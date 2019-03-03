@@ -2521,7 +2521,7 @@ void LogToSD() {
   myFile.print(",");
   myFile.print(tempset, 2);
   myFile.print(",");
-  myFile.println(pH, 3);
+  myFile.print(pH, 3);
   myFile.print(",");
   myFile.println(phset, 3);
   myFile.close();
@@ -2540,4 +2540,3 @@ void LCDupdate() {
   lcd.print(tempset, 2);
 
 }
-

@@ -1,8 +1,8 @@
 
 /*
-   Version #: 0.18 (Adding watachdog timer)
+   Version #: 0.190 (Adding Real Time Clock)
    Author: Kirt L Onthank
-   Date:2018/7/17
+   Date:2019/3/3
    IDE V1.8.4
    Email:kirt.onthank@wallawalla.edu
 */
@@ -20,12 +20,15 @@
 #include <TrueRandom.h>
 #include <MemoryFree.h>
 #include <avr/wdt.h>
+#include <Wire.h>
+#include "RTClib.h"
 
 
 #define RREF 430.0
 Adafruit_MAX31865 max = Adafruit_MAX31865(45, 43, 41, 39);
+RTC_PCF8523 rtc;
 
-double softvers = 0.18;                                        //Software Version
+double softvers = 0.190;                                        //Software Version
 
 //byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; //Setting MAC Address
 char server[] = "api.pushingbox.com"; //pushingbox API server
@@ -245,6 +248,18 @@ void setup()
   Serial.begin(9600);                                 //set baud rate for the hardware serial port_0 to 9600
   Serial1.begin(9600);
   wdt_disable();
+
+  // Starting Real Time CLock and Setting time
+   if (! rtc.begin()) {
+    Serial.println("Couldn't find RTC");
+    while (1);
+   }
+ 
+   if (! rtc.initialized()) {
+    Serial.println("RTC is NOT running!");            
+    rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));   // set the RTC to the date & time this sketch was compiled
+   } 
+
   // Store MAC address in EEPROM
   if (EEPROM.read(44) == '#') {
     for (int i = 3; i < 6; i++) {
@@ -352,35 +367,6 @@ void setup()
     }
 
 
-    //For Time////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Udp.begin(localPort);
-    Serial.println(F("waiting for sync"));
-    setSyncProvider(getNtpTime);
-    //End Time////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  }
-
-  //Set time if NPT fails///////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  int answer = 0;
-  int failstart = millis();
-  timdiff = 0;
-  if (year() == 1970)
-  {
-    lcd.clear();
-    lcd.write("Time fail. Set?");
-    lcd.setCursor(0, 1);
-    lcd.write("Yes:1       No:2");
-    while (answer == 0 && timdiff <= 10000) {
-      char timefail = customKeypad.getKey();
-      if (timefail == '1') {
-        ManualTime();
-        answer = 1;
-      }
-      if (timefail == '2') {
-        answer = 1;
-      }
-      timdiff = millis() - failstart;
-    }
   }
 
 
@@ -485,8 +471,6 @@ void setup()
   lcd.print(F("T="));            //display"Temp="
   wdt_enable(WDTO_8S);
 }
-
-time_t prevDisplay = 0; // when the digital clock was displayed
 
 void serialEvent() {                                  //if the hardware serial port_0 receives a char
   inputstring = Serial.readStringUntil(13);           //read the string until we see a <CR>
@@ -1312,7 +1296,7 @@ void loop()
   }
 
 
-  ///See Device Time/////////////////////////////////////////////////////////////////////////////
+  ///Enable PID/////////////////////////////////////////////////////////////////////////////
   if (to_start == '8') {
     wdt_disable();
     answer = 0;
@@ -1525,59 +1509,6 @@ void printDigits(int digits) {
   Serial.print(digits);
 }
 
-/*-------- NTP code ----------*/
-
-const int NTP_PACKET_SIZE = 48; // NTP time is in the first 48 bytes of message
-byte packetBuffer[NTP_PACKET_SIZE]; //buffer to hold incoming & outgoing packets
-
-time_t getNtpTime()
-{
-  while (Udp.parsePacket() > 0) ; // discard any previously received packets
-  Serial.println(F("Transmit NTP Request"));
-  sendNTPpacket(timeServer);
-  uint32_t beginWait = millis();
-  while (millis() - beginWait < 1500) {
-    int size = Udp.parsePacket();
-    if (size >= NTP_PACKET_SIZE) {
-      Serial.println(F("Receive NTP Response"));
-      Udp.read(packetBuffer, NTP_PACKET_SIZE);  // read packet into the buffer
-      unsigned long secsSince1900;
-      // convert four bytes starting at location 40 to a long integer
-      secsSince1900 =  (unsigned long)packetBuffer[40] << 24;
-      secsSince1900 |= (unsigned long)packetBuffer[41] << 16;
-      secsSince1900 |= (unsigned long)packetBuffer[42] << 8;
-      secsSince1900 |= (unsigned long)packetBuffer[43];
-      return secsSince1900 - 2208988800UL + timeZone * SECS_PER_HOUR;
-    }
-  }
-  Serial.println(F("No NTP Response :-("));
-  return 0; // return 0 if unable to get the time
-}
-
-// send an NTP request to the time server at the given address
-void sendNTPpacket(IPAddress &address)
-{
-  // set all bytes in the buffer to 0
-  memset(packetBuffer, 0, NTP_PACKET_SIZE);
-  // Initialize values needed to form NTP request
-  // (see URL above for details on the packets)
-  packetBuffer[0] = 0b11100011;   // LI, Version, Mode
-  packetBuffer[1] = 0;     // Stratum, or type of clock
-  packetBuffer[2] = 6;     // Polling Interval
-  packetBuffer[3] = 0xEC;  // Peer Clock Precision
-  // 8 bytes of zero for Root Delay & Root Dispersion
-  packetBuffer[12]  = 49;
-  packetBuffer[13]  = 0x4E;
-  packetBuffer[14]  = 49;
-  packetBuffer[15]  = 52;
-  // all NTP fields have been given values, now
-  // you can send a packet requesting a timestamp:
-  Udp.beginPacket(address, 123); //NTP requests are to port 123
-  Udp.write(packetBuffer, NTP_PACKET_SIZE);
-  Udp.endPacket();
-}
-//End Added for Time///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 // ************************************************
 // Save any parameter changes to EEPROM
@@ -1597,7 +1528,6 @@ void SaveTempSet()
     EEPROM_writeDouble(tempAddress, tempset);
   }
 }
-
 
 // ************************************************
 // Load parameters from EEPROM
@@ -1775,6 +1705,8 @@ void ManualTime()
   delay(500);
 
   setTime(Hournow, Minnow, 30, Daynow, Monthnow, Yearnow);
+  rtc.adjust(DateTime(Yearnow, Monthnow, Daynow, Hournow, Minnow, 30));
+
 
   int starttime = millis();
   int nowtime = millis();
@@ -2496,24 +2428,25 @@ void LogToSD() {
 
   pinMode(10, OUTPUT);
   digitalWrite(10, HIGH);
+  DateTime now = rtc.now();
   myFile = SD.open(file_full, FILE_WRITE);
-  myFile.print(month());
+  myFile.print(now.month(), DEC);
   myFile.print("/");
-  myFile.print(day());
+  myFile.print(now.day(), DEC);
   myFile.print("/");
-  myFile.print(year());
+  myFile.print(now.year(), DEC);
   myFile.print(" ");
-  myFile.print(hour());
+  myFile.print(now.hour(), DEC);
   myFile.print(":");
-  if (minute() < 10) {
+  if (now.minute() < 10) {
     myFile.print("0");
   }
-  myFile.print(minute());
+  myFile.print(now.minute(), DEC);
   myFile.print(":");
-  if (second() < 10) {
+  if (now.second() < 10) {
     myFile.print("0");
   }
-  myFile.print(second());
+  myFile.print(now.second(), DEC);
   myFile.print(",");
   myFile.print(tankid);
   myFile.print(",");

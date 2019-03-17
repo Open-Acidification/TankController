@@ -1,8 +1,8 @@
 
 /*
-   Version #: 0.190 (Adding Real Time Clock)
+   Version #: 0.191 (0.190: Adding Real Time Clock, 0.191: Temperature compensation defeat & PT100 resistance to serial monitor.)
    Author: Kirt L Onthank
-   Date:2019/3/3
+   Date:2019/3/16
    IDE V1.8.4
    Email:kirt.onthank@wallawalla.edu
 */
@@ -28,7 +28,7 @@
 Adafruit_MAX31865 max = Adafruit_MAX31865(45, 43, 41, 39);
 RTC_PCF8523 rtc;
 
-double softvers = 0.190;                                        //Software Version
+double softvers = 0.191;                                        //Software Version
 
 //byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; //Setting MAC Address
 char server[] = "api.pushingbox.com"; //pushingbox API server
@@ -1387,7 +1387,26 @@ void loop()
     Serial.println(Kd);
     Serial.print(F("PID Output (s): "));
     Serial.println(Output / 1000, 1);
-    Serial.println("");
+    DateTime now = rtc.now();
+    Serial.print(now.year(), DEC);
+    Serial.print('/');
+    Serial.print(now.month(), DEC);
+    Serial.print('/');
+    Serial.print(now.day(), DEC);
+    Serial.print(" ");
+    Serial.print(now.hour(), DEC);
+    Serial.print(':');
+    if (now.minute() < 10) {
+     Serial.print("0");
+    }
+    Serial.print(now.minute(), DEC);
+    Serial.print(':');
+    if (now.second() < 10) {
+      Serial.print("0");
+    }
+    Serial.print(now.second(), DEC);
+    Serial.println();
+    Serial.println();
   }
 
   //Sending data to Google Sheets////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1489,15 +1508,16 @@ void sendData() {
 //Adding for Time//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void digitalClockDisplay() {
   // digital clock display of the time
-  Serial.print(hour());
-  printDigits(minute());
-  printDigits(second());
+  DateTime now = rtc.now();
+  Serial.print(now.hour());
+  printDigits(now.minute());
+  printDigits(now.second());
   Serial.print(F(" "));
-  Serial.print(day());
+  Serial.print(now.day());
   Serial.print(F("-"));
-  Serial.print(month());
+  Serial.print(now.month());
   Serial.print(F("-"));
-  Serial.print(year());
+  Serial.print(now.year());
   Serial.println();
 }
 
@@ -1802,6 +1822,7 @@ void Get_Temperature()
 
   temp = total / numReadings;                               // calculate the average
   Serial.print(F("Temperature = ")); Serial.println(temp);
+  Serial.print(F("Resistance = ")); Serial.println(RREF*ratio,5);
 }
 
 // ************************************************
@@ -1809,7 +1830,12 @@ void Get_Temperature()
 // ************************************************
 void Set_Temp_Comp()
 {
-  tempcomp = pretempcomp + String(temp, 2);
+  if (temp>0 && temp<100) {
+    tempcomp = pretempcomp + String(temp, 2);
+    }
+  else {
+    tempcomp = pretempcomp + 20;
+    }    
   Serial.println(tempcomp);
   Serial1.print(tempcomp);                      //send that string to the Atlas Scientific product
   Serial1.print('\r');                             //add a <CR> to the end of the string

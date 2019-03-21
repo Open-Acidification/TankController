@@ -1,6 +1,9 @@
 
 /*
-   Version #: 0.191 (0.190: Adding Real Time Clock, 0.191: Temperature compensation defeat & PT100 resistance to serial monitor.)
+   Version #: 0.192 
+    (0.190: Adding Real Time Clock, 
+    0.191: Temperature compensation defeat & PT100 resistance to serial monitor, 
+    0.0192: added fields to SD card output)
    Author: Kirt L Onthank
    Date:2019/3/16
    IDE V1.8.4
@@ -379,7 +382,7 @@ void setup()
   file_full = filename + ".txt";
 
   myFile = SD.open(file_full, FILE_WRITE);
-  myFile.println("time,tankid,temp,temp setpoint,pH,pH setpoint");
+  myFile.println("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd");
   myFile.close();
   SD_previousMillis = millis();
   ///Starting the SD Card//////////////////////////////////////////////////////////////////////////////////
@@ -2482,7 +2485,16 @@ void LogToSD() {
   myFile.print(",");
   myFile.print(pH, 3);
   myFile.print(",");
-  myFile.println(phset, 3);
+  myFile.print(phset, 3);
+  myFile.print(",");
+  myFile.print(onTime);
+  myFile.print(",");
+  myFile.print(Kp);
+  myFile.print(",");
+  myFile.print(Ki);
+  myFile.print(",");
+  myFile.println(Kd);
+
   myFile.close();
 }
 

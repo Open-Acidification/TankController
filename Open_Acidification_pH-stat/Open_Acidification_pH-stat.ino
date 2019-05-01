@@ -1,11 +1,12 @@
 
 /*
-   Version #: 0.192 
+   Version #: 0.193 
     (0.190: Adding Real Time Clock, 
     0.191: Temperature compensation defeat & PT100 resistance to serial monitor, 
-    0.0192: added fields to SD card output)
+    0.192: added fields to SD card output
+    0.193: Fixed current time display output to take time from RTC)
    Author: Kirt L Onthank
-   Date:2019/3/16
+   Date:2019/4/30
    IDE V1.8.4
    Email:kirt.onthank@wallawalla.edu
 */
@@ -31,7 +32,7 @@
 Adafruit_MAX31865 max = Adafruit_MAX31865(45, 43, 41, 39);
 RTC_PCF8523 rtc;
 
-double softvers = 0.191;                                        //Software Version
+double softvers = 0.193;                                        //Software Version
 
 //byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; //Setting MAC Address
 char server[] = "api.pushingbox.com"; //pushingbox API server
@@ -982,19 +983,21 @@ void loop()
     int starttime = millis();
     int nowtime = millis();
     int yearnow;
-    if (year() >= 2000) {
-      yearnow = year() - 2000;
+    DateTime now = rtc.now();
+    if (now.year() >= 2000) {
+      yearnow = now.year() - 2000;
     }
-    if (year() < 2000) {
-      yearnow = year() - 1900;
+    if (now.year() < 2000) {
+      yearnow = now.year() - 1900;
     }
     while (nowtime <= starttime + 5000)
     {
+      DateTime now = rtc.now();
       nowtime = millis();
       lcd.clear();
-      lcd.print(String(month()) + "/" + String(day()) + "/" + String(yearnow));
+      lcd.print(String(now.month()) + "/" + String(now.day()) + "/" + String(yearnow));
       lcd.print(F(" "));
-      lcd.print(String(hour()) + ":" + String(minute()) + ":" + String(second()));
+      lcd.print(String(now.hour()) + ":" + String(now.minute()) + ":" + String(now.second()));
       lcd.setCursor(0, 1);
 
       int days = floor(millis() / 86400000);

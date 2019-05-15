@@ -1,7 +1,7 @@
 
 /*
    Version #: 0.193 
-    (0.190: Adding Real Time Clock, 
+   (0.190: Adding Real Time Clock, 
     0.191: Temperature compensation defeat & PT100 resistance to serial monitor, 
     0.192: added fields to SD card output
     0.193: Fixed current time display output to take time from RTC)
@@ -1347,7 +1347,7 @@ void loop()
     lcd.setCursor(0, 0);
     lcd.print(F("Software Version"));
     lcd.setCursor(0, 1);
-    lcd.print(softvers);
+    lcd.print(softvers,3);
     delay(5000);
     lcd.clear();
     lcd.print(F("pH="));

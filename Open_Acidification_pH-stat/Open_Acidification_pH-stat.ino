@@ -326,6 +326,7 @@ void setup()
   lcd.print(F("Ethernet cable?"));
   lcd.setCursor(0, 1);
   lcd.print(F("Yes:1       No:2"));
+  Serial.print("Ethernet cable?  Yes:1  No: 2");
   while (ethanswer == 0 && timdiff <= 10000) {
     char ether = customKeypad.getKey();
     if (ether == '1') {

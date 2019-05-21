@@ -1,10 +1,12 @@
 
 /*
-   Version #: 0.193 
+   Version #: 0.195 
    (0.190: Adding Real Time Clock, 
     0.191: Temperature compensation defeat & PT100 resistance to serial monitor, 
     0.192: added fields to SD card output
-    0.193: Fixed current time display output to take time from RTC)
+    0.193: Fixed current time display output to take time from RTC
+    0.194: Device ID to the beginning, software version sig figs)
+    0.195: Fixing SD card writing stuff (was taking too long and overrunning pH reading time)
    Author: Kirt L Onthank
    Date:2019/4/30
    IDE V1.8.4
@@ -27,18 +29,20 @@
 #include <Wire.h>
 #include "RTClib.h"
 
+String DevID = "v172D35C152EDA6C"; //DeviceID from Pushingbox
 
 #define RREF 430.0
 Adafruit_MAX31865 max = Adafruit_MAX31865(45, 43, 41, 39);
 RTC_PCF8523 rtc;
 
-double softvers = 0.193;                                        //Software Version
+double softvers = 0.195;                                        //Software Version
 
 //byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; //Setting MAC Address
 char server[] = "api.pushingbox.com"; //pushingbox API server
 IPAddress ip(192, 168, 1, 2); //Arduino IP address. Only used when DHCP is turned off.
 EthernetClient client; //define 'client' as object
 String data; //GET query with data
+String SDstring; //what to write to SD card
 boolean cxn = false;
 
 float interval = 1200000;                         // interval at which to update Google Sheets (milliseconds)
@@ -380,7 +384,8 @@ void setup()
   digitalWrite(10, HIGH);
   SD.begin(4);
 
-  filename = String(year() - 2000) + "-" + String(month()) + "-" + String(day());
+  DateTime now = rtc.now();
+  filename = String(now.year() - 2000) + "-" + now.month() + "-" + now.day();
   file_full = filename + ".txt";
 
   myFile = SD.open(file_full, FILE_WRITE);
@@ -1491,7 +1496,9 @@ void loop()
 // ************************************************
 void packData() {
   data += "";
-  data += "GET /pushingbox?devid=v172D35C152EDA6C&tankid="; //GET request query to pushingbox API
+  data += "GET /pushingbox?devid="; //GET request query to pushingbox API
+  data += DevID; //GET request query to pushingbox API
+  data += "&tankid="; //GET request query to pushingbox API
   data += tankid;
   data += "&tempData="; //GET request query to pushingbox API
   data += temp;
@@ -1506,6 +1513,7 @@ void packData() {
 // ************************************************
 void sendData() {
   Serial.println(F("connected"));
+  Serial.println(data);
   client.println(data);
   client.println("Host: api.pushingbox.com");
   client.println("Connection: close");
@@ -2447,11 +2455,14 @@ void Change_Kd()
 
 void LogToSD() {
   unsigned long SD_currentMillis = millis();
+  DateTime now = rtc.now();
+  Serial.println("SD1");
   pinMode(10, OUTPUT);
+  Serial.println("SD1");
   digitalWrite(10, HIGH);
   if (SD_currentMillis - SD_previousMillis >= SD_interval) {
     SD_previousMillis = SD_currentMillis;
-    filename = String(year() - 2000) + "-" + month() + "-" + day();
+    filename = String(now.year() - 2000) + "-" + now.month() + "-" + now.day();
     file_full = filename + ".txt";
 
     myFile = SD.open(file_full, FILE_WRITE);
@@ -2461,45 +2472,46 @@ void LogToSD() {
 
   pinMode(10, OUTPUT);
   digitalWrite(10, HIGH);
-  DateTime now = rtc.now();
   myFile = SD.open(file_full, FILE_WRITE);
-  myFile.print(now.month(), DEC);
-  myFile.print("/");
-  myFile.print(now.day(), DEC);
-  myFile.print("/");
-  myFile.print(now.year(), DEC);
-  myFile.print(" ");
-  myFile.print(now.hour(), DEC);
-  myFile.print(":");
+  SDstring = "";
+  SDstring += String(now.month(), DEC);
+  SDstring += "/";
+  SDstring += String(now.day(), DEC);
+  SDstring += "/";
+  SDstring += String(now.year(), DEC);
+  SDstring += " ";
+  SDstring += String(now.hour(), DEC);
+  SDstring += ":";
   if (now.minute() < 10) {
-    myFile.print("0");
+    SDstring += "0";
   }
-  myFile.print(now.minute(), DEC);
-  myFile.print(":");
+  SDstring += String(now.minute(), DEC);
+  SDstring += ":";
   if (now.second() < 10) {
-    myFile.print("0");
+    SDstring += "0";
   }
-  myFile.print(now.second(), DEC);
-  myFile.print(",");
-  myFile.print(tankid);
-  myFile.print(",");
-  myFile.print(temp, 2);
-  myFile.print(",");
-  myFile.print(tempset, 2);
-  myFile.print(",");
-  myFile.print(pH, 3);
-  myFile.print(",");
-  myFile.print(phset, 3);
-  myFile.print(",");
-  myFile.print(onTime);
-  myFile.print(",");
-  myFile.print(Kp);
-  myFile.print(",");
-  myFile.print(Ki);
-  myFile.print(",");
-  myFile.println(Kd);
-
+  SDstring += String(now.second(), DEC);
+  SDstring += ",";
+  SDstring += tankid;
+  SDstring += ",";
+  SDstring += String(temp, 2);
+  SDstring += ",";
+  SDstring += String(tempset, 2);
+  SDstring += ",";
+  SDstring += String(pH, 3);
+  SDstring += ",";
+  SDstring += String(phset, 3);
+  SDstring += ",";
+  SDstring += String(onTime);
+  SDstring += ",";
+  SDstring += Kp;
+  SDstring += ",";
+  SDstring += Ki;
+  SDstring += ",";
+  SDstring += Kd;
+  myFile.println(SDstring);
   myFile.close();
+  Serial.println(SDstring);
 }
 
 

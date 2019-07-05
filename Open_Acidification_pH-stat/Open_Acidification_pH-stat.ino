@@ -1,14 +1,15 @@
 
 /*
-   Version #: 0.195 
+   Version #: 0.196 
    (0.190: Adding Real Time Clock, 
     0.191: Temperature compensation defeat & PT100 resistance to serial monitor, 
     0.192: added fields to SD card output
     0.193: Fixed current time display output to take time from RTC
     0.194: Device ID to the beginning, software version sig figs)
     0.195: Fixing SD card writing stuff (was taking too long and overrunning pH reading time)
+    0.196: Adding ability to switch between chilling and heating
    Author: Kirt L Onthank
-   Date:2019/4/30
+   Date:2019/7/3
    IDE V1.8.4
    Email:kirt.onthank@wallawalla.edu
 */
@@ -35,7 +36,7 @@ String DevID = "v172D35C152EDA6C"; //DeviceID from Pushingbox
 Adafruit_MAX31865 max = Adafruit_MAX31865(45, 43, 41, 39);
 RTC_PCF8523 rtc;
 
-double softvers = 0.195;                                        //Software Version
+double softvers = 0.196;                                        //Software Version
 
 //byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; //Setting MAC Address
 char server[] = "api.pushingbox.com"; //pushingbox API server
@@ -78,6 +79,7 @@ double newph = 0;
 double newtemp = 0;
 double realtemp;
 double tempcorr = 0;
+double heat;
 double Input, Output, Setpoint;
 double Kp;
 double Ki;
@@ -119,7 +121,7 @@ const int KpAddress = 20;
 const int KiAddress = 28;
 const int KdAddress = 36;
 const int MacAddress = 44;
-
+const int heatAddress = 52;
 
 // End EEPROM addresses for persisted data///////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -313,7 +315,7 @@ void setup()
   max.begin(MAX31865_3WIRE);                          //start pt100 temperature probe
   Serial1.begin(9600);                               //set baud rate for the software serial port to 9600
   inputstring.reserve(10);                            //set aside some bytes for receiving data from the PC
-  sensorstring.reserve(30);                           //set aside some bytes for receiving data from Atlas Scientific product
+  sensorstring.reserve(30);                           //set aside some bytes for receiving data from Atlas Scientific pH EZO
   Serial1.print("C,1");                              //Reset pH stamp to continuous measurement: once per second
   Serial1.print('\r');                               //add a <CR> to the end of the string
   pinMode(chiller, OUTPUT);
@@ -1037,9 +1039,9 @@ void loop()
   if (to_start == '1') {
     wdt_disable();
     lcd.clear();
-    lcd.print(F("Device Addresses"));
+    lcd.print(F("Unit Information"));
     lcd.setCursor(0, 1);
-    lcd.print(F("IP:1       MAC:2"));
+    lcd.print(F("IP:1 MAC:2 SV:3"));
     while (answer == 0 && timdiff <= 5000) {
       char answerkey = customKeypad.getKey();
       if (answerkey == '1') {
@@ -1061,6 +1063,15 @@ void loop()
         lcd.print(&macstr[9]);
         Serial.print(F("MAC Address: "));
         Serial.println(macstr);
+        delay(7000);
+        answer = 1;
+      }
+      if (answerkey == '3'){
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print(F("Software Version"));
+        lcd.setCursor(0, 1);
+        lcd.print(softvers,3);
         delay(7000);
         answer = 1;
       }
@@ -1346,19 +1357,33 @@ void loop()
   }
 
 
-  /// See Software Version /////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /// Set Chill or Heat /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   if (to_start == '9') {
+    wdt_disable();
     lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(F("Software Version"));
+    lcd.print(F("Chill or Heat?"));
     lcd.setCursor(0, 1);
-    lcd.print(softvers,3);
-    delay(5000);
+    lcd.print(F("Chill:1   Heat:2"));
+    while (answer == 0 && timdiff <= 5000) {
+      char answerkey = customKeypad.getKey();
+      if (answerkey == '1') {
+        heat = 0;
+        EEPROM_writeDouble(heatAddress, 0);
+        answer = 1;
+      }
+      if (answerkey == '2') {
+        heat = 1;
+        EEPROM_writeDouble(heatAddress, 1);
+        answer = 1;
+      }
+      timdiff = millis() - queststart;
+    }
     lcd.clear();
     lcd.print(F("pH="));
     lcd.setCursor(0, 1) ;          //Display position
     lcd.print(F("T="));            //display"Temp="
+    wdt_enable(WDTO_8S);
   }
 
 
@@ -1575,6 +1600,7 @@ void LoadParameters()
   Kp = EEPROM_readDouble(KpAddress);
   Ki = EEPROM_readDouble(KiAddress);
   Kd = EEPROM_readDouble(KdAddress);
+  heat = EEPROM_readDouble(heatAddress);
   // Use defaults if EEPROM values are invalid
   if (isnan(phset))
   {
@@ -1595,6 +1621,10 @@ void LoadParameters()
   if (isnan(Kd))
   {
     Kd = 0;
+  }
+  if (isnan(heat))
+  {
+    heat = 0;
   }
 }
 
@@ -1928,19 +1958,31 @@ void RunAutoTune()
 
 void Set_Chiller()
 {
-  unsigned long chiller_currentMillis = millis();
-  if (chiller_currentMillis - chiller_previousMillis >= chiller_interval) { //pause 30 seconds between swtiching chiller on and off to prevent damage to chiller
-    chiller_previousMillis = chiller_currentMillis;
-    if (temp >= tempset + 0.05) {                                          //if the observed temperature is greater than or equal the temperature setpoint plus .05 degree
-      Serial.println(F("chiller on"));                                     //print chiller state to serial
-      digitalWrite(chiller, LOW);
+  if (heat == 0) {
+    unsigned long chiller_currentMillis = millis();
+    if (chiller_currentMillis - chiller_previousMillis >= chiller_interval) { //pause 30 seconds between swtiching chiller on and off to prevent damage to chiller
+      chiller_previousMillis = chiller_currentMillis;
+      if (temp >= tempset + 0.05) {                                          //if the observed temperature is greater than or equal the temperature setpoint plus .05 degree
+        Serial.println(F("chiller on"));                                     //print chiller state to serial
+        digitalWrite(chiller, LOW);
+        }
+      if (temp <= tempset - 0.05) {                                          //see if temperature is lower than .05 below setpoint
+        Serial.println(F("chiller off"));                                    //print chiller state to serial
+        digitalWrite(chiller, HIGH);
+      }
     }
-    if (temp <= tempset - 0.05) {                                          //see if temperature is lower than .05 below setpoint
-      Serial.println(F("chiller off"));                                    //print chiller state to serial
-      digitalWrite(chiller, HIGH);
-    }
+    
   }
-
+  if (heat == 1) {
+    if (temp <= tempset + 0.05) {                                          //if the observed temperature is less than or equal the temperature setpoint plus .05 degree
+        Serial.println(F("chiller on"));                                     //print chiller state to serial
+        digitalWrite(chiller, LOW);
+        }
+      if (temp >= tempset - 0.05) {                                          //see if temperature is greater than or equal to .05 below setpoint
+        Serial.println(F("chiller off"));                                    //print chiller state to serial
+        digitalWrite(chiller, HIGH);
+      }
+    }
 }
 
 // ************************************************
@@ -2525,5 +2567,11 @@ void LCDupdate() {
   lcd.print(temp, 2);
   lcd.setCursor(11, 1);
   lcd.print(tempset, 2);
-
+  lcd.setCursor(9,1);
+  if (heat == 0) {
+    lcd.print("C");
+    }
+  if (heat == 1) {
+    lcd.print("H");
+    }
 }

@@ -679,6 +679,12 @@ void loop()
      while (answer == 0 && timdiff <= 5000) {
       char answerkey = customKeypad.getKey();
       if (answerkey == '1') {
+
+      if (Serial1.available() > 0) {                      //if we see that the Atlas Scientific product has sent a character
+        Serial.println("clearing buffer");
+        char inchar = (char)Serial1.read();               //get the char we just received
+      }
+
         Serial.println("pressed 1");
         GetCalSlope();
         lcd.clear();

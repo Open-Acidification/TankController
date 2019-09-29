@@ -1,6 +1,6 @@
 
 /*
-   Version #: 0.196 
+   Version #: 0.197 
    (0.190: Adding Real Time Clock, 
     0.191: Temperature compensation defeat & PT100 resistance to serial monitor, 
     0.192: added fields to SD card output
@@ -8,8 +8,9 @@
     0.194: Device ID to the beginning, software version sig figs)
     0.195: Fixing SD card writing stuff (was taking too long and overrunning pH reading time)
     0.196: Adding ability to switch between chilling and heating
+    0.197: Adding calibration reset and calibration stats
    Author: Kirt L Onthank
-   Date:2019/7/3
+   Date:2019/9/28
    IDE V1.8.4
    Email:kirt.onthank@wallawalla.edu
 */
@@ -68,8 +69,12 @@ String lowcalstring = "";
 String rightnow;
 String pretempcomp = "T,";
 String tempcomp;
+String sloperaw = "";
+String slope = "";
 boolean input_string_complete = false;             //have we received all the data from the PC
 boolean sensor_string_complete = false;            //have we received all the data from the Atlas Scientific product
+boolean WaitForString = true;
+boolean SlopeFlag = true;
 double pH;                                         //used to hold a floating point number that is the pH
 double pHDisplay;                                  //used to hold a floating point number that is the pH
 double temp;
@@ -101,6 +106,7 @@ boolean pidrun = true;
 boolean sensed = false;
 #define chiller 47
 #define co2reg 49
+int LoopStart;
 
 //Temperature Smoothing/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const int numReadings = 10;
@@ -316,7 +322,9 @@ void setup()
   Serial1.begin(9600);                               //set baud rate for the software serial port to 9600
   inputstring.reserve(10);                            //set aside some bytes for receiving data from the PC
   sensorstring.reserve(30);                           //set aside some bytes for receiving data from Atlas Scientific pH EZO
-  Serial1.print("C,1");                              //Reset pH stamp to continuous measurement: once per second
+  Serial1.print("*OK,0");                              //Turn off the returning of OK after command to EZO pH
+  Serial1.print('\r');                               //add a <CR> to the end of the string
+  Serial1.print("C,0");                              //Reset pH stamp to continuous measurement: once per second
   Serial1.print('\r');                               //add a <CR> to the end of the string
   pinMode(chiller, OUTPUT);
   pinMode(co2reg, OUTPUT);
@@ -622,100 +630,33 @@ void loop()
     wdt_enable(WDTO_8S);
   }
 
+  //////////////////////////////////////////////////////////////////////////////////////////////////////
   /// pH One-Point Calibration /////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////////////////////
+  int answer = 0;
+  int queststart = millis();
+  int timdiff = 0;
 
   if (to_start == 'C') {
     wdt_disable();
     onTime=0;
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print(F("Calibration mode"));
-    lcd.setCursor(3, 1);
-    lcd.print(F("One-point"));
-    delay(5000);
-
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(F("Buffer pH:"));
+    lcd.print(F("Calibration"));
     lcd.setCursor(0, 1);
-    lcd.print(F("  .   "));
-
-    Key = customKeypad.waitForKey();
-    midBuffer = (Key - '0') * 10;
-    lcd.setCursor(0, 1);
-    lcd.print(Key);
-    Serial.print(F("Tens place: "));
-    Serial.println(Key);
-
-    Key = customKeypad.waitForKey();
-    midBuffer = (Key - '0') + midBuffer;
-    lcd.setCursor(1, 1);
-    lcd.print(Key);
-    Serial.print(F("Ones place: "));
-    Serial.println(Key);
-
-    Key = customKeypad.waitForKey();
-    midBuffer = ((Key - '0') * 0.1) + midBuffer;
-    lcd.setCursor(3, 1);
-    lcd.print(Key);
-    Serial.print(F("Tenths place: "));
-    Serial.println(Key);
-
-    Key = customKeypad.waitForKey();
-    midBuffer = ((Key - '0') * 0.01) + midBuffer;
-    lcd.setCursor(4, 1);
-    lcd.print(Key);
-    Serial.print(F("Hundreths place: "));
-    Serial.println(Key);
-
-    Key = customKeypad.waitForKey();
-    midBuffer = ((Key - '0') * 0.001) + midBuffer;
-    lcd.setCursor(5, 1);
-    lcd.print(Key);
-    Serial.print(F("Thousanths place: "));
-    Serial.println(Key);
-    midcalstring = premidcalstring + String(midBuffer);
-    Serial.print(midcalstring);
-
-
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(F("Press '#' to cal"));
-    while (Key != '#') {
-
-      if (Serial1.available() > 0) {                     //if we see that the Atlas Scientific product has sent a character
-        char inchar = (char)Serial1.read();              //get the char we just received
-        sensorstring += inchar;                           //add the char to the var called sensorstring
-        if (inchar == '\r') {                             //if the incoming character is a <CR>
-          sensor_string_complete = true;                  //set the flag
-        }
+    lcd.print(F("1-pt:1 2-pt:2"));
+     while (answer == 0 && timdiff <= 5000) {
+      char answerkey = customKeypad.getKey();
+      if (answerkey == '1') {
+        OnePointCal();
+        answer = 1;
       }
-
-
-      if (sensor_string_complete == true) {               //if a string from the Atlas Scientific product has been received in its entirety
-        if (isdigit(sensorstring[0])) {                   //if the first character in the string is a digit
-          pH = sensorstring.toFloat();                    //convert the string to a floating point number so it can be evaluated by the Arduino
-        }
-        sensorstring = "";                                //clear the string
-        sensor_string_complete = false;                   //reset the flag used to tell if we have received a completed string from the Atlas Scientific product
+      if (answerkey == '2') {
+        TwoPointCal();
+        answer = 1;
       }
-      lcd.setCursor(0, 1);
-      lcd.print(F("pH="));
-      lcd.print(pH, 3);
-
-      Key = customKeypad.getKey();
-    }
-    Key = NO_KEY;
-
-    Serial1.print(midcalstring);                      //send that string to the Atlas Scientific product
-    Serial1.print('\r');                             //add a <CR> to the end of the string
-
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(F("###Calibration##"));
-    lcd.setCursor(0, 1);
-    lcd.print(F("####Complete####"));
-    delay(3000);
+      timdiff = millis() - queststart;
+     }      
     lcd.clear();
     lcd.print(F("pH="));
     lcd.setCursor(0, 1) ;          //Display position
@@ -724,7 +665,7 @@ void loop()
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  /// pH Two-Point Calibration ////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /// Calibration Management //////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   if (to_start == 'D') {
@@ -732,175 +673,30 @@ void loop()
     onTime=0;
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print(F("Calibration mode"));
-    lcd.setCursor(3, 1);
-    lcd.print(F("Two-point"));
-    delay(5000);
-
-    // Lower Buffer ///
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(F("Higher Buffer pH:"));
+    lcd.print(F("Cal Management"));
     lcd.setCursor(0, 1);
-    lcd.print(F("  .   "));
-
-    Key = customKeypad.waitForKey();
-    midBuffer = (Key - '0') * 10;
-    lcd.setCursor(0, 1);
-    lcd.print(Key);
-    Serial.print(F("Tens place: "));
-    Serial.println(Key);
-
-    Key = customKeypad.waitForKey();
-    midBuffer = (Key - '0') + midBuffer;
-    lcd.setCursor(1, 1);
-    lcd.print(Key);
-    Serial.print(F("Ones place: "));
-    Serial.println(Key);
-
-    Key = customKeypad.waitForKey();
-    midBuffer = ((Key - '0') * 0.1) + midBuffer;
-    lcd.setCursor(3, 1);
-    lcd.print(Key);
-    Serial.print(F("Tenths place: "));
-    Serial.println(Key);
-
-    Key = customKeypad.waitForKey();
-    midBuffer = ((Key - '0') * 0.01) + midBuffer;
-    lcd.setCursor(4, 1);
-    lcd.print(Key);
-    Serial.print(F("Hundreths place: "));
-    Serial.println(Key);
-
-    Key = customKeypad.waitForKey();
-    midBuffer = ((Key - '0') * 0.001) + midBuffer;
-    lcd.setCursor(5, 1);
-    lcd.print(Key);
-    Serial.print(F("Thousanths place: "));
-    Serial.println(Key);
-    midcalstring = premidcalstring + String(midBuffer);
-    Serial.print(midcalstring);
-
-
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(F("Press '#' to cal"));
-    while (Key != '#') {
-
-      if (Serial1.available() > 0) {                     //if we see that the Atlas Scientific product has sent a character
-        char inchar = (char)Serial1.read();              //get the char we just received
-        sensorstring += inchar;                           //add the char to the var called sensorstring
-        if (inchar == '\r') {                             //if the incoming character is a <CR>
-          sensor_string_complete = true;                  //set the flag
-        }
+    lcd.print(F("Slope:1 Clear:2"));
+     while (answer == 0 && timdiff <= 5000) {
+      char answerkey = customKeypad.getKey();
+      if (answerkey == '1') {
+        Serial.println("pressed 1");
+        GetCalSlope();
+        lcd.clear();
+        lcd.print("Cal Slope:");
+        lcd.setCursor(0,1);
+        lcd.print(slope);
+        delay(5000);
+        answer = 1;
       }
-
-
-      if (sensor_string_complete == true) {               //if a string from the Atlas Scientific product has been received in its entirety
-        if (isdigit(sensorstring[0])) {                   //if the first character in the string is a digit
-          pH = sensorstring.toFloat();                    //convert the string to a floating point number so it can be evaluated by the Arduino
-        }
-        sensorstring = "";                                //clear the string
-        sensor_string_complete = false;                   //reset the flag used to tell if we have received a completed string from the Atlas Scientific product
+      if (answerkey == '2') {
+        Serial.println("pressed 2");
+        Serial1.print("Cal,clear");                      //send Calibration clear command to EZO pH stamp
+        Serial1.print('\r');                             //add a <CR> to the end of the string
+        answer = 1;
       }
-      lcd.setCursor(0, 1);
-      lcd.print(F("pH="));
-      lcd.print(pH, 3);
-
-      Key = customKeypad.getKey();
-    }
-    Key = NO_KEY;
-
-    Serial1.print(midcalstring);                      //send that string to the Atlas Scientific product
-    Serial1.print('\r');                             //add a <CR> to the end of the string
-
-    // High pH Buffer ///
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(F("Lower Buffer pH:"));
-    lcd.setCursor(0, 1);
-    lcd.print(F("  .   "));
-
-    Key = customKeypad.waitForKey();
-    lowBuffer = (Key - '0') * 10;
-    lcd.setCursor(0, 1);
-    lcd.print(Key);
-    Serial.print(F("Tens place: "));
-    Serial.println(Key);
-
-    Key = customKeypad.waitForKey();
-    lowBuffer = (Key - '0') + lowBuffer;
-    lcd.setCursor(1, 1);
-    lcd.print(Key);
-    Serial.print(F("Ones place: "));
-    Serial.println(Key);
-
-    Key = customKeypad.waitForKey();
-    lowBuffer = ((Key - '0') * 0.1) + lowBuffer;
-    lcd.setCursor(3, 1);
-    lcd.print(Key);
-    Serial.print(F("Tenths place: "));
-    Serial.println(Key);
-
-    Key = customKeypad.waitForKey();
-    lowBuffer = ((Key - '0') * 0.01) + lowBuffer;
-    lcd.setCursor(4, 1);
-    lcd.print(Key);
-    Serial.print(F("Hundreths place: "));
-    Serial.println(Key);
-
-    Key = customKeypad.waitForKey();
-    lowBuffer = ((Key - '0') * 0.001) + lowBuffer;
-    lcd.setCursor(5, 1);
-    lcd.print(Key);
-    Serial.print(F("Thousanths place: "));
-    Serial.println(Key);
-    lowcalstring = prelowcalstring + String(lowBuffer);
-    Serial.print(lowcalstring);
-
-
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(F("Press '#' to cal"));
-    while (Key != '#') {
-
-      serialEvent();
-      serialEvent3();
-      if (Serial1.available() > 0) {                     //if we see that the Atlas Scientific product has sent a character
-        char inchar = (char)Serial1.read();              //get the char we just received
-        sensorstring += inchar;                           //add the char to the var called sensorstring
-        if (inchar == '\r') {                             //if the incoming character is a <CR>
-          sensor_string_complete = true;                  //set the flag
-        }
-      }
-
-
-      if (sensor_string_complete == true) {               //if a string from the Atlas Scientific product has been received in its entirety
-        if (isdigit(sensorstring[0])) {                   //if the first character in the string is a digit
-          pH = sensorstring.toFloat();                    //convert the string to a floating point number so it can be evaluated by the Arduino
-        }
-        sensorstring = "";                                //clear the string
-        sensor_string_complete = false;                   //reset the flag used to tell if we have received a completed string from the Atlas Scientific product
-      }
-      lcd.setCursor(0, 1);
-      lcd.print(F("pH="));
-      lcd.print(pH, 3);
-
-      Key = customKeypad.getKey();
-    }
-    Key = NO_KEY;
-
-    Serial1.print(lowcalstring);                      //send that string to the Atlas Scientific product
-    Serial1.print('\r');                             //add a <CR> to the end of the string
-
-
-
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(F("###Calibration##"));
-    lcd.setCursor(0, 1);
-    lcd.print(F("####Complete####"));
-    delay(3000);
+      timdiff = millis() - queststart;
+     }      
+        
     lcd.clear();
     lcd.print(F("pH="));
     lcd.setCursor(0, 1) ;          //Display position
@@ -1032,9 +828,6 @@ void loop()
 
   /// See Device addresses /////////////////////////////////////////////////////////////////////////////
 
-  int answer = 0;
-  int queststart = millis();
-  int timdiff = 0;
 
   if (to_start == '1') {
     wdt_disable();
@@ -1390,6 +1183,7 @@ void loop()
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /// Main Running Loop /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
   unsigned long sensor_currentMillis = millis();
   if (sensor_currentMillis - sensor_previousMillis >= sensor_interval) {
@@ -1816,6 +1610,8 @@ void DriveOutput()
 // ************************************************
 void Get_pH()
 {
+  Serial1.print("R");                              //Ask EZO pH stamp for pH reading
+  Serial1.print('\r');                             //add a <CR> to the end of the string
   while (pH == -99) {
     if (input_string_complete) {                        //if a string from the PC has been received in its entirety
       Serial1.print(inputstring);                      //send that string to the Atlas Scientific product
@@ -2492,15 +2288,13 @@ void Change_Kd()
 }
 
 // ************************************************
-// Log parameters to SD card
+// Log to SD card
 // ************************************************
 
 void LogToSD() {
   unsigned long SD_currentMillis = millis();
   DateTime now = rtc.now();
-  Serial.println("SD1");
   pinMode(10, OUTPUT);
-  Serial.println("SD1");
   digitalWrite(10, HIGH);
   if (SD_currentMillis - SD_previousMillis >= SD_interval) {
     SD_previousMillis = SD_currentMillis;
@@ -2574,4 +2368,364 @@ void LCDupdate() {
   if (heat == 1) {
     lcd.print("H");
     }
+}
+
+
+// ************************************************
+// One Point Calibration
+// ************************************************
+void OnePointCal() {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(F("Calibration mode"));
+    lcd.setCursor(3, 1);
+    lcd.print(F("One-point"));
+    delay(5000);
+
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(F("Buffer pH:"));
+    lcd.setCursor(0, 1);
+    lcd.print(F("  .   "));
+
+    Key = customKeypad.waitForKey();
+    midBuffer = (Key - '0') * 10;
+    lcd.setCursor(0, 1);
+    lcd.print(Key);
+    Serial.print(F("Tens place: "));
+    Serial.println(Key);
+
+    Key = customKeypad.waitForKey();
+    midBuffer = (Key - '0') + midBuffer;
+    lcd.setCursor(1, 1);
+    lcd.print(Key);
+    Serial.print(F("Ones place: "));
+    Serial.println(Key);
+
+    Key = customKeypad.waitForKey();
+    midBuffer = ((Key - '0') * 0.1) + midBuffer;
+    lcd.setCursor(3, 1);
+    lcd.print(Key);
+    Serial.print(F("Tenths place: "));
+    Serial.println(Key);
+
+    Key = customKeypad.waitForKey();
+    midBuffer = ((Key - '0') * 0.01) + midBuffer;
+    lcd.setCursor(4, 1);
+    lcd.print(Key);
+    Serial.print(F("Hundreths place: "));
+    Serial.println(Key);
+
+    Key = customKeypad.waitForKey();
+    midBuffer = ((Key - '0') * 0.001) + midBuffer;
+    lcd.setCursor(5, 1);
+    lcd.print(Key);
+    Serial.print(F("Thousanths place: "));
+    Serial.println(Key);
+    midcalstring = premidcalstring + String(midBuffer);
+    Serial.print(midcalstring);
+
+
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(F("Press '#' to cal"));
+    while (Key != '#') {
+/*
+     Serial1.print("R");                              //Ask for pH reading
+     Serial1.print('\r');                               //add a <CR> to the end of the string
+
+      if (Serial1.available() > 0) {                     //if we see that the Atlas Scientific product has sent a character
+        char inchar = (char)Serial1.read();              //get the char we just received
+        sensorstring += inchar;                           //add the char to the var called sensorstring
+        if (inchar == '\r') {                             //if the incoming character is a <CR>
+          sensor_string_complete = true;                  //set the flag
+        }
+      }
+
+
+      if (sensor_string_complete == true) {               //if a string from the Atlas Scientific product has been received in its entirety
+        if (isdigit(sensorstring[0])) {                   //if the first character in the string is a digit
+          pH = sensorstring.toFloat();                    //convert the string to a floating point number so it can be evaluated by the Arduino
+        }
+        sensorstring = "";                                //clear the string
+        sensor_string_complete = false;                   //reset the flag used to tell if we have received a completed string from the Atlas Scientific product
+      }
+*/
+
+  unsigned long sensor_currentMillis = millis();
+  if (sensor_currentMillis - sensor_previousMillis >= sensor_interval) {
+    sensor_previousMillis = sensor_currentMillis;
+
+    Get_pH();
+    Get_Temperature();
+    Set_Temp_Comp();
+  }
+
+      
+      lcd.setCursor(0, 1);
+      lcd.print(F("pH="));
+      lcd.print(pH, 3);
+
+      
+      Key = customKeypad.getKey();
+    }
+    Key = NO_KEY;
+
+    Serial1.print(midcalstring);                      //send that string to the Atlas Scientific product
+    Serial1.print('\r');                             //add a <CR> to the end of the string
+
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(F("###Calibration##"));
+    lcd.setCursor(0, 1);
+    lcd.print(F("####Complete####"));
+    delay(3000);
+}
+
+
+// ************************************************
+// Two Point Calibration
+// ************************************************
+
+void TwoPointCal() {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(F("Calibration mode"));
+    lcd.setCursor(3, 1);
+    lcd.print(F("Two-point"));
+    delay(5000);
+
+    // Lower Buffer ///
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(F("Higher Buffer pH:"));
+    lcd.setCursor(0, 1);
+    lcd.print(F("  .   "));
+
+    Key = customKeypad.waitForKey();
+    midBuffer = (Key - '0') * 10;
+    lcd.setCursor(0, 1);
+    lcd.print(Key);
+    Serial.print(F("Tens place: "));
+    Serial.println(Key);
+
+    Key = customKeypad.waitForKey();
+    midBuffer = (Key - '0') + midBuffer;
+    lcd.setCursor(1, 1);
+    lcd.print(Key);
+    Serial.print(F("Ones place: "));
+    Serial.println(Key);
+
+    Key = customKeypad.waitForKey();
+    midBuffer = ((Key - '0') * 0.1) + midBuffer;
+    lcd.setCursor(3, 1);
+    lcd.print(Key);
+    Serial.print(F("Tenths place: "));
+    Serial.println(Key);
+
+    Key = customKeypad.waitForKey();
+    midBuffer = ((Key - '0') * 0.01) + midBuffer;
+    lcd.setCursor(4, 1);
+    lcd.print(Key);
+    Serial.print(F("Hundreths place: "));
+    Serial.println(Key);
+
+    Key = customKeypad.waitForKey();
+    midBuffer = ((Key - '0') * 0.001) + midBuffer;
+    lcd.setCursor(5, 1);
+    lcd.print(Key);
+    Serial.print(F("Thousanths place: "));
+    Serial.println(Key);
+    midcalstring = premidcalstring + String(midBuffer);
+    Serial.print(midcalstring);
+
+
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(F("Press '#' to cal"));
+    while (Key != '#') {
+ /*     Serial1.print("R");                              //Ask for pH reading
+      Serial1.print('\r');                               //add a <CR> to the end of the string
+
+      if (Serial1.available() > 0) {                     //if we see that the Atlas Scientific product has sent a character
+        char inchar = (char)Serial1.read();              //get the char we just received
+        sensorstring += inchar;                           //add the char to the var called sensorstring
+        if (inchar == '\r') {                             //if the incoming character is a <CR>
+          sensor_string_complete = true;                  //set the flag
+        }
+      }
+
+
+      if (sensor_string_complete == true) {               //if a string from the Atlas Scientific product has been received in its entirety
+        if (isdigit(sensorstring[0])) {                   //if the first character in the string is a digit
+          pH = sensorstring.toFloat();                    //convert the string to a floating point number so it can be evaluated by the Arduino
+        }
+        sensorstring = "";                                //clear the string
+        sensor_string_complete = false;                   //reset the flag used to tell if we have received a completed string from the Atlas Scientific product
+      }
+ */
+  unsigned long sensor_currentMillis = millis();
+  if (sensor_currentMillis - sensor_previousMillis >= sensor_interval) {
+    sensor_previousMillis = sensor_currentMillis;
+
+    Get_pH();
+    Get_Temperature();
+    Set_Temp_Comp();
+  }
+     
+      lcd.setCursor(0, 1);
+      lcd.print(F("pH="));
+      lcd.print(pH, 3);
+
+      Key = customKeypad.getKey();
+
+    }
+    Key = NO_KEY;
+
+    Serial1.print(midcalstring);                      //send that string to the Atlas Scientific product
+    Serial1.print('\r');                             //add a <CR> to the end of the string
+
+    // High pH Buffer ///
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(F("Lower Buffer pH:"));
+    lcd.setCursor(0, 1);
+    lcd.print(F("  .   "));
+
+    Key = customKeypad.waitForKey();
+    lowBuffer = (Key - '0') * 10;
+    lcd.setCursor(0, 1);
+    lcd.print(Key);
+    Serial.print(F("Tens place: "));
+    Serial.println(Key);
+
+    Key = customKeypad.waitForKey();
+    lowBuffer = (Key - '0') + lowBuffer;
+    lcd.setCursor(1, 1);
+    lcd.print(Key);
+    Serial.print(F("Ones place: "));
+    Serial.println(Key);
+
+    Key = customKeypad.waitForKey();
+    lowBuffer = ((Key - '0') * 0.1) + lowBuffer;
+    lcd.setCursor(3, 1);
+    lcd.print(Key);
+    Serial.print(F("Tenths place: "));
+    Serial.println(Key);
+
+    Key = customKeypad.waitForKey();
+    lowBuffer = ((Key - '0') * 0.01) + lowBuffer;
+    lcd.setCursor(4, 1);
+    lcd.print(Key);
+    Serial.print(F("Hundreths place: "));
+    Serial.println(Key);
+
+    Key = customKeypad.waitForKey();
+    lowBuffer = ((Key - '0') * 0.001) + lowBuffer;
+    lcd.setCursor(5, 1);
+    lcd.print(Key);
+    Serial.print(F("Thousanths place: "));
+    Serial.println(Key);
+    lowcalstring = prelowcalstring + String(lowBuffer);
+    Serial.print(lowcalstring);
+
+
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(F("Press '#' to cal"));
+    while (Key != '#') {
+/*      Serial1.print("R");                              //Ask for pH reading
+      Serial1.print('\r');                               //add a <CR> to the end of the string
+
+      serialEvent();
+      serialEvent3();
+      if (Serial1.available() > 0) {                     //if we see that the Atlas Scientific product has sent a character
+        char inchar = (char)Serial1.read();              //get the char we just received
+        sensorstring += inchar;                           //add the char to the var called sensorstring
+        if (inchar == '\r') {                             //if the incoming character is a <CR>
+          sensor_string_complete = true;                  //set the flag
+        }
+      }
+
+
+      if (sensor_string_complete == true) {               //if a string from the Atlas Scientific product has been received in its entirety
+        if (isdigit(sensorstring[0])) {                   //if the first character in the string is a digit
+          pH = sensorstring.toFloat();                    //convert the string to a floating point number so it can be evaluated by the Arduino
+        }
+        sensorstring = "";                                //clear the string
+        sensor_string_complete = false;                   //reset the flag used to tell if we have received a completed string from the Atlas Scientific product
+      }
+*/
+  unsigned long sensor_currentMillis = millis();
+  if (sensor_currentMillis - sensor_previousMillis >= sensor_interval) {
+    sensor_previousMillis = sensor_currentMillis;
+
+    Get_pH();
+    Get_Temperature();
+    Set_Temp_Comp();
+      lcd.setCursor(0, 1);
+      lcd.print(F("pH="));
+      lcd.print(pH, 3);
+  }
+      
+
+      Key = customKeypad.getKey();
+    }
+    Key = NO_KEY;
+
+    Serial1.print(lowcalstring);                      //send that string to the Atlas Scientific product
+    Serial1.print('\r');                             //add a <CR> to the end of the string
+
+
+
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(F("###Calibration##"));
+    lcd.setCursor(0, 1);
+    lcd.print(F("####Complete####"));
+    delay(3000);
+}
+
+
+//Get Calibration Slope
+void GetCalSlope() {
+  Serial.println("Shut Down pH Reading");
+  delay(1000);
+  Serial1.print("Slope,?");                             //Sending request for Calibration Slope
+  Serial1.print('\r');                                  //add a <CR> to the end of the string
+  Serial.println("Asked for slope");
+  WaitForString = true;
+  slope = "";
+  while (WaitForString == true) {                        //Into a loop that will wait for the response
+    Serial.println("Waiting for response");
+    if (Serial1.available() > 0) {                      //if we see that the Atlas Scientific product has sent a character
+      Serial.println("Receiving response");
+      char inchar = (char)Serial1.read();               //get the char we just received
+      sensorstring += inchar;                           //add the char to the var called sensorstring
+      if (inchar == '\r') {                             //if the incoming character is a <CR>
+        sensor_string_complete = true;                  //set the flag
+      }
+    }
+
+    if (sensor_string_complete == true) {               //if a string from the Atlas Scientific product has been received in its entirety
+      Serial.println("Response complete");
+      sloperaw = sensorstring;                             //Store raw slope string into another 
+      slope = sloperaw;
+      slope.remove(0,7);                                //removing the first 7 characters of the slope string
+      slope[slope.length()-1]=' ';
+      sensorstring = "";                                //clear the string
+      sensor_string_complete = false;                   //reset the flag used to tell if we have received a completed string from the Atlas Scientific product
+      Serial.print("Raw String: ");
+      Serial.println(sloperaw);
+      Serial.print("Calibration Slope: ");
+      Serial.println(slope);
+    }
+
+    if (slope.length()>3){
+      WaitForString = false;
+    }
+    Serial.println(WaitForString);
+  }
+  Serial.print("finshing GetCalSlope");
+  WaitForString = true;                                 //Resetting waiting flag
 }

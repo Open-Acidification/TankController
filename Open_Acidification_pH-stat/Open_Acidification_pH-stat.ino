@@ -37,7 +37,7 @@ String DevID = "v172D35C152EDA6C"; //DeviceID from Pushingbox
 Adafruit_MAX31865 max = Adafruit_MAX31865(45, 43, 41, 39);
 RTC_PCF8523 rtc;
 
-double softvers = 0.196;                                        //Software Version
+double softvers = 0.197;                                        //Software Version
 
 //byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; //Setting MAC Address
 char server[] = "api.pushingbox.com"; //pushingbox API server

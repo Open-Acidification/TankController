@@ -474,6 +474,10 @@ void loop()
         }
         answer = 1;
       }
+	  if (answerkey == '3') {
+		  SetSineWave();
+		  answer = 1;
+	  }
       timdiff = millis() - queststart;
     }
     lcd.clear();

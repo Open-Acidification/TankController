@@ -80,8 +80,12 @@ double pHDisplay;                                  //used to hold a floating poi
 double temp;
 double tempset;
 double phset;
+double amplitudeSet;
+double frequencySet;
 double newph = 0;
 double newtemp = 0;
+double newAmplitude = 0;
+double newFrequency = 0;
 double realtemp;
 double tempcorr = 0;
 double heat;

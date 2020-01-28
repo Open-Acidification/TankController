@@ -734,6 +734,21 @@ void loop()
     }
     Serial.print(now.second(), DEC);
     Serial.println();
+    Serial.println(F("FREQUENCY: "));
+    frequency = EEPROM_readDouble(frequencyAddress);
+    Serial.println(frequency);
+    Serial.println(F("AMPLITUDE: "));
+    amplitude = EEPROM_readDouble(amplitudeAddress);
+    Serial.println(amplitude);
+    Serial.println(F("SETPOINT: "));
+    Serial.println(Setpoint);
+    Serial.println(F("SINE SETPOINT: "));
+    double frequencyInMillis = frequency * 60 * 1000;
+    double SineSetpoint = amplitude * sin(2*M_PI*frequencyInMillis*millis());
+    Serial.println(SineSetpoint);
+    Serial.println(F("MILLIS: "));
+    Serial.println(millis());
+    Serial.println();
     Serial.println();
   }
 

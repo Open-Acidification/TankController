@@ -93,6 +93,8 @@ double Input, Output, Setpoint;
 double Kp;
 double Ki;
 double Kd;
+double amplitude;
+double frequency;
 long onTime = 0;
 int WindowSize = 10000;                         // 10 second Time Proportional Output window
 unsigned long windowStartTime;
@@ -132,6 +134,8 @@ const int KiAddress = 28;
 const int KdAddress = 36;
 const int MacAddress = 44;
 const int heatAddress = 52;
+const int amplitudeAddress = 56;
+const int frequencyAddress = 60;
 
 // End EEPROM addresses for persisted data///////////////////////////////////////////////////////////////////////////////////////////////////////
 

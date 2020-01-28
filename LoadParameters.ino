@@ -10,6 +10,8 @@ void LoadParameters()
   Ki = EEPROM_readDouble(KiAddress);
   Kd = EEPROM_readDouble(KdAddress);
   heat = EEPROM_readDouble(heatAddress);
+  amplitude = EEPROM_readDouble(amplitudeAddress);
+  frequency = EEPROM_readDouble(frequencyAddress);
   // Use defaults if EEPROM values are invalid
   if (isnan(phset))
   {
@@ -34,5 +36,13 @@ void LoadParameters()
   if (isnan(heat))
   {
     heat = 0;
+  }
+  if (isnan(amplitude))
+  {
+    amplitude = 0;
+  }
+  if (isnan(frequency))
+  {
+    frequency = 0;
   }
 }

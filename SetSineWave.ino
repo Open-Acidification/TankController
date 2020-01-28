@@ -39,8 +39,9 @@ void SetSineWave() {
     lcd.print(newAmplitude, 3);
 
     amplitudeSet = newAmplitude;
-    // Setpoint = -1 * amplitudeSet;
-    // SavepHSet();
+
+    SaveAmplitudeSet();
+    
     delay(1000);
 
     lcd.clear();
@@ -72,12 +73,14 @@ void SetSineWave() {
     newFrequency = ((Key - '0') * 0.001) + newFrequency;
     lcd.setCursor(4, 1);
     lcd.print(Key);
-    Serial.print(F("Thousanths place: "));
+    Serial.print(F("Thousandths place: "));
     Serial.println(Key);
     lcd.setCursor(10, 1);
     lcd.print(newFrequency, 3);
 
     frequencySet = newFrequency;
+
+    SaveFrequencySet();
 
     delay(1000);
 

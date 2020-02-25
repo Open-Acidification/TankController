@@ -54,7 +54,7 @@ float chiller_interval = 30000;                   // interval at which to change
 unsigned long SD_previousMillis = 0;              // will store last time A new log file was started on the SD card
 float SD_interval = 86400000;                     // interval at which to start a new log file (milliseconds)
 unsigned long sensor_previousMillis = 0;          // will store last time sensor readings were taken
-float sensor_interval = 800;                      // interval at which to start a new log file (milliseconds)
+float sensor_interval;                      // interval at which to start a new log file (milliseconds)
 float LeaseInterval = 4 * 86400000;               //Interval at which to renew DHCP lease (First number is days)
 unsigned long previousLease = 0;
 
@@ -136,6 +136,8 @@ const int MacAddress = 44;
 const int heatAddress = 52;
 const int amplitudeAddress = 56;
 const int frequencyAddress = 60;
+const int granularityAddress = 64; // granularity for SD logging interval
+const int maxDataAgeAddress = 68; // max data age for SD card
 
 // End EEPROM addresses for persisted data///////////////////////////////////////////////////////////////////////////////////////////////////////
 

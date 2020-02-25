@@ -181,6 +181,19 @@ void setup()
     Serial.println(F("Tank ID change End"));
   }
 
+  // load granularity
+  sensor_interval = EEPROM_readDouble(granularityAddress);
+  if (isnan(sensor_interval)) {
+    sensor_interval = 800; // default granularity for interval between logging
+    EEPROM_writeDouble(granularityAddress, sensor_interval);
+  }
+
+  // load maxDataAge
+  maxDataAge = EEPROM_readDouble(granularityAddress);
+  if (isnan(maxDataAge)) {
+    maxDataAge = 800; // default max data age
+    EEPROM_writeDouble(maxDataAgeAddress, maxDataAge);
+  }
 
   //Setting PID parameters////////////////////////////////////////////////////////////////////////////////////////
   myPID.SetTunings(Kp, Ki, Kd);

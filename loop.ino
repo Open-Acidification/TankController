@@ -136,11 +136,11 @@ void loop()
       char answerkey = customKeypad.getKey();
       if (answerkey == '1') {
         OnePointCal();
-        answer = 1;
+		break;
       }
       if (answerkey == '2') {
         TwoPointCal();
-        answer = 1;
+		break;
       }
       timdiff = millis() - queststart;
     }
@@ -436,7 +436,7 @@ void loop()
     lcd.print(F("   PID TUNING   "));
     lcd.setCursor(0, 1);
     lcd.print(F("      MENU      "));
-    delay(3000);
+    delay(1000);
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(F("Start AutoTune:1"));

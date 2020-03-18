@@ -1,5 +1,5 @@
 {
-    "port": "/dev/cu.usbserial-1420",
+    "port": "/dev/cu.usbserial-1410",
     "board": "arduino:avr:mega",
     "configuration": "cpu=atmega2560",
     "sketch": "Open_Acidification_pH-stat.ino"

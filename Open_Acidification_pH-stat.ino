@@ -293,5 +293,5 @@ void serialEvent3() {                                 //if the hardware serial p
 // ************************************************
 SIGNAL(TIMER2_OVF_vect)
 {
-  DriveOutput();
+  // DriveOutput();
 }

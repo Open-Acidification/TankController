@@ -55,7 +55,7 @@ void setup()
   lcd.write(byte(6));
   lcd.write(byte(7));
   lcd.print(F(" OA CONTROL"));
-  delay(5000);
+  delay(1000);
   lcd.clear();
 
   max.begin(MAX31865_3WIRE);                          //start pt100 temperature probe

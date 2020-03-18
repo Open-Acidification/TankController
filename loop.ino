@@ -772,7 +772,7 @@ void loop()
       packData();                                          //packing GET query with data
 
       Serial.println(F("connecting..."));
-      if (client.connect(server, 80)) {
+      if (client.connect(APIServer, 80)) {
         sendData();
         cxn = true;                                        //connected = true
       }
@@ -803,6 +803,19 @@ void loop()
       lcd.write(" ");
 
 
+    }
+
+    // listen for incoming clients
+    EthernetClient RPClient = ethernetServer.available(); // Raspberry Pi Client
+    if (RPClient) {
+
+      handleRequest(RPClient);    
+
+      // give the web browser time to receive the data
+      delay(1);
+      // close the connection:
+      RPClient.stop();
+      Serial.println("RPClient disconnected");
     }
   }
 

@@ -30,6 +30,9 @@
 #include <avr/wdt.h>
 #include <Wire.h>
 #include "RTClib.h"
+#include <ArduinoJson.h>
+#include <string.h>
+#include <stdio.h>
 
 String DevID = "v172D35C152EDA6C"; //DeviceID from Pushingbox
 
@@ -40,9 +43,11 @@ RTC_PCF8523 rtc;
 double softvers = 0.197;                                        //Software Version
 
 //byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; //Setting MAC Address
-char server[] = "api.pushingbox.com"; //pushingbox API server
+char APIServer[] = "api.pushingbox.com"; //pushingbox API server
 IPAddress ip(192, 168, 1, 2); //Arduino IP address. Only used when DHCP is turned off.
 EthernetClient client; //define 'client' as object
+EthernetServer ethernetServer(80);
+int requestCharCounter = 0; // for parsing html requests
 String data; //GET query with data
 String SDstring; //what to write to SD card
 boolean cxn = false;
@@ -55,6 +60,7 @@ unsigned long SD_previousMillis = 0;              // will store last time A new 
 float SD_interval = 86400000;                     // interval at which to start a new log file (milliseconds)
 unsigned long sensor_previousMillis = 0;          // will store last time sensor readings were taken
 float sensor_interval;                      // interval at which to start a new log file (milliseconds)
+int maxDataAge;
 float LeaseInterval = 4 * 86400000;               //Interval at which to renew DHCP lease (First number is days)
 unsigned long previousLease = 0;
 
@@ -113,6 +119,8 @@ boolean sensed = false;
 #define chiller 47
 #define co2reg 49
 int LoopStart;
+
+char htmlRequestBuffer[500];
 
 //Temperature Smoothing/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const int numReadings = 10;

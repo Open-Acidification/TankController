@@ -1,7 +1,7 @@
 
 void setup()
 {
-  Serial.begin(9600);                                 //set baud rate for the hardware serial port_0 to 9600
+  Serial.begin(2000000);                                 //set baud rate for the hardware serial port_0 to 9600
   Serial1.begin(9600);
   wdt_disable();
 
@@ -125,6 +125,10 @@ void setup()
       Ethernet.begin(mac, ip);
     }
 
+    // start the ethernetServer
+    ethernetServer.begin();
+    Serial.print("ethernetServer is at ");
+    Serial.println(Ethernet.localIP());
 
   }
 
@@ -142,6 +146,8 @@ void setup()
   myFile.println("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd");
   myFile.close();
   SD_previousMillis = millis();
+  File root = SD.open("/");
+  printDirectory(root, 0);
   ///Starting the SD Card//////////////////////////////////////////////////////////////////////////////////
 
 
@@ -189,7 +195,7 @@ void setup()
   }
 
   // load maxDataAge
-  maxDataAge = EEPROM_readDouble(granularityAddress);
+  maxDataAge = EEPROM_readDouble(maxDataAgeAddress);
   if (isnan(maxDataAge)) {
     maxDataAge = 800; // default max data age
     EEPROM_writeDouble(maxDataAgeAddress, maxDataAge);
@@ -201,12 +207,14 @@ void setup()
   myPID.SetSampleTime(1000);
   myPID.SetOutputLimits(0, WindowSize);
 
+  noInterrupts();                        // disable all interrupts  
   // Run timer2 interrupt every 15 ms
   TCCR2A = 0;
   TCCR2B = 1 << CS22 | 1 << CS21 | 1 << CS20;
 
   //Timer2 Overflow Interrupt Enable
   TIMSK2 |= 1 << TOIE2;
+  interrupts();   
 
 
 

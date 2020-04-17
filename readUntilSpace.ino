@@ -1,15 +1,18 @@
-String readUntilSpace() {
-	String result;
-	int start = requestCharCounter;
-	char c = htmlRequestBuffer[requestCharCounter];
+#include <string>
+
+String readUntilSpace(char* buffer, int& end, int size) {
+	String result = "";
+	int start = end;
+	char c = buffer[end];
 	while (c == ' ' || c == '\n' || c == '\r') {
-		c = htmlRequestBuffer[requestCharCounter++];
+		c = buffer[++end];
+		start++;
 	}
-	while (c != ' ' && c != '\n' && c != '\r') {
-		c = htmlRequestBuffer[requestCharCounter++];
+	while (c != ' ' && c != '\n' && c != '\r' && end < size) {
+		c = buffer[++end];
 	}
-	for (int i = start; i < requestCharCounter; i++) {
-		result.concat(htmlRequestBuffer[i]);
+	for (int i = start; i < end; i++) {
+		result += buffer[i];
 	}
 	return result;
 }

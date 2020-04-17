@@ -1,5 +1,5 @@
-void clearBuffer() {
-	for (int i = 0; i < sizeof(htmlRequestBuffer); i++) {
-		htmlRequestBuffer[i] = ' ';
-	}
+#include "string.h"
+
+void clearBuffer(char* htmlRequestBuffer, int size) {
+	memset(htmlRequestBuffer, ' ', size);
 }

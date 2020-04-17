@@ -60,6 +60,11 @@ void handleDevice(String endpoint, EthernetClient client) {
 			Serial.println(myFile.size());
 			long totalRead = 0;
 			while (myFile.available()) {
+				if (totalRead > 400000) {
+					// transmission overloaded- force disconnect
+					myFile.close();
+					break;
+				}
 				int bytesAvailable = myFile.available();
 				Serial.println("AVAILABLE: ");
 				Serial.println(bytesAvailable);

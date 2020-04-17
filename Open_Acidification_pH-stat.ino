@@ -57,7 +57,8 @@ unsigned long previousMillis = 0 - interval + 30000; // will store last time Goo
 unsigned long chiller_previousMillis = 0;         // will store last time chiller state was checked
 float chiller_interval = 30000;                   // interval at which to change chiller state (milliseconds)
 unsigned long SD_previousMillis = 0;              // will store last time A new log file was started on the SD card
-float SD_interval = 86400000;                     // interval at which to start a new log file (milliseconds)
+// float SD_interval = 86400000;                     // interval at which to start a new log file (milliseconds) (formerly 1 day)
+float SD_interval = 3600000;                      // log to SD each hour
 unsigned long sensor_previousMillis = 0;          // will store last time sensor readings were taken
 float sensor_interval;                      // interval at which to start a new log file (milliseconds)
 int maxDataAge;
@@ -120,7 +121,8 @@ boolean sensed = false;
 #define co2reg 49
 int LoopStart;
 
-char htmlRequestBuffer[500];
+int const htmlRequestBufferSize = 500;
+char htmlRequestBuffer[htmlRequestBufferSize];
 
 //Temperature Smoothing/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const int numReadings = 10;

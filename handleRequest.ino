@@ -1,9 +1,11 @@
+#include <string>
+
 void handleRequest(EthernetClient client) {
 	Serial.println("new client");
     // an http request ends with a blank line
     boolean currentLineIsBlank = true;
     int count = 0;
-    clearBuffer();
+    clearBuffer(htmlRequestBuffer, htmlRequestBufferSize);
     requestCharCounter = 0;
     while (client.connected()) {
       if (client.available()) {
@@ -22,16 +24,16 @@ void handleRequest(EthernetClient client) {
     Serial.println(htmlRequestBuffer);
     Serial.println("=======");
     Serial.println("TYPE: ");
-    String type = readUntilSpace();
-    Serial.println(type);
+    String type = readUntilSpace(htmlRequestBuffer, requestCharCounter, htmlRequestBufferSize);
+    Serial.println(type.c_str());
     Serial.println("=======");
     Serial.println("ENDPOINT: ");
-    String endpoint = readUntilSpace();
-    Serial.println(endpoint);
+    String endpoint = readUntilSpace(htmlRequestBuffer, requestCharCounter, htmlRequestBufferSize);
+    Serial.println(endpoint.c_str());
     Serial.println("=======");
     Serial.println("PROTOCOL: ");
-    String protocol = readUntilSpace();
-    Serial.println(protocol);
+    String protocol = readUntilSpace(htmlRequestBuffer, requestCharCounter, htmlRequestBufferSize);
+    Serial.println(protocol.c_str());
     Serial.println("=======");
     Serial.println("BODY: ");
     Serial.println(freeMemory());
@@ -68,6 +70,8 @@ void handleRequest(EthernetClient client) {
       // handleConfig(body, client);
     } else if (endpoint.startsWith("/device")) {  
       handleDevice(endpoint, client);
+    } else if (endpoint.startsWith("/data")) {
+      handleData(endpoint, client);
     } else {
       handleMisc(client);
     }

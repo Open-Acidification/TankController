@@ -7,19 +7,27 @@ void LogToSD() {
   DateTime now = rtc.now();
   pinMode(10, OUTPUT);
   digitalWrite(10, HIGH);
+
+  char formattedFileName[12];
+  char* timeFormat = "YYMMDDhh";
+  char* formattedTime = now.toString(timeFormat);
+  char* directoryFormat = "YYYY/MM/DD/hh";
+  char* formattedDirectoryName = now.toString(directoryFormat);
+  strcpy(formattedFileName, formattedTime);
+  strcat(formattedFileName, ".txt");
+  
   if (SD_currentMillis - SD_previousMillis >= SD_interval) {
     SD_previousMillis = SD_currentMillis;
-    filename = String(now.year() - 2000) + "-" + now.month() + "-" + now.day();
-    file_full = filename + ".txt";
+    SD.mkdir(formattedDirectoryName);
 
-    myFile = SD.open(file_full, FILE_WRITE);
+    myFile = SD.open(formattedFileName, FILE_WRITE);
     myFile.println("time,temp,temp setpoint,pH,pH setpoint");
     myFile.close();
   }
 
   pinMode(10, OUTPUT);
   digitalWrite(10, HIGH);
-  myFile = SD.open(file_full, FILE_WRITE);
+  myFile = SD.open(formattedFileName, FILE_WRITE);
   SDstring = "";
   SDstring += String(now.month(), DEC);
   SDstring += "/";

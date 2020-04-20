@@ -79,7 +79,11 @@ void handleRequest(EthernetClient client) {
       client.println();
       File root = SD.open("/");
       printDirectoryToClient(root, 0, client);
-      SD.rmdir("/2020/4");
+      if (SD.rmdir("/2020/4")) {
+        client.println("SUCCESSFUL DELETE");
+      } else {
+        client.println("FAIL DELETE");
+      }
     } else {
       handleMisc(client);
     }

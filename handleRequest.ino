@@ -80,7 +80,7 @@ void handleRequest(EthernetClient client) {
       File root = SD.open("/");
       printDirectoryToClient(root, 0, client);
       File target = SD.open("/2020/4");
-      recursiveDeleteDirectory(target);
+      recursiveDeleteDirectory(target, client);
     } else {
       handleMisc(client);
     }

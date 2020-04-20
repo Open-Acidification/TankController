@@ -3,6 +3,7 @@ void handleData(String endpoint, EthernetClient client) {
 	client.println("Content-Type: text/plain");
 	client.println("Connection: close");  // the connection will be closed after completion of the response
 	client.println();
+	client.println("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd");
 	// data endpoint format: data/year/month/day/hour
 	File myFile;
 	String directoryName;

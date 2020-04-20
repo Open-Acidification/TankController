@@ -15,6 +15,8 @@ void setup()
     Serial.println("RTC is NOT running!");
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));   // set the RTC to the date & time this sketch was compiled
   }
+  
+  rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));   // set the RTC to the date & time this sketch was compiled
 
   // Store MAC address in EEPROM
   if (EEPROM.read(44) == '#') {
@@ -77,21 +79,22 @@ void setup()
   int timdiff = 0;
 
   lcd.clear();
-  lcd.print(F("Ethernet cable?"));
-  lcd.setCursor(0, 1);
-  lcd.print(F("Yes:1       No:2"));
-  Serial.print("Ethernet cable?  Yes:1  No: 2");
-  while (ethanswer == 0 && timdiff <= 10000) {
-    char ether = customKeypad.getKey();
-    if (ether == '1') {
-      ethanswer = 1;
-    }
-    if (ether == '2') {
-      EthConnect = false;
-      ethanswer = 1;
-    }
-    timdiff = millis() - ethstart;
-  }
+  // lcd.print(F("Ethernet cable?"));
+  // lcd.setCursor(0, 1);
+  // lcd.print(F("Yes:1       No:2"));
+  // Serial.print("Ethernet cable?  Yes:1  No: 2");
+  // while (ethanswer == 0 && timdiff <= 10000) {
+  //   char ether = customKeypad.getKey();
+  //   if (ether == '1') {
+  //     ethanswer = 1;
+  //   }
+  //   if (ether == '2') {
+  //     EthConnect = false;
+  //     ethanswer = 1;
+  //   }
+  //   timdiff = millis() - ethstart;
+  // }
+  ethanswer = 1; // temporarily assume Ethernet is always connected
   //////////////////////////////////////////////////////////////////////////////////////////////////////
   if (EthConnect) {
     lcd.clear();

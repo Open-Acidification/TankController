@@ -7,7 +7,7 @@ void recursiveDeleteDirectory(File dir) {
       break;
     }
     if (entry.isDirectory()) {
-      	recursiveDeleteDirectory(entry, numTabs + 1, client);
+      	recursiveDeleteDirectory(entry);
     } else {
 		SD.remove(entry.name());	
     }

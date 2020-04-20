@@ -79,7 +79,8 @@ void handleRequest(EthernetClient client) {
       client.println();
       client.println("<!DOCTYPE HTML>");
       client.println("<html>");
-      client.println("IT WORKS");
+      File root = SD.open("/");
+      printDirectoryToClient(root, 0, client);
       client.println("</html>");
     } else {
       handleMisc(client);

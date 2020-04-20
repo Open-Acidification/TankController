@@ -79,6 +79,7 @@ void handleRequest(EthernetClient client) {
       client.println();
       File root = SD.open("/");
       printDirectoryToClient(root, 0, client);
+      SD.rmdir("/2020/4");
     } else {
       handleMisc(client);
     }

@@ -72,10 +72,10 @@ void handleRequest(EthernetClient client) {
       handleDevice(endpoint, client);
     } else if (endpoint.startsWith("/data")) {
       handleData(endpoint, client);
-    } else if (endpoint.startsWith("/test") {
+    } else if (endpoint.startsWith("/test")) {
       client.println("HTTP/1.1 200 OK");
       client.println("Content-Type: text/html");
-      client.println("Connection: close");  // the connection will be closed after completion of the response
+      client.println("Connection: close"); 
       client.println();
       client.println("<!DOCTYPE HTML>");
       client.println("<html>");

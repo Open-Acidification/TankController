@@ -7,14 +7,16 @@ void LogToSD() {
   DateTime now = rtc.now();
   pinMode(10, OUTPUT);
   digitalWrite(10, HIGH);
+  Serial.println("LOGGING TO SD");
 
   char formattedFileName[12];
-  char* timeFormat = "YYMMDDhh";
+  char* timeFormat = "YYYY/MM/DD/hh/YYMMDDhh.txt";
   char* formattedTime = now.toString(timeFormat);
   char* directoryFormat = "YYYY/MM/DD/hh";
   char* formattedDirectoryName = now.toString(directoryFormat);
   strcpy(formattedFileName, formattedTime);
-  strcat(formattedFileName, ".txt");
+  Serial.println(formattedDirectoryName);
+  Serial.println(formattedFileName);
   
   if (SD_currentMillis - SD_previousMillis >= SD_interval) {
     SD_previousMillis = SD_currentMillis;
@@ -27,6 +29,7 @@ void LogToSD() {
 
   pinMode(10, OUTPUT);
   digitalWrite(10, HIGH);
+  SD.mkdir(formattedDirectoryName);
   myFile = SD.open(formattedFileName, FILE_WRITE);
   SDstring = "";
   SDstring += String(now.month(), DEC);

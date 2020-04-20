@@ -1,11 +1,8 @@
 void handleData(String endpoint, EthernetClient client) {	  
 	client.println("HTTP/1.1 200 OK");
-	client.println("Content-Type: text/html");
+	client.println("Content-Type: text/plain");
 	client.println("Connection: close");  // the connection will be closed after completion of the response
-	client.println("Refresh: 5");  // refresh the page automatically every 5 sec
 	client.println();
-	client.println("<!DOCTYPE HTML>");
-	client.println("<html>");
 	// data endpoint format: data/year/month/day/hour
 	File myFile;
 	String directoryName;
@@ -42,15 +39,4 @@ void handleData(String endpoint, EthernetClient client) {
 			client.println("INVALID FORMAT");
 			break;
 	}
-
-	SD.mkdir("2020/4/12/1");
-	SD.mkdir("2020/4/12/2");
-	SD.mkdir("2020/4/12/3");
-	SD.mkdir("2020/4/11/1");
-	SD.remove("2020/4/12/1/20041201.txt");
-	myFile = SD.open("2020/4/12/1/20041201.txt", FILE_WRITE);
-	myFile.println("Today's data");
-	myFile.close();
-
-	client.println("</html>");
 }

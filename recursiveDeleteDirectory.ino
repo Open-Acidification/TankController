@@ -1,19 +1,20 @@
-void recursiveDeleteDirectory(File dir, EthernetClient client) {
-  while (true) {
-
-    File entry =  dir.openNextFile();
-    if (! entry) {
-      // no more files
-      break;
-    }
-	client.println("REMOVING: ");
-	client.println(dir.name());
-    if (entry.isDirectory()) {
-      	recursiveDeleteDirectory(entry, client);
-    } else {
-		SD.remove(entry.name());	
-    }
-	SD.rmdir(entry.name());
-  }
-  SD.rmdir(dir.name());
+void recursiveDeleteDirectory(String dirName, EthernetClient client) {
+	File dir = SD.open(dirName);
+	while (true) {
+		File entry =  dir.openNextFile();
+		if (!entry) {
+			// no more files
+			break;
+		}
+		client.println("REMOVING: ");
+		if (entry.isDirectory()) {
+			client.println(dirName);
+			recursiveDeleteDirectory(dirName + "/" + entry.name(), client);
+		} else {
+			client.println(dirName + "/" + entry.name());
+			SD.remove(dirName + "/" + entry.name());	
+		}
+		SD.rmdir(entry.name());
+  	}
+  	SD.rmdir(dirName);
 }

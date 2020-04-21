@@ -58,11 +58,7 @@ jobs:
       - name: Arduino CLI Config
         run: |
           arduino-cli config init --dest-dir "."
-          sed -i 's/Arduino/\"Open-Acidification/Open-Acidification/\"/g' arduino-cli.yaml
-          cat arduino-cli.yaml
-          pwd
-          ls . -la
-          ls .. -la 
+          sed -i 's/Arduino/Open-Acidification\/Open-Acidification/g' arduino-cli.yaml
 
       # Finally, we compile the sketch, using the FQBN that was set
       # in the build matrix.

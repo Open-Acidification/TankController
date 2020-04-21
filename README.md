@@ -1,1 +1,1 @@
-https://github.com/PlasmaIntec/Open-Acidification/workflows/test/badge.svg
+![](https://github.com/PlasmaIntec/Open-Acidification/workflows/test/badge.svg)

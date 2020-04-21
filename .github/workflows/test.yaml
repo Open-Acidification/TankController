@@ -32,7 +32,9 @@ jobs:
 
     # This is the platform GitHub will use to run our workflow, we
     # pick Windows for no particular reason.
-    runs-on: windows-latest
+    # But Windows doesn't support Docker container actions
+    # See https://stackoverflow.com/a/58964901
+    runs-on: ubuntu-latest
 
     # This is the list of steps this job will run.
     steps:

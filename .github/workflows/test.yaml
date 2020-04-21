@@ -52,6 +52,7 @@ jobs:
         with:
           fqbn: 'arduino:avr:mega'
           libraries: '"Adafruit MAX31865 library"'
+          sketch-paths: "."
 
       # We then install the platform, which one will be determined
       # dynamically by the build matrix.

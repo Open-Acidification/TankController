@@ -53,8 +53,11 @@ jobs:
         run: |
           arduino-cli core update-index
           arduino-cli core install ${{ matrix.arduino-platform }}
+
+      - name: Arduino CLI Config
+        run: |
           arduino-cli config init --dest-dir "."
-          sed -i 's/Arduino/Open-Acidification\/Open-Acidification/g' arduino-cli.yaml
+          sed -i 's/Arduino/work\/Open-Acidification\/Open-Acidification/g' arduino-cli.yaml
           cat arduino-cli.yaml
           pwd
           ls . -la

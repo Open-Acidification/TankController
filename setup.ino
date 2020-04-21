@@ -15,8 +15,6 @@ void setup()
     Serial.println("RTC is NOT running!");
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));   // set the RTC to the date & time this sketch was compiled
   }
-  
-  rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));   // set the RTC to the date & time this sketch was compiled
 
   // Store MAC address in EEPROM
   if (EEPROM.read(44) == '#') {

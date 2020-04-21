@@ -49,7 +49,6 @@ EthernetClient client; //define 'client' as object
 EthernetServer ethernetServer(80);
 int requestCharCounter = 0; // for parsing html requests
 String data; //GET query with data
-String SDstring; //what to write to SD card
 boolean cxn = false;
 
 float interval = 1200000;                         // interval at which to update Google Sheets (milliseconds)

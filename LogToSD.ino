@@ -32,23 +32,23 @@ void LogToSD() {
   SD.mkdir(formattedDirectoryName);
   myFile = SD.open(formattedFileName, FILE_WRITE);
   SDstring = "";
-  SDstring += now.month();
+  SDstring += String((char*) now.month());
   SDstring += "/";
-  SDstring += now.day();
+  SDstring += String((char*) now.day());
   SDstring += "/";
-  SDstring += now.year();
+  SDstring += String((char*) now.year());
   SDstring += " ";
-  SDstring += now.hour();
+  SDstring += String((char*) now.hour());
   SDstring += ":";
   if (now.minute() < 10) {
     SDstring += "0";
   }
-  SDstring += now.minute();
+  SDstring += String((char*) now.minute());
   SDstring += ":";
   if (now.second() < 10) {
     SDstring += "0";
   }
-  SDstring += now.second();
+  SDstring += String((char*) now.second());
   SDstring += ",";
   SDstring += tankid;
   SDstring += ",";

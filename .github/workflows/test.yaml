@@ -59,6 +59,7 @@ jobs:
           pwd
           ls . -la
           ls .. -la 
+          arduino-cli lib list
 
       # Finally, we compile the sketch, using the FQBN that was set
       # in the build matrix.

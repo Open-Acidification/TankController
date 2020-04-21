@@ -79,7 +79,6 @@ void handleRequest(EthernetClient client) {
       client.println();
       File root = SD.open("/");
       printDirectoryToClient(root, 0, client);
-      recursiveDeleteDirectory("/2020/4", client);
     } else {
       handleMisc(client);
     }

@@ -45,6 +45,12 @@ jobs:
       - name: Setup Arduino CLI
         uses: arduino/setup-arduino-cli@v1.0.0
 
+      - name: Install libraries
+        uses: arduino/actions/libraries/compile-examples@master
+        with:
+          fqbn: 'arduino:avr:mega'
+          libraries: '"Adafruit MAX31865 library"'
+
       # We then install the platform, which one will be determined
       # dynamically by the build matrix.
       - name: Install platform

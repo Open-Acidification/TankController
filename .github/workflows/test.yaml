@@ -47,19 +47,19 @@ jobs:
       - name: Setup Arduino CLI
         uses: arduino/setup-arduino-cli@v1.0.0
 
-      - name: Install libraries
-        uses: arduino/actions/libraries/compile-examples@master
-        with:
-          fqbn: 'arduino:avr:mega'
-          libraries: '"Adafruit MAX31865 library"'
-          sketch-paths: "."
-
       # We then install the platform, which one will be determined
       # dynamically by the build matrix.
       - name: Install platform
         run: |
           arduino-cli core update-index
           arduino-cli core install ${{ matrix.arduino-platform }}
+
+      # Set up arduino-cli config
+      - name: Arduino CLI Config
+        run: |
+          arduino-cli config init --dest-dir "."
+          sed -i 's/Arduino/Open-Acidification/g' arduino-cli.yaml
+
       # Finally, we compile the sketch, using the FQBN that was set
       # in the build matrix.
       - name: Compile Sketch

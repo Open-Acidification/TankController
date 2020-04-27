@@ -27,11 +27,11 @@ DynamicJsonDocument printCurrentLevelDirectories(String dirName, EthernetClient 
 				client.println(entry.name());
 				// printCurrentLevelDirectories(dirName + "/" + entry.name(), client);
 				DynamicJsonDocument directories = printCurrentLevelDirectories(dirName + "/" + entry.name(), client, level+1);
-				// client.println("DIRECTORY");
-				// serializeJson(doc, client);
-				// serializeJson(directories, client);
-				// client.println();
-				// client.println("POST DIRECTORY");
+				client.println("DIRECTORY");
+				serializeJson(doc, client);
+				serializeJson(directories, client);
+				client.println();
+				client.println("POST DIRECTORY");
 				filesArray.add(directories);
 			} else {
 				filesArray.add(entry.name());

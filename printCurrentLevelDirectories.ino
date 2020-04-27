@@ -1,4 +1,4 @@
-void printCurrentLevelDirectories(String dirName, EthernetClient client) {
+DynamicJsonDocument printCurrentLevelDirectories(String dirName, EthernetClient client) {
 	File dir = SD.open(dirName);
 
 	// DynamicJsonDocument tempDoc(1024);
@@ -11,9 +11,9 @@ void printCurrentLevelDirectories(String dirName, EthernetClient client) {
 	// tempOuterArray.add(nestedDoc);
 	// serializeJson(tempDoc, client);
 
-	// DynamicJsonDocument doc(1024);
-	// client.println(dir.name());
-	// JsonArray filesArray = doc.createNestedArray(dir.name());
+	DynamicJsonDocument doc(1024);
+	client.println(dir.name());
+	JsonArray filesArray = doc.createNestedArray(dir.name());
 	while (true) {
 
 		File entry =  dir.openNextFile();
@@ -24,18 +24,18 @@ void printCurrentLevelDirectories(String dirName, EthernetClient client) {
 		char* hasLetterS = strchr(entry.name(), 'S');
 		if (entry.isDirectory() && !hasLetterS) { // WILL NOT PRINT SYSTEM~1 AT ROOT LEVEL
 			client.println(entry.name());
-			printCurrentLevelDirectories(dirName + "/" + entry.name(), client);
-			// DynamicJsonDocument directories = printCurrentLevelDirectories(dirName + "/" + entry.name(), client);
+			// printCurrentLevelDirectories(dirName + "/" + entry.name(), client);
+			DynamicJsonDocument directories = printCurrentLevelDirectories(dirName + "/" + entry.name(), client);
 			// client.println("DIRECTORY");
 			// serializeJson(doc, client);
 			// serializeJson(directories, client);
 			// client.println();
 			// client.println("POST DIRECTORY");
-			// filesArray.add(directories);
+			filesArray.add(directories);
 		}
 		entry.close();
 	}
-	// serializeJson(doc, client);
-	// client.println();
-	// return doc;
+	serializeJson(doc, client);
+	client.println();
+	return doc;
 }

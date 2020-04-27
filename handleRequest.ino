@@ -91,7 +91,8 @@ void handleRequest(EthernetClient client) {
       strcpy(formattedSDString, formattedTime);
       char buffer[100];
       snprintf(buffer, 100, "%d", temp);
-      strcpy(formattedSDString, "," + buffer);
+      strcpy(formattedSDString, ",");
+      strcpy(formattedSDString, buffer);
       client.println(formattedSDString);
     } else {
       handleMisc(client);

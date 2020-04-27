@@ -21,16 +21,16 @@ void handleData(String endpoint, EthernetClient client) {
 	}
 	switch (slashes) {
 		case 0: // data: return years available
-			printCurrentLevelDirectories(directoryName, client);
+			printCurrentLevelDirectories(directoryName, client, slashes);
 			break;
 		case 1: // year: return months available
-			printCurrentLevelDirectories(directoryName, client);
+			printCurrentLevelDirectories(directoryName, client, slashes);
 			break;
 		case 2: // month: return days available
-			printCurrentLevelDirectories(directoryName, client);
+			printCurrentLevelDirectories(directoryName, client, slashes);
 			break;
 		case 3: // day: return hours available
-			printCurrentLevelDirectories(directoryName, client);
+			printCurrentLevelDirectories(directoryName, client, slashes);
 			break;
 		case 4: // hour: return csv of the specific hour
 			printFileInDirectory(directoryName, client);

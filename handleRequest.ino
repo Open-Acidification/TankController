@@ -79,6 +79,20 @@ void handleRequest(EthernetClient client) {
       client.println();
       File root = SD.open("/");
       printDirectoryToClient(root, 0, client);
+    } else if (endpoint.startsWith("/time")) {
+      client.println("HTTP/1.1 200 OK");
+      client.println("Content-Type: text/plain");
+      client.println("Connection: close"); 
+      client.println();
+      DateTime now = rtc.now();
+      char formattedFileName[12];
+      char* timeFormat = "YYYY/MM/DD/hh/YYMMDDhh.txt";
+      char* formattedTime = now.toString(timeFormat);
+      char* directoryFormat = "YYYY/MM/DD/hh";
+      char* formattedDirectoryName = now.toString(directoryFormat);
+      strcpy(formattedFileName, formattedTime);
+      client.println(formattedDirectoryName);
+      client.println(formattedFileName);
     } else {
       handleMisc(client);
     }

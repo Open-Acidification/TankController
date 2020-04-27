@@ -15,6 +15,10 @@ DynamicJsonDocument printCurrentLevelDirectories(String dirName, EthernetClient 
 		if (entry.isDirectory() && !hasLetterS) { // WILL NOT PRINT SYSTEM~1 AT ROOT LEVEL
 			client.println(entry.name());
 			DynamicJsonDocument directories = printCurrentLevelDirectories(dirName + "/" + entry.name(), client);
+			client.println("DIRECTORY");
+			serializeJson(doc, client);
+			serializeJson(directories, client);
+			client.println("POST DIRECTORY");
 			filesArray.add(directories);
 		}
 		entry.close();

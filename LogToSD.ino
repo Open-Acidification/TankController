@@ -2,6 +2,8 @@
 // Log to SD card
 // ************************************************
 
+#include <string>
+
 void LogToSD() {
   unsigned long SD_currentMillis = millis();
   DateTime now = rtc.now();
@@ -33,9 +35,9 @@ void LogToSD() {
   myFile = SD.open(formattedFileName, FILE_WRITE);
 
   char formattedSDString[50];
-  char* timeFormat = "MM/DD/YYYY hh:mm:ss";
-  char* formattedTime = now.toString(timeFormat);
-  strcpy(formattedSDString, formattedTime);  
+  char* logTimeFormat = "MM/DD/YYYY hh:mm:ss";
+  char* logFormattedTime = now.toString(logTimeFormat);
+  strcpy(formattedSDString, logFormattedTime);  
   char varBuffer[100];
   snprintf(varBuffer, 100, "%d", tankid);
   strcat(formattedSDString, ",");

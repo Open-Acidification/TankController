@@ -93,10 +93,9 @@ void handleRequest(EthernetClient client) {
       snprintf(buffer, 100, "%d", tankid);
       strcat(formattedSDString, ",");
       strcat(formattedSDString, buffer);
-      char tempBuffer[100];
-      snprintf(tempBuffer, 100, "%f", temp);
+      snprintf(buffer, 100, "%d", temp);
       strcat(formattedSDString, ",");
-      strcat(formattedSDString, tempBuffer);
+      strcat(formattedSDString, buffer);
       snprintf(buffer, 100, "%f", tempset);
       strcat(formattedSDString, ",");
       strcat(formattedSDString, buffer);

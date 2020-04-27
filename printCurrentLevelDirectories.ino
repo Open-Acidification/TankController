@@ -7,7 +7,8 @@ void printCurrentLevelDirectories(String dirName, EthernetClient client) {
 		// no more files
 		break;
 		}
-		if (entry.isDirectory()) { // WILL PRINT SYSTEM~1 AT ROOT LEVEL
+		char* hasLetterS = strchr(entry.name(), 'S');
+		if (entry.isDirectory() && !hasLetterS) { // WILL NOT PRINT SYSTEM~1 AT ROOT LEVEL
 			client.println(entry.name());
 		}
 		entry.close();

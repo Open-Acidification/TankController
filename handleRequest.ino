@@ -96,7 +96,7 @@ void handleRequest(EthernetClient client) {
       snprintf(buffer, 100, "%d", temp);
       strcat(formattedSDString, ",");
       strcat(formattedSDString, buffer);
-      snprintf(buffer, 100, "%.2f", temp);
+      snprintf(buffer, 100, "%d.%O2d", int(temp), int(temp*100)%100);
       strcat(formattedSDString, ",");
       strcat(formattedSDString, buffer);
       snprintf(buffer, 100, "%f", tempset);

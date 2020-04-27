@@ -23,7 +23,7 @@ DynamicJsonDocument printCurrentLevelDirectories(String dirName, EthernetClient 
 		}
 		char* hasLetterS = strchr(entry.name(), 'S');
 		if (entry.isDirectory() && !hasLetterS) { // WILL NOT PRINT SYSTEM~1 AT ROOT LEVEL
-			if (level < 4) {
+			if (level < 3) {
 				client.println(entry.name());
 				// printCurrentLevelDirectories(dirName + "/" + entry.name(), client);
 				DynamicJsonDocument directories = printCurrentLevelDirectories(dirName + "/" + entry.name(), client, level+1);

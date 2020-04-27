@@ -93,18 +93,23 @@ void handleRequest(EthernetClient client) {
       snprintf(buffer, 100, "%d", tankid);
       strcat(formattedSDString, ",");
       strcat(formattedSDString, buffer);
+      memset(buffer, 0, sizeof(Buffer));
       snprintf(buffer, 100, "%f", temp);
       strcat(formattedSDString, ",");
       strcat(formattedSDString, buffer);
+      memset(buffer, 0, sizeof(Buffer));
       snprintf(buffer, 100, "%f", tempset);
       strcat(formattedSDString, ",");
       strcat(formattedSDString, buffer);
+      memset(buffer, 0, sizeof(Buffer));
       snprintf(buffer, 100, "%f", pH);
       strcat(formattedSDString, ",");
       strcat(formattedSDString, buffer);
+      memset(buffer, 0, sizeof(Buffer));
       snprintf(buffer, 100, "%f", phset);
       strcat(formattedSDString, ",");
       strcat(formattedSDString, buffer);
+      memset(buffer, 0, sizeof(Buffer));
       client.println(formattedSDString);
     } else {
       handleMisc(client);

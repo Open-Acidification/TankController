@@ -2,8 +2,6 @@
 // Log to SD card
 // ************************************************
 
-#include <string>
-
 void LogToSD() {
   unsigned long SD_currentMillis = millis();
   DateTime now = rtc.now();
@@ -42,32 +40,32 @@ void LogToSD() {
   snprintf(varBuffer, 100, "%d", tankid);
   strcat(formattedSDString, ",");
   strcat(formattedSDString, varBuffer);
-  fmtDouble(temp, 3, varBuffer);
+  fmtDouble(temp, 3, varBuffer, 0xffff);
   strcat(formattedSDString, ",");
   strcat(formattedSDString, varBuffer);
-  fmtDouble(tempset, 3, varBuffer);
+  fmtDouble(tempset, 3, varBuffer, 0xffff);
   strcat(formattedSDString, ",");
   strcat(formattedSDString, varBuffer);
-  fmtDouble(pH, 3, varBuffer);
+  fmtDouble(pH, 3, varBuffer, 0xffff);
   strcat(formattedSDString, ",");
   strcat(formattedSDString, varBuffer);
-  fmtDouble(phset, 3, varBuffer);
+  fmtDouble(phset, 3, varBuffer, 0xffff);
   strcat(formattedSDString, ",");
   strcat(formattedSDString, varBuffer);
-  fmtDouble(onTime, 3, varBuffer);
+  fmtDouble(onTime, 3, varBuffer, 0xffff);
   strcat(formattedSDString, ",");
   strcat(formattedSDString, varBuffer);
-  fmtDouble(Kp, 3, varBuffer);
+  fmtDouble(Kp, 3, varBuffer, 0xffff);
   strcat(formattedSDString, ",");
   strcat(formattedSDString, varBuffer);
-  fmtDouble(Ki, 3, varBuffer);
+  fmtDouble(Ki, 3, varBuffer, 0xffff);
   strcat(formattedSDString, ",");
   strcat(formattedSDString, varBuffer);
-  fmtDouble(Kd, 3, varBuffer);
+  fmtDouble(Kd, 3, varBuffer, 0xffff);
   strcat(formattedSDString, ",");
   strcat(formattedSDString, varBuffer);
 
-  myFile.println(SDstring);
+  myFile.println(formattedSDString);
   myFile.close();
-  Serial.println(SDstring);
+  Serial.println(formattedSDString);
 }

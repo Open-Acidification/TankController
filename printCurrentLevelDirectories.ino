@@ -2,8 +2,7 @@ void printCurrentLevelDirectories(String dirName, EthernetClient client) {
 	File dir = SD.open(dirName);
 
 	DynamicJsonDocument doc(1024);
-	JsonObject root = doc.createNestedObject();
-	JsonArray coords = root.createNestedArray("files");
+	JsonArray coords = doc.createNestedArray("files");
 	coords.add(48.7507371);
 	coords.add(2.2625587);
 	serializeJson(doc, client);

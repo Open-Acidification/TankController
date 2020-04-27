@@ -31,6 +31,7 @@ void LogToSD() {
   digitalWrite(10, HIGH);
   SD.mkdir(formattedDirectoryName);
   myFile = SD.open(formattedFileName, FILE_WRITE);
+  String SDstring;
   SDstring = "";
   SDstring += String((char*) now.month());
   SDstring += "/";

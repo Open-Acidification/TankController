@@ -8,7 +8,7 @@ DynamicJsonDocument printCurrentLevelDirectories(String dirName, EthernetClient 
 	tempArray.add(2);
 	tempArray.add(3);
 	JsonArray tempOuterArray = tempDoc.createNestedArray("tempOuterArray");
-	tempDoc.add(nestedDoc);
+	tempOuterArray.add(nestedDoc);
 	serializeJson(tempDoc, client);
 
 	DynamicJsonDocument doc(1024);

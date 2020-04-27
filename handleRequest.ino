@@ -90,7 +90,10 @@ void handleRequest(EthernetClient client) {
       char* formattedTime = now.toString(timeFormat);
       strcpy(formattedSDString, formattedTime);
       char buffer[100];
-      snprintf(buffer, 100, "%d", temp);
+      snprintf(buffer, 100, "%d", tankid);
+      strcat(formattedSDString, ",");
+      strcat(formattedSDString, buffer);
+      snprintf(buffer, 100, "%4.2f", temp);
       strcat(formattedSDString, ",");
       strcat(formattedSDString, buffer);
       client.println(formattedSDString);

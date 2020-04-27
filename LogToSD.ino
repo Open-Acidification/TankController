@@ -31,43 +31,40 @@ void LogToSD() {
   digitalWrite(10, HIGH);
   SD.mkdir(formattedDirectoryName);
   myFile = SD.open(formattedFileName, FILE_WRITE);
-  String SDstring;
-  SDstring = "";
-  SDstring += String((char*) now.month());
-  SDstring += "/";
-  SDstring += String((char*) now.day());
-  SDstring += "/";
-  SDstring += String((char*) now.year());
-  SDstring += " ";
-  SDstring += String((char*) now.hour());
-  SDstring += ":";
-  if (now.minute() < 10) {
-    SDstring += "0";
-  }
-  SDstring += String((char*) now.minute());
-  SDstring += ":";
-  if (now.second() < 10) {
-    SDstring += "0";
-  }
-  SDstring += String((char*) now.second());
-  SDstring += ",";
-  SDstring += tankid;
-  SDstring += ",";
-  SDstring += String(temp, 2);
-  SDstring += ",";
-  SDstring += String(tempset, 2);
-  SDstring += ",";
-  SDstring += String(pH, 3);
-  SDstring += ",";
-  SDstring += String(phset, 3);
-  SDstring += ",";
-  SDstring += String(onTime);
-  SDstring += ",";
-  SDstring += Kp;
-  SDstring += ",";
-  SDstring += Ki;
-  SDstring += ",";
-  SDstring += Kd;
+
+  char formattedSDString[50];
+  char* timeFormat = "MM/DD/YYYY hh:mm:ss";
+  char* formattedTime = now.toString(timeFormat);
+  strcpy(formattedSDString, formattedTime);  
+  char varBuffer[100];
+  snprintf(varBuffer, 100, "%d", tankid);
+  strcat(formattedSDString, ",");
+  strcat(formattedSDString, varBuffer);
+  fmtDouble(temp, 3, varBuffer);
+  strcat(formattedSDString, ",");
+  strcat(formattedSDString, varBuffer);
+  fmtDouble(tempset, 3, varBuffer);
+  strcat(formattedSDString, ",");
+  strcat(formattedSDString, varBuffer);
+  fmtDouble(pH, 3, varBuffer);
+  strcat(formattedSDString, ",");
+  strcat(formattedSDString, varBuffer);
+  fmtDouble(phset, 3, varBuffer);
+  strcat(formattedSDString, ",");
+  strcat(formattedSDString, varBuffer);
+  fmtDouble(onTime, 3, varBuffer);
+  strcat(formattedSDString, ",");
+  strcat(formattedSDString, varBuffer);
+  fmtDouble(Kp, 3, varBuffer);
+  strcat(formattedSDString, ",");
+  strcat(formattedSDString, varBuffer);
+  fmtDouble(Ki, 3, varBuffer);
+  strcat(formattedSDString, ",");
+  strcat(formattedSDString, varBuffer);
+  fmtDouble(Kd, 3, varBuffer);
+  strcat(formattedSDString, ",");
+  strcat(formattedSDString, varBuffer);
+
   myFile.println(SDstring);
   myFile.close();
   Serial.println(SDstring);

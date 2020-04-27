@@ -2,9 +2,7 @@ DynamicJsonDocument printCurrentLevelDirectories(String dirName, EthernetClient 
 	File dir = SD.open(dirName);
 
 	DynamicJsonDocument doc(1024);
-	JsonArray filesArray = doc.createNestedArray("files");
-	filesArray.add(48.7507371);
-	filesArray.add(2.2625587);
+	JsonArray filesArray = doc.createNestedArray(dirName);
 	while (true) {
 
 		File entry =  dir.openNextFile();

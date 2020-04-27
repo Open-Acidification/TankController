@@ -12,6 +12,7 @@ DynamicJsonDocument printCurrentLevelDirectories(String dirName, EthernetClient 
 	serializeJson(tempDoc, client);
 
 	DynamicJsonDocument doc(1024);
+	client.println(dir.name());
 	JsonArray filesArray = doc.createNestedArray(dir.name());
 	while (true) {
 
@@ -27,6 +28,7 @@ DynamicJsonDocument printCurrentLevelDirectories(String dirName, EthernetClient 
 			client.println("DIRECTORY");
 			serializeJson(doc, client);
 			serializeJson(directories, client);
+			client.println();
 			client.println("POST DIRECTORY");
 			filesArray.add(directories);
 		}

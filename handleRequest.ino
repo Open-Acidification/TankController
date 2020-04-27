@@ -85,14 +85,14 @@ void handleRequest(EthernetClient client) {
       client.println("Connection: close"); 
       client.println();
       DateTime now = rtc.now();
-      char formattedFileName[12];
-      char* timeFormat = "YYYY/MM/DD/hh/YYMMDDhh.txt";
+      char formattedSDString[50];
+      char* timeFormat = "MM/DD/YYYY hh:mm:ss";
       char* formattedTime = now.toString(timeFormat);
-      char* directoryFormat = "YYYY/MM/DD/hh";
-      char* formattedDirectoryName = now.toString(directoryFormat);
-      strcpy(formattedFileName, formattedTime);
-      client.println(formattedDirectoryName);
-      client.println(formattedFileName);
+      strcpy(formattedSDString, formattedTime);
+      char buffer[100];
+      snprintf(buffer, 100, "%d", temp);
+      strcpy(formattedSDString, "," + buffer);
+      client.println(formattedSDString);
     } else {
       handleMisc(client);
     }

@@ -812,7 +812,7 @@ void loop()
       handleRequest(RPClient);    
 
       // give the web browser time to receive the data
-      delay(1);
+      delay(1000);
       // close the connection:
       RPClient.stop();
       Serial.println("RPClient disconnected");

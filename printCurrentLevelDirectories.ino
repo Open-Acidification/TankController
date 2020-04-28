@@ -7,6 +7,7 @@ JsonDocument printCurrentLevelDirectories(File dir, EthernetClient client, int l
 	while (true) {
 
 		File entry =  dir.openNextFile();
+		Serial.println(entry.name());
 		if (!entry) {
 			// no more files
 			break;

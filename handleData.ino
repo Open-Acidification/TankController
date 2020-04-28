@@ -23,17 +23,8 @@ void handleData(String endpoint, EthernetClient client) {
 	File dir = SD.open(directoryName);
 	switch (slashes) {
 		case 0: // data: return years available
-			StaticJsonDocument<512> doc = printCurrentLevelDirectories(dir, client, slashes);
-			serializeJson(doc, client);
-			break;
 		case 1: // year: return months available
-			StaticJsonDocument<512> doc = printCurrentLevelDirectories(dir, client, slashes);
-			serializeJson(doc, client);
-			break;
 		case 2: // month: return days available
-			StaticJsonDocument<512> doc = printCurrentLevelDirectories(dir, client, slashes);
-			serializeJson(doc, client);
-			break;
 		case 3: // day: return hours available
 			StaticJsonDocument<512> doc = printCurrentLevelDirectories(dir, client, slashes);
 			serializeJson(doc, client);

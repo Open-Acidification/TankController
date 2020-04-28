@@ -18,7 +18,7 @@ JsonDocument printCurrentLevelDirectories(File dir, EthernetClient client, int l
 			if (level == 3) {
 				while (true) {
 					File leafEntry = dir.openNextFile();
-					if (!entry) break;
+					if (!leafEntry) break;
 					filesArray.add(leafEntry.name());
 				}
 			} else {

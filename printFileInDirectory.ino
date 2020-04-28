@@ -6,8 +6,9 @@ void printFileInDirectory(String dirName, EthernetClient client) {
 		Serial.println("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd");
 		// read from the file until there's nothing else in it:
 		while (myFile.available()) {
-			client.write(myFile.read());
-			Serial.write(myFile.read());
+			byte read = myFile.read();
+			client.write(read);
+			Serial.write(read);
 		}
 		// close the file:
 		myFile.close();

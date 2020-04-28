@@ -1,5 +1,5 @@
 JsonDocument printCurrentLevelDirectories(File dir, EthernetClient client, int level) {
-	StaticJsonDocument<1024> doc;
+	StaticJsonDocument<128> doc;
 	client.println(dir.name());
 	client.println("CURRENT LEVEL:");
 	client.println(level);
@@ -17,7 +17,7 @@ JsonDocument printCurrentLevelDirectories(File dir, EthernetClient client, int l
 			if (level == 3) {
 				filesArray.add(entry.name());
 			} else {
-				StaticJsonDocument<1024> directories = printCurrentLevelDirectories(entry, client, level+1);
+				StaticJsonDocument<128> directories = printCurrentLevelDirectories(entry, client, level+1);
 				client.println("DIRECTORY");
 				serializeJson(doc, client);
 				serializeJson(directories, client);

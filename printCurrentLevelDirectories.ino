@@ -9,7 +9,6 @@ JsonDocument printCurrentLevelDirectories(File dir, EthernetClient client, int l
 		File entry =  dir.openNextFile();
 		if (!entry) {
 			// no more files
-			dir.rewindDirectory();
 			break;
 		}
 		char* hasLetterS = strchr(entry.name(), 'S');
@@ -19,11 +18,11 @@ JsonDocument printCurrentLevelDirectories(File dir, EthernetClient client, int l
 				while (true) {
 					File leafEntry = dir.openNextFile();
 					if (!leafEntry) {
-						dir.rewindDirectory();
 						break;
 					}
 					filesArray.add(leafEntry.name());
 				}
+				dir.rewindDirectory();
 			} else {
 				StaticJsonDocument<1024> directories = printCurrentLevelDirectories(entry, client, level+1);
 				client.println("DIRECTORY");
@@ -36,6 +35,7 @@ JsonDocument printCurrentLevelDirectories(File dir, EthernetClient client, int l
 		}
 		entry.close();
 	}
+	dir.rewindDirectory();
 	serializeJson(doc, client);
 	client.println();
 	return doc;

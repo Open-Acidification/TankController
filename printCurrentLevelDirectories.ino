@@ -16,16 +16,16 @@ JsonDocument printCurrentLevelDirectories(File dir, EthernetClient client, int l
 	client.println("CURRENT LEVEL:");
 	client.println(level);
 	JsonArray filesArray = doc.createNestedArray(dir.name());
-	while (true) {
+	if (level < 3) {
+		while (true) {
 
-		File entry =  dir.openNextFile();
-		if (!entry) {
-			// no more files
-			break;
-		}
-		char* hasLetterS = strchr(entry.name(), 'S');
-		if (entry.isDirectory() && !hasLetterS) { // WILL NOT PRINT SYSTEM~1 AT ROOT LEVEL
-			if (level < 3) {
+			File entry =  dir.openNextFile();
+			if (!entry) {
+				// no more files
+				break;
+			}
+			char* hasLetterS = strchr(entry.name(), 'S');
+			if (entry.isDirectory() && !hasLetterS) { // WILL NOT PRINT SYSTEM~1 AT ROOT LEVEL
 				client.println(entry.name());
 				// printCurrentLevelDirectories(dirName + "/" + entry.name(), client);
 				StaticJsonDocument<1024> directories = printCurrentLevelDirectories(entry, client, level+1);
@@ -35,11 +35,11 @@ JsonDocument printCurrentLevelDirectories(File dir, EthernetClient client, int l
 				client.println();
 				client.println("POST DIRECTORY");
 				filesArray.add(directories);
-			} else {
-				filesArray.add(entry.name());
 			}
+			entry.close();
 		}
-		entry.close();
+	} else {
+		filesArray.add(dir.name());
 	}
 	serializeJson(doc, client);
 	client.println();

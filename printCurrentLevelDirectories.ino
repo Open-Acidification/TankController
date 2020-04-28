@@ -9,11 +9,12 @@ JsonDocument printCurrentLevelDirectories(File dir, EthernetClient client, int l
 		File entry =  dir.openNextFile();
 		if (!entry) {
 			// no more files
+			client.print(entry.name());
+			client.println(" has no more files");
 			break;
 		}
 		char* hasLetterS = strchr(entry.name(), 'S');
 		if (entry.isDirectory() && !hasLetterS) { // WILL NOT PRINT SYSTEM~1 AT ROOT LEVEL
-			client.println(entry.name());
 			if (level == 3) {
 				filesArray.add(entry.name());
 			} else {

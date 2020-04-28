@@ -1,4 +1,4 @@
-DynamicJsonDocument printCurrentLevelDirectories(File dir, EthernetClient client, int level) {
+StaticJsonDocument printCurrentLevelDirectories(File dir, EthernetClient client, int level) {
 	// File dir = SD.open(dirName);
 
 	// DynamicJsonDocument tempDoc(1024);
@@ -11,7 +11,7 @@ DynamicJsonDocument printCurrentLevelDirectories(File dir, EthernetClient client
 	// tempOuterArray.add(nestedDoc);
 	// serializeJson(tempDoc, client);
 
-	DynamicJsonDocument doc(1024);
+	StaticJsonDocument<1024> doc(1024);
 	client.println(dir.name());
 	client.println("CURRENT LEVEL:");
 	client.println(level);
@@ -28,7 +28,7 @@ DynamicJsonDocument printCurrentLevelDirectories(File dir, EthernetClient client
 			if (level < 3) {
 				client.println(entry.name());
 				// printCurrentLevelDirectories(dirName + "/" + entry.name(), client);
-				DynamicJsonDocument directories = printCurrentLevelDirectories(entry, client, level+1);
+				StaticJsonDocument<1024> directories = printCurrentLevelDirectories(entry, client, level+1);
 				client.println("DIRECTORY");
 				serializeJson(doc, client);
 				serializeJson(directories, client);

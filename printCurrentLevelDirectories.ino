@@ -6,6 +6,7 @@ JsonDocument printCurrentLevelDirectories(File dir, EthernetClient client, int l
 	JsonArray filesArray = doc.createNestedArray(dir.name());
 	dir.seek(0);
 	dir.rewindDirectory();
+	client.println(dir.cwd());
 	while (true) {
 
 		File entry =  dir.openNextFile();

@@ -13,6 +13,8 @@ DynamicJsonDocument printCurrentLevelDirectories(File dir, EthernetClient client
 
 	DynamicJsonDocument doc(1024);
 	client.println(dir.name());
+	client.println("CURRENT LEVEL:");
+	client.println(level);
 	JsonArray filesArray = doc.createNestedArray(dir.name());
 	while (true) {
 

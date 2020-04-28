@@ -1,4 +1,4 @@
-StaticJsonDocument<1024> printCurrentLevelDirectories(File dir, EthernetClient client, int level) {
+JsonDocument printCurrentLevelDirectories(File dir, EthernetClient client, int level) {
 	// File dir = SD.open(dirName);
 
 	// DynamicJsonDocument tempDoc(1024);

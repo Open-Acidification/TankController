@@ -1,6 +1,7 @@
 JsonDocument printCurrentLevelDirectories(File dir, EthernetClient client, int level) {
 	StaticJsonDocument<512> doc;
 	JsonArray filesArray = doc.createNestedArray(dir.name());
+	Serial.println(dir.name());
 	dir.seek(0);
 	dir.rewindDirectory();
 	while (true) {

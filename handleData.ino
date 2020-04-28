@@ -19,18 +19,19 @@ void handleData(String endpoint, EthernetClient client) {
 		pch = strtok(NULL, "/");
 		slashes += 1;
 	}
+	File dir = SD.open(directoryName);
 	switch (slashes) {
 		case 0: // data: return years available
-			printCurrentLevelDirectories(directoryName, client, slashes);
+			printCurrentLevelDirectories(dir, client, slashes);
 			break;
 		case 1: // year: return months available
-			printCurrentLevelDirectories(directoryName, client, slashes);
+			printCurrentLevelDirectories(dir, client, slashes);
 			break;
 		case 2: // month: return days available
-			printCurrentLevelDirectories(directoryName, client, slashes);
+			printCurrentLevelDirectories(dir, client, slashes);
 			break;
 		case 3: // day: return hours available
-			printCurrentLevelDirectories(directoryName, client, slashes);
+			printCurrentLevelDirectories(dir, client, slashes);
 			break;
 		case 4: // hour: return csv of the specific hour
 			printFileInDirectory(directoryName, client);

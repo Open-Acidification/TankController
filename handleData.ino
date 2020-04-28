@@ -34,6 +34,8 @@ void handleData(String endpoint, EthernetClient client) {
 			break;
 		case 4: // hour: return csv of the specific hour
 			client.println();
+			Serial.print("PRINTING FILE: ");
+			Serial.println(directoryName);
 			printFileInDirectory(directoryName, client);
 			break;
 		default:

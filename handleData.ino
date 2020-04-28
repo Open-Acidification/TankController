@@ -1,6 +1,5 @@
 void handleData(String endpoint, EthernetClient client) {	  
 	// data endpoint format: data/year/month/day/hour
-	File myFile;
 	String directoryName;
 	if (endpoint.length() >= 5) {
 		directoryName = endpoint.substring(5); // remove "/data/" prefix
@@ -16,6 +15,8 @@ void handleData(String endpoint, EthernetClient client) {
 		slashes += 1;
 	}
 	File dir = SD.open(directoryName);
+	Serial.print("HOW MANY SLASHES: ");
+	Serial.println(slashes);
 	switch (slashes) {
 		case 0: // data: return years available
 		case 1: // year: return months available
@@ -26,7 +27,7 @@ void handleData(String endpoint, EthernetClient client) {
 			client.println("Content-Type: text/plain; charset=UTF-8");
 			client.println("Connection: close");  // the connection will be closed after completion of the response
 			client.println();
-			Serial.println("START BULIDING JSON");
+			Serial.println("START BUILDING JSON");
 			StaticJsonDocument<512> doc = printCurrentLevelDirectories(dir, client, slashes);
 			serializeJson(doc, client);
 			break;

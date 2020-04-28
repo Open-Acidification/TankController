@@ -1,5 +1,6 @@
 void handleData(String endpoint, EthernetClient client) {	  
 	client.println("HTTP/1.1 200 OK");
+	client.println("X-Content-Type-Options: nosniff");
 	client.println("Content-Type: text/plain; charset=UTF-8");
 	client.println("Connection: close");  // the connection will be closed after completion of the response
 	client.println();

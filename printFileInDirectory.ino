@@ -3,9 +3,11 @@ void printFileInDirectory(String dirName, EthernetClient client) {
 	File myFile = myDirectory.openNextFile();
 	if (myFile) {
 		client.println("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd");
+		Serial.println("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd");
 		// read from the file until there's nothing else in it:
 		while (myFile.available()) {
 			client.write(myFile.read());
+			Serial.write(myFile.read());
 		}
 		// close the file:
 		myFile.close();

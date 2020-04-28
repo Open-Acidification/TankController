@@ -41,4 +41,5 @@ void handleData(String endpoint, EthernetClient client) {
 			client.println("INVALID FORMAT");
 			break;
 	}
+	dir.close();
 }

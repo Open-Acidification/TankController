@@ -4,9 +4,9 @@ JsonDocument printCurrentLevelDirectories(File dir, EthernetClient client, int l
 	client.println("CURRENT LEVEL:");
 	client.println(level);
 	JsonArray filesArray = doc.createNestedArray(dir.name());
+	dir.seek(0);
 	while (true) {
 
-		dir.rewindDirectory();
 		File entry =  dir.openNextFile();
 		if (!entry) {
 			// no more files

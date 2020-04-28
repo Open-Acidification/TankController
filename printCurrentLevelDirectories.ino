@@ -15,14 +15,7 @@ JsonDocument printCurrentLevelDirectories(File dir, EthernetClient client, int l
 		if (entry.isDirectory() && !hasLetterS) { // WILL NOT PRINT SYSTEM~1 AT ROOT LEVEL
 			client.println(entry.name());
 			if (level == 3) {
-				while (true) {
-					File leafEntry = dir.openNextFile();
-					if (!leafEntry) {
-						break;
-					}
-					filesArray.add(leafEntry.name());
-				}
-				dir.rewindDirectory();
+				filesArray.add(entry.name());
 			} else {
 				StaticJsonDocument<1024> directories = printCurrentLevelDirectories(entry, client, level+1);
 				client.println("DIRECTORY");

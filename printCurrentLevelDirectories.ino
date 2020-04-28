@@ -11,7 +11,7 @@ StaticJsonDocument<1024> printCurrentLevelDirectories(File dir, EthernetClient c
 	// tempOuterArray.add(nestedDoc);
 	// serializeJson(tempDoc, client);
 
-	StaticJsonDocument<1024> doc(1024);
+	StaticJsonDocument<1024> doc;
 	client.println(dir.name());
 	client.println("CURRENT LEVEL:");
 	client.println(level);

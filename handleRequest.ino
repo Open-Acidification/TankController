@@ -2,70 +2,71 @@
 
 void handleRequest(EthernetClient client) {
 	Serial.println("new client");
-    // an http request ends with a blank line
-    boolean currentLineIsBlank = true;
-    int count = 0;
-    clearBuffer(htmlRequestBuffer, htmlRequestBufferSize);
-    requestCharCounter = 0;
-    while (client.connected()) {
-      if (client.available()) {
-        // Here is where the POST data is.  
-        while(client.available())
-        {          
-          htmlRequestBuffer[count] = client.read();
-          char c = htmlRequestBuffer[count];
-          count++;
-        }
-        break;
-      }
-    }
-    Serial.println();
-    Serial.println("REQUEST: ");
-    Serial.println(htmlRequestBuffer);
-    Serial.println("=======");
-    Serial.println("TYPE: ");
-    String type = readUntilSpace(htmlRequestBuffer, requestCharCounter, htmlRequestBufferSize);
-    Serial.println(type.c_str());
-    Serial.println("=======");
-    Serial.println("ENDPOINT: ");
-    String endpoint = readUntilSpace(htmlRequestBuffer, requestCharCounter, htmlRequestBufferSize);
-    Serial.println(endpoint.c_str());
-    Serial.println("=======");
-    Serial.println("PROTOCOL: ");
-    String protocol = readUntilSpace(htmlRequestBuffer, requestCharCounter, htmlRequestBufferSize);
-    Serial.println(protocol.c_str());
-    Serial.println("=======");
-    Serial.println("BODY: ");
-    Serial.println(freeMemory());
-    char* firstOpenBrace = strstr(htmlRequestBuffer, "{");
-    Serial.println(freeMemory());
-    char* body = calloc(500, sizeof(char));
-    if (body) {
-      Serial.println("body");
-      Serial.write(body);
-      Serial.println("\n!!!!!!!!!!!!!!");
-    } else {
-      Serial.println("DID NOT ALLOCATE MEMORY FOR BODY");
-    }
-    Serial.println(freeMemory());
-    Serial.println("firstOpenBrace");
-    Serial.write(firstOpenBrace);
-    Serial.println("\n!!!!!!!!!!!!!!");
-    Serial.println("body - firstOpenBrace");
-    Serial.println(body - firstOpenBrace);
-    Serial.println(firstOpenBrace - body);
-    Serial.println("\n!!!!!!!!!!!!!!");
-    strncpy(body, firstOpenBrace, 500);
-    Serial.println("body");
-    Serial.println(body);
-    Serial.println("freeMemory");
-    Serial.println(freeMemory());
+  
+   // an http request ends with a blank line
+   boolean currentLineIsBlank = true;
+   boolean headerFinished = false;
+   String postData;
+   String header;
+  char* requestType;
+  String endpoint;
+  char* requestProtocol;
+   while (client.connected()) {
+     while(client.available()) {
+       char c = client.read();
+       // read first line as header contains endpoint and request type information
+       if (!headerFinished) {
+         header.concat(c);
+       }
+       // if you've gotten to the end of the line (received a newline
+       // character) and the line is blank, the http request has ended,
+       // so you can send a reply
+       if (c == '\n' && currentLineIsBlank) {
+
+          // Here is where the POST data is.  
+         while(client.available())
+         {
+           char c = client.read();
+            Serial.write(c);
+            postData.concat(c);
+         }
+        
+         Serial.println();
+         Serial.println("Parsing request");
+
+         Serial.println("header:");
+         Serial.println(header);
+         Serial.println("postData:");
+         Serial.println(postData);
+
+        requestType = strtok(header.c_str(), " ");
+        endpoint = String(strtok(NULL, " "));
+        requestProtocol = strtok(NULL, " ");         
+
+         Serial.println("requestType:");
+         Serial.println(requestType);
+         Serial.println("endpoint:");
+         Serial.println(endpoint);
+         Serial.println("requestProtocol:");
+         Serial.println(requestProtocol);
+         break;
+       }
+       else if (c == '\n') {
+         // you're starting a new line
+         currentLineIsBlank = true;
+         headerFinished = true;
+       }
+       else if (c != '\r') {
+         // you've gotten a character on the current line
+         currentLineIsBlank = false;
+       }
+     }
 
 	// parse and handle request based on endpoint
     if (endpoint.startsWith("/config")) {
-      handleConfig(body, client);
+      handleConfig(postData.c_str(), client);
     } else if (endpoint.startsWith("/series")) {
-      handleSeries(body, client);
+      handleSeries(postData.c_str(), client);
     } else if (endpoint.startsWith("/device")) {  
       handleDevice(endpoint, client);
     } else if (endpoint.startsWith("/data")) {
@@ -125,9 +126,6 @@ void handleRequest(EthernetClient client) {
     } else {
       handleMisc(client);
     }
-
-    free(body);
-    Serial.println("freed!!!");
-    Serial.println(freeMemory());
-    Serial.println("=======");
+    return;
+   }
 }

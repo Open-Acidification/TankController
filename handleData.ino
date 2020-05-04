@@ -29,8 +29,7 @@ void handleData(String endpoint, EthernetClient client) {
 			client.println("X-Content-Type-Options: nosniff");
 			client.println();
 			Serial.println("START BUILDING JSON");
-			StaticJsonDocument<512> doc = printCurrentLevelDirectories(dir, client, slashes);
-			serializeJson(doc, client);
+			printCurrentLevelDirectories(dir, client, slashes);
 			break;
 		case 4: // hour: return csv of the specific hour
 			client.println();

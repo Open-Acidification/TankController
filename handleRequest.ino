@@ -39,35 +39,33 @@ void handleRequest(EthernetClient client) {
     Serial.println(freeMemory());
     char* firstOpenBrace = strstr(htmlRequestBuffer, "{");
     Serial.println(freeMemory());
-    // char* body = calloc(500, sizeof(char));
-    // if (body) {
-    //   Serial.println("body");
-    //   Serial.write(body);
-    //   Serial.println("\n!!!!!!!!!!!!!!");
-    // } else {
-    //   Serial.println("DID NOT ALLOCATE MEMORY FOR BODY");
-    // }
-    // Serial.println(freeMemory());
-    // Serial.println("firstOpenBrace");
-    // Serial.write(firstOpenBrace);
-    // Serial.println("\n!!!!!!!!!!!!!!");
-    // Serial.println("body - firstOpenBrace");
-    // Serial.println(body - firstOpenBrace);
-    // Serial.println(firstOpenBrace - body);
-    // Serial.println("\n!!!!!!!!!!!!!!");
-    // strncpy(body, firstOpenBrace, body - firstOpenBrace);
-    // Serial.println("body");
-    // Serial.println(body);
-    // Serial.println("freeMemory");
-    // Serial.println(freeMemory());
-    // free(body);
-    // Serial.println("freed!!!");
-    // Serial.println(freeMemory());
-    // Serial.println("=======");
+    char* body = calloc(500, sizeof(char));
+    if (body) {
+      Serial.println("body");
+      Serial.write(body);
+      Serial.println("\n!!!!!!!!!!!!!!");
+    } else {
+      Serial.println("DID NOT ALLOCATE MEMORY FOR BODY");
+    }
+    Serial.println(freeMemory());
+    Serial.println("firstOpenBrace");
+    Serial.write(firstOpenBrace);
+    Serial.println("\n!!!!!!!!!!!!!!");
+    Serial.println("body - firstOpenBrace");
+    Serial.println(body - firstOpenBrace);
+    Serial.println(firstOpenBrace - body);
+    Serial.println("\n!!!!!!!!!!!!!!");
+    strncpy(body, firstOpenBrace, 500);
+    Serial.println("body");
+    Serial.println(body);
+    Serial.println("freeMemory");
+    Serial.println(freeMemory());
 
 	// parse and handle request based on endpoint
     if (endpoint.startsWith("/config")) {
-      // handleConfig(body, client);
+      handleConfig(body, client);
+    } else if (endpoint.startsWith("/series")) {
+      handleSeries(body, client);
     } else if (endpoint.startsWith("/device")) {  
       handleDevice(endpoint, client);
     } else if (endpoint.startsWith("/data")) {
@@ -127,4 +125,9 @@ void handleRequest(EthernetClient client) {
     } else {
       handleMisc(client);
     }
+
+    free(body);
+    Serial.println("freed!!!");
+    Serial.println(freeMemory());
+    Serial.println("=======");
 }

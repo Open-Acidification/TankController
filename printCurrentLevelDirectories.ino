@@ -1,9 +1,7 @@
 JsonDocument printCurrentLevelDirectories(File dir, EthernetClient client, int level) {
 	StaticJsonDocument<512> doc;
-	JsonArray filesArray = doc.createNestedArray(dir.name());
+	JsonArray filesArray = doc.to<JsonArray>();;
 	Serial.println(dir.name());
-	dir.seek(0);
-	dir.rewindDirectory();
 	while (true) {
 
 		File entry =  dir.openNextFile();
@@ -14,15 +12,10 @@ JsonDocument printCurrentLevelDirectories(File dir, EthernetClient client, int l
 		}
 		char* hasLetterS = strchr(entry.name(), 'S');
 		if (entry.isDirectory() && !hasLetterS) { // WILL NOT PRINT SYSTEM~1 AT ROOT LEVEL
-			if (level == 3) {
-				filesArray.add(entry.name());
-			} else {
-				StaticJsonDocument<512> directories = printCurrentLevelDirectories(entry, client, level+1);
-				filesArray.add(directories);
-			}
+			filesArray.add(entry.name());
 		}
 		entry.close();
 	}
-	dir.rewindDirectory();
+	serializeJson(doc, client);
 	return doc;
 }

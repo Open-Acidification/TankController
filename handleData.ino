@@ -32,6 +32,7 @@ void handleData(String endpoint, EthernetClient client) {
 			printCurrentLevelDirectories(dir, client, slashes);
 			break;
 		case 4: // hour: return csv of the specific hour
+			client.println("X-Content-Type-Options: nosniff");
 			client.println();
 			Serial.print("PRINTING FILE: ");
 			Serial.println(directoryName);

@@ -32,11 +32,41 @@ void LogToSD() {
   SD.mkdir(formattedDirectoryName);
   myFile = SD.open(formattedFileName, FILE_WRITE);
 
+  // create information string with timestamp
   char formattedSDString[50];
-  char* logTimeFormat = "MM/DD/YYYY hh:mm:ss";
-  char* logFormattedTime = now.toString(logTimeFormat);
-  strcpy(formattedSDString, logFormattedTime);  
+  memset(formattedSDString, 0, 50);
+  char timeBuffer[100];
+  memset(timeBuffer, 0, 100);
   char varBuffer[100];
+  memset(varBuffer, 0, 100);
+  DateTime tempNow = rtc.now();
+  fmtDouble(tempNow.year(), 0, timeBuffer, 0xffff);
+  strcat(formattedSDString, timeBuffer);
+  strcat(formattedSDString, "/");
+  fmtDouble(tempNow.month(), 0, timeBuffer, 0xffff);
+  strcat(formattedSDString, timeBuffer);
+  strcat(formattedSDString, "/");
+  fmtDouble(tempNow.day(), 0, timeBuffer, 0xffff);
+  strcat(formattedSDString, timeBuffer);
+  strcat(formattedSDString, " ");
+  fmtDouble(tempNow.hour(), 0, timeBuffer, 0xffff);
+  strcat(formattedSDString, timeBuffer);
+  strcat(formattedSDString, ":");
+  if (tempNow.minute() < 10) {
+    strcat(formattedSDString, "0");
+  }
+  fmtDouble(tempNow.minute(), 0, timeBuffer, 0xffff);
+  strcat(formattedSDString, timeBuffer);
+  strcat(formattedSDString, ":");
+  if (tempNow.second() < 10) {
+    strcat(formattedSDString, "0");
+  }
+  fmtDouble(tempNow.second(), 0, timeBuffer, 0xffff);
+  strcat(formattedSDString, timeBuffer);
+  strcat(formattedSDString, ":");
+  fmtDouble(millis(), 0, timeBuffer, 0xffff);
+  strcat(formattedSDString, timeBuffer);
+
   snprintf(varBuffer, 100, "%d", tankid);
   strcat(formattedSDString, ",");
   strcat(formattedSDString, varBuffer);

@@ -12,7 +12,7 @@ void handleLines(String endpoint, EthernetClient client) {
 	}
 	int slashIndex = endpoint.lastIndexOf("/");
 	String hourName = endpoint.substring(slashIndex);
-	directoryName = directoryName.concat(hourName);
+	directoryName.concat(hourName);
 	char* pch;
 	int slashes = -1;
 	pch = strtok(endpoint.c_str(), "/");
@@ -34,5 +34,4 @@ void handleLines(String endpoint, EthernetClient client) {
 			client.println("REQUIRES FULL YEAR/MONTH/DAY/HOUR SPECIFICATION");
 			break;
 	}
-	dir.close();
 }

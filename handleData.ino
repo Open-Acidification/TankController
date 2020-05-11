@@ -10,6 +10,22 @@ void handleData(String endpoint, EthernetClient client) {
 	} else {
 		directoryName = "/";
 	}
+	int startingLine = 0;
+	int numLines = 0;
+	// check if there are url parameters 
+	int urlParameterIndex = directoryName.indexOf("?");
+	if (urlParameterIndex > -1) {
+		String urlParameter = directoryName.substring(urlParameterIndex);
+		directoryName = directoryName.substring(0, urlParameterIndex);
+		int startIndex = urlParameter.indexOf("start");
+		int numIndex = urlParameter.indexOf("num");
+		startingLine = urlParameter.substring(startIndex+6, numIndex-1).toInt();
+		numLines = urlParameter.substring(numIndex+4).toInt();
+		Serial.println("========");
+		Serial.println(startingLine);
+		Serial.println(numLines);
+		Serial.println("========");
+	}
 	char* pch;
 	int slashes = -1;
 	pch = strtok(endpoint.c_str(), "/");
@@ -31,12 +47,20 @@ void handleData(String endpoint, EthernetClient client) {
 			Serial.println("START BUILDING JSON");
 			printCurrentLevelDirectories(dir, client, slashes);
 			break;
-		case 4: // hour: return csv of the specific hour
-			client.println("X-Content-Type-Options: nosniff");
-			client.println();
-			Serial.print("PRINTING FILE: ");
-			Serial.println(directoryName);
-			printFileInDirectory(directoryName, client);
+		case 4: 
+			if (urlParameterIndex > -1) { // specified lines: print numLines from startingLine in specified csv
+				client.println("X-Content-Type-Options: nosniff");
+				client.println();
+				Serial.print("PRINTING SPECIFIED LINES FROM FILE: ");
+				Serial.println(directoryName);
+				printSpecifiedLines(directoryName, client, startingLine, numLines);
+			} else { // hour: return csv of the specific hour
+				client.println("X-Content-Type-Options: nosniff");
+				client.println();
+				Serial.print("PRINTING FILE: ");
+				Serial.println(directoryName);
+				printFileInDirectory(directoryName, client);
+			}
 			break;
 		default:
 			client.println("INVALID FORMAT");

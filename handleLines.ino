@@ -5,14 +5,14 @@ void handleLines(String endpoint, EthernetClient client) {
 	client.println("Keep-Alive: timeout=5, max=1000");
 	// lines endpoint format: lines/year/month/day/hour
 	String directoryName;
-	if (endpoint.length() >= 5) {
-		directoryName = endpoint.substring(5); // remove "/lines/" prefix
+	if (endpoint.length() >= 6) {
+		directoryName = endpoint.substring(6); // remove "/lines/" prefix
 	} else {
 		directoryName = "/";
 	}
 	int slashIndex = endpoint.lastIndexOf("/");
 	String hourName = endpoint.substring(slashIndex);
-	directoryName.concat(hourName);
+	directoryName.concat(hourName + ".txt");
 	char* pch;
 	int slashes = -1;
 	pch = strtok(endpoint.c_str(), "/");
@@ -28,7 +28,17 @@ void handleLines(String endpoint, EthernetClient client) {
 			client.println();
 			Serial.print("PRINTING LINE FILE: ");
 			Serial.println(directoryName);
-			printFileInDirectory(directoryName, client);
+			File lineFile = SD.open(directoryName);
+			char linesBuffer[10];
+			int i = 0;
+			while (lineFile.available() && i < 10) {
+				linesBuffer[i++] = lineFile.read();
+			}
+			linesBuffer[i] = '\0';
+			int lineCount = atoi(linesBuffer);
+			Serial.print("LINE COUNT: ");
+			Serial.println(lineCount);
+			client.println(lineCount);
 			break;
 		default:
 			client.println("REQUIRES FULL YEAR/MONTH/DAY/HOUR SPECIFICATION");

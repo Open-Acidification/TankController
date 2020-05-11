@@ -30,25 +30,46 @@ void LogToSD() {
   pinMode(10, OUTPUT);
   digitalWrite(10, HIGH);
   SD.mkdir(formattedDirectoryName);
-  myFile = SD.open(formattedFileName, FILE_WRITE);
 
   // update accompanying line-count file
   File lineFile = SD.open(formattedLineFileName, FILE_WRITE);
-  if (!lineFile.size()) {
-    lineFile.write("1");
+  Serial.print("FILE LINE NAME: ");
+  Serial.println(formattedLineFileName);
+  int lineFileSize = lineFile.size();
+  Serial.print("FILE SIZE IS: ");
+  Serial.println(lineFileSize);
+  if (!lineFileSize) {
+    lineFile.println("1");
+    lineFile.close();
   } else {
     char linesBuffer[10];
-    int i = 0;
-    while (lineFile.available()) {
-      linesBuffer[i++] = lineFile.read();
-    }
-    linesBuffer[i] = '\0';
-    int lineCount = atoi(linesBuffer);
     lineFile.seek(0);
-    lineFile.write(lineCount);
+    Serial.print("AVAILABLE: ");
+    Serial.println(lineFile.available());
+    byte read;
+    for (int i = 0; i < 10 && read != -1; i++) {
+      read = lineFile.read();
+      Serial.print("READ: ");
+      Serial.println((char)read);
+      linesBuffer[i] = (char)read;
+    }
+    Serial.print("LINE BUFFER IS: ");
+    Serial.println(linesBuffer);
+    int lineCount = atoi(linesBuffer);
+    Serial.print("LINE COUNT IS: ");
+    Serial.println(lineCount);
+    lineFile.close();
+    SD.remove(formattedLineFileName);
+    lineFile = SD.open(formattedLineFileName, FILE_WRITE);
+    char lineCountBuffer[10];
+    sprintf(lineCountBuffer, "%d", lineCount+1);
+    Serial.print("WRITING LINE COUNT: ");
+    Serial.println(lineCountBuffer);
+    lineFile.println(lineCountBuffer);
+    lineFile.close();
   }
-  lineFile.close();
 
+  myFile = SD.open(formattedFileName, FILE_WRITE);
   // create information string with timestamp
   char formattedSDString[50];
   memset(formattedSDString, 0, 50);

@@ -71,6 +71,8 @@ void handleRequest(EthernetClient client) {
       handleDevice(endpoint, client);
     } else if (endpoint.startsWith("/data")) {
       handleData(endpoint, client);
+    } else if (endpoint.startsWith("/lines")) {
+      handleLines(endpoint, client);
     } else if (endpoint.startsWith("/test")) {
       client.println("HTTP/1.1 200 OK");
       client.println("Content-Type: text/plain");

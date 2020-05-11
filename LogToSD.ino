@@ -9,12 +9,12 @@ void LogToSD() {
   digitalWrite(10, HIGH);
   Serial.println("LOGGING TO SD");
 
-  char formattedFileName[12];
   char* timeFormat = "YYYY/MM/DD/hh/YYMMDDhh.txt";
-  char* formattedTime = now.toString(timeFormat);
+  char* linesFormat = "YYYY/MM/DD/hh/hh.txt";
+  char* formattedFileName = now.toString(timeFormat);
+  char* formattedLineFileName = now.toString(linesFormat);
   char* directoryFormat = "YYYY/MM/DD/hh";
   char* formattedDirectoryName = now.toString(directoryFormat);
-  strcpy(formattedFileName, formattedTime);
   Serial.println(formattedDirectoryName);
   Serial.println(formattedFileName);
   
@@ -31,6 +31,23 @@ void LogToSD() {
   digitalWrite(10, HIGH);
   SD.mkdir(formattedDirectoryName);
   myFile = SD.open(formattedFileName, FILE_WRITE);
+
+  // update accompanying line-count file
+  File lineFile = SD.open(formattedLineFileName, FILE_WRITE);
+  if (!lineFile.size()) {
+    lineFile.write("1");
+  } else {
+    char linesBuffer[10];
+    int i = 0;
+    while (lineFile.available()) {
+      linesBuffer[i++] = lineFile.read();
+    }
+    linesBuffer[i] = '\0';
+    int lineCount = atoi(linesBuffer);
+    lineFile.seek(0);
+    lineFile.write(lineCount);
+  }
+  lineFile.close();
 
   // create information string with timestamp
   char formattedSDString[50];

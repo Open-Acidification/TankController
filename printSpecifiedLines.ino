@@ -20,7 +20,7 @@ void printSpecifiedLines(String dirName, EthernetClient client, long startingLin
 			Serial.println("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime");
 		} else {
 			Serial.println("FAILED SEEK");
-			client.println("HTTP/1.1 404 Not Found");
+			client.println("HTTP/1.1 416 Requested Range Not Satisfiable");
 			// if the starting byte is greater than file size, print an error:
 			client.print("starting byte is greater than file size at file: ");
 			client.println(dirName);

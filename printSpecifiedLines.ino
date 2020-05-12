@@ -5,13 +5,13 @@ void printSpecifiedLines(String dirName, EthernetClient client, long startingLin
 		Serial.println(startingLine);
 		Serial.print("NUMLINES: ");
 		Serial.println(numLines);
-		client.println("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd");
-		Serial.println("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd");
 		int printedLines = 0;
 		// seek starting byte
 		long startingByte = startingLine * (recordLength+2);
 		if (myFile.seek(startingByte)) {
 			Serial.println("SUCCESSFUL SEEK");
+			client.println("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime");
+			Serial.println("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime");
 		} else {
 			Serial.println("FAILED SEEK");
 			// if the starting byte is greater than file size, print an error:

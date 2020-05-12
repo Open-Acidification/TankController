@@ -1,8 +1,8 @@
 void printFileInDirectory(String dirName, EthernetClient client) {	
 	File myFile = SD.open(dirName);
 	if (myFile) {
-		client.println("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd");
-		Serial.println("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd");
+		client.println("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime");
+		Serial.println("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime");
 		// read from the file until there's nothing else in it:
 		while (myFile.available()) {
 			byte read = myFile.read();

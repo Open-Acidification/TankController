@@ -60,6 +60,8 @@ unsigned long SD_previousMillis = 0;              // will store last time A new 
 float SD_interval = 3600000;                      // log to SD each hour
 unsigned long sensor_previousMillis = 0;          // will store last time sensor readings were taken
 float sensor_interval;                      // interval at which to start a new log file (milliseconds)
+unsigned long second_previousMillis = 0;         
+float second_interval = 1000;                     
 int maxDataAge;
 float LeaseInterval = 4 * 86400000;               //Interval at which to renew DHCP lease (First number is days)
 unsigned long previousLease = 0;

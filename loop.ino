@@ -703,7 +703,11 @@ void loop()
       onTime = Output;
     }
     LCDupdate();
-    LogToSD();
+    unsigned long second_currentMillis = millis();
+    if (second_currentMillis - second_previousMillis >= second_interval) {
+      second_previousMillis = second_currentMillis;
+      LogToSD();
+    }
     digitalClockDisplay();
     Serial.print(F("freeMemory()="));
     Serial.println(freeMemory());

@@ -102,6 +102,7 @@ double Kd;
 double amplitude;
 double frequency;
 long onTime = 0;
+int recordLength = 70; // length of each record to be logged
 int WindowSize = 10000;                         // 10 second Time Proportional Output window
 unsigned long windowStartTime;
 float midBuffer = 0;

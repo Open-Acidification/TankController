@@ -7,16 +7,24 @@ void printSpecifiedLines(String dirName, EthernetClient client, long startingLin
 		Serial.println(numLines);
 		client.println("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd");
 		Serial.println("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd");
-		// read from the file until there's nothing else in it:
 		int printedLines = 0;
-		if (myFile.seek(startingLine)) {
+		// seek starting byte
+		long startingByte = startingLine * recordLength;
+		if (myFile.seek(startingByte)) {
 			client.println("SUCCESSFUL SEEK");
 		} else {
-			client.println("FAILED SEEK");
+			// if the starting byte is greater than file size, print an error:
+			client.print("starting byte is greater than file size at file: ");
+			client.println(dirName);
+			// close the file:
+			myFile.close();
+			return;
 		}
 		client.println(startingLine);
+		client.println(startingByte);
 		client.println(myFile.position());
 		client.println(myFile.size());
+		// print specified lines
 		while (printedLines++ < numLines) {
 			// skip to line
 			// int linesSkipped = 0;

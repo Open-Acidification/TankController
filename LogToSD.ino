@@ -57,8 +57,8 @@ void LogToSD() {
 
   myFile = SD.open(formattedFileName, FILE_WRITE);
   // create information string with timestamp
-  char formattedSDString[50];
-  memset(formattedSDString, 0, 50);
+  char formattedSDString[recordLength];
+  memset(formattedSDString, 0, recordLength);
   char timeBuffer[100];
   memset(timeBuffer, 0, 100);
   char varBuffer[100];
@@ -87,17 +87,14 @@ void LogToSD() {
   }
   fmtDouble(tempNow.second(), 0, timeBuffer, 0xffff);
   strcat(formattedSDString, timeBuffer);
-  strcat(formattedSDString, ":");
-  fmtDouble(millis(), 0, timeBuffer, 0xffff);
-  strcat(formattedSDString, timeBuffer);
 
   snprintf(varBuffer, 100, "%d", tankid);
   strcat(formattedSDString, ",");
   strcat(formattedSDString, varBuffer);
-  fmtDouble(temp, 3, varBuffer, 0xffff);
+  fmtDouble(temp, 2, varBuffer, 0xffff);
   strcat(formattedSDString, ",");
   strcat(formattedSDString, varBuffer);
-  fmtDouble(tempset, 3, varBuffer, 0xffff);
+  fmtDouble(tempset, 2, varBuffer, 0xffff);
   strcat(formattedSDString, ",");
   strcat(formattedSDString, varBuffer);
   fmtDouble(pH, 3, varBuffer, 0xffff);
@@ -106,19 +103,19 @@ void LogToSD() {
   fmtDouble(phset, 3, varBuffer, 0xffff);
   strcat(formattedSDString, ",");
   strcat(formattedSDString, varBuffer);
-  fmtDouble(onTime, 3, varBuffer, 0xffff);
-  strcat(formattedSDString, ",");
-  strcat(formattedSDString, varBuffer);
-  fmtDouble(Kp, 3, varBuffer, 0xffff);
-  strcat(formattedSDString, ",");
-  strcat(formattedSDString, varBuffer);
-  fmtDouble(Ki, 3, varBuffer, 0xffff);
-  strcat(formattedSDString, ",");
-  strcat(formattedSDString, varBuffer);
-  fmtDouble(Kd, 3, varBuffer, 0xffff);
+  fmtDouble(onTime, 0, varBuffer, 0xffff);
   strcat(formattedSDString, ",");
   strcat(formattedSDString, varBuffer);
 
+  Serial.print("formattedSDString SIZE: ");
+  Serial.println(strlen(formattedSDString));
+  Serial.print("ADDING: ");
+  Serial.println(recordLength - strlen(formattedSDString));
+  for (strlen(formattedSDString); strlen(formattedSDString) < recordLength;) {
+    strcat(formattedSDString, " ");
+  }
+  Serial.print("AFTER EDIT formattedSDString SIZE: ");
+  Serial.println(strlen(formattedSDString));
   myFile.println(formattedSDString);
   myFile.close();
   Serial.println(formattedSDString);

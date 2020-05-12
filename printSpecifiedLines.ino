@@ -1,4 +1,4 @@
-void printSpecifiedLines(String dirName, EthernetClient client, int startingLine, int numLines) {	
+void printSpecifiedLines(String dirName, EthernetClient client, long startingLine, long numLines) {	
 	File myFile = SD.open(dirName);
 	if (myFile) {
 		Serial.print("STARTINGLINE: ");
@@ -9,15 +9,23 @@ void printSpecifiedLines(String dirName, EthernetClient client, int startingLine
 		Serial.println("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd");
 		// read from the file until there's nothing else in it:
 		int printedLines = 0;
+		if (myFile.seek(startingLine)) {
+			client.println("SUCCESSFUL SEEK");
+		} else {
+			client.println("FAILED SEEK");
+		}
+		client.println(startingLine);
+		client.println(myFile.position());
+		client.println(myFile.size());
 		while (printedLines++ < numLines) {
 			// skip to line
-			int linesSkipped = 0;
-			while (myFile.available() && linesSkipped < startingLine) {
-				byte read = myFile.read();
-				if ((char)read == '\n') {
-					linesSkipped++;
-				}
-			}
+			// int linesSkipped = 0;
+			// while (myFile.available() && linesSkipped < startingLine) {
+			// 	byte read = myFile.read();
+			// 	if ((char)read == '\n') {
+			// 		linesSkipped++;
+			// 	}
+			// }
 			// fill up buffer
 			char line[100];
 			memset(line, 0, 100);

@@ -10,8 +10,8 @@ void handleData(String endpoint, EthernetClient client) {
 	} else {
 		directoryName = "/";
 	}
-	int startingLine = 0;
-	int numLines = 0;
+	long startingLine = 0;
+	long numLines = 0;
 	// check if there are url parameters 
 	int urlParameterIndex = directoryName.indexOf("?");
 	if (urlParameterIndex > -1) {

@@ -1,6 +1,5 @@
 void printSpecifiedLines(String dirName, EthernetClient client, int startingLine, int numLines) {	
-	File myDirectory = SD.open(dirName);
-	File myFile = myDirectory.openNextFile();
+	File myFile = SD.open(dirName);
 	if (myFile) {
 		Serial.print("STARTINGLINE: ");
 		Serial.println(startingLine);

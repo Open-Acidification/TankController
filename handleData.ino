@@ -48,6 +48,8 @@ void handleData(String endpoint, EthernetClient client) {
 			printCurrentLevelDirectories(dir, client, slashes);
 			break;
 		case 4: 
+			String fileName = "/" + directoryName.substring(3,5) + directoryName.substring(6,8) + directoryName.substring(9,11) + directoryName.substring(12,14) + ".txt";  
+			directoryName.concat(fileName);
 			if (urlParameterIndex > -1) { // specified lines: print numLines from startingLine in specified csv
 				client.println("X-Content-Type-Options: nosniff");
 				client.println();

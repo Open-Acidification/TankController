@@ -1,6 +1,6 @@
 void handleSeries(char* body, EthernetClient client) {
 	
-	StaticJsonDocument<200> doc;
+	StaticJsonDocument<1000> doc;
 	DeserializationError error = deserializeJson(doc, body);	
 	if (error) {
 		client.println("HTTP/1.1 400 Not Found");
@@ -21,8 +21,8 @@ void handleSeries(char* body, EthernetClient client) {
 		JsonObject phObject = doc["pH"];
 		JsonArray phValueJsonArray = phObject["value"];
 		JsonArray phTimeJsonArray = phObject["time"];
-		int phInterval = phObject["interval"];
-		int phDelay = phObject["delay"];
+		phInterval = phObject["interval"];
+		phDelay = phObject["delay"];
 		int phSeriesSize = phValueJsonArray.size();
 		int phValueArray[phSeriesSize];
 		int phTimeArray[phSeriesSize];
@@ -31,11 +31,17 @@ void handleSeries(char* body, EthernetClient client) {
 		SD.remove("pv.txt");
 		seriesFile = SD.open("pv.txt", FILE_WRITE); // pH values
 		client.println("pH values: ");
+		int goalRecordLength = 10;
+		char goalRecordString[goalRecordLength];
+		memset(goalRecordString, 0, goalRecordLength);
 		for (JsonVariant v : phValueJsonArray) {
 			phValueArray[counter++] = v.as<int>();
-			Serial.println(phValueArray[counter-1]);
-			client.println(phValueArray[counter-1]);
-			seriesFile.println(phValueArray[counter-1]);
+			itoa(phValueArray[counter-1], goalRecordString, 10);
+			for (strlen(goalRecordString); strlen(goalRecordString) < goalRecordLength;) {
+				strcat(goalRecordString, " ");
+			}
+			client.println(goalRecordString);
+			seriesFile.println(goalRecordString);
 		}
 		seriesFile.close();
 		counter = 0;

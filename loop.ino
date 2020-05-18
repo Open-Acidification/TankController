@@ -690,6 +690,7 @@ void loop()
     Get_Temperature();
     Set_Temp_Comp();
     Set_Chiller();
+    updateGoals();
     if (!pidrun) {
       if (pH > phset) {
         onTime = 10000;

@@ -122,6 +122,8 @@ boolean sensed = false;
 #define chiller 47
 #define co2reg 49
 int LoopStart;
+long phInterval;
+long phDelay;
 
 int const htmlRequestBufferSize = 500;
 char htmlRequestBuffer[htmlRequestBufferSize];

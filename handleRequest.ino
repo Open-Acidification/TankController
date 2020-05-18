@@ -69,6 +69,8 @@ void handleRequest(EthernetClient client) {
       handleSeries(postData.c_str(), client);
     } else if (endpoint.startsWith("/device")) {  
       handleDevice(endpoint, client);
+    } else if (endpoint.startsWith("/goal")) {  
+      handleGoal(endpoint, client);
     } else if (endpoint.startsWith("/data")) {
       handleData(endpoint, client);
     } else if (endpoint.startsWith("/lines")) {

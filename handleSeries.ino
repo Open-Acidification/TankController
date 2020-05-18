@@ -23,7 +23,8 @@ void handleSeries(char* body, EthernetClient client) {
 		JsonArray phTimeJsonArray = phObject["time"];
 		phInterval = phObject["interval"];
 		phDelay = phObject["delay"];
-		int phSeriesSize = phValueJsonArray.size();
+		phSeriesSize = phValueJsonArray.size();
+		phSeriesPointer = 0;
 		int phValueArray[phSeriesSize];
 		int phTimeArray[phSeriesSize];
 		pinMode(10, OUTPUT);
@@ -31,7 +32,6 @@ void handleSeries(char* body, EthernetClient client) {
 		SD.remove("pv.txt");
 		seriesFile = SD.open("pv.txt", FILE_WRITE); // pH values
 		client.println("pH values: ");
-		int goalRecordLength = 10;
 		char goalRecordString[goalRecordLength];
 		memset(goalRecordString, 0, goalRecordLength);
 		for (JsonVariant v : phValueJsonArray) {

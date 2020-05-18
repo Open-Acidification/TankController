@@ -1,7 +1,6 @@
 void handleGoal(String endpoint, EthernetClient client) {	
-	File pvFile = SD.open("pv.txt");
-	int goalRecordLength = 10;
 	long startingByte = 2 * (goalRecordLength+2);
+	File pvFile = SD.open("pv.txt");
 	if (pvFile.seek(startingByte)) {
 		Serial.println("SUCCESSFUL GOAL SEEK");
 		client.println("HTTP/1.1 200 OK");

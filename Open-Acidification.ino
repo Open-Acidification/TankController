@@ -122,8 +122,11 @@ boolean sensed = false;
 #define chiller 47
 #define co2reg 49
 int LoopStart;
+int goalRecordLength = 10;
 long phInterval;
 long phDelay;
+int phSeriesSize;
+long phSeriesPointer;
 
 int const htmlRequestBufferSize = 500;
 char htmlRequestBuffer[htmlRequestBufferSize];

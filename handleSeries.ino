@@ -71,6 +71,10 @@ void handleSeries(char* body, EthernetClient client) {
 		JsonObject tempObject = doc["temp"];
 		JsonArray tempValueJsonArray = tempObject["value"];
 		JsonArray tempTimeJsonArray = tempObject["time"];
+		tempInterval = tempObject["interval"];
+		tempDelay = tempObject["delay"];
+		tempSeriesSize = tempValueJsonArray.size();
+		tempSeriesPointer = 0;
 		int tempInterval = tempObject["interval"];
 		int tempDelay = tempObject["delay"];
 		int tempSeriesSize = tempValueJsonArray.size();
@@ -79,22 +83,31 @@ void handleSeries(char* body, EthernetClient client) {
 		SD.remove("/tv.txt");
 		seriesFile = SD.open("/tv.txt", FILE_WRITE); // temperature values
 		client.println("temp values: ");
+		memset(goalRecordString, 0, goalRecordLength);
 		for (JsonVariant v : tempValueJsonArray) {
 			tempValueArray[counter++] = v.as<int>();
-			Serial.println(tempValueArray[counter-1]);
-			client.println(tempValueArray[counter-1]);
-			seriesFile.println(tempValueArray[counter-1]);
+			itoa(tempValueArray[counter-1], goalRecordString, 10);
+			for (strlen(goalRecordString); strlen(goalRecordString) < goalRecordLength;) {
+				strcat(goalRecordString, " ");
+			}
+			client.println(goalRecordString);
+			seriesFile.println(goalRecordString);
 		}
 		seriesFile.close();
+
 		counter = 0;
 		SD.remove("/tt.txt");
 		seriesFile = SD.open("/tt.txt", FILE_WRITE); // temperature times
 		client.println("temp values: ");
+		memset(goalRecordString, 0, goalRecordLength);
 		for (JsonVariant v : tempTimeJsonArray) {
 			tempTimeArray[counter++] = v.as<int>();
-			Serial.println(tempTimeArray[counter-1]);
-			client.println(tempTimeArray[counter-1]);
-			seriesFile.println(tempTimeArray[counter-1]);
+			itoa(tempTimeArray[counter-1], goalRecordString, 10);
+			for (strlen(goalRecordString); strlen(goalRecordString) < goalRecordLength;) {
+				strcat(goalRecordString, " ");
+			}
+			client.println(goalRecordString);
+			seriesFile.println(goalRecordString);
 		}
 		seriesFile.close();
 		client.println("temp interval: ");

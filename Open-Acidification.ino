@@ -127,6 +127,10 @@ long phInterval;
 long phDelay;
 int phSeriesSize;
 long phSeriesPointer;
+long tempInterval;
+long tempDelay;
+int tempSeriesSize;
+long tempSeriesPointer;
 
 int const htmlRequestBufferSize = 500;
 char htmlRequestBuffer[htmlRequestBufferSize];

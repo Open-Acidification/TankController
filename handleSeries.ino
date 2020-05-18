@@ -44,15 +44,20 @@ void handleSeries(char* body, EthernetClient client) {
 			seriesFile.println(goalRecordString);
 		}
 		seriesFile.close();
+
 		counter = 0;
 		SD.remove("/pt.txt");
 		seriesFile = SD.open("/pt.txt", FILE_WRITE); // pH times
 		client.println("pH times: ");
+		memset(goalRecordString, 0, goalRecordLength);
 		for (JsonVariant v : phTimeJsonArray) {
 			phTimeArray[counter++] = v.as<int>();
-			Serial.println(phTimeArray[counter-1]);
-			client.println(phTimeArray[counter-1]);
-			seriesFile.println(phTimeArray[counter-1]);
+			itoa(phTimeArray[counter-1], goalRecordString, 10);
+			for (strlen(goalRecordString); strlen(goalRecordString) < goalRecordLength;) {
+				strcat(goalRecordString, " ");
+			}
+			client.println(goalRecordString);
+			seriesFile.println(goalRecordString);
 		}
 		seriesFile.close();
 		client.println("pH interval: ");

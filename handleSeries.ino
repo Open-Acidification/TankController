@@ -15,7 +15,9 @@ void handleSeries(char* body, EthernetClient client) {
 		JsonArray phValueJsonArray = phObject["value"];
 		JsonArray phTimeJsonArray = phObject["time"];
 		phInterval = phObject["interval"];
+		EEPROM_writeDouble(phIntervalAddress, phInterval);
 		phDelay = phObject["delay"];
+		EEPROM_writeDouble(phDelayAddress, phDelay);
 		phSeriesSize = phValueJsonArray.size();
 		EEPROM_writeDouble(phSeriesSizeAddress, phSeriesSize);
 		phSeriesPointer = 0;
@@ -67,7 +69,9 @@ void handleSeries(char* body, EthernetClient client) {
 		JsonArray tempValueJsonArray = tempObject["value"];
 		JsonArray tempTimeJsonArray = tempObject["time"];
 		tempInterval = tempObject["interval"];
+		EEPROM_writeDouble(tempIntervalAddress, tempInterval);
 		tempDelay = tempObject["delay"];
+		EEPROM_writeDouble(tempDelayAddress, tempDelay);
 		tempSeriesSize = tempValueJsonArray.size();
 		EEPROM_writeDouble(tempSeriesSizeAddress, tempSeriesSize);
 		tempSeriesPointer = 0;

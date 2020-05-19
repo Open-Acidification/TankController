@@ -230,6 +230,34 @@ void setup()
     EEPROM_writeDouble(tempSeriesPointerAddress, tempSeriesPointer);
   }
 
+  // load phInterval;
+  phInterval = EEPROM_readDouble(phIntervalAddress);
+  if (isnan(phIntervalAddress)) {
+    phInterval = 0;
+    EEPROM_writeDouble(phIntervalAddress, phInterval);
+  }
+
+  // load phDelay;
+  phDelay = EEPROM_readDouble(phDelayAddress);
+  if (isnan(phDelayAddress)) {
+    phDelay = 0;
+    EEPROM_writeDouble(phDelayAddress, phDelay);
+  }
+
+  // load tempInterval;
+  tempInterval = EEPROM_readDouble(tempIntervalAddress);
+  if (isnan(tempIntervalAddress)) {
+    tempInterval = 0;
+    EEPROM_writeDouble(tempIntervalAddress, tempInterval);
+  }
+
+  // load tempDelay;
+  tempDelay = EEPROM_readDouble(tempDelayAddress);
+  if (isnan(tempDelayAddress)) {
+    tempDelay = 0;
+    EEPROM_writeDouble(tempDelayAddress, tempDelay);
+  }
+
   //Setting PID parameters////////////////////////////////////////////////////////////////////////////////////////
   myPID.SetTunings(Kp, Ki, Kd);
   myPID.SetMode(AUTOMATIC);

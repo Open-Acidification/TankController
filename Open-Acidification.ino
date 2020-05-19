@@ -163,6 +163,10 @@ const int phSeriesSizeAddress = 72;
 const int phSeriesPointerAddress = 76;
 const int tempSeriesSizeAddress = 80;
 const int tempSeriesPointerAddress = 84;
+const int phIntervalAddress = 88;
+const int phDelayAddress = 92;
+const int tempIntervalAddress = 96;
+const int tempDelayAddress = 100;
 
 // End EEPROM addresses for persisted data///////////////////////////////////////////////////////////////////////////////////////////////////////
 

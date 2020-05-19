@@ -1,29 +1,39 @@
 void handleGoal(String endpoint, EthernetClient client) {	
-	long startingByte = 2 * (goalRecordLength+2);
-	File pvFile = SD.open("pv.txt");
-	if (pvFile.seek(startingByte)) {
-		printHeader(client, 200);
-		client.println("ph values: ");
-	} else {
-		Serial.println("FAILED GOAL SEEK");
-		printHeader(client, 416);
-		// close the file:
-		pvFile.close();
-		return;
+	printHeader(client, 200);
+
+	client.println("ph values: ");
+	for (int i = 0; i < phSeriesSize; i++) {
+		long phValueCurrent = readLineFromSD("pv.txt", i, goalRecordLength);
+		client.println(phValueCurrent);
 	}
-	// fill up buffer
-	char line[10];
-	memset(line, 0, 10);
-	for (int i = 0; i < 10 && pvFile.available(); i++) {
-		byte read = pvFile.read();
-		if ((char)read == '\n') {
-			break;
-		}
-		line[i] = read;
+
+	client.println("ph times: ");
+	for (int i = 0; i < phSeriesSize; i++) {
+		long phTimeCurrent = readLineFromSD("pt.txt", i, goalRecordLength);
+		client.println(phTimeCurrent);
 	}
-	// write buffer to client
-	client.write(line, strlen(line));
-	Serial.write(line, strlen(line));
-	// close the file:
-	pvFile.close();
+
+	client.println("ph interval: ");
+	client.println(phInterval);
+
+	client.println("ph delay: ");
+	client.println(phDelay);
+
+	client.println("temp values: ");
+	for (int i = 0; i < tempSeriesSize; i++) {
+		long tempValueCurrent = readLineFromSD("tv.txt", i, goalRecordLength);
+		client.println(tempValueCurrent);
+	}
+
+	client.println("temp times: ");
+	for (int i = 0; i < tempSeriesSize; i++) {
+		long tempTimeCurrent = readLineFromSD("tt.txt", i, goalRecordLength);
+		client.println(tempTimeCurrent);
+	}
+
+	client.println("temp interval: ");
+	client.println(tempInterval);
+
+	client.println("temp delay: ");
+	client.println(tempDelay);
 }

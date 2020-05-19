@@ -159,6 +159,10 @@ const int amplitudeAddress = 56;
 const int frequencyAddress = 60;
 const int granularityAddress = 64; // granularity for SD logging interval
 const int maxDataAgeAddress = 68; // max data age for SD card
+const int phSeriesSizeAddress = 72;
+const int phSeriesPointerAddress = 76;
+const int tempSeriesSizeAddress = 80;
+const int tempSeriesPointerAddress = 84;
 
 // End EEPROM addresses for persisted data///////////////////////////////////////////////////////////////////////////////////////////////////////
 

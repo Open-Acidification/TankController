@@ -202,6 +202,34 @@ void setup()
     EEPROM_writeDouble(maxDataAgeAddress, maxDataAge);
   }
 
+  // load phSeriesSizeAddress;
+  phSeriesSize = EEPROM_readDouble(phSeriesSizeAddress);
+  if (isnan(phSeriesSize)) {
+    phSeriesSize = 0;
+    EEPROM_writeDouble(phSeriesSizeAddress, phSeriesSize);
+  }
+
+  // load phSeriesPointerAddress;
+  phSeriesPointer = EEPROM_readDouble(phSeriesPointerAddress);
+  if (isnan(phSeriesPointer)) {
+    phSeriesPointer = 0;
+    EEPROM_writeDouble(phSeriesPointerAddress, phSeriesPointer);
+  }
+
+  // load tempSeriesSizeAddress;
+  tempSeriesSize = EEPROM_readDouble(tempSeriesSizeAddress);
+  if (isnan(tempSeriesSize)) {
+    tempSeriesSize = 0;
+    EEPROM_writeDouble(tempSeriesSizeAddress, tempSeriesSize);
+  }
+
+  // load tempSeriesPointerAddress;
+  tempSeriesPointer = EEPROM_readDouble(tempSeriesPointerAddress);
+  if (isnan(tempSeriesPointer)) {
+    tempSeriesPointer = 0;
+    EEPROM_writeDouble(tempSeriesPointerAddress, tempSeriesPointer);
+  }
+
   //Setting PID parameters////////////////////////////////////////////////////////////////////////////////////////
   myPID.SetTunings(Kp, Ki, Kd);
   myPID.SetMode(AUTOMATIC);

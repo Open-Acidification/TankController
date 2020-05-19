@@ -24,7 +24,9 @@ void handleSeries(char* body, EthernetClient client) {
 		phInterval = phObject["interval"];
 		phDelay = phObject["delay"];
 		phSeriesSize = phValueJsonArray.size();
+		EEPROM_writeDouble(phSeriesSizeAddress, phSeriesSize);
 		phSeriesPointer = 0;
+		EEPROM_writeDouble(phSeriesPointerAddress, phSeriesPointer);
 		int phValueArray[phSeriesSize];
 		int phTimeArray[phSeriesSize];
 		pinMode(10, OUTPUT);
@@ -74,7 +76,9 @@ void handleSeries(char* body, EthernetClient client) {
 		tempInterval = tempObject["interval"];
 		tempDelay = tempObject["delay"];
 		tempSeriesSize = tempValueJsonArray.size();
+		EEPROM_writeDouble(tempSeriesSizeAddress, tempSeriesSize);
 		tempSeriesPointer = 0;
+		EEPROM_writeDouble(tempSeriesPointerAddress, tempSeriesPointer);
 		int tempInterval = tempObject["interval"];
 		int tempDelay = tempObject["delay"];
 		int tempSeriesSize = tempValueJsonArray.size();

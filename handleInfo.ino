@@ -1,4 +1,4 @@
-void handleInfo(char* body, EthernetClient client) {	
+void handleInfo(EthernetClient client) {	
 	printHeader(client, 200);
 	client.println(tankid);
 }

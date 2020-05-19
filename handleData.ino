@@ -55,8 +55,7 @@ void handleData(String endpoint, EthernetClient client) {
 			}
 			break;
 		default:
-			client.println("HTTP/1.1 404 Not Found");
-			client.println("INVALID FORMAT");
+			printHeader(client, 404);
 			break;
 	}
 	dir.close();

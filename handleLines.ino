@@ -1,8 +1,4 @@
-void handleLines(String endpoint, EthernetClient client) {	  
-	client.println("HTTP/1.1 200 OK");
-	client.println("Content-Type: text/plain; charset=UTF-8");
-	client.println("Connection: keep-alive");  // the connection will be closed after completion of the response
-	client.println("Keep-Alive: timeout=5, max=1000");
+void handleLines(String endpoint, EthernetClient client) {
 	// lines endpoint format: lines/year/month/day/hour
 	String directoryName;
 	if (endpoint.length() >= 6) {
@@ -24,8 +20,7 @@ void handleLines(String endpoint, EthernetClient client) {
 	switch (slashes) {
 		case 4: 
 		 	// hour: return csv of the specific hour
-			client.println("X-Content-Type-Options: nosniff");
-			client.println();
+			printHeader(client, 200);
 			Serial.print("PRINTING LINE FILE: ");
 			Serial.println(directoryName);
 			File lineFile = SD.open(directoryName);
@@ -40,7 +35,8 @@ void handleLines(String endpoint, EthernetClient client) {
 			Serial.println(lineCount);
 			client.println(lineCount);
 			break;
-		default:
+		default:			
+			printHeader(client, 400);
 			client.println("REQUIRES FULL YEAR/MONTH/DAY/HOUR SPECIFICATION");
 			break;
 	}

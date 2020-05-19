@@ -76,23 +76,14 @@ void handleRequest(EthernetClient client) {
     } else if (endpoint.startsWith("/lines")) {
       handleLines(endpoint, client);
     } else if (endpoint.startsWith("/test")) {
-      client.println("HTTP/1.1 200 OK");
-      client.println("Content-Type: text/plain");
-      client.println("Connection: close"); 
-      client.println();
+      printHeader(client, 200);
       File root = SD.open("/");
       printDirectoryToClient(root, 0, client);
     } else if (endpoint.startsWith("/mac")) {
-      client.println("HTTP/1.1 200 OK");
-      client.println("Content-Type: text/plain");
-      client.println("Connection: close"); 
-      client.println();
+      printHeader(client, 200);
       client.println(macstr);
     } else if (endpoint.startsWith("/time")) {
-      client.println("HTTP/1.1 200 OK");
-      client.println("Content-Type: text/plain");
-      client.println("Connection: close"); 
-      client.println();
+      printHeader(client, 200);
       DateTime now = rtc.now();
       char formattedSDString[50];
       char* timeFormat = "MM/DD/YYYY hh:mm:ss";

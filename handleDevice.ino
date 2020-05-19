@@ -6,14 +6,7 @@ void handleDevice(String endpoint, EthernetClient client) {
 	fileName.concat(".txt");
 	Serial.println("SD FILE NAME");
 	Serial.println(fileName);
-	client.println("HTTP/1.1 200 OK");
-	client.println("Content-Type: text/html");
-	client.println("Connection: close");  // the connection will be closed after completion of the response
-	client.println("Refresh: 5");  // refresh the page automatically every 5 sec
-	client.println();
-	client.println("<!DOCTYPE HTML>");
-	client.println("<html>");
-	client.println("READING SD CARD <br>");
+	printHeader(client, 200);
 
 	volatile File myFile = SD.open(fileName, FILE_READ);
 	Serial.println("Reading file: ");
@@ -117,6 +110,4 @@ void handleDevice(String endpoint, EthernetClient client) {
 		Serial.print("error opening ");
 		Serial.println(fileName);
 	}
-
-	client.println("</html>");
 }

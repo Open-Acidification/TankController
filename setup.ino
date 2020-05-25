@@ -139,14 +139,6 @@ void setup()
   digitalWrite(10, HIGH);
   SD.begin(4);
 
-  DateTime now = rtc.now();
-  filename = String(now.year() - 2000) + "-" + now.month() + "-" + now.day();
-  file_full = filename + ".txt";
-
-  myFile = SD.open(file_full, FILE_WRITE);
-  myFile.println("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd");
-  myFile.close();
-  SD_previousMillis = millis();
   File root = SD.open("/");
   printDirectory(root, 0);
   ///Starting the SD Card//////////////////////////////////////////////////////////////////////////////////

@@ -17,15 +17,6 @@ void LogToSD() {
   char* formattedDirectoryName = now.toString(directoryFormat);
   Serial.println(formattedDirectoryName);
   Serial.println(formattedFileName);
-  
-  if (SD_currentMillis - SD_previousMillis >= SD_interval) {
-    SD_previousMillis = SD_currentMillis;
-    SD.mkdir(formattedDirectoryName);
-
-    myFile = SD.open(formattedFileName, FILE_WRITE);
-    myFile.println("time,temp,temp setpoint,pH,pH setpoint");
-    myFile.close();
-  }
 
   pinMode(10, OUTPUT);
   digitalWrite(10, HIGH);

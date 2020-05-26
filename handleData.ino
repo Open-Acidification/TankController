@@ -8,19 +8,29 @@ void handleData(String endpoint, EthernetClient client) {
 	}
 	long startingLine = 0;
 	long numLines = 0;
+	long lastLines = 0;
+	int lastIndex = -1;
 	// check if there are url parameters 
 	int urlParameterIndex = directoryName.indexOf("?");
 	if (urlParameterIndex > -1) {
 		String urlParameter = directoryName.substring(urlParameterIndex);
 		directoryName = directoryName.substring(0, urlParameterIndex);
-		int startIndex = urlParameter.indexOf("start");
-		int numIndex = urlParameter.indexOf("num");
-		startingLine = urlParameter.substring(startIndex+6, numIndex-1).toInt();
-		numLines = urlParameter.substring(numIndex+4).toInt();
-		Serial.println("========");
-		Serial.println(startingLine);
-		Serial.println(numLines);
-		Serial.println("========");
+		lastIndex = urlParameter.indexOf("last");
+		if (lastIndex > -1) { // print last lines
+			lastLines = urlParameter.substring(lastIndex+5).toInt();
+			Serial.println("========");
+			Serial.println(lastLines);
+			Serial.println("========");
+		} else { // print specified lines
+			int startIndex = urlParameter.indexOf("start");
+			int numIndex = urlParameter.indexOf("num");
+			startingLine = urlParameter.substring(startIndex+6, numIndex-1).toInt();
+			numLines = urlParameter.substring(numIndex+4).toInt();
+			Serial.println("========");
+			Serial.println(startingLine);
+			Serial.println(numLines);
+			Serial.println("========");
+		}
 	}
 	char* pch;
 	int slashes = -1;
@@ -44,7 +54,11 @@ void handleData(String endpoint, EthernetClient client) {
 		case 4: 
 			String fileName = "/" + directoryName.substring(3,5) + directoryName.substring(6,8) + directoryName.substring(9,11) + directoryName.substring(12,14) + ".txt";  
 			directoryName.concat(fileName);
-			if (urlParameterIndex > -1) { // specified lines: print numLines from startingLine in specified csv
+			if (urlParameterIndex > -1 && lastIndex > -1) { // last lines: print lastLines in specified csv
+				Serial.print("PRINTING LAST LINES FROM FILE: ");
+				Serial.println(directoryName);
+				printLastLines(directoryName, client, lastLines);
+			} else if (urlParameterIndex > -1) { // specified lines: print numLines from startingLine in specified csv
 				Serial.print("PRINTING SPECIFIED LINES FROM FILE: ");
 				Serial.println(directoryName);
 				printSpecifiedLines(directoryName, client, startingLine, numLines);

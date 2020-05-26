@@ -63,3 +63,7 @@ jobs:
       # in the build matrix.
       - name: Compile Sketch
         run: arduino-cli compile --fqbn ${{ matrix.fqbn }} .
+
+      - name: Serial Monitor
+        run: |
+          ./monitor.sh

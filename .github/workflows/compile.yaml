@@ -53,6 +53,7 @@ jobs:
         run: |
           arduino-cli core update-index
           arduino-cli core install ${{ matrix.arduino-platform }}
+          arduino-cli board list
 
       - name: Arduino CLI Config
         run: |
@@ -63,7 +64,3 @@ jobs:
       # in the build matrix.
       - name: Compile Sketch
         run: arduino-cli compile --fqbn ${{ matrix.fqbn }} .
-
-      - name: Serial Monitor
-        run: |
-          arduino-cli board list

@@ -8,13 +8,17 @@ void handleConfig(char* body, EthernetClient client) {
 		Serial.println(error.c_str());
     } else {
 		printHeader(client, 200);
-		int granularity;
-		int maxDataAge;
 		granularity = doc["granularity"];
 		maxDataAge = doc["maxDataAge"];
 		client.print("granularity: ");
 		client.println(granularity);
+		if (granularity) {			
+			EEPROM_writeDouble(granularityAddress, granularity);
+		}
 		client.print("maxDataAge: ");
 		client.println(maxDataAge);
+		if (maxDataAge) {			
+			EEPROM_writeDouble(maxDataAgeAddress, maxDataAge);
+		}
     }
 }

@@ -19,8 +19,6 @@ jobs:
       run: |
         echo ${{ steps.ip.outputs.ipv4 }}
         echo ${{ steps.ip.outputs.ipv6 }}
-        export ARDUINO_IP_ADDRESS=${{ steps.ip.outputs.ipv4 }}
-        printenv
         
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
@@ -40,4 +38,5 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
+        export ARDUINO_IP_ADDRESS=${{ steps.ip.outputs.ipv4 }}
         pytest -s

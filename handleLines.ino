@@ -23,14 +23,7 @@ void handleLines(String endpoint, EthernetClient client) {
 			printHeader(client, 200);
 			Serial.print("PRINTING LINE FILE: ");
 			Serial.println(directoryName);
-			File lineFile = SD.open(directoryName);
-			char linesBuffer[10];
-			int i = 0;
-			while (lineFile.available() && i < 10) {
-				linesBuffer[i++] = lineFile.read();
-			}
-			linesBuffer[i] = '\0';
-			int lineCount = atoi(linesBuffer);
+			long lineCount = readLineFromSD(directoryName.c_str(), 0, 10);
 			Serial.print("LINE COUNT: ");
 			Serial.println(lineCount);
 			client.println(lineCount);

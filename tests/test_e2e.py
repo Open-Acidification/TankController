@@ -1,11 +1,12 @@
 import requests
 import os
 
+# not working
 def test_e2e():
 	print(os.environ["ARDUINO_IP_ADDRESS"])
 
 	response = requests.get(
-		"http://192.168.1.2"
+		os.environ["ARDUINO_IP_ADDRESS"] 
 	)
 	
 	print(response.status_code)

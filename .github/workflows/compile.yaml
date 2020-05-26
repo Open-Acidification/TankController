@@ -66,4 +66,4 @@ jobs:
 
       - name: Serial Monitor
         run: |
-          ./monitor.sh
+          arduino-cli board list

@@ -1,4 +1,4 @@
-void handleGoal(String endpoint, EthernetClient client) {	
+void handleGoal(EthernetClient client) {	
 	printHeader(client, 200);
 
 	client.println("ph values: ");

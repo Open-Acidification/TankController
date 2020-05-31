@@ -66,11 +66,23 @@ void handleRequest(EthernetClient client) {
     if (endpoint.startsWith("/config")) {
       handleConfig(postData.c_str(), client);
     } else if (endpoint.startsWith("/series")) {
-      handleSeries(postData.c_str(), client);
+      if (startsWith(requestType, "POST")) {
+        // upload new timeseries
+        Serial.println("POST TIMESERIES");
+        handleSeries(postData.c_str(), client);
+      } else if (startsWith(requestType, "GET")) {
+        // return current timeseries
+        Serial.println("GET TIMESERIES");
+        handleGoal(client);
+      } else {
+        // wrong request type
+        Serial.println("WRONG TIMESERIES");
+        printHeader(client, 400);
+      }
     } else if (endpoint.startsWith("/device")) {  
       handleDevice(endpoint, client);
     } else if (endpoint.startsWith("/goal")) {  
-      handleGoal(endpoint, client);
+      handleGoal(client);
     } else if (endpoint.startsWith("/info")) {  
       handleInfo(client);
     } else if (endpoint.startsWith("/data")) {

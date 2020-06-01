@@ -1,39 +1,44 @@
 void handleGoal(EthernetClient client) {	
 	printHeader(client, 200);
 
-	client.println("ph values: ");
+	StaticJsonDocument<200> goalDoc;
+	JsonObject goalObj = goalDoc.to<JsonObject>();
+
+	StaticJsonDocument<100> phValuesDoc;
+	JsonArray phValues = phValuesDoc.to<JsonArray>();
 	for (int i = 0; i < phSeriesSize; i++) {
 		long phValueCurrent = readLineFromSD("pv.txt", i, goalRecordLength);
-		client.println(phValueCurrent);
+		phValues.add(phValueCurrent);
 	}
+	goalObj["phValues"] = phValues;
 
-	client.println("ph times: ");
+	StaticJsonDocument<100> phTimesDoc;
+	JsonArray phTimes = phTimesDoc.to<JsonArray>();
 	for (int i = 0; i < phSeriesSize; i++) {
 		long phTimeCurrent = readLineFromSD("pt.txt", i, goalRecordLength);
-		client.println(phTimeCurrent);
+		phTimes.add(phTimeCurrent);
 	}
+	goalObj["phTimes"] = phTimes;
+	goalObj["phInterval"] = phInterval;
+	goalObj["phDelay"] = phDelay;
 
-	client.println("ph interval: ");
-	client.println(phInterval);
-
-	client.println("ph delay: ");
-	client.println(phDelay);
-
-	client.println("temp values: ");
+	StaticJsonDocument<100> tempValuesDoc;
+	JsonArray tempValues = tempValuesDoc.to<JsonArray>();
 	for (int i = 0; i < tempSeriesSize; i++) {
 		long tempValueCurrent = readLineFromSD("tv.txt", i, goalRecordLength);
-		client.println(tempValueCurrent);
+		tempValues.add(tempValueCurrent);
 	}
+	goalObj["tempValues"] = tempValues;
 
-	client.println("temp times: ");
+	StaticJsonDocument<100> tempTimesDoc;
+	JsonArray tempTimes = tempTimesDoc.to<JsonArray>();
 	for (int i = 0; i < tempSeriesSize; i++) {
 		long tempTimeCurrent = readLineFromSD("tt.txt", i, goalRecordLength);
-		client.println(tempTimeCurrent);
+		tempTimes.add(tempTimeCurrent);
 	}
+	goalObj["tempTimes"] = tempTimes;
+	goalObj["tempInterval"] = tempInterval;
+	goalObj["tempDelay"] = tempDelay;
 
-	client.println("temp interval: ");
-	client.println(tempInterval);
-
-	client.println("temp delay: ");
-	client.println(tempDelay);
+	serializeJson(goalObj, client);
 }

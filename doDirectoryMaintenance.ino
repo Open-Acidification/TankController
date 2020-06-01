@@ -1,4 +1,4 @@
-void doDirectoryMaintenance() {
+void doDirectoryMaintenance() { // TODO: investigate bug with un-deletable files
 	char nameBuffer[20];
 	char deleteBuffer[20];
 	memset(nameBuffer, 0, 20);

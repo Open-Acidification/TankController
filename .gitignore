@@ -16,3 +16,7 @@ Thumbs.db
 *.o
 *.out
 *.log
+
+# Arduino Files
+arduino-cli.yaml
+..arduino*

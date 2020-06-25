@@ -14,4 +14,3 @@ jobs:
         exclude: './third_party ./external'
         extensions: 'c,h,C,H,cpp,hpp,cc,hh,c++,h++,cxx,hxx,ino'
         clangFormatVersion: 9
-        style: google

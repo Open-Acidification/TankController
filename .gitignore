@@ -19,4 +19,5 @@ Thumbs.db
 
 # Arduino Files
 arduino-cli.yaml
-..arduino*
+*.hex
+*.elf

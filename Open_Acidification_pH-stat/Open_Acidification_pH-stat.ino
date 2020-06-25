@@ -1,67 +1,70 @@
 
 /*
-   Version #: 0.197 
-   (0.190: Adding Real Time Clock, 
-    0.191: Temperature compensation defeat & PT100 resistance to serial monitor, 
+   Version #: 0.197
+
+   History:
+    0.190: Adding Real Time Clock,
+    0.191: Temperature compensation defeat & PT100 resistance to serial monitor
     0.192: added fields to SD card output
     0.193: Fixed current time display output to take time from RTC
-    0.194: Device ID to the beginning, software version sig figs)
+    0.194: Device ID to the beginning, software version sig figs
     0.195: Fixing SD card writing stuff (was taking too long and overrunning pH reading time)
     0.196: Adding ability to switch between chilling and heating
     0.197: Adding calibration reset and calibration stats
    Author: Kirt L Onthank
-   Date:2019/9/28
+   Date: 2019/9/28
    IDE V1.8.4
-   Email:kirt.onthank@wallawalla.edu
+   Email: kirt.onthank@wallawalla.edu
 */
 
 #include <Adafruit_MAX31865.h>
-#include <LiquidCrystal.h>
-#include <SPI.h>
-#include <SD.h>
+#include <EEPROM.h>
 #include <Ethernet.h>
 #include <Keypad.h>
-#include <TimeLib.h>
-#include <EEPROM.h>
-#include <PID_v1.h>
-#include <PID_AutoTune_v0.h>
-#include <TrueRandom.h>
+#include <LiquidCrystal.h>
 #include <MemoryFree.h>
-#include <avr/wdt.h>
+#include <PID_AutoTune_v0.h>
+#include <PID_v1.h>
+#include <SD.h>
+#include <SPI.h>
+#include <TimeLib.h>
+#include <TrueRandom.h>
 #include <Wire.h>
+#include <avr/wdt.h>
 #include "RTClib.h"
 
-String DevID = "v172D35C152EDA6C"; //DeviceID from Pushingbox
+String DevID = "v172D35C152EDA6C";  // DeviceID from Pushingbox
 
 #define RREF 430.0
 Adafruit_MAX31865 max = Adafruit_MAX31865(45, 43, 41, 39);
 RTC_PCF8523 rtc;
 
-double softvers = 0.197;                                        //Software Version
+double softvers = 0.197;  // Software Version
 
-//byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; //Setting MAC Address
-char server[] = "api.pushingbox.com"; //pushingbox API server
-IPAddress ip(192, 168, 1, 2); //Arduino IP address. Only used when DHCP is turned off.
-EthernetClient client; //define 'client' as object
-String data; //GET query with data
-String SDstring; //what to write to SD card
+// byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; //Setting MAC Address
+char server[] = "api.pushingbox.com";  // pushingbox API server
+IPAddress ip(192, 168, 1, 2);          // Arduino IP address. Only used when DHCP is turned off.
+EthernetClient client;                 // define 'client' as object
+String data;                           // GET query with data
+String SDstring;                       // what to write to SD card
 boolean cxn = false;
 
-float interval = 1200000;                         // interval at which to update Google Sheets (milliseconds)
-unsigned long previousMillis = 0 - interval + 30000; // will store last time Google Sheets was updated (-interval+30000 sets first upload for 30 seconds after startup. This eases troubleshooting)
-unsigned long chiller_previousMillis = 0;         // will store last time chiller state was checked
-float chiller_interval = 30000;                   // interval at which to change chiller state (milliseconds)
-unsigned long SD_previousMillis = 0;              // will store last time A new log file was started on the SD card
-float SD_interval = 86400000;                     // interval at which to start a new log file (milliseconds)
-unsigned long sensor_previousMillis = 0;          // will store last time sensor readings were taken
-float sensor_interval = 800;                      // interval at which to start a new log file (milliseconds)
-float LeaseInterval = 4 * 86400000;               //Interval at which to renew DHCP lease (First number is days)
+float interval = 1200000;  // interval at which to update Google Sheets (milliseconds)
+unsigned long previousMillis =
+    0 - interval + 30000;  // will store last time Google Sheets was updated (-interval+30000 sets first upload for 30 seconds after startup. This eases troubleshooting)
+unsigned long chiller_previousMillis = 0;  // will store last time chiller state was checked
+float chiller_interval = 30000;            // interval at which to change chiller state (milliseconds)
+unsigned long SD_previousMillis = 0;       // will store last time A new log file was started on the SD card
+float SD_interval = 86400000;              // interval at which to start a new log file (milliseconds)
+unsigned long sensor_previousMillis = 0;   // will store last time sensor readings were taken
+float sensor_interval = 800;               // interval at which to start a new log file (milliseconds)
+float LeaseInterval = 4 * 86400000;        // Interval at which to renew DHCP lease (First number is days)
 unsigned long previousLease = 0;
 
-const byte ROWS = 4; //four rows
-const byte COLS = 4; //four columns
-String inputstring = "";                          //a string to hold incoming data from the PC
-String sensorstring = "";                         //a string to hold the data from the EZO pH circuit
+const byte ROWS = 4;       // four rows
+const byte COLS = 4;       // four columns
+String inputstring = "";   // a string to hold incoming data from the PC
+String sensorstring = "";  // a string to hold the data from the EZO pH circuit
 String premidcalstring = "Cal,mid,";
 String prelowcalstring = "Cal,low,";
 String midcalstring = "";
@@ -71,12 +74,12 @@ String pretempcomp = "T,";
 String tempcomp;
 String sloperaw = "";
 String slope = "";
-boolean input_string_complete = false;             //have we received all the data from the PC
-boolean sensor_string_complete = false;            //have we received all the data from the Atlas Scientific product
+boolean input_string_complete = false;   // have we received all the data from the PC
+boolean sensor_string_complete = false;  // have we received all the data from the Atlas Scientific product
 boolean WaitForString = true;
 boolean SlopeFlag = true;
-double pH;                                         //used to hold a floating point number that is the pH
-double pHDisplay;                                  //used to hold a floating point number that is the pH
+double pH;         // used to hold a floating point number that is the pH
+double pHDisplay;  // used to hold a floating point number that is the pH
 double temp;
 double tempset;
 double phset;
@@ -90,7 +93,7 @@ double Kp;
 double Ki;
 double Kd;
 long onTime = 0;
-int WindowSize = 10000;                         // 10 second Time Proportional Output window
+int WindowSize = 10000;  // 10 second Time Proportional Output window
 unsigned long windowStartTime;
 float midBuffer = 0;
 float lowBuffer = 0;
@@ -100,7 +103,7 @@ char exitph = NO_KEY;
 float newinterval;
 int tankid;
 boolean EthConnect = true;
-byte mac[6] = { 0x90, 0xA2, 0xDA, 0x00, 0x00, 0x00 };
+byte mac[6] = {0x90, 0xA2, 0xDA, 0x00, 0x00, 0x00};
 char macstr[18];
 boolean pidrun = true;
 boolean sensed = false;
@@ -108,17 +111,16 @@ boolean sensed = false;
 #define co2reg 49
 int LoopStart;
 
-//Temperature Smoothing/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Temperature Smoothing////////////////////////////////////////////////////////////////////////////////////////////////
 const int numReadings = 10;
 
-double readings[numReadings];      // the readings from the analog input
-volatile int readIndex = 0;              // the index of the current reading
-volatile double total = 0;                  // the running total
-volatile double tempnow = 0;                // the average
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+double readings[numReadings];  // the readings from the analog input
+volatile int readIndex = 0;    // the index of the current reading
+volatile double total = 0;     // the running total
+volatile double tempnow = 0;   // the average
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-// EEPROM addresses for persisted data///////////////////////////////////////////////////////////////////////////////////////////////////////////
+// EEPROM addresses for persisted data//////////////////////////////////////////////////////////////////////////////////
 const int pHAddress = 0;
 const int tempAddress = 4;
 const int tankidAddress = 8;
@@ -129,25 +131,19 @@ const int KdAddress = 36;
 const int MacAddress = 44;
 const int heatAddress = 52;
 
-// End EEPROM addresses for persisted data///////////////////////////////////////////////////////////////////////////////////////////////////////
+// End EEPROM addresses for persisted data//////////////////////////////////////////////////////////////////////////////
 
 String filename;
 String file_full;
 
-char stdKeys[ROWS][COLS] = {
-  { '1' , '2' , '3' , 'A' },
-  { '4' , '5' , '6' , 'B' },
-  { '7' , '8' , '9' , 'C' },
-  { '*' , '0' , '#' , 'D' }
-};
+char stdKeys[ROWS][COLS] = {{'1', '2', '3', 'A'}, {'4', '5', '6', 'B'}, {'7', '8', '9', 'C'}, {'*', '0', '#', 'D'}};
 byte rowPins[ROWS] = {34, 36, 38, 40};
 byte colPins[COLS] = {42, 44, 46, 48};
 Keypad customKeypad = Keypad(makeKeymap(stdKeys), rowPins, colPins, ROWS, COLS);
-PID myPID(&Input, &Output, &Setpoint, Kp, Ki, Kd, DIRECT); //Starting the PID, Specify the links and initial tuning parameters
+PID myPID(&Input, &Output, &Setpoint, Kp, Ki, Kd, DIRECT);  // Starting the PID, Specify the links and initial tuning parameters
 File myFile;
 const int rs = 24, en = 22, d4 = 26, d5 = 28, d6 = 30, d7 = 32;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
-
 
 // ************************************************
 // Auto Tune Variables and constants
@@ -162,119 +158,46 @@ boolean tuning = false;
 
 PID_ATune aTune(&Input, &Output);
 
-
-//Stuff for retreiving time/////////////////////////////////////////////////////////////////////////////////////////////////////////
-IPAddress timeServer(132, 163, 97, 1); // utcnist.colorado.edu
-const int timeZone = -7;  // Pacific Daylight Time (USA)
+// Stuff for retreiving time////////////////////////////////////////////////////////////////////////////////////////////
+IPAddress timeServer(132, 163, 97, 1);  // utcnist.colorado.edu
+const int timeZone = -7;                // Pacific Daylight Time (USA)
 EthernetUDP Udp;
 unsigned int localPort = 8888;  // local port to listen for UDP packets
-//End Time////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// End Time/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//Custom Characters for splash////////////////////////////////
-byte ol1[8] = {
-  0b00000,
-  0b00000,
-  0b00001,
-  0b00011,
-  0b00011,
-  0b00111,
-  0b00111,
-  0b00110
-};
+// Custom Characters for splash////////////////////////////////
+byte ol1[8] = {0b00000, 0b00000, 0b00001, 0b00011, 0b00011, 0b00111, 0b00111, 0b00110};
 
-byte ol2[8] = {
-  0b00111,
-  0b11111,
-  0b11111,
-  0b10011,
-  0b11101,
-  0b11110,
-  0b00101,
-  0b11011
-};
+byte ol2[8] = {0b00111, 0b11111, 0b11111, 0b10011, 0b11101, 0b11110, 0b00101, 0b11011};
 
-byte ol3[8] = {
-  0b11100,
-  0b11111,
-  0b01111,
-  0b10111,
-  0b10110,
-  0b01110,
-  0b10101,
-  0b11011
-};
+byte ol3[8] = {0b11100, 0b11111, 0b01111, 0b10111, 0b10110, 0b01110, 0b10101, 0b11011};
 
-byte ol4[8] = {
-  0b00000,
-  0b00000,
-  0b10000,
-  0b11000,
-  0b11000,
-  0b11100,
-  0b11100,
-  0b11100
-};
+byte ol4[8] = {0b00000, 0b00000, 0b10000, 0b11000, 0b11000, 0b11100, 0b11100, 0b11100};
 
-byte ol5[8] = {
-  0b00111,
-  0b00111,
-  0b00111,
-  0b00011,
-  0b00011,
-  0b00001,
-  0b00000,
-  0b00000
-};
+byte ol5[8] = {0b00111, 0b00111, 0b00111, 0b00011, 0b00011, 0b00001, 0b00000, 0b00000};
 
-byte ol6[8] = {
-  0b11011,
-  0b10101,
-  0b01110,
-  0b01101,
-  0b11101,
-  0b11110,
-  0b11111,
-  0b00111
-};
+byte ol6[8] = {0b11011, 0b10101, 0b01110, 0b01101, 0b11101, 0b11110, 0b11111, 0b00111};
 
-byte ol7[8] = {
-  0b11011,
-  0b10100,
-  0b01111,
-  0b10111,
-  0b11001,
-  0b11111,
-  0b11111,
-  0b11100
-};
+byte ol7[8] = {0b11011, 0b10100, 0b01111, 0b10111, 0b11001, 0b11111, 0b11111, 0b11100};
 
-byte ol8[8] = {
-  0b01100,
-  0b11100,
-  0b11100,
-  0b11000,
-  0b11000,
-  0b10000,
-  0b00000,
-  0b00000
-};
+byte ol8[8] = {0b01100, 0b11100, 0b11100, 0b11000, 0b11000, 0b10000, 0b00000, 0b00000};
 
-void setup()
-{
-  Serial.begin(9600);                                 //set baud rate for the hardware serial port_0 to 9600
+void setup() {
+  Serial.begin(9600);  // set baud rate for the hardware serial port_0 to 9600
   Serial1.begin(9600);
   wdt_disable();
 
   // Starting Real Time CLock and Setting time
-   if (! rtc.begin()) {
+  if (!rtc.begin()) {
     Serial.println("Couldn't find RTC");
-    while (1);
-   }
- 
-   if (! rtc.initialized()) {
-    Serial.println("RTC is NOT running!");            
-    rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));   // set the RTC to the date & time this sketch was compiled
-   } 
+    while (1)
+      ;
+  }
+
+  if (!rtc.initialized()) {
+    Serial.println("RTC is NOT running!");
+    rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));  // set the RTC to the date & time this sketch was compiled
+  }
 
   // Store MAC address in EEPROM
   if (EEPROM.read(44) == '#') {
@@ -282,8 +205,7 @@ void setup()
       mac[i] = EEPROM.read(i + 44);
     }
     Serial.println(F("MAC Address found in EEPROM and read"));
-  }
-  else {
+  } else {
     Serial.println(F("No MAC Address Found in EEPROM. Generating New MAC."));
     for (int i = 3; i < 6; i++) {
       mac[i] = TrueRandom.randomByte();
@@ -318,20 +240,20 @@ void setup()
   delay(5000);
   lcd.clear();
 
-  max.begin(MAX31865_3WIRE);                          //start pt100 temperature probe
-  Serial1.begin(9600);                               //set baud rate for the software serial port to 9600
-  inputstring.reserve(10);                            //set aside some bytes for receiving data from the PC
-  sensorstring.reserve(30);                           //set aside some bytes for receiving data from Atlas Scientific pH EZO
-  Serial1.print("*OK,0");                              //Turn off the returning of OK after command to EZO pH
-  Serial1.print('\r');                               //add a <CR> to the end of the string
-  Serial1.print("C,0");                              //Reset pH stamp to continuous measurement: once per second
-  Serial1.print('\r');                               //add a <CR> to the end of the string
+  max.begin(MAX31865_3WIRE);  // start pt100 temperature probe
+  Serial1.begin(9600);        // set baud rate for the software serial port to 9600
+  inputstring.reserve(10);    // set aside some bytes for receiving data from the PC
+  sensorstring.reserve(30);   // set aside some bytes for receiving data from Atlas Scientific pH EZO
+  Serial1.print("*OK,0");     // Turn off the returning of OK after command to EZO pH
+  Serial1.print('\r');        // add a <CR> to the end of the string
+  Serial1.print("C,0");       // Reset pH stamp to continuous measurement: once per second
+  Serial1.print('\r');        // add a <CR> to the end of the string
   pinMode(chiller, OUTPUT);
   pinMode(co2reg, OUTPUT);
   digitalWrite(chiller, HIGH);
   digitalWrite(co2reg, HIGH);
 
-  ///Check if ethernet is connected/////////////////////////////////////////////////////////////////////
+  /// Check if ethernet is connected/////////////////////////////////////////////////////////////////////
   int ethanswer = 0;
   int ethstart = millis();
   int timdiff = 0;
@@ -384,12 +306,9 @@ void setup()
       Serial.println(F("Failed to configure Ethernet using DHCP"));
       Ethernet.begin(mac, ip);
     }
-
-
   }
 
-
-  ///Starting the SD Card//////////////////////////////////////////////////////////////////////////////////
+  /// Starting the SD Card//////////////////////////////////////////////////////////////////////////////////
   pinMode(10, OUTPUT);
   digitalWrite(10, HIGH);
   SD.begin(4);
@@ -402,15 +321,12 @@ void setup()
   myFile.println("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd");
   myFile.close();
   SD_previousMillis = millis();
-  ///Starting the SD Card//////////////////////////////////////////////////////////////////////////////////
+  /// Starting the SD Card//////////////////////////////////////////////////////////////////////////////////
 
-
-  //loading Tank ID///////////////////////////////////////////////////////////////////////////////////////
+  // loading Tank ID///////////////////////////////////////////////////////////////////////////////////////
   tankid = EEPROM_readDouble(tankidAddress);
 
-
-  if (isnan(tankid))
-  {
+  if (isnan(tankid)) {
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(F("Tank ID# is not"));
@@ -441,8 +357,7 @@ void setup()
     Serial.println(F("Tank ID change End"));
   }
 
-
-  //Setting PID parameters////////////////////////////////////////////////////////////////////////////////////////
+  // Setting PID parameters////////////////////////////////////////////////////////////////////////////////////////
   myPID.SetTunings(Kp, Ki, Kd);
   myPID.SetMode(AUTOMATIC);
   myPID.SetSampleTime(1000);
@@ -452,71 +367,54 @@ void setup()
   TCCR2A = 0;
   TCCR2B = 1 << CS22 | 1 << CS21 | 1 << CS20;
 
-  //Timer2 Overflow Interrupt Enable
+  // Timer2 Overflow Interrupt Enable
   TIMSK2 |= 1 << TOIE2;
 
-
-
-  //loading Temp Correction////////////////////////////////////////////////////////////////////////////////////////
+  // loading Temp Correction////////////////////////////////////////////////////////////////////////////////////////
   tempcorr = EEPROM_readDouble(tempcorrAddress);
 
-  if (isnan(tempcorr))
-  {
+  if (isnan(tempcorr)) {
     tempcorr = 0;
   }
 
-
-  //Filling array for temp smoothing///////////////////////////////////////////////////////////////////////
+  // Filling array for temp smoothing///////////////////////////////////////////////////////////////////////
   for (int thisReading = 0; thisReading < numReadings; thisReading++) {
     readings[thisReading] = 0;
   }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-  byte upArrow[8] = {
-    0b00100,
-    0b01110,
-    0b10101,
-    0b00100,
-    0b00100,
-    0b00100,
-    0b00100,
-    0b00100
-  };
+  byte upArrow[8] = {0b00100, 0b01110, 0b10101, 0b00100, 0b00100, 0b00100, 0b00100, 0b00100};
   lcd.createChar(0, upArrow);
 
   lcd.clear();
   lcd.print(F("pH="));
-  lcd.setCursor(0, 1) ;          //Display position
-  lcd.print(F("T="));            //display"Temp="
+  lcd.setCursor(0, 1);  // Display position
+  lcd.print(F("T="));   // display"Temp="
   wdt_enable(WDTO_8S);
 }
 
-void serialEvent() {                                  //if the hardware serial port_0 receives a char
-  inputstring = Serial.readStringUntil(13);           //read the string until we see a <CR>
-  input_string_complete = true;                       //set the flag used to tell if we have received a completed string from the PC
+void serialEvent() {                         // if the hardware serial port_0 receives a char
+  inputstring = Serial.readStringUntil(13);  // read the string until we see a <CR>
+  input_string_complete = true;              // set the flag used to tell if we have received a completed string from the PC
 }
 
-void serialEvent3() {                                 //if the hardware serial port_3 receives a char
-  sensorstring = Serial1.readStringUntil(13);         //read the string until we see a <CR>
-  sensor_string_complete = true;                      //set the flag used to tell if we have received a completed string from the PC
+void serialEvent3() {                          // if the hardware serial port_3 receives a char
+  sensorstring = Serial1.readStringUntil(13);  // read the string until we see a <CR>
+  sensor_string_complete = true;               // set the flag used to tell if we have received a completed string from the PC
 }
 
 // ************************************************
 // Timer Interrupt Handlers
 // ************************************************
-SIGNAL(TIMER2_OVF_vect)
-{
+SIGNAL(TIMER2_OVF_vect) {
   DriveOutput();
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// BEGIN LOOP//////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///BEGIN LOOP//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void loop()
-{
+void loop() {
   wdt_reset();
   char to_start = customKeypad.getKey();
   if (to_start != NO_KEY) {
@@ -572,8 +470,8 @@ void loop()
 
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
     wdt_enable(WDTO_8S);
   }
 
@@ -625,8 +523,8 @@ void loop()
 
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
     wdt_enable(WDTO_8S);
   }
 
@@ -639,13 +537,13 @@ void loop()
 
   if (to_start == 'C') {
     wdt_disable();
-    onTime=0;
+    onTime = 0;
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(F("Calibration"));
     lcd.setCursor(0, 1);
     lcd.print(F("1-pt:1 2-pt:2"));
-     while (answer == 0 && timdiff <= 5000) {
+    while (answer == 0 && timdiff <= 5000) {
       char answerkey = customKeypad.getKey();
       if (answerkey == '1') {
         OnePointCal();
@@ -656,57 +554,56 @@ void loop()
         answer = 1;
       }
       timdiff = millis() - queststart;
-     }      
+    }
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
     wdt_enable(WDTO_8S);
   }
 
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  /// Calibration Management //////////////////////////////////////////////////////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /// Calibration Management ///////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   if (to_start == 'D') {
     wdt_disable();
-    onTime=0;
+    onTime = 0;
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(F("Cal Management"));
     lcd.setCursor(0, 1);
     lcd.print(F("Slope:1 Clear:2"));
-     while (answer == 0 && timdiff <= 5000) {
+    while (answer == 0 && timdiff <= 5000) {
       char answerkey = customKeypad.getKey();
       if (answerkey == '1') {
-
-      if (Serial1.available() > 0) {                      //if we see that the Atlas Scientific product has sent a character
-        Serial.println("clearing buffer");
-        char inchar = (char)Serial1.read();               //get the char we just received
-      }
+        if (Serial1.available() > 0) {  // if we see that the Atlas Scientific product has sent a character
+          Serial.println("clearing buffer");
+          char inchar = (char)Serial1.read();  // get the char we just received
+        }
 
         Serial.println("pressed 1");
         GetCalSlope();
         lcd.clear();
         lcd.print("Cal Slope:");
-        lcd.setCursor(0,1);
+        lcd.setCursor(0, 1);
         lcd.print(slope);
         delay(5000);
         answer = 1;
       }
       if (answerkey == '2') {
         Serial.println("pressed 2");
-        Serial1.print("Cal,clear");                      //send Calibration clear command to EZO pH stamp
-        Serial1.print('\r');                             //add a <CR> to the end of the string
+        Serial1.print("Cal,clear");  // send Calibration clear command to EZO pH stamp
+        Serial1.print('\r');         // add a <CR> to the end of the string
         answer = 1;
       }
       timdiff = millis() - queststart;
-     }      
-        
+    }
+
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
     wdt_enable(WDTO_8S);
   }
 
@@ -739,11 +636,10 @@ void loop()
 
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
     wdt_enable(WDTO_8S);
   }
-
 
   /// Change Google Sheet Interval /////////////////////////////////////////////////////////////////////////////
 
@@ -781,8 +677,8 @@ void loop()
     delay(3000);
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
     wdt_enable(WDTO_8S);
   }
 
@@ -800,8 +696,7 @@ void loop()
     if (now.year() < 2000) {
       yearnow = now.year() - 1900;
     }
-    while (nowtime <= starttime + 5000)
-    {
+    while (nowtime <= starttime + 5000) {
       DateTime now = rtc.now();
       nowtime = millis();
       lcd.clear();
@@ -827,13 +722,12 @@ void loop()
     }
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
     wdt_enable(WDTO_8S);
   }
 
   /// See Device addresses /////////////////////////////////////////////////////////////////////////////
-
 
   if (to_start == '1') {
     wdt_disable();
@@ -865,12 +759,12 @@ void loop()
         delay(7000);
         answer = 1;
       }
-      if (answerkey == '3'){
+      if (answerkey == '3') {
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print(F("Software Version"));
         lcd.setCursor(0, 1);
-        lcd.print(softvers,3);
+        lcd.print(softvers, 3);
         delay(7000);
         answer = 1;
       }
@@ -878,8 +772,8 @@ void loop()
     }
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
     wdt_enable(WDTO_8S);
   }
 
@@ -889,8 +783,8 @@ void loop()
     Key = NO_KEY;
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
   }
 
   /// See Tank ID and Log File Name/////////////////////////////////////////////////////////////////////////////
@@ -908,8 +802,8 @@ void loop()
     Key = NO_KEY;
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
   }
 
   /// See PID Constants/////////////////////////////////////////////////////////////////////////////
@@ -932,12 +826,12 @@ void loop()
     Key = NO_KEY;
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
     wdt_enable(WDTO_8S);
   }
 
-  ///PID Tuning Menu/////////////////////////////////////////////////////////////////////////////
+  /// PID Tuning Menu/////////////////////////////////////////////////////////////////////////////
 
   if (to_start == '5') {
     wdt_disable();
@@ -991,15 +885,13 @@ void loop()
     }
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
     wdt_enable(WDTO_8S);
   }
-  ///End PID Tuning Menu/////////////////////////////////////////////////////////////////////////////
+  /// End PID Tuning Menu/////////////////////////////////////////////////////////////////////////////
 
-
-
-  ///Temperature Calibration/////////////////////////////////////////////////////////////////////////////
+  /// Temperature Calibration/////////////////////////////////////////////////////////////////////////////
   if (to_start == '6') {
     wdt_disable();
     Serial.println(F("Temperature Calibration"));
@@ -1058,7 +950,6 @@ void loop()
     lcd.setCursor(0, 0);
     lcd.print(F("Press '#' to cal"));
     while (Key != '#') {
-
       uint16_t rtd = max.readRTD();
       float ratio = rtd;
       ratio /= 32768;
@@ -1066,17 +957,16 @@ void loop()
       Serial.print(F("Temperature = "));
       Serial.println(temp);
 
-      total = total - readings[readIndex];                      // Delete oldest temperature reading
-      readings[readIndex] = tempnow;                            // Add new temperature reading to the array
-      total = total + readings[readIndex];                      // Add the temperature reading to the total
-      readIndex = readIndex + 1;                                // advance to the next position in the array
+      total = total - readings[readIndex];  // Delete oldest temperature reading
+      readings[readIndex] = tempnow;        // Add new temperature reading to the array
+      total = total + readings[readIndex];  // Add the temperature reading to the total
+      readIndex = readIndex + 1;            // advance to the next position in the array
 
-      if (readIndex >= numReadings) {                           // if we're at the end of the array...
-        readIndex = 0;                                          // ...wrap around to the beginning
+      if (readIndex >= numReadings) {  // if we're at the end of the array...
+        readIndex = 0;                 // ...wrap around to the beginning
       }
 
-      temp = total / numReadings;                               // calculate the average
-
+      temp = total / numReadings;  // calculate the average
 
       lcd.setCursor(0, 1);
       lcd.print(F("Temp="));
@@ -1095,30 +985,27 @@ void loop()
 
     EEPROM_writeDouble(tempcorrAddress, tempcorr);
 
-
     Serial.println(F("Temp Calibration End"));
 
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
     wdt_enable(WDTO_8S);
   }
 
-
-  ///Manual Set Time/////////////////////////////////////////////////////////////////////////////
+  /// Manual Set Time/////////////////////////////////////////////////////////////////////////////
   if (to_start == '7') {
     wdt_disable();
     ManualTime();
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
     wdt_enable(WDTO_8S);
   }
 
-
-  ///Enable PID/////////////////////////////////////////////////////////////////////////////
+  /// Enable PID/////////////////////////////////////////////////////////////////////////////
   if (to_start == '8') {
     wdt_disable();
     answer = 0;
@@ -1150,13 +1037,12 @@ void loop()
     }
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
     wdt_enable(WDTO_8S);
   }
 
-
-  /// Set Chill or Heat /////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /// Set Chill or Heat ////////////////////////////////////////////////////////////////////////////////////////////////
 
   if (to_start == '9') {
     wdt_disable();
@@ -1180,16 +1066,14 @@ void loop()
     }
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
     wdt_enable(WDTO_8S);
   }
 
-
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  /// Main Running Loop /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /// Main Running Loop ////////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   unsigned long sensor_currentMillis = millis();
   if (sensor_currentMillis - sensor_previousMillis >= sensor_interval) {
@@ -1234,7 +1118,7 @@ void loop()
     Serial.print(now.hour(), DEC);
     Serial.print(':');
     if (now.minute() < 10) {
-     Serial.print("0");
+      Serial.print("0");
     }
     Serial.print(now.minute(), DEC);
     Serial.print(':');
@@ -1246,92 +1130,85 @@ void loop()
     Serial.println();
   }
 
-  //Sending data to Google Sheets////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Sending data to Google Sheets//////////////////////////////////////////////////////////////////////////////////////
 
   if (EthConnect) {
-
     unsigned long currentMillis = millis();
 
     if (currentMillis - previousMillis >= interval) {
       Serial.println(F("Starting upload to Google Docs"));
       wdt_reset();
-      
+
       lcd.setCursor(9, 0);
       lcd.write((uint8_t)0);
       pinMode(4, OUTPUT);
       digitalWrite(4, HIGH);
 
-      previousMillis = currentMillis;                     // save the last time you updated Google Sheets
+      previousMillis = currentMillis;  // save the last time you updated Google Sheets
 
-      packData();                                          //packing GET query with data
+      packData();  // packing GET query with data
 
       Serial.println(F("connecting..."));
       if (client.connect(server, 80)) {
         sendData();
-        cxn = true;                                        //connected = true
-      }
-      else {
+        cxn = true;  // connected = true
+      } else {
         Serial.println(F("connection failed"));
       }
       // loop
       while (cxn) {
         if (client.available()) {
-          char c = client.read(); //save http header to c
-          Serial.print(c); //print http header to serial monitor
+          char c = client.read();  // save http header to c
+          Serial.print(c);         // print http header to serial monitor
         }
         if (!client.connected()) {
           Serial.println();
           Serial.println(F("disconnecting."));
           Serial.print(F("Temperature Sent :"));
-          Serial.println(temp); //print sent value to serial monitor
+          Serial.println(temp);  // print sent value to serial monitor
 
           client.stop();
           cxn = false;
 
-          data = ""; //data reset
-
+          data = "";  // data reset
         }
       }
       Serial.println(F("exiting Google Docs loop"));
       lcd.setCursor(9, 0);
       lcd.write(" ");
-
-
     }
   }
 
-
-  //Renewing DHCP lease every so often///////////////////////////////////////////////////////////////////////////////////////
+  // Renewing DHCP lease every so often/////////////////////////////////////////////////////////////////////////////////
   unsigned long currentMillis = millis();
 
   if (currentMillis - previousLease >= LeaseInterval) {
     Ethernet.maintain();
   }
 
-  //Serial.println("");
+  // Serial.println("");
   pH = -99;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////END MAIN LOOP//////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////END MAIN LOOP////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // ************************************************
 // Packing data into Pushingbox request
 // ************************************************
 void packData() {
   data += "";
-  data += "GET /pushingbox?devid="; //GET request query to pushingbox API
-  data += DevID; //GET request query to pushingbox API
-  data += "&tankid="; //GET request query to pushingbox API
+  data += "GET /pushingbox?devid=";  // GET request query to pushingbox API
+  data += DevID;                     // GET request query to pushingbox API
+  data += "&tankid=";                // GET request query to pushingbox API
   data += tankid;
-  data += "&tempData="; //GET request query to pushingbox API
+  data += "&tempData=";  // GET request query to pushingbox API
   data += temp;
-  data += "&pHdata="; //GET request query to pushingbox API
+  data += "&pHdata=";  // GET request query to pushingbox API
   data += String(pHDisplay, 3);
   data += " HTTP/1.1";
 }
-
 
 // ************************************************
 // Sending Pushingbox request
@@ -1345,7 +1222,7 @@ void sendData() {
   client.println();
 }
 
-//Adding for Time//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Adding for Time//////////////////////////////////////////////////////////////////////////////////////////////////////
 void digitalClockDisplay() {
   // digital clock display of the time
   DateTime now = rtc.now();
@@ -1369,22 +1246,17 @@ void printDigits(int digits) {
   Serial.print(digits);
 }
 
-
 // ************************************************
 // Save any parameter changes to EEPROM
 // ************************************************
-void SavepHSet()
-{
-  if (phset != EEPROM_readDouble(pHAddress))
-  {
+void SavepHSet() {
+  if (phset != EEPROM_readDouble(pHAddress)) {
     EEPROM_writeDouble(pHAddress, phset);
   }
 }
 
-void SaveTempSet()
-{
-  if (tempset != EEPROM_readDouble(tempAddress))
-  {
+void SaveTempSet() {
+  if (tempset != EEPROM_readDouble(tempAddress)) {
     EEPROM_writeDouble(tempAddress, tempset);
   }
 }
@@ -1392,8 +1264,7 @@ void SaveTempSet()
 // ************************************************
 // Load parameters from EEPROM
 // ************************************************
-void LoadParameters()
-{
+void LoadParameters() {
   // Load from EEPROM
   phset = EEPROM_readDouble(pHAddress);
   tempset = EEPROM_readDouble(tempAddress);
@@ -1402,41 +1273,32 @@ void LoadParameters()
   Kd = EEPROM_readDouble(KdAddress);
   heat = EEPROM_readDouble(heatAddress);
   // Use defaults if EEPROM values are invalid
-  if (isnan(phset))
-  {
+  if (isnan(phset)) {
     phset = 8.1;
   }
-  if (isnan(tempset))
-  {
+  if (isnan(tempset)) {
     tempset = 20;
   }
-  if (isnan(Kp))
-  {
+  if (isnan(Kp)) {
     Kp = 100000;
   }
-  if (isnan(Ki))
-  {
+  if (isnan(Ki)) {
     Ki = 0;
   }
-  if (isnan(Kd))
-  {
+  if (isnan(Kd)) {
     Kd = 0;
   }
-  if (isnan(heat))
-  {
+  if (isnan(heat)) {
     heat = 0;
   }
 }
 
-
 // ************************************************
 // Write floating point values to EEPROM
 // ************************************************
-void EEPROM_writeDouble(int address, double value)
-{
+void EEPROM_writeDouble(int address, double value) {
   byte* p = (byte*)(void*)&value;
-  for (int i = 0; i < sizeof(value); i++)
-  {
+  for (int i = 0; i < sizeof(value); i++) {
     EEPROM.write(address++, *p++);
   }
 }
@@ -1444,12 +1306,10 @@ void EEPROM_writeDouble(int address, double value)
 // ************************************************
 // Read floating point values from EEPROM
 // ************************************************
-double EEPROM_readDouble(int address)
-{
+double EEPROM_readDouble(int address) {
   double value = 0.0;
   byte* p = (byte*)(void*)&value;
-  for (int i = 0; i < sizeof(value); i++)
-  {
+  for (int i = 0; i < sizeof(value); i++) {
     *p++ = EEPROM.read(address++);
   }
   return value;
@@ -1458,8 +1318,7 @@ double EEPROM_readDouble(int address)
 // ************************************************
 // Manual Time Set
 // ************************************************
-void ManualTime()
-{
+void ManualTime() {
   lcd.clear();
   lcd.print(F("What year is it?"));
   unsigned long Yearnow;
@@ -1572,11 +1431,9 @@ void ManualTime()
   setTime(Hournow, Minnow, 30, Daynow, Monthnow, Yearnow);
   rtc.adjust(DateTime(Yearnow, Monthnow, Daynow, Hournow, Minnow, 30));
 
-
   int starttime = millis();
   int nowtime = millis();
-  while (nowtime <= starttime + 5000)
-  {
+  while (nowtime <= starttime + 5000) {
     nowtime = millis();
     lcd.clear();
     lcd.print(String(month()) + "/" + String(day()) + "/" + String(year()));
@@ -1587,61 +1444,53 @@ void ManualTime()
   lcd.clear();
 }
 
-
 // ************************************************
 // Called by ISR every 15ms to drive the output
 // ************************************************
-void DriveOutput()
-{
+void DriveOutput() {
   long now = millis();
   // Set the output
   // "on time" is proportional to the PID output
-  if (now - windowStartTime > WindowSize)
-  { //time to shift the Relay Window
+  if (now - windowStartTime > WindowSize) {  // time to shift the Relay Window
     windowStartTime += WindowSize;
   }
-  if ((onTime > 100) && (onTime > (now - windowStartTime)))
-  {
-    digitalWrite(co2reg, LOW); //OPEN CO2 solenoid
-  }
-  else
-  {
-    digitalWrite(co2reg, HIGH); //CLOSE CO2 solenoid
+  if ((onTime > 100) && (onTime > (now - windowStartTime))) {
+    digitalWrite(co2reg, LOW);  // OPEN CO2 solenoid
+  } else {
+    digitalWrite(co2reg, HIGH);  // CLOSE CO2 solenoid
   }
 }
-
 
 // ************************************************
 // Get pH reading from Atlas pH EZO
 // ************************************************
-void Get_pH()
-{
-  Serial1.print("R");                              //Ask EZO pH stamp for pH reading
-  Serial1.print('\r');                             //add a <CR> to the end of the string
+void Get_pH() {
+  Serial1.print("R");   // Ask EZO pH stamp for pH reading
+  Serial1.print('\r');  // add a <CR> to the end of the string
   while (pH == -99) {
-    if (input_string_complete) {                        //if a string from the PC has been received in its entirety
-      Serial1.print(inputstring);                      //send that string to the Atlas Scientific product
-      Serial1.print('\r');                             //add a <CR> to the end of the string
-      inputstring = "";                                 //clear the string
-      input_string_complete = false;                    //reset the flag used to tell if we have received a completed string from the PC
+    if (input_string_complete) {      // if a string from the PC has been received in its entirety
+      Serial1.print(inputstring);     // send that string to the Atlas Scientific product
+      Serial1.print('\r');            // add a <CR> to the end of the string
+      inputstring = "";               // clear the string
+      input_string_complete = false;  // reset the flag used to tell if we have received a completed string from the PC
     }
 
-    if (Serial1.available() > 0) {                     //if we see that the Atlas Scientific product has sent a character
-      char inchar = (char)Serial1.read();              //get the char we just received
-      sensorstring += inchar;                           //add the char to the var called sensorstring
-      if (inchar == '\r') {                             //if the incoming character is a <CR>
-        sensor_string_complete = true;                  //set the flag
+    if (Serial1.available() > 0) {         // if we see that the Atlas Scientific product has sent a character
+      char inchar = (char)Serial1.read();  // get the char we just received
+      sensorstring += inchar;              // add the char to the var called sensorstring
+      if (inchar == '\r') {                // if the incoming character is a <CR>
+        sensor_string_complete = true;     // set the flag
       }
     }
 
-    if (sensor_string_complete == true) {               //if a string from the Atlas Scientific product has been received in its entirety
-      if (isdigit(sensorstring[0])) {                   //if the first character in the string is a digit
-        pH = sensorstring.toFloat();                    //convert the string to a floating point number so it can be evaluated by the Arduino
+    if (sensor_string_complete == true) {  // if a string from the Atlas Scientific product has been received in its entirety
+      if (isdigit(sensorstring[0])) {      // if the first character in the string is a digit
+        pH = sensorstring.toFloat();       // convert the string to a floating point number so it can be evaluated by the Arduino
         Serial.print(F("pH = "));
         Serial.println(pH, 3);
       }
-      sensorstring = "";                                //clear the string
-      sensor_string_complete = false;                   //reset the flag used to tell if we have received a completed string from the Atlas Scientific product
+      sensorstring = "";               // clear the string
+      sensor_string_complete = false;  // reset the flag used to tell if we have received a completed string from the Atlas Scientific product
     }
   }
   Input = -1 * pH;
@@ -1651,48 +1500,46 @@ void Get_pH()
 // ************************************************
 // Get temperature reading from PT100
 // ************************************************
-void Get_Temperature()
-{
+void Get_Temperature() {
   uint16_t rtd = max.readRTD();
   float ratio = rtd;
   ratio /= 32768;
   tempnow = max.temperature(100, RREF) + tempcorr;
 
-  total = total - readings[readIndex];                      // Delete oldest temperature reading
-  readings[readIndex] = tempnow;                            // Add new temperature reading to the array
-  total = total + readings[readIndex];                      // Add the temperature reading to the total
-  readIndex = readIndex + 1;                                // advance to the next position in the array
+  total = total - readings[readIndex];  // Delete oldest temperature reading
+  readings[readIndex] = tempnow;        // Add new temperature reading to the array
+  total = total + readings[readIndex];  // Add the temperature reading to the total
+  readIndex = readIndex + 1;            // advance to the next position in the array
 
-  if (readIndex >= numReadings) {                           // if we're at the end of the array...
-    readIndex = 0;                                          // ...wrap around to the beginning
+  if (readIndex >= numReadings) {  // if we're at the end of the array...
+    readIndex = 0;                 // ...wrap around to the beginning
   }
 
-  temp = total / numReadings;                               // calculate the average
-  Serial.print(F("Temperature = ")); Serial.println(temp);
-  Serial.print(F("Resistance = ")); Serial.println(RREF*ratio,5);
+  temp = total / numReadings;  // calculate the average
+  Serial.print(F("Temperature = "));
+  Serial.println(temp);
+  Serial.print(F("Resistance = "));
+  Serial.println(RREF * ratio, 5);
 }
 
 // ************************************************
 // Send temperature compensation to Atlas pH EZO
 // ************************************************
-void Set_Temp_Comp()
-{
-  if (temp>0 && temp<100) {
+void Set_Temp_Comp() {
+  if (temp > 0 && temp < 100) {
     tempcomp = pretempcomp + String(temp, 2);
-    }
-  else {
+  } else {
     tempcomp = pretempcomp + 20;
-    }    
+  }
   Serial.println(tempcomp);
-  Serial1.print(tempcomp);                      //send that string to the Atlas Scientific product
-  Serial1.print('\r');                             //add a <CR> to the end of the string
+  Serial1.print(tempcomp);  // send that string to the Atlas Scientific product
+  Serial1.print('\r');      // add a <CR> to the end of the string
 }
 
 // ************************************************
 // Run the Auto-Tuning cycle
 // ************************************************
-void RunAutoTune()
-{
+void RunAutoTune() {
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print(F("   AUTOTUNING   "));
@@ -1707,8 +1554,7 @@ void RunAutoTune()
   aTune.SetOutputStep(aTuneStep);
   aTune.SetLookbackSec((int)aTuneLookBack);
   while (tuning) {
-    if (tuning)
-    {
+    if (tuning) {
       byte val = (aTune.Runtime());
       Get_pH();
       lcd.setCursor(3, 1);
@@ -1718,12 +1564,10 @@ void RunAutoTune()
       lcd.print(temp, 2);
       Set_Temp_Comp();
       pH = -99;
-      if (val != 0)
-      {
+      if (val != 0) {
         tuning = false;
       }
-      if (!tuning)
-      { //we're done, set the tuning parameters
+      if (!tuning) {  // we're done, set the tuning parameters
         Kp = aTune.GetKp();
         Ki = aTune.GetKi();
         Kd = aTune.GetKd();
@@ -1749,50 +1593,45 @@ void RunAutoTune()
       lcd.print(F("   AUTOTUNING   "));
       delay(3000);
     }
-
   }
-
 }
 
 // ************************************************
 // Set chiller state
 // ************************************************
 
-void Set_Chiller()
-{
+void Set_Chiller() {
   if (heat == 0) {
     unsigned long chiller_currentMillis = millis();
-    if (chiller_currentMillis - chiller_previousMillis >= chiller_interval) { //pause 30 seconds between swtiching chiller on and off to prevent damage to chiller
+    if (chiller_currentMillis - chiller_previousMillis >= chiller_interval) {  // pause 30 seconds between swtiching chiller on and off to prevent damage to chiller
       chiller_previousMillis = chiller_currentMillis;
-      if (temp >= tempset + 0.05) {                                          //if the observed temperature is greater than or equal the temperature setpoint plus .05 degree
-        Serial.println(F("chiller on"));                                     //print chiller state to serial
+      if (temp >= tempset + 0.05) {       // if the observed temperature is greater than or equal the temperature setpoint plus .05 degree
+        Serial.println(F("chiller on"));  // print chiller state to serial
         digitalWrite(chiller, LOW);
-        }
-      if (temp <= tempset - 0.05) {                                          //see if temperature is lower than .05 below setpoint
-        Serial.println(F("chiller off"));                                    //print chiller state to serial
+      }
+      if (temp <= tempset - 0.05) {        // see if temperature is lower than .05 below setpoint
+        Serial.println(F("chiller off"));  // print chiller state to serial
         digitalWrite(chiller, HIGH);
       }
     }
-    
   }
   if (heat == 1) {
-    if (temp <= tempset + 0.05) {                                          //if the observed temperature is less than or equal the temperature setpoint plus .05 degree
-        Serial.println(F("chiller on"));                                     //print chiller state to serial
-        digitalWrite(chiller, LOW);
-        }
-      if (temp >= tempset - 0.05) {                                          //see if temperature is greater than or equal to .05 below setpoint
-        Serial.println(F("chiller off"));                                    //print chiller state to serial
-        digitalWrite(chiller, HIGH);
-      }
+    if (temp <= tempset + 0.05) {       // if the observed temperature is less than or equal the temperature setpoint plus .05 degree
+      Serial.println(F("chiller on"));  // print chiller state to serial
+      digitalWrite(chiller, LOW);
     }
+    if (temp >= tempset - 0.05) {        // see if temperature is greater than or equal to .05 below setpoint
+      Serial.println(F("chiller off"));  // print chiller state to serial
+      digitalWrite(chiller, HIGH);
+    }
+  }
 }
 
 // ************************************************
 // Change Kp value
 // ************************************************
 
-void Change_Kp()
-{
+void Change_Kp() {
   double KpTemp;
   KpTemp = Kp;
   lcd.clear();
@@ -1933,7 +1772,6 @@ void Change_Kp()
       Serial.print(F("New Kp: "));
       Serial.println(KpTemp);
     }
-
   }
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -1957,8 +1795,7 @@ void Change_Kp()
 // Change Ki value
 // ************************************************
 
-void Change_Ki()
-{
+void Change_Ki() {
   Serial.println(F("starting Ki adjustment routine"));
   double KiTemp;
   KiTemp = Ki;
@@ -2131,8 +1968,7 @@ void Change_Ki()
 // Change Kd value
 // ************************************************
 
-void Change_Kd()
-{
+void Change_Kd() {
   double KdTemp;
   KdTemp = Kd;
   lcd.clear();
@@ -2273,7 +2109,6 @@ void Change_Kd()
       Serial.print(F("New Kd: "));
       Serial.println(KdTemp);
     }
-
   }
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -2356,382 +2191,369 @@ void LogToSD() {
   Serial.println(SDstring);
 }
 
-
 void LCDupdate() {
   lcd.setCursor(3, 0);
   lcd.print(pHDisplay, 3);
   lcd.setCursor(11, 0);
   lcd.print(phset, 3);
-  lcd.setCursor(0, 1) ;
+  lcd.setCursor(0, 1);
   lcd.setCursor(2, 1);
   lcd.print(temp, 2);
   lcd.setCursor(11, 1);
   lcd.print(tempset, 2);
-  lcd.setCursor(9,1);
+  lcd.setCursor(9, 1);
   if (heat == 0) {
     lcd.print("C");
-    }
+  }
   if (heat == 1) {
     lcd.print("H");
-    }
+  }
 }
-
 
 // ************************************************
 // One Point Calibration
 // ************************************************
 void OnePointCal() {
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(F("Calibration mode"));
-    lcd.setCursor(3, 1);
-    lcd.print(F("One-point"));
-    delay(5000);
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(F("Calibration mode"));
+  lcd.setCursor(3, 1);
+  lcd.print(F("One-point"));
+  delay(5000);
 
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(F("Buffer pH:"));
-    lcd.setCursor(0, 1);
-    lcd.print(F("  .   "));
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(F("Buffer pH:"));
+  lcd.setCursor(0, 1);
+  lcd.print(F("  .   "));
 
-    Key = customKeypad.waitForKey();
-    midBuffer = (Key - '0') * 10;
-    lcd.setCursor(0, 1);
-    lcd.print(Key);
-    Serial.print(F("Tens place: "));
-    Serial.println(Key);
+  Key = customKeypad.waitForKey();
+  midBuffer = (Key - '0') * 10;
+  lcd.setCursor(0, 1);
+  lcd.print(Key);
+  Serial.print(F("Tens place: "));
+  Serial.println(Key);
 
-    Key = customKeypad.waitForKey();
-    midBuffer = (Key - '0') + midBuffer;
-    lcd.setCursor(1, 1);
-    lcd.print(Key);
-    Serial.print(F("Ones place: "));
-    Serial.println(Key);
+  Key = customKeypad.waitForKey();
+  midBuffer = (Key - '0') + midBuffer;
+  lcd.setCursor(1, 1);
+  lcd.print(Key);
+  Serial.print(F("Ones place: "));
+  Serial.println(Key);
 
-    Key = customKeypad.waitForKey();
-    midBuffer = ((Key - '0') * 0.1) + midBuffer;
-    lcd.setCursor(3, 1);
-    lcd.print(Key);
-    Serial.print(F("Tenths place: "));
-    Serial.println(Key);
+  Key = customKeypad.waitForKey();
+  midBuffer = ((Key - '0') * 0.1) + midBuffer;
+  lcd.setCursor(3, 1);
+  lcd.print(Key);
+  Serial.print(F("Tenths place: "));
+  Serial.println(Key);
 
-    Key = customKeypad.waitForKey();
-    midBuffer = ((Key - '0') * 0.01) + midBuffer;
-    lcd.setCursor(4, 1);
-    lcd.print(Key);
-    Serial.print(F("Hundreths place: "));
-    Serial.println(Key);
+  Key = customKeypad.waitForKey();
+  midBuffer = ((Key - '0') * 0.01) + midBuffer;
+  lcd.setCursor(4, 1);
+  lcd.print(Key);
+  Serial.print(F("Hundreths place: "));
+  Serial.println(Key);
 
-    Key = customKeypad.waitForKey();
-    midBuffer = ((Key - '0') * 0.001) + midBuffer;
-    lcd.setCursor(5, 1);
-    lcd.print(Key);
-    Serial.print(F("Thousanths place: "));
-    Serial.println(Key);
-    midcalstring = premidcalstring + String(midBuffer);
-    Serial.print(midcalstring);
+  Key = customKeypad.waitForKey();
+  midBuffer = ((Key - '0') * 0.001) + midBuffer;
+  lcd.setCursor(5, 1);
+  lcd.print(Key);
+  Serial.print(F("Thousanths place: "));
+  Serial.println(Key);
+  midcalstring = premidcalstring + String(midBuffer);
+  Serial.print(midcalstring);
+
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(F("Press '#' to cal"));
+  while (Key != '#') {
+    /*
+         Serial1.print("R");                              //Ask for pH reading
+         Serial1.print('\r');                               //add a <CR> to the end of the string
+
+          if (Serial1.available() > 0) {                     //if we see that the Atlas Scientific product has sent a character
+            char inchar = (char)Serial1.read();              //get the char we just received
+            sensorstring += inchar;                           //add the char to the var called sensorstring
+            if (inchar == '\r') {                             //if the incoming character is a <CR>
+              sensor_string_complete = true;                  //set the flag
+            }
+          }
 
 
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(F("Press '#' to cal"));
-    while (Key != '#') {
-/*
-     Serial1.print("R");                              //Ask for pH reading
-     Serial1.print('\r');                               //add a <CR> to the end of the string
+          if (sensor_string_complete == true) {               //if a string from the Atlas Scientific product has been received in its entirety
+            if (isdigit(sensorstring[0])) {                   //if the first character in the string is a digit
+              pH = sensorstring.toFloat();                    //convert the string to a floating point number so it can be evaluated by the Arduino
+            }
+            sensorstring = "";                                //clear the string
+            sensor_string_complete = false;                   //reset the flag used to tell if we have received a completed string from the Atlas Scientific product
+          }
+    */
 
-      if (Serial1.available() > 0) {                     //if we see that the Atlas Scientific product has sent a character
-        char inchar = (char)Serial1.read();              //get the char we just received
-        sensorstring += inchar;                           //add the char to the var called sensorstring
-        if (inchar == '\r') {                             //if the incoming character is a <CR>
-          sensor_string_complete = true;                  //set the flag
-        }
-      }
+    unsigned long sensor_currentMillis = millis();
+    if (sensor_currentMillis - sensor_previousMillis >= sensor_interval) {
+      sensor_previousMillis = sensor_currentMillis;
 
-
-      if (sensor_string_complete == true) {               //if a string from the Atlas Scientific product has been received in its entirety
-        if (isdigit(sensorstring[0])) {                   //if the first character in the string is a digit
-          pH = sensorstring.toFloat();                    //convert the string to a floating point number so it can be evaluated by the Arduino
-        }
-        sensorstring = "";                                //clear the string
-        sensor_string_complete = false;                   //reset the flag used to tell if we have received a completed string from the Atlas Scientific product
-      }
-*/
-
-  unsigned long sensor_currentMillis = millis();
-  if (sensor_currentMillis - sensor_previousMillis >= sensor_interval) {
-    sensor_previousMillis = sensor_currentMillis;
-
-    Get_pH();
-    Get_Temperature();
-    Set_Temp_Comp();
-  }
-
-      
-      lcd.setCursor(0, 1);
-      lcd.print(F("pH="));
-      lcd.print(pH, 3);
-
-      
-      Key = customKeypad.getKey();
+      Get_pH();
+      Get_Temperature();
+      Set_Temp_Comp();
     }
-    Key = NO_KEY;
 
-    Serial1.print(midcalstring);                      //send that string to the Atlas Scientific product
-    Serial1.print('\r');                             //add a <CR> to the end of the string
-
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(F("###Calibration##"));
     lcd.setCursor(0, 1);
-    lcd.print(F("####Complete####"));
-    delay(3000);
-}
+    lcd.print(F("pH="));
+    lcd.print(pH, 3);
 
+    Key = customKeypad.getKey();
+  }
+  Key = NO_KEY;
+
+  Serial1.print(midcalstring);  // send that string to the Atlas Scientific product
+  Serial1.print('\r');          // add a <CR> to the end of the string
+
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(F("###Calibration##"));
+  lcd.setCursor(0, 1);
+  lcd.print(F("####Complete####"));
+  delay(3000);
+}
 
 // ************************************************
 // Two Point Calibration
 // ************************************************
 
 void TwoPointCal() {
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(F("Calibration mode"));
-    lcd.setCursor(3, 1);
-    lcd.print(F("Two-point"));
-    delay(5000);
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(F("Calibration mode"));
+  lcd.setCursor(3, 1);
+  lcd.print(F("Two-point"));
+  delay(5000);
 
-    // Lower Buffer ///
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(F("Higher Buffer pH:"));
+  // Lower Buffer ///
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(F("Higher Buffer pH:"));
+  lcd.setCursor(0, 1);
+  lcd.print(F("  .   "));
+
+  Key = customKeypad.waitForKey();
+  midBuffer = (Key - '0') * 10;
+  lcd.setCursor(0, 1);
+  lcd.print(Key);
+  Serial.print(F("Tens place: "));
+  Serial.println(Key);
+
+  Key = customKeypad.waitForKey();
+  midBuffer = (Key - '0') + midBuffer;
+  lcd.setCursor(1, 1);
+  lcd.print(Key);
+  Serial.print(F("Ones place: "));
+  Serial.println(Key);
+
+  Key = customKeypad.waitForKey();
+  midBuffer = ((Key - '0') * 0.1) + midBuffer;
+  lcd.setCursor(3, 1);
+  lcd.print(Key);
+  Serial.print(F("Tenths place: "));
+  Serial.println(Key);
+
+  Key = customKeypad.waitForKey();
+  midBuffer = ((Key - '0') * 0.01) + midBuffer;
+  lcd.setCursor(4, 1);
+  lcd.print(Key);
+  Serial.print(F("Hundreths place: "));
+  Serial.println(Key);
+
+  Key = customKeypad.waitForKey();
+  midBuffer = ((Key - '0') * 0.001) + midBuffer;
+  lcd.setCursor(5, 1);
+  lcd.print(Key);
+  Serial.print(F("Thousanths place: "));
+  Serial.println(Key);
+  midcalstring = premidcalstring + String(midBuffer);
+  Serial.print(midcalstring);
+
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(F("Press '#' to cal"));
+  while (Key != '#') {
+    /*     Serial1.print("R");                              //Ask for pH reading
+         Serial1.print('\r');                               //add a <CR> to the end of the string
+
+         if (Serial1.available() > 0) {                     //if we see that the Atlas Scientific product has sent a character
+           char inchar = (char)Serial1.read();              //get the char we just received
+           sensorstring += inchar;                           //add the char to the var called sensorstring
+           if (inchar == '\r') {                             //if the incoming character is a <CR>
+             sensor_string_complete = true;                  //set the flag
+           }
+         }
+
+
+         if (sensor_string_complete == true) {               //if a string from the Atlas Scientific product has been received in its entirety
+           if (isdigit(sensorstring[0])) {                   //if the first character in the string is a digit
+             pH = sensorstring.toFloat();                    //convert the string to a floating point number so it can be evaluated by the Arduino
+           }
+           sensorstring = "";                                //clear the string
+           sensor_string_complete = false;                   //reset the flag used to tell if we have received a completed string from the Atlas Scientific product
+         }
+    */
+    unsigned long sensor_currentMillis = millis();
+    if (sensor_currentMillis - sensor_previousMillis >= sensor_interval) {
+      sensor_previousMillis = sensor_currentMillis;
+
+      Get_pH();
+      Get_Temperature();
+      Set_Temp_Comp();
+    }
+
     lcd.setCursor(0, 1);
-    lcd.print(F("  .   "));
+    lcd.print(F("pH="));
+    lcd.print(pH, 3);
 
-    Key = customKeypad.waitForKey();
-    midBuffer = (Key - '0') * 10;
-    lcd.setCursor(0, 1);
-    lcd.print(Key);
-    Serial.print(F("Tens place: "));
-    Serial.println(Key);
-
-    Key = customKeypad.waitForKey();
-    midBuffer = (Key - '0') + midBuffer;
-    lcd.setCursor(1, 1);
-    lcd.print(Key);
-    Serial.print(F("Ones place: "));
-    Serial.println(Key);
-
-    Key = customKeypad.waitForKey();
-    midBuffer = ((Key - '0') * 0.1) + midBuffer;
-    lcd.setCursor(3, 1);
-    lcd.print(Key);
-    Serial.print(F("Tenths place: "));
-    Serial.println(Key);
-
-    Key = customKeypad.waitForKey();
-    midBuffer = ((Key - '0') * 0.01) + midBuffer;
-    lcd.setCursor(4, 1);
-    lcd.print(Key);
-    Serial.print(F("Hundreths place: "));
-    Serial.println(Key);
-
-    Key = customKeypad.waitForKey();
-    midBuffer = ((Key - '0') * 0.001) + midBuffer;
-    lcd.setCursor(5, 1);
-    lcd.print(Key);
-    Serial.print(F("Thousanths place: "));
-    Serial.println(Key);
-    midcalstring = premidcalstring + String(midBuffer);
-    Serial.print(midcalstring);
-
-
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(F("Press '#' to cal"));
-    while (Key != '#') {
- /*     Serial1.print("R");                              //Ask for pH reading
-      Serial1.print('\r');                               //add a <CR> to the end of the string
-
-      if (Serial1.available() > 0) {                     //if we see that the Atlas Scientific product has sent a character
-        char inchar = (char)Serial1.read();              //get the char we just received
-        sensorstring += inchar;                           //add the char to the var called sensorstring
-        if (inchar == '\r') {                             //if the incoming character is a <CR>
-          sensor_string_complete = true;                  //set the flag
-        }
-      }
-
-
-      if (sensor_string_complete == true) {               //if a string from the Atlas Scientific product has been received in its entirety
-        if (isdigit(sensorstring[0])) {                   //if the first character in the string is a digit
-          pH = sensorstring.toFloat();                    //convert the string to a floating point number so it can be evaluated by the Arduino
-        }
-        sensorstring = "";                                //clear the string
-        sensor_string_complete = false;                   //reset the flag used to tell if we have received a completed string from the Atlas Scientific product
-      }
- */
-  unsigned long sensor_currentMillis = millis();
-  if (sensor_currentMillis - sensor_previousMillis >= sensor_interval) {
-    sensor_previousMillis = sensor_currentMillis;
-
-    Get_pH();
-    Get_Temperature();
-    Set_Temp_Comp();
+    Key = customKeypad.getKey();
   }
-     
+  Key = NO_KEY;
+
+  Serial1.print(midcalstring);  // send that string to the Atlas Scientific product
+  Serial1.print('\r');          // add a <CR> to the end of the string
+
+  // High pH Buffer ///
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(F("Lower Buffer pH:"));
+  lcd.setCursor(0, 1);
+  lcd.print(F("  .   "));
+
+  Key = customKeypad.waitForKey();
+  lowBuffer = (Key - '0') * 10;
+  lcd.setCursor(0, 1);
+  lcd.print(Key);
+  Serial.print(F("Tens place: "));
+  Serial.println(Key);
+
+  Key = customKeypad.waitForKey();
+  lowBuffer = (Key - '0') + lowBuffer;
+  lcd.setCursor(1, 1);
+  lcd.print(Key);
+  Serial.print(F("Ones place: "));
+  Serial.println(Key);
+
+  Key = customKeypad.waitForKey();
+  lowBuffer = ((Key - '0') * 0.1) + lowBuffer;
+  lcd.setCursor(3, 1);
+  lcd.print(Key);
+  Serial.print(F("Tenths place: "));
+  Serial.println(Key);
+
+  Key = customKeypad.waitForKey();
+  lowBuffer = ((Key - '0') * 0.01) + lowBuffer;
+  lcd.setCursor(4, 1);
+  lcd.print(Key);
+  Serial.print(F("Hundreths place: "));
+  Serial.println(Key);
+
+  Key = customKeypad.waitForKey();
+  lowBuffer = ((Key - '0') * 0.001) + lowBuffer;
+  lcd.setCursor(5, 1);
+  lcd.print(Key);
+  Serial.print(F("Thousanths place: "));
+  Serial.println(Key);
+  lowcalstring = prelowcalstring + String(lowBuffer);
+  Serial.print(lowcalstring);
+
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(F("Press '#' to cal"));
+  while (Key != '#') {
+    /*      Serial1.print("R");                              //Ask for pH reading
+          Serial1.print('\r');                               //add a <CR> to the end of the string
+
+          serialEvent();
+          serialEvent3();
+          if (Serial1.available() > 0) {                     //if we see that the Atlas Scientific product has sent a character
+            char inchar = (char)Serial1.read();              //get the char we just received
+            sensorstring += inchar;                           //add the char to the var called sensorstring
+            if (inchar == '\r') {                             //if the incoming character is a <CR>
+              sensor_string_complete = true;                  //set the flag
+            }
+          }
+
+
+          if (sensor_string_complete == true) {               //if a string from the Atlas Scientific product has been received in its entirety
+            if (isdigit(sensorstring[0])) {                   //if the first character in the string is a digit
+              pH = sensorstring.toFloat();                    //convert the string to a floating point number so it can be evaluated by the Arduino
+            }
+            sensorstring = "";                                //clear the string
+            sensor_string_complete = false;                   //reset the flag used to tell if we have received a completed string from the Atlas Scientific product
+          }
+    */
+    unsigned long sensor_currentMillis = millis();
+    if (sensor_currentMillis - sensor_previousMillis >= sensor_interval) {
+      sensor_previousMillis = sensor_currentMillis;
+
+      Get_pH();
+      Get_Temperature();
+      Set_Temp_Comp();
       lcd.setCursor(0, 1);
       lcd.print(F("pH="));
       lcd.print(pH, 3);
-
-      Key = customKeypad.getKey();
-
     }
-    Key = NO_KEY;
 
-    Serial1.print(midcalstring);                      //send that string to the Atlas Scientific product
-    Serial1.print('\r');                             //add a <CR> to the end of the string
-
-    // High pH Buffer ///
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(F("Lower Buffer pH:"));
-    lcd.setCursor(0, 1);
-    lcd.print(F("  .   "));
-
-    Key = customKeypad.waitForKey();
-    lowBuffer = (Key - '0') * 10;
-    lcd.setCursor(0, 1);
-    lcd.print(Key);
-    Serial.print(F("Tens place: "));
-    Serial.println(Key);
-
-    Key = customKeypad.waitForKey();
-    lowBuffer = (Key - '0') + lowBuffer;
-    lcd.setCursor(1, 1);
-    lcd.print(Key);
-    Serial.print(F("Ones place: "));
-    Serial.println(Key);
-
-    Key = customKeypad.waitForKey();
-    lowBuffer = ((Key - '0') * 0.1) + lowBuffer;
-    lcd.setCursor(3, 1);
-    lcd.print(Key);
-    Serial.print(F("Tenths place: "));
-    Serial.println(Key);
-
-    Key = customKeypad.waitForKey();
-    lowBuffer = ((Key - '0') * 0.01) + lowBuffer;
-    lcd.setCursor(4, 1);
-    lcd.print(Key);
-    Serial.print(F("Hundreths place: "));
-    Serial.println(Key);
-
-    Key = customKeypad.waitForKey();
-    lowBuffer = ((Key - '0') * 0.001) + lowBuffer;
-    lcd.setCursor(5, 1);
-    lcd.print(Key);
-    Serial.print(F("Thousanths place: "));
-    Serial.println(Key);
-    lowcalstring = prelowcalstring + String(lowBuffer);
-    Serial.print(lowcalstring);
-
-
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(F("Press '#' to cal"));
-    while (Key != '#') {
-/*      Serial1.print("R");                              //Ask for pH reading
-      Serial1.print('\r');                               //add a <CR> to the end of the string
-
-      serialEvent();
-      serialEvent3();
-      if (Serial1.available() > 0) {                     //if we see that the Atlas Scientific product has sent a character
-        char inchar = (char)Serial1.read();              //get the char we just received
-        sensorstring += inchar;                           //add the char to the var called sensorstring
-        if (inchar == '\r') {                             //if the incoming character is a <CR>
-          sensor_string_complete = true;                  //set the flag
-        }
-      }
-
-
-      if (sensor_string_complete == true) {               //if a string from the Atlas Scientific product has been received in its entirety
-        if (isdigit(sensorstring[0])) {                   //if the first character in the string is a digit
-          pH = sensorstring.toFloat();                    //convert the string to a floating point number so it can be evaluated by the Arduino
-        }
-        sensorstring = "";                                //clear the string
-        sensor_string_complete = false;                   //reset the flag used to tell if we have received a completed string from the Atlas Scientific product
-      }
-*/
-  unsigned long sensor_currentMillis = millis();
-  if (sensor_currentMillis - sensor_previousMillis >= sensor_interval) {
-    sensor_previousMillis = sensor_currentMillis;
-
-    Get_pH();
-    Get_Temperature();
-    Set_Temp_Comp();
-      lcd.setCursor(0, 1);
-      lcd.print(F("pH="));
-      lcd.print(pH, 3);
+    Key = customKeypad.getKey();
   }
-      
+  Key = NO_KEY;
 
-      Key = customKeypad.getKey();
-    }
-    Key = NO_KEY;
+  Serial1.print(lowcalstring);  // send that string to the Atlas Scientific product
+  Serial1.print('\r');          // add a <CR> to the end of the string
 
-    Serial1.print(lowcalstring);                      //send that string to the Atlas Scientific product
-    Serial1.print('\r');                             //add a <CR> to the end of the string
-
-
-
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(F("###Calibration##"));
-    lcd.setCursor(0, 1);
-    lcd.print(F("####Complete####"));
-    delay(3000);
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(F("###Calibration##"));
+  lcd.setCursor(0, 1);
+  lcd.print(F("####Complete####"));
+  delay(3000);
 }
 
-
-//Get Calibration Slope
+// Get Calibration Slope
 void GetCalSlope() {
   Serial.println("Shut Down pH Reading");
   delay(1000);
-  Serial1.print("Slope,?");                             //Sending request for Calibration Slope
-  Serial1.print('\r');                                  //add a <CR> to the end of the string
+  Serial1.print("Slope,?");  // Sending request for Calibration Slope
+  Serial1.print('\r');       // add a <CR> to the end of the string
   Serial.println("Asked for slope");
   WaitForString = true;
   slope = "";
-  while (WaitForString == true) {                        //Into a loop that will wait for the response
+  while (WaitForString == true) {  // Into a loop that will wait for the response
     Serial.println("Waiting for response");
-    if (Serial1.available() > 0) {                      //if we see that the Atlas Scientific product has sent a character
+    if (Serial1.available() > 0) {  // if we see that the Atlas Scientific product has sent a character
       Serial.println("Receiving response");
-      char inchar = (char)Serial1.read();               //get the char we just received
-      sensorstring += inchar;                           //add the char to the var called sensorstring
-      if (inchar == '\r') {                             //if the incoming character is a <CR>
-        sensor_string_complete = true;                  //set the flag
+      char inchar = (char)Serial1.read();  // get the char we just received
+      sensorstring += inchar;              // add the char to the var called sensorstring
+      if (inchar == '\r') {                // if the incoming character is a <CR>
+        sensor_string_complete = true;     // set the flag
       }
     }
 
-    if (sensor_string_complete == true) {               //if a string from the Atlas Scientific product has been received in its entirety
+    if (sensor_string_complete == true) {  // if a string from the Atlas Scientific product has been received in its entirety
       Serial.println("Response complete");
-      sloperaw = sensorstring;                             //Store raw slope string into another 
+      sloperaw = sensorstring;  // Store raw slope string into another
       slope = sloperaw;
-      slope.remove(0,7);                                //removing the first 7 characters of the slope string
-      slope[slope.length()-1]=' ';
-      sensorstring = "";                                //clear the string
-      sensor_string_complete = false;                   //reset the flag used to tell if we have received a completed string from the Atlas Scientific product
+      slope.remove(0, 7);  // removing the first 7 characters of the slope string
+      slope[slope.length() - 1] = ' ';
+      sensorstring = "";               // clear the string
+      sensor_string_complete = false;  // reset the flag used to tell if we have received a completed string from the Atlas Scientific product
       Serial.print("Raw String: ");
       Serial.println(sloperaw);
       Serial.print("Calibration Slope: ");
       Serial.println(slope);
     }
 
-    if (slope.length()>3){
+    if (slope.length() > 3) {
       WaitForString = false;
     }
     Serial.println(WaitForString);
   }
   Serial.print("finshing GetCalSlope");
-  WaitForString = true;                                 //Resetting waiting flag
+  WaitForString = true;  // Resetting waiting flag
 }

@@ -42,7 +42,7 @@ jobs:
       - name: Check spelling
         uses: check-spelling/check-spelling@0.0.16-alpha
         env:
-          bucket: ssh://git@github.com:Open-Acidification/Open-Acidification.github.io.git
-          project: spelling
+          bucket: ssh://git@github.com:Open-Acidification/data-for-check-spelling.git
+          project: master
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERBOSE: 1

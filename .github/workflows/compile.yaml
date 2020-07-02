@@ -57,9 +57,10 @@ jobs:
       - name: Arduino CLI Config
         run: |
           arduino-cli config init --dest-dir "."
-          sed -i 's/Arduino/work\/Open-Acidification\/Open-Acidification/g' arduino-cli.yaml
+          sed -i 's/Arduino/work\/Open_Acidification_pH-stat_arduino\/Open_Acidification_pH-stat_arduino/g' arduino-cli.yaml
 
       # Finally, we compile the sketch, using the FQBN that was set
       # in the build matrix.
       - name: Compile Sketch
-        run: arduino-cli compile --fqbn ${{ matrix.fqbn }} .
+        run: |
+          arduino-cli compile --fqbn ${{ matrix.fqbn }} --libraries libraries ./Open_Acidification_pH-stat_arduino/

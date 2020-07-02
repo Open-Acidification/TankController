@@ -39,4 +39,4 @@ jobs:
     - name: Test with pytest
       run: |
         export ARDUINO_IP_ADDRESS=${{ steps.ip.outputs.ipv4 }}
-        pytest -s
+        # pytest -s

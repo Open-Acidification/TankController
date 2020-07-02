@@ -1,0 +1,5 @@
+{
+    "board": "arduino:avr:megaADK",
+    "sketch": "app.ino",
+    "port": "/dev/cu.usbserial-1440"
+}

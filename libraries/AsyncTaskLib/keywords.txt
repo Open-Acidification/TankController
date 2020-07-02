@@ -1,0 +1,26 @@
+#######################################
+# Syntax Coloring Map AsyncTask
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+AsyncTask	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+Start	KEYWORD2
+Reset	KEYWORD2
+Stop	KEYWORD2
+Update	KEYWORD2
+SetIntervalMillis	KEYWORD2
+SetIntervalMicros	KEYWORD2
+IsActive	KEYWORD2
+IsExpired	KEYWORD2
+Interval	KEYWORD2
+AutoReset	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################

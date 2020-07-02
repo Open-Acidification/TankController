@@ -1,0 +1,6 @@
+{
+    "port": "/dev/cu.usbserial-1440",
+    "board": "arduino:avr:mega",
+    "configuration": "cpu=atmega2560",
+    "sketch": "Open_Acidification_pH-stat.ino"
+}

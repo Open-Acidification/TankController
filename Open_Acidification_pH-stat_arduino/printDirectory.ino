@@ -1,8 +1,7 @@
 void printDirectory(File dir, int numTabs) {
   while (true) {
-
-    File entry =  dir.openNextFile();
-    if (! entry) {
+    File entry = dir.openNextFile();
+    if (!entry) {
       // no more files
       break;
     }

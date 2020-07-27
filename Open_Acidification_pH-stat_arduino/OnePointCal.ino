@@ -52,7 +52,6 @@ void OnePointCal() {
   midcalstring = premidcalstring + String(midBuffer);
   Serial.print(midcalstring);
 
-
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print(F("Press '#' to cal"));
@@ -88,18 +87,16 @@ void OnePointCal() {
       Set_Temp_Comp();
     }
 
-
     lcd.setCursor(0, 1);
     lcd.print(F("pH="));
     lcd.print(pH, 3);
-
 
     Key = customKeypad.getKey();
   }
   Key = NO_KEY;
 
-  Serial1.print(midcalstring);                      //send that string to the Atlas Scientific product
-  Serial1.print('\r');                             //add a <CR> to the end of the string
+  Serial1.print(midcalstring);  // send that string to the Atlas Scientific product
+  Serial1.print('\r');          // add a <CR> to the end of the string
 
   lcd.clear();
   lcd.setCursor(0, 0);

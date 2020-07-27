@@ -1,66 +1,51 @@
 void recursiveRm(File dir, String tempPath) {
   Serial.println("CURRENT TEMPPATH: ");
   Serial.println(tempPath);
-  while(true) {
-    File entry =  dir.openNextFile();
+  while (true) {
+    File entry = dir.openNextFile();
     String localPath;
 
     Serial.println("CURRENT ENTRY: ");
     Serial.println(entry.name());
     if (entry) {
-      if ( entry.isDirectory() )
-      {
+      if (entry.isDirectory()) {
         localPath = tempPath + "/" + entry.name() + "/" + '\0';
         char folderBuf[localPath.length()];
-        localPath.toCharArray(folderBuf, localPath.length() );
+        localPath.toCharArray(folderBuf, localPath.length());
         recursiveRm(entry, folderBuf);
 
-
-        if( SD.rmdir( folderBuf ) )
-        {
+        if (SD.rmdir(folderBuf)) {
           Serial.print("Deleted folder ");
           Serial.println(folderBuf);
-        } 
-        else
-        {
+        } else {
           Serial.print("Unable to delete folder ");
           Serial.println(folderBuf);
         }
-      } 
-      else
-      {
+      } else {
         localPath = tempPath + entry.name() + '\0';
         char charBuf[localPath.length()];
-        localPath.toCharArray(charBuf, localPath.length() );
+        localPath.toCharArray(charBuf, localPath.length());
 
-        if( SD.remove( charBuf ) )
-        {
+        if (SD.remove(charBuf)) {
           Serial.print("Deleted ");
           Serial.println(localPath);
-        } 
-        else
-        {
+        } else {
           Serial.print("Failed to delete ");
           Serial.println(localPath);
         }
-
       }
       entry.close();
-    } 
-    else {
+    } else {
       // break out of recursion
       break;
     }
   }
   // delete specified root dir
-  if( SD.rmdir( tempPath ) )
-  {
+  if (SD.rmdir(tempPath)) {
     Serial.print("Deleted root dir: ");
     Serial.println(tempPath);
-  } 
-  else
-  {
+  } else {
     Serial.print("Failed to delete root dir: ");
     Serial.println(tempPath);
-  } 
+  }
 }

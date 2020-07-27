@@ -1,9 +1,8 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///BEGIN LOOP//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// BEGIN LOOP//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void loop()
-{
+void loop() {
   wdt_reset();
   char to_start = customKeypad.getKey();
   if (to_start != NO_KEY) {
@@ -59,8 +58,8 @@ void loop()
 
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
     wdt_enable(WDTO_8S);
   }
 
@@ -112,8 +111,8 @@ void loop()
 
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
     wdt_enable(WDTO_8S);
   }
 
@@ -136,18 +135,18 @@ void loop()
       char answerkey = customKeypad.getKey();
       if (answerkey == '1') {
         OnePointCal();
-		break;
+        break;
       }
       if (answerkey == '2') {
         TwoPointCal();
-		break;
+        break;
       }
       timdiff = millis() - queststart;
     }
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
     wdt_enable(WDTO_8S);
   }
 
@@ -166,10 +165,9 @@ void loop()
     while (answer == 0 && timdiff <= 5000) {
       char answerkey = customKeypad.getKey();
       if (answerkey == '1') {
-
-        if (Serial1.available() > 0) {                      //if we see that the Atlas Scientific product has sent a character
+        if (Serial1.available() > 0) {  // if we see that the Atlas Scientific product has sent a character
           Serial.println("clearing buffer");
-          char inchar = (char)Serial1.read();               //get the char we just received
+          char inchar = (char)Serial1.read();  // get the char we just received
         }
 
         Serial.println("pressed 1");
@@ -183,8 +181,8 @@ void loop()
       }
       if (answerkey == '2') {
         Serial.println("pressed 2");
-        Serial1.print("Cal,clear");                      //send Calibration clear command to EZO pH stamp
-        Serial1.print('\r');                             //add a <CR> to the end of the string
+        Serial1.print("Cal,clear");  // send Calibration clear command to EZO pH stamp
+        Serial1.print('\r');         // add a <CR> to the end of the string
         answer = 1;
       }
       timdiff = millis() - queststart;
@@ -192,8 +190,8 @@ void loop()
 
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
     wdt_enable(WDTO_8S);
   }
 
@@ -226,11 +224,10 @@ void loop()
 
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
     wdt_enable(WDTO_8S);
   }
-
 
   /// Change Google Sheet Interval /////////////////////////////////////////////////////////////////////////////
 
@@ -268,8 +265,8 @@ void loop()
     delay(3000);
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
     wdt_enable(WDTO_8S);
   }
 
@@ -287,8 +284,7 @@ void loop()
     if (now.year() < 2000) {
       yearnow = now.year() - 1900;
     }
-    while (nowtime <= starttime + 5000)
-    {
+    while (nowtime <= starttime + 5000) {
       DateTime now = rtc.now();
       nowtime = millis();
       lcd.clear();
@@ -314,13 +310,12 @@ void loop()
     }
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
     wdt_enable(WDTO_8S);
   }
 
   /// See Device addresses /////////////////////////////////////////////////////////////////////////////
-
 
   if (to_start == '1') {
     wdt_disable();
@@ -365,8 +360,8 @@ void loop()
     }
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
     wdt_enable(WDTO_8S);
   }
 
@@ -376,8 +371,8 @@ void loop()
     Key = NO_KEY;
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
   }
 
   /// See Tank ID and Log File Name/////////////////////////////////////////////////////////////////////////////
@@ -395,8 +390,8 @@ void loop()
     Key = NO_KEY;
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
   }
 
   /// See PID Constants/////////////////////////////////////////////////////////////////////////////
@@ -419,12 +414,12 @@ void loop()
     Key = NO_KEY;
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
     wdt_enable(WDTO_8S);
   }
 
-  ///PID Tuning Menu/////////////////////////////////////////////////////////////////////////////
+  /// PID Tuning Menu/////////////////////////////////////////////////////////////////////////////
 
   if (to_start == '5') {
     wdt_disable();
@@ -474,23 +469,21 @@ void loop()
         }
         answer = 1;
       }
-	  if (answerkey == '3') {
-		  SetSineWave();
-		  answer = 1;
-	  }
+      if (answerkey == '3') {
+        SetSineWave();
+        answer = 1;
+      }
       timdiff = millis() - queststart;
     }
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
     wdt_enable(WDTO_8S);
   }
-  ///End PID Tuning Menu/////////////////////////////////////////////////////////////////////////////
+  /// End PID Tuning Menu/////////////////////////////////////////////////////////////////////////////
 
-
-
-  ///Temperature Calibration/////////////////////////////////////////////////////////////////////////////
+  /// Temperature Calibration/////////////////////////////////////////////////////////////////////////////
   if (to_start == '6') {
     wdt_disable();
     Serial.println(F("Temperature Calibration"));
@@ -549,7 +542,6 @@ void loop()
     lcd.setCursor(0, 0);
     lcd.print(F("Press '#' to cal"));
     while (Key != '#') {
-
       uint16_t rtd = max.readRTD();
       float ratio = rtd;
       ratio /= 32768;
@@ -557,17 +549,16 @@ void loop()
       Serial.print(F("Temperature = "));
       Serial.println(temp);
 
-      total = total - readings[readIndex];                      // Delete oldest temperature reading
-      readings[readIndex] = tempnow;                            // Add new temperature reading to the array
-      total = total + readings[readIndex];                      // Add the temperature reading to the total
-      readIndex = readIndex + 1;                                // advance to the next position in the array
+      total = total - readings[readIndex];  // Delete oldest temperature reading
+      readings[readIndex] = tempnow;        // Add new temperature reading to the array
+      total = total + readings[readIndex];  // Add the temperature reading to the total
+      readIndex = readIndex + 1;            // advance to the next position in the array
 
-      if (readIndex >= numReadings) {                           // if we're at the end of the array...
-        readIndex = 0;                                          // ...wrap around to the beginning
+      if (readIndex >= numReadings) {  // if we're at the end of the array...
+        readIndex = 0;                 // ...wrap around to the beginning
       }
 
-      temp = total / numReadings;                               // calculate the average
-
+      temp = total / numReadings;  // calculate the average
 
       lcd.setCursor(0, 1);
       lcd.print(F("Temp="));
@@ -586,30 +577,27 @@ void loop()
 
     EEPROM_writeDouble(tempcorrAddress, tempcorr);
 
-
     Serial.println(F("Temp Calibration End"));
 
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
     wdt_enable(WDTO_8S);
   }
 
-
-  ///Manual Set Time/////////////////////////////////////////////////////////////////////////////
+  /// Manual Set Time/////////////////////////////////////////////////////////////////////////////
   if (to_start == '7') {
     wdt_disable();
     ManualTime();
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
     wdt_enable(WDTO_8S);
   }
 
-
-  ///Enable PID/////////////////////////////////////////////////////////////////////////////
+  /// Enable PID/////////////////////////////////////////////////////////////////////////////
   if (to_start == '8') {
     wdt_disable();
     answer = 0;
@@ -641,11 +629,10 @@ void loop()
     }
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
     wdt_enable(WDTO_8S);
   }
-
 
   /// Set Chill or Heat /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -671,16 +658,14 @@ void loop()
     }
     lcd.clear();
     lcd.print(F("pH="));
-    lcd.setCursor(0, 1) ;          //Display position
-    lcd.print(F("T="));            //display"Temp="
+    lcd.setCursor(0, 1);  // Display position
+    lcd.print(F("T="));   // display"Temp="
     wdt_enable(WDTO_8S);
   }
-
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /// Main Running Loop /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
   unsigned long sensor_currentMillis = millis();
   if (sensor_currentMillis - sensor_previousMillis >= sensor_interval) {
@@ -749,7 +734,7 @@ void loop()
     Serial.println(Setpoint);
     Serial.println(F("SINE SETPOINT: "));
     double frequencyInMillis = frequency * 60 * 1000;
-    double SineSetpoint = amplitude * sin(2*M_PI*frequencyInMillis*millis());
+    double SineSetpoint = amplitude * sin(2 * M_PI * frequencyInMillis * millis());
     Serial.println(SineSetpoint);
     Serial.println(F("MILLIS: "));
     Serial.println(millis());
@@ -757,10 +742,9 @@ void loop()
     Serial.println();
   }
 
-  //Sending data to Google Sheets////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Sending data to Google Sheets////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   if (EthConnect) {
-
     unsigned long currentMillis = millis();
 
     if (currentMillis - previousMillis >= interval) {
@@ -772,49 +756,44 @@ void loop()
       pinMode(4, OUTPUT);
       digitalWrite(4, HIGH);
 
-      previousMillis = currentMillis;                     // save the last time you updated Google Sheets
+      previousMillis = currentMillis;  // save the last time you updated Google Sheets
 
-      packData();                                          //packing GET query with data
+      packData();  // packing GET query with data
 
       Serial.println(F("connecting..."));
       if (client.connect(APIServer, 80)) {
         sendData();
-        cxn = true;                                        //connected = true
-      }
-      else {
+        cxn = true;  // connected = true
+      } else {
         Serial.println(F("connection failed"));
       }
       // loop
       while (cxn) {
         if (client.available()) {
-          char c = client.read(); //save http header to c
-          Serial.print(c); //print http header to serial monitor
+          char c = client.read();  // save http header to c
+          Serial.print(c);         // print http header to serial monitor
         }
         if (!client.connected()) {
           Serial.println();
           Serial.println(F("disconnecting."));
           Serial.print(F("Temperature Sent :"));
-          Serial.println(temp); //print sent value to serial monitor
+          Serial.println(temp);  // print sent value to serial monitor
 
           client.stop();
           cxn = false;
 
-          data = ""; //data reset
-
+          data = "";  // data reset
         }
       }
       Serial.println(F("exiting Google Docs loop"));
       lcd.setCursor(9, 0);
       lcd.write(" ");
-
-
     }
 
     // listen for incoming clients
-    EthernetClient RPClient = ethernetServer.available(); // Raspberry Pi Client
+    EthernetClient RPClient = ethernetServer.available();  // Raspberry Pi Client
     if (RPClient) {
-
-      handleRequest(RPClient);    
+      handleRequest(RPClient);
 
       // give the web browser time to receive the data
       delay(1000);
@@ -824,15 +803,14 @@ void loop()
     }
   }
 
-
-  //Renewing DHCP lease every so often///////////////////////////////////////////////////////////////////////////////////////
+  // Renewing DHCP lease every so often///////////////////////////////////////////////////////////////////////////////////////
   unsigned long currentMillis = millis();
 
   if (currentMillis - previousLease >= LeaseInterval) {
     Ethernet.maintain();
   }
 
-  //Serial.println("");
+  // Serial.println("");
   pH = -99;
 }
 

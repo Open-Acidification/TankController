@@ -2,8 +2,7 @@
 // Change Kp value
 // ************************************************
 
-void Change_Kp()
-{
+void Change_Kp() {
   double KpTemp;
   KpTemp = Kp;
   lcd.clear();
@@ -144,7 +143,6 @@ void Change_Kp()
       Serial.print(F("New Kp: "));
       Serial.println(KpTemp);
     }
-
   }
   lcd.clear();
   lcd.setCursor(0, 0);

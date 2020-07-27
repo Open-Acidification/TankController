@@ -3,8 +3,7 @@
 // Change Kd value
 // ************************************************
 
-void Change_Kd()
-{
+void Change_Kd() {
   double KdTemp;
   KdTemp = Kd;
   lcd.clear();
@@ -145,7 +144,6 @@ void Change_Kd()
       Serial.print(F("New Kd: "));
       Serial.println(KdTemp);
     }
-
   }
   lcd.clear();
   lcd.setCursor(0, 0);

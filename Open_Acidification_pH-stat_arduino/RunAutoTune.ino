@@ -1,8 +1,7 @@
 // ************************************************
 // Run the Auto-Tuning cycle
 // ************************************************
-void RunAutoTune()
-{
+void RunAutoTune() {
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print(F("   AUTOTUNING   "));
@@ -17,8 +16,7 @@ void RunAutoTune()
   aTune.SetOutputStep(aTuneStep);
   aTune.SetLookbackSec((int)aTuneLookBack);
   while (tuning) {
-    if (tuning)
-    {
+    if (tuning) {
       byte val = (aTune.Runtime());
       Get_pH();
       lcd.setCursor(3, 1);
@@ -28,12 +26,10 @@ void RunAutoTune()
       lcd.print(temp, 2);
       Set_Temp_Comp();
       pH = -99;
-      if (val != 0)
-      {
+      if (val != 0) {
         tuning = false;
       }
-      if (!tuning)
-      { //we're done, set the tuning parameters
+      if (!tuning) {  // we're done, set the tuning parameters
         Kp = aTune.GetKp();
         Ki = aTune.GetKi();
         Kd = aTune.GetKd();
@@ -59,7 +55,5 @@ void RunAutoTune()
       lcd.print(F("   AUTOTUNING   "));
       delay(3000);
     }
-
   }
-
 }

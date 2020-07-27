@@ -1,8 +1,7 @@
 // ************************************************
 // Manual Time Set
 // ************************************************
-void ManualTime()
-{
+void ManualTime() {
   lcd.clear();
   lcd.print(F("What year is it?"));
   unsigned long Yearnow;
@@ -115,11 +114,9 @@ void ManualTime()
   setTime(Hournow, Minnow, 30, Daynow, Monthnow, Yearnow);
   rtc.adjust(DateTime(Yearnow, Monthnow, Daynow, Hournow, Minnow, 30));
 
-
   int starttime = millis();
   int nowtime = millis();
-  while (nowtime <= starttime + 5000)
-  {
+  while (nowtime <= starttime + 5000) {
     nowtime = millis();
     lcd.clear();
     lcd.print(String(month()) + "/" + String(day()) + "/" + String(year()));

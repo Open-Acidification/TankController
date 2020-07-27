@@ -1,8 +1,7 @@
 void printDirectoryToClient(File dir, int numTabs, EthernetClient client) {
   while (true) {
-
-    File entry =  dir.openNextFile();
-    if (! entry) {
+    File entry = dir.openNextFile();
+    if (!entry) {
       // no more files
       break;
     }

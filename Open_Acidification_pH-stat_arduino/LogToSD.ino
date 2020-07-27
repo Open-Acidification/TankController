@@ -41,7 +41,7 @@ void LogToSD() {
     SD.remove(formattedLineFileName);
     lineFile = SD.open(formattedLineFileName, FILE_WRITE);
     char lineCountBuffer[10];
-    sprintf(lineCountBuffer, "%d", lineCount+1);
+    sprintf(lineCountBuffer, "%d", lineCount + 1);
     lineFile.println(lineCountBuffer);
     lineFile.close();
   }

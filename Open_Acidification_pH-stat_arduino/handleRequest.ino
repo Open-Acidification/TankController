@@ -1,68 +1,64 @@
 #include <string>
 
 void handleRequest(EthernetClient client) {
-	Serial.println("new client");
-  
-   // an http request ends with a blank line
-   boolean currentLineIsBlank = true;
-   boolean headerFinished = false;
-   String postData;
-   String header;
+  Serial.println("new client");
+
+  // an http request ends with a blank line
+  boolean currentLineIsBlank = true;
+  boolean headerFinished = false;
+  String postData;
+  String header;
   char* requestType;
   String endpoint;
   char* requestProtocol;
-   while (client.connected()) {
-     while(client.available()) {
-       char c = client.read();
-       // read first line as header contains endpoint and request type information
-       if (!headerFinished) {
-         header.concat(c);
-       }
-       // if you've gotten to the end of the line (received a newline
-       // character) and the line is blank, the http request has ended,
-       // so you can send a reply
-       if (c == '\n' && currentLineIsBlank) {
+  while (client.connected()) {
+    while (client.available()) {
+      char c = client.read();
+      // read first line as header contains endpoint and request type information
+      if (!headerFinished) {
+        header.concat(c);
+      }
+      // if you've gotten to the end of the line (received a newline
+      // character) and the line is blank, the http request has ended,
+      // so you can send a reply
+      if (c == '\n' && currentLineIsBlank) {
+        // Here is where the POST data is.
+        while (client.available()) {
+          char c = client.read();
+          Serial.write(c);
+          postData.concat(c);
+        }
 
-          // Here is where the POST data is.  
-         while(client.available())
-         {
-           char c = client.read();
-            Serial.write(c);
-            postData.concat(c);
-         }
-        
-         Serial.println();
-         Serial.println("Parsing request");
+        Serial.println();
+        Serial.println("Parsing request");
 
-         Serial.println("header:");
-         Serial.println(header);
-         Serial.println("postData:");
-         Serial.println(postData);
+        Serial.println("header:");
+        Serial.println(header);
+        Serial.println("postData:");
+        Serial.println(postData);
 
         requestType = strtok(header.c_str(), " ");
         endpoint = String(strtok(NULL, " "));
-        requestProtocol = strtok(NULL, " ");         
+        requestProtocol = strtok(NULL, " ");
 
-         Serial.println("requestType:");
-         Serial.println(requestType);
-         Serial.println("endpoint:");
-         Serial.println(endpoint);
-         Serial.println("requestProtocol:");
-         Serial.println(requestProtocol);
-         break;
-       }
-       else if (c == '\n') {
-         // you're starting a new line
-         currentLineIsBlank = true;
-         headerFinished = true;
-       }
-       else if (c != '\r') {
-         // you've gotten a character on the current line
-         currentLineIsBlank = false;
-       }
-     }
+        Serial.println("requestType:");
+        Serial.println(requestType);
+        Serial.println("endpoint:");
+        Serial.println(endpoint);
+        Serial.println("requestProtocol:");
+        Serial.println(requestProtocol);
+        break;
+      } else if (c == '\n') {
+        // you're starting a new line
+        currentLineIsBlank = true;
+        headerFinished = true;
+      } else if (c != '\r') {
+        // you've gotten a character on the current line
+        currentLineIsBlank = false;
+      }
+    }
 
-	// parse and handle request based on endpoint
+    // parse and handle request based on endpoint
     if (endpoint.startsWith("/config")) {
       handleConfig(postData.c_str(), client);
     } else if (endpoint.startsWith("/series")) {
@@ -79,11 +75,11 @@ void handleRequest(EthernetClient client) {
         Serial.println("WRONG TIMESERIES");
         printHeader(client, 400);
       }
-    } else if (endpoint.startsWith("/device")) {  
+    } else if (endpoint.startsWith("/device")) {
       handleDevice(endpoint, client);
-    } else if (endpoint.startsWith("/goal")) {  
+    } else if (endpoint.startsWith("/goal")) {
       handleGoal(client);
-    } else if (endpoint.startsWith("/info")) {  
+    } else if (endpoint.startsWith("/info")) {
       handleInfo(client);
     } else if (endpoint.startsWith("/data")) {
       handleData(endpoint, client);
@@ -136,5 +132,5 @@ void handleRequest(EthernetClient client) {
       handleMisc(client);
     }
     return;
-   }
+  }
 }

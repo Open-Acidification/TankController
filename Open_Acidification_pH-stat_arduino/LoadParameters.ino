@@ -1,8 +1,7 @@
 // ************************************************
 // Load parameters from EEPROM
 // ************************************************
-void LoadParameters()
-{
+void LoadParameters() {
   // Load from EEPROM
   phset = EEPROM_readDouble(pHAddress);
   tempset = EEPROM_readDouble(tempAddress);
@@ -13,36 +12,28 @@ void LoadParameters()
   amplitude = EEPROM_readDouble(amplitudeAddress);
   frequency = EEPROM_readDouble(frequencyAddress);
   // Use defaults if EEPROM values are invalid
-  if (isnan(phset))
-  {
+  if (isnan(phset)) {
     phset = 8.1;
   }
-  if (isnan(tempset))
-  {
+  if (isnan(tempset)) {
     tempset = 20;
   }
-  if (isnan(Kp))
-  {
+  if (isnan(Kp)) {
     Kp = 100000;
   }
-  if (isnan(Ki))
-  {
+  if (isnan(Ki)) {
     Ki = 0;
   }
-  if (isnan(Kd))
-  {
+  if (isnan(Kd)) {
     Kd = 0;
   }
-  if (isnan(heat))
-  {
+  if (isnan(heat)) {
     heat = 0;
   }
-  if (isnan(amplitude))
-  {
+  if (isnan(amplitude)) {
     amplitude = 0;
   }
-  if (isnan(frequency))
-  {
+  if (isnan(frequency)) {
     frequency = 0;
   }
 }

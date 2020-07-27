@@ -2,8 +2,7 @@
 // Change Ki value
 // ************************************************
 
-void Change_Ki()
-{
+void Change_Ki() {
   Serial.println(F("starting Ki adjustment routine"));
   double KiTemp;
   KiTemp = Ki;

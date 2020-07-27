@@ -39,4 +39,5 @@ jobs:
     - name: Test with pytest
       run: |
         export ARDUINO_IP_ADDRESS=${{ steps.ip.outputs.ipv4 }}
+        export ARDUINO_TANK_ID=10
         # pytest -s

@@ -13,14 +13,3 @@ void packData() {
   data += String(pHDisplay, 3);
   data += " HTTP/1.1";
 }
-// ************************************************
-// Sending Pushingbox request
-// ************************************************
-void sendData() {
-  Serial.println(F("connected"));
-  Serial.println(data);
-  client.println(data);
-  client.println("Host: api.pushingbox.com");
-  client.println("Connection: close");
-  client.println();
-}

@@ -1,20 +1,18 @@
 
 /*
    Version #: 0.197
-
-   History:
-    0.190: Adding Real Time Clock,
+   (0.190: Adding Real Time Clock,
     0.191: Temperature compensation defeat & PT100 resistance to serial monitor,
     0.192: added fields to SD card output
     0.193: Fixed current time display output to take time from RTC
-    0.194: Device ID to the beginning, software version sig figs
+    0.194: Device ID to the beginning, software version sig figs)
     0.195: Fixing SD card writing stuff (was taking too long and overrunning pH reading time)
     0.196: Adding ability to switch between chilling and heating
     0.197: Adding calibration reset and calibration stats
    Author: Kirt L Onthank
-   Date:   2019/9/28
-   Email:  kirt.onthank@wallawalla.edu
+   Date:2019/9/28
    IDE V1.8.4
+   Email:kirt.onthank@wallawalla.edu
 */
 
 #include <Adafruit_MAX31865.h>
@@ -34,7 +32,6 @@
 #include <avr/wdt.h>
 #include <stdio.h>
 #include <string.h>
-
 #include "RTClib.h"
 
 String DevID = "v172D35C152EDA6C";  // DeviceID from Pushingbox
@@ -139,16 +136,16 @@ long tempSeriesPointer;
 int const htmlRequestBufferSize = 500;
 char htmlRequestBuffer[htmlRequestBufferSize];
 
-// Temperature Smoothing////////////////////////////////////////////////////////////////////////////////////////////////
+// Temperature Smoothing/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const int numReadings = 10;
 
 double readings[numReadings];  // the readings from the analog input
 volatile int readIndex = 0;    // the index of the current reading
 volatile double total = 0;     // the running total
 volatile double tempnow = 0;   // the average
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// EEPROM addresses for persisted data//////////////////////////////////////////////////////////////////////////////////
+// EEPROM addresses for persisted data///////////////////////////////////////////////////////////////////////////////////////////////////////////
 const int pHAddress = 0;
 const int tempAddress = 4;
 const int tankidAddress = 8;
@@ -171,7 +168,7 @@ const int phDelayAddress = 92;
 const int tempIntervalAddress = 96;
 const int tempDelayAddress = 100;
 
-// End EEPROM addresses for persisted data//////////////////////////////////////////////////////////////////////////////
+// End EEPROM addresses for persisted data///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 String filename;
 String file_full;
@@ -198,12 +195,12 @@ boolean tuning = false;
 
 PID_ATune aTune(&Input, &Output);
 
-// Stuff for retreiving time////////////////////////////////////////////////////////////////////////////////////////////
+// Stuff for retreiving time/////////////////////////////////////////////////////////////////////////////////////////////////////////
 IPAddress timeServer(132, 163, 97, 1);  // utcnist.colorado.edu
 const int timeZone = -7;                // Pacific Daylight Time (USA)
 EthernetUDP Udp;
 unsigned int localPort = 8888;  // local port to listen for UDP packets
-// End Time/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// End Time////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Custom Characters for splash////////////////////////////////
 byte ol1[8] = {0b00000, 0b00000, 0b00001, 0b00011, 0b00011, 0b00111, 0b00111, 0b00110};
@@ -238,7 +235,3 @@ void serialEvent3() {                          // if the hardware serial port_3 
 SIGNAL(TIMER2_OVF_vect) {
   // DriveOutput();
 }
-
-// https://forum.arduino.cc/index.php/topic,44216.0.html#11
-void fmtDouble(double val, byte precision, char *buf);
-unsigned fmtUnsigned(unsigned long val, char *buf, unsigned bufLen = 0xffff, byte width = 0);

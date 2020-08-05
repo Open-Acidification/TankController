@@ -2,7 +2,7 @@
 // Packing data into Pushingbox request
 // ************************************************
 void packData() {
-  data += "";
+  data += ""; 
   data += "GET /pushingbox?devid=";  // GET request query to pushingbox API
   data += DevID;                     // GET request query to pushingbox API
   data += "&tankid=";                // GET request query to pushingbox API

@@ -54,6 +54,11 @@ jobs:
           arduino-cli core update-index
           arduino-cli core install ${{ matrix.arduino-platform }}
 
+      # Installing libraries needed for this project
+      - name: Install libraries
+        run: |
+          ./scripts/install_libraries.sh
+
       - name: Arduino CLI Config
         run: |
           arduino-cli config init --dest-dir "."

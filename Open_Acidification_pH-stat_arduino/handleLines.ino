@@ -6,7 +6,7 @@ void handleLines(String endpoint, EthernetClient client) {
   } else {
     directoryName = "/";
   }
-  int slashIndex = endpoint.lastIndexOf("/");
+  int slashIndex = endpoint.lastIndexOf("/"); // is a const, but single use
   String hourName = endpoint.substring(slashIndex);
   directoryName.concat(hourName + ".txt");
   char* pch;

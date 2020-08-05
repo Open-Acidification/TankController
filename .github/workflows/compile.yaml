@@ -71,4 +71,4 @@ jobs:
       # in the build matrix.
       - name: Compile Sketch
         run: |
-          arduino-cli compile --fqbn ${{ matrix.fqbn }} --libraries libraries ./Open_Acidification_pH-stat_arduino/
+          arduino-cli compile --fqbn ${{ matrix.fqbn }} --libraries libraries,Open_Acidification_pH-stat_arduino/libraries ./Open_Acidification_pH-stat_arduino/

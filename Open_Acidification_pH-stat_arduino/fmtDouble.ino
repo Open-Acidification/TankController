@@ -24,7 +24,7 @@ unsigned fmtUnsigned(unsigned long val, char *buf, unsigned bufLen, byte width) 
   // copy the optional leading zeroes and digits to the target buffer
   unsigned len = 0;
   byte padding = (width > idx) ? width - idx : 0;
-  char c = '0'; 
+  char c = '0';
   while ((--bufLen > 0) && (idx || padding)) {
     if (padding)
       padding--;

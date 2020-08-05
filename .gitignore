@@ -21,3 +21,4 @@ Thumbs.db
 arduino-cli.yaml
 *.hex
 *.elf
+*.eep

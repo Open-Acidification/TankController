@@ -1,6 +1,6 @@
 void handleSeries(char* body, EthernetClient client) {
   StaticJsonDocument<1000> doc;
-  DeserializationError error = deserializeJson(doc, body); // is a const, but only used once
+  DeserializationError error = deserializeJson(doc, body);
   char goalRecordString[goalRecordLength];
   memset(goalRecordString, 0, goalRecordLength);
   if (error) {
@@ -28,7 +28,7 @@ void handleSeries(char* body, EthernetClient client) {
       client.println("pH SERIES NOT SAME SIZE");
       phSeriesIsValid = false;
     }
-    long phTimeLast = getLastJsonArrayValue(phTimeJsonArray); // is a const, but only used once
+    long phTimeLast = getLastJsonArrayValue(phTimeJsonArray);
     if (phTimeLast > phInterval) {
       client.println("phTimeLast GREATER THAN phInterval");
       phSeriesIsValid = false;

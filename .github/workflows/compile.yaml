@@ -47,13 +47,6 @@ jobs:
       - name: Setup Arduino CLI
         uses: arduino/setup-arduino-cli@v1.0.0
 
-      # Installing libraries needed for this project
-      - name: Install libraries
-        run: |
-          mkdir -p "$HOME/Arduino/libraries"
-          ln -s "$PWD" "$HOME/Arduino/libraries/."
-          ./scripts/install_libraries.sh  
-
       # We then install the platform, which one will be determined
       # dynamically by the build matrix.
       - name: Install platform
@@ -65,6 +58,14 @@ jobs:
         run: |
           arduino-cli config init --dest-dir "."
           sed -i 's/Arduino/work\/Open_Acidification_pH-stat_arduino\/Open_Acidification_pH-stat_arduino/g' arduino-cli.yaml
+          more arduino-cli.yaml
+      # Installing libraries needed for this project
+
+      # mkdir -p "$HOME/Arduino/libraries"
+      # ln -s "$PWD" "$HOME/Arduino/libraries/."
+      - name: Install libraries
+        run: |
+          ./scripts/install_libraries.sh  
 
       # Finally, we compile the sketch, using the FQBN that was set
       # in the build matrix.

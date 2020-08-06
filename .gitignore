@@ -16,11 +16,9 @@ Thumbs.db
 *.o
 *.out
 *.log
-<<<<<<< HEAD
 
 # Arduino Files
 arduino-cli.yaml
 *.hex
 *.elf
-=======
->>>>>>> master
+*.eep

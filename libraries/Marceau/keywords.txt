@@ -1,9 +1,0 @@
-Marceau	KEYWORD1
-begin	KEYWORD2
-enableSerial	KEYWORD2
-enableWifi	KEYWORD2
-loop	KEYWORD2
-addCmd	KEYWORD2
-cmdComplete	KEYWORD2
-setHostname	KEYWORD2
-setDefaultAPName	KEYWORD2

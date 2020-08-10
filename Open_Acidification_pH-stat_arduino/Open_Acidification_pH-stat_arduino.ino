@@ -133,7 +133,7 @@ long tempDelay;
 int tempSeriesSize;
 long tempSeriesPointer;
 
-const int htmlRequestBufferSize = 500; (prev was int const)
+const int htmlRequestBufferSize = 500;
 char htmlRequestBuffer[htmlRequestBufferSize];
 
 // Temperature Smoothing/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

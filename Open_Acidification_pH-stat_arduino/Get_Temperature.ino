@@ -12,11 +12,11 @@ void Get_Temperature() {
   total = total + readings[readIndex];  // Add the temperature reading to the total
   readIndex = readIndex + 1;            // advance to the next position in the array
 
-  if (readIndex >= numReadings) {  // if we're at the end of the array...
+  if (readIndex >= NUM_READINGS) {  // if we're at the end of the array...
     readIndex = 0;                 // ...wrap around to the beginning
   }
 
-  temp = total / numReadings;  // calculate the average
+  temp = total / NUM_READINGS;  // calculate the average
   Serial.print(F("Temperature = "));
   Serial.println(temp);
   Serial.print(F("Resistance = "));

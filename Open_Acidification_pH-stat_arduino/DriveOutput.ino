@@ -5,12 +5,12 @@ void DriveOutput() {
   long now = millis();
   // Set the output
   // "on time" is proportional to the PID output
-  if (now - windowStartTime > WindowSize) {  // time to shift the Relay Window
-    windowStartTime += WindowSize;
+  if (now - windowStartTime > WINDOW_SIZE) {  // time to shift the Relay Window
+    windowStartTime += WINDOW_SIZE;
   }
   if ((onTime > 100) && (onTime > (now - windowStartTime))) {
-    digitalWrite(co2reg, LOW);  // OPEN CO2 solenoid
+    digitalWrite(CO2_REG, LOW);  // OPEN CO2 solenoid
   } else {
-    digitalWrite(co2reg, HIGH);  // CLOSE CO2 solenoid
+    digitalWrite(CO2_REG, HIGH);  // CLOSE CO2 solenoid
   }
 }

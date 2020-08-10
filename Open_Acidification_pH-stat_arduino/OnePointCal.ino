@@ -49,7 +49,7 @@ void OnePointCal() {
   lcd.print(Key);
   Serial.print(F("Thousanths place: "));
   Serial.println(Key);
-  midcalstring = premidcalstring + String(midBuffer);
+  midcalstring = PRE_MID_CAL_STRING + String(midBuffer);
   Serial.print(midcalstring);
 
   lcd.clear();

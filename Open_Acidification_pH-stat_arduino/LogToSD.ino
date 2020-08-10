@@ -48,8 +48,8 @@ void LogToSD() {
 
   myFile = SD.open(formattedFileName, FILE_WRITE);
   // create information string with timestamp
-  char formattedSDString[recordLength];
-  memset(formattedSDString, 0, recordLength);
+  char formattedSDString[RECORD_LENGTH];
+  memset(formattedSDString, 0, RECORD_LENGTH);
   char timeBuffer[100];
   memset(timeBuffer, 0, 100);
   char varBuffer[100];
@@ -101,8 +101,8 @@ void LogToSD() {
   Serial.print("formattedSDString SIZE: ");
   Serial.println(strlen(formattedSDString));
   Serial.print("ADDING: ");
-  Serial.println(recordLength - strlen(formattedSDString));
-  for (strlen(formattedSDString); strlen(formattedSDString) < recordLength;) {
+  Serial.println(RECORD_LENGTH - strlen(formattedSDString));
+  for (strlen(formattedSDString); strlen(formattedSDString) < RECORD_LENGTH;) {
     strcat(formattedSDString, " ");
   }
   Serial.print("AFTER EDIT formattedSDString SIZE: ");

@@ -51,7 +51,7 @@ void TwoPointCal() {
   lcd.print(Key);
   Serial.print(F("Thousanths place: "));
   Serial.println(Key);
-  midcalstring = premidcalstring + String(midBuffer);
+  midcalstring = PRE_MID_CAL_STRING + String(midBuffer);
   Serial.print(midcalstring);
 
   lcd.clear();
@@ -139,7 +139,7 @@ void TwoPointCal() {
   lcd.print(Key);
   Serial.print(F("Thousanths place: "));
   Serial.println(Key);
-  lowcalstring = prelowcalstring + String(lowBuffer);
+  lowcalstring = PRE_LOW_CAL_STRING + String(lowBuffer);
   Serial.print(lowcalstring);
 
   lcd.clear();

@@ -10,7 +10,7 @@ void printLastLines(String dirName, EthernetClient client, long lastLines) {
     Serial.println(lineDirName);
     long lineCount = readLineFromSD(lineDirName.c_str(), 0, 10);
     long startingLine = lineCount - lastLines;
-    long startingByte = startingLine * (recordLength + 2);
+    long startingByte = startingLine * (RECORD_LENGTH + 2);
     if (myFile.seek(startingByte)) {
       Serial.println("SUCCESSFUL SEEK");
       printHeader(client, 200);

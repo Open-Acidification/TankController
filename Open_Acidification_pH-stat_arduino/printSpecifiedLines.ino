@@ -7,7 +7,7 @@ void printSpecifiedLines(String dirName, EthernetClient client, long startingLin
     Serial.println(numLines);
     int printedLines = 0;
     // seek starting byte
-    long startingByte = startingLine * (recordLength + 2);
+    long startingByte = startingLine * (RECORD_LENGTH + 2);
     if (myFile.seek(startingByte)) {
       Serial.println("SUCCESSFUL SEEK");
       printHeader(client, 200);

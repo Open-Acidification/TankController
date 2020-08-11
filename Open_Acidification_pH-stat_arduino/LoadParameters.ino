@@ -3,14 +3,14 @@
 // ************************************************
 void LoadParameters() {
   // Load from EEPROM
-  phset = EEPROM_readDouble(pHAddress);
-  tempset = EEPROM_readDouble(tempAddress);
-  Kp = EEPROM_readDouble(KpAddress);
-  Ki = EEPROM_readDouble(KiAddress);
-  Kd = EEPROM_readDouble(KdAddress);
-  heat = EEPROM_readDouble(heatAddress);
-  amplitude = EEPROM_readDouble(amplitudeAddress);
-  frequency = EEPROM_readDouble(frequencyAddress);
+  phset = EEPROM_readDouble(PH_ADDRESS);
+  tempset = EEPROM_readDouble(TEMP_ADDRESS);
+  Kp = EEPROM_readDouble(KP_ADDRESS);
+  Ki = EEPROM_readDouble(KI_ADDRESS);
+  Kd = EEPROM_readDouble(KD_ADDRESS);
+  heat = EEPROM_readDouble(HEAT_ADDRESS);
+  amplitude = EEPROM_readDouble(AMPLITUDE_ADDRESS);
+  frequency = EEPROM_readDouble(FREQUENCY_ADDRESS);
   // Use defaults if EEPROM values are invalid
   if (isnan(phset)) {
     phset = 8.1;

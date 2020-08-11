@@ -1,8 +1,8 @@
 void handleSeries(char* body, EthernetClient client) {
   StaticJsonDocument<1000> doc;
   DeserializationError error = deserializeJson(doc, body);
-  char goalRecordString[goalRecordLength];
-  memset(goalRecordString, 0, goalRecordLength);
+  char goalRecordString[GOAL_RECORD_LENGTH];
+  memset(goalRecordString, 0, GOAL_RECORD_LENGTH);
   if (error) {
     printHeader(client, 400);
 
@@ -36,10 +36,10 @@ void handleSeries(char* body, EthernetClient client) {
 
     if (phSeriesIsValid) {
       phSeriesPointer = 0;
-      EEPROM_writeDouble(phIntervalAddress, phInterval);
-      EEPROM_writeDouble(phDelayAddress, phDelay);
-      EEPROM_writeDouble(phSeriesSizeAddress, phSeriesSize);
-      EEPROM_writeDouble(phSeriesPointerAddress, phSeriesPointer);
+      EEPROM_writeDouble(PH_INTERVAL_ADDRESS, phInterval);
+      EEPROM_writeDouble(PH_DELAY_ADDRESS, phDelay);
+      EEPROM_writeDouble(PH_SERIES_SIZE_ADDRESS, phSeriesSize);
+      EEPROM_writeDouble(PH_SERIES_POINTER_ADDRESS, phSeriesPointer);
       pinMode(10, OUTPUT);
       digitalWrite(10, HIGH);
       SD.remove("pv.txt");
@@ -48,7 +48,7 @@ void handleSeries(char* body, EthernetClient client) {
       for (JsonVariant v : phValueJsonArray) {
         phValueArray[counter++] = v.as<long>();
         itoa(phValueArray[counter - 1], goalRecordString, 10);
-        for (strlen(goalRecordString); strlen(goalRecordString) < goalRecordLength;) {
+        for (strlen(goalRecordString); strlen(goalRecordString) < GOAL_RECORD_LENGTH;) {
           strcat(goalRecordString, " ");
         }
         client.println(goalRecordString);
@@ -60,11 +60,11 @@ void handleSeries(char* body, EthernetClient client) {
       SD.remove("/pt.txt");
       seriesFile = SD.open("/pt.txt", FILE_WRITE);  // pH times
       client.println("pH times: ");
-      memset(goalRecordString, 0, goalRecordLength);
+      memset(goalRecordString, 0, GOAL_RECORD_LENGTH);
       for (JsonVariant v : phTimeJsonArray) {
         phTimeArray[counter++] = v.as<long>();
         itoa(phTimeArray[counter - 1], goalRecordString, 10);
-        for (strlen(goalRecordString); strlen(goalRecordString) < goalRecordLength;) {
+        for (strlen(goalRecordString); strlen(goalRecordString) < GOAL_RECORD_LENGTH;) {
           strcat(goalRecordString, " ");
         }
         client.println(goalRecordString);
@@ -108,18 +108,18 @@ void handleSeries(char* body, EthernetClient client) {
     if (tempSeriesIsValid) {
       counter = 0;
       tempSeriesPointer = 0;
-      EEPROM_writeDouble(tempIntervalAddress, tempInterval);
-      EEPROM_writeDouble(tempDelayAddress, tempDelay);
-      EEPROM_writeDouble(tempSeriesSizeAddress, tempSeriesSize);
-      EEPROM_writeDouble(tempSeriesPointerAddress, tempSeriesPointer);
+      EEPROM_writeDouble(TEMP_INTERVAL_ADDRESS, tempInterval);
+      EEPROM_writeDouble(TEMP_DELAY_ADDRESS, tempDelay);
+      EEPROM_writeDouble(TEMP_SERIES_SIZE_ADDRESS, tempSeriesSize);
+      EEPROM_writeDouble(TEMP_SERIES_POINTER_ADDRESS, tempSeriesPointer);
       SD.remove("/tv.txt");
       seriesFile = SD.open("/tv.txt", FILE_WRITE);  // temperature values
       client.println("temp values: ");
-      memset(goalRecordString, 0, goalRecordLength);
+      memset(goalRecordString, 0, GOAL_RECORD_LENGTH);
       for (JsonVariant v : tempValueJsonArray) {
         tempValueArray[counter++] = v.as<long>();
         itoa(tempValueArray[counter - 1], goalRecordString, 10);
-        for (strlen(goalRecordString); strlen(goalRecordString) < goalRecordLength;) {
+        for (strlen(goalRecordString); strlen(goalRecordString) < GOAL_RECORD_LENGTH;) {
           strcat(goalRecordString, " ");
         }
         client.println(goalRecordString);
@@ -131,11 +131,11 @@ void handleSeries(char* body, EthernetClient client) {
       SD.remove("/tt.txt");
       seriesFile = SD.open("/tt.txt", FILE_WRITE);  // temperature times
       client.println("temp values: ");
-      memset(goalRecordString, 0, goalRecordLength);
+      memset(goalRecordString, 0, GOAL_RECORD_LENGTH);
       for (JsonVariant v : tempTimeJsonArray) {
         tempTimeArray[counter++] = v.as<long>();
         itoa(tempTimeArray[counter - 1], goalRecordString, 10);
-        for (strlen(goalRecordString); strlen(goalRecordString) < goalRecordLength;) {
+        for (strlen(goalRecordString); strlen(goalRecordString) < GOAL_RECORD_LENGTH;) {
           strcat(goalRecordString, " ");
         }
         client.println(goalRecordString);

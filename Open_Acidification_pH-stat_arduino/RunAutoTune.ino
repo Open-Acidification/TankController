@@ -12,9 +12,9 @@ void RunAutoTune() {
   ATuneModeRemember = myPID.GetMode();
 
   // set up the auto-tune parameters
-  aTune.SetNoiseBand(aTuneNoise);
-  aTune.SetOutputStep(aTuneStep);
-  aTune.SetLookbackSec((int)aTuneLookBack);
+  aTune.SetNoiseBand(ATUNE_NOISE);
+  aTune.SetOutputStep(ATUNE_STEP);
+  aTune.SetLookbackSec((int)ATUNE_LOOK_BACK);
   while (tuning) {
     if (tuning) {
       byte val = (aTune.Runtime());
@@ -39,9 +39,9 @@ void RunAutoTune() {
         myPID.SetMode(ATuneModeRemember);
 
         // Persist any changed parameters to EEPROM
-        EEPROM_writeDouble(KpAddress, Kp);
-        EEPROM_writeDouble(KiAddress, Ki);
-        EEPROM_writeDouble(KdAddress, Kd);
+        EEPROM_writeDouble(KP_ADDRESS, Kp);
+        EEPROM_writeDouble(KI_ADDRESS, Ki);
+        EEPROM_writeDouble(KD_ADDRESS, Kd);
       }
     }
     char atune_key = customKeypad.getKey();

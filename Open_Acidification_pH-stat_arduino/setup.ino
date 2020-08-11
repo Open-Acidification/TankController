@@ -34,14 +34,14 @@ void setup() {
 
   LoadParameters();
   Setpoint = -1 * phset;
-  lcd.createChar(0, ol1);
-  lcd.createChar(1, ol2);
-  lcd.createChar(2, ol3);
-  lcd.createChar(3, ol4);
-  lcd.createChar(4, ol5);
-  lcd.createChar(5, ol6);
-  lcd.createChar(6, ol7);
-  lcd.createChar(7, ol8);
+  lcd.createChar(0, OL1);
+  lcd.createChar(1, OL2);
+  lcd.createChar(2, OL3);
+  lcd.createChar(3, OL4);
+  lcd.createChar(4, OL5);
+  lcd.createChar(5, OL6);
+  lcd.createChar(6, OL7);
+  lcd.createChar(7, OL8);
   lcd.begin(16, 2);
   lcd.write(byte(0));
   lcd.write(byte(1));
@@ -65,10 +65,10 @@ void setup() {
   Serial1.print('\r');        // add a <CR> to the end of the string
   Serial1.print("C,0");       // Reset pH stamp to continuous measurement: once per second
   Serial1.print('\r');        // add a <CR> to the end of the string
-  pinMode(chiller, OUTPUT);
-  pinMode(co2reg, OUTPUT);
-  digitalWrite(chiller, HIGH);
-  digitalWrite(co2reg, HIGH);
+  pinMode(CHILLER, OUTPUT);
+  pinMode(CO2_REG, OUTPUT);
+  digitalWrite(CHILLER, HIGH);
+  digitalWrite(CO2_REG, HIGH);
 
   /// Check if ethernet is connected/////////////////////////////////////////////////////////////////////
   int ethanswer = 0;
@@ -132,7 +132,7 @@ void setup() {
   }
 
   // loading Tank ID///////////////////////////////////////////////////////////////////////////////////////
-  tankid = EEPROM_readDouble(tankidAddress);
+  tankid = EEPROM_readDouble(TANKID_ADDRESS);
   if (isnan(tankid)) {
     lcd.clear();
     lcd.setCursor(0, 0);
@@ -159,79 +159,79 @@ void setup() {
     Serial.print(F("Ones place: "));
     Serial.println(Key);
 
-    EEPROM_writeDouble(tankidAddress, tankid);
+    EEPROM_writeDouble(TANKID_ADDRESS, tankid);
     delay(1000);
     Serial.println(F("Tank ID change End"));
   }
 
   // load granularity
-  sensor_interval = EEPROM_readDouble(granularityAddress);
+  sensor_interval = EEPROM_readDouble(GRANULARITY_ADDRESS);
   if (isnan(sensor_interval)) {
     sensor_interval = 800;  // default granularity for interval between logging
-    EEPROM_writeDouble(granularityAddress, sensor_interval);
+    EEPROM_writeDouble(GRANULARITY_ADDRESS, sensor_interval);
   }
 
   // load maxDataAge
-  maxDataAge = EEPROM_readDouble(maxDataAgeAddress);
+  maxDataAge = EEPROM_readDouble(MAX_DATA_AGE_ADDRESS);
   if (isnan(maxDataAge)) {
     maxDataAge = 800;  // default max data age
-    EEPROM_writeDouble(maxDataAgeAddress, maxDataAge);
+    EEPROM_writeDouble(MAX_DATA_AGE_ADDRESS, maxDataAge);
   }
 
-  // load phSeriesSizeAddress;
-  phSeriesSize = EEPROM_readDouble(phSeriesSizeAddress);
+  // load PH_SERIES_SIZE_ADDRESS;
+  phSeriesSize = EEPROM_readDouble(PH_SERIES_SIZE_ADDRESS);
   if (isnan(phSeriesSize)) {
     phSeriesSize = 0;
-    EEPROM_writeDouble(phSeriesSizeAddress, phSeriesSize);
+    EEPROM_writeDouble(PH_SERIES_SIZE_ADDRESS, phSeriesSize);
   }
 
-  // load phSeriesPointerAddress;
-  phSeriesPointer = EEPROM_readDouble(phSeriesPointerAddress);
+  // load PH_SERIES_POINTER_ADDRESS;
+  phSeriesPointer = EEPROM_readDouble(PH_SERIES_POINTER_ADDRESS);
   if (isnan(phSeriesPointer)) {
     phSeriesPointer = 0;
-    EEPROM_writeDouble(phSeriesPointerAddress, phSeriesPointer);
+    EEPROM_writeDouble(PH_SERIES_POINTER_ADDRESS, phSeriesPointer);
   }
 
-  // load tempSeriesSizeAddress;
-  tempSeriesSize = EEPROM_readDouble(tempSeriesSizeAddress);
+  // load TEMP_SERIES_SIZE_ADDRESS;
+  tempSeriesSize = EEPROM_readDouble(TEMP_SERIES_SIZE_ADDRESS);
   if (isnan(tempSeriesSize)) {
     tempSeriesSize = 0;
-    EEPROM_writeDouble(tempSeriesSizeAddress, tempSeriesSize);
+    EEPROM_writeDouble(TEMP_SERIES_SIZE_ADDRESS, tempSeriesSize);
   }
 
-  // load tempSeriesPointerAddress;
-  tempSeriesPointer = EEPROM_readDouble(tempSeriesPointerAddress);
+  // load TEMP_SERIES_POINTER_ADDRESS;
+  tempSeriesPointer = EEPROM_readDouble(TEMP_SERIES_POINTER_ADDRESS);
   if (isnan(tempSeriesPointer)) {
     tempSeriesPointer = 0;
-    EEPROM_writeDouble(tempSeriesPointerAddress, tempSeriesPointer);
+    EEPROM_writeDouble(TEMP_SERIES_POINTER_ADDRESS, tempSeriesPointer);
   }
 
   // load phInterval;
-  phInterval = EEPROM_readDouble(phIntervalAddress);
-  if (isnan(phIntervalAddress)) {
+  phInterval = EEPROM_readDouble(PH_INTERVAL_ADDRESS);
+  if (isnan(PH_INTERVAL_ADDRESS)) {
     phInterval = 0;
-    EEPROM_writeDouble(phIntervalAddress, phInterval);
+    EEPROM_writeDouble(PH_INTERVAL_ADDRESS, phInterval);
   }
 
   // load phDelay;
-  phDelay = EEPROM_readDouble(phDelayAddress);
-  if (isnan(phDelayAddress)) {
+  phDelay = EEPROM_readDouble(PH_DELAY_ADDRESS);
+  if (isnan(PH_DELAY_ADDRESS)) {
     phDelay = 0;
-    EEPROM_writeDouble(phDelayAddress, phDelay);
+    EEPROM_writeDouble(PH_DELAY_ADDRESS, phDelay);
   }
 
   // load tempInterval;
-  tempInterval = EEPROM_readDouble(tempIntervalAddress);
-  if (isnan(tempIntervalAddress)) {
+  tempInterval = EEPROM_readDouble(TEMP_INTERVAL_ADDRESS);
+  if (isnan(TEMP_INTERVAL_ADDRESS)) {
     tempInterval = 0;
-    EEPROM_writeDouble(tempIntervalAddress, tempInterval);
+    EEPROM_writeDouble(TEMP_INTERVAL_ADDRESS, tempInterval);
   }
 
   // load tempDelay;
-  tempDelay = EEPROM_readDouble(tempDelayAddress);
-  if (isnan(tempDelayAddress)) {
+  tempDelay = EEPROM_readDouble(TEMP_DELAY_ADDRESS);
+  if (isnan(TEMP_DELAY_ADDRESS)) {
     tempDelay = 0;
-    EEPROM_writeDouble(tempDelayAddress, tempDelay);
+    EEPROM_writeDouble(TEMP_DELAY_ADDRESS, tempDelay);
   }
 
   /// Starting the SD Card//////////////////////////////////////////////////////////////////////////////////
@@ -248,7 +248,7 @@ void setup() {
   myPID.SetTunings(Kp, Ki, Kd);
   myPID.SetMode(AUTOMATIC);
   myPID.SetSampleTime(1000);
-  myPID.SetOutputLimits(0, WindowSize);
+  myPID.SetOutputLimits(0, WINDOW_SIZE);
 
   noInterrupts();  // disable all interrupts
   // Run timer2 interrupt every 15 ms
@@ -260,14 +260,14 @@ void setup() {
   interrupts();
 
   // loading Temp Correction////////////////////////////////////////////////////////////////////////////////////////
-  tempcorr = EEPROM_readDouble(tempcorrAddress);
+  tempcorr = EEPROM_readDouble(TEMP_CORR_ADDRESS);
 
   if (isnan(tempcorr)) {
     tempcorr = 0;
   }
 
   // Filling array for temp smoothing///////////////////////////////////////////////////////////////////////
-  for (int thisReading = 0; thisReading < numReadings; thisReading++) {
+  for (int thisReading = 0; thisReading < NUM_READINGS; thisReading++) {
     readings[thisReading] = 0;
   }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////

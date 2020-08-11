@@ -4,7 +4,7 @@
 void packData() {
   data += "";
   data += "GET /pushingbox?devid=";  // GET request query to pushingbox API
-  data += DevID;                     // GET request query to pushingbox API
+  data += DEV_ID;                     // GET request query to pushingbox API
   data += "&tankid=";                // GET request query to pushingbox API
   data += tankid;
   data += "&tempData=";  // GET request query to pushingbox API

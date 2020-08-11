@@ -3,7 +3,7 @@ void GetCalSlope() {
   Serial.println(F("Shut Down pH Reading"));
   delay(1000);
   Serial1.print(F("Slope,?"));  // Sending request for Calibration Slope
-  Serial1.print('\r');       // add a <CR> to the end of the string
+  Serial1.print('\r');          // add a <CR> to the end of the string
   Serial.println(F("Asked for slope"));
   WaitForString = true;
   slope = "";

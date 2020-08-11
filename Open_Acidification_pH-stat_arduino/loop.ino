@@ -182,7 +182,7 @@ void loop() {
       if (answerkey == '2') {
         Serial.println(F("pressed 2"));
         Serial1.print(F("Cal,clear"));  // send Calibration clear command to EZO pH stamp
-        Serial1.print('\r');         // add a <CR> to the end of the string
+        Serial1.print('\r');            // add a <CR> to the end of the string
         answer = 1;
       }
       timdiff = millis() - queststart;
@@ -555,7 +555,7 @@ void loop() {
       readIndex = readIndex + 1;            // advance to the next position in the array
 
       if (readIndex >= NUM_READINGS) {  // if we're at the end of the array...
-        readIndex = 0;                 // ...wrap around to the beginning
+        readIndex = 0;                  // ...wrap around to the beginning
       }
 
       temp = total / NUM_READINGS;  // calculate the average

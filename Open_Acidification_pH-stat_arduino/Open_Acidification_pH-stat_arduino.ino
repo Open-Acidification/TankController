@@ -45,8 +45,8 @@ const double SOFTVERS = 0.197;  // Software Version
 
 // byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; //Setting MAC Address
 const char API_SERVER[] = "api.pushingbox.com";  // pushingbox API server
-IPAddress ip(192, 168, 1, 2);             // Arduino IP address. Only used when DHCP is turned off.
-EthernetClient client;                    // define 'client' as object
+IPAddress ip(192, 168, 1, 2);                    // Arduino IP address. Only used when DHCP is turned off.
+EthernetClient client;                           // define 'client' as object
 EthernetServer ethernetServer(80);
 int requestCharCounter = 0;  // for parsing html requests
 String data;                 // GET query with data
@@ -56,9 +56,9 @@ float interval = 1200000;  // interval at which to update Google Sheets (millise
 unsigned long previousMillis =
     0 - interval + 30000;  // will store last time Google Sheets was updated (-interval+30000 sets first upload for 30 seconds after startup. This eases troubleshooting)
 unsigned long chiller_previousMillis = 0;  // will store last time chiller state was checked
-const float CHILLER_INTERVAL = 30000;            // interval at which to change chiller state (milliseconds)
+const float CHILLER_INTERVAL = 30000;      // interval at which to change chiller state (milliseconds)
 // float SD_interval = 86400000;                     // interval at which to start a new log file (milliseconds) (formerly 1 day)
-const float SD_INTERVAL = 3600000;              // log to SD each hour
+const float SD_INTERVAL = 3600000;        // log to SD each hour
 unsigned long sensor_previousMillis = 0;  // will store last time sensor readings were taken
 float sensor_interval;                    // interval at which to start a new log file (milliseconds)
 unsigned long second_previousMillis = 0;
@@ -141,9 +141,9 @@ char htmlRequestBuffer[HTML_REQUEST_BUFFER_SIZE];
 const int NUM_READINGS = 10;
 
 double readings[NUM_READINGS];  // the readings from the analog input
-volatile int readIndex = 0;    // the index of the current reading
-volatile double total = 0;     // the running total
-volatile double tempnow = 0;   // the average
+volatile int readIndex = 0;     // the index of the current reading
+volatile double total = 0;      // the running total
+volatile double tempnow = 0;    // the average
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // EEPROM addresses for persisted data///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -158,8 +158,8 @@ const int MAC_ADDRESS = 44;
 const int HEAT_ADDRESS = 52;
 const int AMPLITUDE_ADDRESS = 56;
 const int FREQUENCY_ADDRESS = 60;
-const int GRANULARITY_ADDRESS = 64;  // granularity for SD logging interval
-const int MAX_DATA_AGE_ADDRESS = 68;   // max data age for SD card
+const int GRANULARITY_ADDRESS = 64;   // granularity for SD logging interval
+const int MAX_DATA_AGE_ADDRESS = 68;  // max data age for SD card
 const int PH_SERIES_SIZE_ADDRESS = 72;
 const int PH_SERIES_POINTER_ADDRESS = 76;
 const int TEMP_SERIES_SIZE_ADDRESS = 80;
@@ -198,7 +198,7 @@ PID_ATune aTune(&Input, &Output);
 
 // Stuff for retreiving time/////////////////////////////////////////////////////////////////////////////////////////////////////////
 IPAddress timeServer(132, 163, 97, 1);  // utcnist.colorado.edu
-const int TIME_ZONE = -7;                // Pacific Daylight Time (USA)
+const int TIME_ZONE = -7;               // Pacific Daylight Time (USA)
 EthernetUDP Udp;
 unsigned int localPort = 8888;  // local port to listen for UDP packets
 // End Time////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

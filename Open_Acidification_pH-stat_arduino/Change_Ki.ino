@@ -19,138 +19,52 @@ void Change_Ki() {
     Key = customKeypad.waitForKey();
     Serial.print(F("Key: "));
     Serial.println(Key);
-    if (Key == '1') {
-      Serial.println(F("in the 1 if statement"));
-      KiTemp = KiTemp + 10000;
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F("Ki:"));
-      lcd.setCursor(0, 1);
-      lcd.print(KiTemp, 2);
-      Serial.print(F("New Ki: "));
-      Serial.println(KiTemp);
-    }
-    if (Key == '4') {
-      Serial.println(F("in the 4 if statement"));
-      KiTemp = KiTemp - 10000;
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F("Ki:"));
-      lcd.setCursor(0, 1);
-      lcd.print(KiTemp, 2);
-      Serial.print(F("New Ki: "));
-      Serial.println(KiTemp);
-    }
 
-    if (Key == '2') {
-      KiTemp = KiTemp + 1000;
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F("Ki:"));
-      lcd.setCursor(0, 1);
-      lcd.print(KiTemp, 2);
-      Serial.print(F("New Ki: "));
-      Serial.println(KiTemp);
+    switch (Key) {
+      case '1':
+        KiTemp = KiTemp + 10000;
+        break;
+      case '4':
+        KiTemp = KiTemp - 10000;
+        break;
+      case '2':
+        KiTemp = KiTemp + 1000;
+        break;
+      case '5':
+        KiTemp = KiTemp - 1000;
+        break;
+      case '3':
+        KiTemp = KiTemp + 100;
+        break;
+      case '6':
+        KiTemp = KiTemp - 100;
+        break;
+      case 'A':
+        KiTemp = KiTemp + 10;
+        break;
+      case 'B':
+        KiTemp = KiTemp - 10;
+        break;
+      case '7':
+        KiTemp = KiTemp + 1;
+        break;
+      case '*':
+        KiTemp = KiTemp - 1;
+        break;
+      case '8':
+        KiTemp = KiTemp + 0.1;
+        break;
+      case '0':
+        KiTemp = KiTemp - 0.1;
+        break;
     }
-
-    if (Key == '5') {
-      KiTemp = KiTemp - 1000;
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F("Ki:"));
-      lcd.setCursor(0, 1);
-      lcd.print(KiTemp, 2);
-      Serial.print(F("New Ki: "));
-      Serial.println(KiTemp);
-    }
-
-    if (Key == '3') {
-      KiTemp = KiTemp + 100;
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F("Ki:"));
-      lcd.setCursor(0, 1);
-      lcd.print(KiTemp, 2);
-      Serial.print(F("New Ki: "));
-      Serial.println(KiTemp);
-    }
-
-    if (Key == '6') {
-      KiTemp = KiTemp - 100;
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F("Ki:"));
-      lcd.setCursor(0, 1);
-      lcd.print(KiTemp, 2);
-      Serial.print(F("New Ki: "));
-      Serial.println(KiTemp);
-    }
-
-    if (Key == 'A') {
-      KiTemp = KiTemp + 10;
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F("Ki:"));
-      lcd.setCursor(0, 1);
-      lcd.print(KiTemp, 2);
-      Serial.print(F("New Ki: "));
-      Serial.println(KiTemp);
-    }
-
-    if (Key == 'B') {
-      KiTemp = KiTemp - 10;
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F("Ki:"));
-      lcd.setCursor(0, 1);
-      lcd.print(KiTemp, 2);
-      Serial.print(F("New Ki: "));
-      Serial.println(KiTemp);
-    }
-
-    if (Key == '7') {
-      KiTemp = KiTemp + 1;
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F("Ki:"));
-      lcd.setCursor(0, 1);
-      lcd.print(KiTemp, 2);
-      Serial.print(F("New Ki: "));
-      Serial.println(KiTemp);
-    }
-
-    if (Key == '*') {
-      KiTemp = KiTemp - 1;
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F("Ki:"));
-      lcd.setCursor(0, 1);
-      lcd.print(KiTemp, 2);
-      Serial.print(F("New Ki: "));
-      Serial.println(KiTemp);
-    }
-
-    if (Key == '8') {
-      KiTemp = KiTemp + 0.1;
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F("Ki:"));
-      lcd.setCursor(0, 1);
-      lcd.print(KiTemp, 2);
-      Serial.print(F("New Ki: "));
-      Serial.println(KiTemp);
-    }
-
-    if (Key == '0') {
-      KiTemp = KiTemp - 0.1;
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F("Ki:"));
-      lcd.setCursor(0, 1);
-      lcd.print(KiTemp, 2);
-      Serial.print(F("New Ki: "));
-      Serial.println(KiTemp);
-    }
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(F("Ki:"));
+    lcd.setCursor(0, 1);
+    lcd.print(KiTemp, 2);
+    Serial.print(F("New Ki: "));
+    Serial.println(KiTemp);
   }
   Serial.println(F("out of the Ki adjusting while loop"));
   lcd.clear();

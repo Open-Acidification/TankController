@@ -13,136 +13,52 @@ void Change_Kp() {
   Key = NO_KEY;
   while (Key != '#') {
     Key = customKeypad.waitForKey();
-    if (Key == '1') {
-      KpTemp = KpTemp + 10000;
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F("Kp:"));
-      lcd.setCursor(0, 1);
-      lcd.print(KpTemp, 2);
-      Serial.print(F("New Kp: "));
-      Serial.println(KpTemp);
-    }
-    if (Key == '4') {
-      KpTemp = KpTemp - 10000;
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F("Kp:"));
-      lcd.setCursor(0, 1);
-      lcd.print(KpTemp, 2);
-      Serial.print(F("New Kp: "));
-      Serial.println(KpTemp);
-    }
 
-    if (Key == '2') {
-      KpTemp = KpTemp + 1000;
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F("Kp:"));
-      lcd.setCursor(0, 1);
-      lcd.print(KpTemp, 2);
-      Serial.print(F("New Kp: "));
-      Serial.println(KpTemp);
+    switch (Key) {
+      case '1':
+        KpTemp = KpTemp + 10000;
+        break;
+      case '4':
+        KpTemp = KpTemp - 10000;
+        break;
+      case '2':
+        KpTemp = KpTemp + 1000;
+        break;
+      case '5':
+        KpTemp = KpTemp - 1000;
+        break;
+      case '3':
+        KpTemp = KpTemp + 100;
+        break;
+      case '6':
+        KpTemp = KpTemp - 100;
+        break;
+      case 'A':
+        KpTemp = KpTemp + 10;
+        break;
+      case 'B':
+        KpTemp = KpTemp - 10;
+        break;
+      case '7':
+        KpTemp = KpTemp + 1;
+        break;
+      case '*':
+        KpTemp = KpTemp - 1;
+        break;
+      case '8':
+        KpTemp = KpTemp + 0.1;
+        break;
+      case '0':
+        KpTemp = KpTemp - 0.1;
+        break;
     }
-
-    if (Key == '5') {
-      KpTemp = KpTemp - 1000;
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F("Kp:"));
-      lcd.setCursor(0, 1);
-      lcd.print(KpTemp, 2);
-      Serial.print(F("New Kp: "));
-      Serial.println(KpTemp);
-    }
-
-    if (Key == '3') {
-      KpTemp = KpTemp + 100;
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F("Kp:"));
-      lcd.setCursor(0, 1);
-      lcd.print(KpTemp, 2);
-      Serial.print(F("New Kp: "));
-      Serial.println(KpTemp);
-    }
-
-    if (Key == '6') {
-      KpTemp = KpTemp - 100;
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F("Kp:"));
-      lcd.setCursor(0, 1);
-      lcd.print(KpTemp, 2);
-      Serial.print(F("New Kp: "));
-      Serial.println(KpTemp);
-    }
-
-    if (Key == 'A') {
-      KpTemp = KpTemp + 10;
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F("Kp:"));
-      lcd.setCursor(0, 1);
-      lcd.print(KpTemp, 2);
-      Serial.print(F("New Kp: "));
-      Serial.println(KpTemp);
-    }
-
-    if (Key == 'B') {
-      KpTemp = KpTemp - 10;
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F("Kp:"));
-      lcd.setCursor(0, 1);
-      lcd.print(KpTemp, 2);
-      Serial.print(F("New Kp: "));
-      Serial.println(KpTemp);
-    }
-
-    if (Key == '7') {
-      KpTemp = KpTemp + 1;
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F("Kp:"));
-      lcd.setCursor(0, 1);
-      lcd.print(KpTemp, 2);
-      Serial.print(F("New Kp: "));
-      Serial.println(KpTemp);
-    }
-
-    if (Key == '*') {
-      KpTemp = KpTemp - 1;
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F("Kp:"));
-      lcd.setCursor(0, 1);
-      lcd.print(KpTemp, 2);
-      Serial.print(F("New Kp: "));
-      Serial.println(KpTemp);
-    }
-
-    if (Key == '8') {
-      KpTemp = KpTemp + 0.1;
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F("Kp:"));
-      lcd.setCursor(0, 1);
-      lcd.print(KpTemp, 2);
-      Serial.print(F("New Kp: "));
-      Serial.println(KpTemp);
-    }
-
-    if (Key == '0') {
-      KpTemp = KpTemp - 0.1;
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F("Kp:"));
-      lcd.setCursor(0, 1);
-      lcd.print(KpTemp, 2);
-      Serial.print(F("New Kp: "));
-      Serial.println(KpTemp);
-    }
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(F("Kp:"));
+    lcd.setCursor(0, 1);
+    lcd.print(KpTemp, 2);
+    Serial.print(F("New Kp: "));
+    Serial.println(KpTemp);
   }
   lcd.clear();
   lcd.setCursor(0, 0);

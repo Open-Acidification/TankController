@@ -13,7 +13,7 @@ void Get_Temperature() {
   readIndex = readIndex + 1;            // advance to the next position in the array
 
   if (readIndex >= NUM_READINGS) {  // if we're at the end of the array...
-    readIndex = 0;                 // ...wrap around to the beginning
+    readIndex = 0;                  // ...wrap around to the beginning
   }
 
   temp = total / NUM_READINGS;  // calculate the average

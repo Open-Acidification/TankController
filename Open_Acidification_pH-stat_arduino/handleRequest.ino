@@ -1,7 +1,7 @@
 #include <string>
 
 void handleRequest(EthernetClient client) {
-  Serial.println("new client");
+  Serial.println(F("new client"));
 
   // an http request ends with a blank line
   boolean currentLineIsBlank = true;
@@ -30,22 +30,22 @@ void handleRequest(EthernetClient client) {
         }
 
         Serial.println();
-        Serial.println("Parsing request");
+        Serial.println(F("Parsing request"));
 
-        Serial.println("header:");
+        Serial.println(F("header:"));
         Serial.println(header);
-        Serial.println("postData:");
+        Serial.println(F("postData:"));
         Serial.println(postData);
 
         requestType = strtok(header.c_str(), " ");
         endpoint = String(strtok(NULL, " "));
         requestProtocol = strtok(NULL, " ");
 
-        Serial.println("requestType:");
+        Serial.println(F("requestType:"));
         Serial.println(requestType);
-        Serial.println("endpoint:");
+        Serial.println(F("endpoint:"));
         Serial.println(endpoint);
-        Serial.println("requestProtocol:");
+        Serial.println(F("requestProtocol:"));
         Serial.println(requestProtocol);
         break;
       } else if (c == '\n') {
@@ -64,15 +64,15 @@ void handleRequest(EthernetClient client) {
     } else if (endpoint.startsWith("/series")) {
       if (startsWith(requestType, "POST")) {
         // upload new timeseries
-        Serial.println("POST TIMESERIES");
+        Serial.println(F("POST TIMESERIES"));
         handleSeries(postData.c_str(), client);
       } else if (startsWith(requestType, "GET")) {
         // return current timeseries
-        Serial.println("GET TIMESERIES");
+        Serial.println(F("GET TIMESERIES"));
         handleGoal(client);
       } else {
         // wrong request type
-        Serial.println("WRONG TIMESERIES");
+        Serial.println(F("WRONG TIMESERIES"));
         printHeader(client, 400);
       }
     } else if (endpoint.startsWith("/device")) {

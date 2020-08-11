@@ -29,7 +29,7 @@ void handleLines(String endpoint, EthernetClient client) {
       break;
     default:
       printHeader(client, 400);
-      client.println("REQUIRES FULL YEAR/MONTH/DAY/HOUR SPECIFICATION");
+      client.println(F("REQUIRES FULL YEAR/MONTH/DAY/HOUR SPECIFICATION"));
       break;
   }
 }

@@ -61,9 +61,9 @@ void setup() {
   Serial1.begin(9600);        // set baud rate for the software serial port to 9600
   inputstring.reserve(10);    // set aside some bytes for receiving data from the PC
   sensorstring.reserve(30);   // set aside some bytes for receiving data from Atlas Scientific pH EZO
-  Serial1.print("*OK,0");     // Turn off the returning of OK after command to EZO pH
+  Serial1.print(F("*OK,0"));     // Turn off the returning of OK after command to EZO pH
   Serial1.print('\r');        // add a <CR> to the end of the string
-  Serial1.print("C,0");       // Reset pH stamp to continuous measurement: once per second
+  Serial1.print(F("C,0"));       // Reset pH stamp to continuous measurement: once per second
   Serial1.print('\r');        // add a <CR> to the end of the string
   pinMode(CHILLER, OUTPUT);
   pinMode(CO2_REG, OUTPUT);

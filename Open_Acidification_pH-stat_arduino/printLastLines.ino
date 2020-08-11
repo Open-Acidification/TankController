@@ -14,13 +14,13 @@ void printLastLines(String dirName, EthernetClient client, long lastLines) {
     if (myFile.seek(startingByte)) {
       Serial.println(F("SUCCESSFUL SEEK"));
       printHeader(client, 200);
-      client.println("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime");
+      client.println(F("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime"));
       Serial.println(F("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime"));
     } else {
       Serial.println(F("FAILED SEEK"));
       printHeader(client, 400);
       // if the starting byte is greater than file size, print an error:
-      client.print("starting byte is greater than file size at file: ");
+      client.print(F("starting byte is greater than file size at file: "));
       client.println(dirName);
       // close the file:
       myFile.close();
@@ -46,7 +46,7 @@ void printLastLines(String dirName, EthernetClient client, long lastLines) {
     myFile.close();
   } else {
     // if the file didn't open, print an error:
-    client.println("error opening file at directory: ");
+    client.println(F("error opening file at directory: "));
     client.println(dirName);
   }
 }

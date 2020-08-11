@@ -20,10 +20,10 @@ void handleLines(String endpoint, EthernetClient client) {
     case 4:
       // hour: return csv of the specific hour
       printHeader(client, 200);
-      Serial.print("PRINTING LINE FILE: ");
+      Serial.print(F("PRINTING LINE FILE: "));
       Serial.println(directoryName);
       long lineCount = readLineFromSD(directoryName.c_str(), 0, 10);
-      Serial.print("LINE COUNT: ");
+      Serial.print(F("LINE COUNT: "));
       Serial.println(lineCount);
       client.println(lineCount);
       break;

@@ -7,16 +7,16 @@ void doDirectoryMaintenance() {  // TODO: investigate bug with un-deletable file
   int day = now.day();
 
   int year = now.year();
-  Serial.println("CURRENT YEAR IS: ");
+  Serial.println(F("CURRENT YEAR IS: "));
   Serial.println(year);
   char yearBuffer[4];
   itoa(year, yearBuffer, 10);
   strcat(nameBuffer, yearBuffer);
-  Serial.println("NAME BUFFER IS: ");
+  Serial.println(F("NAME BUFFER IS: "));
   Serial.println(nameBuffer);
 
   int month = now.month();
-  Serial.println("CURRENT MONTH IS: ");
+  Serial.println(F("CURRENT MONTH IS: "));
   Serial.println(month);
   strcat(nameBuffer, "/");
   if (month < 10) {
@@ -25,7 +25,7 @@ void doDirectoryMaintenance() {  // TODO: investigate bug with un-deletable file
   char monthBuffer[12];
   itoa(month, monthBuffer, 10);
   strcat(nameBuffer, monthBuffer);
-  Serial.println("NAME BUFFER IS: ");
+  Serial.println(F("NAME BUFFER IS: "));
   Serial.println(nameBuffer);
   File tempDir = SD.open(nameBuffer);
 
@@ -33,15 +33,15 @@ void doDirectoryMaintenance() {  // TODO: investigate bug with un-deletable file
   while (true) {
     File entry = tempDir.openNextFile();
     if (entry) {
-      Serial.println("ENTRY NAME IS: ");
+      Serial.println(F("ENTRY NAME IS: "));
       Serial.println(entry.name());
       // calculate elapsed time
       int dirAgeInDays = day - atoi(entry.name());
-      Serial.println("ENTRY AGE IS: ");
+      Serial.println(F("ENTRY AGE IS: "));
       Serial.println(dirAgeInDays);
       // remove if directory is too old
       if (dirAgeInDays > maxDataAge) {
-        Serial.println("ENTRY IS TOO OLD");
+        Serial.println(F("ENTRY IS TOO OLD"));
         memset(deleteBuffer, 0, 20);
         strcat(deleteBuffer, nameBuffer);
         strcat(deleteBuffer, "/");
@@ -52,6 +52,6 @@ void doDirectoryMaintenance() {  // TODO: investigate bug with un-deletable file
       break;
     }
   }
-  Serial.println("maxDataAge IS: ");
+  Serial.println(F("maxDataAge IS: "));
   Serial.println(maxDataAge);
 }

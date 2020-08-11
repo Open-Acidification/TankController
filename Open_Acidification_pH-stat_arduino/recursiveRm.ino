@@ -1,11 +1,11 @@
 void recursiveRm(File dir, String tempPath) {
-  Serial.println("CURRENT TEMPPATH: ");
+  Serial.println(F("CURRENT TEMPPATH: "));
   Serial.println(tempPath);
   while (true) {
     File entry = dir.openNextFile();
     String localPath;
 
-    Serial.println("CURRENT ENTRY: ");
+    Serial.println(F("CURRENT ENTRY: "));
     Serial.println(entry.name());
     if (entry) {
       if (entry.isDirectory()) {
@@ -15,10 +15,10 @@ void recursiveRm(File dir, String tempPath) {
         recursiveRm(entry, folderBuf);
 
         if (SD.rmdir(folderBuf)) {
-          Serial.print("Deleted folder ");
+          Serial.print(F("Deleted folder "));
           Serial.println(folderBuf);
         } else {
-          Serial.print("Unable to delete folder ");
+          Serial.print(F("Unable to delete folder "));
           Serial.println(folderBuf);
         }
       } else {
@@ -27,10 +27,10 @@ void recursiveRm(File dir, String tempPath) {
         localPath.toCharArray(charBuf, localPath.length());
 
         if (SD.remove(charBuf)) {
-          Serial.print("Deleted ");
+          Serial.print(F("Deleted "));
           Serial.println(localPath);
         } else {
-          Serial.print("Failed to delete ");
+          Serial.print(F("Failed to delete "));
           Serial.println(localPath);
         }
       }
@@ -42,10 +42,10 @@ void recursiveRm(File dir, String tempPath) {
   }
   // delete specified root dir
   if (SD.rmdir(tempPath)) {
-    Serial.print("Deleted root dir: ");
+    Serial.print(F("Deleted root dir: "));
     Serial.println(tempPath);
   } else {
-    Serial.print("Failed to delete root dir: ");
+    Serial.print(F("Failed to delete root dir: "));
     Serial.println(tempPath);
   }
 }

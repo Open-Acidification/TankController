@@ -166,11 +166,11 @@ void loop() {
       char answerkey = customKeypad.getKey();
       if (answerkey == '1') {
         if (Serial1.available() > 0) {  // if we see that the Atlas Scientific product has sent a character
-          Serial.println("clearing buffer");
+          Serial.println(F("clearing buffer"));
           char inchar = (char)Serial1.read();  // get the char we just received
         }
 
-        Serial.println("pressed 1");
+        Serial.println(F("pressed 1"));
         GetCalSlope();
         lcd.clear();
         lcd.print("Cal Slope:");
@@ -180,8 +180,8 @@ void loop() {
         answer = 1;
       }
       if (answerkey == '2') {
-        Serial.println("pressed 2");
-        Serial1.print("Cal,clear");  // send Calibration clear command to EZO pH stamp
+        Serial.println(F("pressed 2"));
+        Serial1.print(F("Cal,clear"));  // send Calibration clear command to EZO pH stamp
         Serial1.print('\r');         // add a <CR> to the end of the string
         answer = 1;
       }
@@ -711,16 +711,16 @@ void loop() {
     Serial.print(now.month(), DEC);
     Serial.print('/');
     Serial.print(now.day(), DEC);
-    Serial.print(" ");
+    Serial.print(F(" "));
     Serial.print(now.hour(), DEC);
     Serial.print(':');
     if (now.minute() < 10) {
-      Serial.print("0");
+      Serial.print(F("0"));
     }
     Serial.print(now.minute(), DEC);
     Serial.print(':');
     if (now.second() < 10) {
-      Serial.print("0");
+      Serial.print(F("0"));
     }
     Serial.print(now.second(), DEC);
     Serial.println();
@@ -799,7 +799,7 @@ void loop() {
       delay(1000);
       // close the connection:
       RPClient.stop();
-      Serial.println("RPClient disconnected");
+      Serial.println(F("RPClient disconnected"));
     }
   }
 

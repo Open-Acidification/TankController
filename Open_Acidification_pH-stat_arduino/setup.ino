@@ -6,13 +6,13 @@ void setup() {
 
   // Starting Real Time CLock and Setting time
   if (!rtc.begin()) {
-    Serial.println("Couldn't find RTC");
+    Serial.println(F("Couldn't find RTC"));
     while (1)
       ;
   }
 
   if (!rtc.initialized()) {
-    Serial.println("RTC is NOT running!");
+    Serial.println(F("RTC is NOT running!"));
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));  // set the RTC to the date & time this sketch was compiled
   }
 
@@ -127,7 +127,7 @@ void setup() {
 
     // start the ethernetServer
     ethernetServer.begin();
-    Serial.print("ethernetServer is at ");
+    Serial.print(F("ethernetServer is at "));
     Serial.println(Ethernet.localIP());
   }
 

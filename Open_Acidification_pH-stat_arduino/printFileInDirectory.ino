@@ -8,7 +8,7 @@ void printFileInDirectory(String dirName, EthernetClient client) {
     client.println("X-Content-Type-Options: nosniff");
     client.println();
     client.println("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime");
-    Serial.println("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime");
+    Serial.println(F("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime"));
     // read from the file until there's nothing else in it:
     while (myFile.available()) {
       byte read = myFile.read();

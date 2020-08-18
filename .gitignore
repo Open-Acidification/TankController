@@ -22,3 +22,4 @@ arduino-cli.yaml
 *.hex
 *.elf
 *.eep
+libraries

@@ -17,6 +17,7 @@ arduino-cli lib install TimerOne@1.1.0
 # These libraries could not be found in the arduino-cli library list
 cd libraries
 git clone https://github.com/maniacbug/MemoryFree.git
+git clone https://github.com/br3ttb/Arduino-PID-AutoTune-Library.git
 git clone https://github.com/PaulStoffregen/Time.git --branch v1.6
 git clone https://github.com/Glumgad/TimedAction.git
 git clone https://github.com/sirleech/TrueRandom.git

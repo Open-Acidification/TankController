@@ -10,11 +10,11 @@ void printDirectoryToClient(File dir, int numTabs, EthernetClient client) {
     }
     client.print(entry.name());
     if (entry.isDirectory()) {
-      client.println("/");
+      client.println(F("/"));
       printDirectoryToClient(entry, numTabs + 1, client);
     } else {
       // files have sizes, directories do not
-      client.print("\t\t");
+      client.print(F("\t\t"));
       client.println(entry.size(), DEC);
     }
     entry.close();

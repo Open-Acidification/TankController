@@ -18,7 +18,7 @@ long readLineFromSD(char* fileName, int line, int lineLength) {
     line[i] = '\0';
     lineValue = atoi(line);
   } else {
-    Serial.println("FAILED READ LINE SEEK");
+    Serial.println(F("FAILED READ LINE SEEK"));
   }
 
   // close the file:

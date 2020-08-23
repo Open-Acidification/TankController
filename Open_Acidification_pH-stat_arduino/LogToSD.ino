@@ -7,7 +7,7 @@ void LogToSD() {
   DateTime now = rtc.now();
   pinMode(10, OUTPUT);
   digitalWrite(10, HIGH);
-  Serial.println("LOGGING TO SD");
+  Serial.println(F("LOGGING TO SD"));
 
   char* timeFormat = "YYYY/MM/DD/hh/YYMMDDhh.txt";
   char* linesFormat = "YYYY/MM/DD/hh/hh.txt";
@@ -98,14 +98,14 @@ void LogToSD() {
   strcat(formattedSDString, ",");
   strcat(formattedSDString, varBuffer);
 
-  Serial.print("formattedSDString SIZE: ");
+  Serial.print(F("formattedSDString SIZE: "));
   Serial.println(strlen(formattedSDString));
-  Serial.print("ADDING: ");
+  Serial.print(F("ADDING: "));
   Serial.println(RECORD_LENGTH - strlen(formattedSDString));
   for (strlen(formattedSDString); strlen(formattedSDString) < RECORD_LENGTH;) {
     strcat(formattedSDString, " ");
   }
-  Serial.print("AFTER EDIT formattedSDString SIZE: ");
+  Serial.print(F("AFTER EDIT formattedSDString SIZE: "));
   Serial.println(strlen(formattedSDString));
   myFile.println(formattedSDString);
   myFile.close();

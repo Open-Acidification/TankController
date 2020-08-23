@@ -6,7 +6,7 @@ void recursiveDeleteDirectory(String dirName, EthernetClient client) {
       // no more files
       break;
     }
-    client.println("REMOVING: ");
+    client.println(F("REMOVING: "));
     if (entry.isDirectory()) {
       client.println(dirName);
       recursiveDeleteDirectory(dirName + "/" + entry.name(), client);

@@ -25,12 +25,12 @@ void handleSeries(char* body, EthernetClient client) {
     // validate pH series
     bool phSeriesIsValid = true;
     if (phValueJsonArray.size() != phTimeJsonArray.size()) {
-      client.println("pH SERIES NOT SAME SIZE");
+      client.println(F("pH SERIES NOT SAME SIZE"));
       phSeriesIsValid = false;
     }
     long phTimeLast = getLastJsonArrayValue(phTimeJsonArray);
     if (phTimeLast > phInterval) {
-      client.println("phTimeLast GREATER THAN phInterval");
+      client.println(F("phTimeLast GREATER THAN phInterval"));
       phSeriesIsValid = false;
     }
 
@@ -44,7 +44,7 @@ void handleSeries(char* body, EthernetClient client) {
       digitalWrite(10, HIGH);
       SD.remove("pv.txt");
       seriesFile = SD.open("pv.txt", FILE_WRITE);  // pH values
-      client.println("pH values: ");
+      client.println(F("pH values: "));
       for (JsonVariant v : phValueJsonArray) {
         phValueArray[counter++] = v.as<long>();
         itoa(phValueArray[counter - 1], goalRecordString, 10);
@@ -59,7 +59,7 @@ void handleSeries(char* body, EthernetClient client) {
       counter = 0;
       SD.remove("/pt.txt");
       seriesFile = SD.open("/pt.txt", FILE_WRITE);  // pH times
-      client.println("pH times: ");
+      client.println(F("pH times: "));
       memset(goalRecordString, 0, GOAL_RECORD_LENGTH);
       for (JsonVariant v : phTimeJsonArray) {
         phTimeArray[counter++] = v.as<long>();
@@ -71,14 +71,14 @@ void handleSeries(char* body, EthernetClient client) {
         seriesFile.println(goalRecordString);
       }
       seriesFile.close();
-      client.println("pH interval: ");
+      client.println(F("pH interval: "));
       client.println(phInterval);
-      client.println("pH delay: ");
+      client.println(F("pH delay: "));
       client.println(phDelay);
-      client.print("ph series size: ");
+      client.print(F("ph series size: "));
       client.println(phSeriesSize);
     } else {
-      client.println("pH SERIES INVALID");
+      client.println(F("pH SERIES INVALID"));
     }
 
     JsonObject tempObject = doc["temp"];
@@ -96,12 +96,12 @@ void handleSeries(char* body, EthernetClient client) {
     // validate temp series
     bool tempSeriesIsValid = true;
     if (tempValueJsonArray.size() != tempTimeJsonArray.size()) {
-      client.println("temp SERIES NOT SAME SIZE");
+      client.println(F("temp SERIES NOT SAME SIZE"));
       tempSeriesIsValid = false;
     }
     long tempTimeLast = getLastJsonArrayValue(tempTimeJsonArray);
     if (tempTimeLast > tempInterval) {
-      client.println("tempTimeLast GREATER THAN tempInterval");
+      client.println(F("tempTimeLast GREATER THAN tempInterval"));
       tempSeriesIsValid = false;
     }
 
@@ -114,7 +114,7 @@ void handleSeries(char* body, EthernetClient client) {
       EEPROM_writeDouble(TEMP_SERIES_POINTER_ADDRESS, tempSeriesPointer);
       SD.remove("/tv.txt");
       seriesFile = SD.open("/tv.txt", FILE_WRITE);  // temperature values
-      client.println("temp values: ");
+      client.println(F("temp values: "));
       memset(goalRecordString, 0, GOAL_RECORD_LENGTH);
       for (JsonVariant v : tempValueJsonArray) {
         tempValueArray[counter++] = v.as<long>();
@@ -130,7 +130,7 @@ void handleSeries(char* body, EthernetClient client) {
       counter = 0;
       SD.remove("/tt.txt");
       seriesFile = SD.open("/tt.txt", FILE_WRITE);  // temperature times
-      client.println("temp values: ");
+      client.println(F("temp values: "));
       memset(goalRecordString, 0, GOAL_RECORD_LENGTH);
       for (JsonVariant v : tempTimeJsonArray) {
         tempTimeArray[counter++] = v.as<long>();
@@ -142,14 +142,14 @@ void handleSeries(char* body, EthernetClient client) {
         seriesFile.println(goalRecordString);
       }
       seriesFile.close();
-      client.println("temp interval: ");
+      client.println(F("temp interval: "));
       client.println(tempInterval);
-      client.println("temp delay: ");
+      client.println(F("temp delay: "));
       client.println(tempDelay);
-      client.print("temp series size: ");
+      client.print(F("temp series size: "));
       client.println(tempSeriesSize);
     } else {
-      client.println("temp SERIES INVALID");
+      client.println(F("temp SERIES INVALID"));
     }
   }
 }

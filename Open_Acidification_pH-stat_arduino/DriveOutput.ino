@@ -5,7 +5,7 @@ void DriveOutput() {
   long now = millis();
   // Set the output
   // "on time" is proportional to the PID output
-  static unsigned long windowStartTime = now;
+  static long windowStartTime = now;
   if (now - windowStartTime > WINDOW_SIZE) {  // time to shift the Relay Window
     windowStartTime += WINDOW_SIZE;
   }

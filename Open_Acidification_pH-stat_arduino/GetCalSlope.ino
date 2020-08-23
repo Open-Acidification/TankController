@@ -6,7 +6,6 @@ void GetCalSlope() {
   Serial1.print('\r');          // add a <CR> to the end of the string
   Serial.println(F("Asked for slope"));
   bool WaitForString = true;
-  // WaitForString = true;
   slope = "";
   while (WaitForString == true) {  // Into a loop that will wait for the response
     Serial.println(F("Waiting for response"));

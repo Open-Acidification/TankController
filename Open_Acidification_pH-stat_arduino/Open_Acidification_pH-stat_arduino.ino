@@ -77,8 +77,8 @@ String midcalstring = "";
 String slope = "";
 boolean input_string_complete = false;   // have we received all the data from the PC
 boolean sensor_string_complete = false;  // have we received all the data from the Atlas Scientific product
-double pH;         // used to hold a floating point number that is the pH
-double pHDisplay;  // used to hold a floating point number that is the pH
+double pH;                               // used to hold a floating point number that is the pH
+double pHDisplay;                        // used to hold a floating point number that is the pH
 double temp;
 double tempset;
 double phset;
@@ -95,6 +95,7 @@ double frequency;
 long onTime = 0;
 const int RECORD_LENGTH = 70;   // length of each record to be logged
 const int WINDOW_SIZE = 10000;  // 10 second Time Proportional Output window
+long windowStartTime = millis();
 float midBuffer = 0;
 char Key = NO_KEY;
 char exitph = NO_KEY;

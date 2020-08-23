@@ -21,6 +21,7 @@ void loop() {
     Serial.println(F("Step 1"));
 
     Key = customKeypad.waitForKey();
+    double newph = 0;
     newph = Key - '0';
     lcd.setCursor(0, 1);
     lcd.print(Key);
@@ -75,6 +76,7 @@ void loop() {
     Serial.println(F("Step 1"));
 
     Key = customKeypad.waitForKey();
+    double newtemp = 0;
     newtemp = (Key - '0') * 10;
     lcd.setCursor(0, 1);
     lcd.print(Key);
@@ -239,6 +241,7 @@ void loop() {
     lcd.setCursor(0, 1);
     lcd.print(F("in min: "));
     Key = customKeypad.waitForKey();
+    float newinterval;
     newinterval = (Key - '0') * 10;
     lcd.setCursor(8, 1);
     lcd.print(Key);
@@ -499,6 +502,7 @@ void loop() {
     lcd.print(F("  .  "));
 
     Key = customKeypad.waitForKey();
+    double realtemp;
     realtemp = (Key - '0') * 10;
     lcd.setCursor(0, 1);
     lcd.print(Key);
@@ -598,6 +602,7 @@ void loop() {
   }
 
   /// Enable PID/////////////////////////////////////////////////////////////////////////////
+  bool pidrun = true;
   if (to_start == '8') {
     wdt_disable();
     answer = 0;
@@ -759,6 +764,8 @@ void loop() {
       previousMillis = currentMillis;  // save the last time you updated Google Sheets
 
       packData();  // packing GET query with data
+
+      bool cxn = false;
 
       Serial.println(F("connecting..."));
       if (client.connect(API_SERVER, 80)) {

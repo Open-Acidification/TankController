@@ -11,6 +11,7 @@ void SetSineWave() {
   lcd.print(F(" .   "));
 
   Key = customKeypad.waitForKey();
+  double newAmplitude = 0;
   newAmplitude = Key - '0';
   lcd.setCursor(0, 1);
   lcd.print(Key);
@@ -51,6 +52,7 @@ void SetSineWave() {
   lcd.print(F(" .   "));
 
   Key = customKeypad.waitForKey();
+  double newFrequency = 0;
   newFrequency = Key - '0';
   lcd.setCursor(0, 1);
   lcd.print(Key);

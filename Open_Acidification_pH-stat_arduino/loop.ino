@@ -21,8 +21,7 @@ void loop() {
     Serial.println(F("Step 1"));
 
     Key = customKeypad.waitForKey();
-    double newph = 0;
-    newph = Key - '0';
+    double newph = Key - '0';
     lcd.setCursor(0, 1);
     lcd.print(Key);
     Serial.print(F("Ones place: "));
@@ -76,8 +75,7 @@ void loop() {
     Serial.println(F("Step 1"));
 
     Key = customKeypad.waitForKey();
-    double newtemp = 0;
-    newtemp = (Key - '0') * 10;
+    double newtemp = (Key - '0') * 10;
     lcd.setCursor(0, 1);
     lcd.print(Key);
     Serial.print(F("Tens place: "));
@@ -241,8 +239,7 @@ void loop() {
     lcd.setCursor(0, 1);
     lcd.print(F("in min: "));
     Key = customKeypad.waitForKey();
-    float newinterval;
-    newinterval = (Key - '0') * 10;
+    float newinterval = (Key - '0') * 10;
     lcd.setCursor(8, 1);
     lcd.print(Key);
     Serial.print(F("Tens place: "));
@@ -502,8 +499,7 @@ void loop() {
     lcd.print(F("  .  "));
 
     Key = customKeypad.waitForKey();
-    double realtemp;
-    realtemp = (Key - '0') * 10;
+    double realtemp = (Key - '0') * 10;
     lcd.setCursor(0, 1);
     lcd.print(Key);
     Serial.print(F("Tens place: "));
@@ -602,7 +598,6 @@ void loop() {
   }
 
   /// Enable PID/////////////////////////////////////////////////////////////////////////////
-  bool pidrun = true;
   if (to_start == '8') {
     wdt_disable();
     answer = 0;

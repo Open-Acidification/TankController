@@ -106,8 +106,7 @@ void TwoPointCal() {
   lcd.print(F("  .   "));
 
   Key = customKeypad.waitForKey();
-  float lowBuffer = 0;
-  lowBuffer = (Key - '0') * 10;
+  float lowBuffer = (Key - '0') * 10;
   lcd.setCursor(0, 1);
   lcd.print(Key);
   Serial.print(F("Tens place: "));
@@ -140,8 +139,7 @@ void TwoPointCal() {
   lcd.print(Key);
   Serial.print(F("Thousanths place: "));
   Serial.println(Key);
-  String lowcalstring = "";
-  lowcalstring = PRE_LOW_CAL_STRING + String(lowBuffer);
+  String lowcalstring = PRE_LOW_CAL_STRING + String(lowBuffer);
   Serial.print(lowcalstring);
 
   lcd.clear();

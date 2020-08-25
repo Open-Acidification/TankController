@@ -50,7 +50,6 @@ EthernetClient client;                           // define 'client' as object
 EthernetServer ethernetServer(80);
 int requestCharCounter = 0;  // for parsing html requests
 String data;                 // GET query with data
-boolean cxn = false;
 
 float interval = 1200000;  // interval at which to update Google Sheets (milliseconds)
 unsigned long previousMillis =
@@ -75,28 +74,16 @@ String sensorstring = "";  // a string to hold the data from the EZO pH circuit
 const String PRE_MID_CAL_STRING = "Cal,mid,";
 const String PRE_LOW_CAL_STRING = "Cal,low,";
 String midcalstring = "";
-String lowcalstring = "";
-String rightnow;
-String pretempcomp = "T,";
-String tempcomp;
-String sloperaw = "";
 String slope = "";
 boolean input_string_complete = false;   // have we received all the data from the PC
 boolean sensor_string_complete = false;  // have we received all the data from the Atlas Scientific product
-boolean WaitForString = true;
-boolean SlopeFlag = true;
-double pH;         // used to hold a floating point number that is the pH
-double pHDisplay;  // used to hold a floating point number that is the pH
+double pH;                               // used to hold a floating point number that is the pH
+double pHDisplay;                        // used to hold a floating point number that is the pH
 double temp;
 double tempset;
 double phset;
 double amplitudeSet;
 double frequencySet;
-double newph = 0;
-double newtemp = 0;
-double newAmplitude = 0;
-double newFrequency = 0;
-double realtemp;
 double tempcorr = 0;
 double heat;
 double Input, Output, Setpoint;
@@ -108,22 +95,17 @@ double frequency;
 long onTime = 0;
 const int RECORD_LENGTH = 70;   // length of each record to be logged
 const int WINDOW_SIZE = 10000;  // 10 second Time Proportional Output window
-unsigned long windowStartTime;
+long windowStartTime = millis();
 float midBuffer = 0;
-float lowBuffer = 0;
-float tim = 0.00;
 char Key = NO_KEY;
 char exitph = NO_KEY;
-float newinterval;
 int tankid;
 boolean EthConnect = true;
 byte mac[6] = {0x90, 0xA2, 0xDA, 0x00, 0x00, 0x00};
 char macstr[18];
 boolean pidrun = true;
-boolean sensed = false;
 const int CHILLER = 47;
 const int CO2_REG = 49;
-int LoopStart;
 const int GOAL_RECORD_LENGTH = 10;
 long phInterval;
 long phDelay;
@@ -172,7 +154,6 @@ const int TEMP_DELAY_ADDRESS = 100;
 // End EEPROM addresses for persisted data///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 String filename;
-String file_full;
 
 const char STD_KEYS[ROWS][COLS] = {{'1', '2', '3', 'A'}, {'4', '5', '6', 'B'}, {'7', '8', '9', 'C'}, {'*', '0', '#', 'D'}};
 const byte ROW_PINS[ROWS] = {34, 36, 38, 40};

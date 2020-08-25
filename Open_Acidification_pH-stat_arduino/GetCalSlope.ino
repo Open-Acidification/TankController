@@ -5,7 +5,7 @@ void GetCalSlope() {
   Serial1.print(F("Slope,?"));  // Sending request for Calibration Slope
   Serial1.print('\r');          // add a <CR> to the end of the string
   Serial.println(F("Asked for slope"));
-  WaitForString = true;
+  bool WaitForString = true;
   slope = "";
   while (WaitForString == true) {  // Into a loop that will wait for the response
     Serial.println(F("Waiting for response"));
@@ -20,7 +20,7 @@ void GetCalSlope() {
 
     if (sensor_string_complete == true) {  // if a string from the Atlas Scientific product has been received in its entirety
       Serial.println(F("Response complete"));
-      sloperaw = sensorstring;  // Store raw slope string into another
+      String sloperaw = sensorstring;  // Store raw slope string into another
       slope = sloperaw;
       slope.remove(0, 7);  // removing the first 7 characters of the slope string
       slope[slope.length() - 1] = ' ';

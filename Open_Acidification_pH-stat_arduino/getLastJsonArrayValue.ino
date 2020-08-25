@@ -1,4 +1,4 @@
-long getLastJsonArrayValue(JsonArray array) {
+long GetLastJsonArrayValue(JsonArray array) {
   JsonArray::iterator it = array.begin();
   JsonArray::iterator it2 = array.begin();
   for (it; it != array.end();) {

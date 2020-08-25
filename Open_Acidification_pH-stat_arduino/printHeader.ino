@@ -1,4 +1,4 @@
-void printHeader(EthernetClient client, int code) {
+void PrintHeader(EthernetClient client, int code) {
   switch (code) {
     case 200:
       client.println(F("HTTP/1.1 200 OK"));

@@ -1,4 +1,4 @@
-long readLineFromSD(char* fileName, int line, int lineLength) {
+long ReadLineFromSD(char* fileName, int line, int lineLength) {
   long startingByte = line * (lineLength + 2);
   long lineValue;
 

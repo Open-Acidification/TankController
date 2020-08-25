@@ -2,7 +2,7 @@
 // Set chiller state
 // ************************************************
 
-void Set_Chiller() {
+void SetChiller() {
   if (heat == 0) {
     unsigned long chiller_currentMillis = millis();
     if (chiller_currentMillis - chiller_previousMillis >= CHILLER_INTERVAL) {  // pause 30 seconds between swtiching chiller on and off to prevent damage to chiller

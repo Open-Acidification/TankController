@@ -1,4 +1,4 @@
-void handleData(String endpoint, EthernetClient client) {
+void HandleData(String endpoint, EthernetClient client) {
   // data endpoint format: data/year/month/day/hour
   String directoryName;
   if (endpoint.length() >= 5) {
@@ -48,7 +48,7 @@ void handleData(String endpoint, EthernetClient client) {
     case 2:  // month: return days available
     case 3:  // day: return hours available
       Serial.println(F("START BUILDING JSON"));
-      printCurrentLevelDirectories(dir, client, slashes);
+      PrintCurrentLevelDirectories(dir, client, slashes);
       break;
     case 4:
       String fileName = "/" + directoryName.substring(3, 5) + directoryName.substring(6, 8) + directoryName.substring(9, 11) + directoryName.substring(12, 14) + ".txt";
@@ -56,19 +56,19 @@ void handleData(String endpoint, EthernetClient client) {
       if (urlParameterIndex > -1 && lastIndex > -1) {  // last lines: print lastLines in specified csv
         Serial.print(F("PRINTING LAST LINES FROM FILE: "));
         Serial.println(directoryName);
-        printLastLines(directoryName, client, lastLines);
+        PrintLastLines(directoryName, client, lastLines);
       } else if (urlParameterIndex > -1) {  // specified lines: print numLines from startingLine in specified csv
         Serial.print(F("PRINTING SPECIFIED LINES FROM FILE: "));
         Serial.println(directoryName);
-        printSpecifiedLines(directoryName, client, startingLine, numLines);
+        PrintSpecifiedLines(directoryName, client, startingLine, numLines);
       } else {  // hour: return csv of the specific hour
         Serial.print(F("PRINTING FILE: "));
         Serial.println(directoryName);
-        printFileInDirectory(directoryName, client);
+        PrintFileInDirectory(directoryName, client);
       }
       break;
     default:
-      printHeader(client, 404);
+      PrintHeader(client, 404);
       break;
   }
   dir.close();

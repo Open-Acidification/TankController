@@ -1,4 +1,4 @@
-void recursiveRm(File dir, String tempPath) {
+void RecursiveRm(File dir, String tempPath) {
   Serial.println(F("CURRENT TEMPPATH: "));
   Serial.println(tempPath);
   while (true) {
@@ -12,7 +12,7 @@ void recursiveRm(File dir, String tempPath) {
         localPath = tempPath + "/" + entry.name() + "/" + '\0';
         char folderBuf[localPath.length()];
         localPath.toCharArray(folderBuf, localPath.length());
-        recursiveRm(entry, folderBuf);
+        RecursiveRm(entry, folderBuf);
 
         if (SD.rmdir(folderBuf)) {
           Serial.print(F("Deleted folder "));

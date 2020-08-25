@@ -99,7 +99,7 @@ def test_uri_mac():
     assert response.status_code == 200
 
     response_string = response.content.decode().replace('\r', '\n')
-    assert response_string.startswith("90:a2:da:")
+    assert response_string.startsWith("90:a2:da:")
 
 def test_uri_mac():
     # find latest hour
@@ -110,7 +110,7 @@ def test_uri_mac():
     assert response.status_code == 200
 
     response_string = response.content.decode().replace('\r', '\n')
-    assert response_string.startswith("90:a2:da:")
+    assert response_string.startsWith("90:a2:da:")
 
 def test_uri_info():
     # find latest hour
@@ -161,7 +161,7 @@ def test_uri_device():
     assert device.has_key("tankid")
 
     # Check field data
-    assert device["macstr"].startswith("90:a2:da:")
+    assert device["macstr"].startsWith("90:a2:da:")
     assert device["tankid"] == int(os.environ["ARDUINO_TANK_ID"])
 
 

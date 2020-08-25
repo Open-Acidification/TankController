@@ -1,4 +1,4 @@
-void printFileInDirectory(String dirName, EthernetClient client) {
+void PrintFileInDirectory(String dirName, EthernetClient client) {
   File myFile = SD.open(dirName);
   if (myFile) {
     client.println(F("HTTP/1.1 200 OK"));

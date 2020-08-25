@@ -1,7 +1,7 @@
 // ************************************************
 // Send temperature compensation to Atlas pH EZO
 // ************************************************
-void Set_Temp_Comp() {
+void SetTempComp() {
   const String PRE_TEMP_COMP = "T,";
   String tempcomp;
   if (temp > 0 && temp < 100) {

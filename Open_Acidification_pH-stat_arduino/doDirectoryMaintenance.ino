@@ -1,4 +1,4 @@
-void doDirectoryMaintenance() {  // TODO: investigate bug with un-deletable files
+void DoDirectoryMaintenance() {  // TODO: investigate bug with un-deletable files
   char nameBuffer[20];
   char deleteBuffer[20];
   memset(nameBuffer, 0, 20);
@@ -46,7 +46,7 @@ void doDirectoryMaintenance() {  // TODO: investigate bug with un-deletable file
         strcat(deleteBuffer, nameBuffer);
         strcat(deleteBuffer, "/");
         strcat(deleteBuffer, entry.name());
-        recursiveRm(entry, deleteBuffer);
+        RecursiveRm(entry, deleteBuffer);
       }
     } else {
       break;

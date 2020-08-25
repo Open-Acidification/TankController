@@ -1,4 +1,4 @@
-void printDirectoryToClient(File dir, int numTabs, EthernetClient client) {
+void PrintDirectoryToClient(File dir, int numTabs, EthernetClient client) {
   while (true) {
     File entry = dir.openNextFile();
     if (!entry) {
@@ -11,7 +11,7 @@ void printDirectoryToClient(File dir, int numTabs, EthernetClient client) {
     client.print(entry.name());
     if (entry.isDirectory()) {
       client.println(F("/"));
-      printDirectoryToClient(entry, numTabs + 1, client);
+      PrintDirectoryToClient(entry, numTabs + 1, client);
     } else {
       // files have sizes, directories do not
       client.print(F("\t\t"));

@@ -1,6 +1,6 @@
 // https://forum.arduino.cc/index.php/topic,44216.0.html#11
-void fmtDouble(double val, byte precision, char *buf, unsigned bufLen = 0xffff);
-unsigned fmtUnsigned(unsigned long val, char *buf, unsigned bufLen = 0xffff, byte width = 0);
+unsigned FmtUnsigned(unsigned long val, char *buf, unsigned bufLen = 0xffff, byte width = 0);
+void FmtDouble(double val, byte precision, char *buf, unsigned bufLen = 0xffff);
 
 //
 // Produce a formatted string in a buffer corresponding to the value provided.
@@ -8,7 +8,7 @@ unsigned fmtUnsigned(unsigned long val, char *buf, unsigned bufLen = 0xffff, byt
 // zeroes to achieve the specified width.  The number of characters added to
 // the buffer (not including the null termination) is returned.
 //
-unsigned fmtUnsigned(unsigned long val, char *buf, unsigned bufLen, byte width) {
+unsigned FmtUnsigned(unsigned long val, char *buf, unsigned bufLen, byte width) {
   if (!buf || !bufLen)
     return (0);
 
@@ -47,9 +47,9 @@ unsigned fmtUnsigned(unsigned long val, char *buf, unsigned bufLen, byte width) 
 // optionally specified.  If it is given, the maximum length of the generated string
 // will be one less than the specified value.
 //
-// example: fmtDouble(3.1415, 2, buf); // produces 3.14 (two decimal places)
+// example: FmtDouble(3.1415, 2, buf); // produces 3.14 (two decimal places)
 //
-void fmtDouble(double val, byte precision, char *buf, unsigned bufLen) {
+void FmtDouble(double val, byte precision, char *buf, unsigned bufLen) {
   if (!buf || !bufLen)
     return;
 
@@ -79,7 +79,7 @@ void fmtDouble(double val, byte precision, char *buf, unsigned bufLen) {
       val += roundingFactor;
 
       // add the integral portion to the buffer
-      unsigned len = fmtUnsigned((unsigned long)val, buf, bufLen);
+      unsigned len = FmtUnsigned((unsigned long)val, buf, bufLen);
       buf += len;
       bufLen -= len;
     }
@@ -88,7 +88,7 @@ void fmtDouble(double val, byte precision, char *buf, unsigned bufLen) {
     if ((precision > 0) && (bufLen > 0)) {
       *buf++ = '.';
       if (--bufLen > 0)
-        buf += fmtUnsigned((unsigned long)((val - (unsigned long)val) * mult), buf, bufLen, precision);
+        buf += FmtUnsigned((unsigned long)((val - (unsigned long)val) * mult), buf, bufLen, precision);
     }
   }
 

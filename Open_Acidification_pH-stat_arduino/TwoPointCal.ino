@@ -83,8 +83,8 @@ void TwoPointCal() {
       sensor_previousMillis = sensor_currentMillis;
 
       Get_pH();
-      Get_Temperature();
-      Set_Temp_Comp();
+      GetTemperature();
+      SetTempComp();
     }
 
     lcd.setCursor(0, 1);
@@ -173,8 +173,8 @@ void TwoPointCal() {
       sensor_previousMillis = sensor_currentMillis;
 
       Get_pH();
-      Get_Temperature();
-      Set_Temp_Comp();
+      GetTemperature();
+      SetTempComp();
       lcd.setCursor(0, 1);
       lcd.print(F("pH="));
       lcd.print(pH, 3);

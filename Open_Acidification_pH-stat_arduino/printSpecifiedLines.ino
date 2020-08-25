@@ -1,4 +1,4 @@
-void printSpecifiedLines(String dirName, EthernetClient client, long startingLine, long numLines) {
+void PrintSpecifiedLines(String dirName, EthernetClient client, long startingLine, long numLines) {
   File myFile = SD.open(dirName);
   if (myFile) {
     Serial.print(F("STARTINGLINE: "));
@@ -10,12 +10,12 @@ void printSpecifiedLines(String dirName, EthernetClient client, long startingLin
     long startingByte = startingLine * (RECORD_LENGTH + 2);
     if (myFile.seek(startingByte)) {
       Serial.println(F("SUCCESSFUL SEEK"));
-      printHeader(client, 200);
+      PrintHeader(client, 200);
       client.println(F("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime"));
       Serial.println(F("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime"));
     } else {
       Serial.println(F("FAILED SEEK"));
-      printHeader(client, 416);
+      PrintHeader(client, 416);
       // if the starting byte is greater than file size, print an error:
       client.print(F("starting byte is greater than file size at file: "));
       client.println(dirName);
@@ -43,7 +43,7 @@ void printSpecifiedLines(String dirName, EthernetClient client, long startingLin
     myFile.close();
   } else {
     // if the file didn't open, print an error:
-    printHeader(client, 404);
+    PrintHeader(client, 404);
     client.print(F("error opening file at directory"));
     client.println(dirName);
   }

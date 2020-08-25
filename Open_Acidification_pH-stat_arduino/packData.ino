@@ -1,7 +1,7 @@
 // ************************************************
 // Packing data into Pushingbox request
 // ************************************************
-void packData() {
+void PackData() {
   data += "";
   data += "GET /pushingbox?devid=";  // GET request query to pushingbox API
   data += DEV_ID;                    // GET request query to pushingbox API

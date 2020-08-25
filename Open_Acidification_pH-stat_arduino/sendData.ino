@@ -1,7 +1,7 @@
 // ************************************************
 // Sending Pushingbox request
 // ************************************************
-void sendData() {
+void SendData() {
   Serial.println(F("connected"));
   Serial.println(data);
   client.println(data);

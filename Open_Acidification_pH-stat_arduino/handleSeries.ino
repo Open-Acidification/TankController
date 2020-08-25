@@ -1,15 +1,15 @@
-void handleSeries(char* body, EthernetClient client) {
+void HandleSeries(char* body, EthernetClient client) {
   StaticJsonDocument<1000> doc;
   DeserializationError error = deserializeJson(doc, body);
   char goalRecordString[GOAL_RECORD_LENGTH];
   memset(goalRecordString, 0, GOAL_RECORD_LENGTH);
   if (error) {
-    printHeader(client, 400);
+    PrintHeader(client, 400);
 
     Serial.print(F("deserializeJson() failed: "));
     Serial.println(error.c_str());
   } else {
-    printHeader(client, 200);
+    PrintHeader(client, 200);
 
     int counter = 0;
     File seriesFile;
@@ -28,7 +28,7 @@ void handleSeries(char* body, EthernetClient client) {
       client.println(F("pH SERIES NOT SAME SIZE"));
       phSeriesIsValid = false;
     }
-    long phTimeLast = getLastJsonArrayValue(phTimeJsonArray);
+    long phTimeLast = GetLastJsonArrayValue(phTimeJsonArray);
     if (phTimeLast > phInterval) {
       client.println(F("phTimeLast GREATER THAN phInterval"));
       phSeriesIsValid = false;
@@ -36,10 +36,10 @@ void handleSeries(char* body, EthernetClient client) {
 
     if (phSeriesIsValid) {
       phSeriesPointer = 0;
-      EEPROM_writeDouble(PH_INTERVAL_ADDRESS, phInterval);
-      EEPROM_writeDouble(PH_DELAY_ADDRESS, phDelay);
-      EEPROM_writeDouble(PH_SERIES_SIZE_ADDRESS, phSeriesSize);
-      EEPROM_writeDouble(PH_SERIES_POINTER_ADDRESS, phSeriesPointer);
+      EEPROM_WriteDouble(PH_INTERVAL_ADDRESS, phInterval);
+      EEPROM_WriteDouble(PH_DELAY_ADDRESS, phDelay);
+      EEPROM_WriteDouble(PH_SERIES_SIZE_ADDRESS, phSeriesSize);
+      EEPROM_WriteDouble(PH_SERIES_POINTER_ADDRESS, phSeriesPointer);
       pinMode(10, OUTPUT);
       digitalWrite(10, HIGH);
       SD.remove("pv.txt");
@@ -99,7 +99,7 @@ void handleSeries(char* body, EthernetClient client) {
       client.println(F("temp SERIES NOT SAME SIZE"));
       tempSeriesIsValid = false;
     }
-    long tempTimeLast = getLastJsonArrayValue(tempTimeJsonArray);
+    long tempTimeLast = GetLastJsonArrayValue(tempTimeJsonArray);
     if (tempTimeLast > tempInterval) {
       client.println(F("tempTimeLast GREATER THAN tempInterval"));
       tempSeriesIsValid = false;
@@ -108,10 +108,10 @@ void handleSeries(char* body, EthernetClient client) {
     if (tempSeriesIsValid) {
       counter = 0;
       tempSeriesPointer = 0;
-      EEPROM_writeDouble(TEMP_INTERVAL_ADDRESS, tempInterval);
-      EEPROM_writeDouble(TEMP_DELAY_ADDRESS, tempDelay);
-      EEPROM_writeDouble(TEMP_SERIES_SIZE_ADDRESS, tempSeriesSize);
-      EEPROM_writeDouble(TEMP_SERIES_POINTER_ADDRESS, tempSeriesPointer);
+      EEPROM_WriteDouble(TEMP_INTERVAL_ADDRESS, tempInterval);
+      EEPROM_WriteDouble(TEMP_DELAY_ADDRESS, tempDelay);
+      EEPROM_WriteDouble(TEMP_SERIES_SIZE_ADDRESS, tempSeriesSize);
+      EEPROM_WriteDouble(TEMP_SERIES_POINTER_ADDRESS, tempSeriesPointer);
       SD.remove("/tv.txt");
       seriesFile = SD.open("/tv.txt", FILE_WRITE);  // temperature values
       client.println(F("temp values: "));

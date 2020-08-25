@@ -1,4 +1,4 @@
-void printDirectory(File dir, int numTabs) {
+void PrintDirectory(File dir, int numTabs) {
   while (true) {
     File entry = dir.openNextFile();
     if (!entry) {
@@ -11,7 +11,7 @@ void printDirectory(File dir, int numTabs) {
     Serial.print(entry.name());
     if (entry.isDirectory()) {
       Serial.println(F("/"));
-      printDirectory(entry, numTabs + 1);
+      PrintDirectory(entry, numTabs + 1);
     } else {
       // files have sizes, directories do not
       Serial.print(F("\t\t"));

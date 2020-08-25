@@ -2,7 +2,7 @@
 // Change Ki value
 // ************************************************
 
-void Change_Ki() {
+void ChangeKi() {
   Serial.println(F("starting Ki adjustment routine"));
   double KiTemp;
   KiTemp = Ki;
@@ -78,7 +78,7 @@ void Change_Ki() {
     Key = customKeypad.waitForKey();
     if (Key == '1') {
       Ki = KiTemp;
-      EEPROM_writeDouble(KI_ADDRESS, Ki);
+      EEPROM_WriteDouble(KI_ADDRESS, Ki);
       myPID.SetTunings(Kp, Ki, Kd);
       Key = '2';
     }

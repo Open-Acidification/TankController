@@ -3,7 +3,7 @@
 // Change Kd value
 // ************************************************
 
-void Change_Kd() {
+void ChangeKd() {
   double KdTemp;
   KdTemp = Kd;
   lcd.clear();
@@ -73,7 +73,7 @@ void Change_Kd() {
     Key = customKeypad.waitForKey();
     if (Key == '1') {
       Kd = KdTemp;
-      EEPROM_writeDouble(KD_ADDRESS, Kd);
+      EEPROM_WriteDouble(KD_ADDRESS, Kd);
       myPID.SetTunings(Kp, Ki, Kd);
       Key = '2';
     }

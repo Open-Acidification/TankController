@@ -1,7 +1,7 @@
 // ************************************************
 // Get temperature reading from PT100
 // ************************************************
-void Get_Temperature() {
+void GetTemperature() {
   uint16_t rtd = max.readRTD();
   float ratio = rtd;
   ratio /= 32768;

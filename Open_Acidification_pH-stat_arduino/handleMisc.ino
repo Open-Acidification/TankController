@@ -1,5 +1,5 @@
-void handleMisc(EthernetClient client) {
-  printHeader(client, 200);
+void HandleMisc(EthernetClient client) {
+  PrintHeader(client, 200);
   // output the value of each analog input pin
   for (int analogChannel = 0; analogChannel < 6; analogChannel++) {
     int sensorReading = analogRead(analogChannel);

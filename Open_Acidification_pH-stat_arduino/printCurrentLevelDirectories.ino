@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int cmpfunc(const void* p1, const void* p2) {
+int CmpFunc(const void* p1, const void* p2) {
   const char* aName = *(const char**)p1;
   const char* bName = *(const char**)p2;
 
@@ -13,7 +13,7 @@ int cmpfunc(const void* p1, const void* p2) {
   return (*aName - *bName);
 }
 
-JsonDocument printCurrentLevelDirectories(File dir, EthernetClient client, int level) {
+JsonDocument PrintCurrentLevelDirectories(File dir, EthernetClient client, int level) {
   client.println(F("HTTP/1.1 200 OK"));
   client.println(F("Content-Type: text/plain; charset=UTF-8"));
   client.println(F("Connection: keep-alive"));  // the connection will be closed after completion of the response
@@ -43,7 +43,7 @@ JsonDocument printCurrentLevelDirectories(File dir, EthernetClient client, int l
   }
 
   // sort array
-  qsort(files, fileCounter, sizeof(files[0]), cmpfunc);
+  qsort(files, fileCounter, sizeof(files[0]), CmpFunc);
 
   // add items in sorted array to json array
   StaticJsonDocument<512> doc;

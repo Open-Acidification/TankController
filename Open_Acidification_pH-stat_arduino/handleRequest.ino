@@ -1,6 +1,6 @@
 #include <string>
 
-void handleRequest(EthernetClient client) {
+void HandleRequest(EthernetClient client) {
   Serial.println(F("new client"));
 
   // an http request ends with a blank line
@@ -60,40 +60,40 @@ void handleRequest(EthernetClient client) {
 
     // parse and handle request based on endpoint
     if (endpoint.startsWith("/config")) {
-      handleConfig(postData.c_str(), client);
+      HandleConfig(postData.c_str(), client);
     } else if (endpoint.startsWith("/series")) {
       if (startsWith(requestType, "POST")) {
         // upload new timeseries
         Serial.println(F("POST TIMESERIES"));
-        handleSeries(postData.c_str(), client);
+        HandleSeries(postData.c_str(), client);
       } else if (startsWith(requestType, "GET")) {
         // return current timeseries
         Serial.println(F("GET TIMESERIES"));
-        handleGoal(client);
+        HandleGoal(client);
       } else {
         // wrong request type
         Serial.println(F("WRONG TIMESERIES"));
-        printHeader(client, 400);
+        PrintHeader(client, 400);
       }
     } else if (endpoint.startsWith("/device")) {
-      handleDevice(endpoint, client);
+      HandleDevice(endpoint, client);
     } else if (endpoint.startsWith("/goal")) {
-      handleGoal(client);
+      HandleGoal(client);
     } else if (endpoint.startsWith("/info")) {
-      handleInfo(client);
+      HandleInfo(client);
     } else if (endpoint.startsWith("/data")) {
-      handleData(endpoint, client);
+      HandleData(endpoint, client);
     } else if (endpoint.startsWith("/lines")) {
-      handleLines(endpoint, client);
+      HandleLines(endpoint, client);
     } else if (endpoint.startsWith("/test")) {
-      printHeader(client, 200);
+      PrintHeader(client, 200);
       File root = SD.open("/");
-      printDirectoryToClient(root, 0, client);
+      PrintDirectoryToClient(root, 0, client);
     } else if (endpoint.startsWith("/mac")) {
-      printHeader(client, 200);
+      PrintHeader(client, 200);
       client.println(macstr);
     } else if (endpoint.startsWith("/time")) {
-      printHeader(client, 200);
+      PrintHeader(client, 200);
       DateTime now = rtc.now();
       char formattedSDString[50];
       char* timeFormat = "MM/DD/YYYY hh:mm:ss";
@@ -103,33 +103,33 @@ void handleRequest(EthernetClient client) {
       snprintf(buffer, 100, "%d", tankid);
       strcat(formattedSDString, ",");
       strcat(formattedSDString, buffer);
-      fmtDouble(temp, 3, buffer);
+      FmtDouble(temp, 3, buffer);
       strcat(formattedSDString, ",");
       strcat(formattedSDString, buffer);
-      fmtDouble(tempset, 3, buffer);
+      FmtDouble(tempset, 3, buffer);
       strcat(formattedSDString, ",");
       strcat(formattedSDString, buffer);
-      fmtDouble(pH, 3, buffer);
+      FmtDouble(pH, 3, buffer);
       strcat(formattedSDString, ",");
       strcat(formattedSDString, buffer);
-      fmtDouble(phset, 3, buffer);
+      FmtDouble(phset, 3, buffer);
       strcat(formattedSDString, ",");
       strcat(formattedSDString, buffer);
-      fmtDouble(onTime, 3, buffer);
+      FmtDouble(onTime, 3, buffer);
       strcat(formattedSDString, ",");
       strcat(formattedSDString, buffer);
-      fmtDouble(Kp, 3, buffer);
+      FmtDouble(Kp, 3, buffer);
       strcat(formattedSDString, ",");
       strcat(formattedSDString, buffer);
-      fmtDouble(Ki, 3, buffer);
+      FmtDouble(Ki, 3, buffer);
       strcat(formattedSDString, ",");
       strcat(formattedSDString, buffer);
-      fmtDouble(Kd, 3, buffer);
+      FmtDouble(Kd, 3, buffer);
       strcat(formattedSDString, ",");
       strcat(formattedSDString, buffer);
       client.println(formattedSDString);
     } else {
-      handleMisc(client);
+      HandleMisc(client);
     }
     return;
   }

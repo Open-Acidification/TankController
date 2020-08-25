@@ -1,10 +1,10 @@
 // Adding for Time//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void digitalClockDisplay() {
+void DigitalClockDisplay() {
   // digital clock display of the time
   DateTime now = rtc.now();
   Serial.print(now.hour());
-  printDigits(now.minute());
-  printDigits(now.second());
+  PrintDigits(now.minute());
+  PrintDigits(now.second());
   Serial.print(F(" "));
   Serial.print(now.day());
   Serial.print(F("-"));

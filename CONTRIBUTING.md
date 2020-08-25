@@ -1,19 +1,23 @@
 # Contributing
+
 :wave: Hi there!
 We're thrilled that you'd like to contribute to this project.
 Your help is essential for making it great.
 
 ## Submitting a pull request
+
 [Pull Requests][pulls] are used for adding new code and documents to the repository, or editing the existing code or documentation.
 
-**With write access**
+### With write access
+
 1. Clone the repository (only if you have write access)
 1. Create a new branch: `git checkout -b my-branch-name`
 1. Make your change
 1. Push and [submit a pull request][pr]
 1. Pat yourself on the back and wait for your pull request to be reviewed and merged.
 
-**Without write access**
+### Without write access
+
 1. [Fork][fork] and clone the repository
 1. Create a new branch: `git checkout -b my-branch-name`
 1. Make your change
@@ -31,12 +35,15 @@ Draft pull requests are also welcome to get feedback early on, or if there is so
 - Open a pull request
 
 ## Releasing
+
 If you are the current maintainer of this code:
+
 1. Update `README.md` to reflect new version number in the suggested workflow file section
 2. Draft [Release](https://help.github.com/en/github/administering-a-repository/managing-releases-in-a-repository) document explaining details of Release
 3. Look for approval from @prestoncarman or @KirtOnthank
 
 ## Resources
+
 - [How to Contribute to Open Source](https://opensource.guide/how-to-contribute/)
 - [Using Pull Requests](https://help.github.com/articles/about-pull-requests/)
 - [GitHub Help](https://help.github.com)

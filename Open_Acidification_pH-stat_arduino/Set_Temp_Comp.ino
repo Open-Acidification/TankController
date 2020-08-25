@@ -2,10 +2,12 @@
 // Send temperature compensation to Atlas pH EZO
 // ************************************************
 void Set_Temp_Comp() {
+  const String PRE_TEMP_COMP = "T,";
+  String tempcomp;
   if (temp > 0 && temp < 100) {
-    tempcomp = pretempcomp + String(temp, 2);
+    tempcomp = PRE_TEMP_COMP + String(temp, 2);
   } else {
-    tempcomp = pretempcomp + 20;
+    tempcomp = PRE_TEMP_COMP + 20;
   }
   Serial.println(tempcomp);
   Serial1.print(tempcomp);  // send that string to the Atlas Scientific product

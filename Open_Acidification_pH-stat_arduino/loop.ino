@@ -52,7 +52,7 @@ void loop() {
 
     phset = newph;
     Setpoint = -1 * phset;
-    SavepHSet();
+    SavePhSet();
     delay(1000);
     Serial.println(F("New pH Set End"));
 
@@ -218,7 +218,7 @@ void loop() {
     Serial.print(F("Ones place: "));
     Serial.println(Key);
 
-    EEPROM_writeDouble(TANKID_ADDRESS, tankid);
+    EepromWriteDouble(TANKID_ADDRESS, tankid);
     delay(1000);
     Serial.println(F("Tank ID change End"));
 
@@ -453,17 +453,17 @@ void loop() {
         while (answerkey == '2') {
           char secondkey = customKeypad.getKey();
           if (secondkey == '1') {
-            Change_Kp();
+            ChangeKp();
             answerkey = '0';
           }
 
           if (secondkey == '2') {
-            Change_Ki();
+            ChangeKi();
             answerkey = '0';
           }
 
           if (secondkey == '3') {
-            Change_Kd();
+            ChangeKd();
             answerkey = '0';
           }
         }
@@ -575,7 +575,7 @@ void loop() {
     Serial.print(F("tempcorr: "));
     Serial.println(tempcorr);
 
-    EEPROM_writeDouble(TEMP_CORR_ADDRESS, tempcorr);
+    EepromWriteDouble(TEMP_CORR_ADDRESS, tempcorr);
 
     Serial.println(F("Temp Calibration End"));
 
@@ -646,12 +646,12 @@ void loop() {
       char answerkey = customKeypad.getKey();
       if (answerkey == '1') {
         heat = 0;
-        EEPROM_writeDouble(HEAT_ADDRESS, 0);
+        EepromWriteDouble(HEAT_ADDRESS, 0);
         answer = 1;
       }
       if (answerkey == '2') {
         heat = 1;
-        EEPROM_writeDouble(HEAT_ADDRESS, 1);
+        EepromWriteDouble(HEAT_ADDRESS, 1);
         answer = 1;
       }
       timdiff = millis() - queststart;
@@ -671,11 +671,11 @@ void loop() {
   if (sensor_currentMillis - sensor_previousMillis >= sensor_interval) {
     sensor_previousMillis = sensor_currentMillis;
 
-    Get_pH();
-    Get_Temperature();
-    Set_Temp_Comp();
-    Set_Chiller();
-    updateGoals();
+    GetPh();
+    GetTemperature();
+    SetTempComp();
+    SetChiller();
+    UpdateGoals();
     if (!pidrun) {
       if (pH > phset) {
         onTime = 10000;
@@ -688,13 +688,13 @@ void loop() {
       myPID.Compute();
       onTime = Output;
     }
-    LCDupdate();
+    LcdUpdate();
     unsigned long second_currentMillis = millis();
     if (second_currentMillis - second_previousMillis >= second_interval) {
       second_previousMillis = second_currentMillis;
       LogToSD();
     }
-    digitalClockDisplay();
+    DigitalClockDisplay();
     Serial.print(F("freeMemory()="));
     Serial.println(freeMemory());
     Serial.print(F("Kp:"));
@@ -725,10 +725,10 @@ void loop() {
     Serial.print(now.second(), DEC);
     Serial.println();
     Serial.println(F("FREQUENCY: "));
-    frequency = EEPROM_readDouble(FREQUENCY_ADDRESS);
+    frequency = EepromReadDouble(FREQUENCY_ADDRESS);
     Serial.println(frequency);
     Serial.println(F("AMPLITUDE: "));
-    amplitude = EEPROM_readDouble(AMPLITUDE_ADDRESS);
+    amplitude = EepromReadDouble(AMPLITUDE_ADDRESS);
     Serial.println(amplitude);
     Serial.println(F("SETPOINT: "));
     Serial.println(Setpoint);
@@ -758,13 +758,13 @@ void loop() {
 
       previousMillis = currentMillis;  // save the last time you updated Google Sheets
 
-      packData();  // packing GET query with data
+      PackData();  // packing GET query with data
 
       bool cxn = false;
 
       Serial.println(F("connecting..."));
       if (client.connect(API_SERVER, 80)) {
-        sendData();
+        SendData();
         cxn = true;  // connected = true
       } else {
         Serial.println(F("connection failed"));
@@ -795,7 +795,7 @@ void loop() {
     // listen for incoming clients
     EthernetClient RPClient = ethernetServer.available();  // Raspberry Pi Client
     if (RPClient) {
-      handleRequest(RPClient);
+      HandleRequest(RPClient);
 
       // give the web browser time to receive the data
       delay(1000);

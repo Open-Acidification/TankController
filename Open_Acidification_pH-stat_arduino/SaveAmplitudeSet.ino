@@ -1,5 +1,5 @@
 void SaveAmplitudeSet() {
-  if (amplitudeSet != EEPROM_readDouble(AMPLITUDE_ADDRESS)) {
-    EEPROM_writeDouble(AMPLITUDE_ADDRESS, amplitudeSet);
+  if (amplitudeSet != EepromReadDouble(AMPLITUDE_ADDRESS)) {
+    EepromWriteDouble(AMPLITUDE_ADDRESS, amplitudeSet);
   }
 }

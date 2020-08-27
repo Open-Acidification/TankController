@@ -352,7 +352,7 @@ void loop() {
         lcd.setCursor(0, 0);
         lcd.print(F("Software Version"));
         lcd.setCursor(0, 1);
-        lcd.print(SOFTVERS, 3);
+        lcd.print(SOFTWARE_VERSION);
         delay(7000);
         answer = 1;
       }

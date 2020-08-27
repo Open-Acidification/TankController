@@ -36,10 +36,10 @@ void HandleSeries(char* body, EthernetClient client) {
 
     if (phSeriesIsValid) {
       phSeriesPointer = 0;
-      EEPROM_WriteDouble(PH_INTERVAL_ADDRESS, phInterval);
-      EEPROM_WriteDouble(PH_DELAY_ADDRESS, phDelay);
-      EEPROM_WriteDouble(PH_SERIES_SIZE_ADDRESS, phSeriesSize);
-      EEPROM_WriteDouble(PH_SERIES_POINTER_ADDRESS, phSeriesPointer);
+      EepromWriteDouble(PH_INTERVAL_ADDRESS, phInterval);
+      EepromWriteDouble(PH_DELAY_ADDRESS, phDelay);
+      EepromWriteDouble(PH_SERIES_SIZE_ADDRESS, phSeriesSize);
+      EepromWriteDouble(PH_SERIES_POINTER_ADDRESS, phSeriesPointer);
       pinMode(10, OUTPUT);
       digitalWrite(10, HIGH);
       SD.remove("pv.txt");
@@ -108,10 +108,10 @@ void HandleSeries(char* body, EthernetClient client) {
     if (tempSeriesIsValid) {
       counter = 0;
       tempSeriesPointer = 0;
-      EEPROM_WriteDouble(TEMP_INTERVAL_ADDRESS, tempInterval);
-      EEPROM_WriteDouble(TEMP_DELAY_ADDRESS, tempDelay);
-      EEPROM_WriteDouble(TEMP_SERIES_SIZE_ADDRESS, tempSeriesSize);
-      EEPROM_WriteDouble(TEMP_SERIES_POINTER_ADDRESS, tempSeriesPointer);
+      EepromWriteDouble(TEMP_INTERVAL_ADDRESS, tempInterval);
+      EepromWriteDouble(TEMP_DELAY_ADDRESS, tempDelay);
+      EepromWriteDouble(TEMP_SERIES_SIZE_ADDRESS, tempSeriesSize);
+      EepromWriteDouble(TEMP_SERIES_POINTER_ADDRESS, tempSeriesPointer);
       SD.remove("/tv.txt");
       seriesFile = SD.open("/tv.txt", FILE_WRITE);  // temperature values
       client.println(F("temp values: "));

@@ -12,12 +12,12 @@ void HandleConfig(char* body, EthernetClient client) {
     client.print(F("granularity: "));
     client.println(granularity);
     if (granularity) {
-      EEPROM_WriteDouble(GRANULARITY_ADDRESS, granularity);
+      EepromWriteDouble(GRANULARITY_ADDRESS, granularity);
     }
     client.print(F("maxDataAge: "));
     client.println(maxDataAge);
     if (maxDataAge) {
-      EEPROM_WriteDouble(MAX_DATA_AGE_ADDRESS, maxDataAge);
+      EepromWriteDouble(MAX_DATA_AGE_ADDRESS, maxDataAge);
     }
   }
 }

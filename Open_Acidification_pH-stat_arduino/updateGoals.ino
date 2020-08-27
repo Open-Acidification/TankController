@@ -22,7 +22,7 @@ void UpdateGoals() {
       phTimeNext = ReadLineFromSD("pt.txt", phSeriesPointer + 1 >= phSeriesSize ? 0 : phSeriesPointer + 1, GOAL_RECORD_LENGTH);
     }
   }
-  EEPROM_WriteDouble(PH_SERIES_POINTER_ADDRESS, phSeriesPointer);
+  EepromWriteDouble(PH_SERIES_POINTER_ADDRESS, phSeriesPointer);
 
   // interpolate ph goal
   long phValueCurrent = ReadLineFromSD("pv.txt", phSeriesPointer, GOAL_RECORD_LENGTH);
@@ -57,7 +57,7 @@ void UpdateGoals() {
       tempTimeNext = ReadLineFromSD("tt.txt", tempSeriesPointer + 1 >= tempSeriesSize ? 0 : tempSeriesPointer + 1, GOAL_RECORD_LENGTH);
     }
   }
-  EEPROM_WriteDouble(TEMP_SERIES_POINTER_ADDRESS, tempSeriesPointer);
+  EepromWriteDouble(TEMP_SERIES_POINTER_ADDRESS, tempSeriesPointer);
 
   // interpolate temp goal
   long tempValueCurrent = ReadLineFromSD("tv.txt", tempSeriesPointer, GOAL_RECORD_LENGTH);

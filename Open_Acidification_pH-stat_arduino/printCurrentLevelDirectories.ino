@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int CmpFunc(const void* p1, const void* p2) {
+int CompareCStrings(const void* p1, const void* p2) {
   const char* aName = *(const char**)p1;
   const char* bName = *(const char**)p2;
 
@@ -43,7 +43,7 @@ JsonDocument PrintCurrentLevelDirectories(File dir, EthernetClient client, int l
   }
 
   // sort array
-  qsort(files, fileCounter, sizeof(files[0]), CmpFunc);
+  qsort(files, fileCounter, sizeof(files[0]), CompareCStrings);
 
   // add items in sorted array to json array
   StaticJsonDocument<512> doc;

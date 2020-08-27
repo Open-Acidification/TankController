@@ -1,4 +1,4 @@
-void LCD_Update() {
+void LcdUpdate() {
   lcd.setCursor(3, 0);
   lcd.print(pHDisplay, 3);
   lcd.setCursor(11, 0);

@@ -1,5 +1,5 @@
 void SaveFrequencySet() {
-  if (frequencySet != EEPROM_ReadDouble(FREQUENCY_ADDRESS)) {
-    EEPROM_WriteDouble(FREQUENCY_ADDRESS, frequencySet);
+  if (frequencySet != EepromReadDouble(FREQUENCY_ADDRESS)) {
+    EepromWriteDouble(FREQUENCY_ADDRESS, frequencySet);
   }
 }

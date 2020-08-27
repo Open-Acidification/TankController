@@ -55,46 +55,46 @@ void LogToSD() {
   char varBuffer[100];
   memset(varBuffer, 0, 100);
   DateTime tempNow = rtc.now();
-  FmtDouble(tempNow.year(), 0, timeBuffer, 0xffff);
+  FormatDouble(tempNow.year(), 0, timeBuffer, 0xffff);
   strcat(formattedSDString, timeBuffer);
   strcat(formattedSDString, "/");
-  FmtDouble(tempNow.month(), 0, timeBuffer, 0xffff);
+  FormatDouble(tempNow.month(), 0, timeBuffer, 0xffff);
   strcat(formattedSDString, timeBuffer);
   strcat(formattedSDString, "/");
-  FmtDouble(tempNow.day(), 0, timeBuffer, 0xffff);
+  FormatDouble(tempNow.day(), 0, timeBuffer, 0xffff);
   strcat(formattedSDString, timeBuffer);
   strcat(formattedSDString, " ");
-  FmtDouble(tempNow.hour(), 0, timeBuffer, 0xffff);
+  FormatDouble(tempNow.hour(), 0, timeBuffer, 0xffff);
   strcat(formattedSDString, timeBuffer);
   strcat(formattedSDString, ":");
   if (tempNow.minute() < 10) {
     strcat(formattedSDString, "0");
   }
-  FmtDouble(tempNow.minute(), 0, timeBuffer, 0xffff);
+  FormatDouble(tempNow.minute(), 0, timeBuffer, 0xffff);
   strcat(formattedSDString, timeBuffer);
   strcat(formattedSDString, ":");
   if (tempNow.second() < 10) {
     strcat(formattedSDString, "0");
   }
-  FmtDouble(tempNow.second(), 0, timeBuffer, 0xffff);
+  FormatDouble(tempNow.second(), 0, timeBuffer, 0xffff);
   strcat(formattedSDString, timeBuffer);
 
   snprintf(varBuffer, 100, "%d", tankid);
   strcat(formattedSDString, ",");
   strcat(formattedSDString, varBuffer);
-  FmtDouble(temp, 2, varBuffer, 0xffff);
+  FormatDouble(temp, 2, varBuffer, 0xffff);
   strcat(formattedSDString, ",");
   strcat(formattedSDString, varBuffer);
-  FmtDouble(tempset, 2, varBuffer, 0xffff);
+  FormatDouble(tempset, 2, varBuffer, 0xffff);
   strcat(formattedSDString, ",");
   strcat(formattedSDString, varBuffer);
-  FmtDouble(pH, 3, varBuffer, 0xffff);
+  FormatDouble(pH, 3, varBuffer, 0xffff);
   strcat(formattedSDString, ",");
   strcat(formattedSDString, varBuffer);
-  FmtDouble(phset, 3, varBuffer, 0xffff);
+  FormatDouble(phset, 3, varBuffer, 0xffff);
   strcat(formattedSDString, ",");
   strcat(formattedSDString, varBuffer);
-  FmtDouble(onTime, 0, varBuffer, 0xffff);
+  FormatDouble(onTime, 0, varBuffer, 0xffff);
   strcat(formattedSDString, ",");
   strcat(formattedSDString, varBuffer);
 

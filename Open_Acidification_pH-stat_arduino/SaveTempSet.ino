@@ -1,5 +1,5 @@
 void SaveTempSet() {
-  if (tempset != EEPROM_ReadDouble(TEMP_ADDRESS)) {
-    EEPROM_WriteDouble(TEMP_ADDRESS, tempset);
+  if (tempset != EepromReadDouble(TEMP_ADDRESS)) {
+    EepromWriteDouble(TEMP_ADDRESS, tempset);
   }
 }

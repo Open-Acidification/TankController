@@ -39,9 +39,9 @@ void RunAutoTune() {
         myPID.SetMode(ATuneModeRemember);
 
         // Persist any changed parameters to EEPROM
-        EEPROM_WriteDouble(KP_ADDRESS, Kp);
-        EEPROM_WriteDouble(KI_ADDRESS, Ki);
-        EEPROM_WriteDouble(KD_ADDRESS, Kd);
+        EepromWriteDouble(KP_ADDRESS, Kp);
+        EepromWriteDouble(KI_ADDRESS, Ki);
+        EepromWriteDouble(KD_ADDRESS, Kd);
       }
     }
     char atune_key = customKeypad.getKey();

@@ -52,7 +52,7 @@ void loop() {
 
     phset = newph;
     Setpoint = -1 * phset;
-    Save_pH_Set();
+    SavePhSet();
     delay(1000);
     Serial.println(F("New pH Set End"));
 
@@ -218,7 +218,7 @@ void loop() {
     Serial.print(F("Ones place: "));
     Serial.println(Key);
 
-    EEPROM_WriteDouble(TANKID_ADDRESS, tankid);
+    EepromWriteDouble(TANKID_ADDRESS, tankid);
     delay(1000);
     Serial.println(F("Tank ID change End"));
 
@@ -575,7 +575,7 @@ void loop() {
     Serial.print(F("tempcorr: "));
     Serial.println(tempcorr);
 
-    EEPROM_WriteDouble(TEMP_CORR_ADDRESS, tempcorr);
+    EepromWriteDouble(TEMP_CORR_ADDRESS, tempcorr);
 
     Serial.println(F("Temp Calibration End"));
 
@@ -646,12 +646,12 @@ void loop() {
       char answerkey = customKeypad.getKey();
       if (answerkey == '1') {
         heat = 0;
-        EEPROM_WriteDouble(HEAT_ADDRESS, 0);
+        EepromWriteDouble(HEAT_ADDRESS, 0);
         answer = 1;
       }
       if (answerkey == '2') {
         heat = 1;
-        EEPROM_WriteDouble(HEAT_ADDRESS, 1);
+        EepromWriteDouble(HEAT_ADDRESS, 1);
         answer = 1;
       }
       timdiff = millis() - queststart;
@@ -688,7 +688,7 @@ void loop() {
       myPID.Compute();
       onTime = Output;
     }
-    LCD_Update();
+    LcdUpdate();
     unsigned long second_currentMillis = millis();
     if (second_currentMillis - second_previousMillis >= second_interval) {
       second_previousMillis = second_currentMillis;
@@ -725,10 +725,10 @@ void loop() {
     Serial.print(now.second(), DEC);
     Serial.println();
     Serial.println(F("FREQUENCY: "));
-    frequency = EEPROM_ReadDouble(FREQUENCY_ADDRESS);
+    frequency = EepromReadDouble(FREQUENCY_ADDRESS);
     Serial.println(frequency);
     Serial.println(F("AMPLITUDE: "));
-    amplitude = EEPROM_ReadDouble(AMPLITUDE_ADDRESS);
+    amplitude = EepromReadDouble(AMPLITUDE_ADDRESS);
     Serial.println(amplitude);
     Serial.println(F("SETPOINT: "));
     Serial.println(Setpoint);

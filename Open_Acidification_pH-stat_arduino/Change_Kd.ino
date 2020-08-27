@@ -73,7 +73,7 @@ void ChangeKd() {
     Key = customKeypad.waitForKey();
     if (Key == '1') {
       Kd = KdTemp;
-      EEPROM_WriteDouble(KD_ADDRESS, Kd);
+      EepromWriteDouble(KD_ADDRESS, Kd);
       myPID.SetTunings(Kp, Ki, Kd);
       Key = '2';
     }

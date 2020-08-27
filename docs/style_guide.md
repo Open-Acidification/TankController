@@ -1,28 +1,24 @@
 # Style Guide
 
-This project follows Google's C++ style guide
+This project follows [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
 
-https://google.github.io/styleguide/cppguide.html
-
-With some exceptions and clarifiactions listed below
+With some exceptions listed below
 ## Exceptions
 
 ### Variable Names
 
 #### Constant Names
 
-Variables declared as constant should be fully capitalized with underscores placed where separation is necessary.
+Variables declared as a constant should be fully capitalized with underscores placed where separation is necessary.
 
 Examples:
 - const byte ROWS = 4;
 - const int WINDOW_SIZE = 10000;
 
-## Clarifications
+### Function Names
 
-### Function Names:
-
-If a name starts with a non-capital character or ends with a capital character, use an underscore for separation if needed.
+If the function is meant to overload an exsisting function from a library, keep the same name
 
 Examples:
-- EEPROM_WriteDouble
-- Get_pH_Test
+
+- bool startsWith(const char *a, const char *b) { ... }

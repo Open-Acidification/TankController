@@ -3556,7 +3556,7 @@ namespace Matchers {
     StdString::EqualsMatcher Equals( std::string const& str, CaseSensitive::Choice caseSensitivity = CaseSensitive::Yes );
     StdString::ContainsMatcher Contains( std::string const& str, CaseSensitive::Choice caseSensitivity = CaseSensitive::Yes );
     StdString::EndsWithMatcher EndsWith( std::string const& str, CaseSensitive::Choice caseSensitivity = CaseSensitive::Yes );
-    StdString::StartsWithMatcher startsWith( std::string const& str, CaseSensitive::Choice caseSensitivity = CaseSensitive::Yes );
+    StdString::StartsWithMatcher StartsWith( std::string const& str, CaseSensitive::Choice caseSensitivity = CaseSensitive::Yes );
     StdString::RegexMatcher Matches( std::string const& regex, CaseSensitive::Choice caseSensitivity = CaseSensitive::Yes );
 
 } // namespace Matchers
@@ -4941,8 +4941,8 @@ namespace Catch {
                 }
             };
 
-            struct startsWith : StringHolder {
-                startsWith( NSString* substr ) : StringHolder( substr ){}
+            struct StartsWith : StringHolder {
+                StartsWith( NSString* substr ) : StringHolder( substr ){}
 
                 bool match( NSString* str ) const override {
                     return  (str != nil || m_substr == nil ) &&
@@ -4975,8 +4975,8 @@ namespace Catch {
         inline Impl::NSStringMatchers::Contains
             Contains( NSString* substr ){ return Impl::NSStringMatchers::Contains( substr ); }
 
-        inline Impl::NSStringMatchers::startsWith
-            startsWith( NSString* substr ){ return Impl::NSStringMatchers::startsWith( substr ); }
+        inline Impl::NSStringMatchers::StartsWith
+            StartsWith( NSString* substr ){ return Impl::NSStringMatchers::StartsWith( substr ); }
 
         inline Impl::NSStringMatchers::EndsWith
             EndsWith( NSString* substr ){ return Impl::NSStringMatchers::EndsWith( substr ); }
@@ -11665,7 +11665,7 @@ namespace Matchers {
     StdString::EndsWithMatcher EndsWith( std::string const& str, CaseSensitive::Choice caseSensitivity ) {
         return StdString::EndsWithMatcher( StdString::CasedString( str, caseSensitivity) );
     }
-    StdString::StartsWithMatcher startsWith( std::string const& str, CaseSensitive::Choice caseSensitivity ) {
+    StdString::StartsWithMatcher StartsWith( std::string const& str, CaseSensitive::Choice caseSensitivity ) {
         return StdString::StartsWithMatcher( StdString::CasedString( str, caseSensitivity) );
     }
 
@@ -17615,4 +17615,3 @@ using Catch::Detail::Approx;
 // end catch_reenable_warnings.h
 // end catch.hpp
 #endif // TWOBLUECUBES_SINGLE_INCLUDE_CATCH_HPP_INCLUDED
-

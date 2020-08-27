@@ -31,7 +31,6 @@
 #include <Wire.h>
 #include <avr/wdt.h>
 #include <stdio.h>
-#include <string.h>
 
 #include "RTClib.h"
 
@@ -41,9 +40,8 @@ const float RREF = 430.0;
 Adafruit_MAX31865 max = Adafruit_MAX31865(45, 43, 41, 39);
 RTC_PCF8523 rtc;
 
-const double SOFTVERS = 0.197;  // Software Version
+const String SOFTWARE_VERSION = "0.2.0";  // Software Version
 
-// byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; //Setting MAC Address
 const char API_SERVER[] = "api.pushingbox.com";  // pushingbox API server
 IPAddress ip(192, 168, 1, 2);                    // Arduino IP address. Only used when DHCP is turned off.
 EthernetClient client;                           // define 'client' as object

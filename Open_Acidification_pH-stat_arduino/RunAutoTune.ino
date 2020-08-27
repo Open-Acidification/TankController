@@ -18,7 +18,7 @@ void RunAutoTune() {
   while (tuning) {
     if (tuning) {
       byte val = (aTune.Runtime());
-      Get_pH();
+      GetPh();
       lcd.setCursor(3, 1);
       lcd.print(pH, 3);
       GetTemperature();

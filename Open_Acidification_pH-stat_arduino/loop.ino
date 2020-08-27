@@ -671,7 +671,7 @@ void loop() {
   if (sensor_currentMillis - sensor_previousMillis >= sensor_interval) {
     sensor_previousMillis = sensor_currentMillis;
 
-    Get_pH();
+    GetPh();
     GetTemperature();
     SetTempComp();
     SetChiller();

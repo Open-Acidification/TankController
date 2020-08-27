@@ -82,7 +82,7 @@ void TwoPointCal() {
     if (sensor_currentMillis - sensor_previousMillis >= sensor_interval) {
       sensor_previousMillis = sensor_currentMillis;
 
-      Get_pH();
+      GetPh();
       GetTemperature();
       SetTempComp();
     }
@@ -172,7 +172,7 @@ void TwoPointCal() {
     if (sensor_currentMillis - sensor_previousMillis >= sensor_interval) {
       sensor_previousMillis = sensor_currentMillis;
 
-      Get_pH();
+      GetPh();
       GetTemperature();
       SetTempComp();
       lcd.setCursor(0, 1);

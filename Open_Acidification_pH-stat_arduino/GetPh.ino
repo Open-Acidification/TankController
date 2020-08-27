@@ -1,7 +1,7 @@
 // ************************************************
 // Get pH reading from Atlas pH EZO
 // ************************************************
-void Get_pH() {
+void GetPh() {
   Serial1.print(F("R"));  // Ask EZO pH stamp for pH reading
   Serial1.print('\r');    // add a <CR> to the end of the string
   while (pH == -99) {

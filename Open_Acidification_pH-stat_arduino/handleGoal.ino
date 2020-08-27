@@ -7,7 +7,7 @@ void HandleGoal(EthernetClient client) {
   StaticJsonDocument<100> phValuesDoc;
   JsonArray phValues = phValuesDoc.to<JsonArray>();
   for (int i = 0; i < phSeriesSize; i++) {
-    long phValueCurrent = ReadLineFromSD("pv.txt", i, GOAL_RECORD_LENGTH);
+    long phValueCurrent = ReadLineFromSd("pv.txt", i, GOAL_RECORD_LENGTH);
     phValues.add(phValueCurrent);
   }
   goalObj["phValues"] = phValues;
@@ -15,7 +15,7 @@ void HandleGoal(EthernetClient client) {
   StaticJsonDocument<100> phTimesDoc;
   JsonArray phTimes = phTimesDoc.to<JsonArray>();
   for (int i = 0; i < phSeriesSize; i++) {
-    long phTimeCurrent = ReadLineFromSD("pt.txt", i, GOAL_RECORD_LENGTH);
+    long phTimeCurrent = ReadLineFromSd("pt.txt", i, GOAL_RECORD_LENGTH);
     phTimes.add(phTimeCurrent);
   }
   goalObj["phTimes"] = phTimes;
@@ -25,7 +25,7 @@ void HandleGoal(EthernetClient client) {
   StaticJsonDocument<100> tempValuesDoc;
   JsonArray tempValues = tempValuesDoc.to<JsonArray>();
   for (int i = 0; i < tempSeriesSize; i++) {
-    long tempValueCurrent = ReadLineFromSD("tv.txt", i, GOAL_RECORD_LENGTH);
+    long tempValueCurrent = ReadLineFromSd("tv.txt", i, GOAL_RECORD_LENGTH);
     tempValues.add(tempValueCurrent);
   }
   goalObj["tempValues"] = tempValues;
@@ -33,7 +33,7 @@ void HandleGoal(EthernetClient client) {
   StaticJsonDocument<100> tempTimesDoc;
   JsonArray tempTimes = tempTimesDoc.to<JsonArray>();
   for (int i = 0; i < tempSeriesSize; i++) {
-    long tempTimeCurrent = ReadLineFromSD("tt.txt", i, GOAL_RECORD_LENGTH);
+    long tempTimeCurrent = ReadLineFromSd("tt.txt", i, GOAL_RECORD_LENGTH);
     tempTimes.add(tempTimeCurrent);
   }
   goalObj["tempTimes"] = tempTimes;

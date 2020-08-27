@@ -1,7 +1,7 @@
 #include "catch.hpp"
-#include "../clearBuffer.ino"
+#include "../ClearBuffer.ino"
 // #include "../handleRequest.ino"
-#include "../readUntilSpace.ino"
+#include "../ReadUntilSpace.ino"
 
 TEST_CASE( "Clears buffer completely", "[buffer]" ) {
 	int bufferSize = 500;

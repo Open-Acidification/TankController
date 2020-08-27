@@ -22,7 +22,7 @@ void HandleLines(String endpoint, EthernetClient client) {
       PrintHeader(client, 200);
       Serial.print(F("PRINTING LINE FILE: "));
       Serial.println(directoryName);
-      long lineCount = ReadLineFromSD(directoryName.c_str(), 0, 10);
+      long lineCount = ReadLineFromSd(directoryName.c_str(), 0, 10);
       Serial.print(F("LINE COUNT: "));
       Serial.println(lineCount);
       client.println(lineCount);

@@ -2,7 +2,8 @@
 
 This project follows [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
 
-With some exceptions listed below
+With some exceptions listed below:
+
 ## Exceptions
 
 ### Variable Names

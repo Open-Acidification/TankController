@@ -8,9 +8,9 @@ void HandleRequest(EthernetClient client) {
   boolean headerFinished = false;
   String postData;
   String header;
-  char* requestType;
+  String requestType;
   String endpoint;
-  char* requestProtocol;
+  String requestProtocol;
   while (client.connected()) {
     while (client.available()) {
       char c = client.read();
@@ -37,9 +37,9 @@ void HandleRequest(EthernetClient client) {
         Serial.println(F("postData:"));
         Serial.println(postData);
 
-        requestType = strtok(header.c_str(), " ");
+        requestType = String(strtok(header.c_str(), " "));
         endpoint = String(strtok(NULL, " "));
-        requestProtocol = strtok(NULL, " ");
+        requestProtocol = String(strtok(NULL, " "));
 
         Serial.println(F("requestType:"));
         Serial.println(requestType);
@@ -62,11 +62,11 @@ void HandleRequest(EthernetClient client) {
     if (endpoint.startsWith("/config")) {
       HandleConfig(postData.c_str(), client);
     } else if (endpoint.startsWith("/series")) {
-      if (startsWith(requestType, "POST")) {
+      if (requestType.startsWith("POST")) {
         // upload new timeseries
         Serial.println(F("POST TIMESERIES"));
         HandleSeries(postData.c_str(), client);
-      } else if (startsWith(requestType, "GET")) {
+      } else if (requestType.startsWith("GET")) {
         // return current timeseries
         Serial.println(F("GET TIMESERIES"));
         HandleGoal(client);

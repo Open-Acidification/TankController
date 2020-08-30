@@ -18,13 +18,13 @@ void RunAutoTune() {
   while (tuning) {
     if (tuning) {
       byte val = (aTune.Runtime());
-      Get_pH();
+      GetPh();
       lcd.setCursor(3, 1);
       lcd.print(pH, 3);
-      Get_Temperature();
+      GetTemperature();
       lcd.setCursor(11, 1);
       lcd.print(temp, 2);
-      Set_Temp_Comp();
+      SetTempComp();
       pH = -99;
       if (val != 0) {
         tuning = false;
@@ -39,9 +39,9 @@ void RunAutoTune() {
         myPID.SetMode(ATuneModeRemember);
 
         // Persist any changed parameters to EEPROM
-        EEPROM_writeDouble(KP_ADDRESS, Kp);
-        EEPROM_writeDouble(KI_ADDRESS, Ki);
-        EEPROM_writeDouble(KD_ADDRESS, Kd);
+        EepromWriteDouble(KP_ADDRESS, Kp);
+        EepromWriteDouble(KI_ADDRESS, Ki);
+        EepromWriteDouble(KD_ADDRESS, Kd);
       }
     }
     char atune_key = customKeypad.getKey();

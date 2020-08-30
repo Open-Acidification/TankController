@@ -132,7 +132,7 @@ void setup() {
   }
 
   // loading Tank ID///////////////////////////////////////////////////////////////////////////////////////
-  tankid = EEPROM_readDouble(TANKID_ADDRESS);
+  tankid = EepromReadDouble(TANKID_ADDRESS);
   if (isnan(tankid)) {
     lcd.clear();
     lcd.setCursor(0, 0);
@@ -159,79 +159,79 @@ void setup() {
     Serial.print(F("Ones place: "));
     Serial.println(Key);
 
-    EEPROM_writeDouble(TANKID_ADDRESS, tankid);
+    EepromWriteDouble(TANKID_ADDRESS, tankid);
     delay(1000);
     Serial.println(F("Tank ID change End"));
   }
 
   // load granularity
-  sensor_interval = EEPROM_readDouble(GRANULARITY_ADDRESS);
+  sensor_interval = EepromReadDouble(GRANULARITY_ADDRESS);
   if (isnan(sensor_interval)) {
     sensor_interval = 800;  // default granularity for interval between logging
-    EEPROM_writeDouble(GRANULARITY_ADDRESS, sensor_interval);
+    EepromWriteDouble(GRANULARITY_ADDRESS, sensor_interval);
   }
 
   // load maxDataAge
-  maxDataAge = EEPROM_readDouble(MAX_DATA_AGE_ADDRESS);
+  maxDataAge = EepromReadDouble(MAX_DATA_AGE_ADDRESS);
   if (isnan(maxDataAge)) {
     maxDataAge = 800;  // default max data age
-    EEPROM_writeDouble(MAX_DATA_AGE_ADDRESS, maxDataAge);
+    EepromWriteDouble(MAX_DATA_AGE_ADDRESS, maxDataAge);
   }
 
   // load PH_SERIES_SIZE_ADDRESS;
-  phSeriesSize = EEPROM_readDouble(PH_SERIES_SIZE_ADDRESS);
+  phSeriesSize = EepromReadDouble(PH_SERIES_SIZE_ADDRESS);
   if (isnan(phSeriesSize)) {
     phSeriesSize = 0;
-    EEPROM_writeDouble(PH_SERIES_SIZE_ADDRESS, phSeriesSize);
+    EepromWriteDouble(PH_SERIES_SIZE_ADDRESS, phSeriesSize);
   }
 
   // load PH_SERIES_POINTER_ADDRESS;
-  phSeriesPointer = EEPROM_readDouble(PH_SERIES_POINTER_ADDRESS);
+  phSeriesPointer = EepromReadDouble(PH_SERIES_POINTER_ADDRESS);
   if (isnan(phSeriesPointer)) {
     phSeriesPointer = 0;
-    EEPROM_writeDouble(PH_SERIES_POINTER_ADDRESS, phSeriesPointer);
+    EepromWriteDouble(PH_SERIES_POINTER_ADDRESS, phSeriesPointer);
   }
 
   // load TEMP_SERIES_SIZE_ADDRESS;
-  tempSeriesSize = EEPROM_readDouble(TEMP_SERIES_SIZE_ADDRESS);
+  tempSeriesSize = EepromReadDouble(TEMP_SERIES_SIZE_ADDRESS);
   if (isnan(tempSeriesSize)) {
     tempSeriesSize = 0;
-    EEPROM_writeDouble(TEMP_SERIES_SIZE_ADDRESS, tempSeriesSize);
+    EepromWriteDouble(TEMP_SERIES_SIZE_ADDRESS, tempSeriesSize);
   }
 
   // load TEMP_SERIES_POINTER_ADDRESS;
-  tempSeriesPointer = EEPROM_readDouble(TEMP_SERIES_POINTER_ADDRESS);
+  tempSeriesPointer = EepromReadDouble(TEMP_SERIES_POINTER_ADDRESS);
   if (isnan(tempSeriesPointer)) {
     tempSeriesPointer = 0;
-    EEPROM_writeDouble(TEMP_SERIES_POINTER_ADDRESS, tempSeriesPointer);
+    EepromWriteDouble(TEMP_SERIES_POINTER_ADDRESS, tempSeriesPointer);
   }
 
   // load phInterval;
-  phInterval = EEPROM_readDouble(PH_INTERVAL_ADDRESS);
+  phInterval = EepromReadDouble(PH_INTERVAL_ADDRESS);
   if (isnan(PH_INTERVAL_ADDRESS)) {
     phInterval = 0;
-    EEPROM_writeDouble(PH_INTERVAL_ADDRESS, phInterval);
+    EepromWriteDouble(PH_INTERVAL_ADDRESS, phInterval);
   }
 
   // load phDelay;
-  phDelay = EEPROM_readDouble(PH_DELAY_ADDRESS);
+  phDelay = EepromReadDouble(PH_DELAY_ADDRESS);
   if (isnan(PH_DELAY_ADDRESS)) {
     phDelay = 0;
-    EEPROM_writeDouble(PH_DELAY_ADDRESS, phDelay);
+    EepromWriteDouble(PH_DELAY_ADDRESS, phDelay);
   }
 
   // load tempInterval;
-  tempInterval = EEPROM_readDouble(TEMP_INTERVAL_ADDRESS);
+  tempInterval = EepromReadDouble(TEMP_INTERVAL_ADDRESS);
   if (isnan(TEMP_INTERVAL_ADDRESS)) {
     tempInterval = 0;
-    EEPROM_writeDouble(TEMP_INTERVAL_ADDRESS, tempInterval);
+    EepromWriteDouble(TEMP_INTERVAL_ADDRESS, tempInterval);
   }
 
   // load tempDelay;
-  tempDelay = EEPROM_readDouble(TEMP_DELAY_ADDRESS);
+  tempDelay = EepromReadDouble(TEMP_DELAY_ADDRESS);
   if (isnan(TEMP_DELAY_ADDRESS)) {
     tempDelay = 0;
-    EEPROM_writeDouble(TEMP_DELAY_ADDRESS, tempDelay);
+    EepromWriteDouble(TEMP_DELAY_ADDRESS, tempDelay);
   }
 
   /// Starting the SD Card//////////////////////////////////////////////////////////////////////////////////
@@ -240,8 +240,8 @@ void setup() {
   SD.begin(4);
 
   File root = SD.open("/");
-  printDirectory(root, 0);
-  // doDirectoryMaintenance();
+  PrintDirectory(root, 0);
+  // DoDirectoryMaintenance();
   /// Starting the SD Card//////////////////////////////////////////////////////////////////////////////////
 
   // Setting PID parameters////////////////////////////////////////////////////////////////////////////////////////
@@ -260,7 +260,7 @@ void setup() {
   interrupts();
 
   // loading Temp Correction////////////////////////////////////////////////////////////////////////////////////////
-  tempcorr = EEPROM_readDouble(TEMP_CORR_ADDRESS);
+  tempcorr = EepromReadDouble(TEMP_CORR_ADDRESS);
 
   if (isnan(tempcorr)) {
     tempcorr = 0;

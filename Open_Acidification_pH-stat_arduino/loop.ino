@@ -550,9 +550,9 @@ void loop() {
       Serial.println(temp);
 
       total = total - readings[read_index];  // Delete oldest temperature reading
-      readings[read_index] = temp_now;        // Add new temperature reading to the array
+      readings[read_index] = temp_now;       // Add new temperature reading to the array
       total = total + readings[read_index];  // Add the temperature reading to the total
-      read_index = read_index + 1;            // advance to the next position in the array
+      read_index = read_index + 1;           // advance to the next position in the array
 
       if (read_index >= NUM_READINGS) {  // if we're at the end of the array...
         read_index = 0;                  // ...wrap around to the beginning

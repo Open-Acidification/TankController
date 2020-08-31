@@ -59,8 +59,8 @@ void setup() {
 
   max.begin(MAX31865_3WIRE);  // start pt100 temperature probe
   Serial1.begin(9600);        // set baud rate for the software serial port to 9600
-  input_string.reserve(10);    // set aside some bytes for receiving data from the PC
-  sensor_string.reserve(30);   // set aside some bytes for receiving data from Atlas Scientific pH EZO
+  input_string.reserve(10);   // set aside some bytes for receiving data from the PC
+  sensor_string.reserve(30);  // set aside some bytes for receiving data from Atlas Scientific pH EZO
   Serial1.print(F("*OK,0"));  // Turn off the returning of OK after command to EZO pH
   Serial1.print('\r');        // add a <CR> to the end of the string
   Serial1.print(F("C,0"));    // Reset pH stamp to continuous measurement: once per second

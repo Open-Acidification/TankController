@@ -11,5 +11,5 @@ void SetTempComp() {
   }
   Serial.println(temp_comp);
   Serial1.print(temp_comp);  // send that string to the Atlas Scientific product
-  Serial1.print('\r');      // add a <CR> to the end of the string
+  Serial1.print('\r');       // add a <CR> to the end of the string
 }

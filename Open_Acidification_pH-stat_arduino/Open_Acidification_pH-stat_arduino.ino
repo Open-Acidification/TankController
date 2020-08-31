@@ -47,17 +47,17 @@ IPAddress ip(192, 168, 1, 2);                    // Arduino IP address. Only use
 EthernetClient client;                           // define 'client' as object
 EthernetServer ethernet_server(80);
 int request_char_counter = 0;  // for parsing html requests
-String data;                 // GET query with data
+String data;                   // GET query with data
 
 float interval = 1200000;  // interval at which to update Google Sheets (milliseconds)
 unsigned long previous_millis =
     0 - interval + 30000;  // will store last time Google Sheets was updated (-interval+30000 sets first upload for 30 seconds after startup. This eases troubleshooting)
 unsigned long chiller_previous_millis = 0;  // will store last time chiller state was checked
-const float CHILLER_INTERVAL = 30000;      // interval at which to change chiller state (milliseconds)
+const float CHILLER_INTERVAL = 30000;       // interval at which to change chiller state (milliseconds)
 // float SD_interval = 86400000;                     // interval at which to start a new log file (milliseconds) (formerly 1 day)
-const float SD_INTERVAL = 3600000;        // log to SD each hour
+const float SD_INTERVAL = 3600000;         // log to SD each hour
 unsigned long sensor_previous_millis = 0;  // will store last time sensor readings were taken
-float sensor_interval;                    // interval at which to start a new log file (milliseconds)
+float sensor_interval;                     // interval at which to start a new log file (milliseconds)
 unsigned long second_previous_millis = 0;
 const float second_interval = 1000;
 int granularity;
@@ -65,8 +65,8 @@ int max_data_age;
 const float LEASE_INTERVAL = 4 * 86400000;  // Interval at which to renew DHCP lease (First number is days)
 unsigned long previous_lease = 0;
 
-const byte ROWS = 4;       // four rows
-const byte COLS = 4;       // four columns
+const byte ROWS = 4;        // four rows
+const byte COLS = 4;        // four columns
 String input_string = "";   // a string to hold incoming data from the PC
 String sensor_string = "";  // a string to hold the data from the EZO pH circuit
 const String PRE_MID_CAL_STRING = "Cal,mid,";
@@ -76,7 +76,7 @@ String slope = "";
 boolean input_string_complete = false;   // have we received all the data from the PC
 boolean sensor_string_complete = false;  // have we received all the data from the Atlas Scientific product
 double pH;                               // used to hold a floating point number that is the pH
-double ph_display;                        // used to hold a floating point number that is the pH
+double ph_display;                       // used to hold a floating point number that is the pH
 double temp;
 double temp_set;
 double ph_set;
@@ -121,9 +121,9 @@ char html_request_buffer[HTML_REQUEST_BUFFER_SIZE];
 const int NUM_READINGS = 10;
 
 double readings[NUM_READINGS];  // the readings from the analog input
-volatile int read_index = 0;     // the index of the current reading
+volatile int read_index = 0;    // the index of the current reading
 volatile double total = 0;      // the running total
-volatile double temp_now = 0;    // the average
+volatile double temp_now = 0;   // the average
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // EEPROM addresses for persisted data///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -177,7 +177,7 @@ PID_ATune aTune(&input, &output);
 
 // Stuff for retreiving time/////////////////////////////////////////////////////////////////////////////////////////////////////////
 IPAddress time_server(132, 163, 97, 1);  // utcnist.colorado.edu
-const int TIME_ZONE = -7;               // Pacific Daylight Time (USA)
+const int TIME_ZONE = -7;                // Pacific Daylight Time (USA)
 EthernetUDP udp;
 unsigned int local_port = 8888;  // local port to listen for UDP packets
 // End Time////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -199,14 +199,14 @@ const byte OL7[8] = {0b11011, 0b10100, 0b01111, 0b10111, 0b11001, 0b11111, 0b111
 
 const byte OL8[8] = {0b01100, 0b11100, 0b11100, 0b11000, 0b11000, 0b10000, 0b00000, 0b00000};
 
-void serialEvent() {                         // if the hardware serial port_0 receives a char
+void serialEvent() {                          // if the hardware serial port_0 receives a char
   input_string = Serial.readStringUntil(13);  // read the string until we see a <CR>
-  input_string_complete = true;              // set the flag used to tell if we have received a completed string from the PC
+  input_string_complete = true;               // set the flag used to tell if we have received a completed string from the PC
 }
 
-void serialEvent3() {                          // if the hardware serial port_3 receives a char
+void serialEvent3() {                           // if the hardware serial port_3 receives a char
   sensor_string = Serial1.readStringUntil(13);  // read the string until we see a <CR>
-  sensor_string_complete = true;               // set the flag used to tell if we have received a completed string from the PC
+  sensor_string_complete = true;                // set the flag used to tell if we have received a completed string from the PC
 }
 
 // ************************************************

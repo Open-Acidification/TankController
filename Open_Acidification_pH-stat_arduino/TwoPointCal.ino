@@ -96,7 +96,7 @@ void TwoPointCal() {
   key = NO_KEY;
 
   Serial1.print(mid_cal_string);  // send that string to the Atlas Scientific product
-  Serial1.print('\r');          // add a <CR> to the end of the string
+  Serial1.print('\r');            // add a <CR> to the end of the string
 
   // High pH Buffer ///
   lcd.clear();
@@ -185,7 +185,7 @@ void TwoPointCal() {
   key = NO_KEY;
 
   Serial1.print(low_cal_string);  // send that string to the Atlas Scientific product
-  Serial1.print('\r');          // add a <CR> to the end of the string
+  Serial1.print('\r');            // add a <CR> to the end of the string
 
   lcd.clear();
   lcd.setCursor(0, 0);

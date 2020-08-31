@@ -156,13 +156,13 @@ def test_uri_device():
     device = json.loads(response_string)
     # Check json fields
     assert device.has_key("granularity")
-    assert device.has_key("maxDataAge")
-    assert device.has_key("macstr")
-    assert device.has_key("tankid")
+    assert device.has_key("max_data_age")
+    assert device.has_key("mac_str")
+    assert device.has_key("tank_id")
 
     # Check field data
-    assert device["macstr"].startsWith("90:a2:da:")
-    assert device["tankid"] == int(os.environ["ARDUINO_TANK_ID"])
+    assert device["mac_str"].startsWith("90:a2:da:")
+    assert device["tank_id"] == int(os.environ["ARDUINO_TANK_ID"])
 
 
 def test_uri_config():

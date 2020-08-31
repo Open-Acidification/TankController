@@ -1,57 +1,57 @@
 void DoDirectoryMaintenance() {  // TODO: investigate bug with un-deletable files
-  char nameBuffer[20];
-  char deleteBuffer[20];
-  memset(nameBuffer, 0, 20);
-  strcat(nameBuffer, "/");
+  char name_buffer[20];
+  char delete_buffer[20];
+  memset(name_buffer, 0, 20);
+  strcat(name_buffer, "/");
   DateTime now = rtc.now();
   int day = now.day();
 
   int year = now.year();
   Serial.println(F("CURRENT YEAR IS: "));
   Serial.println(year);
-  char yearBuffer[4];
-  itoa(year, yearBuffer, 10);
-  strcat(nameBuffer, yearBuffer);
+  char year_buffer[4];
+  itoa(year, year_buffer, 10);
+  strcat(name_buffer, year_buffer);
   Serial.println(F("NAME BUFFER IS: "));
-  Serial.println(nameBuffer);
+  Serial.println(name_buffer);
 
   int month = now.month();
   Serial.println(F("CURRENT MONTH IS: "));
   Serial.println(month);
-  strcat(nameBuffer, "/");
+  strcat(name_buffer, "/");
   if (month < 10) {
-    strcat(nameBuffer, "0");
+    strcat(name_buffer, "0");
   }
-  char monthBuffer[12];
-  itoa(month, monthBuffer, 10);
-  strcat(nameBuffer, monthBuffer);
+  char month_buffer[12];
+  itoa(month, month_buffer, 10);
+  strcat(name_buffer, month_buffer);
   Serial.println(F("NAME BUFFER IS: "));
-  Serial.println(nameBuffer);
-  File tempDir = SD.open(nameBuffer);
+  Serial.println(name_buffer);
+  File temp_dir = SD.open(name_buffer);
 
   // for relevant directories
   while (true) {
-    File entry = tempDir.openNextFile();
+    File entry = temp_dir.openNextFile();
     if (entry) {
       Serial.println(F("ENTRY NAME IS: "));
       Serial.println(entry.name());
       // calculate elapsed time
-      int dirAgeInDays = day - atoi(entry.name());
+      int dir_age_in_days = day - atoi(entry.name());
       Serial.println(F("ENTRY AGE IS: "));
-      Serial.println(dirAgeInDays);
+      Serial.println(dir_age_in_days);
       // remove if directory is too old
-      if (dirAgeInDays > maxDataAge) {
+      if (dir_age_in_days > max_data_age) {
         Serial.println(F("ENTRY IS TOO OLD"));
-        memset(deleteBuffer, 0, 20);
-        strcat(deleteBuffer, nameBuffer);
-        strcat(deleteBuffer, "/");
-        strcat(deleteBuffer, entry.name());
-        RecursiveRm(entry, deleteBuffer);
+        memset(delete_buffer, 0, 20);
+        strcat(delete_buffer, name_buffer);
+        strcat(delete_buffer, "/");
+        strcat(delete_buffer, entry.name());
+        RecursiveRm(entry, delete_buffer);
       }
     } else {
       break;
     }
   }
-  Serial.println(F("maxDataAge IS: "));
-  Serial.println(maxDataAge);
+  Serial.println(F("max_data_age IS: "));
+  Serial.println(max_data_age);
 }

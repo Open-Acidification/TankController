@@ -25,7 +25,7 @@ JsonDocument PrintCurrentLevelDirectories(File dir, EthernetClient client, int l
   // add directories to array
   char** files;
   files = malloc(40 * sizeof(char*));
-  int fileCounter = 0;
+  int file_counter = 0;
   while (true) {
     File entry = dir.openNextFile();
     Serial.println(entry.name());
@@ -33,27 +33,27 @@ JsonDocument PrintCurrentLevelDirectories(File dir, EthernetClient client, int l
       // no more files
       break;
     }
-    char* hasLetterS = strchr(entry.name(), 'S');
-    if (entry.isDirectory() && !hasLetterS) {  // WILL NOT PRINT SYSTEM~1 AT ROOT LEVEL
-      files[fileCounter] = malloc(10 * sizeof(char));
-      strcpy(files[fileCounter], entry.name());
-      fileCounter++;
+    char* has_letter_s = strchr(entry.name(), 'S');
+    if (entry.isDirectory() && !has_letter_s) {  // WILL NOT PRINT SYSTEM~1 AT ROOT LEVEL
+      files[file_counter] = malloc(10 * sizeof(char));
+      strcpy(files[file_counter], entry.name());
+      file_counter++;
     }
     entry.close();
   }
 
   // sort array
-  qsort(files, fileCounter, sizeof(files[0]), CompareCStrings);
+  qsort(files, file_counter, sizeof(files[0]), CompareCStrings);
 
   // add items in sorted array to json array
   StaticJsonDocument<512> doc;
-  JsonArray filesArray = doc.to<JsonArray>();
-  for (int i = 0; i < fileCounter; i++) {
-    filesArray.add(files[i]);
+  JsonArray files_array = doc.to<JsonArray>();
+  for (int i = 0; i < file_counter; i++) {
+    files_array.add(files[i]);
   }
 
   // free memory
-  for (int i = 0; i < fileCounter; i++) {
+  for (int i = 0; i < file_counter; i++) {
     free(files[i]);
   }
   free(files);

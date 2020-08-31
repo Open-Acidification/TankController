@@ -4,29 +4,29 @@ void HandleRequest(EthernetClient client) {
   Serial.println(F("new client"));
 
   // an http request ends with a blank line
-  boolean currentLineIsBlank = true;
-  boolean headerFinished = false;
-  String postData;
+  boolean current_line_is_blank = true;
+  boolean header_finished = false;
+  String post_data;
   String header;
-  String requestType;
+  String request_type;
   String endpoint;
-  String requestProtocol;
+  String request_protocol;
   while (client.connected()) {
     while (client.available()) {
       char c = client.read();
       // read first line as header contains endpoint and request type information
-      if (!headerFinished) {
+      if (!header_finished) {
         header.concat(c);
       }
       // if you've gotten to the end of the line (received a newline
       // character) and the line is blank, the http request has ended,
       // so you can send a reply
-      if (c == '\n' && currentLineIsBlank) {
+      if (c == '\n' && current_line_is_blank) {
         // Here is where the POST data is.
         while (client.available()) {
           char c = client.read();
           Serial.write(c);
-          postData.concat(c);
+          post_data.concat(c);
         }
 
         Serial.println();
@@ -34,39 +34,39 @@ void HandleRequest(EthernetClient client) {
 
         Serial.println(F("header:"));
         Serial.println(header);
-        Serial.println(F("postData:"));
-        Serial.println(postData);
+        Serial.println(F("post_data:"));
+        Serial.println(post_data);
 
-        requestType = String(strtok(header.c_str(), " "));
+        request_type = String(strtok(header.c_str(), " "));
         endpoint = String(strtok(NULL, " "));
-        requestProtocol = String(strtok(NULL, " "));
+        request_protocol = String(strtok(NULL, " "));
 
-        Serial.println(F("requestType:"));
-        Serial.println(requestType);
+        Serial.println(F("request_type:"));
+        Serial.println(request_type);
         Serial.println(F("endpoint:"));
         Serial.println(endpoint);
-        Serial.println(F("requestProtocol:"));
-        Serial.println(requestProtocol);
+        Serial.println(F("request_protocol:"));
+        Serial.println(request_protocol);
         break;
       } else if (c == '\n') {
         // you're starting a new line
-        currentLineIsBlank = true;
-        headerFinished = true;
+        current_line_is_blank = true;
+        header_finished = true;
       } else if (c != '\r') {
         // you've gotten a character on the current line
-        currentLineIsBlank = false;
+        current_line_is_blank = false;
       }
     }
 
     // parse and handle request based on endpoint
     if (endpoint.startsWith("/config")) {
-      HandleConfig(postData.c_str(), client);
+      HandleConfig(post_data.c_str(), client);
     } else if (endpoint.startsWith("/series")) {
-      if (requestType.startsWith("POST")) {
+      if (request_type.startsWith("POST")) {
         // upload new timeseries
         Serial.println(F("POST TIMESERIES"));
-        HandleSeries(postData.c_str(), client);
-      } else if (requestType.startsWith("GET")) {
+        HandleSeries(post_data.c_str(), client);
+      } else if (request_type.startsWith("GET")) {
         // return current timeseries
         Serial.println(F("GET TIMESERIES"));
         HandleGoal(client);
@@ -91,43 +91,43 @@ void HandleRequest(EthernetClient client) {
       PrintDirectoryToClient(root, 0, client);
     } else if (endpoint.startsWith("/mac")) {
       PrintHeader(client, 200);
-      client.println(macstr);
+      client.println(mac_str);
     } else if (endpoint.startsWith("/time")) {
       PrintHeader(client, 200);
       DateTime now = rtc.now();
-      char formattedSDString[50];
-      char* timeFormat = "MM/DD/YYYY hh:mm:ss";
-      char* formattedTime = now.toString(timeFormat);
-      strcpy(formattedSDString, formattedTime);
+      char formatted_sd_string[50];
+      char* time_format = "MM/DD/YYYY hh:mm:ss";
+      char* formatted_time = now.toString(time_format);
+      strcpy(formatted_sd_string, formatted_time);
       char buffer[100];
-      snprintf(buffer, 100, "%d", tankid);
-      strcat(formattedSDString, ",");
-      strcat(formattedSDString, buffer);
+      snprintf(buffer, 100, "%d", tank_id);
+      strcat(formatted_sd_string, ",");
+      strcat(formatted_sd_string, buffer);
       FormatDouble(temp, 3, buffer);
-      strcat(formattedSDString, ",");
-      strcat(formattedSDString, buffer);
-      FormatDouble(tempset, 3, buffer);
-      strcat(formattedSDString, ",");
-      strcat(formattedSDString, buffer);
+      strcat(formatted_sd_string, ",");
+      strcat(formatted_sd_string, buffer);
+      FormatDouble(temp_set, 3, buffer);
+      strcat(formatted_sd_string, ",");
+      strcat(formatted_sd_string, buffer);
       FormatDouble(pH, 3, buffer);
-      strcat(formattedSDString, ",");
-      strcat(formattedSDString, buffer);
-      FormatDouble(phset, 3, buffer);
-      strcat(formattedSDString, ",");
-      strcat(formattedSDString, buffer);
-      FormatDouble(onTime, 3, buffer);
-      strcat(formattedSDString, ",");
-      strcat(formattedSDString, buffer);
+      strcat(formatted_sd_string, ",");
+      strcat(formatted_sd_string, buffer);
+      FormatDouble(ph_set, 3, buffer);
+      strcat(formatted_sd_string, ",");
+      strcat(formatted_sd_string, buffer);
+      FormatDouble(on_time, 3, buffer);
+      strcat(formatted_sd_string, ",");
+      strcat(formatted_sd_string, buffer);
       FormatDouble(Kp, 3, buffer);
-      strcat(formattedSDString, ",");
-      strcat(formattedSDString, buffer);
+      strcat(formatted_sd_string, ",");
+      strcat(formatted_sd_string, buffer);
       FormatDouble(Ki, 3, buffer);
-      strcat(formattedSDString, ",");
-      strcat(formattedSDString, buffer);
+      strcat(formatted_sd_string, ",");
+      strcat(formatted_sd_string, buffer);
       FormatDouble(Kd, 3, buffer);
-      strcat(formattedSDString, ",");
-      strcat(formattedSDString, buffer);
-      client.println(formattedSDString);
+      strcat(formatted_sd_string, ",");
+      strcat(formatted_sd_string, buffer);
+      client.println(formatted_sd_string);
     } else {
       HandleMisc(client);
     }

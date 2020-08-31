@@ -1,21 +1,21 @@
-void PrintLastLines(String dirName, EthernetClient client, long lastLines) {
-  File myFile = SD.open(dirName);
-  if (myFile) {
-    Serial.print(F("LASTLINES: "));
-    Serial.println(lastLines);
-    int printedLines = 0;
+void PrintLastLines(String dirName, EthernetClient client, long last_lines) {
+  File my_file = SD.open(dirName);
+  if (my_file) {
+    Serial.print(F("last_lines: "));
+    Serial.println(last_lines);
+    int printed_lines = 0;
     // seek starting byte
-    String lineDirName = dirName.substring(0, dirName.length() - 12) + dirName.substring(dirName.length() - 6);
-    Serial.println(F("lineDirName"));
-    Serial.println(lineDirName);
-    long lineCount = ReadLineFromSd(lineDirName.c_str(), 0, 10);
-    long startingLine = lineCount - lastLines;
-    long startingByte = startingLine * (RECORD_LENGTH + 2);
-    if (myFile.seek(startingByte)) {
+    String line_dir_name = dirName.substring(0, dirName.length() - 12) + dirName.substring(dirName.length() - 6);
+    Serial.println(F("line_dir_name"));
+    Serial.println(line_dir_name);
+    long line_count = ReadLineFromSd(line_dir_name.c_str(), 0, 10);
+    long starting_line = line_count - last_lines;
+    long starting_byte = starting_line * (RECORD_LENGTH + 2);
+    if (my_file.seek(starting_byte)) {
       Serial.println(F("SUCCESSFUL SEEK"));
       PrintHeader(client, 200);
-      client.println(F("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime"));
-      Serial.println(F("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime"));
+      client.println(F("time,tank_id,temp,temp setpoint,pH,pH setpoint,on_time"));
+      Serial.println(F("time,tank_id,temp,temp setpoint,pH,pH setpoint,on_time"));
     } else {
       Serial.println(F("FAILED SEEK"));
       PrintHeader(client, 400);
@@ -23,16 +23,16 @@ void PrintLastLines(String dirName, EthernetClient client, long lastLines) {
       client.print(F("starting byte is greater than file size at file: "));
       client.println(dirName);
       // close the file:
-      myFile.close();
+      my_file.close();
       return;
     }
     // print specified lines
-    while (printedLines++ < lastLines) {
+    while (printed_lines++ < last_lines) {
       // fill up buffer
       char line[100];
       memset(line, 0, 100);
-      for (int i = 0; i < 100 && myFile.available(); i++) {
-        byte read = myFile.read();
+      for (int i = 0; i < 100 && my_file.available(); i++) {
+        byte read = my_file.read();
         if ((char)read == '\n') {
           break;
         }
@@ -43,7 +43,7 @@ void PrintLastLines(String dirName, EthernetClient client, long lastLines) {
       Serial.write(line, strlen(line));
     }
     // close the file:
-    myFile.close();
+    my_file.close();
   } else {
     // if the file didn't open, print an error:
     client.println(F("error opening file at directory: "));

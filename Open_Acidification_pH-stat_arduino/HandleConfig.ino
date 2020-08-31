@@ -8,7 +8,7 @@ void HandleConfig(char* body, EthernetClient client) {
   } else {
     PrintHeader(client, 200);
     granularity = doc["granularity"];
-    max_data_age = doc["max_data_age"];
+    max_data_age = doc["maxDataAge"];
     client.print(F("granularity: "));
     client.println(granularity);
     if (granularity) {

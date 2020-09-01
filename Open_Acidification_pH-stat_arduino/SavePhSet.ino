@@ -2,7 +2,7 @@
 // Save any parameter changes to EEPROM
 // ************************************************
 void SavePhSet() {
-  if (phset != EepromReadDouble(PH_ADDRESS)) {
-    EepromWriteDouble(PH_ADDRESS, phset);
+  if (ph_set != EepromReadDouble(PH_ADDRESS)) {
+    EepromWriteDouble(PH_ADDRESS, ph_set);
   }
 }

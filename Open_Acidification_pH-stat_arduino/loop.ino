@@ -4,12 +4,12 @@
 
 void loop() {
   wdt_reset();
-  char to_start = customKeypad.getKey();
+  char to_start = custom_keypad.getKey();
   if (to_start != NO_KEY) {
     Serial.print(F("To start key: "));
     Serial.println(to_start);
   }
-  /// Change pH Setpoint ///////////////////////////////////////////////////////////////////////////////////
+  /// Change pH set_point ///////////////////////////////////////////////////////////////////////////////////
 
   if (to_start == 'A') {
     wdt_disable();
@@ -20,38 +20,38 @@ void loop() {
     lcd.print(F(" .   "));
     Serial.println(F("Step 1"));
 
-    Key = customKeypad.waitForKey();
-    double newph = Key - '0';
+    key = custom_keypad.waitForKey();
+    double newph = key - '0';
     lcd.setCursor(0, 1);
-    lcd.print(Key);
+    lcd.print(key);
     Serial.print(F("Ones place: "));
-    Serial.println(Key);
+    Serial.println(key);
 
-    Key = customKeypad.waitForKey();
-    newph = ((Key - '0') * 0.1) + newph;
+    key = custom_keypad.waitForKey();
+    newph = ((key - '0') * 0.1) + newph;
     lcd.setCursor(2, 1);
-    lcd.print(Key);
+    lcd.print(key);
     Serial.print(F("Tenths place: "));
-    Serial.println(Key);
+    Serial.println(key);
 
-    Key = customKeypad.waitForKey();
-    newph = ((Key - '0') * 0.01) + newph;
+    key = custom_keypad.waitForKey();
+    newph = ((key - '0') * 0.01) + newph;
     lcd.setCursor(3, 1);
-    lcd.print(Key);
+    lcd.print(key);
     Serial.print(F("Hundreths place: "));
-    Serial.println(Key);
+    Serial.println(key);
 
-    Key = customKeypad.waitForKey();
-    newph = ((Key - '0') * 0.001) + newph;
+    key = custom_keypad.waitForKey();
+    newph = ((key - '0') * 0.001) + newph;
     lcd.setCursor(4, 1);
-    lcd.print(Key);
+    lcd.print(key);
     Serial.print(F("Thousanths place: "));
-    Serial.println(Key);
+    Serial.println(key);
     lcd.setCursor(10, 1);
     lcd.print(newph, 3);
 
-    phset = newph;
-    Setpoint = -1 * phset;
+    ph_set = newph;
+    set_point = -1 * ph_set;
     SavePhSet();
     delay(1000);
     Serial.println(F("New pH Set End"));
@@ -63,7 +63,7 @@ void loop() {
     wdt_enable(WDTO_8S);
   }
 
-  /// Change Temperature Setpoint /////////////////////////////////////////////////////////////////////////////
+  /// Change Temperature set_point /////////////////////////////////////////////////////////////////////////////
 
   if (to_start == 'B') {
     wdt_disable();
@@ -74,37 +74,37 @@ void loop() {
     lcd.print(F("  .  "));
     Serial.println(F("Step 1"));
 
-    Key = customKeypad.waitForKey();
-    double newtemp = (Key - '0') * 10;
+    key = custom_keypad.waitForKey();
+    double newtemp = (key - '0') * 10;
     lcd.setCursor(0, 1);
-    lcd.print(Key);
+    lcd.print(key);
     Serial.print(F("Tens place: "));
-    Serial.println(Key);
+    Serial.println(key);
 
-    Key = customKeypad.waitForKey();
-    newtemp = (Key - '0') + newtemp;
+    key = custom_keypad.waitForKey();
+    newtemp = (key - '0') + newtemp;
     lcd.setCursor(1, 1);
-    lcd.print(Key);
+    lcd.print(key);
     Serial.print(F("Ones place: "));
-    Serial.println(Key);
+    Serial.println(key);
 
-    Key = customKeypad.waitForKey();
-    newtemp = ((Key - '0') * 0.1) + newtemp;
+    key = custom_keypad.waitForKey();
+    newtemp = ((key - '0') * 0.1) + newtemp;
     lcd.setCursor(3, 1);
-    lcd.print(Key);
+    lcd.print(key);
     Serial.print(F("Tenths place: "));
-    Serial.println(Key);
+    Serial.println(key);
 
-    Key = customKeypad.waitForKey();
-    newtemp = ((Key - '0') * 0.01) + newtemp;
+    key = custom_keypad.waitForKey();
+    newtemp = ((key - '0') * 0.01) + newtemp;
     lcd.setCursor(4, 1);
-    lcd.print(Key);
+    lcd.print(key);
     Serial.print(F("Hundreths place: "));
-    Serial.println(Key);
+    Serial.println(key);
     lcd.setCursor(10, 1);
     lcd.print(newtemp, 3);
 
-    tempset = newtemp;
+    temp_set = newtemp;
     SaveTempSet();
     delay(1000);
     Serial.println(F("New Temp Set End"));
@@ -120,28 +120,28 @@ void loop() {
   /// pH One-Point Calibration /////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////////////////////
   int answer = 0;
-  int queststart = millis();
-  int timdiff = 0;
+  int quest_start = millis();
+  int time_diff = 0;
 
   if (to_start == 'C') {
     wdt_disable();
-    onTime = 0;
+    on_time = 0;
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(F("Calibration"));
     lcd.setCursor(0, 1);
     lcd.print(F("1-pt:1 2-pt:2"));
-    while (answer == 0 && timdiff <= 5000) {
-      char answerkey = customKeypad.getKey();
-      if (answerkey == '1') {
+    while (answer == 0 && time_diff <= 5000) {
+      char answer_key = custom_keypad.getKey();
+      if (answer_key == '1') {
         OnePointCal();
         break;
       }
-      if (answerkey == '2') {
+      if (answer_key == '2') {
         TwoPointCal();
         break;
       }
-      timdiff = millis() - queststart;
+      time_diff = millis() - quest_start;
     }
     lcd.clear();
     lcd.print(F("pH="));
@@ -156,15 +156,15 @@ void loop() {
 
   if (to_start == 'D') {
     wdt_disable();
-    onTime = 0;
+    on_time = 0;
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(F("Cal Management"));
     lcd.setCursor(0, 1);
     lcd.print(F("Slope:1 Clear:2"));
-    while (answer == 0 && timdiff <= 5000) {
-      char answerkey = customKeypad.getKey();
-      if (answerkey == '1') {
+    while (answer == 0 && time_diff <= 5000) {
+      char answer_key = custom_keypad.getKey();
+      if (answer_key == '1') {
         if (Serial1.available() > 0) {  // if we see that the Atlas Scientific product has sent a character
           Serial.println(F("clearing buffer"));
           char inchar = (char)Serial1.read();  // get the char we just received
@@ -179,13 +179,13 @@ void loop() {
         delay(5000);
         answer = 1;
       }
-      if (answerkey == '2') {
+      if (answer_key == '2') {
         Serial.println(F("pressed 2"));
         Serial1.print(F("Cal,clear"));  // send Calibration clear command to EZO pH stamp
         Serial1.print('\r');            // add a <CR> to the end of the string
         answer = 1;
       }
-      timdiff = millis() - queststart;
+      time_diff = millis() - quest_start;
     }
 
     lcd.clear();
@@ -204,21 +204,21 @@ void loop() {
     lcd.print(F("Set Tank ID#:"));
     Serial.println(F("Start Tank ID change"));
 
-    Key = customKeypad.waitForKey();
-    tankid = (Key - '0') * 10;
+    key = custom_keypad.waitForKey();
+    tank_id = (key - '0') * 10;
     lcd.setCursor(0, 1);
-    lcd.print(Key);
+    lcd.print(key);
     Serial.print(F("Tens place: "));
-    Serial.println(Key);
+    Serial.println(key);
 
-    Key = customKeypad.waitForKey();
-    tankid = (Key - '0') + tankid;
+    key = custom_keypad.waitForKey();
+    tank_id = (key - '0') + tank_id;
     lcd.setCursor(1, 1);
-    lcd.print(Key);
+    lcd.print(key);
     Serial.print(F("Ones place: "));
-    Serial.println(Key);
+    Serial.println(key);
 
-    EepromWriteDouble(TANKID_ADDRESS, tankid);
+    EepromWriteDouble(TANKID_ADDRESS, tank_id);
     delay(1000);
     Serial.println(F("Tank ID change End"));
 
@@ -238,27 +238,27 @@ void loop() {
     lcd.print(F("G Sheet Interval"));
     lcd.setCursor(0, 1);
     lcd.print(F("in min: "));
-    Key = customKeypad.waitForKey();
-    float newinterval = (Key - '0') * 10;
+    key = custom_keypad.waitForKey();
+    float new_interval = (key - '0') * 10;
     lcd.setCursor(8, 1);
-    lcd.print(Key);
+    lcd.print(key);
     Serial.print(F("Tens place: "));
-    Serial.println(Key);
+    Serial.println(key);
 
-    Key = customKeypad.waitForKey();
-    newinterval = (Key - '0') + newinterval;
+    key = custom_keypad.waitForKey();
+    new_interval = (key - '0') + new_interval;
     lcd.setCursor(9, 1);
-    lcd.print(Key);
+    lcd.print(key);
     Serial.print(F("Ones place: "));
-    Serial.println(Key);
+    Serial.println(key);
     delay(1000);
 
-    interval = newinterval * 60000;
+    interval = new_interval * 60000;
     Serial.println(F("New Google Sheet Interval End"));
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(F("in min: "));
-    lcd.print(newinterval, 0);
+    lcd.print(new_interval, 0);
     lcd.setCursor(0, 1);
     lcd.print(F("in ms: "));
     lcd.print(interval, 0);
@@ -274,21 +274,21 @@ void loop() {
 
   if (to_start == '0') {
     wdt_disable();
-    int starttime = millis();
-    int nowtime = millis();
-    int yearnow;
+    int start_time = millis();
+    int now_time = millis();
+    int year_now;
     DateTime now = rtc.now();
     if (now.year() >= 2000) {
-      yearnow = now.year() - 2000;
+      year_now = now.year() - 2000;
     }
     if (now.year() < 2000) {
-      yearnow = now.year() - 1900;
+      year_now = now.year() - 1900;
     }
-    while (nowtime <= starttime + 5000) {
+    while (now_time <= start_time + 5000) {
       DateTime now = rtc.now();
-      nowtime = millis();
+      now_time = millis();
       lcd.clear();
-      lcd.print(String(now.month()) + "/" + String(now.day()) + "/" + String(yearnow));
+      lcd.print(String(now.month()) + "/" + String(now.day()) + "/" + String(year_now));
       lcd.print(F(" "));
       lcd.print(String(now.hour()) + ":" + String(now.minute()) + ":" + String(now.second()));
       lcd.setCursor(0, 1);
@@ -323,9 +323,9 @@ void loop() {
     lcd.print(F("Unit Information"));
     lcd.setCursor(0, 1);
     lcd.print(F("IP:1 MAC:2 SV:3"));
-    while (answer == 0 && timdiff <= 5000) {
-      char answerkey = customKeypad.getKey();
-      if (answerkey == '1') {
+    while (answer == 0 && time_diff <= 5000) {
+      char answer_key = custom_keypad.getKey();
+      if (answer_key == '1') {
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print(F("Device IP Address:"));
@@ -334,20 +334,20 @@ void loop() {
         delay(7000);
         answer = 1;
       }
-      if (answerkey == '2') {
+      if (answer_key == '2') {
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print(F("MAC    "));
-        lcd.print(macstr);
+        lcd.print(mac_str);
         lcd.setCursor(0, 1);
         lcd.print(F("ADDRESS "));
-        lcd.print(&macstr[9]);
+        lcd.print(&mac_str[9]);
         Serial.print(F("MAC Address: "));
-        Serial.println(macstr);
+        Serial.println(mac_str);
         delay(7000);
         answer = 1;
       }
-      if (answerkey == '3') {
+      if (answer_key == '3') {
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print(F("Software Version"));
@@ -356,7 +356,7 @@ void loop() {
         delay(7000);
         answer = 1;
       }
-      timdiff = millis() - queststart;
+      time_diff = millis() - quest_start;
     }
     lcd.clear();
     lcd.print(F("pH="));
@@ -368,7 +368,7 @@ void loop() {
   /// Reset LCD Screen /////////////////////////////////////////////////////////////////////////////
 
   if (to_start == '2') {
-    Key = NO_KEY;
+    key = NO_KEY;
     lcd.clear();
     lcd.print(F("pH="));
     lcd.setCursor(0, 1);  // Display position
@@ -381,13 +381,13 @@ void loop() {
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(F("Tank ID: "));
-    lcd.print(tankid);
+    lcd.print(tank_id);
     lcd.setCursor(0, 1);
     lcd.print(F("Log: "));
-    lcd.print(filename);
+    lcd.print(file_name);
     lcd.print(F(".txt"));
     delay(5000);
-    Key = NO_KEY;
+    key = NO_KEY;
     lcd.clear();
     lcd.print(F("pH="));
     lcd.setCursor(0, 1);  // Display position
@@ -411,7 +411,7 @@ void loop() {
     lcd.print(F("Kd:"));
     lcd.print(Kd);
     delay(5000);
-    Key = NO_KEY;
+    key = NO_KEY;
     lcd.clear();
     lcd.print(F("pH="));
     lcd.setCursor(0, 1);  // Display position
@@ -424,8 +424,8 @@ void loop() {
   if (to_start == '5') {
     wdt_disable();
     answer = 0;
-    queststart = millis();
-    timdiff = 0;
+    quest_start = millis();
+    time_diff = 0;
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(F("   PID TUNING   "));
@@ -438,42 +438,42 @@ void loop() {
     lcd.setCursor(0, 1);
     lcd.print(F("Manual Tune:2"));
 
-    while (answer == 0 && timdiff <= 10000) {
-      char answerkey = customKeypad.getKey();
-      if (answerkey == '1') {
+    while (answer == 0 && time_diff <= 10000) {
+      char answer_key = custom_keypad.getKey();
+      if (answer_key == '1') {
         RunAutoTune();
         answer = 1;
       }
-      if (answerkey == '2') {
+      if (answer_key == '2') {
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print(F("Change Kp:1 Ki:2"));
         lcd.setCursor(0, 1);
         lcd.print(F("Kd:3"));
-        while (answerkey == '2') {
-          char secondkey = customKeypad.getKey();
+        while (answer_key == '2') {
+          char secondkey = custom_keypad.getKey();
           if (secondkey == '1') {
             ChangeKp();
-            answerkey = '0';
+            answer_key = '0';
           }
 
           if (secondkey == '2') {
             ChangeKi();
-            answerkey = '0';
+            answer_key = '0';
           }
 
           if (secondkey == '3') {
             ChangeKd();
-            answerkey = '0';
+            answer_key = '0';
           }
         }
         answer = 1;
       }
-      if (answerkey == '3') {
+      if (answer_key == '3') {
         SetSineWave();
         answer = 1;
       }
-      timdiff = millis() - queststart;
+      time_diff = millis() - quest_start;
     }
     lcd.clear();
     lcd.print(F("pH="));
@@ -498,37 +498,37 @@ void loop() {
     lcd.setCursor(0, 1);
     lcd.print(F("  .  "));
 
-    Key = customKeypad.waitForKey();
-    double realtemp = (Key - '0') * 10;
+    key = custom_keypad.waitForKey();
+    double real_temp = (key - '0') * 10;
     lcd.setCursor(0, 1);
-    lcd.print(Key);
+    lcd.print(key);
     Serial.print(F("Tens place: "));
-    Serial.println(Key);
+    Serial.println(key);
 
-    Key = customKeypad.waitForKey();
-    realtemp = (Key - '0') + realtemp;
+    key = custom_keypad.waitForKey();
+    real_temp = (key - '0') + real_temp;
     lcd.setCursor(1, 1);
-    lcd.print(Key);
+    lcd.print(key);
     Serial.print(F("Ones place: "));
-    Serial.println(Key);
+    Serial.println(key);
 
-    Key = customKeypad.waitForKey();
-    realtemp = ((Key - '0') * 0.1) + realtemp;
+    key = custom_keypad.waitForKey();
+    real_temp = ((key - '0') * 0.1) + real_temp;
     lcd.setCursor(3, 1);
-    lcd.print(Key);
+    lcd.print(key);
     Serial.print(F("Tenths place: "));
-    Serial.println(Key);
+    Serial.println(key);
 
-    Key = customKeypad.waitForKey();
-    realtemp = ((Key - '0') * 0.01) + realtemp;
+    key = custom_keypad.waitForKey();
+    real_temp = ((key - '0') * 0.01) + real_temp;
     lcd.setCursor(4, 1);
-    lcd.print(Key);
+    lcd.print(key);
     Serial.print(F("Hundreths place: "));
-    Serial.println(Key);
+    Serial.println(key);
     lcd.setCursor(10, 1);
-    lcd.print(realtemp, 3);
-    Serial.print(F("realtemp: "));
-    Serial.println(realtemp);
+    lcd.print(real_temp, 3);
+    Serial.print(F("real_temp: "));
+    Serial.println(real_temp);
     delay(1000);
 
     lcd.clear();
@@ -541,21 +541,21 @@ void loop() {
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(F("Press '#' to cal"));
-    while (Key != '#') {
+    while (key != '#') {
       uint16_t rtd = max.readRTD();
       float ratio = rtd;
       ratio /= 32768;
-      tempnow = max.temperature(100, RREF);
+      temp_now = max.temperature(100, RREF);
       Serial.print(F("Temperature = "));
       Serial.println(temp);
 
-      total = total - readings[readIndex];  // Delete oldest temperature reading
-      readings[readIndex] = tempnow;        // Add new temperature reading to the array
-      total = total + readings[readIndex];  // Add the temperature reading to the total
-      readIndex = readIndex + 1;            // advance to the next position in the array
+      total = total - readings[read_index];  // Delete oldest temperature reading
+      readings[read_index] = temp_now;       // Add new temperature reading to the array
+      total = total + readings[read_index];  // Add the temperature reading to the total
+      read_index = read_index + 1;           // advance to the next position in the array
 
-      if (readIndex >= NUM_READINGS) {  // if we're at the end of the array...
-        readIndex = 0;                  // ...wrap around to the beginning
+      if (read_index >= NUM_READINGS) {  // if we're at the end of the array...
+        read_index = 0;                  // ...wrap around to the beginning
       }
 
       temp = total / NUM_READINGS;  // calculate the average
@@ -564,18 +564,18 @@ void loop() {
       lcd.print(F("Temp="));
       lcd.print(temp, 3);
       delay(1000);
-      Key = customKeypad.getKey();
+      key = custom_keypad.getKey();
     }
-    Key = NO_KEY;
-    tempcorr = realtemp - temp;
-    Serial.print(F("realtemp: "));
-    Serial.println(realtemp);
+    key = NO_KEY;
+    temp_corr = real_temp - temp;
+    Serial.print(F("real_temp: "));
+    Serial.println(real_temp);
     Serial.print(F("measured temp: "));
     Serial.println(temp);
-    Serial.print(F("tempcorr: "));
-    Serial.println(tempcorr);
+    Serial.print(F("temp_corr: "));
+    Serial.println(temp_corr);
 
-    EepromWriteDouble(TEMP_CORR_ADDRESS, tempcorr);
+    EepromWriteDouble(TEMP_CORR_ADDRESS, temp_corr);
 
     Serial.println(F("Temp Calibration End"));
 
@@ -601,31 +601,31 @@ void loop() {
   if (to_start == '8') {
     wdt_disable();
     answer = 0;
-    queststart = millis();
-    timdiff = 0;
+    quest_start = millis();
+    time_diff = 0;
     lcd.clear();
     lcd.print(F("Enable PID?"));
     lcd.setCursor(0, 1);
     lcd.print(F("Yes:1       No:2"));
-    while (answer == 0 && timdiff <= 5000) {
-      char answerkey = customKeypad.getKey();
-      if (answerkey == '1') {
-        pidrun = true;
+    while (answer == 0 && time_diff <= 5000) {
+      char answer_key = custom_keypad.getKey();
+      if (answer_key == '1') {
+        pid_run = true;
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print(F("PID Enabled"));
         delay(3000);
         answer = 1;
       }
-      if (answerkey == '2') {
-        pidrun = false;
+      if (answer_key == '2') {
+        pid_run = false;
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print(F("PID DISABLED"));
         delay(3000);
         answer = 1;
       }
-      timdiff = millis() - queststart;
+      time_diff = millis() - quest_start;
     }
     lcd.clear();
     lcd.print(F("pH="));
@@ -642,19 +642,19 @@ void loop() {
     lcd.print(F("Chill or Heat?"));
     lcd.setCursor(0, 1);
     lcd.print(F("Chill:1   Heat:2"));
-    while (answer == 0 && timdiff <= 5000) {
-      char answerkey = customKeypad.getKey();
-      if (answerkey == '1') {
+    while (answer == 0 && time_diff <= 5000) {
+      char answer_key = custom_keypad.getKey();
+      if (answer_key == '1') {
         heat = 0;
         EepromWriteDouble(HEAT_ADDRESS, 0);
         answer = 1;
       }
-      if (answerkey == '2') {
+      if (answer_key == '2') {
         heat = 1;
         EepromWriteDouble(HEAT_ADDRESS, 1);
         answer = 1;
       }
-      timdiff = millis() - queststart;
+      time_diff = millis() - quest_start;
     }
     lcd.clear();
     lcd.print(F("pH="));
@@ -667,31 +667,31 @@ void loop() {
   /// Main Running Loop /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  unsigned long sensor_currentMillis = millis();
-  if (sensor_currentMillis - sensor_previousMillis >= sensor_interval) {
-    sensor_previousMillis = sensor_currentMillis;
+  unsigned long sensor_current_millis = millis();
+  if (sensor_current_millis - sensor_previous_millis >= sensor_interval) {
+    sensor_previous_millis = sensor_current_millis;
 
     GetPh();
     GetTemperature();
     SetTempComp();
     SetChiller();
     UpdateGoals();
-    if (!pidrun) {
-      if (pH > phset) {
-        onTime = 10000;
+    if (!pid_run) {
+      if (pH > ph_set) {
+        on_time = 10000;
       }
-      if (pH <= phset) {
-        onTime = 0;
+      if (pH <= ph_set) {
+        on_time = 0;
       }
     }
-    if (pidrun) {
-      myPID.Compute();
-      onTime = Output;
+    if (pid_run) {
+      my_pid.Compute();
+      on_time = output;
     }
     LcdUpdate();
-    unsigned long second_currentMillis = millis();
-    if (second_currentMillis - second_previousMillis >= second_interval) {
-      second_previousMillis = second_currentMillis;
+    unsigned long second_current_millis = millis();
+    if (second_current_millis - second_previous_millis >= second_interval) {
+      second_previous_millis = second_current_millis;
       LogToSD();
     }
     DigitalClockDisplay();
@@ -703,8 +703,8 @@ void loop() {
     Serial.print(Ki);
     Serial.print(F(" Kd:"));
     Serial.println(Kd);
-    Serial.print(F("PID Output (s): "));
-    Serial.println(Output / 1000, 1);
+    Serial.print(F("PID output (s): "));
+    Serial.println(output / 1000, 1);
     DateTime now = rtc.now();
     Serial.print(now.year(), DEC);
     Serial.print('/');
@@ -731,11 +731,11 @@ void loop() {
     amplitude = EepromReadDouble(AMPLITUDE_ADDRESS);
     Serial.println(amplitude);
     Serial.println(F("SETPOINT: "));
-    Serial.println(Setpoint);
+    Serial.println(set_point);
     Serial.println(F("SINE SETPOINT: "));
-    double frequencyInMillis = frequency * 60 * 1000;
-    double SineSetpoint = amplitude * sin(2 * M_PI * frequencyInMillis * millis());
-    Serial.println(SineSetpoint);
+    double frequency_in_millis = frequency * 60 * 1000;
+    double sine_set_point = amplitude * sin(2 * M_PI * frequency_in_millis * millis());
+    Serial.println(sine_set_point);
     Serial.println(F("MILLIS: "));
     Serial.println(millis());
     Serial.println();
@@ -744,10 +744,10 @@ void loop() {
 
   // Sending data to Google Sheets////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  if (EthConnect) {
-    unsigned long currentMillis = millis();
+  if (eth_connect) {
+    unsigned long current_millis = millis();
 
-    if (currentMillis - previousMillis >= interval) {
+    if (current_millis - previous_millis >= interval) {
       Serial.println(F("Starting upload to Google Docs"));
       wdt_reset();
 
@@ -756,7 +756,7 @@ void loop() {
       pinMode(4, OUTPUT);
       digitalWrite(4, HIGH);
 
-      previousMillis = currentMillis;  // save the last time you updated Google Sheets
+      previous_millis = current_millis;  // save the last time you updated Google Sheets
 
       PackData();  // packing GET query with data
 
@@ -793,22 +793,22 @@ void loop() {
     }
 
     // listen for incoming clients
-    EthernetClient RPClient = ethernetServer.available();  // Raspberry Pi Client
-    if (RPClient) {
-      HandleRequest(RPClient);
+    EthernetClient rpc_client = ethernet_server.available();  // Raspberry Pi Client
+    if (rpc_client) {
+      HandleRequest(rpc_client);
 
       // give the web browser time to receive the data
       delay(1000);
       // close the connection:
-      RPClient.stop();
-      Serial.println(F("RPClient disconnected"));
+      rpc_client.stop();
+      Serial.println(F("rpc_client disconnected"));
     }
   }
 
   // Renewing DHCP lease every so often///////////////////////////////////////////////////////////////////////////////////////
-  unsigned long currentMillis = millis();
+  unsigned long current_millis = millis();
 
-  if (currentMillis - previousLease >= LEASE_INTERVAL) {
+  if (current_millis - previous_lease >= LEASE_INTERVAL) {
     Ethernet.maintain();
   }
 

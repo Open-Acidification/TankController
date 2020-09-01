@@ -1,72 +1,72 @@
 void UpdateGoals() {
   long now = millis();
 
-  long phTime = now % phInterval;
+  long ph_time = now % ph_interval;
 
-  long phTimeCurrent = ReadLineFromSd("pt.txt", phSeriesPointer, GOAL_RECORD_LENGTH);
-  long phTimeNext = ReadLineFromSd("pt.txt", phSeriesPointer + 1 >= phSeriesSize ? 0 : phSeriesPointer + 1, GOAL_RECORD_LENGTH);
+  long ph_time_current = ReadLineFromSd("pt.txt", ph_series_pointer, GOAL_RECORD_LENGTH);
+  long ph_time_next = ReadLineFromSd("pt.txt", ph_series_pointer + 1 >= ph_series_size ? 0 : ph_series_pointer + 1, GOAL_RECORD_LENGTH);
 
-  // we want to make sure phTime is always between phTimeCurrent and phTimeNext
-  if (phSeriesSize) {
-    while ((phTimeNext > phTimeCurrent) && (phTimeNext < phTime)) {
-      phSeriesPointer++;
-      if (phSeriesPointer >= phSeriesSize) {
-        phSeriesPointer = 0;
+  // we want to make sure ph_time is always between ph_time_current and ph_time_next
+  if (ph_series_size) {
+    while ((ph_time_next > ph_time_current) && (ph_time_next < ph_time)) {
+      ph_series_pointer++;
+      if (ph_series_pointer >= ph_series_size) {
+        ph_series_pointer = 0;
       }
-      phTimeCurrent = ReadLineFromSd("pt.txt", phSeriesPointer, GOAL_RECORD_LENGTH);
-      phTimeNext = ReadLineFromSd("pt.txt", phSeriesPointer + 1 >= phSeriesSize ? 0 : phSeriesPointer + 1, GOAL_RECORD_LENGTH);
+      ph_time_current = ReadLineFromSd("pt.txt", ph_series_pointer, GOAL_RECORD_LENGTH);
+      ph_time_next = ReadLineFromSd("pt.txt", ph_series_pointer + 1 >= ph_series_size ? 0 : ph_series_pointer + 1, GOAL_RECORD_LENGTH);
     }
-    if ((phTimeNext < phTimeCurrent) && (phTimeCurrent > phTime)) {
-      phSeriesPointer = 0;
-      phTimeCurrent = ReadLineFromSd("pt.txt", phSeriesPointer, GOAL_RECORD_LENGTH);
-      phTimeNext = ReadLineFromSd("pt.txt", phSeriesPointer + 1 >= phSeriesSize ? 0 : phSeriesPointer + 1, GOAL_RECORD_LENGTH);
+    if ((ph_time_next < ph_time_current) && (ph_time_current > ph_time)) {
+      ph_series_pointer = 0;
+      ph_time_current = ReadLineFromSd("pt.txt", ph_series_pointer, GOAL_RECORD_LENGTH);
+      ph_time_next = ReadLineFromSd("pt.txt", ph_series_pointer + 1 >= ph_series_size ? 0 : ph_series_pointer + 1, GOAL_RECORD_LENGTH);
     }
   }
-  EepromWriteDouble(PH_SERIES_POINTER_ADDRESS, phSeriesPointer);
+  EepromWriteDouble(PH_SERIES_POINTER_ADDRESS, ph_series_pointer);
 
   // interpolate ph goal
-  long phValueCurrent = ReadLineFromSd("pv.txt", phSeriesPointer, GOAL_RECORD_LENGTH);
-  long phValueNext;
-  if (phSeriesPointer + 1 >= phSeriesSize) {
-    phValueNext = ReadLineFromSd("pv.txt", 0, GOAL_RECORD_LENGTH);
-    phTimeNext = phInterval;
+  long ph_value_current = ReadLineFromSd("pv.txt", ph_series_pointer, GOAL_RECORD_LENGTH);
+  long ph_value_next;
+  if (ph_series_pointer + 1 >= ph_series_size) {
+    ph_value_next = ReadLineFromSd("pv.txt", 0, GOAL_RECORD_LENGTH);
+    ph_time_next = ph_interval;
   } else {
-    phValueNext = ReadLineFromSd("pv.txt", phSeriesPointer + 1, GOAL_RECORD_LENGTH);
+    ph_value_next = ReadLineFromSd("pv.txt", ph_series_pointer + 1, GOAL_RECORD_LENGTH);
   }
-  phset = phValueCurrent + (phValueNext - phValueCurrent) * (phTime - phTimeCurrent) / (phTimeNext - phTimeCurrent);
+  ph_set = ph_value_current + (ph_value_next - ph_value_current) * (ph_time - ph_time_current) / (ph_time_next - ph_time_current);
 
   // now do the same for temp
-  long tempTime = now % tempInterval;
+  long temp_time = now % temp_interval;
 
-  long tempTimeCurrent = ReadLineFromSd("tt.txt", tempSeriesPointer, GOAL_RECORD_LENGTH);
-  long tempTimeNext = ReadLineFromSd("tt.txt", tempSeriesPointer + 1 >= tempSeriesSize ? 0 : tempSeriesPointer + 1, GOAL_RECORD_LENGTH);
+  long temp_time_current = ReadLineFromSd("tt.txt", temp_series_pointer, GOAL_RECORD_LENGTH);
+  long temp_time_next = ReadLineFromSd("tt.txt", temp_series_pointer + 1 >= temp_series_size ? 0 : temp_series_pointer + 1, GOAL_RECORD_LENGTH);
 
-  // we want to make sure tempTime is always between tempTimeCurrent and tempTimeNext
-  if (tempSeriesSize) {
-    while ((tempTimeNext > tempTimeCurrent) && (tempTimeNext < tempTime)) {
-      tempSeriesPointer++;
-      if (tempSeriesPointer >= tempSeriesSize) {
-        tempSeriesPointer = 0;
+  // we want to make sure temp_time is always between temp_time_current and temp_time_next
+  if (temp_series_size) {
+    while ((temp_time_next > temp_time_current) && (temp_time_next < temp_time)) {
+      temp_series_pointer++;
+      if (temp_series_pointer >= temp_series_size) {
+        temp_series_pointer = 0;
       }
-      tempTimeCurrent = ReadLineFromSd("tt.txt", tempSeriesPointer, GOAL_RECORD_LENGTH);
-      tempTimeNext = ReadLineFromSd("tt.txt", tempSeriesPointer + 1 >= tempSeriesSize ? 0 : tempSeriesPointer + 1, GOAL_RECORD_LENGTH);
+      temp_time_current = ReadLineFromSd("tt.txt", temp_series_pointer, GOAL_RECORD_LENGTH);
+      temp_time_next = ReadLineFromSd("tt.txt", temp_series_pointer + 1 >= temp_series_size ? 0 : temp_series_pointer + 1, GOAL_RECORD_LENGTH);
     }
-    if ((tempTimeNext < tempTimeCurrent) && (tempTimeCurrent > tempTime)) {
-      tempSeriesPointer = 0;
-      tempTimeCurrent = ReadLineFromSd("tt.txt", tempSeriesPointer, GOAL_RECORD_LENGTH);
-      tempTimeNext = ReadLineFromSd("tt.txt", tempSeriesPointer + 1 >= tempSeriesSize ? 0 : tempSeriesPointer + 1, GOAL_RECORD_LENGTH);
+    if ((temp_time_next < temp_time_current) && (temp_time_current > temp_time)) {
+      temp_series_pointer = 0;
+      temp_time_current = ReadLineFromSd("tt.txt", temp_series_pointer, GOAL_RECORD_LENGTH);
+      temp_time_next = ReadLineFromSd("tt.txt", temp_series_pointer + 1 >= temp_series_size ? 0 : temp_series_pointer + 1, GOAL_RECORD_LENGTH);
     }
   }
-  EepromWriteDouble(TEMP_SERIES_POINTER_ADDRESS, tempSeriesPointer);
+  EepromWriteDouble(TEMP_SERIES_POINTER_ADDRESS, temp_series_pointer);
 
   // interpolate temp goal
-  long tempValueCurrent = ReadLineFromSd("tv.txt", tempSeriesPointer, GOAL_RECORD_LENGTH);
-  long tempValueNext;
-  if (tempSeriesPointer + 1 >= tempSeriesSize) {
-    tempValueNext = ReadLineFromSd("tv.txt", 0, GOAL_RECORD_LENGTH);
-    tempTimeNext = tempInterval;
+  long temp_value_current = ReadLineFromSd("tv.txt", temp_series_pointer, GOAL_RECORD_LENGTH);
+  long temp_value_next;
+  if (temp_series_pointer + 1 >= temp_series_size) {
+    temp_value_next = ReadLineFromSd("tv.txt", 0, GOAL_RECORD_LENGTH);
+    temp_time_next = temp_interval;
   } else {
-    tempValueNext = ReadLineFromSd("tv.txt", tempSeriesPointer + 1, GOAL_RECORD_LENGTH);
+    temp_value_next = ReadLineFromSd("tv.txt", temp_series_pointer + 1, GOAL_RECORD_LENGTH);
   }
-  tempset = tempValueCurrent + (tempValueNext - tempValueCurrent) * (tempTime - tempTimeCurrent) / (tempTimeNext - tempTimeCurrent);
+  temp_set = temp_value_current + (temp_value_next - temp_value_current) * (temp_time - temp_time_current) / (temp_time_next - temp_time_current);
 }

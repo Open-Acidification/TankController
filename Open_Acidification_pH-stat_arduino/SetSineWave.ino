@@ -10,35 +10,35 @@ void SetSineWave() {
   lcd.setCursor(0, 1);
   lcd.print(F(" .   "));
 
-  Key = customKeypad.waitForKey();
-  double newAmplitude = Key - '0';
+  key = custom_keypad.waitForKey();
+  double new_amplitude = key - '0';
   lcd.setCursor(0, 1);
-  lcd.print(Key);
+  lcd.print(key);
 
-  Key = customKeypad.waitForKey();
-  newAmplitude = ((Key - '0') * 0.1) + newAmplitude;
+  key = custom_keypad.waitForKey();
+  new_amplitude = ((key - '0') * 0.1) + new_amplitude;
   lcd.setCursor(2, 1);
-  lcd.print(Key);
+  lcd.print(key);
   Serial.print(F("Tenths place: "));
-  Serial.println(Key);
+  Serial.println(key);
 
-  Key = customKeypad.waitForKey();
-  newAmplitude = ((Key - '0') * 0.01) + newAmplitude;
+  key = custom_keypad.waitForKey();
+  new_amplitude = ((key - '0') * 0.01) + new_amplitude;
   lcd.setCursor(3, 1);
-  lcd.print(Key);
+  lcd.print(key);
   Serial.print(F("Hundreths place: "));
-  Serial.println(Key);
+  Serial.println(key);
 
-  Key = customKeypad.waitForKey();
-  newAmplitude = ((Key - '0') * 0.001) + newAmplitude;
+  key = custom_keypad.waitForKey();
+  new_amplitude = ((key - '0') * 0.001) + new_amplitude;
   lcd.setCursor(4, 1);
-  lcd.print(Key);
+  lcd.print(key);
   Serial.print(F("Thousanths place: "));
-  Serial.println(Key);
+  Serial.println(key);
   lcd.setCursor(10, 1);
-  lcd.print(newAmplitude, 3);
+  lcd.print(new_amplitude, 3);
 
-  amplitudeSet = newAmplitude;
+  amplitude_set = new_amplitude;
 
   SaveAmplitudeSet();
 
@@ -50,35 +50,35 @@ void SetSineWave() {
   lcd.setCursor(0, 1);
   lcd.print(F(" .   "));
 
-  Key = customKeypad.waitForKey();
-  double newFrequency = Key - '0';
+  key = custom_keypad.waitForKey();
+  double new_frequency = key - '0';
   lcd.setCursor(0, 1);
-  lcd.print(Key);
+  lcd.print(key);
 
-  Key = customKeypad.waitForKey();
-  newFrequency = ((Key - '0') * 0.1) + newFrequency;
+  key = custom_keypad.waitForKey();
+  new_frequency = ((key - '0') * 0.1) + new_frequency;
   lcd.setCursor(2, 1);
-  lcd.print(Key);
+  lcd.print(key);
   Serial.print(F("Tenths place: "));
-  Serial.println(Key);
+  Serial.println(key);
 
-  Key = customKeypad.waitForKey();
-  newFrequency = ((Key - '0') * 0.01) + newFrequency;
+  key = custom_keypad.waitForKey();
+  new_frequency = ((key - '0') * 0.01) + new_frequency;
   lcd.setCursor(3, 1);
-  lcd.print(Key);
+  lcd.print(key);
   Serial.print(F("Hundreths place: "));
-  Serial.println(Key);
+  Serial.println(key);
 
-  Key = customKeypad.waitForKey();
-  newFrequency = ((Key - '0') * 0.001) + newFrequency;
+  key = custom_keypad.waitForKey();
+  new_frequency = ((key - '0') * 0.001) + new_frequency;
   lcd.setCursor(4, 1);
-  lcd.print(Key);
+  lcd.print(key);
   Serial.print(F("Thousandths place: "));
-  Serial.println(Key);
+  Serial.println(key);
   lcd.setCursor(10, 1);
-  lcd.print(newFrequency, 3);
+  lcd.print(new_frequency, 3);
 
-  frequencySet = newFrequency;
+  frequency_set = new_frequency;
 
   SaveFrequencySet();
 

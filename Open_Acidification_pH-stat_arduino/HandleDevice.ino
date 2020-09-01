@@ -4,8 +4,8 @@ void HandleDevice(String endpoint, EthernetClient client) {
   StaticJsonDocument<200> doc;
   JsonObject object = doc.to<JsonObject>();
   object["granularity"] = granularity;
-  object["maxDataAge"] = maxDataAge;
-  object["macstr"] = macstr;
-  object["tankid"] = tankid;
+  object["maxDataAge"] = max_data_age;
+  object["macstr"] = mac_str;
+  object["tankid"] = tank_id;
   serializeJson(doc, client);
 }

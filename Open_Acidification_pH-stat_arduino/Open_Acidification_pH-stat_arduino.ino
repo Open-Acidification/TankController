@@ -63,8 +63,8 @@ float interval = 20 * MINUTE;  // interval at which to update Google Sheets (mil
 unsigned long previous_millis =
     0 - interval + 30 * SECOND;  // will store last time Google Sheets was updated (-interval+30000 sets first upload for 30 seconds after startup. This eases troubleshooting)
 unsigned long chiller_previous_millis = 0;   // will store last time chiller state was checked
-const float CHILLER_INTERVAL = 30 * SECOND;  // interval at which to change chiller state (milliseconds)
-// float SD_interval = 1 * DAY;                     // interval at which to start a new log file (milliseconds) (formerly 1 day)
+const float CHILLER_INTERVAL = 30 * SECOND;  // interval at which to change chiller state
+// float SD_interval = 1 * DAY;                     // interval at which to start a new log file (formerly 1 day)
 const float SD_INTERVAL = 1 * HOUR;        // log to SD each hour
 unsigned long sensor_previous_millis = 0;  // will store last time sensor readings were taken
 float sensor_interval;                     // interval at which to start a new log file (milliseconds)

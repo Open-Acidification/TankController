@@ -53,7 +53,7 @@ void loop() {
     ph_set = newph;
     set_point = -1 * ph_set;
     SavePhSet();
-    delay(1000);
+    delay(1 * SECOND);
     Serial.println(F("New pH Set End"));
 
     lcd.clear();
@@ -106,7 +106,7 @@ void loop() {
 
     temp_set = newtemp;
     SaveTempSet();
-    delay(1000);
+    delay(1 * SECOND);
     Serial.println(F("New Temp Set End"));
 
     lcd.clear();
@@ -131,7 +131,7 @@ void loop() {
     lcd.print(F("Calibration"));
     lcd.setCursor(0, 1);
     lcd.print(F("1-pt:1 2-pt:2"));
-    while (answer == 0 && time_diff <= 5000) {
+    while (answer == 0 && time_diff <= 5 * SECOND) {
       char answer_key = custom_keypad.getKey();
       if (answer_key == '1') {
         OnePointCal();
@@ -162,7 +162,7 @@ void loop() {
     lcd.print(F("Cal Management"));
     lcd.setCursor(0, 1);
     lcd.print(F("Slope:1 Clear:2"));
-    while (answer == 0 && time_diff <= 5000) {
+    while (answer == 0 && time_diff <= 5 * SECOND) {
       char answer_key = custom_keypad.getKey();
       if (answer_key == '1') {
         if (Serial1.available() > 0) {  // if we see that the Atlas Scientific product has sent a character
@@ -176,7 +176,7 @@ void loop() {
         lcd.print("Cal Slope:");
         lcd.setCursor(0, 1);
         lcd.print(slope);
-        delay(5000);
+        delay(5 * SECOND);
         answer = 1;
       }
       if (answer_key == '2') {
@@ -219,7 +219,7 @@ void loop() {
     Serial.println(key);
 
     EepromWriteDouble(TANKID_ADDRESS, tank_id);
-    delay(1000);
+    delay(1 * SECOND);
     Serial.println(F("Tank ID change End"));
 
     lcd.clear();
@@ -251,9 +251,9 @@ void loop() {
     lcd.print(key);
     Serial.print(F("Ones place: "));
     Serial.println(key);
-    delay(1000);
+    delay(1 * SECOND);
 
-    interval = new_interval * 60000;
+    interval = new_interval * MINUTE;
     Serial.println(F("New Google Sheet Interval End"));
     lcd.clear();
     lcd.setCursor(0, 0);
@@ -262,7 +262,7 @@ void loop() {
     lcd.setCursor(0, 1);
     lcd.print(F("in ms: "));
     lcd.print(interval, 0);
-    delay(3000);
+    delay(3 * SECOND);
     lcd.clear();
     lcd.print(F("pH="));
     lcd.setCursor(0, 1);  // Display position
@@ -284,7 +284,7 @@ void loop() {
     if (now.year() < 2000) {
       year_now = now.year() - 1900;
     }
-    while (now_time <= start_time + 5000) {
+    while (now_time <= start_time + 5 * SECOND) {
       DateTime now = rtc.now();
       now_time = millis();
       lcd.clear();
@@ -293,10 +293,10 @@ void loop() {
       lcd.print(String(now.hour()) + ":" + String(now.minute()) + ":" + String(now.second()));
       lcd.setCursor(0, 1);
 
-      int days = floor(millis() / 86400000);
-      int hours = floor((millis() - (days * 86400000)) / 3600000);
-      int minutes = floor((millis() - (days * 86400000) - (hours * 3600000)) / 60000);
-      int seconds = floor((millis() - (days * 86400000) - (hours * 3600000) - (minutes * 60000)) / 1000);
+      int days = floor(millis() / DAY);
+      int hours = floor((millis() - (days * DAY)) / HOUR);
+      int minutes = floor((millis() - (days * DAY) - (hours * HOUR)) / MINUTE);
+      int seconds = floor((millis() - (days * DAY) - (hours * HOUR) - (minutes * MINUTE)) / SECOND);
       lcd.print(F("Up d:"));
       lcd.print(days);
       lcd.print(F(" "));
@@ -323,7 +323,7 @@ void loop() {
     lcd.print(F("Unit Information"));
     lcd.setCursor(0, 1);
     lcd.print(F("IP:1 MAC:2 SV:3"));
-    while (answer == 0 && time_diff <= 5000) {
+    while (answer == 0 && time_diff <= 5 * SECOND) {
       char answer_key = custom_keypad.getKey();
       if (answer_key == '1') {
         lcd.clear();
@@ -331,7 +331,7 @@ void loop() {
         lcd.print(F("Device IP Address:"));
         lcd.setCursor(0, 1);
         lcd.print(Ethernet.localIP());
-        delay(7000);
+        delay(7 * SECOND);
         answer = 1;
       }
       if (answer_key == '2') {
@@ -344,7 +344,7 @@ void loop() {
         lcd.print(&mac_str[9]);
         Serial.print(F("MAC Address: "));
         Serial.println(mac_str);
-        delay(7000);
+        delay(7 * SECOND);
         answer = 1;
       }
       if (answer_key == '3') {
@@ -353,7 +353,7 @@ void loop() {
         lcd.print(F("Software Version"));
         lcd.setCursor(0, 1);
         lcd.print(SOFTWARE_VERSION);
-        delay(7000);
+        delay(7 * SECOND);
         answer = 1;
       }
       time_diff = millis() - quest_start;
@@ -386,7 +386,7 @@ void loop() {
     lcd.print(F("Log: "));
     lcd.print(file_name);
     lcd.print(F(".txt"));
-    delay(5000);
+    delay(5 * SECOND);
     key = NO_KEY;
     lcd.clear();
     lcd.print(F("pH="));
@@ -405,12 +405,12 @@ void loop() {
     lcd.setCursor(0, 1);
     lcd.print(F("Ki:"));
     lcd.print(Ki);
-    delay(5000);
+    delay(5 * SECOND);
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(F("Kd:"));
     lcd.print(Kd);
-    delay(5000);
+    delay(5 * SECOND);
     key = NO_KEY;
     lcd.clear();
     lcd.print(F("pH="));
@@ -431,14 +431,14 @@ void loop() {
     lcd.print(F("   PID TUNING   "));
     lcd.setCursor(0, 1);
     lcd.print(F("      MENU      "));
-    delay(1000);
+    delay(1 * SECOND);
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(F("Start AutoTune:1"));
     lcd.setCursor(0, 1);
     lcd.print(F("Manual Tune:2"));
 
-    while (answer == 0 && time_diff <= 10000) {
+    while (answer == 0 && time_diff <= 10 * SECOND) {
       char answer_key = custom_keypad.getKey();
       if (answer_key == '1') {
         RunAutoTune();
@@ -491,7 +491,7 @@ void loop() {
     lcd.print(F("###Calibrate####"));
     lcd.setCursor(0, 1);
     lcd.print(F("##Temperature###"));
-    delay(3000);
+    delay(3 * SECOND);
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(F("Calibration Temp:"));
@@ -529,14 +529,14 @@ void loop() {
     lcd.print(real_temp, 3);
     Serial.print(F("real_temp: "));
     Serial.println(real_temp);
-    delay(1000);
+    delay(1 * SECOND);
 
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(F("Place temp probe"));
     lcd.setCursor(0, 1);
     lcd.print(F("in cal solution"));
-    delay(5000);
+    delay(5 * SECOND);
 
     lcd.clear();
     lcd.setCursor(0, 0);
@@ -563,7 +563,7 @@ void loop() {
       lcd.setCursor(0, 1);
       lcd.print(F("Temp="));
       lcd.print(temp, 3);
-      delay(1000);
+      delay(1 * SECOND);
       key = custom_keypad.getKey();
     }
     key = NO_KEY;
@@ -607,14 +607,14 @@ void loop() {
     lcd.print(F("Enable PID?"));
     lcd.setCursor(0, 1);
     lcd.print(F("Yes:1       No:2"));
-    while (answer == 0 && time_diff <= 5000) {
+    while (answer == 0 && time_diff <= 5 * SECOND) {
       char answer_key = custom_keypad.getKey();
       if (answer_key == '1') {
         pid_run = true;
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print(F("PID Enabled"));
-        delay(3000);
+        delay(3 * SECOND);
         answer = 1;
       }
       if (answer_key == '2') {
@@ -622,7 +622,7 @@ void loop() {
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print(F("PID DISABLED"));
-        delay(3000);
+        delay(3 * SECOND);
         answer = 1;
       }
       time_diff = millis() - quest_start;
@@ -642,7 +642,7 @@ void loop() {
     lcd.print(F("Chill or Heat?"));
     lcd.setCursor(0, 1);
     lcd.print(F("Chill:1   Heat:2"));
-    while (answer == 0 && time_diff <= 5000) {
+    while (answer == 0 && time_diff <= 5 * SECOND) {
       char answer_key = custom_keypad.getKey();
       if (answer_key == '1') {
         heat = 0;
@@ -678,7 +678,7 @@ void loop() {
     UpdateGoals();
     if (!pid_run) {
       if (pH > ph_set) {
-        on_time = 10000;
+        on_time = 10 * SECOND;
       }
       if (pH <= ph_set) {
         on_time = 0;
@@ -733,7 +733,7 @@ void loop() {
     Serial.println(F("SETPOINT: "));
     Serial.println(set_point);
     Serial.println(F("SINE SETPOINT: "));
-    double frequency_in_millis = frequency * 60 * 1000;
+    double frequency_in_millis = frequency * MINUTE;
     double sine_set_point = amplitude * sin(2 * M_PI * frequency_in_millis * millis());
     Serial.println(sine_set_point);
     Serial.println(F("MILLIS: "));
@@ -798,7 +798,7 @@ void loop() {
       HandleRequest(rpc_client);
 
       // give the web browser time to receive the data
-      delay(1000);
+      delay(1 * SECOND);
       // close the connection:
       rpc_client.stop();
       Serial.println(F("rpc_client disconnected"));

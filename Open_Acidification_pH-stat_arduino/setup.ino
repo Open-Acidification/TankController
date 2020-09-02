@@ -54,7 +54,7 @@ void setup() {
   lcd.write(byte(6));
   lcd.write(byte(7));
   lcd.print(F(" OA CONTROL"));
-  delay(1000);
+  delay(1 * SECOND);
   lcd.clear();
 
   max.begin(MAX31865_3WIRE);  // start pt100 temperature probe
@@ -140,7 +140,7 @@ void setup() {
     lcd.setCursor(0, 1);
     lcd.print(F("set. Set ID now"));
     Serial.println(F("Start Tank ID change"));
-    delay(3000);
+    delay(3 * SECOND);
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(F("New Tank ID:"));
@@ -160,7 +160,7 @@ void setup() {
     Serial.println(key);
 
     EepromWriteDouble(TANKID_ADDRESS, tank_id);
-    delay(1000);
+    delay(1 * SECOND);
     Serial.println(F("Tank ID change End"));
   }
 

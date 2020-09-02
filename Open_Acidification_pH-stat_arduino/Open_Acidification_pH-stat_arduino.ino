@@ -49,20 +49,30 @@ EthernetServer ethernet_server(80);
 int request_char_counter = 0;  // for parsing html requests
 String data;                   // GET query with data
 
-float interval = 1200000;  // interval at which to update Google Sheets (milliseconds)
+// Time Constants /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+int const SECOND = 1000;
+int const MINUTE = 60 * SECOND;
+int const HOUR = 60 * MINUTE;
+int const DAY = 24 * HOUR;
+int const WEEK = 7 * DAY;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+float interval = 20 * MINUTE;  // interval at which to update Google Sheets (milliseconds)
 unsigned long previous_millis =
-    0 - interval + 30000;  // will store last time Google Sheets was updated (-interval+30000 sets first upload for 30 seconds after startup. This eases troubleshooting)
+    0 - interval + 30 * SECOND;  // will store last time Google Sheets was updated (-interval+30000 sets first upload for 30 seconds after startup. This eases troubleshooting)
 unsigned long chiller_previous_millis = 0;  // will store last time chiller state was checked
-const float CHILLER_INTERVAL = 30000;       // interval at which to change chiller state (milliseconds)
-// float SD_interval = 86400000;                     // interval at which to start a new log file (milliseconds) (formerly 1 day)
-const float SD_INTERVAL = 3600000;         // log to SD each hour
+const float CHILLER_INTERVAL = 30 * SECOND;       // interval at which to change chiller state (milliseconds)
+// float SD_interval = 1 * DAY;                     // interval at which to start a new log file (milliseconds) (formerly 1 day)
+const float SD_INTERVAL = 1 * HOUR;         // log to SD each hour
 unsigned long sensor_previous_millis = 0;  // will store last time sensor readings were taken
 float sensor_interval;                     // interval at which to start a new log file (milliseconds)
 unsigned long second_previous_millis = 0;
-const float second_interval = 1000;
+const float second_interval = 1 * SECOND;
 int granularity;
 int max_data_age;
-const float LEASE_INTERVAL = 4 * 86400000;  // Interval at which to renew DHCP lease (First number is days)
+const float LEASE_INTERVAL = 4 * DAY;  // Interval at which to renew DHCP lease
 unsigned long previous_lease = 0;
 
 const byte ROWS = 4;        // four rows

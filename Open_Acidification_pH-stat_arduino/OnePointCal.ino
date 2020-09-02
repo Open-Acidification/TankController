@@ -7,7 +7,7 @@ void OnePointCal() {
   lcd.print(F("Calibration mode"));
   lcd.setCursor(3, 1);
   lcd.print(F("One-point"));
-  delay(5000);
+  delay(5 * SECOND);
 
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -103,5 +103,5 @@ void OnePointCal() {
   lcd.print(F("###Calibration##"));
   lcd.setCursor(0, 1);
   lcd.print(F("####Complete####"));
-  delay(3000);
+  delay(3 * SECOND);
 }

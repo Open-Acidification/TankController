@@ -45,85 +45,85 @@ const String SOFTWARE_VERSION = "0.2.0";  // Software Version
 const char API_SERVER[] = "api.pushingbox.com";  // pushingbox API server
 IPAddress ip(192, 168, 1, 2);                    // Arduino IP address. Only used when DHCP is turned off.
 EthernetClient client;                           // define 'client' as object
-EthernetServer ethernetServer(80);
-int requestCharCounter = 0;  // for parsing html requests
-String data;                 // GET query with data
+EthernetServer ethernet_server(80);
+int request_char_counter = 0;  // for parsing html requests
+String data;                   // GET query with data
 
 float interval = 1200000;  // interval at which to update Google Sheets (milliseconds)
-unsigned long previousMillis =
+unsigned long previous_millis =
     0 - interval + 30000;  // will store last time Google Sheets was updated (-interval+30000 sets first upload for 30 seconds after startup. This eases troubleshooting)
-unsigned long chiller_previousMillis = 0;  // will store last time chiller state was checked
-const float CHILLER_INTERVAL = 30000;      // interval at which to change chiller state (milliseconds)
+unsigned long chiller_previous_millis = 0;  // will store last time chiller state was checked
+const float CHILLER_INTERVAL = 30000;       // interval at which to change chiller state (milliseconds)
 // float SD_interval = 86400000;                     // interval at which to start a new log file (milliseconds) (formerly 1 day)
-const float SD_INTERVAL = 3600000;        // log to SD each hour
-unsigned long sensor_previousMillis = 0;  // will store last time sensor readings were taken
-float sensor_interval;                    // interval at which to start a new log file (milliseconds)
-unsigned long second_previousMillis = 0;
+const float SD_INTERVAL = 3600000;         // log to SD each hour
+unsigned long sensor_previous_millis = 0;  // will store last time sensor readings were taken
+float sensor_interval;                     // interval at which to start a new log file (milliseconds)
+unsigned long second_previous_millis = 0;
 const float second_interval = 1000;
 int granularity;
-int maxDataAge;
+int max_data_age;
 const float LEASE_INTERVAL = 4 * 86400000;  // Interval at which to renew DHCP lease (First number is days)
-unsigned long previousLease = 0;
+unsigned long previous_lease = 0;
 
-const byte ROWS = 4;       // four rows
-const byte COLS = 4;       // four columns
-String inputstring = "";   // a string to hold incoming data from the PC
-String sensorstring = "";  // a string to hold the data from the EZO pH circuit
+const byte ROWS = 4;        // four rows
+const byte COLS = 4;        // four columns
+String input_string = "";   // a string to hold incoming data from the PC
+String sensor_string = "";  // a string to hold the data from the EZO pH circuit
 const String PRE_MID_CAL_STRING = "Cal,mid,";
 const String PRE_LOW_CAL_STRING = "Cal,low,";
-String midcalstring = "";
+String mid_cal_string = "";
 String slope = "";
 boolean input_string_complete = false;   // have we received all the data from the PC
 boolean sensor_string_complete = false;  // have we received all the data from the Atlas Scientific product
 double pH;                               // used to hold a floating point number that is the pH
-double pHDisplay;                        // used to hold a floating point number that is the pH
+double ph_display;                       // used to hold a floating point number that is the pH
 double temp;
-double tempset;
-double phset;
-double amplitudeSet;
-double frequencySet;
-double tempcorr = 0;
+double temp_set;
+double ph_set;
+double amplitude_set;
+double frequency_set;
+double temp_corr = 0;
 double heat;
-double Input, Output, Setpoint;
+double input, output, set_point;
 double Kp;
 double Ki;
 double Kd;
 double amplitude;
 double frequency;
-long onTime = 0;
+long on_time = 0;
 const int RECORD_LENGTH = 70;   // length of each record to be logged
-const int WINDOW_SIZE = 10000;  // 10 second Time Proportional Output window
-long windowStartTime = millis();
-float midBuffer = 0;
-char Key = NO_KEY;
-char exitph = NO_KEY;
-int tankid;
-boolean EthConnect = true;
+const int WINDOW_SIZE = 10000;  // 10 second Time Proportional output window
+long window_start_time = millis();
+float mid_buffer = 0;
+char key = NO_KEY;
+char exit_ph = NO_KEY;
+int tank_id;
+boolean eth_connect = true;
 byte mac[6] = {0x90, 0xA2, 0xDA, 0x00, 0x00, 0x00};
-char macstr[18];
-boolean pidrun = true;
+char mac_str[18];
+boolean pid_run = true;
 const int CHILLER = 47;
 const int CO2_REG = 49;
 const int GOAL_RECORD_LENGTH = 10;
-long phInterval;
-long phDelay;
-int phSeriesSize;
-long phSeriesPointer;
-long tempInterval;
-long tempDelay;
-int tempSeriesSize;
-long tempSeriesPointer;
+long ph_interval;
+long ph_delay;
+int ph_series_size;
+long ph_series_pointer;
+long temp_interval;
+long temp_delay;
+int temp_series_size;
+long temp_series_pointer;
 
 const int HTML_REQUEST_BUFFER_SIZE = 500;
-char htmlRequestBuffer[HTML_REQUEST_BUFFER_SIZE];
+char html_request_buffer[HTML_REQUEST_BUFFER_SIZE];
 
 // Temperature Smoothing/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const int NUM_READINGS = 10;
 
 double readings[NUM_READINGS];  // the readings from the analog input
-volatile int readIndex = 0;     // the index of the current reading
+volatile int read_index = 0;    // the index of the current reading
 volatile double total = 0;      // the running total
-volatile double tempnow = 0;    // the average
+volatile double temp_now = 0;   // the average
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // EEPROM addresses for persisted data///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -151,21 +151,21 @@ const int TEMP_DELAY_ADDRESS = 100;
 
 // End EEPROM addresses for persisted data///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-String filename;
+String file_name;
 
 const char STD_KEYS[ROWS][COLS] = {{'1', '2', '3', 'A'}, {'4', '5', '6', 'B'}, {'7', '8', '9', 'C'}, {'*', '0', '#', 'D'}};
 const byte ROW_PINS[ROWS] = {34, 36, 38, 40};
 const byte COL_PINS[COLS] = {42, 44, 46, 48};
-Keypad customKeypad = Keypad(makeKeymap(STD_KEYS), ROW_PINS, COL_PINS, ROWS, COLS);
-PID myPID(&Input, &Output, &Setpoint, Kp, Ki, Kd, DIRECT);  // Starting the PID, Specify the links and initial tuning parameters
-File myFile;
+Keypad custom_keypad = Keypad(makeKeymap(STD_KEYS), ROW_PINS, COL_PINS, ROWS, COLS);
+PID my_pid(&input, &output, &set_point, Kp, Ki, Kd, DIRECT);  // Starting the PID, Specify the links and initial tuning parameters
+File my_file;
 const int RS = 24, EN = 22, D4 = 26, D5 = 28, D6 = 30, D7 = 32;
 LiquidCrystal lcd(RS, EN, D4, D5, D6, D7);
 
 // ************************************************
 // Auto Tune Variables and constants
 // ************************************************
-byte ATuneModeRemember = 2;
+byte a_tune_mode_remember = 2;
 
 const double ATUNE_STEP = 500;
 const double ATUNE_NOISE = 1;
@@ -173,13 +173,13 @@ const unsigned int ATUNE_LOOK_BACK = 20;
 
 boolean tuning = false;
 
-PID_ATune aTune(&Input, &Output);
+PID_ATune aTune(&input, &output);
 
 // Stuff for retreiving time/////////////////////////////////////////////////////////////////////////////////////////////////////////
-IPAddress timeServer(132, 163, 97, 1);  // utcnist.colorado.edu
-const int TIME_ZONE = -7;               // Pacific Daylight Time (USA)
-EthernetUDP Udp;
-unsigned int localPort = 8888;  // local port to listen for UDP packets
+IPAddress time_server(132, 163, 97, 1);  // utcnist.colorado.edu
+const int TIME_ZONE = -7;                // Pacific Daylight Time (USA)
+EthernetUDP udp;
+unsigned int local_port = 8888;  // local port to listen for UDP packets
 // End Time////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Custom Characters for splash////////////////////////////////
@@ -199,14 +199,14 @@ const byte OL7[8] = {0b11011, 0b10100, 0b01111, 0b10111, 0b11001, 0b11111, 0b111
 
 const byte OL8[8] = {0b01100, 0b11100, 0b11100, 0b11000, 0b11000, 0b10000, 0b00000, 0b00000};
 
-void serialEvent() {                         // if the hardware serial port_0 receives a char
-  inputstring = Serial.readStringUntil(13);  // read the string until we see a <CR>
-  input_string_complete = true;              // set the flag used to tell if we have received a completed string from the PC
+void serialEvent() {                          // if the hardware serial port_0 receives a char
+  input_string = Serial.readStringUntil(13);  // read the string until we see a <CR>
+  input_string_complete = true;               // set the flag used to tell if we have received a completed string from the PC
 }
 
-void serialEvent3() {                          // if the hardware serial port_3 receives a char
-  sensorstring = Serial1.readStringUntil(13);  // read the string until we see a <CR>
-  sensor_string_complete = true;               // set the flag used to tell if we have received a completed string from the PC
+void serialEvent3() {                           // if the hardware serial port_3 receives a char
+  sensor_string = Serial1.readStringUntil(13);  // read the string until we see a <CR>
+  sensor_string_complete = true;                // set the flag used to tell if we have received a completed string from the PC
 }
 
 // ************************************************

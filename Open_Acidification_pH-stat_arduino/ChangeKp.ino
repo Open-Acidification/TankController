@@ -3,77 +3,77 @@
 // ************************************************
 
 void ChangeKp() {
-  double KpTemp;
-  KpTemp = Kp;
+  double kp_temp;
+  kp_temp = Kp;
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print(F("Kp:"));
   lcd.setCursor(0, 1);
-  lcd.print(KpTemp);
-  Key = NO_KEY;
-  while (Key != '#') {
-    Key = customKeypad.waitForKey();
+  lcd.print(kp_temp);
+  key = NO_KEY;
+  while (key != '#') {
+    key = custom_keypad.waitForKey();
 
-    switch (Key) {
+    switch (key) {
       case '1':
-        KpTemp = KpTemp + 10000;
+        kp_temp = kp_temp + 10000;
         break;
       case '4':
-        KpTemp = KpTemp - 10000;
+        kp_temp = kp_temp - 10000;
         break;
       case '2':
-        KpTemp = KpTemp + 1000;
+        kp_temp = kp_temp + 1000;
         break;
       case '5':
-        KpTemp = KpTemp - 1000;
+        kp_temp = kp_temp - 1000;
         break;
       case '3':
-        KpTemp = KpTemp + 100;
+        kp_temp = kp_temp + 100;
         break;
       case '6':
-        KpTemp = KpTemp - 100;
+        kp_temp = kp_temp - 100;
         break;
       case 'A':
-        KpTemp = KpTemp + 10;
+        kp_temp = kp_temp + 10;
         break;
       case 'B':
-        KpTemp = KpTemp - 10;
+        kp_temp = kp_temp - 10;
         break;
       case '7':
-        KpTemp = KpTemp + 1;
+        kp_temp = kp_temp + 1;
         break;
       case '*':
-        KpTemp = KpTemp - 1;
+        kp_temp = kp_temp - 1;
         break;
       case '8':
-        KpTemp = KpTemp + 0.1;
+        kp_temp = kp_temp + 0.1;
         break;
       case '0':
-        KpTemp = KpTemp - 0.1;
+        kp_temp = kp_temp - 0.1;
         break;
     }
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(F("Kp:"));
     lcd.setCursor(0, 1);
-    lcd.print(KpTemp, 2);
+    lcd.print(kp_temp, 2);
     Serial.print(F("New Kp: "));
-    Serial.println(KpTemp);
+    Serial.println(kp_temp);
   }
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print(F("New Kp:"));
-  lcd.print(KpTemp);
+  lcd.print(kp_temp);
   lcd.setCursor(0, 1);
   lcd.print(F("Keep:1 Discard:2"));
 
-  while (Key != '2') {
-    Key = customKeypad.waitForKey();
-    if (Key == '1') {
-      Kp = KpTemp;
+  while (key != '2') {
+    key = custom_keypad.waitForKey();
+    if (key == '1') {
+      Kp = kp_temp;
       EepromWriteDouble(KP_ADDRESS, Kp);
-      myPID.SetTunings(Kp, Ki, Kd);
-      Key = '2';
+      my_pid.SetTunings(Kp, Ki, Kd);
+      key = '2';
     }
   }
 }

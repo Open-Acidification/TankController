@@ -9,7 +9,7 @@ void RunAutoTune() {
   lcd.print(F("pH=      T="));
   tuning = true;
   // Remember the mode we were in
-  ATuneModeRemember = myPID.GetMode();
+  a_tune_mode_remember = my_pid.GetMode();
 
   // set up the auto-tune parameters
   aTune.SetNoiseBand(ATUNE_NOISE);
@@ -35,8 +35,8 @@ void RunAutoTune() {
         Kd = aTune.GetKd();
 
         // Re-tune the PID and revert to normal control mode
-        myPID.SetTunings(Kp, Ki, Kd);
-        myPID.SetMode(ATuneModeRemember);
+        my_pid.SetTunings(Kp, Ki, Kd);
+        my_pid.SetMode(a_tune_mode_remember);
 
         // Persist any changed parameters to EEPROM
         EepromWriteDouble(KP_ADDRESS, Kp);
@@ -44,7 +44,7 @@ void RunAutoTune() {
         EepromWriteDouble(KD_ADDRESS, Kd);
       }
     }
-    char atune_key = customKeypad.getKey();
+    char atune_key = custom_keypad.getKey();
     if (atune_key == "#") {
       aTune.Cancel();
       tuning = false;

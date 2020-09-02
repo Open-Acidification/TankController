@@ -30,10 +30,10 @@ void setup() {
     }
     EEPROM.write(44, '#');
   }
-  snprintf(macstr, 18, "%02x:%02x:%02x:%02x:%02x:%02x", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+  snprintf(mac_str, 18, "%02x:%02x:%02x:%02x:%02x:%02x", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
 
   LoadParameters();
-  Setpoint = -1 * phset;
+  set_point = -1 * ph_set;
   lcd.createChar(0, OL1);
   lcd.createChar(1, OL2);
   lcd.createChar(2, OL3);
@@ -59,8 +59,8 @@ void setup() {
 
   max.begin(MAX31865_3WIRE);  // start pt100 temperature probe
   Serial1.begin(9600);        // set baud rate for the software serial port to 9600
-  inputstring.reserve(10);    // set aside some bytes for receiving data from the PC
-  sensorstring.reserve(30);   // set aside some bytes for receiving data from Atlas Scientific pH EZO
+  input_string.reserve(10);   // set aside some bytes for receiving data from the PC
+  sensor_string.reserve(30);  // set aside some bytes for receiving data from Atlas Scientific pH EZO
   Serial1.print(F("*OK,0"));  // Turn off the returning of OK after command to EZO pH
   Serial1.print('\r');        // add a <CR> to the end of the string
   Serial1.print(F("C,0"));    // Reset pH stamp to continuous measurement: once per second
@@ -71,29 +71,29 @@ void setup() {
   digitalWrite(CO2_REG, HIGH);
 
   /// Check if ethernet is connected/////////////////////////////////////////////////////////////////////
-  int ethanswer = 0;
-  int ethstart = millis();
-  int timdiff = 0;
+  int eth_answer = 0;
+  int eth_start = millis();
+  int time_diff = 0;
 
   lcd.clear();
   // lcd.print(F("Ethernet cable?"));
   // lcd.setCursor(0, 1);
   // lcd.print(F("Yes:1       No:2"));
   // Serial.print("Ethernet cable?  Yes:1  No: 2");
-  // while (ethanswer == 0 && timdiff <= 10000) {
-  //   char ether = customKeypad.getKey();
+  // while (eth_answer == 0 && time_diff <= 10000) {
+  //   char ether = custom_keypad.getKey();
   //   if (ether == '1') {
-  //     ethanswer = 1;
+  //     eth_answer = 1;
   //   }
   //   if (ether == '2') {
-  //     EthConnect = false;
-  //     ethanswer = 1;
+  //     eth_connect = false;
+  //     eth_answer = 1;
   //   }
-  //   timdiff = millis() - ethstart;
+  //   time_diff = millis() - eth_start;
   // }
-  ethanswer = 1;  // temporarily assume Ethernet is always connected
+  eth_answer = 1;  // temporarily assume Ethernet is always connected
   //////////////////////////////////////////////////////////////////////////////////////////////////////
-  if (EthConnect) {
+  if (eth_connect) {
     lcd.clear();
     lcd.write(byte(0));
     lcd.write(byte(1));
@@ -125,15 +125,15 @@ void setup() {
       Ethernet.begin(mac, ip);
     }
 
-    // start the ethernetServer
-    ethernetServer.begin();
-    Serial.print(F("ethernetServer is at "));
+    // start the ethernet_server
+    ethernet_server.begin();
+    Serial.print(F("ethernet_server is at "));
     Serial.println(Ethernet.localIP());
   }
 
   // loading Tank ID///////////////////////////////////////////////////////////////////////////////////////
-  tankid = EepromReadDouble(TANKID_ADDRESS);
-  if (isnan(tankid)) {
+  tank_id = EepromReadDouble(TANKID_ADDRESS);
+  if (isnan(tank_id)) {
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(F("Tank ID# is not"));
@@ -145,21 +145,21 @@ void setup() {
     lcd.setCursor(0, 0);
     lcd.print(F("New Tank ID:"));
 
-    Key = customKeypad.waitForKey();
-    tankid = (Key - '0') * 10;
+    key = custom_keypad.waitForKey();
+    tank_id = (key - '0') * 10;
     lcd.setCursor(0, 1);
-    lcd.print(Key);
+    lcd.print(key);
     Serial.print(F("Tens place: "));
-    Serial.println(Key);
+    Serial.println(key);
 
-    Key = customKeypad.waitForKey();
-    tankid = (Key - '0') + tankid;
+    key = custom_keypad.waitForKey();
+    tank_id = (key - '0') + tank_id;
     lcd.setCursor(1, 1);
-    lcd.print(Key);
+    lcd.print(key);
     Serial.print(F("Ones place: "));
-    Serial.println(Key);
+    Serial.println(key);
 
-    EepromWriteDouble(TANKID_ADDRESS, tankid);
+    EepromWriteDouble(TANKID_ADDRESS, tank_id);
     delay(1000);
     Serial.println(F("Tank ID change End"));
   }
@@ -171,67 +171,67 @@ void setup() {
     EepromWriteDouble(GRANULARITY_ADDRESS, sensor_interval);
   }
 
-  // load maxDataAge
-  maxDataAge = EepromReadDouble(MAX_DATA_AGE_ADDRESS);
-  if (isnan(maxDataAge)) {
-    maxDataAge = 800;  // default max data age
-    EepromWriteDouble(MAX_DATA_AGE_ADDRESS, maxDataAge);
+  // load max_data_age
+  max_data_age = EepromReadDouble(MAX_DATA_AGE_ADDRESS);
+  if (isnan(max_data_age)) {
+    max_data_age = 800;  // default max data age
+    EepromWriteDouble(MAX_DATA_AGE_ADDRESS, max_data_age);
   }
 
   // load PH_SERIES_SIZE_ADDRESS;
-  phSeriesSize = EepromReadDouble(PH_SERIES_SIZE_ADDRESS);
-  if (isnan(phSeriesSize)) {
-    phSeriesSize = 0;
-    EepromWriteDouble(PH_SERIES_SIZE_ADDRESS, phSeriesSize);
+  ph_series_size = EepromReadDouble(PH_SERIES_SIZE_ADDRESS);
+  if (isnan(ph_series_size)) {
+    ph_series_size = 0;
+    EepromWriteDouble(PH_SERIES_SIZE_ADDRESS, ph_series_size);
   }
 
   // load PH_SERIES_POINTER_ADDRESS;
-  phSeriesPointer = EepromReadDouble(PH_SERIES_POINTER_ADDRESS);
-  if (isnan(phSeriesPointer)) {
-    phSeriesPointer = 0;
-    EepromWriteDouble(PH_SERIES_POINTER_ADDRESS, phSeriesPointer);
+  ph_series_pointer = EepromReadDouble(PH_SERIES_POINTER_ADDRESS);
+  if (isnan(ph_series_pointer)) {
+    ph_series_pointer = 0;
+    EepromWriteDouble(PH_SERIES_POINTER_ADDRESS, ph_series_pointer);
   }
 
   // load TEMP_SERIES_SIZE_ADDRESS;
-  tempSeriesSize = EepromReadDouble(TEMP_SERIES_SIZE_ADDRESS);
-  if (isnan(tempSeriesSize)) {
-    tempSeriesSize = 0;
-    EepromWriteDouble(TEMP_SERIES_SIZE_ADDRESS, tempSeriesSize);
+  temp_series_size = EepromReadDouble(TEMP_SERIES_SIZE_ADDRESS);
+  if (isnan(temp_series_size)) {
+    temp_series_size = 0;
+    EepromWriteDouble(TEMP_SERIES_SIZE_ADDRESS, temp_series_size);
   }
 
   // load TEMP_SERIES_POINTER_ADDRESS;
-  tempSeriesPointer = EepromReadDouble(TEMP_SERIES_POINTER_ADDRESS);
-  if (isnan(tempSeriesPointer)) {
-    tempSeriesPointer = 0;
-    EepromWriteDouble(TEMP_SERIES_POINTER_ADDRESS, tempSeriesPointer);
+  temp_series_pointer = EepromReadDouble(TEMP_SERIES_POINTER_ADDRESS);
+  if (isnan(temp_series_pointer)) {
+    temp_series_pointer = 0;
+    EepromWriteDouble(TEMP_SERIES_POINTER_ADDRESS, temp_series_pointer);
   }
 
-  // load phInterval;
-  phInterval = EepromReadDouble(PH_INTERVAL_ADDRESS);
+  // load ph_interval;
+  ph_interval = EepromReadDouble(PH_INTERVAL_ADDRESS);
   if (isnan(PH_INTERVAL_ADDRESS)) {
-    phInterval = 0;
-    EepromWriteDouble(PH_INTERVAL_ADDRESS, phInterval);
+    ph_interval = 0;
+    EepromWriteDouble(PH_INTERVAL_ADDRESS, ph_interval);
   }
 
-  // load phDelay;
-  phDelay = EepromReadDouble(PH_DELAY_ADDRESS);
+  // load ph_delay;
+  ph_delay = EepromReadDouble(PH_DELAY_ADDRESS);
   if (isnan(PH_DELAY_ADDRESS)) {
-    phDelay = 0;
-    EepromWriteDouble(PH_DELAY_ADDRESS, phDelay);
+    ph_delay = 0;
+    EepromWriteDouble(PH_DELAY_ADDRESS, ph_delay);
   }
 
-  // load tempInterval;
-  tempInterval = EepromReadDouble(TEMP_INTERVAL_ADDRESS);
+  // load temp_interval;
+  temp_interval = EepromReadDouble(TEMP_INTERVAL_ADDRESS);
   if (isnan(TEMP_INTERVAL_ADDRESS)) {
-    tempInterval = 0;
-    EepromWriteDouble(TEMP_INTERVAL_ADDRESS, tempInterval);
+    temp_interval = 0;
+    EepromWriteDouble(TEMP_INTERVAL_ADDRESS, temp_interval);
   }
 
-  // load tempDelay;
-  tempDelay = EepromReadDouble(TEMP_DELAY_ADDRESS);
+  // load temp_delay;
+  temp_delay = EepromReadDouble(TEMP_DELAY_ADDRESS);
   if (isnan(TEMP_DELAY_ADDRESS)) {
-    tempDelay = 0;
-    EepromWriteDouble(TEMP_DELAY_ADDRESS, tempDelay);
+    temp_delay = 0;
+    EepromWriteDouble(TEMP_DELAY_ADDRESS, temp_delay);
   }
 
   /// Starting the SD Card//////////////////////////////////////////////////////////////////////////////////
@@ -245,10 +245,10 @@ void setup() {
   /// Starting the SD Card//////////////////////////////////////////////////////////////////////////////////
 
   // Setting PID parameters////////////////////////////////////////////////////////////////////////////////////////
-  myPID.SetTunings(Kp, Ki, Kd);
-  myPID.SetMode(AUTOMATIC);
-  myPID.SetSampleTime(1000);
-  myPID.SetOutputLimits(0, WINDOW_SIZE);
+  my_pid.SetTunings(Kp, Ki, Kd);
+  my_pid.SetMode(AUTOMATIC);
+  my_pid.SetSampleTime(1000);
+  my_pid.SetOutputLimits(0, WINDOW_SIZE);
 
   noInterrupts();  // disable all interrupts
   // Run timer2 interrupt every 15 ms
@@ -260,20 +260,20 @@ void setup() {
   interrupts();
 
   // loading Temp Correction////////////////////////////////////////////////////////////////////////////////////////
-  tempcorr = EepromReadDouble(TEMP_CORR_ADDRESS);
+  temp_corr = EepromReadDouble(TEMP_CORR_ADDRESS);
 
-  if (isnan(tempcorr)) {
-    tempcorr = 0;
+  if (isnan(temp_corr)) {
+    temp_corr = 0;
   }
 
   // Filling array for temp smoothing///////////////////////////////////////////////////////////////////////
-  for (int thisReading = 0; thisReading < NUM_READINGS; thisReading++) {
-    readings[thisReading] = 0;
+  for (int this_reading = 0; this_reading < NUM_READINGS; this_reading++) {
+    readings[this_reading] = 0;
   }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  byte upArrow[8] = {0b00100, 0b01110, 0b10101, 0b00100, 0b00100, 0b00100, 0b00100, 0b00100};
-  lcd.createChar(0, upArrow);
+  byte up_arrow[8] = {0b00100, 0b01110, 0b10101, 0b00100, 0b00100, 0b00100, 0b00100, 0b00100};
+  lcd.createChar(0, up_arrow);
 
   lcd.clear();
   lcd.print(F("pH="));

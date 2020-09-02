@@ -4,120 +4,120 @@
 void ManualTime() {
   lcd.clear();
   lcd.print(F("What year is it?"));
-  unsigned long Yearnow;
+  unsigned long year_now;
 
-  Key = customKeypad.waitForKey();
-  Yearnow = (Key - '0') * 1000;
+  key = custom_keypad.waitForKey();
+  year_now = (key - '0') * 1000;
   lcd.setCursor(0, 1);
-  lcd.print(Key);
+  lcd.print(key);
   Serial.print(F("Thousands place: "));
-  Serial.println(Key);
+  Serial.println(key);
 
-  Key = customKeypad.waitForKey();
-  Yearnow = ((Key - '0') * 100) + Yearnow;
+  key = custom_keypad.waitForKey();
+  year_now = ((key - '0') * 100) + year_now;
   lcd.setCursor(1, 1);
-  lcd.print(Key);
+  lcd.print(key);
   Serial.print(F("Hundreds place: "));
-  Serial.println(Key);
+  Serial.println(key);
 
-  Key = customKeypad.waitForKey();
-  Yearnow = ((Key - '0') * 10) + Yearnow;
+  key = custom_keypad.waitForKey();
+  year_now = ((key - '0') * 10) + year_now;
   lcd.setCursor(2, 1);
-  lcd.print(Key);
+  lcd.print(key);
   Serial.print(F("Tens place: "));
-  Serial.println(Key);
+  Serial.println(key);
 
-  Key = customKeypad.waitForKey();
-  Yearnow = (Key - '0') + Yearnow;
+  key = custom_keypad.waitForKey();
+  year_now = (key - '0') + year_now;
   lcd.setCursor(3, 1);
-  lcd.print(Key);
+  lcd.print(key);
   Serial.print(F("Ones place: "));
-  Serial.println(Key);
+  Serial.println(key);
   delay(500);
 
   lcd.clear();
   lcd.print(F("Month? (01-12)"));
   unsigned long Monthnow;
 
-  Key = customKeypad.waitForKey();
-  Monthnow = (Key - '0') * 10;
+  key = custom_keypad.waitForKey();
+  Monthnow = (key - '0') * 10;
   lcd.setCursor(0, 1);
-  lcd.print(Key);
+  lcd.print(key);
   Serial.print(F("Ten place: "));
-  Serial.println(Key);
+  Serial.println(key);
 
-  Key = customKeypad.waitForKey();
-  Monthnow = (Key - '0') + Monthnow;
+  key = custom_keypad.waitForKey();
+  Monthnow = (key - '0') + Monthnow;
   lcd.setCursor(1, 1);
-  lcd.print(Key);
+  lcd.print(key);
   Serial.print(F("Ones place: "));
-  Serial.println(Key);
+  Serial.println(key);
   delay(500);
 
   lcd.clear();
   lcd.print(F("Day? (01-31)"));
-  unsigned long Daynow;
+  unsigned long day_now;
 
-  Key = customKeypad.waitForKey();
-  Daynow = (Key - '0') * 10;
+  key = custom_keypad.waitForKey();
+  day_now = (key - '0') * 10;
   lcd.setCursor(0, 1);
-  lcd.print(Key);
+  lcd.print(key);
   Serial.print(F("Ten place: "));
-  Serial.println(Key);
+  Serial.println(key);
 
-  Key = customKeypad.waitForKey();
-  Daynow = (Key - '0') + Daynow;
+  key = custom_keypad.waitForKey();
+  day_now = (key - '0') + day_now;
   lcd.setCursor(1, 1);
-  lcd.print(Key);
+  lcd.print(key);
   Serial.print(F("Ones place: "));
-  Serial.println(Key);
+  Serial.println(key);
   delay(500);
 
   lcd.clear();
   lcd.print(F("Hour? (00-23)"));
-  unsigned long Hournow;
+  unsigned long hour_now;
 
-  Key = customKeypad.waitForKey();
-  Hournow = (Key - '0') * 10;
+  key = custom_keypad.waitForKey();
+  hour_now = (key - '0') * 10;
   lcd.setCursor(0, 1);
-  lcd.print(Key);
+  lcd.print(key);
   Serial.print(F("Ten place: "));
-  Serial.println(Key);
+  Serial.println(key);
 
-  Key = customKeypad.waitForKey();
-  Hournow = (Key - '0') + Hournow;
+  key = custom_keypad.waitForKey();
+  hour_now = (key - '0') + hour_now;
   lcd.setCursor(1, 1);
-  lcd.print(Key);
+  lcd.print(key);
   Serial.print(F("Ones place: "));
-  Serial.println(Key);
+  Serial.println(key);
   delay(500);
 
   lcd.clear();
   lcd.print(F("Minute? (00-59)"));
-  unsigned long Minnow;
+  unsigned long min_now;
 
-  Key = customKeypad.waitForKey();
-  Minnow = (Key - '0') * 10;
+  key = custom_keypad.waitForKey();
+  min_now = (key - '0') * 10;
   lcd.setCursor(0, 1);
-  lcd.print(Key);
+  lcd.print(key);
   Serial.print(F("Ten place: "));
-  Serial.println(Key);
+  Serial.println(key);
 
-  Key = customKeypad.waitForKey();
-  Minnow = (Key - '0') + Minnow;
+  key = custom_keypad.waitForKey();
+  min_now = (key - '0') + min_now;
   lcd.setCursor(1, 1);
-  lcd.print(Key);
+  lcd.print(key);
   Serial.print(F("Ones place: "));
-  Serial.println(Key);
+  Serial.println(key);
   delay(500);
 
-  setTime(Hournow, Minnow, 30, Daynow, Monthnow, Yearnow);
-  rtc.adjust(DateTime(Yearnow, Monthnow, Daynow, Hournow, Minnow, 30));
+  setTime(hour_now, min_now, 30, day_now, Monthnow, year_now);
+  rtc.adjust(DateTime(year_now, Monthnow, day_now, hour_now, min_now, 30));
 
-  int starttime = millis();
-  int nowtime = millis();
-  while (nowtime <= starttime + 5000) {
-    nowtime = millis();
+  int start_time = millis();
+  int now_time = millis();
+  while (now_time <= start_time + 5000) {
+    now_time = millis();
     lcd.clear();
     lcd.print(String(month()) + "/" + String(day()) + "/" + String(year()));
     lcd.setCursor(0, 1);

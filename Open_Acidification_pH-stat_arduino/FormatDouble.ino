@@ -1,6 +1,6 @@
 // https://forum.arduino.cc/index.php/topic,44216.0.html#11
-unsigned FormatUnsigned(unsigned long val, char *buf, unsigned bufLen = 0xffff, byte width = 0);
-void FormatDouble(double val, byte precision, char *buf, unsigned bufLen = 0xffff);
+unsigned FormatUnsigned(unsigned long val, char *buf, unsigned buf_len = 0xffff, byte width = 0);
+void FormatDouble(double val, byte precision, char *buf, unsigned buf_len = 0xffff);
 
 //
 // Produce a formatted string in a buffer corresponding to the value provided.
@@ -8,8 +8,8 @@ void FormatDouble(double val, byte precision, char *buf, unsigned bufLen = 0xfff
 // zeroes to achieve the specified width.  The number of characters added to
 // the buffer (not including the null termination) is returned.
 //
-unsigned FormatUnsigned(unsigned long val, char *buf, unsigned bufLen, byte width) {
-  if (!buf || !bufLen)
+unsigned FormatUnsigned(unsigned long val, char *buf, unsigned buf_len, byte width) {
+  if (!buf || !buf_len)
     return (0);
 
   // produce the digit string (backwards in the digit buffer)
@@ -25,7 +25,7 @@ unsigned FormatUnsigned(unsigned long val, char *buf, unsigned bufLen, byte widt
   unsigned len = 0;
   byte padding = (width > idx) ? width - idx : 0;
   char c = '0';
-  while ((--bufLen > 0) && (idx || padding)) {
+  while ((--buf_len > 0) && (idx || padding)) {
     if (padding)
       padding--;
     else
@@ -49,8 +49,8 @@ unsigned FormatUnsigned(unsigned long val, char *buf, unsigned bufLen, byte widt
 //
 // example: FormatDouble(3.1415, 2, buf); // produces 3.14 (two decimal places)
 //
-void FormatDouble(double val, byte precision, char *buf, unsigned bufLen) {
-  if (!buf || !bufLen)
+void FormatDouble(double val, byte precision, char *buf, unsigned buf_len) {
+  if (!buf || !buf_len)
     return;
 
   // limit the precision to the maximum allowed value
@@ -58,37 +58,37 @@ void FormatDouble(double val, byte precision, char *buf, unsigned bufLen) {
   if (precision > maxPrecision)
     precision = maxPrecision;
 
-  if (--bufLen > 0) {
+  if (--buf_len > 0) {
     // check for a negative value
     if (val < 0.0) {
       val = -val;
       *buf = '-';
-      bufLen--;
+      buf_len--;
     }
 
     // compute the rounding factor and fractional multiplier
-    double roundingFactor = 0.5;
+    double rounding_factor = 0.5;
     unsigned long mult = 1;
     for (byte i = 0; i < precision; i++) {
-      roundingFactor /= 10.0;
+      rounding_factor /= 10.0;
       mult *= 10;
     }
 
-    if (bufLen > 0) {
+    if (buf_len > 0) {
       // apply the rounding factor
-      val += roundingFactor;
+      val += rounding_factor;
 
       // add the integral portion to the buffer
-      unsigned len = FormatUnsigned((unsigned long)val, buf, bufLen);
+      unsigned len = FormatUnsigned((unsigned long)val, buf, buf_len);
       buf += len;
-      bufLen -= len;
+      buf_len -= len;
     }
 
     // handle the fractional portion
-    if ((precision > 0) && (bufLen > 0)) {
+    if ((precision > 0) && (buf_len > 0)) {
       *buf++ = '.';
-      if (--bufLen > 0)
-        buf += FormatUnsigned((unsigned long)((val - (unsigned long)val) * mult), buf, bufLen, precision);
+      if (--buf_len > 0)
+        buf += FormatUnsigned((unsigned long)((val - (unsigned long)val) * mult), buf, buf_len, precision);
     }
   }
 

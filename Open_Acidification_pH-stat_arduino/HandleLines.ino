@@ -1,14 +1,14 @@
 void HandleLines(String endpoint, EthernetClient client) {
   // lines endpoint format: lines/year/month/day/hour
-  String directoryName;
+  String directory_name;
   if (endpoint.length() >= 6) {
-    directoryName = endpoint.substring(6);  // remove "/lines/" prefix
+    directory_name = endpoint.substring(6);  // remove "/lines/" prefix
   } else {
-    directoryName = "/";
+    directory_name = "/";
   }
-  int slashIndex = endpoint.lastIndexOf("/");
-  String hourName = endpoint.substring(slashIndex);
-  directoryName.concat(hourName + ".txt");
+  int slash_index = endpoint.lastIndexOf("/");
+  String hour_name = endpoint.substring(slash_index);
+  directory_name.concat(hour_name + ".txt");
   char* pch;
   int slashes = -1;
   pch = strtok(endpoint.c_str(), "/");
@@ -21,11 +21,11 @@ void HandleLines(String endpoint, EthernetClient client) {
       // hour: return csv of the specific hour
       PrintHeader(client, 200);
       Serial.print(F("PRINTING LINE FILE: "));
-      Serial.println(directoryName);
-      long lineCount = ReadLineFromSd(directoryName.c_str(), 0, 10);
+      Serial.println(directory_name);
+      long line_count = ReadLineFromSd(directory_name.c_str(), 0, 10);
       Serial.print(F("LINE COUNT: "));
-      Serial.println(lineCount);
-      client.println(lineCount);
+      Serial.println(line_count);
+      client.println(line_count);
       break;
     default:
       PrintHeader(client, 400);

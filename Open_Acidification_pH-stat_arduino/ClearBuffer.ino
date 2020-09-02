@@ -1,5 +1,5 @@
 #include "string.h"
 
-void ClearBuffer(char* htmlRequestBuffer, int size) {
-  memset(htmlRequestBuffer, ' ', size);
+void ClearBuffer(char* html_request_buffer, int size) {
+  memset(html_request_buffer, ' ', size);
 }

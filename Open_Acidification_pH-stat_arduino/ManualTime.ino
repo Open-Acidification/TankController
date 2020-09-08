@@ -116,7 +116,7 @@ void ManualTime() {
 
   int start_time = millis();
   int now_time = millis();
-  while (now_time <= start_time + 5 * SECOND) {
+  while (now_time <= start_time + FIVE_SECOND_DELAY_IN_MILLIS) {
     now_time = millis();
     lcd.clear();
     lcd.print(String(month()) + "/" + String(day()) + "/" + String(year()));

@@ -56,9 +56,9 @@ int const MINUTE_IN_MILLIS = 60 * SECOND_IN_MILLIS;
 int const HOUR_IN_MILLIS = 60 * MINUTE_IN_MILLIS;
 int const DAY_IN_MILLIS = 24 * HOUR_IN_MILLIS;
 
-int const ONE_SECOND_DELAY_IN_MILLIS = ONE_SECOND_DELAY_IN_MILLIS;
-int const THREE_SECOND_DELAY_IN_MILLIS = THREE_SECOND_DELAY_IN_MILLIS;
-int const FIVE_SECOND_DELAY_IN_MILLIS = FIVE_SECOND_DELAY_IN_MILLIS;
+int const ONE_SECOND_DELAY_IN_MILLIS = 1 * SECOND_IN_MILLIS;
+int const THREE_SECOND_DELAY_IN_MILLIS = 3 * SECOND_IN_MILLIS;
+int const FIVE_SECOND_DELAY_IN_MILLIS = 5 * SECOND_IN_MILLIS;
 int const SEVEN_SECOND_DELAY_IN_MILLIS = 7 * SECOND_IN_MILLIS;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,7 +74,7 @@ const float SD_INTERVAL = 1 * HOUR_IN_MILLIS;  // log to SD each hour
 unsigned long sensor_previous_millis = 0;      // will store last time sensor readings were taken
 float sensor_interval;                         // interval at which to start a new log file (milliseconds)
 unsigned long second_previous_millis = 0;
-const float second_interval = ONE_SECOND_DELAY_IN_MILLIS;
+const float second_interval = 1 * SECOND_IN_MILLIS;
 int granularity;
 int max_data_age;
 const float LEASE_INTERVAL = 4 * DAY_IN_MILLIS;  // Interval at which to renew DHCP lease

@@ -131,7 +131,7 @@ void loop() {
     lcd.print(F("Calibration"));
     lcd.setCursor(0, 1);
     lcd.print(F("1-pt:1 2-pt:2"));
-    while (answer == 0 && time_diff <= FIVE_SECOND_DELAY_IN_MILLIS) {
+    while (answer == 0 && time_diff <= 5 * SECOND_IN_MILLIS) {
       char answer_key = custom_keypad.getKey();
       if (answer_key == '1') {
         OnePointCal();
@@ -162,7 +162,7 @@ void loop() {
     lcd.print(F("Cal Management"));
     lcd.setCursor(0, 1);
     lcd.print(F("Slope:1 Clear:2"));
-    while (answer == 0 && time_diff <= FIVE_SECOND_DELAY_IN_MILLIS) {
+    while (answer == 0 && time_diff <= 5 * SECOND_IN_MILLIS) {
       char answer_key = custom_keypad.getKey();
       if (answer_key == '1') {
         if (Serial1.available() > 0) {  // if we see that the Atlas Scientific product has sent a character
@@ -284,7 +284,7 @@ void loop() {
     if (now.year() < 2000) {
       year_now = now.year() - 1900;
     }
-    while (now_time <= start_time + FIVE_SECOND_DELAY_IN_MILLIS) {
+    while (now_time <= start_time + 5 * SECOND_IN_MILLIS) {
       DateTime now = rtc.now();
       now_time = millis();
       lcd.clear();
@@ -323,7 +323,7 @@ void loop() {
     lcd.print(F("Unit Information"));
     lcd.setCursor(0, 1);
     lcd.print(F("IP:1 MAC:2 SV:3"));
-    while (answer == 0 && time_diff <= FIVE_SECOND_DELAY_IN_MILLIS) {
+    while (answer == 0 && time_diff <= 5 * SECOND_IN_MILLIS) {
       char answer_key = custom_keypad.getKey();
       if (answer_key == '1') {
         lcd.clear();
@@ -607,7 +607,7 @@ void loop() {
     lcd.print(F("Enable PID?"));
     lcd.setCursor(0, 1);
     lcd.print(F("Yes:1       No:2"));
-    while (answer == 0 && time_diff <= FIVE_SECOND_DELAY_IN_MILLIS) {
+    while (answer == 0 && time_diff <= 5 * SECOND_IN_MILLIS) {
       char answer_key = custom_keypad.getKey();
       if (answer_key == '1') {
         pid_run = true;
@@ -642,7 +642,7 @@ void loop() {
     lcd.print(F("Chill or Heat?"));
     lcd.setCursor(0, 1);
     lcd.print(F("Chill:1   Heat:2"));
-    while (answer == 0 && time_diff <= FIVE_SECOND_DELAY_IN_MILLIS) {
+    while (answer == 0 && time_diff <= 5 * SECOND_IN_MILLIS) {
       char answer_key = custom_keypad.getKey();
       if (answer_key == '1') {
         heat = 0;

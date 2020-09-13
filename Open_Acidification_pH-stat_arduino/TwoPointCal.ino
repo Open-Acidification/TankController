@@ -8,7 +8,7 @@ void TwoPointCal() {
   lcd.print(F("Calibration mode"));
   lcd.setCursor(3, 1);
   lcd.print(F("Two-point"));
-  delay(5000);
+  delay(FIVE_SECOND_DELAY_IN_MILLIS);
 
   // Lower Buffer ///
   lcd.clear();
@@ -192,5 +192,5 @@ void TwoPointCal() {
   lcd.print(F("###Calibration##"));
   lcd.setCursor(0, 1);
   lcd.print(F("####Complete####"));
-  delay(3000);
+  delay(THREE_SECOND_DELAY_IN_MILLIS);
 }

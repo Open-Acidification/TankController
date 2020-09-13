@@ -42,7 +42,7 @@ void SetSineWave() {
 
   SaveAmplitudeSet();
 
-  delay(1000);
+  delay(ONE_SECOND_DELAY_IN_MILLIS);
 
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -82,7 +82,7 @@ void SetSineWave() {
 
   SaveFrequencySet();
 
-  delay(1000);
+  delay(ONE_SECOND_DELAY_IN_MILLIS);
 
   lcd.clear();
   lcd.print(F("pH="));

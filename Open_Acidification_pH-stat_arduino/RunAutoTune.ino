@@ -53,7 +53,7 @@ void RunAutoTune() {
       lcd.print(F("   CANCELLING   "));
       lcd.setCursor(0, 1);
       lcd.print(F("   AUTOTUNING   "));
-      delay(3000);
+      delay(THREE_SECOND_DELAY_IN_MILLIS);
     }
   }
 }

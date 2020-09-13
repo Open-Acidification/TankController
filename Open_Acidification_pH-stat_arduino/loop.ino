@@ -293,10 +293,10 @@ void loop() {
       lcd.print(String(now.hour()) + ":" + String(now.minute()) + ":" + String(now.second()));
       lcd.setCursor(0, 1);
 
-      int days = floor(millis() / DAY_IN_MILLIS);
-      int hours = floor((millis() - (days * DAY_IN_MILLIS)) / HOUR_IN_MILLIS);
-      int minutes = floor((millis() - (days * DAY_IN_MILLIS) - (hours * HOUR_IN_MILLIS)) / MINUTE_IN_MILLIS);
-      int seconds = floor((millis() - (days * DAY_IN_MILLIS) - (hours * HOUR_IN_MILLIS) - (minutes * MINUTE_IN_MILLIS)) / SECOND_IN_MILLIS);
+      unsigned long days = floor(millis() / DAY_IN_MILLIS);
+      unsigned long hours = floor((millis() - (days * DAY_IN_MILLIS)) / HOUR_IN_MILLIS);
+      unsigned long minutes = floor((millis() - (days * DAY_IN_MILLIS) - (hours * HOUR_IN_MILLIS)) / MINUTE_IN_MILLIS);
+      unsigned long seconds = floor((millis() - (days * DAY_IN_MILLIS) - (hours * HOUR_IN_MILLIS) - (minutes * MINUTE_IN_MILLIS)) / SECOND_IN_MILLIS);
       lcd.print(F("Up d:"));
       lcd.print(days);
       lcd.print(F(" "));

@@ -51,33 +51,32 @@ String data;                   // GET query with data
 
 // Time Constants /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int const SECOND_IN_MILLIS = 1000;
-int const MINUTE_IN_MILLIS = 60 * SECOND_IN_MILLIS;
-int const HOUR_IN_MILLIS = 60 * MINUTE_IN_MILLIS;
-int const DAY_IN_MILLIS = 24 * HOUR_IN_MILLIS;
+const unsigned long SECOND_IN_MILLIS = 1000;
+const unsigned long MINUTE_IN_MILLIS = 60 * SECOND_IN_MILLIS;
+const unsigned long HOUR_IN_MILLIS = 60 * MINUTE_IN_MILLIS;
+const unsigned long DAY_IN_MILLIS = 24 * HOUR_IN_MILLIS;
 
-int const ONE_SECOND_DELAY_IN_MILLIS = 1 * SECOND_IN_MILLIS;
-int const THREE_SECOND_DELAY_IN_MILLIS = 3 * SECOND_IN_MILLIS;
-int const FIVE_SECOND_DELAY_IN_MILLIS = 5 * SECOND_IN_MILLIS;
-int const SEVEN_SECOND_DELAY_IN_MILLIS = 7 * SECOND_IN_MILLIS;
+const unsigned long ONE_SECOND_DELAY_IN_MILLIS = 1 * SECOND_IN_MILLIS;
+const unsigned long THREE_SECOND_DELAY_IN_MILLIS = 3 * SECOND_IN_MILLIS;
+const unsigned long FIVE_SECOND_DELAY_IN_MILLIS = 5 * SECOND_IN_MILLIS;
+const unsigned long SEVEN_SECOND_DELAY_IN_MILLIS = 7 * SECOND_IN_MILLIS;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int interval = 20 * MINUTE_IN_MILLIS;  // interval at which to update Google Sheets (milliseconds)
+unsigned long interval = 20 * MINUTE_IN_MILLIS;  // interval at which to update Google Sheets (milliseconds)
 unsigned long previous_millis =
     0 - interval +
     30 * SECOND_IN_MILLIS;  // will store last time Google Sheets was updated (-interval+30000 sets first upload for 30 seconds after startup. This eases troubleshooting)
-unsigned long chiller_previous_millis = 0;             // will store last time chiller state was checked
-const float CHILLER_INTERVAL = 30 * SECOND_IN_MILLIS;  // interval at which to change chiller state
-// float SD_interval = 1 * DAY_IN_MILLIS;                     // interval at which to start a new log file (formerly 1 day)
-const float SD_INTERVAL = 1 * HOUR_IN_MILLIS;  // log to SD each hour
-unsigned long sensor_previous_millis = 0;      // will store last time sensor readings were taken
-float sensor_interval;                         // interval at which to start a new log file (milliseconds)
+unsigned long chiller_previous_millis = 0;  // will store last time chiller state was checked
+const unsigned long CHILLER_INTERVAL =
+    30 * SECOND_IN_MILLIS;                 // interval at which to change chiller state                 // interval at which to start a new log file (formerly 1 day)
+unsigned long sensor_previous_millis = 0;  // will store last time sensor readings were taken
+unsigned long sensor_interval;             // interval at which to start a new log file (milliseconds)
 unsigned long second_previous_millis = 0;
-const float second_interval = 1 * SECOND_IN_MILLIS;
-int granularity;
-int max_data_age;
-const float LEASE_INTERVAL = 4 * DAY_IN_MILLIS;  // Interval at which to renew DHCP lease
+const unsigned long second_interval = 1 * SECOND_IN_MILLIS;
+unsigned long granularity;
+unsigned long max_data_age;
+const unsigned long LEASE_INTERVAL = 4 * DAY_IN_MILLIS;  // Interval at which to renew DHCP lease
 unsigned long previous_lease = 0;
 
 const byte ROWS = 4;        // four rows

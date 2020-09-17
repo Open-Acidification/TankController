@@ -12,6 +12,7 @@ arduino-cli lib install Keypad@3.1.1
 arduino-cli lib install LiquidCrystal@1.0.7
 arduino-cli lib install PID@1.2.0
 arduino-cli lib install RTClib@1.3.3
+arduino-cli lib install SD@1.2.4
 
 # These libraries are to be installed via git clone
 # These libraries could not be found in the arduino-cli library list

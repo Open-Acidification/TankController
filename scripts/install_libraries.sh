@@ -1,7 +1,7 @@
 # Standard libraries being used include:
-#  > EEPROM, Ethernet, LiquidCrystal, SD, SPI, Wire
+#  > EEPROM, SPI, Wire
 #
-# Note these come pre-installed.
+# Note these come pre-installed or are included by another library.
 
 # These libraries are to be installed with the arduino-cli tool
 # All libraries should include a version number

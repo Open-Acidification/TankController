@@ -1,0 +1,25 @@
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# misc
+*.zip
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# C++ Files
+*.o
+*.out
+*.log
+
+# Arduino Files
+arduino-cli.yaml
+*.hex
+*.elf
+*.eep
+libraries

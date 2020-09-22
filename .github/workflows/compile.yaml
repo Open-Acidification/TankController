@@ -6,22 +6,15 @@ name: Compile and Test
 on: [push, pull_request]
 
 jobs:
-  build:
-    # This is the list of steps this job will run.
+  test: 
     runs-on: ubuntu-latest
     steps:
-      # First of all, we clone the repo using the `checkout` action.
-      - name: Checkout
-        uses: actions/checkout@v2
+      # Clone the repo using the `checkout` action.
+      - uses: actions/checkout@v2
 
-      # Arduino CI uses Ruby
-      - name: Ruby
-        uses: actions/setup-ruby@v1
-        with: 
-          ruby-version: 2.6
-
-      # Finally, we run Arduino CI
-      - name: Arduino CI
+      # Get Ruby and run Arduino CI
+      - uses: actions/setup-ruby@v1
         run: |
           gem install bundler
-          ./testAndBuild.sh
+          bundle install
+          bundle exec arduino_ci_remote.rb

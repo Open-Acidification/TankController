@@ -33,6 +33,9 @@
 #include <stdio.h>
 
 #include "RTClib.h"
+#include "TankControllerLib.h"
+
+TankController tank;
 
 const String DEV_ID = "v172D35C152EDA6C";  // DeviceID from Pushingbox
 

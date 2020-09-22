@@ -1,5 +1,6 @@
 
 void setup() {
+  tank.setup();
   Serial.begin(2000000);  // set baud rate for the hardware serial port_0 to 9600
   Serial1.begin(9600);
   wdt_disable();

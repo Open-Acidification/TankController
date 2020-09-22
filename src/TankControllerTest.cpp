@@ -1,16 +1,18 @@
 #include "TankControllerTest.h"
 #ifdef MOCK_PINS_COUNT
 
-TankControllerTest::TankControllerTest() : TankControllerProd() {}
+TankControllerTest::TankControllerTest() : TankControllerProd() {
+}
 
-TankControllerTest::~TankControllerTest() {}
+TankControllerTest::~TankControllerTest() {
+}
 
 void TankControllerTest::setup() {
-    TankControllerProd::setup();
+  TankControllerProd::setup();
 }
 
 void TankControllerTest::loop() {
-    TankControllerProd::loop();
+  TankControllerProd::loop();
 }
 
 #endif

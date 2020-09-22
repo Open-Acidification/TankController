@@ -8,12 +8,15 @@
 #endif
 
 class TankControllerProd {
-    public:
-        TankControllerProd();
-        ~TankControllerProd();
-        virtual String className() const { return "TankControllerProd"; }
-        void setup();
-        void loop();
-    private:
-        int foo;
+public:
+  TankControllerProd();
+  ~TankControllerProd();
+  virtual String className() const {
+    return "TankControllerProd";
+  }
+  void setup();
+  void loop();
+
+private:
+  int foo;
 };

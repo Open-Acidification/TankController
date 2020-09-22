@@ -8,6 +8,7 @@ on: [push, pull_request]
 jobs:
   build:
     # This is the list of steps this job will run.
+    runs-on: ubuntu-latest
     steps:
       # First of all, we clone the repo using the `checkout` action.
       - name: Checkout

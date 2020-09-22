@@ -4,7 +4,7 @@ AccessModifierOffset: '-2'
 AllowShortFunctionsOnASingleLine: None
 AllowShortIfStatementsOnASingleLine: 'false'
 AllowShortLoopsOnASingleLine: 'false'
-ColumnLimit: 180
+ColumnLimit: 120
 IndentCaseLabels: 'true'
 IndentWidth: '2'
 IndentWrappedFunctionNames: 'true'

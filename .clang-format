@@ -1,4 +1,4 @@
-﻿---
+---
 BasedOnStyle: Google
 AccessModifierOffset: '-2'
 AllowShortFunctionsOnASingleLine: None

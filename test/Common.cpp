@@ -37,11 +37,6 @@ public:
   }
 };
 
-unittest(className) {
-  TankControllerClass tank;
-  std::cout << "TESTING: " << tank.className() << std::endl;
-}
-
 unittest(loop) {
   state->reset();
   BitCollector led;

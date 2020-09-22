@@ -1,1 +1,1 @@
-arduino-cli compile --fqbn arduino:avr:mega --libraries libraries ./Open_Acidification_pH-stat_arduino/
+arduino-cli compile --fqbn arduino:avr:mega --libraries libraries ./TankController/

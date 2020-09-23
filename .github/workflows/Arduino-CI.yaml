@@ -12,12 +12,14 @@ jobs:
       - uses: actions/checkout@v2
 
       # Get Ruby and run Arduino CI
-      - uses: actions/setup-ruby@v1
+      - uses: ruby/setup-ruby@v1
         with: 
           ruby-version: 2.6
 
+      # Install Arduino IDE and Arduino CI
       - run: |
           bundle install
 
+      # Finally, run the tests
       - run: |
-          bundle exec arduino_ci_remote.rb
+          bundle exec arduino_ci_remote.rb --skip-compilation

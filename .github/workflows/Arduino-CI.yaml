@@ -16,8 +16,8 @@ jobs:
         with: 
           ruby-version: 2.6
 
-      # Run the test
       - run: |
-          gem install bundler
           bundle install
+
+      - run: |
           bundle exec arduino_ci_remote.rb

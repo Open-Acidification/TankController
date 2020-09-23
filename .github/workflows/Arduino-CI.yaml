@@ -16,7 +16,7 @@ jobs:
       - uses: actions/setup-ruby@v1
         with: 
           ruby-version: 2.6
-        run: |
+      - run: |
           gem install bundler
           bundle install
           bundle exec arduino_ci_remote.rb

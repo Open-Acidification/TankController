@@ -38,8 +38,8 @@ If you are the current maintainer of this code:
 - [Using Pull Requests](https://help.github.com/articles/about-pull-requests/)
 - [GitHub Help](https://help.github.com)
 
-[pulls]: https://github.com/Open-Acidification/Open_Acidification_pH-stat_arduino/pulls
-[pr]: https://github.com/Open-Acidification/Open_Acidification_pH-stat_arduino/compare
-[fork]: https://github.com/Open-Acidification/Open_Acidification_pH-stat_arduino/fork
+[pulls]: https://github.com/Open-Acidification/TankController/pulls
+[pr]: https://github.com/Open-Acidification/TankController/compare
+[fork]: https://github.com/Open-Acidification/TankController/fork
 
 CONTRIBUTING.md is a modified version of the [Super-Linter CONTRIBUTING.md](https://github.com/github/super-linter/blob/master/.github/CONTRIBUTING.md).

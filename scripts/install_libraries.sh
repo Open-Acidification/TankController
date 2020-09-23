@@ -24,3 +24,4 @@ mv Arduino-PID-AutoTune-Library/PID_AutoTune_v0 .
 git clone https://github.com/PaulStoffregen/Time.git --branch v1.6
 #git clone https://github.com/Glumgad/TimedAction.git
 git clone https://github.com/sirleech/TrueRandom.git
+git clone https://github.com/Open-Acidification/TankControllerLib.git 

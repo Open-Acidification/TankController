@@ -1,8 +1,7 @@
-# This is the name of the workflow, visible on GitHub UI.
+# This is the name of the workflow, visible on GitHub UI
 name: Arduino CI
 
-# Here we tell GitHub to run the workflow when a commit
-# is pushed or a Pull Request is opened.
+# Run on a Push or a Pull Request
 on: [push, pull_request]
 
 jobs:
@@ -16,6 +15,8 @@ jobs:
       - uses: actions/setup-ruby@v1
         with: 
           ruby-version: 2.6
+
+      # Run the test
       - run: |
           gem install bundler
           bundle install

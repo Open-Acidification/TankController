@@ -1,3 +1,4 @@
+
 # IDE - VSCode
 .vscode/*
 !.vscode/settings.json
@@ -23,3 +24,9 @@ arduino-cli.yaml
 *.elf
 *.eep
 libraries
+
+# Arduino-CI Files
+Gemfile.lock
+.bundle/*
+vendor/*
+*.cpp.bin*

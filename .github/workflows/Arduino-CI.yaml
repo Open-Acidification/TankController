@@ -16,7 +16,6 @@ jobs:
       - uses: actions/setup-ruby@v1
         with: 
           ruby-version: 2.6
-      - name: Arduino CI Test
         run: |
           gem install bundler
           bundle install

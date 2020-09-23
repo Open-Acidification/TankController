@@ -8,7 +8,7 @@ jobs:
   runTest: 
     runs-on: ubuntu-latest
     steps:
-      # Clone the repo using the `checkout` action.
+      # Clone the repo using the `checkout` action
       - uses: actions/checkout@v2
 
       # Get Ruby and run Arduino CI

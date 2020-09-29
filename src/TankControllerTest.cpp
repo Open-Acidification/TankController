@@ -1,5 +1,5 @@
 #include "TankControllerTest.h"
-#ifdef MOCK_PINS_COUNT
+#ifdef ARDUINO_CI
 
 TankControllerTest::TankControllerTest() : TankControllerProd() {
 }

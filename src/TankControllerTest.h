@@ -1,7 +1,7 @@
 #pragma once
 
 #include "TankControllerLib.h"
-#ifdef MOCK_PINS_COUNT
+#ifdef ARDUINO_CI
 
 class TankControllerTest : public TankControllerProd {
 public:

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
-#ifdef MOCK_PINS_COUNT
+#ifdef ARDUINO_CI
 #define TankControllerTest TankController
 #else
 #define TankControllerProd TankController

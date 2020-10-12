@@ -1,6 +1,6 @@
 
 #include "TankControllerLib.h"
-TankController tank;
+TankControllerLib tank;
 
 void setup() {
   tank.setup();

@@ -4,12 +4,12 @@
 
 #include <iostream>
 
-#include "TankControllerTest.h"
+#include "TankControllerLib.h"
 
 #define LED_PIN 13
 
 GodmodeState* state = GODMODE();
-const int logSize = 100;
+const int logSize = 10;
 struct {
   long time;
   bool value;
@@ -41,11 +41,17 @@ unittest(loop) {
   state->reset();
   BitCollector led;
   logIndex = 0;
-  TankControllerClass tank;
+  TankControllerLib tank;
   state->digitalPin[LED_BUILTIN].addObserver("led", &led);
   tank.setup();
   tank.loop();
+  delay(500);
   tank.loop();
+  delay(500);
+  tank.loop();
+  delay(500);
+  tank.loop();
+  delay(500);
   state->digitalPin[LED_BUILTIN].removeObserver("led");
   assertFalse(overflowFlag);
   assertEqual(4, logIndex);
@@ -58,3 +64,5 @@ unittest(loop) {
   assertEqual(1500000, pinLog[3].time);
   assertEqual(LOW, pinLog[3].value);
 }
+
+unittest_main()

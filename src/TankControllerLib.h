@@ -1,22 +1,23 @@
 #pragma once
-
 #include <Arduino.h>
-#ifdef ARDUINO_CI
-#define TankControllerTest TankController
-#else
-#define TankControllerProd TankController
-#endif
 
-class TankControllerProd {
+class UIState;
+class TankControllerLib {
 public:
-  TankControllerProd();
-  ~TankControllerProd();
-  virtual String className() const {
-    return "TankControllerProd";
+  static TankControllerLib* singleton() {
+    if (!instance) {
+      instance = new TankControllerLib;
+    }
+    return instance;
   }
+  TankControllerLib();
+  ~TankControllerLib();
   void setup();
   void loop();
 
 private:
-  int foo;
+  friend class UIState;
+  void changeState(UIState* newState);
+  UIState* _state;
+  static TankControllerLib* instance;
 };

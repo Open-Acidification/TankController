@@ -16,9 +16,6 @@ platforms:
 unittest:
     platforms:
         - mega2560
-    testfiles:
-        reject:
-            - "Common.cpp"
   
 compile:
     platforms:

@@ -35,7 +35,7 @@
 #include "RTClib.h"
 #include "TankControllerLib.h"
 
-TankController tank;
+TankControllerLib* tank = TankControllerLib::instance();
 
 const String DEV_ID = "v172D35C152EDA6C";  // DeviceID from Pushingbox
 

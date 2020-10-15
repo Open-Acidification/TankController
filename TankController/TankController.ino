@@ -28,7 +28,6 @@
 #include <SPI.h>
 #include <TimeLib.h>
 #include <TrueRandom.h>
-#include <Wire.h>
 #include <avr/wdt.h>
 #include <stdio.h>
 

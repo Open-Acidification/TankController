@@ -17,6 +17,6 @@ public:
 
 protected:
   void changeState(UIState* state) {
-    TankControllerLib::singleton()->changeState(state);
+    TankControllerLib::instance()->changeState(state);
   }
 };

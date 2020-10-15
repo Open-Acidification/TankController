@@ -28,14 +28,13 @@
 #include <SPI.h>
 #include <TimeLib.h>
 #include <TrueRandom.h>
-#include <Wire.h>
 #include <avr/wdt.h>
 #include <stdio.h>
 
 #include "RTClib.h"
 #include "TankControllerLib.h"
 
-TankController tank;
+TankControllerLib* tank = TankControllerLib::instance();
 
 const String DEV_ID = "v172D35C152EDA6C";  // DeviceID from Pushingbox
 

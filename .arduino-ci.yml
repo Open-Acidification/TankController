@@ -8,7 +8,6 @@ platforms:
         features:
         defines:
           - __AVR_ATmega2560__
-          # added this line
           - ARDUINO_CI
         warnings:
         flags:
@@ -16,7 +15,11 @@ platforms:
 unittest:
     platforms:
         - mega2560
-  
+    libraries:
+      - "LiquidCrystal"
+
 compile:
     platforms:
       - mega2560
+    libraries:
+      - "LiquidCrystal"

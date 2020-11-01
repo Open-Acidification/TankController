@@ -20,6 +20,11 @@ jobs:
       - run: |
           bundle install
 
+      # Installing libraries needed for this project
+      - name: Install libraries
+        run: |
+          ./scripts/install_libraries.sh  
+
       # Finally, run the tests
       - run: |
-          bundle exec arduino_ci_remote.rb --skip-compilation
+          bundle exec arduino_ci_remote.rb

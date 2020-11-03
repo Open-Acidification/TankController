@@ -1,37 +1,36 @@
-## Welcome to GitHub Pages
+# Tank Controller
 
-You can use the [editor on GitHub](https://github.com/Open-Acidification/TankControllerLib/edit/master/docs/index.md) to maintain and preview the content for your website in Markdown files.
+The library for Tank Controller. 
+As more features get added to the library, they should only be added when testing for that feature is included.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## Topics for documentation
 
-### Markdown
+### Things to document
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+* Discuss debug strategy and logging via serial
 
-```markdown
-Syntax highlighted code block
+* Document items in the EEPROM
+  * pH
+    * Precision x.xxx (three decimal places)
+    * Common sea water 8.2
+    * Experiments target 8.1 to 7.5
+    * probe accuracy - can be to a few thousand (more likely to hundreth)
+    * Thousand is helpful for setting and managing tank
+    * **Probably could have a section on science of pH**
+    * Requires calibration (1 and 2 point calibration)
+      * Precision of xx.xxx
+      * Sets the compensation temperature (required temperature to accurately measure)
+      * Reading must stabilize (TODO make notification when stable)
+      * both temperature and pH probe are used in calibration
+      * **Needs detailed calibration instructions** (both manual steps and device code process)
+    * <http://www.4oakton.com/TechTips/TT_ph.pdf>
+  * PID
+    * Calculates the length of bubbling
+    * Must be longer than a tenth of a second to open the device for bubbling
+    * Magic to get desired pH
+  * Temperature (Celcius)
+    * 0.03 accuracy
+    * Requires calibration
+    * Experiments target 10 to 15
+    * Both chillers and heaters
 
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/Open-Acidification/TankControllerLib/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.

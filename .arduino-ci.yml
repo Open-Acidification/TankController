@@ -17,9 +17,12 @@ unittest:
         - mega2560
     libraries:
       - "LiquidCrystal"
+      - "RTClib"
 
 compile:
     platforms:
       - mega2560
     libraries:
       - "LiquidCrystal"
+      - "RTClib"
+

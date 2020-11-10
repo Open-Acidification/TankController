@@ -33,4 +33,43 @@ As more features get added to the library, they should only be added when testin
     * Requires calibration
     * Experiments target 10 to 15
     * Both chillers and heaters
+  * Tank ID
+    * Tank id used in logging
+    * Basically a label for tank
+    * Key for Google data sheets
+    * sort/filter
+  * Google sheet interval
+    * Period of upload
+    * Still needed (alternate reporting tool)
+  * Observer time
+  * Seed device addresses
+    * Mac, IP Address
+  * Reset screen
+    * Allows for resetting for failed pixels
+  * See Tank ID and Log file name
+    * May need to review log process
+  * See PID Constants
+  * Tuning
+    * Remove autotune
+    * Manual tune is only working process
+  * Sine wave
+    * Set baseline, amplitude, and interval
+    * Interval minutes per cycle
+  * Temperature calibration
+    * Enter the temperature offset
+  * Set time
+  * Enable/Disable PID
+  * Set chill or heat
+    * Possibly call "Temperature control"
+* Main loop
+  * Sensor must have delays between calls (~1 second)
+  * Temperature set for 30 seconds at a time
+  * pH bubbler uses a 10 second at a time
+  * Show set points and current values
+  * Ethernet
+    * Google
+    * Time
+    * Ethernet release
+    * HTTP API
+
 

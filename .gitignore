@@ -26,3 +26,6 @@ Gemfile.lock
 .bundle/*
 vendor/*
 *.cpp.bin*
+
+# Doxygen Generated Files
+public

@@ -71,5 +71,3 @@ As more features get added to the library, they should only be added when testin
     * Time
     * Ethernet release
     * HTTP API
-
-

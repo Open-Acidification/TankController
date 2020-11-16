@@ -1,9 +1,3 @@
-/*
- * MainMenu.cpp
- *
- * Branch to other states to handle various menu options
- */
-
 // #include "CalibrationManagement.h"
 // #include "ChangeGoogleSheetInterval.h"
 // #include "ChangeTankID.h"
@@ -21,6 +15,9 @@
 // #include "TemperatureCalibration.h"
 #include "MainMenu.h"
 
+/**
+ * Branch to other states to handle various menu options
+ */
 void MainMenu::handleKey(char key) {
   switch (key) {
     case 'A':  // Change pH set_point

@@ -1,19 +1,30 @@
-// This class is for the Serial Commands used in Tank Controller.
-// Serial here mostly deals with writing or printing data over through the serial port.
-// Serial.print and Serial.write can be called in different ways to print data.
-// Also print_PID, print_DataTime, print_mac are used to print the PID information, current date information, and the
-// mac address.
-
+/**
+ *  This class is for the Serial Commands used in Tank Controller.
+ *  Serial here mostly deals with writing or printing data over through the serial port.
+ *  Serial.print and Serial.write can be called in different ways to print data.
+ *  Also print_PID, print_DataTime, print_mac are used to print the PID information,
+ *  current date information, and the mac address.
+ */
 #include <Arduino.h>
 #include <RTClib.h>
 
 class Serial_TC {
 private:
+  void print_two_digits(int value) {
+    if (value < 10) {
+      Serial.print('0');
+    }
+    Serial.print(value, DEC);
+  }
+
 public:
   Serial_TC() {
     Serial.begin(9600);
   }
 
+  /**
+   * Print the PID.
+   */
   void print_PID(double Kp, double Ki, double Kd, double output) {
     Serial.print(F("Kp:"));
     Serial.print(Kp);
@@ -25,12 +36,6 @@ public:
     Serial.println(output / 1000, 1);
   }
 
-  void print_two_digits(int value) {
-    if (value < 10) {
-      Serial.print('0');
-    }
-    Serial.print(value, DEC);
-  }
   void print_DateTime(DateTime dateTime) {
     Serial.print(dateTime.year(), DEC);
     Serial.print('-');

@@ -33,4 +33,4 @@ class Chiller_TC : public TempControl_TC {
   public:
     void chill();
 
-}
+};

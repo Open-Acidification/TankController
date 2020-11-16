@@ -1,6 +1,6 @@
 #include "TankControllerLib.h"
 
-#ifdef ARDUINO_CI
+#ifdef MOCK_PINS_COUNT
 #include <cassert>
 #else
 #define assert(p) (void)0

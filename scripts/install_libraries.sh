@@ -2,19 +2,25 @@
 
 # set up directories
 bundle exec ensure_arduino_installation.rb
+cd $(bundle exec arduino_library_location.rb)
 
-# get custom version of LiquidCrystal
-git clone https://github.com/Arduino-CI/LiquidCrystal.git
-mv LiquidCrystal $(bundle exec arduino_library_location.rb)
+# add missing libraries
+if [ ! -d "./Adafruit BusIO" ] ; then
+  git clone --depth 1 https://github.com/Arduino-CI/Adafruit_BusIO.git --branch "master" --single-branch "./Adafruit BusIO"
+fi
 
-# get custom version of RTClib
-git clone https://github.com/Arduino-CI/RTClib.git
-mv RTClib $(bundle exec arduino_library_location.rb)
+if [ ! -d "./Adafruit_MAX31865" ] ; then
+  git clone --depth 1 https://github.com/Arduino-CI/Adafruit_MAX31865.git --branch "master" --single-branch
+fi
 
-# get custom version of Adafruit_BusIO
-git clone https://github.com/Arduino-CI/Adafruit_BusIO.git
-mv Adafruit_BusIO $(bundle exec arduino_library_location.rb)
+if [ ! -d "./Ethernet" ] ; then
+  git clone --depth 1 https://github.com/Arduino-CI/Ethernet.git --branch "master" --single-branch
+fi
 
-# get custom version of Adafruit_MAX31865
-git clone https://github.com/Arduino-CI/Adafruit_MAX31865.git
-mv Adafruit_MAX31865 $(bundle exec arduino_library_location.rb)
+if [ ! -d "./LiquidCrystal" ] ; then
+  git clone --depth 1 https://github.com/Arduino-CI/LiquidCrystal.git --branch "master" --single-branch
+fi
+
+if [ ! -d "./RTClib" ] ; then
+  git clone --depth 1 https://github.com/Arduino-CI/RTClib.git --branch "master" --single-branch
+fi

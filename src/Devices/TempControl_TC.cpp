@@ -8,6 +8,7 @@ void TempControl_TC::updateCtrl() {
 void Chiller_TC::chill() {
   if (currentTime - previousTime >= CHILLER_INTERVAL) {
     previousTime = currentTime;
+    // temp and temp_set may need to be passed in since they're dependent on GetTemperature
     if (temp >= temp_set + 0.05) {
       Serial.println(F("chiller on"));
       digitalWrite(CHILLER, LOW);

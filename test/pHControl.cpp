@@ -5,13 +5,13 @@
 #include <iostream>
 
 #include "TankControllerLib.h"
-#include "Chiller_TC.h"
+#include "pHControl_TC.h"
 
-unittest(chillin) {
+unittest(pHatStacks) {
     GodemodeState* state = GODMODE();
 
 
-    pHControl_TC test;
+    pHControl_TC pHTest;
 
     
 }

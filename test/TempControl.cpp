@@ -5,13 +5,13 @@
 #include <iostream>
 
 #include "TankControllerLib.h"
-#include "Chiller_TC.h"
+#include "TempControl_TC.h"
 
 unittest(chillin) {
     GodemodeState* state = GODMODE();
 
 
-    TempControl_TC test;
+    TempControl_TC tempTest;
 
     
 }

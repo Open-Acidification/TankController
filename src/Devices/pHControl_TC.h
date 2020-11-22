@@ -1,3 +1,4 @@
+#include <Arduino.h>
 
 class pHControl_TC {
     private:

@@ -1,3 +1,4 @@
+#include <Arduino.h>
 
 // class temp control -temp setpoint +get/set temp target +virtual updateCtrl(),  subclass heater (respective code) and
 // chiller (respective code)

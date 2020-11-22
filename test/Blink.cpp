@@ -38,10 +38,10 @@ public:
 };
 
 unittest(loop) {
-  state->reset();
   BitCollector led;
   logIndex = 0;
   TankControllerLib* tank = TankControllerLib::instance();
+  state->resetClock();
   state->digitalPin[LED_BUILTIN].addObserver("led", &led);
   tank->setup();
   tank->loop();

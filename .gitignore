@@ -13,6 +13,8 @@ Thumbs.db
 *.o
 *.out
 *.log
+*.bin.dSYM
+*.bin
 
 # Arduino Files
 arduino-cli.yaml

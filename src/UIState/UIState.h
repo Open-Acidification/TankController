@@ -1,4 +1,4 @@
-/*
+/**
  * Abstract superclass for the TankController UI states
  * Concrete subclass for the initial (start) state
  */

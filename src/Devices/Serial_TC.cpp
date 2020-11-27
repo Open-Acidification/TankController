@@ -25,6 +25,14 @@ Serial_TC::Serial_TC() {
   Serial.begin(9600);
 }
 
+void Serial_TC::print(char aChar) {
+  Serial.print(aChar);
+}
+
+void Serial_TC::print(uint16_t anInt) {
+  Serial.print(anInt);
+}
+
 void Serial_TC::print(String aString) {
   Serial.println(aString);
 }
@@ -47,21 +55,6 @@ void Serial_TC::print(String aString, int anInt, int format) {
 void Serial_TC::print(String aString, String aString2) {
   Serial.print(aString);
   Serial.println(aString2);
-}
-
-void Serial_TC::print_DateTime(DateTime dateTime) {
-  Serial.print(dateTime.year(), DEC);
-  Serial.print('-');
-  print_two_digits(dateTime.month());
-  Serial.print('-');
-  print_two_digits(dateTime.day());
-  Serial.print(' ');
-  print_two_digits(dateTime.hour());
-  Serial.print(':');
-  print_two_digits(dateTime.minute());
-  Serial.print(':');
-  print_two_digits(dateTime.second());
-  Serial.println();
 }
 
 void Serial_TC::print_mac(byte mac[]) {
@@ -89,7 +82,7 @@ void Serial_TC::print_PID(double Kp, double Ki, double Kd, double output) {
 }
 
 /**
- * private function to add a leading zero digit
+ * function to add a leading zero digit
  */
 void Serial_TC::print_two_digits(int value) {
   if (value < 10) {

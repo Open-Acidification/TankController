@@ -1,4 +1,5 @@
 #include "Devices/DateTime_TC.h"
+
 #include "Devices/Serial_TC.h"
 
 //  class methods
@@ -20,7 +21,7 @@ DateTime_TC::DateTime_TC(uint16_t year, uint8_t month, uint8_t day, uint8_t hour
  * "2020-11-26T18:55:15"
  */
 void DateTime_TC::printToSerial() {
- Serial_TC *serial = Serial_TC::instance();
+  Serial_TC* serial = Serial_TC::instance();
   serial->print(year());
   serial->print('-');
   serial->print_two_digits(month());

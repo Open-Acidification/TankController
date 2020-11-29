@@ -1,7 +1,7 @@
 #pragma once
 #include <Arduino.h>
 #ifdef MOCK_PINS_COUNT
-#include <PCF8523_CI.h>
+#include <RTClib_CI.h>
 #else
 #include <RTClib.h>
 #endif

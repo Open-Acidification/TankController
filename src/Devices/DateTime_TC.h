@@ -3,7 +3,7 @@
 #ifdef MOCK_PINS_COUNT
 #include <PCF8523_CI.h>
 #else
-#include <DateTime.h>
+#include <RTClib.h>
 #endif
 
 class DateTime_TC : public DateTime {

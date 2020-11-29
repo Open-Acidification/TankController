@@ -18,7 +18,7 @@ DateTime_TC::DateTime_TC(uint16_t year, uint8_t month, uint8_t day, uint8_t hour
 
 /**
  * output dateTime to serialPort(DigitalClockDisplay.ino)
- * "2020-11-26T18:55:15"
+ * "2020-11-26 18:55:15"
  */
 void DateTime_TC::printToSerial() {
   Serial_TC* serial = Serial_TC::instance();

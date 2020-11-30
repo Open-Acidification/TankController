@@ -10,17 +10,13 @@ unittest(SerialTest) {
 
   Serial_TC* mySerial = Serial_TC::instance();
 
-/*
-  void print(char aChar);
-  void print(uint16_t anInt);
-*/
   state->serialPort[0].dataOut = "";  // the history of data written
   mySerial->print('a');
   assertEqual("", state->serialPort[0].dataIn);
   assertEqual("a", state->serialPort[0].dataOut);
 
   state->serialPort[0].dataOut = "";  // the history of data written
-  mySerial->print((uint16_t) 1234);
+  mySerial->print((uint16_t)1234);
   assertEqual("", state->serialPort[0].dataIn);
   assertEqual("1234", state->serialPort[0].dataOut);
 

@@ -27,4 +27,4 @@ jobs:
 
       # Finally, run the tests
       - run: |
-          bundle exec arduino_ci_remote.rb
+          bundle exec arduino_ci.rb

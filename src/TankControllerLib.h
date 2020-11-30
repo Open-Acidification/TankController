@@ -2,6 +2,7 @@
 #include <Arduino.h>
 
 #include "Devices/DateTime_TC.h"
+#include "Devices/EthernetServer_TC.h"
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/Serial_TC.h"
 

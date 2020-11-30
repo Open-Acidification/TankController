@@ -8,7 +8,6 @@
 #pragma once
 
 #include <Arduino.h>
-#include <RTClib.h>
 
 class Serial_TC {
 public:
@@ -16,14 +15,19 @@ public:
   static Serial_TC* instance();
 
   //  instance methods
+  void print(char aChar);
+  void print(uint16_t anInt);
   void print(String aString);
   void print(String aString, char aChar);
   void print(String aString, int anInt);
   void print(String aString, int anInt, int format);
   void print(String aString, String aString2);
-  void print_DateTime(DateTime dateTime);
+  void println() {
+    Serial.println();
+  }
   void print_mac(byte mac[]);
   void print_PID(double Kp, double Ki, double Kd, double output);
+  void print_two_digits(int value);
   void write(byte aByte);
   void write(char arr[], int anInt);
 
@@ -33,5 +37,4 @@ private:
 
   //  instance methods
   Serial_TC();
-  void print_two_digits(int value);
 };

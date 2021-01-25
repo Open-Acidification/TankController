@@ -1,5 +1,5 @@
 #include <Arduino.h>
-
+#if 0
 class pHControl_TC {
     private:
         const int CO2_REG_PIN = 49;
@@ -14,3 +14,4 @@ class pHControl_TC {
         void driveOutput();
 
 };
+#endif

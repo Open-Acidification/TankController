@@ -42,3 +42,4 @@ private:
 public:
   void updateControl(double currentTemperature);
 };
+

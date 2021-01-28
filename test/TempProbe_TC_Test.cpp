@@ -13,7 +13,7 @@ unittest(TempProbe_Test) {
 
   // Test getTemperature()
   float testTemp = tempProbe->getTemperature();
-  assertEqual(-242, (int)testTemp);
+  assertEqual(988, (int)testTemp);
 
   // Test readFault()
   uint8_t testFault = tempProbe->readFault();

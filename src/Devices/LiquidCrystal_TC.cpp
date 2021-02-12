@@ -76,3 +76,15 @@ void LiquidCrystal_TC::splashScreen() {
   write(uint8_t(7));
   print(F("TANK CONTROL"));
 }
+
+/**
+ * Prints an input string to the desired line of the LCD screen
+ * Even numbers go on the bottom line, odd ones go on the top line
+ */
+void LiquidCrystal_TC::writeLine(char* text, int line) {
+  line = line % 2;
+  setCursor(0, line);
+  print("                ");
+  setCursor(0, line);
+  print(text);
+}

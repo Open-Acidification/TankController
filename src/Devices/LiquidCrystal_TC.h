@@ -9,8 +9,8 @@
 
 class LiquidCrystal_TC : public LiquidCrystal {
 public:
-  // class methods
   static LiquidCrystal_TC* instance();
+  void writeLine(char* text, int line);
 
 private:
   // class variables

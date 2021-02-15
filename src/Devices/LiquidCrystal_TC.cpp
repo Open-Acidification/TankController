@@ -28,7 +28,7 @@ LiquidCrystal_TC::LiquidCrystal_TC() : LiquidCrystal(RS, EN, D4, D5, D6, D7) {
 
 /**
  * Splash screen includes the following logo (actually, this
- * one is double width to get it more nearly porportional):
+ * one is double width to get it more nearly proportional):
               XXXXXXXXXXXX
           XXXXXXXXXXXXXXXXXXXX
         XXXXXXXXXXXX  XXXXXXXXXX

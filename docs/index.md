@@ -1,6 +1,6 @@
 # Tank Controller
 
-The library for Tank Controller. 
+The library for Tank Controller.
 As more features get added to the library, they should only be added when testing for that feature is included.
 
 ## Topics for documentation
@@ -14,7 +14,7 @@ As more features get added to the library, they should only be added when testin
     * Precision x.xxx (three decimal places)
     * Common sea water 8.2
     * Experiments target 8.1 to 7.5
-    * probe accuracy - can be to a few thousand (more likely to hundreth)
+    * probe accuracy - can be to a few thousand (more likely to hundredth)
     * Thousand is helpful for setting and managing tank
     * **Probably could have a section on science of pH**
     * Requires calibration (1 and 2 point calibration)
@@ -28,7 +28,7 @@ As more features get added to the library, they should only be added when testin
     * Calculates the length of bubbling
     * Must be longer than a tenth of a second to open the device for bubbling
     * Magic to get desired pH
-  * Temperature (Celcius)
+  * Temperature (Celsius)
     * 0.03 accuracy
     * Requires calibration
     * Experiments target 10 to 15

@@ -5,14 +5,14 @@
  * associated library has a simple API as described below.
  *
  * Device I/O:
- * This device has 5 pins: Vin (3V or 5V powersupply, the same as the
+ * This device has 5 pins: Vin (3V or 5V power supply, the same as the
  * microcontroler), GND (Ground), CLK (Clock), SDO (MOSI: Master Out Slave In),
  * SDI (MISO: Master In Slave Out), and CS (Slave Select).
  *
  * Connection with the thermocouple:
  * The Adafruit MAX31865 can connect to three different types of thermocouples,
  * two wire, three wire, or four wire. You'll need to look at the sensor's
- * documentation to find the wiring requirments. The board has four pins used
+ * documentation to find the wiring requirements. The board has four pins used
  * for connection with the thermocouple, they are labeled on the board: RTD+
  * (Resistance Positive), RTD- (Resistance Negative), F+ (Fault Plus), and F-
  * (Fault Negative).
@@ -26,7 +26,7 @@
  *
  * Constructor:
  * To use the constructor you will have to set which pins you want to use, the
- * functions are labled below. Adafruit_MAX31865 thermo = Adafruit_MAX31865(CS
+ * functions are labeled below. Adafruit_MAX31865 thermo = Adafruit_MAX31865(CS
  * (Slave Select), DI (MOSI), DO (MISO), CLK (Clock));
  *
  * Begin:
@@ -36,7 +36,7 @@
  * bool successful = thermo.begin(max31865_numwires_t x = MAX31865_2WIRE);
  *
  * Read Resistance:
- * Returns the resitance of the device.
+ * Returns the resistance of the device.
  * uint16_t rtd = thermo.readRTD();
  *
  * Get Temperature:
@@ -48,7 +48,7 @@
  *
  * Read Fault:
  * Returns a fault number in hex. You can compare with returned fault with the
- * defualt fault values given below uint8_t fault = thermo.readFault();
+ * default fault values given below uint8_t fault = thermo.readFault();
  *
  * Faults:
  * MAX31865_FAULT_HIGHTHRESH (RTD High Threshold)
@@ -60,7 +60,7 @@
  *
  * Clear Fault:
  * Once Fault is read clear fault so that it returns to its default state of 0
- * wich is no fault. thermo.clearFault();
+ * which is no fault. thermo.clearFault();
  *
  * How to use the Device:
  * To use the device you must call the constructor, call begin, and then you can
@@ -73,7 +73,7 @@
  * Since this class is build for Tank Controller class, it will automatically
  * set the device to a three wire thermocouple, set the pins that the tank
  * controller has delegated for it, and it has values for RTDnominal, and the
- * refResistore. This class is pretty straightforward and you can the functions
+ * refResistor. This class is pretty straightforward and you can the functions
  * and how to call them below.
  */
 

@@ -5,26 +5,14 @@ name: Arduino CI
 on: [push, pull_request]
 
 jobs:
-  runTest: 
+  arduino_ci: 
     runs-on: ubuntu-latest
     steps:
       # Clone the repo using the `checkout` action
       - uses: actions/checkout@v2
-
-      # Get Ruby and run Arduino CI
-      - uses: ruby/setup-ruby@v1
-        with: 
-          ruby-version: 2.6
-
-      # Install Arduino IDE and Arduino CI
-      - run: |
-          bundle install
-
-      # Installing libraries needed for this project
-      - name: Install libraries
-        run: |
-          ./scripts/install_libraries.sh  
-
-      # Finally, run the tests
-      - run: |
-          bundle exec arduino_ci.rb
+      # Use prebuild Arduino-CI
+      - uses: Arduino-CI/action@stable-1.x
+        env:
+          EXPECT_EXAMPLES: true
+          EXPECT_UNITTESTS: true
+          CUSTOM_INIT_SCRIPT: scripts/install_libraries.sh

@@ -30,3 +30,7 @@ fi
 if [ ! -d "./RTClib" ] ; then
   git clone $SHALLOW_MASTER $GITHUB/RTClib.git 
 fi
+
+if [ ! -d "./Keypad" ] ; then
+  git clone $SHALLOW_MASTER $GITHUB/Keypad.git 
+fi

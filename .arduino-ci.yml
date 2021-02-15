@@ -8,6 +8,7 @@ unittest:
       - "Ethernet"
       - "LiquidCrystal"
       - "RTClib"
+      - "Keypad"
 
 compile:
     platforms:
@@ -18,3 +19,4 @@ compile:
       - "Ethernet"
       - "LiquidCrystal"
       - "RTClib"
+      - "Keypad"

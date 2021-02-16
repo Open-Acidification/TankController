@@ -7,7 +7,7 @@ void TemperatureControl::turnOn(bool newState) {
 
 void Chiller::updateControl(double currentTemperature) {
   unsigned long currentMillis = millis();
-  // pause 30 seconds between swtiching chiller on and off to prevent damage to chiller
+  // pause 30 seconds between switching chiller on and off to prevent damage to chiller
   if (currentMillis - previousMillis >= TIME_INTERVAL) {
     previousMillis = currentMillis;
     // if the observed temperature is above the set point turn on the chiller
@@ -24,12 +24,12 @@ void Chiller::updateControl(double currentTemperature) {
 }
 
 void Heater::updateControl(double currentTemperature) {
-  // if the observed temperature is below the temperature setpoint turn on the heater
+  // if the observed temperature is below the temperature set-point turn on the heater
   if (currentTemperature <= targetTemperature - DELTA) {
     Serial.println(F("heater on"));
     turnOn(true);
   }
-  // if the observed temperature is above the temperature setpoint turn off the heater
+  // if the observed temperature is above the temperature set-point turn off the heater
   else if (currentTemperature >= targetTemperature + DELTA) {
     Serial.println(F("heater off"));
     turnOn(false);

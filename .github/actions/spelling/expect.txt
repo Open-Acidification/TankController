@@ -10,6 +10,7 @@ Clib
 config
 cout
 cpp
+DHCP
 Dnominal
 Doxyfile
 Doxygen
@@ -30,6 +31,7 @@ iostream
 itoa
 jgfoster
 Kd
+Keymap
 Kp
 LOWTHRESH
 mega

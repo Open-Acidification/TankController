@@ -13,7 +13,7 @@ unittest(Main) {
   assertNotNull(singleton2);
   assertEqual(singleton1, singleton2);
 
-  // Test that the default Ip was used as a fall back (Assuming that there is no DHCP server to talk to)
+  // Test that the default IP was used as a fall back (Assuming that there is no DHCP server to talk to)
   IPAddress defaultIP(192, 168, 1, 2);
   assertTrue(singleton1->getIP() == defaultIP);
 

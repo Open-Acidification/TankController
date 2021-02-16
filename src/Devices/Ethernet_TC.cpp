@@ -2,7 +2,7 @@
 
 Ethernet_TC *Ethernet_TC::_instance = nullptr;
 
-// Establishes the Ethenet connection and sets class variables
+// Establishes the Ethernet connection and sets class variables
 Ethernet_TC::Ethernet_TC() {
   if (Ethernet.begin(mac) == 0) {
     Serial.println(F("Failed to configure Ethernet using DHCP"));

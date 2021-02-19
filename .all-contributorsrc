@@ -14,6 +14,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "jgfoster",
+      "name": "James Foster",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1577872?v=4",
+      "profile": "http://programminggems.wordpress.com/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "projectName": "TankControllerLib",

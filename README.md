@@ -17,6 +17,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tr>
     <td align="center"><a href="https://github.com/prestoncarman"><img src="https://avatars.githubusercontent.com/u/3517157?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Preston Carman</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankControllerLib/commits?author=prestoncarman" title="Code">💻</a></td>
+    <td align="center"><a href="http://programminggems.wordpress.com/"><img src="https://avatars.githubusercontent.com/u/1577872?v=4?s=100" width="100px;" alt=""/><br /><sub><b>James Foster</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankControllerLib/commits?author=jgfoster" title="Code">💻</a></td>
   </tr>
 </table>
 

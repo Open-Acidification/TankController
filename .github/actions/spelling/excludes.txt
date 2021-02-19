@@ -1,5 +1,5 @@
 ^\.github/linters/
-^\.github/action/spell-check/
+^\.github/actions/spelling/
 ^\.github/workflows/
 ^TEMPLATES/\.\S*
 Gemfile.lock
@@ -9,4 +9,3 @@ Gemfile.lock
 Doxyfile
 LICENSE
 .all-contributorsrc
-excludes.txt

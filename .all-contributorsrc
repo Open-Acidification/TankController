@@ -23,6 +23,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Kavikick",
+      "name": "Kavikick",
+      "avatar_url": "https://avatars.githubusercontent.com/u/50475639?v=4",
+      "profile": "https://github.com/Kavikick",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "projectName": "TankControllerLib",

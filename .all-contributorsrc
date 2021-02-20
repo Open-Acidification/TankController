@@ -1,0 +1,26 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "KirtOnthank",
+      "name": "Kirt Onthank",
+      "avatar_url": "https://avatars.githubusercontent.com/u/48142545?v=4",
+      "profile": "https://gab.wallawalla.edu/~kirt.onthank/index.html",
+      "contributions": [
+        "bug",
+        "code",
+        "ideas"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "TankController",
+  "projectOwner": "Open-Acidification",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}

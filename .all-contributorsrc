@@ -7,12 +7,29 @@
   "contributorsSortAlphabetically": false,
   "contributors": [
     {
+      "login": "KirtOnthank",
+      "name": "Kirt Onthank",
+      "avatar_url": "https://avatars.githubusercontent.com/u/48142545?v=4",
+      "profile": "https://gab.wallawalla.edu/~kirt.onthank/index.html",
+      "contributions": [
+        "business",
+        "code",
+        "design",
+        "ideas",
+        "mentoring"
+      ]
+    },
+    {
       "login": "prestoncarman",
       "name": "Preston Carman",
       "avatar_url": "https://avatars.githubusercontent.com/u/3517157?v=4",
       "profile": "https://github.com/prestoncarman",
       "contributions": [
-        "code"
+        "bug",
+        "code",
+        "ideas",
+        "mentoring",
+        "review"
       ]
     },
     {
@@ -21,7 +38,11 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/1577872?v=4",
       "profile": "http://programminggems.wordpress.com/",
       "contributions": [
-        "code"
+        "code",
+        "ideas",
+        "mentoring",
+        "projectManagement",
+        "review"
       ]
     },
     {

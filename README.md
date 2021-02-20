@@ -21,6 +21,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/Kavikick"><img src="https://avatars.githubusercontent.com/u/50475639?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Kavikick</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankControllerLib/commits?author=Kavikick" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/atg7000"><img src="https://avatars.githubusercontent.com/u/38963069?v=4?s=100" width="100px;" alt=""/><br /><sub><b>atg7000</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankControllerLib/commits?author=atg7000" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/eucalvo"><img src="https://avatars.githubusercontent.com/u/71796520?v=4?s=100" width="100px;" alt=""/><br /><sub><b>eucalvo</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankControllerLib/commits?author=eucalvo" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/lsaca05"><img src="https://avatars.githubusercontent.com/u/46550669?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Lucas Saca</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankControllerLib/commits?author=lsaca05" title="Code">💻</a></td>
   </tr>
 </table>
 

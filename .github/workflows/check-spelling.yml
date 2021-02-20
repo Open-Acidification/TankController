@@ -1,46 +1,17 @@
----
-####################
-## Check spelling ##
-####################
-
-#
-# Documentation:
-# https://help.github.com/en/articles/workflow-syntax-for-github-actions
-#
-
+# This is the name of the workflow, visible on GitHub UI
 name: Spell checking
-#############################
-# Start the job on all push #
-#############################
-on:
-  push:
-    branches-ignore:
-      - 'main'
 
-###############
-# Set the Job #
-###############
+# Run on a Push or a Pull Request
+on: [push, pull_request]
+
 jobs:
-  build:
-    # Name the Job
-    name: Spell checking
-    # Set the agent to run on
+  spelling:
     runs-on: ubuntu-latest
-    ##################
-    # Load all steps #
-    ##################
     steps:
-      ##########################
-      # Checkout the code base #
-      ##########################
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      #############################
-      # Run check spelling action #
-      #############################
-      - name: Check spelling
-        uses: check-spelling/check-spelling@0.0.16-alpha
+      # Clone the repo using the `checkout` action
+      - uses: actions/checkout@v2
+      # Run check spelling action
+      - uses: check-spelling/check-spelling@0.0.16-alpha
         with:
           bucket: .github/actions
           project: spelling

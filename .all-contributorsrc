@@ -32,6 +32,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "eucalvo",
+      "name": "eucalvo",
+      "avatar_url": "https://avatars.githubusercontent.com/u/71796520?v=4",
+      "profile": "https://github.com/eucalvo",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "projectName": "TankControllerLib",

@@ -22,6 +22,7 @@ Gemfile
 github
 godmode
 Google
+hh
 HIGHTHRESH
 homepage
 http
@@ -56,6 +57,7 @@ REFIN
 REFINHIGH
 REFINLOW
 rpc
+rtc
 rtd
 RTDIN
 RTDINLOW

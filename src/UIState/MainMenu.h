@@ -9,11 +9,14 @@
 #include "../TankControllerLib.h"
 #include "UIState.h"
 
-class MainMenu : UIState {
+class MainMenu : public UIState {
 public:
   MainMenu() {
   }
   ~MainMenu() {
   }
   virtual void handleKey(char key);
+  const char *prompt() {
+    return "Main Menu";
+  };
 };

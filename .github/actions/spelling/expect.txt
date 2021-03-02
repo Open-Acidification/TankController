@@ -61,6 +61,7 @@ RTDIN
 RTDINLOW
 sizeof
 strlen
+substr
 testfile
 TODO
 uint

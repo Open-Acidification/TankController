@@ -14,6 +14,7 @@ public:
   virtual ~UIState() {
   }
   virtual void handleKey(char key) = 0;
+  virtual const char* prompt() = 0;
 
 protected:
   void changeState(UIState* state) {

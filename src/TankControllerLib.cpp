@@ -1,7 +1,8 @@
 #include "TankControllerLib.h"
 
 #ifdef MOCK_PINS_COUNT
-#include <cassert>
+#include <cassert>   // to support testing
+#include <iostream>  // to support occasional debugging output
 #else
 #define assert(p) (void)0
 #endif
@@ -31,7 +32,7 @@ TankControllerLib* TankControllerLib::instance() {
  */
 TankControllerLib::TankControllerLib() {
   assert(!_instance);
-  state = nullptr;
+  state = new MainMenu;
   lcd = LiquidCrystal_TC::instance();
   log = Serial_TC::instance();
   log->print(F("TankControllerLib::TankControllerLib() - version "), TANK_CONTROLLER_VERSION);
@@ -73,11 +74,13 @@ void TankControllerLib::changeState(UIState* newState) {
  * It is called repeatedly while the board is on.
  */
 void TankControllerLib::loop() {
-  blink();            //  blink the on-board LED to show that we are running
-  char key = NO_KEY;  // custom_keypad.getKey();
+  blink();  //  blink the on-board LED to show that we are running
+  char key = Keypad_TC::instance()->getKey();
   if (key != NO_KEY) {
     log->print(F("Keypad input: "), key);
     state->handleKey(key);
+    // print the current prompt on the first line of the display
+    LiquidCrystal_TC::instance()->writeLine(state->prompt(), 0);
   }
 }
 

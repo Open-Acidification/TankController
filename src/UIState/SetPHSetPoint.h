@@ -6,8 +6,10 @@
 #pragma once
 #include "UIState.h"
 
-class SetPHSetPoint : UIState {
+class SetPHSetPoint : public UIState {
 public:
-  virtual void handleKey(char key) {
-  }
+  void handleKey(char key);
+  const char *prompt() {
+    return "Set pH Set Point";
+  };
 };

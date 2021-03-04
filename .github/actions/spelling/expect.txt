@@ -62,6 +62,8 @@ rtd
 RTDIN
 RTDINLOW
 sizeof
+sprintf
+strcpy
 strlen
 substr
 testfile

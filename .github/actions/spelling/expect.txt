@@ -15,6 +15,7 @@ Dnominal
 Doxyfile
 Doxygen
 eep
+eeprom
 emoji
 endif
 endl

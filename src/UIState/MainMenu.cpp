@@ -25,7 +25,7 @@ void MainMenu::handleKey(char key) {
       this->changeState((UIState*)new SetPHSetPoint);
       break;
     case 'B':  // Change Temperature set_point
-      // this->changeState((UIState*) new SetTempSetPoint);
+      this->changeState((UIState*)new SetTempSetPoint);
       break;
     case 'C':  // pH Calibration
       // this->changeState((UIState*) new PHCalibration);

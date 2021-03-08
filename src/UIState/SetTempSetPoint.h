@@ -4,12 +4,15 @@
  * Set the target Temperature
  */
 #pragma once
-#include "UIState.h"
+#include "NumberCollectorState.h"
 
-class SetTempSetPoint : public UIState {
+class SetTempSetPoint : public NumCollectorState {
 public:
-  void handleKey(char key);
   const char *prompt() {
-    return "New Temp set";
+    return "Set Temperature ";
   };
+  int getExpectedDigits() {
+    return 4;
+  };
+  void setValue(double value);
 };

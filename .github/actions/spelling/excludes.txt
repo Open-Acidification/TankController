@@ -2,6 +2,7 @@
 ^\.github/actions/spelling/
 ^\.github/workflows/
 ^TEMPLATES/\.\S*
+^GUI/pybind11/
 Gemfile.lock
 \.pdf$
 \.png$
@@ -9,3 +10,5 @@ Gemfile.lock
 Doxyfile
 LICENSE
 .all-contributorsrc
+.gitignore
+Makefile

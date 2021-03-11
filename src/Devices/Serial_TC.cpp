@@ -4,13 +4,13 @@
 /**
  * static variable for singleton
  */
-Serial_TC* Serial_TC::_instance = nullptr;
+Serial_TC *Serial_TC::_instance = nullptr;
 
 //  class methods
 /**
  * static member function to return singleton
  */
-Serial_TC* Serial_TC::instance() {
+Serial_TC *Serial_TC::instance() {
   if (!_instance) {
     _instance = new Serial_TC();
   }
@@ -33,8 +33,16 @@ void Serial_TC::print(uint16_t anInt) {
   Serial.print(anInt);
 }
 
-void Serial_TC::print(String aString) {
-  Serial.println(aString);
+void Serial_TC::print(double aDouble, int scale) {
+  Serial.print(aDouble, scale);
+}
+
+void Serial_TC::print(String aString, bool newLine) {
+  if (newLine) {
+    Serial.println(aString);
+  } else {
+    Serial.print(aString);
+  }
 }
 
 void Serial_TC::print(String aString, char aChar) {
@@ -52,6 +60,11 @@ void Serial_TC::print(String aString, int anInt, int format) {
   Serial.println(anInt, format);
 }
 
+void Serial_TC::print(char *aString, char *aString2) {
+  Serial.print(aString);
+  Serial.println(aString2);
+}
+
 void Serial_TC::print(String aString, String aString2) {
   Serial.print(aString);
   Serial.println(aString2);
@@ -65,20 +78,6 @@ void Serial_TC::print_mac(byte mac[]) {
     Serial.print(mac[i]);
   }
   Serial.println();
-}
-
-/**
- * Print the PID constants and output
- */
-void Serial_TC::print_PID(double Kp, double Ki, double Kd, double output) {
-  Serial.print(F("Kp:"));
-  Serial.print(Kp);
-  Serial.print(F(" Ki:"));
-  Serial.print(Ki);
-  Serial.print(F(" Kd:"));
-  Serial.println(Kd);
-  Serial.print(F("PID output (s): "));
-  Serial.println(output / 1000, 1);
 }
 
 /**

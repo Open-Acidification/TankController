@@ -2,6 +2,7 @@
 #include <Serial_TC.h>
 
 #include "ArduinoUnitTests.h"
+#include "Devices/Serial_TC.h"
 
 unittest(SerialTest) {
   GodmodeState* state = GODMODE();
@@ -66,11 +67,6 @@ unittest(SerialTest) {
   char temp[] = {'a', 'b', 'c', '\0'};
   mySerial->write(temp, strlen(temp));
   assertEqual("abc", state->serialPort[0].dataOut);
-
-  state->serialPort[0].dataOut = "";  // the history of data written
-  mySerial->print_PID(1.1, 2.2, 3.3, 1234.5);
-  assertEqual("Kp:1.1000000000 Ki:2.2000000000 Kd:3.3000000000\r\nPID output (s): 1.2\r\n",
-              state->serialPort[0].dataOut);
 }
 
 unittest_main()

@@ -40,6 +40,7 @@ ifdef
 ine
 ino
 iostream
+isnan
 itoa
 jgfoster
 Kd
@@ -78,6 +79,7 @@ rtc
 rtd
 RTDIN
 RTDINLOW
+setpoint
 sizeof
 sprintf
 strcpy

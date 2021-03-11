@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include "Devices/LiquidCrystal_TC.h"
 #include "TankControllerLib.h"
 
 unittest(loop) {

@@ -5,6 +5,7 @@ unittest:
     libraries:
       - "Adafruit BusIO"
       - "Adafruit MAX31865"
+      - "Arduino-PID-Library"
       - "Ethernet"
       - "LiquidCrystal"
       - "RTClib"
@@ -16,6 +17,7 @@ compile:
     libraries:
       - "Adafruit BusIO"
       - "Adafruit MAX31865"
+      - "Arduino-PID-Library"
       - "Ethernet"
       - "LiquidCrystal"
       - "RTClib"

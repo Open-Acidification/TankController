@@ -4,8 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "TankControllerLib.h"
-
+#include "Devices/EthernetServer_TC.h"
 /**
  * Trivial test to confirm that EthernetServer_TC compiles,
  * is of proper class, and has proper port

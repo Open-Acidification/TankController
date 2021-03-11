@@ -37,6 +37,7 @@ TankControllerLib::TankControllerLib() {
   lcd = LiquidCrystal_TC::instance();
   log = Serial_TC::instance();
   log->print(F("TankControllerLib::TankControllerLib() - version "), TANK_CONTROLLER_VERSION);
+  SDClass_TC::instance()->printRootDirectory();
 }
 
 /**

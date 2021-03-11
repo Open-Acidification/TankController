@@ -1,4 +1,3 @@
-  
 unittest:
     platforms:
         - mega2560
@@ -10,6 +9,7 @@ unittest:
       - "LiquidCrystal"
       - "RTClib"
       - "Keypad"
+      - "SD"
 
 compile:
     platforms:
@@ -22,3 +22,4 @@ compile:
       - "LiquidCrystal"
       - "RTClib"
       - "Keypad"
+      - "SD"

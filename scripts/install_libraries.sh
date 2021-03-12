@@ -47,5 +47,5 @@ if [ ! -d "./Arduino-PID-AutoTune-Library" ]; then
 fi
 
 if [ ! -d "./SD" ]; then
-  git clone $SHALLOW_MASTER $GITHUB/SD.git
+  git clone $SHALLOW_MAIN $GITHUB/SD.git
 fi

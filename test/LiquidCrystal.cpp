@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#include <string>
 #include <vector>
 
 #include "Devices/LiquidCrystal_TC.h"
@@ -14,7 +13,7 @@ unittest(loop) {
   assertTrue(lcd != nullptr);
   assertEqual("LiquidCrystal_CI", lcd->className());
   // get currently displayed lines
-  std::vector<std::string> lines = lcd->getLines();
+  std::vector<String> lines = lcd->getLines();
   // verify that display contains 2 empty lines
   assertEqual(2, lines.size());
   assertEqual(16, lines.at(0).length());
@@ -42,7 +41,7 @@ unittest(writeLine) {
   LiquidCrystal_TC* testLcd = LiquidCrystal_TC::instance();
   testLcd->writeLine("Hello", 0);
   testLcd->writeLine("World", 1);
-  std::vector<std::string> lines = testLcd->getLines();
+  std::vector<String> lines = testLcd->getLines();
   assertEqual("Hello           ", lines.at(0));
   assertEqual("World           ", lines.at(1));
 

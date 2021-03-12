@@ -82,7 +82,7 @@ unittest(AllDone) {
 
 unittest(printing) {
   LiquidCrystal_TC* testLcd = LiquidCrystal_TC::instance();
-  std::vector<std::string> lines;
+  std::vector<String> lines;
   TestNumCollectorState test;
   test.setExpectedDigits(5);  // 00.000
   lines = testLcd->getLines();

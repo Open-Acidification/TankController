@@ -2,7 +2,6 @@
 
 #define NUM_SERIAL_PORTS 1
 
-#include <string>
 #include <vector>
 
 #include "Arduino.h"
@@ -27,8 +26,8 @@ const char *version() {
   return TankControllerLib::instance()->version();
 }
 const char *lcd(int index) {
-  std::vector<string> lines = LiquidCrystal_TC::instance()->getLines();
-  string line = lines.at(index);
+  std::vector<String> lines = LiquidCrystal_TC::instance()->getLines();
+  String line = lines.at(index);
   int size = line.size();
   for (int i = 0; i < size; ++i) {
     if (line.at(i) < 32) {

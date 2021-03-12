@@ -8,7 +8,7 @@ unittest(test) {
   TankControllerLib* tc = TankControllerLib::instance();
   LiquidCrystal_TC* lc = LiquidCrystal_TC::instance();
   Keypad* keypad = Keypad_TC::instance()->_getPuppet();
-  std::vector<std::string> lines;
+  std::vector<String> lines;
   tc->loop();
   lines = lc->getLines();
   assertEqual(" ONTHANK LAB", lc->getLines().at(0).substr(4));

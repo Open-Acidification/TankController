@@ -8,6 +8,7 @@
 #endif
 
 #include "Devices/Keypad_TC.h"
+#include "Devices/SD_TC.h"
 #include "UIState/MainMenu.h"
 #include "UIState/UIState.h"
 

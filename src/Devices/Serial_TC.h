@@ -15,22 +15,22 @@ public:
   static Serial_TC *instance();
 
   //  instance methods
-  void print(char aChar);
-  void print(uint16_t anInt);
-  void print(double aDouble, int scale = 2);
-  void print(String aString, bool newLine = true);
-  void print(String aString, char aChar);
-  void print(String aString, int anInt);
-  void print(String aString, int anInt, int format);
-  void print(char *aString, char *aString2);
-  void print(String aString, String aString2);
-  void println() {
+  void print(char aChar) const;
+  void print(uint16_t anInt) const;
+  void print(double aDouble, int scale = 2) const;
+  void print(const String aString, bool newLine = true) const;
+  void print(const String aString, char aChar) const;
+  void print(const String aString, int anInt) const;
+  void print(const String aString, int anInt, int format) const;
+  void print(const char *aString, const char *aString2) const;
+  void print(const String aString, const String aString2) const;
+  void println() const {
     Serial.println();
   }
-  void print_mac(byte mac[]);
-  void print_two_digits(int value);
-  void write(byte aByte);
-  void write(char arr[], int anInt);
+  void print_mac(const byte mac[]) const;
+  void print_two_digits(int value) const;
+  void write(byte aByte) const;
+  void write(const char arr[], int anInt) const;
 
 private:
   //  class variable

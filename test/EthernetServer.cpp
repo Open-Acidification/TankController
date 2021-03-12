@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#include <string>
 #include <vector>
 
 #include "Devices/EthernetServer_TC.h"

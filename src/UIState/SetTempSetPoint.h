@@ -8,7 +8,9 @@
 
 class SetTempSetPoint : public NumCollectorState {
 public:
-  const char *prompt() {
+  SetTempSetPoint(TankControllerLib* tc) : NumCollectorState(tc) {
+  }
+  const char* prompt() {
     return "Set Temperature ";
   };
   int getExpectedDigits() {

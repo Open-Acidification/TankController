@@ -1,6 +1,13 @@
 #pragma once
 #include <Arduino.h>
 
+#ifdef MOCK_PINS_COUNT
+#include <cassert>   // to support testing
+#include <iostream>  // to support occasional debugging output
+#else
+#define assert(p) (void)0
+#endif
+
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/Serial_TC.h"
 
@@ -16,13 +23,18 @@ public:
   void setup();
   void loop();
   const char* version();
+  virtual void setNextState(UIState* newState) {
+    assert(nextState == nullptr);
+    nextState = newState;
+  }
 
-private:
+protected:
   // class variables
   static TankControllerLib* _instance;
 
   // instance variables
-  UIState* state;
+  UIState* state = nullptr;
+  UIState* nextState = nullptr;
   LiquidCrystal_TC* lcd;
   Serial_TC* log;
 
@@ -30,8 +42,18 @@ private:
   TankControllerLib();
   ~TankControllerLib();
   void blink();
-  void changeState(UIState* newState);
-
-  // other classes with access to our privates
-  friend class UIState;
+  void updateState();
+  void handleUI();
 };
+
+#ifdef MOCK_PINS_COUNT
+class TankControllerLibTest : public TankControllerLib {
+public:
+  void setNextState(UIState* newState) {
+    assert(nextState == nullptr);
+    nextState = newState;
+    updateState();
+  }
+  bool isOnMainMenu();
+};
+#endif

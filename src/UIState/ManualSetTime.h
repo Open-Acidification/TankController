@@ -8,8 +8,10 @@
 
 class ManualSetTime : public UIState {
 public:
+  ManualSetTime(TankControllerLib* tc) : UIState(tc) {
+  }
   void handleKey(char key);
-  const char *prompt() {
+  const char* prompt() {
     return "Manual Set Time";
   };
 };

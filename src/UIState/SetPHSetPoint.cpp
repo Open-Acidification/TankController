@@ -9,7 +9,7 @@
 void SetPHSetPoint::handleKey(char key) {
   switch (key) {
     case 'D':  // Don't save (cancel)
-      this->changeState((UIState *)new MainMenu);
+      returnToMainMenu();
       break;
     default:
       break;

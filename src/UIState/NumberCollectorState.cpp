@@ -10,26 +10,21 @@ void NumCollectorState::handleKey(char key) {
     numDigits++;
     handleDigit(key - '0');
     if (collectedEnoughDigits()) {
-      printValue();
       setValue(value);
-    } else {
-      printValue();
     }
   } else if (key == 'B') {  // Backspace
     backSpace();
-    printValue();
   } else if (key == 'C') {  // Clear the value
     numDigits = 0;
     value = 0;
-    printValue();
   } else if (key == 'A') {  // All done
     setValue(value);
   } else if (key == '*') {  // Decimal place (if we already have a decimal nothing happens)
     hasDecimal = true;
-    printValue();
   } else if (key == 'D') {  // Don't finish
-    changeState((UIState*)new MainMenu);
+    returnToMainMenu();
   }
+  printValue();
 }
 
 void NumCollectorState::handleDigit(int digit) {

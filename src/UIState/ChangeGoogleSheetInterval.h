@@ -8,8 +8,10 @@
 
 class ChangeGoogleSheetInterval : public UIState {
 public:
+  ChangeGoogleSheetInterval(TankControllerLib* tc) : UIState(tc) {
+  }
   void handleKey(char key);
-  const char *prompt() {
+  const char* prompt() {
     return "G Sheet Interval";
   };
 };

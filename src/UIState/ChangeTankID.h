@@ -8,8 +8,10 @@
 
 class ChangeTankID : public UIState {
 public:
+  ChangeTankID(TankControllerLib* tc) : UIState(tc) {
+  }
   void handleKey(char key);
-  const char *prompt() {
+  const char* prompt() {
     return "Set Tank ID#";
   };
 };

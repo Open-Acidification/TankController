@@ -3,10 +3,10 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#include <iostream>
+#include "TankControllerLib.h"
 
 unittest(A_Digit_NoDecimal) {
-  TestNumCollectorState testNoDecimal;
+  TestNumCollectorState testNoDecimal(TankControllerLib::instance());
   testNoDecimal.setExpectedDigits(3);
   assertEqual(0, testNoDecimal.getValue());
   testNoDecimal.handleKey('1');
@@ -17,7 +17,7 @@ unittest(A_Digit_NoDecimal) {
 }
 
 unittest(A_Digit_WithDecimal) {
-  TestNumCollectorState testDecimal;
+  TestNumCollectorState testDecimal(TankControllerLib::instance());
   testDecimal.setExpectedDigits(4);
   testDecimal.handleKey('1');
   testDecimal.handleKey('2');
@@ -29,7 +29,7 @@ unittest(A_Digit_WithDecimal) {
 }
 
 unittest(A_Digit_MultipleDecimals) {
-  TestNumCollectorState testDecimal;
+  TestNumCollectorState testDecimal(TankControllerLib::instance());
   testDecimal.setExpectedDigits(4);
   testDecimal.handleKey('1');
   testDecimal.handleKey('2');
@@ -43,13 +43,13 @@ unittest(A_Digit_MultipleDecimals) {
 }
 
 unittest(backSpace) {
-  TestNumCollectorState testNoDecimal;
+  TestNumCollectorState testNoDecimal(TankControllerLib::instance());
   testNoDecimal.handleKey('1');
   testNoDecimal.handleKey('2');
   testNoDecimal.handleKey('B');
   assertEqual(1, testNoDecimal.getValue());
 
-  TestNumCollectorState testDecimal;
+  TestNumCollectorState testDecimal(TankControllerLib::instance());
   testDecimal.handleKey('1');
   testDecimal.handleKey('*');
   testDecimal.handleKey('B');
@@ -62,7 +62,7 @@ unittest(backSpace) {
 }
 
 unittest(clear) {
-  TestNumCollectorState testDecimal;
+  TestNumCollectorState testDecimal(TankControllerLib::instance());
   testDecimal.handleKey('1');
   testDecimal.handleKey('2');
   testDecimal.handleKey('C');
@@ -70,7 +70,7 @@ unittest(clear) {
 }
 
 unittest(AllDone) {
-  TestNumCollectorState testDecimal;
+  TestNumCollectorState testDecimal(TankControllerLib::instance());
   testDecimal.setExpectedDigits(4);
   testDecimal.handleKey('1');
   testDecimal.handleKey('2');
@@ -83,7 +83,7 @@ unittest(AllDone) {
 unittest(printing) {
   LiquidCrystal_TC* testLcd = LiquidCrystal_TC::instance();
   std::vector<String> lines;
-  TestNumCollectorState test;
+  TestNumCollectorState test(TankControllerLib::instance());
   test.setExpectedDigits(5);  // 00.000
   lines = testLcd->getLines();
   assertEqual("                ", lines.at(1));

@@ -8,8 +8,10 @@
 
 class SeePIDConstants : public UIState {
 public:
+  SeePIDConstants(TankControllerLib* tc) : UIState(tc) {
+  }
   void handleKey(char key);
-  const char *prompt() {
+  const char* prompt() {
     return "PID Constants";
   };
 };

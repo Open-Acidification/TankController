@@ -6,17 +6,18 @@
 
 #pragma once
 
-#include "../TankControllerLib.h"
 #include "UIState.h"
 
+class TankControllerLib;  // forward reference
 class MainMenu : public UIState {
 public:
-  MainMenu() {
-  }
-  ~MainMenu() {
+  MainMenu(TankControllerLib* tc) : UIState(tc) {
   }
   virtual void handleKey(char key);
-  const char *prompt() {
+  const char* prompt() {
     return "Main Menu";
   };
+  virtual bool isMainMenu() {
+    return true;
+  }
 };

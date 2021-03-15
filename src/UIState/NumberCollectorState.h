@@ -3,11 +3,12 @@
  */
 
 #pragma once
+#include "../Devices/LiquidCrystal_TC.h"
 #include "UIState.h"
 
 class NumCollectorState : public UIState {
 public:
-  NumCollectorState() {
+  NumCollectorState(TankControllerLib* tc) : UIState(tc) {
     LiquidCrystal_TC::instance()->writeLine("                ", 1);
   }
   void handleKey(char key);
@@ -32,6 +33,8 @@ protected:
 #ifdef MOCK_PINS_COUNT
 class TestNumCollectorState : public NumCollectorState {
 public:
+  TestNumCollectorState(TankControllerLib* tc) : NumCollectorState(tc) {
+  }
   // Implementation
   void setValue(double value) {
     storedValue = value;

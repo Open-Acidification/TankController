@@ -8,8 +8,10 @@
 
 class ResetLCDScreen : public UIState {
 public:
+  ResetLCDScreen(TankControllerLib* tc) : UIState(tc) {
+  }
   void handleKey(char key);
-  const char *prompt() {
+  const char* prompt() {
     return "Clearing Screen";
   };
 };

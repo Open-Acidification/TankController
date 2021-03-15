@@ -41,11 +41,14 @@ unittest(loop) {
   BitCollector led;
   logIndex = 0;
   TankControllerLib* tank = TankControllerLib::instance();
-  state->resetClock();
   state->digitalPin[LED_BUILTIN].addObserver("led", &led);
   tank->setup();
+  state->resetClock();
+  assertEqual(0, micros());
   tank->loop();
+  assertEqual(0, micros());
   delay(500);
+  assertEqual(500000, micros());
   tank->loop();
   delay(500);
   tank->loop();

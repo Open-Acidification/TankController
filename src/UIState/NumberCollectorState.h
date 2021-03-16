@@ -9,20 +9,16 @@
 class NumCollectorState : public UIState {
 public:
   NumCollectorState(TankControllerLib* tc) : UIState(tc) {
-    LiquidCrystal_TC::instance()->writeLine("                ", 1);
+    printValue();
   }
   void handleKey(char key);
   virtual void setValue(double value) = 0;
-  virtual int getExpectedDigits() = 0;
 
 protected:
   // Helper Functions
   void handleDigit(int digit);
   void backSpace();
   void printValue();
-  bool collectedEnoughDigits() {
-    return numDigits >= getExpectedDigits();
-  }
 
   double value = 0.0;
   int numDigits = 0;
@@ -39,17 +35,11 @@ public:
   void setValue(double value) {
     storedValue = value;
   }
-  int getExpectedDigits() {
-    return expectedDigits;
-  }
   const char* prompt() {
     return "Test:";
   }
 
   // Testing
-  void setExpectedDigits(int value) {
-    expectedDigits = value;
-  }
   double getValue() {
     return value;
   }
@@ -59,6 +49,5 @@ public:
 
 private:
   double storedValue = 0.0;
-  int expectedDigits = 0;
 };
 #endif

@@ -5,32 +5,36 @@
 
 #include "TankControllerLib.h"
 
+unittest(Edge_Case) {
+  TestNumCollectorState test(TankControllerLib::instance());
+  test.handleKey('9');
+  test.handleKey('0');
+  test.handleKey('*');
+  test.handleKey('0');
+  test.handleKey('9');
+  assertEqual(90.09, test.getValue());
+}
+
 unittest(A_Digit_NoDecimal) {
   TestNumCollectorState testNoDecimal(TankControllerLib::instance());
-  testNoDecimal.setExpectedDigits(3);
-  assertEqual(0, testNoDecimal.getValue());
   testNoDecimal.handleKey('1');
   testNoDecimal.handleKey('2');
   testNoDecimal.handleKey('3');
   assertEqual(123, testNoDecimal.getValue());
-  assertEqual(123, testNoDecimal.getStoredValue());
 }
 
 unittest(A_Digit_WithDecimal) {
   TestNumCollectorState testDecimal(TankControllerLib::instance());
-  testDecimal.setExpectedDigits(4);
   testDecimal.handleKey('1');
   testDecimal.handleKey('2');
   testDecimal.handleKey('*');
   testDecimal.handleKey('3');
   testDecimal.handleKey('4');
   assertEqual(12.34, testDecimal.getValue());
-  assertEqual(12.34, testDecimal.getStoredValue());
 }
 
 unittest(A_Digit_MultipleDecimals) {
   TestNumCollectorState testDecimal(TankControllerLib::instance());
-  testDecimal.setExpectedDigits(4);
   testDecimal.handleKey('1');
   testDecimal.handleKey('2');
   testDecimal.handleKey('*');
@@ -39,7 +43,6 @@ unittest(A_Digit_MultipleDecimals) {
   testDecimal.handleKey('*');
   testDecimal.handleKey('4');
   assertEqual(12.34, testDecimal.getValue());
-  assertEqual(12.34, testDecimal.getStoredValue());
 }
 
 unittest(backSpace) {
@@ -71,7 +74,6 @@ unittest(clear) {
 
 unittest(AllDone) {
   TestNumCollectorState testDecimal(TankControllerLib::instance());
-  testDecimal.setExpectedDigits(4);
   testDecimal.handleKey('1');
   testDecimal.handleKey('2');
   testDecimal.handleKey('3');
@@ -84,9 +86,8 @@ unittest(printing) {
   LiquidCrystal_TC* testLcd = LiquidCrystal_TC::instance();
   std::vector<String> lines;
   TestNumCollectorState test(TankControllerLib::instance());
-  test.setExpectedDigits(5);  // 00.000
   lines = testLcd->getLines();
-  assertEqual("                ", lines.at(1));
+  assertEqual("0               ", lines.at(1));
 
   test.handleKey('2');
   lines = testLcd->getLines();

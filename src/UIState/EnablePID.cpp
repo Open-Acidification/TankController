@@ -1,10 +1,10 @@
 /**
- * SetPHSetPoint.cpp
+ * EnablePID.cpp
  */
 
-#include "SetPHSetPoint.h"
+#include "EnablePID.h"
 
-void SetPHSetPoint::handleKey(char key) {
+void EnablePID::handleKey(char key) {
   switch (key) {
     case 'D':  // Don't save (cancel)
       returnToMainMenu();

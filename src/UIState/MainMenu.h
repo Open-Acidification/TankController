@@ -15,7 +15,7 @@ public:
   }
   virtual void handleKey(char key);
   const char* prompt() {
-    return "Main Menu";
+    return "Main Menu       ";
   };
   virtual bool isMainMenu() {
     return true;

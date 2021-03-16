@@ -1,10 +1,10 @@
 /**
- * SetPHSetPoint.cpp
+ * ChangeTankID.cpp
  */
 
-#include "SetPHSetPoint.h"
+#include "ChangeTankID.h"
 
-void SetPHSetPoint::handleKey(char key) {
+void ChangeTankID::handleKey(char key) {
   switch (key) {
     case 'D':  // Don't save (cancel)
       returnToMainMenu();

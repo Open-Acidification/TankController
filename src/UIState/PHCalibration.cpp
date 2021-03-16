@@ -1,10 +1,10 @@
 /**
- * SetPHSetPoint.cpp
+ * PHCalibration.cpp
  */
 
-#include "SetPHSetPoint.h"
+#include "PHCalibration.h"
 
-void SetPHSetPoint::handleKey(char key) {
+void PHCalibration::handleKey(char key) {
   switch (key) {
     case 'D':  // Don't save (cancel)
       returnToMainMenu();

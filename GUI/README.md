@@ -3,6 +3,7 @@ A Python GUI for TankController running on the mocks provided by `Arduino CI`
 
 ## Build Process
 Follow these steps
+* `cd GUI`
 * `pip install pybind11`
 * `(mkdir -p build; cd build; make -f ../Makefile)`
 * `python TankController.py`

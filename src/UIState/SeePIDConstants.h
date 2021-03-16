@@ -12,6 +12,6 @@ public:
   }
   void handleKey(char key);
   const char* prompt() {
-    return "PID Constants";
+    return "PID Constants   ";
   };
 };

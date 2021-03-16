@@ -1,7 +1,7 @@
 /**
  * PIDTuningMenu.h
  *
- * PID Tuning Menu
+ * PID Tuning
  */
 #pragma once
 #include "UIState.h"
@@ -12,6 +12,6 @@ public:
   }
   void handleKey(char key);
   const char* prompt() {
-    return "PID TUNING";
+    return "PID TUNING      ";
   };
 };

@@ -12,6 +12,6 @@ public:
   }
   void handleKey(char key);
   const char* prompt() {
-    return "Manual Set Time";
+    return "Manual Set Time ";
   };
 };

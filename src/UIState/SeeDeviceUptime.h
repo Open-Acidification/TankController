@@ -12,6 +12,6 @@ public:
   }
   void handleKey(char key);
   const char* prompt() {
-    return "Device time";
+    return "Device time     ";
   };
 };

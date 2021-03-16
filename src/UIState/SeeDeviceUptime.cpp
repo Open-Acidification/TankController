@@ -1,10 +1,10 @@
 /**
- * SetPHSetPoint.cpp
+ * SeeDeviceUptime.cpp
  */
 
-#include "SetPHSetPoint.h"
+#include "SeeDeviceUptime.h"
 
-void SetPHSetPoint::handleKey(char key) {
+void SeeDeviceUptime::handleKey(char key) {
   switch (key) {
     case 'D':  // Don't save (cancel)
       returnToMainMenu();

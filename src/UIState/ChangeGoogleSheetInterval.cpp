@@ -1,10 +1,10 @@
 /**
- * SetPHSetPoint.cpp
+ * ChangeGoogleSheetInterval.cpp
  */
 
-#include "SetPHSetPoint.h"
+#include "ChangeGoogleSheetInterval.h"
 
-void SetPHSetPoint::handleKey(char key) {
+void ChangeGoogleSheetInterval::handleKey(char key) {
   switch (key) {
     case 'D':  // Don't save (cancel)
       returnToMainMenu();

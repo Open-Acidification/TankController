@@ -6,7 +6,7 @@
 #include "MainMenu.h"
 
 void NumCollectorState::handleKey(char key) {
-  if (key > '0' && key < '9') {  // a digit
+  if (key >= '0' && key <= '9') {  // a digit
     numDigits++;
     handleDigit(key - '0');
     if (collectedEnoughDigits()) {

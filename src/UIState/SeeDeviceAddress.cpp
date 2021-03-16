@@ -1,10 +1,10 @@
 /**
- * SetPHSetPoint.cpp
+ * SeeDeviceAddress.cpp
  */
 
-#include "SetPHSetPoint.h"
+#include "SeeDeviceAddress.h"
 
-void SetPHSetPoint::handleKey(char key) {
+void SeeDeviceAddress::handleKey(char key) {
   switch (key) {
     case 'D':  // Don't save (cancel)
       returnToMainMenu();

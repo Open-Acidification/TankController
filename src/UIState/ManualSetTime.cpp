@@ -1,10 +1,10 @@
 /**
- * SetPHSetPoint.cpp
+ * ManualSetTime.cpp
  */
 
-#include "SetPHSetPoint.h"
+#include "ManualSetTime.h"
 
-void SetPHSetPoint::handleKey(char key) {
+void ManualSetTime::handleKey(char key) {
   switch (key) {
     case 'D':  // Don't save (cancel)
       returnToMainMenu();

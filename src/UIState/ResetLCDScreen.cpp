@@ -1,10 +1,10 @@
 /**
- * SetPHSetPoint.cpp
+ * ResetLCDScreen.cpp
  */
 
-#include "SetPHSetPoint.h"
+#include "ResetLCDScreen.h"
 
-void SetPHSetPoint::handleKey(char key) {
+void ResetLCDScreen::handleKey(char key) {
   switch (key) {
     case 'D':  // Don't save (cancel)
       returnToMainMenu();

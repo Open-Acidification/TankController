@@ -11,6 +11,9 @@ public:
   UIState(TankControllerLib* tc) {
     this->tc = tc;
   }
+  // virtual so subclass destructor is called
+  virtual ~UIState() {
+  }
   virtual void handleKey(char key) = 0;
   virtual bool isMainMenu() {
     return false;

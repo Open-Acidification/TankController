@@ -1,10 +1,10 @@
 /**
- * SetPHSetPoint.cpp
+ * SeePIDConstants.cpp
  */
 
-#include "SetPHSetPoint.h"
+#include "SeePIDConstants.h"
 
-void SetPHSetPoint::handleKey(char key) {
+void SeePIDConstants::handleKey(char key) {
   switch (key) {
     case 'D':  // Don't save (cancel)
       returnToMainMenu();

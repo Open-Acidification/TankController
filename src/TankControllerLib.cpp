@@ -9,12 +9,12 @@
 /**
  * static variable to hold singleton
  */
-TankControllerLib* TankControllerLib::_instance = nullptr;
+TankControllerLib *TankControllerLib::_instance = nullptr;
 
 /**
  * static function to return singleton
  */
-TankControllerLib* TankControllerLib::instance() {
+TankControllerLib *TankControllerLib::instance() {
   if (!_instance) {
     _instance = new TankControllerLib;
   }
@@ -30,7 +30,8 @@ TankControllerLib::TankControllerLib() {
   state = new MainMenu(this);
   lcd = LiquidCrystal_TC::instance();
   log = Serial_TC::instance();
-  log->print(F("TankControllerLib::TankControllerLib() - version "), TANK_CONTROLLER_VERSION);
+  log->print((const char *)F("TankControllerLib::TankControllerLib() - version "),
+             (const char *)TANK_CONTROLLER_VERSION);
   SDClass_TC::instance()->printRootDirectory();
 }
 
@@ -67,6 +68,7 @@ void TankControllerLib::updateState() {
     nextState = nullptr;
     // print the current prompt on the first line of the display
     LiquidCrystal_TC::instance()->writeLine(state->prompt(), 0);
+    LiquidCrystal_TC::instance()->writeLine("                ", 1);
   }
 }
 
@@ -98,7 +100,7 @@ void TankControllerLib::loop() {
  */
 void TankControllerLib::setup() {
   log->print(F("TankControllerLib::setup()"));
-  setNextState(((UIState*)new MainMenu(this)));
+  setNextState(((UIState *)new MainMenu(this)));
   updateState();
   pinMode(LED_BUILTIN, OUTPUT);
 }
@@ -106,8 +108,8 @@ void TankControllerLib::setup() {
 /**
  * What is the current version?
  */
-const char* TankControllerLib::version() {
-  log->print(F("TankControllerLib::version() = "), TANK_CONTROLLER_VERSION);
+const char *TankControllerLib::version() {
+  log->print((const char *)F("TankControllerLib::version() = "), (const char *)TANK_CONTROLLER_VERSION);
   return TANK_CONTROLLER_VERSION;
 }
 

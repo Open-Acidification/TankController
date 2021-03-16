@@ -1,10 +1,10 @@
 /**
- * SetPHSetPoint.cpp
+ * PIDTuningMenu.cpp
  */
 
-#include "SetPHSetPoint.h"
+#include "PIDTuningMenu.h"
 
-void SetPHSetPoint::handleKey(char key) {
+void PIDTuningMenu::handleKey(char key) {
   switch (key) {
     case 'D':  // Don't save (cancel)
       returnToMainMenu();

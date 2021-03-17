@@ -9,16 +9,16 @@ void NumCollectorState::handleKey(char key) {
   if (key >= '0' && key <= '9') {  // a digit
     numDigits++;
     handleDigit(key - '0');
+  } else if (key == '*') {  // Decimal place (if we already have a decimal nothing happens)
+    hasDecimal = isInteger() ? false : true;
+  } else if (key == 'A') {  // Accept
+    setValue(value);
   } else if (key == 'B') {  // Backspace
     backSpace();
-  } else if (key == 'C') {  // Clear the value
+  } else if (key == 'C') {  // Clear
     numDigits = 0;
     value = 0;
-  } else if (key == 'A') {  // All done
-    setValue(value);
-  } else if (key == '*') {  // Decimal place (if we already have a decimal nothing happens)
-    hasDecimal = true;
-  } else if (key == 'D') {  // Don't finish
+  } else if (key == 'D') {  // Disregard (escape/cancel)
     returnToMainMenu();
   }
   printValue();

@@ -72,7 +72,7 @@ unittest(clear) {
   assertEqual(0, testDecimal.getValue());
 }
 
-unittest(AllDone) {
+unittest(accept) {
   TestNumCollectorState testDecimal(TankControllerLib::instance());
   testDecimal.handleKey('1');
   testDecimal.handleKey('2');
@@ -112,6 +112,16 @@ unittest(printing) {
   test.handleKey('1');
   lines = testLcd->getLines();
   assertEqual("21.341          ", lines.at(1));
+}
+
+unittest(integer) {
+  TestIntNumCollectorState testDecimal(TankControllerLib::instance());
+  testDecimal.handleKey('1');
+  testDecimal.handleKey('2');
+  testDecimal.handleKey('*');
+  testDecimal.handleKey('3');
+  testDecimal.handleKey('4');
+  assertEqual(1234, testDecimal.getValue());
 }
 
 unittest_main()

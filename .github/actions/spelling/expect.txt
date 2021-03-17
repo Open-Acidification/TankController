@@ -21,6 +21,7 @@ Doxygen
 dylib
 eep
 eeprom
+elif
 emoji
 endif
 endl
@@ -46,6 +47,7 @@ jgfoster
 Kd
 Keymap
 Kp
+len
 libtc
 LOWTHRESH
 lqd

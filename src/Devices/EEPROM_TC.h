@@ -62,16 +62,17 @@ private:
   // class variables
   static EEPROM_TC* _instance;
 
-  // instance variables
-  const int PH_ADDRESS = 0;
-  const int TEMP_ADDRESS = 4;
-  const int TANK_ID_ADDRESS = 8;
-  const int TEMP_CORR_ADDRESS = 12;
-  const int KP_ADDRESS = 20;
-  const int KI_ADDRESS = 28;
-  const int KD_ADDRESS = 36;
-  const int MAC_ADDRESS = 44;
-  const int HEAT_ADDRESS = 52;
+  // instance variables from v0.197
+  const int PH_ADDRESS = 0;          // 9.999
+  const int TEMP_ADDRESS = 4;        // 99.99
+  const int TANK_ID_ADDRESS = 8;     // 999
+  const int TEMP_CORR_ADDRESS = 12;  // 99.99
+  const int KP_ADDRESS = 20;         // double
+  const int KI_ADDRESS = 28;         // double
+  const int KD_ADDRESS = 36;         // double
+  const int MAC_ADDRESS = 44;        // 8 byte
+  const int HEAT_ADDRESS = 52;       // bool
+  // new with v0.2
   const int AMPLITUDE_ADDRESS = 56;
   const int FREQUENCY_ADDRESS = 60;
   const int GRANULARITY_ADDRESS = 64;   // granularity for SD logging interval

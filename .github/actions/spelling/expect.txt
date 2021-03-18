@@ -36,6 +36,7 @@ Google
 hh
 HIGHTHRESH
 homepage
+HSCROLL
 http
 ifdef
 ine
@@ -59,6 +60,7 @@ millis
 mkdir
 MOSI
 Mozilla's
+MULTILINE
 namespace
 nullptr
 numwires
@@ -73,6 +75,7 @@ py
 pybind
 rb
 README
+READONLY
 REFIN
 REFINHIGH
 REFINLOW

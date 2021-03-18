@@ -8,7 +8,6 @@ Follow these steps
 * `make clean`
 * ``filePath=`bundle exec which arduino_library_location.rb` ``
 * `ARDUINO_CI=${filePath%/*}/`
-
 * `(mkdir -p build; cd build; make -f ../Makefile)`
 * `python TankController.py`
 

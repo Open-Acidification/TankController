@@ -35,11 +35,7 @@ unittest(test) {
   test->setValue(15);
 
   // a year ago ensures that it precedes the compile time
-  now = DateTime_TC::now();
-  char buffer[17];
-  strcpy(buffer, "YYYY-MM-DD hh:mm");
-  now.toString(buffer);
-  assertEqual("2020-03-18 13:15", buffer);
+  assertEqual("2020-03-18 13:15", DateTime_TC::nowAs16CharacterString());
 
   assertTrue(tc.isOnMainMenu());
 }

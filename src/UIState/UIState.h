@@ -14,14 +14,17 @@ public:
   // virtual so subclass destructor is called
   virtual ~UIState() {
   }
-  virtual void handleKey(char key) = 0;
+  virtual void handleKey(char key);
   virtual bool isMainMenu() {
     return false;
   }
-  virtual const char* prompt() = 0;
+  virtual const char* prompt() {
+    return "                ";
+  }
+  virtual void start();
 
 protected:
   void setNextState(UIState* state);
-  void returnToMainMenu();
+  void returnToMainMenu(int msDelay = 0);
   TankControllerLib* tc = nullptr;
 };

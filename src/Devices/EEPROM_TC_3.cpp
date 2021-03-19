@@ -1,11 +1,6 @@
 #include "Devices/EEPROM_TC_3.h"
 
-#ifdef MOCK_PINS_COUNT
-#include <cassert>   // to support testing
-#include <iostream>  // to support occasional debugging output
-#else
-#define assert(p) (void)0
-#endif
+#include "TC_assert.h"
 
 //  instance methods
 bool EEPROM_TC_3::isRightVersion() {

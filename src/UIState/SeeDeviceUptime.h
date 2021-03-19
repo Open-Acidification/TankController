@@ -10,8 +10,5 @@ class SeeDeviceUptime : public UIState {
 public:
   SeeDeviceUptime(TankControllerLib* tc) : UIState(tc) {
   }
-  void handleKey(char key);
-  const char* prompt() {
-    return "Device time     ";
-  };
+  void start();
 };

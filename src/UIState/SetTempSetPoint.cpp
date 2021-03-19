@@ -12,6 +12,5 @@ void SetTempSetPoint::setValue(double value) {
   char output[17];
   sprintf(output, "New Temp=%.2f", value);
   LiquidCrystal_TC::instance()->writeLine(output, 1);
-  delay(1000);  // 1 second
-  returnToMainMenu();
+  returnToMainMenu(1000);  // after 1-second delay
 }

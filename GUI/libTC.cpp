@@ -19,12 +19,8 @@
 namespace py = pybind11;
 char lcdLine[20];
 
-string dateTime() {
-  DateTime_TC now = DateTime_TC::now();
-  char buffer[20];
-  strcpy(buffer, "YYYY-MM-DD hh:mm:ss");
-  now.toString(buffer);
-  return string(buffer);
+char *dateTime() {
+  return DateTime_TC::nowAs16CharacterString();
 }
 
 double eeprom(uint8_t index) {

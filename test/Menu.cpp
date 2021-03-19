@@ -2,6 +2,7 @@
 #include <ArduinoUnitTests.h>
 
 #include "Devices/Keypad_TC.h"
+#include "Devices/LiquidCrystal_TC.h"
 #include "TankControllerLib.h"
 
 unittest(SetPHSetPoint) {
@@ -104,7 +105,12 @@ unittest(SeeDeviceUptime) {
   tc->loop();
   keypad->push_back('0');
   tc->loop();  // recognize and apply the key entry
-  assertEqual("Device time     ", lc->getLines().at(0));
+  // Instead of a prompt this will show the dateTime.
+  // To facilitate testing we compare the first three
+  // digits of the year (so this will break in 2030)
+  assertEqual('2', lc->getLines().at(0).at(0));
+  assertEqual('0', lc->getLines().at(0).at(1));
+  assertEqual('2', lc->getLines().at(0).at(2));
   keypad->push_back('D');  // Don't finish (cancel)
   tc->loop();              // recognize and apply the key entry
   lines = lc->getLines();

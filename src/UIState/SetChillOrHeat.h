@@ -1,17 +1,17 @@
 /**
  * SetChillOrHeat.h
  *
- * Set if the chiller or heater is on
+ * Set if the chiller or heater is used
  */
 #pragma once
-#include "UIState.h"
+#include "NumberCollectorState.h"
 
-class SetChillOrHeat : public UIState {
+class SetChillOrHeat : public NumCollectorState {
 public:
-  SetChillOrHeat(TankControllerLib* tc) : UIState(tc) {
+  SetChillOrHeat(TankControllerLib* tc) : NumCollectorState(tc) {
   }
-  void handleKey(char key);
   const char* prompt() {
-    return "Chill or Heat?  ";
+    return "1:Chill; 9:Heat ";
   };
+  void setValue(double value);
 };

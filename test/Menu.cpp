@@ -239,7 +239,7 @@ unittest(SetChillOrHeat) {
   tc->loop();
   keypad->push_back('9');
   tc->loop();  // recognize and apply the key entry
-  assertEqual("Chill or Heat?  ", lc->getLines().at(0));
+  assertEqual("1:Chill; 9:Heat ", lc->getLines().at(0));
   keypad->push_back('D');  // Don't finish (cancel)
   tc->loop();              // recognize and apply the key entry
   lines = lc->getLines();

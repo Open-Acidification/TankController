@@ -4,12 +4,15 @@
 
 #include "SetPHSetPoint.h"
 
-void SetPHSetPoint::handleKey(char key) {
-  switch (key) {
-    case 'D':  // Don't save (cancel)
-      returnToMainMenu();
-      break;
-    default:
-      break;
-  };
+#include "../Devices/EEPROM_TC.h"
+#include "../Devices/LiquidCrystal_TC.h"
+
+void SetPHSetPoint::setValue(double value) {
+  EEPROM_TC::instance()->setPH(value);
+
+  char output[17];
+  sprintf(output, "New pH=%.4f", value);
+  LiquidCrystal_TC::instance()->writeLine(output, 1);
+  delay(1000);  // 1 second
+  returnToMainMenu();
 }

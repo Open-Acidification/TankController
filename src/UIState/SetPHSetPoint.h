@@ -1,17 +1,17 @@
 /**
  * SetPHSetPoint.h
  *
- * Handle top-level menu option
+ * Set the target pH
  */
 #pragma once
-#include "UIState.h"
+#include "NumberCollectorState.h"
 
-class SetPHSetPoint : public UIState {
+class SetPHSetPoint : public NumCollectorState {
 public:
-  SetPHSetPoint(TankControllerLib* tc) : UIState(tc) {
+  SetPHSetPoint(TankControllerLib* tc) : NumCollectorState(tc) {
   }
-  void handleKey(char key);
   const char* prompt() {
     return "Set pH Set Point";
   };
+  void setValue(double value);
 };

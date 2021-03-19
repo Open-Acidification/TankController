@@ -61,13 +61,15 @@ void TankControllerLib::blink() {
  */
 void TankControllerLib::updateState() {
   if (nextState) {
-    if (state) {
+    // SetTime sets the current state to get the prompt
+    if (state != nextState) {
       delete state;
     }
     state = nextState;
     nextState = nullptr;
     // print the current prompt on the first line of the display
-    LiquidCrystal_TC::instance()->writeLine(state->prompt(), 0);
+    const char *prompt = state->prompt();
+    LiquidCrystal_TC::instance()->writeLine(prompt, 0);
     LiquidCrystal_TC::instance()->writeLine("                ", 1);
   }
 }

@@ -201,7 +201,7 @@ unittest(TemperatureCalibration) {
   assertEqual("Main Menu       ", lc->getLines().at(0));
 }
 
-unittest(ManualSetTime) {
+unittest(SetTime) {
   TankControllerLib* tc = TankControllerLib::instance();
   LiquidCrystal_TC* lc = LiquidCrystal_TC::instance();
   Keypad* keypad = Keypad_TC::instance()->_getPuppet();
@@ -209,7 +209,7 @@ unittest(ManualSetTime) {
   tc->loop();
   keypad->push_back('7');
   tc->loop();  // recognize and apply the key entry
-  assertEqual("Manual Set Time ", lc->getLines().at(0));
+  assertEqual("Set Year (YYYY):", lc->getLines().at(0));
   keypad->push_back('D');  // Don't finish (cancel)
   tc->loop();              // recognize and apply the key entry
   lines = lc->getLines();

@@ -5,6 +5,11 @@
 #include "../Devices/LiquidCrystal_TC.h"
 #include "MainMenu.h"
 
+void NumCollectorState::clear() {
+  numDigits = 0;
+  value = 0;
+}
+
 void NumCollectorState::handleKey(char key) {
   if (key >= '0' && key <= '9') {  // a digit
     numDigits++;
@@ -16,8 +21,7 @@ void NumCollectorState::handleKey(char key) {
   } else if (key == 'B') {  // Backspace
     backSpace();
   } else if (key == 'C') {  // Clear
-    numDigits = 0;
-    value = 0;
+    clear();
   } else if (key == 'D') {  // Disregard (escape/cancel)
     returnToMainMenu();
   }

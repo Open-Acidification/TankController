@@ -3,9 +3,7 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#include "Devices/Keypad_TC.h"
 #include "EEPROM_TC.h"
-#include "LiquidCrystal_TC.h"
 #include "TankControllerLib.h"
 
 unittest(test) {

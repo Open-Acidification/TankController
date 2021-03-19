@@ -42,19 +42,10 @@ DateTime_TC::DateTime_TC(uint16_t year, uint8_t month, uint8_t day, uint8_t hour
  * "2020-11-26 18:55:15"
  */
 void DateTime_TC::printToSerial() {
-  Serial_TC *serial = Serial_TC::instance();
-  serial->print(year());
-  serial->print('-');
-  serial->print_two_digits(month());
-  serial->print('-');
-  serial->print_two_digits(day());
-  serial->print(' ');
-  serial->print_two_digits(hour());
-  serial->print(':');
-  serial->print_two_digits(minute());
-  serial->print(':');
-  serial->print_two_digits(second());
-  serial->println();
+  char buffer[20];
+  strcpy(buffer, "YYYY-MM-DD hh:mm:ss");
+  toString(buffer);
+  Serial_TC::instance()->print(buffer);
 }
 
 /**

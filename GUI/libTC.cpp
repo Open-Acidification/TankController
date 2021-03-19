@@ -10,7 +10,6 @@
 #include "Arduino.h"
 #include "DateTime_TC.h"
 #include "EEPROM_TC.h"
-#include "EthernetServer_TC.h"
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
 #include "Serial_TC.h"
@@ -19,6 +18,14 @@
 
 namespace py = pybind11;
 char lcdLine[20];
+
+string dateTime() {
+  DateTime_TC now = DateTime_TC::now();
+  char buffer[20];
+  strcpy(buffer, "YYYY-MM-DD hh:mm:ss");
+  now.toString(buffer);
+  return string(buffer);
+}
 
 double eeprom(uint8_t index) {
   switch (index) {
@@ -108,6 +115,7 @@ const char *version() {
 PYBIND11_MODULE(libTC, m) {
   m.doc() = "pybind11 example plugin";  // optional module docstring
 
+  m.def("dateTime", &dateTime, "TankController DateTime");
   m.def("eeprom", &eeprom, "TankController EEPROM");
   m.def("key", &key, "TankController key");
   m.def("lcd", &lcd, "TankController LiquidCrystal");

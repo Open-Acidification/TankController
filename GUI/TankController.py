@@ -21,6 +21,7 @@ class TankController(wx.Frame):
         self.InitUI()
         self.Centre()
         self.Show()
+        print(libTC.dateTime())
 
     def InitUI(self):
         self.panel = wx.Panel(self)
@@ -125,8 +126,16 @@ class TankController(wx.Frame):
 
     def Keyboard(self, event):
         key = chr(event.GetUnicodeKey()).upper()
+        # do some translations
+        if (ord(key) == 3 or ord(key) == 13):  # return
+            key = 'A'
+        if (ord(key) == 27):  # escape
+            key = 'D'
+        if (key == '.'):  # decimal
+            key = '*'
+        print("Keyboard", key, ord(key))
         self.handleKey(key)
-        print("Keyboard", key)
+
 
 
 if __name__ == "__main__":

@@ -71,6 +71,8 @@ double eeprom(uint8_t index) {
       return EEPROM_TC::instance()->getTempInterval();
     case 20:
       return EEPROM_TC::instance()->getTempDelay();
+    case 21:
+      return EEPROM_TC::instance()->getGoogleSheetInterval();
     default:
       return std::numeric_limits<double>::quiet_NaN();
   }

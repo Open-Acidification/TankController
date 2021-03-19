@@ -197,4 +197,11 @@ unittest(TempDelay) {
   assertEqual(23, singleton->getTempDelay());
 }
 
+unittest(GoogleSheetIntervalMinutes) {
+  EEPROM_TC* singleton = EEPROM_TC::instance();
+  assertEqual(-1, singleton->getGoogleSheetInterval());
+  singleton->setGoogleSheetInterval(20);
+  assertEqual(20, singleton->getGoogleSheetInterval());
+}
+
 unittest_main()

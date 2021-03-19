@@ -76,7 +76,7 @@ class TankController(wx.Frame):
                   'Frequency', 'Granularity', 'Max Data Age',
                   'pH Series Size', 'pH Series Pointer', 'Temp Series Size',
                   'Temp Series Pointer', 'pH Interval', 'pH Delay',
-                  'Temp Interval', 'Temp Delay']
+                  'Temp Interval', 'Temp Delay', 'Google Sheet Minutes']
         eepromSizer = wx.StaticBoxSizer(
             wx.HORIZONTAL, self.panel, label="EEPROM")
         leftSizer = wx.StaticBoxSizer(wx.VERTICAL, self.panel)

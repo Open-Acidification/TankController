@@ -1,4 +1,4 @@
-#include "SetTankID.h"
+#include "SetGoogleSheetInterval.h"
 
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
@@ -8,12 +8,12 @@
 
 unittest(test) {
   TankControllerLibTest tc;
-  SetTankID* test = new SetTankID(&tc);
+  SetGoogleSheetInterval* test = new SetGoogleSheetInterval(&tc);
   tc.setNextState(test);
 
   // setValue
-  test->setValue(12);
-  assertEqual(12, EEPROM_TC::instance()->getTankID());
+  test->setValue(30);
+  assertEqual(30, EEPROM_TC::instance()->getGoogleSheetInterval());
 
   assertTrue(tc.isOnMainMenu());
 }

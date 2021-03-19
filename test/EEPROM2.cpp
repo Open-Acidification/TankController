@@ -52,7 +52,7 @@ unittest(writing_PH_should_corrupt_Temp) {
   EEPROM_TC* singleton = EEPROM_TC::instance(2);
   assertEqual(4, singleton->getTemp());
   singleton->setPH(3.05);
-  assertNotEqual(4, singleton->getTemp());
+  assertNotEqual(4, singleton->getTemp());  // THIS IS THE BUG!!
 }
 
 unittest(TankID) {
@@ -188,6 +188,13 @@ unittest(TempDelay) {
   assertNAN(singleton->getTempDelay());
   singleton->setTempDelay(23);
   assertEqual(23, singleton->getTempDelay());
+}
+
+unittest(GoogleSheetIntervalMinutes) {
+  EEPROM_TC* singleton = EEPROM_TC::instance(2);
+  assertEqual(-1, singleton->getGoogleSheetInterval());
+  singleton->setGoogleSheetInterval(20);
+  assertEqual(20, singleton->getGoogleSheetInterval());
 }
 
 unittest_main()

@@ -81,7 +81,7 @@ unittest(SetTankID) {
   assertEqual("Main Menu       ", lc->getLines().at(0));
 }
 
-unittest(ChangeGoogleSheetInterval) {
+unittest(SetGoogleSheetInterval) {
   TankControllerLib* tc = TankControllerLib::instance();
   LiquidCrystal_TC* lc = LiquidCrystal_TC::instance();
   Keypad* keypad = Keypad_TC::instance()->_getPuppet();
@@ -89,7 +89,7 @@ unittest(ChangeGoogleSheetInterval) {
   tc->loop();
   keypad->push_back('*');
   tc->loop();  // recognize and apply the key entry
-  assertEqual("G Sheet Interval", lc->getLines().at(0));
+  assertEqual("G Sheet Minutes ", lc->getLines().at(0));
   keypad->push_back('D');  // Don't finish (cancel)
   tc->loop();              // recognize and apply the key entry
   lines = lc->getLines();

@@ -15,10 +15,10 @@ public:
 
   // class methods
   static DateTime_TC now();
-  static char *nowAs16CharacterString();
   static RTC_PCF8523 *rtc();  // public so we can test
 
   // instance methods
+  char *as16CharacterString();
   void printToSerial();                             // DigitalClockDisplay.ino
   void yearMonthAsPath(char *buffer, size_t size);  // DoDirectoryMaintenance.ino
   void setAsCurrent();

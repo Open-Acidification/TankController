@@ -18,7 +18,7 @@ void SetTime::setValue(double value) {
     DateTime_TC dt(values[0], values[1], values[2], values[3], values[4]);
     dt.setAsCurrent();
 
-    char *buffer = DateTime_TC::nowAs16CharacterString();
+    char *buffer = DateTime_TC::now().as16CharacterString();
     Serial_TC::instance()->print("Set time to ", buffer);
     LiquidCrystal_TC::instance()->writeLine("New Date/Time:  ", 0);
     LiquidCrystal_TC::instance()->writeLine(buffer, 1);

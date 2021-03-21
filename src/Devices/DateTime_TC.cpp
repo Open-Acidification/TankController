@@ -33,19 +33,23 @@ DateTime_TC DateTime_TC::now() {
   return DateTime_TC(now.year(), now.month(), now.day(), now.hour(), now.minute(), now.second());
 }
 
-char buffer[20];
-char *DateTime_TC::nowAs16CharacterString() {
-  strcpy(buffer, "YYYY-MM-DD hh:mm");
-  DateTime_TC::now().toString(buffer);
-  return buffer;
-}
-
 //  instance methods
 /**
  * Constructor
  */
 DateTime_TC::DateTime_TC(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t min, uint8_t sec)
     : DateTime(year, month, day, hour, min, sec) {
+}
+
+/**
+ * Return a pointer to a static buffer with dateTime as "2021-03-19 15:45"
+ * The choice of 16 characters is to fit into an LCD
+ */
+char buffer[20];
+char *DateTime_TC::as16CharacterString() {
+  strcpy(buffer, "YYYY-MM-DD hh:mm");
+  this->toString(buffer);
+  return buffer;
 }
 
 /**

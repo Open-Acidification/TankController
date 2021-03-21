@@ -36,8 +36,8 @@ protected:
   TankControllerLib();
   ~TankControllerLib();
   void blink();
-  void updateState();
   void handleUI();
+  void updateState();
 };
 
 #ifdef MOCK_PINS_COUNT

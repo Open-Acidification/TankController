@@ -7,6 +7,7 @@ avr
 cassert
 cfg
 chr
+chrono
 ci
 Clib
 cmake
@@ -56,6 +57,7 @@ markdownlint
 mega
 memset
 microcontroler
+milli
 millis
 mkdir
 MOSI
@@ -93,9 +95,12 @@ strncpy
 substr
 testfile
 TODO
+typedef
 uint
+undef
 Unicode
 unittest
+unixtime
 unshallow
 url
 vscode

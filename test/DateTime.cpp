@@ -37,6 +37,12 @@ unittest(now) {
   assertTrue(now.second() >= 0);
 }
 
+unittest(as16CharacterString) {
+  DateTime_TC dateTime = DateTime_TC(2021, 03, 19, 15, 50);
+  dateTime.printToSerial();
+  assertEqual("2021-03-19 15:50", dateTime.as16CharacterString());
+}
+
 //  This function came from DigitalClockDisplay.ino in old TankController code
 unittest(printToSerial) {
   GodmodeState *state = GODMODE();
@@ -67,4 +73,43 @@ unittest(setAsCurrent) {
   assertEqual(48, now1.minute());
   assertEqual(24, now1.second());
 }
+
+// Remaining test deals with simulated delays
+#undef yield
+#include <chrono>
+#include <thread>
+
+#include "UIState/UIState.h"
+
+int myDelay = 0;
+
+// called by UIState::sleep() to let us know about the sleep event
+void sleepHandler(int ms) {
+  myDelay = ms;
+}
+
+unittest(myDelay) {
+  myDelay = 0;
+  uint32_t t1 = DateTime_TC::now().unixtime();
+
+  auto start = std::chrono::high_resolution_clock::now();
+  std::this_thread::sleep_for(std::chrono::milliseconds(1));
+  UIState::sleep(10000);  // this should be seen by arduino_ci, but not the underlying system
+  auto end = std::chrono::high_resolution_clock::now();
+  std::chrono::duration<double, std::milli> elapsed = end - start;
+  assertTrue(1 <= elapsed.count() && elapsed.count() < 10);
+
+  uint32_t t2 = DateTime_TC::now().unixtime();
+  assertTrue(t1 + 10 <= t2 && t2 <= t1 + 11);
+
+  assertTrue(UIState::addSleepHandler(sleepHandler));
+  assertEqual(0, myDelay);
+  UIState::sleep(500);  // this should be seen by arduino_ci
+  assertEqual(500, myDelay);
+  assertTrue(UIState::removeSleepHandler(sleepHandler));
+  assertFalse(UIState::removeSleepHandler(sleepHandler));
+  UIState::sleep(500);  // this should be seen by arduino_ci
+  assertEqual(500, myDelay);
+}
+
 unittest_main()

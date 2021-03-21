@@ -20,7 +20,7 @@ namespace py = pybind11;
 char lcdLine[20];
 
 char *dateTime() {
-  return DateTime_TC::nowAs16CharacterString();
+  return DateTime_TC::now().as16CharacterString();
 }
 
 double eeprom(uint8_t index) {

@@ -22,10 +22,10 @@
  */
 void MainMenu::handleKey(char key) {
   switch (key) {
-    case 'A':  // Change pH set_point
+    case 'A':  // Set pH set_point
       this->setNextState((UIState*)new SetPHSetPoint(tc));
       break;
-    case 'B':  // Change Temperature set_point
+    case 'B':  // Set Temperature set_point
       this->setNextState((UIState*)new SetTempSetPoint(tc));
       break;
     case 'C':  // pH Calibration
@@ -34,10 +34,10 @@ void MainMenu::handleKey(char key) {
     case 'D':  // Calibration Management
       this->setNextState((UIState*)new CalibrationManagement(tc));
       break;
-    case '#':  // Change Tank ID
+    case '#':  // Set Tank ID
       this->setNextState((UIState*)new SetTankID(tc));
       break;
-    case '*':  // Change Google Sheet Interval
+    case '*':  // Set Google Sheet Interval
       this->setNextState((UIState*)new SetGoogleSheetInterval(tc));
       break;
     case '0':  // See Device Uptime & Current Time

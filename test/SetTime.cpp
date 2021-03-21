@@ -7,10 +7,17 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "TankControllerLib.h"
 
+std::vector<String> lines;
+
+void sleepHandler(int millis) {
+  lines = LiquidCrystal_TC::instance()->getLines();
+}
+
 unittest(test) {
   LiquidCrystal_TC* lcd = LiquidCrystal_TC::instance();
   TankControllerLibTest tc;
   SetTime* test = new SetTime(&tc);
+  UIState::addSleepHandler(sleepHandler);
   tc.setNextState(test);
 
   DateTime_TC now = DateTime_TC::now();
@@ -18,7 +25,7 @@ unittest(test) {
   assertTrue(now.year() > 2020);
 
   // get currently displayed lines
-  std::vector<String> lines = lcd->getLines();
+  lines = lcd->getLines();
   assertEqual("Set Year (YYYY):", lines.at(0));
   test->setValue(2020);
   lines = lcd->getLines();
@@ -33,9 +40,14 @@ unittest(test) {
   lines = lcd->getLines();
   assertEqual("Minute (0-59):  ", lines.at(0));
   test->setValue(15);
+  UIState::removeSleepHandler(sleepHandler);
+
+  // during the delay we showed the new value
+  assertEqual("New Date/Time:  ", lines[0]);
+  assertEqual("2020-03-18 13:15", lines[1]);
 
   // a year ago ensures that it precedes the compile time
-  assertEqual("2020-03-18 13:15", DateTime_TC::nowAs16CharacterString());
+  assertEqual("2020-03-18 13:15", DateTime_TC::now().as16CharacterString());
 
   assertTrue(tc.isOnMainMenu());
 }

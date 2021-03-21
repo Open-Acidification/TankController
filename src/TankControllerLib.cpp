@@ -80,8 +80,8 @@ void TankControllerLib::handleUI() {
   if (key != NO_KEY) {
     log->print(F("Keypad input: "), key);
     state->handleKey(key);
-    updateState();
   }
+  updateState();
 }
 
 /**

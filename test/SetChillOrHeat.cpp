@@ -6,6 +6,12 @@
 #include "EEPROM_TC.h"
 #include "TankControllerLib.h"
 
+std::vector<String> lines;
+
+void sleepHandler(int millis) {
+  lines = LiquidCrystal_TC::instance()->getLines();
+}
+
 unittest(default) {
   TankControllerLibTest tc;
   SetChillOrHeat* test = new SetChillOrHeat(&tc);
@@ -36,11 +42,16 @@ unittest(switchToHeat) {
 unittest(switchToChill) {
   TankControllerLibTest tc;
   SetChillOrHeat* test = new SetChillOrHeat(&tc);
+  UIState::addSleepHandler(sleepHandler);
   tc.setNextState(test);
   EEPROM_TC::instance()->setHeat(true);
   test->setValue(1.0);
   assertFalse(EEPROM_TC::instance()->getHeat());
+  UIState::removeSleepHandler(sleepHandler);
   assertTrue(tc.isOnMainMenu());
+
+  // during the delay we showed the new value
+  assertEqual("Use chiller     ", lines[1]);
 }
 
 unittest_main()

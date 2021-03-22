@@ -47,24 +47,24 @@ unittest(loop) {
   assertEqual(0, micros());
   tank->loop();
   assertEqual(0, micros());
-  delay(500);
-  assertEqual(500000, micros());
+  delay(1000);
+  assertEqual(1000000, micros());
   tank->loop();
-  delay(500);
+  delay(1000);
   tank->loop();
-  delay(500);
+  delay(1000);
   tank->loop();
-  delay(500);
+  delay(1000);
   state->digitalPin[LED_BUILTIN].removeObserver("led");
   assertFalse(overflowFlag);
   assertEqual(4, logIndex);
   assertEqual(0, pinLog[0].time);
   assertEqual(HIGH, pinLog[0].value);
-  assertEqual(500000, pinLog[1].time);
+  assertEqual(1000000, pinLog[1].time);
   assertEqual(LOW, pinLog[1].value);
-  assertEqual(1000000, pinLog[2].time);
+  assertEqual(2000000, pinLog[2].time);
   assertEqual(HIGH, pinLog[2].value);
-  assertEqual(1500000, pinLog[3].time);
+  assertEqual(3000000, pinLog[3].time);
   assertEqual(LOW, pinLog[3].value);
 }
 

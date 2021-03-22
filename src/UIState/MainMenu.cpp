@@ -75,3 +75,7 @@ void MainMenu::handleKey(char key) {
       break;
   }
 }
+
+void MainMenu::loop() {
+  // show current temp and pH
+}

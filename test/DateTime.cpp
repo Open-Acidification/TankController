@@ -81,35 +81,20 @@ unittest(setAsCurrent) {
 
 #include "UIState/UIState.h"
 
-int myDelay = 0;
-
-// called by UIState::sleep() to let us know about the sleep event
-void sleepHandler(int ms) {
-  myDelay = ms;
-}
-
 unittest(myDelay) {
-  myDelay = 0;
   uint32_t t1 = DateTime_TC::now().unixtime();
 
   auto start = std::chrono::high_resolution_clock::now();
   std::this_thread::sleep_for(std::chrono::milliseconds(1));
-  UIState::sleep(10000);  // this should be seen by arduino_ci, but not the underlying system
+  delay(10000);  // this should be seen by arduino_ci, but not the underlying system
   auto end = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double, std::milli> elapsed = end - start;
-  assertTrue(1 <= elapsed.count() && elapsed.count() < 10);
+  // actual delay should a few milliseconds
+  assertTrue(1 <= elapsed.count() && elapsed.count() <= 5);
 
   uint32_t t2 = DateTime_TC::now().unixtime();
+  // simulated delay should be 10 seconds
   assertTrue(t1 + 10 <= t2 && t2 <= t1 + 11);
-
-  assertTrue(UIState::addSleepHandler(sleepHandler));
-  assertEqual(0, myDelay);
-  UIState::sleep(500);  // this should be seen by arduino_ci
-  assertEqual(500, myDelay);
-  assertTrue(UIState::removeSleepHandler(sleepHandler));
-  assertFalse(UIState::removeSleepHandler(sleepHandler));
-  UIState::sleep(500);  // this should be seen by arduino_ci
-  assertEqual(500, myDelay);
 }
 
 unittest_main()

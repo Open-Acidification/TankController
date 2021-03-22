@@ -7,8 +7,6 @@
 
 #include <Arduino.h>
 
-typedef void (*SleepHandler)(int ms);
-
 class TankControllerLib;  // Forward reference
 class UIState {
 public:
@@ -20,14 +18,12 @@ public:
   virtual ~UIState() {
   }
 
-  static bool addSleepHandler(SleepHandler pFunction);
-  static bool removeSleepHandler(SleepHandler pFunction);
-  static void sleep(int ms);
-
   // instance methods
   virtual void handleKey(char key);
   virtual bool isMainMenu() {
     return false;
+  }
+  virtual void loop() {
   }
   virtual const char* prompt() {
     return "                ";
@@ -38,8 +34,4 @@ protected:
   void setNextState(UIState* state);
   void returnToMainMenu(int msDelay = 0);
   TankControllerLib* tc = nullptr;
-
-private:
-  static const int SLEEP_HANDLERS_COUNT = 5;
-  static SleepHandler sleepHandlers[SLEEP_HANDLERS_COUNT];
 };

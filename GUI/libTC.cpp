@@ -3,8 +3,16 @@
 #define NUM_SERIAL_PORTS 1
 #define EEPROM_SIZE 4096
 
+#include <sys/time.h>
+
+// Arduino defines this and thread gets confused with it!
+#undef yield
+
+#include <chrono>
+#include <ctime>
 #include <limits>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include "Arduino.h"
@@ -14,10 +22,16 @@
 #include "LiquidCrystal_TC.h"
 #include "Serial_TC.h"
 #include "TankControllerLib.h"
+#include "UIState/UIState.h"
 #include "pybind11/pybind11.h"
+
+#define LED_PIN 13
 
 namespace py = pybind11;
 char lcdLine[20];
+
+// function prototypes
+void loop();
 
 char *dateTime() {
   return DateTime_TC::now().as16CharacterString();
@@ -76,6 +90,7 @@ double eeprom(uint8_t index) {
 
 void key(char key) {
   Keypad_TC::instance()->_getPuppet()->push_back(key);
+  loop();
 }
 
 const char *lcd(int index) {
@@ -91,7 +106,17 @@ const char *lcd(int index) {
   return lcdLine;
 }
 
+bool led() {
+  return digitalRead(LED_PIN);
+}
+
 void loop() {
+  unsigned long millisecondsSinceEpoch =
+      std::chrono::system_clock::now().time_since_epoch() / std::chrono::milliseconds(1);
+  int msBehind = millisecondsSinceEpoch - millis();
+  if (msBehind) {
+    delay(msBehind);
+  }
   TankControllerLib::instance()->loop();
 }
 
@@ -102,7 +127,23 @@ string serial() {
   return result;
 }
 
+void setTime() {
+  int timeDelta = 0;
+  time_t rawtime;
+  struct tm *timeinfo;
+  time(&rawtime);
+  timeinfo = localtime(&rawtime);
+  DateTime_TC now(timeinfo->tm_year + 1900, timeinfo->tm_mon + 1, timeinfo->tm_mday, timeinfo->tm_hour,
+                  timeinfo->tm_min, timeinfo->tm_sec);
+  unsigned long millisecondsSinceEpoch =
+      std::chrono::system_clock::now().time_since_epoch() / std::chrono::milliseconds(1);
+  timeDelta = millisecondsSinceEpoch - millis();
+  delay(timeDelta);
+  now.setAsCurrent();
+}
+
 void setup() {
+  setTime();
   TankControllerLib::instance()->setup();
 }
 
@@ -117,6 +158,7 @@ PYBIND11_MODULE(libTC, m) {
   m.def("eeprom", &eeprom, "TankController EEPROM");
   m.def("key", &key, "TankController key");
   m.def("lcd", &lcd, "TankController LiquidCrystal");
+  m.def("led", &led, "TankController LED pin value");
   m.def("loop", &loop, "TankController loop");
   m.def("serial", &serial, "TankController serial");
   m.def("setup", &setup, "TankController setup");

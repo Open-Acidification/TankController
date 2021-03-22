@@ -14,6 +14,8 @@ cmake
 config
 cout
 cpp
+ctime
+datetime
 DHCP
 Dnominal
 docstring
@@ -51,8 +53,10 @@ Keymap
 Kp
 len
 libtc
+localtime
 LOWTHRESH
 lqd
+mday
 markdownlint
 mega
 memset
@@ -75,6 +79,7 @@ pragma
 println
 py
 pybind
+rawtime
 rb
 README
 READONLY
@@ -93,7 +98,9 @@ strcpy
 strlen
 strncpy
 substr
+sys
 testfile
+timeinfo
 TODO
 typedef
 uint

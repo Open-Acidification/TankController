@@ -13,11 +13,12 @@ class MainMenu : public UIState {
 public:
   MainMenu(TankControllerLib* tc) : UIState(tc) {
   }
-  virtual void handleKey(char key);
+  void handleKey(char key);
   const char* prompt() {
     return "Main Menu       ";
   };
-  virtual bool isMainMenu() {
+  bool isMainMenu() {
     return true;
   }
+  void loop();
 };

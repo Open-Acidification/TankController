@@ -50,7 +50,7 @@ TankControllerLib::~TankControllerLib() {
  *
  */
 void TankControllerLib::blink() {
-  if (millis() / 500 % 2) {
+  if (millis() / 1000 % 2) {
     digitalWrite(LED_BUILTIN, LOW);  // turn the LED off by making the voltage LOW
   } else {
     digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
@@ -82,6 +82,7 @@ void TankControllerLib::handleUI() {
     state->handleKey(key);
   }
   updateState();
+  state->loop();
 }
 
 /**

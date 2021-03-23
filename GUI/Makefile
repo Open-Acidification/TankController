@@ -1,9 +1,6 @@
 CC = g++ -std=c++17 -O3 -fPIC
 DEFINES = -D__AVR__ -D__AVR_ATmega2560__ -DARDUINO_ARCH_AVR -DARDUINO_AVR_MEGA2560 -DARDUINO=100
-ifndef LIBRARIES
-	LIBRARIES = $(shell bundle exec arduino_library_location.rb)
-endif
-TC_PATH = $(LIBRARIES)/TankControllerLib/src
+LIBRARIES = $(shell bundle exec arduino_library_location.rb)
 PY_PATH = $(shell cd ../pybind11; python3 -m pybind11 --includes)
 SUFFIX = $(shell python3-config --extension-suffix)
 PY_LIB = ../libTC$(SUFFIX)

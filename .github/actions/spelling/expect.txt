@@ -78,6 +78,7 @@ plugin
 png
 pragma
 println
+pwd
 py
 pybind
 rawtime
@@ -95,10 +96,12 @@ RTDINLOW
 setpoint
 sizeof
 sprintf
+src
 strcpy
 strlen
 strncpy
 substr
+sudo
 sys
 testfile
 timeinfo

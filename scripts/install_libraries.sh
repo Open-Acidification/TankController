@@ -13,7 +13,10 @@ export SHALLOW_MASTER='--depth 1 --branch master --single-branch '
 # cd $(bundle exec arduino_library_location.rb)
 
 if ! [ $(id -u) = 0 ]; then
-   cd $(bundle exec arduino_library_location.rb)
+  bundle config --local path vendor/bundle
+  bundle install
+  mkdir -p $(bundle exec arduino_library_location.rb)
+  cd $(bundle exec arduino_library_location.rb)
 fi
 
 # add missing libraries

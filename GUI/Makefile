@@ -1,8 +1,5 @@
 CC = g++ -std=c++17 -O3 -fPIC
 DEFINES = -D__AVR__ -D__AVR_ATmega2560__ -DARDUINO_ARCH_AVR -DARDUINO_AVR_MEGA2560 -DARDUINO=100
-ifndef ARDUINO_CI
-	ARDUINO_CI = $(HOME)/Documents/Arduino/arduino_ci/cpp/arduino
-endif
 ifndef LIBRARIES
 	LIBRARIES = $(shell bundle exec arduino_library_location.rb)
 endif
@@ -18,10 +15,12 @@ all : $(PY_LIB)
 $(PY_LIB) : TankControllerLib.o ../pybind11/setup.py ../libTC.cpp
 	echo "===== Compiling PY_LIB ($(PY_LIB)) =====" > /dev/null
 	$(CC) -shared -fPIC												\
+	$(DEFINES)                            	  \
 	-Wl,-undefined,dynamic_lookup							\
 	$(PY_PATH)																\
 	-I$(TC_PATH)                      				\
 	-I$(TC_PATH)/Devices               				\
+	-I$(TC_PATH)/UIState               				\
 	-I$(ARDUINO_CI)														\
 	-I$(LIBRARIES)/Adafruit_BusIO/src					\
 	-I$(LIBRARIES)/Adafruit_MAX31865/src			\
@@ -41,7 +40,9 @@ TankControllerLib.o : Godmode.o
 	echo "===== Compiling TankControllerLib =====" > /dev/null
 	$(CC) -c                              			\
 	$(DEFINES)                            			\
-	-I$(TC_PATH)                          			\
+	-I$(TC_PATH)                      				  \
+	-I$(TC_PATH)/Devices               			  	\
+	-I$(TC_PATH)/UIState               			  	\
 	-I$(ARDUINO_CI)															\
 	-I$(LIBRARIES)/Adafruit_BusIO/src						\
 	-I$(LIBRARIES)/Adafruit_MAX31865/src				\

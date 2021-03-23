@@ -22,7 +22,8 @@
 #include "LiquidCrystal_TC.h"
 #include "Serial_TC.h"
 #include "TankControllerLib.h"
-#include "UIState/UIState.h"
+#include "TempProbe_TC.h"
+#include "UIState.h"
 #include "pybind11/pybind11.h"
 
 #define LED_PIN 13
@@ -106,6 +107,11 @@ const char *lcd(int index) {
   return lcdLine;
 }
 
+double getTemperature() {
+  TempProbe_TC *tempProbe = TempProbe_TC::instance();
+  return tempProbe->getRunningAverage();
+}
+
 bool led() {
   return digitalRead(LED_PIN);
 }
@@ -125,6 +131,11 @@ string serial() {
   string result = string(state->serialPort[0].dataOut);
   state->serialPort[0].dataOut = "";
   return result;
+}
+
+void setTemperature(double value) {
+  TempProbe_TC *tempProbe = TempProbe_TC::instance();
+  tempProbe->setTemperature(value);
 }
 
 void setTime() {

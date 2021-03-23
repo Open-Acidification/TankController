@@ -10,6 +10,9 @@ class SetChillOrHeat : public NumCollectorState {
 public:
   SetChillOrHeat(TankControllerLib* tc) : NumCollectorState(tc) {
   }
+  String name() {
+    return "SetChillOrHeat";
+  }
   const char* prompt() {
     return "1:Chill; 9:Heat ";
   };

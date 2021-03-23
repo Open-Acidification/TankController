@@ -10,5 +10,8 @@ class SeeDeviceUptime : public UIState {
 public:
   SeeDeviceUptime(TankControllerLib* tc) : UIState(tc) {
   }
+  String name() {
+    return "SeeDeviceUptime";
+  }
   void start();
 };

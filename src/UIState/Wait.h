@@ -13,6 +13,9 @@ public:
   }
   // watch to see if enough time has passed
   void loop();
+  String name() {
+    return "Wait";
+  }
   // override to do nothing
   void start() {
   }

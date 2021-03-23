@@ -39,6 +39,9 @@ public:
   void setValue(double value) {
     storedValue = value;
   }
+  String name() {
+    return "TestNumCollectorState";
+  }
   const char* prompt() {
     return "Test:";
   }

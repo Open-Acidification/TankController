@@ -14,13 +14,11 @@ public:
   static TankControllerLib* instance();
 
   // instance methods
-  void setup();
   void loop();
+  void setNextState(UIState* newState, bool update = false);
+  void setup();
+  String stateName();
   const char* version();
-  virtual void setNextState(UIState* newState) {
-    assert(nextState == nullptr);
-    nextState = newState;
-  }
 
 protected:
   // class variables
@@ -39,15 +37,3 @@ protected:
   void handleUI();
   void updateState();
 };
-
-#ifdef MOCK_PINS_COUNT
-class TankControllerLibTest : public TankControllerLib {
-public:
-  void setNextState(UIState* newState) {
-    assert(nextState == nullptr);
-    nextState = newState;
-    updateState();
-  }
-  bool isOnMainMenu();
-};
-#endif

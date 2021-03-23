@@ -11,6 +11,9 @@ public:
   SeePIDConstants(TankControllerLib* tc) : UIState(tc) {
   }
   void handleKey(char key);
+  String name() {
+    return "SeePIDConstants";
+  }
   const char* prompt() {
     return "PID Constants   ";
   };

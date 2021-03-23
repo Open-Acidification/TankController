@@ -11,6 +11,9 @@ public:
   SeeTankID(TankControllerLib* tc) : UIState(tc) {
   }
   void handleKey(char key);
+  String name() {
+    return "SeeTankID";
+  }
   const char* prompt() {
     return "Tank ID=        ";
   };

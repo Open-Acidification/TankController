@@ -7,9 +7,9 @@
 #include "TankControllerLib.h"
 
 unittest(test) {
-  TankControllerLibTest tc;
-  SetGoogleSheetInterval* test = new SetGoogleSheetInterval(&tc);
-  tc.setNextState(test);
+  TankControllerLib* tc = TankControllerLib::instance();
+  SetGoogleSheetInterval* test = new SetGoogleSheetInterval(tc);
+  tc->setNextState(test, true);
 
   // setValue
   test->setValue(30);
@@ -18,11 +18,14 @@ unittest(test) {
   // during the delay we showed the new value
   std::vector<String> lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("New interval=30 ", lines[1]);
-  assertFalse(tc.isOnMainMenu());
+  assertEqual("SetGoogleSheetInterval", tc->stateName());
+  tc->loop();  // transition to Wait
+  assertEqual("Wait", tc->stateName());
   delay(1000);
-  tc.loop();
+  tc->loop();  // queue MainMenu to be next
+  tc->loop();  // transition to MainMenu
   // now we should be back to the main menu
-  assertTrue(tc.isOnMainMenu());
+  assertEqual("MainMenu", tc->stateName());
 }
 
 unittest_main()

@@ -11,6 +11,9 @@ public:
   ResetLCDScreen(TankControllerLib* tc) : UIState(tc) {
   }
   void handleKey(char key);
+  String name() {
+    return "ResetLCDScreen";
+  }
   const char* prompt() {
     return "Clearing Screen ";
   };

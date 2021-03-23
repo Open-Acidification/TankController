@@ -11,6 +11,9 @@ public:
   EnablePID(TankControllerLib* tc) : UIState(tc) {
   }
   void handleKey(char key);
+  String name() {
+    return "EnablePID";
+  }
   const char* prompt() {
     return "Enable PID?     ";
   };

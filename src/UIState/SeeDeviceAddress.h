@@ -11,6 +11,9 @@ public:
   SeeDeviceAddress(TankControllerLib* tc) : UIState(tc) {
   }
   void handleKey(char key);
+  String name() {
+    return "SeeDeviceAddress";
+  }
   const char* prompt() {
     return "Device address  ";
   };

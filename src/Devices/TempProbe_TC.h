@@ -94,9 +94,11 @@ public:
     return thermo.readRTD();
   }
 
-  float getTemperature() {
+  float getRawTemperature() {
     return thermo.temperature(RTDnominal, refResistor);
   }
+
+  double getRunningAverage();
 
   uint8_t readFault() {
     return thermo.readFault();
@@ -106,12 +108,30 @@ public:
     thermo.clearFault();
   }
 
+  void setCorrection(float value) {
+    correction = value;
+  }
+
+#ifdef MOCK_PINS_COUNT
+  // set a temperature in the mock
+  void setTemperature(float newTemp) {
+    thermo.setTemperature(newTemp);
+  }
+#endif
+
 private:
-  //  Class variables
+  //  Class variable
   static TempProbe_TC* _instance;
-  const int RTDnominal = 100;
-  const int refResistor = 430;
+
+  //  Instance variables
+  static const int RTDnominal = 100;
+  static const int refResistor = 430;
   Adafruit_MAX31865 thermo = Adafruit_MAX31865(45, 43, 41, 39);
+  bool firstTime = true;
+  static const int HISTORY_SIZE = 10;
+  double history[HISTORY_SIZE];
+  int historyIndex = 0;
+  double correction = 0.0;
 
   // Methods
   TempProbe_TC();

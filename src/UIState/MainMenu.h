@@ -14,6 +14,9 @@ public:
   MainMenu(TankControllerLib* tc) : UIState(tc) {
   }
   void handleKey(char key);
+  String name() {
+    return "MainMenu";
+  }
   const char* prompt() {
     return "Main Menu       ";
   };

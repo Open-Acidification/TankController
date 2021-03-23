@@ -11,6 +11,9 @@ public:
   CalibrationManagement(TankControllerLib* tc) : UIState(tc) {
   }
   void handleKey(char key);
+  String name() {
+    return "CalibrationManagement";
+  }
   const char* prompt() {
     return "Cal Management  ";
   };

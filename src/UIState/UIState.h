@@ -25,6 +25,7 @@ public:
   }
   virtual void loop() {
   }
+  virtual String name() = 0;
   virtual const char* prompt() {
     return "                ";
   }

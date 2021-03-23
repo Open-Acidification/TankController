@@ -11,6 +11,9 @@ public:
   PHCalibration(TankControllerLib* tc) : UIState(tc) {
   }
   void handleKey(char key);
+  String name() {
+    return "PHCalibration";
+  }
   const char* prompt() {
     return "pH-Calibration  ";
   };

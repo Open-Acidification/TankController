@@ -11,7 +11,7 @@ public:
   PIDTuningMenu(TankControllerLib* tc) : UIState(tc) {
   }
   void handleKey(char key);
-  String name() {
+  const char* name() {
     return "PIDTuningMenu";
   }
   const char* prompt() {

@@ -4,6 +4,7 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/SD_TC.h"
 #include "Devices/Serial_TC.h"
+#include "TC_util.h"
 #include "UIState/MainMenu.h"
 #include "UIState/UIState.h"
 
@@ -62,15 +63,15 @@ void TankControllerLib::blink() {
  * Handles keypresses
  */
 void TankControllerLib::handleUI() {
-  // std::cout << "TankControllerLib::handleUI() - " << state->name() << std::endl;
+  COUT("TankControllerLib::handleUI() - " << state->name());
   char key = Keypad_TC::instance()->getKey();
   if (key != NO_KEY) {
     log->print(F("Keypad input: "), key);
-    // std::cout << "TankControllerLib::handleUI() - " << state->name() << "::handleKey(" << key << ")" << std::endl;
+    COUT("TankControllerLib::handleUI() - " << state->name() << "::handleKey(" << key << ")");
     state->handleKey(key);
   }
   updateState();
-  // std::cout << "TankControllerLib::handleUI() - " << state->name() << "::loop()" << std::endl;
+  COUT("TankControllerLib::handleUI() - " << state->name() << "::loop()");
   state->loop();
 }
 
@@ -79,7 +80,7 @@ void TankControllerLib::handleUI() {
  * It is called repeatedly while the board is on.
  */
 void TankControllerLib::loop() {
-  // std::cout << "TankControllerLib::loop() for " << newState->name() << std::endl;
+  COUT("TankControllerLib::loop() for " << state->name());
   blink();  //  blink the on-board LED to show that we are running
   handleUI();
 }
@@ -88,7 +89,7 @@ void TankControllerLib::loop() {
  * Set the next state
  */
 void TankControllerLib::setNextState(UIState *newState, bool update) {
-  // std::cout << "TankControllerLib::setNextState() to " << newState->name() << std::endl;
+  COUT("TankControllerLib::setNextState() to " << newState->name());
   assert(nextState == nullptr);
   nextState = newState;
   if (update) {
@@ -108,27 +109,26 @@ void TankControllerLib::setup() {
 }
 
 /**
+ * Public member function used to get the current state name.
+ * This is primarily used by testing.
+ */
+const char *TankControllerLib::stateName() {
+  return state->name();
+}
+
+/**
  * Private member function called by UIState subclasses
  * Only updates if a new state is available to switch to
  */
 void TankControllerLib::updateState() {
   if (nextState) {
-    // std::cout << "TankControllerLib::updateState() to " << nextState->name() << std::endl;
+    COUT("TankControllerLib::updateState() to " << nextState->name());
     assert(state != nextState);
     delete state;
     state = nextState;
     nextState = nullptr;
     state->start();
   }
-}
-
-/**
- * Public member function used to get the current state name.
- * This is primarily used by testing.
- */
-
-String TankControllerLib::stateName() {
-  return state->name();
 }
 
 /**

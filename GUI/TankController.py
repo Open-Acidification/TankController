@@ -27,6 +27,7 @@ class TankController(wx.Frame):
         self.Centre()
         self.Show()
         self.startLoop()
+        libTC.setTemperature(12.345)
 
     def InitUI(self):
         self.layoutMain()
@@ -45,68 +46,68 @@ class TankController(wx.Frame):
         self.panel = wx.Panel(self)
         self.panel.Bind(wx.EVT_CHAR, self.Keyboard)
         mainSizer = wx.BoxSizer(wx.VERTICAL)
-        mainSizer.Add(self.layoutTop(), flag=wx.EXPAND)
-        mainSizer.Add(self.layoutBottom(), flag=wx.EXPAND)
+        mainSizer.Add(self.layoutTop(), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
+        mainSizer.Add(self.layoutBottom(), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
         self.panel.SetSizer(mainSizer)
 
     def layoutBottom(self):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.Add(self.layoutSerial(), flag=wx.EXPAND)
+        sizer.Add(self.layoutSerial(), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
         return sizer
 
     def layoutTop(self):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.Add(self.layoutTopLeft(), flag=wx.EXPAND)
-        sizer.Add(self.layoutEEPROM(), flag=wx.EXPAND)
+        sizer.Add(self.layoutTopLeft(), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
+        sizer.Add(self.layoutEEPROM(), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
         return sizer
 
     def layoutTopLeft(self):
         sizer = wx.StaticBoxSizer(wx.VERTICAL, self.panel)
-        sizer.Add(self.layoutDevice(), flag=wx.EXPAND)
-        sizer.Add(self.layoutTank(), flag=wx.EXPAND)
+        sizer.Add(self.layoutDevice(), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
+        sizer.Add(self.layoutTank(), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
         return sizer
 
     def layoutTank(self):
         sizer = wx.StaticBoxSizer(wx.HORIZONTAL, self.panel)
-        sizer.Add(self.layoutTemp(), flag=wx.EXPAND)
-        sizer.Add(self.layoutPH(), flag=wx.EXPAND)
+        sizer.Add(self.layoutTemp(), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
+        sizer.Add(self.layoutPH(), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
         return sizer
 
     def layoutTemp(self):
         sizer = wx.StaticBoxSizer(
-            wx.VERTICAL, self.panel, label="Tank Temperature")
-        self.temp = wx.TextCtrl(
+            wx.VERTICAL, self.panel, label="Tank Temp")
+        temp = wx.TextCtrl(
             self.panel, value='12.345', style=wx.TE_RIGHT)
-        self.temp.Bind(wx.EVT_TEXT, self.onTempChanged)
+        temp.Bind(wx.EVT_TEXT, self.onTempChanged)
         font = wx.Font(18, wx.FONTFAMILY_TELETYPE,
                        wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL)
-        self.lqd.SetFont(font)
-        sizer.Add(self.temp, flag=wx.EXPAND)
+        temp.SetFont(font)
+        sizer.Add(temp, flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
         return sizer
 
     def layoutPH(self):
         sizer = wx.StaticBoxSizer(
             wx.VERTICAL, self.panel, label="Tank pH")
-        self.ph = wx.TextCtrl(
+        ph = wx.TextCtrl(
             self.panel, value='8.1234', style=wx.TE_RIGHT)
-        self.ph.Bind(wx.EVT_TEXT, self.onPHChanged)
+        ph.Bind(wx.EVT_TEXT, self.onPHChanged)
         font = wx.Font(18, wx.FONTFAMILY_TELETYPE,
                        wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL)
-        self.lqd.SetFont(font)
-        sizer.Add(self.ph, flag=wx.EXPAND)
+        ph.SetFont(font)
+        sizer.Add(ph, flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
         return sizer
 
     def layoutDevice(self):
         sizer = wx.StaticBoxSizer(
             wx.VERTICAL, self.panel, label="Tank Controller v" + libTC.version())
-        sizer.Add(self.layoutDisplay(), flag=wx.EXPAND)
-        sizer.Add(self.layoutKeypad(), flag=wx.EXPAND)
+        sizer.Add(self.layoutDisplay(), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
+        sizer.Add(self.layoutKeypad(), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
         return sizer
 
     def layoutDisplay(self):
         sizer = wx.StaticBoxSizer(wx.HORIZONTAL, self.panel)
-        sizer.Add(self.layoutLQD(), flag=wx.EXPAND)
-        sizer.Add(self.layoutPins(), flag=wx.EXPAND)
+        sizer.Add(self.layoutLQD(), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
+        sizer.Add(self.layoutPins(), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
         return sizer
 
     def layoutLQD(self):
@@ -117,7 +118,7 @@ class TankController(wx.Frame):
         font = wx.Font(22, wx.FONTFAMILY_TELETYPE,
                        wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL)
         self.lqd.SetFont(font)
-        sizer.Add(self.lqd, flag=wx.EXPAND)
+        sizer.Add(self.lqd, flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
         return sizer
 
     def layoutPins(self):
@@ -127,7 +128,7 @@ class TankController(wx.Frame):
         font = wx.Font(15, wx.FONTFAMILY_TELETYPE,
                        wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL)
         self.pins.SetFont(font)
-        sizer.Add(self.pins, flag=wx.EXPAND)
+        sizer.Add(self.pins, flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
         return sizer
 
     def layoutKeypad(self):
@@ -141,7 +142,7 @@ class TankController(wx.Frame):
             button = wx.Button(self.panel, label=each)
             button.Bind(wx.EVT_LEFT_UP, self.KeypadEvent)
             keypadGrid.Add(button, 0, flag=wx.EXPAND)
-        sizer.Add(keypadGrid, flag=wx.EXPAND)
+        sizer.Add(keypadGrid, flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
         return sizer
 
     def layoutEEPROM(self):
@@ -149,9 +150,9 @@ class TankController(wx.Frame):
         labels = ['pH', 'Temp', 'Tank ID', 'Corrected Temp',
                   'KP', 'KI', 'KD', 'Mac', 'Heat', 'Amplitude',
                   'Frequency', 'Granularity', 'Max Data Age',
-                  'pH Series Size', 'pH Series Pointer', 'Temp Series Size',
-                  'Temp Series Pointer', 'pH Interval', 'pH Delay',
-                  'Temp Interval', 'Temp Delay', 'Google Sheet Minutes']
+                  'pH Series Size', 'pH Series Ptr', 'Temp Series Size',
+                  'Temp Series Ptr', 'pH Interval', 'pH Delay',
+                  'Temp Interval', 'Temp Delay', 'Google Sheet Mins']
         sizer = wx.StaticBoxSizer(
             wx.HORIZONTAL, self.panel, label="EEPROM")
         leftSizer = wx.StaticBoxSizer(wx.VERTICAL, self.panel)
@@ -159,17 +160,18 @@ class TankController(wx.Frame):
         rightSizer = wx.StaticBoxSizer(wx.VERTICAL, self.panel)
         currentColumn = leftSizer
         for i, each in enumerate(labels):
-            box = wx.StaticBox(self.panel, label=each)
-            value = wx.StaticText(box, label='nan')
+            box = wx.StaticBoxSizer(wx.HORIZONTAL, self.panel, label=each)
+            value = wx.StaticText(self.panel, label="nan")
+            box.Add(value, flag=wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, border=5)
             if i >= len(labels) / 3 * 2:
                 currentColumn = rightSizer
             elif i >= len(labels) / 3:
                 currentColumn = centerSizer
-            currentColumn.Add(box, flag=wx.EXPAND)
+            currentColumn.Add(box, flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=10)
             self.eeprom.append(value)
-        sizer.Add(leftSizer, flag=wx.EXPAND)
-        sizer.Add(centerSizer, flag=wx.EXPAND)
-        sizer.Add(rightSizer, flag=wx.EXPAND)
+        sizer.Add(leftSizer, flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
+        sizer.Add(centerSizer, flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
+        sizer.Add(rightSizer, flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
         return sizer
 
     def layoutSerial(self):
@@ -177,7 +179,7 @@ class TankController(wx.Frame):
             wx.VERTICAL, self.panel, label="Serial Log")
         self.console = wx.TextCtrl(self.panel, size=(1000, 1000),
                                    style=wx.TE_READONLY | wx.TE_MULTILINE | wx.HSCROLL)
-        sizer.Add(self.console, flag=wx.EXPAND)
+        sizer.Add(self.console, flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
         return sizer
 
     def updateDisplay(self):
@@ -214,7 +216,7 @@ class TankController(wx.Frame):
         print("onPHChanged", event.GetString())
 
     def onTempChanged(self, event):
-        print("onTempChanged", event.GetString())
+        libTC.setTemperature(float(event.GetString()))
 
 
 if __name__ == "__main__":

@@ -10,7 +10,7 @@ class SetTime : public NumCollectorState {
 public:
   SetTime(TankControllerLib* tc) : NumCollectorState(tc) {
   }
-  String name() {
+  const char* name() {
     return "SetTime";
   }
   const char* prompt() {

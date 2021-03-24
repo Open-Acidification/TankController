@@ -4,7 +4,7 @@
 
 #include "Devices/EEPROM_TC_2.h"
 #include "Devices/EEPROM_TC_3.h"
-#include "TC_assert.h"
+#include "TC_util.h"
 
 //  class variables
 EEPROM_TC* EEPROM_TC::_instance = nullptr;

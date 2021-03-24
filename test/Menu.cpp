@@ -72,9 +72,7 @@ unittest(SetGoogleSheetInterval) {
 unittest(SeeDeviceUptime) {
   enterKey('0');
   assertEqual(DateTime_TC::now().as16CharacterString(), lc->getLines().at(0).c_str());
-  tc->loop();  // transition into the Wait state
-  assertEqual(DateTime_TC::now().as16CharacterString(), lc->getLines().at(0).c_str());
-  delay(1000);
+  delay(6000);
   tc->loop();  // this will set MainMenu as the next state
   tc->loop();  // this will start MainMenu
   assertEqual("MainMenu", tc->stateName());

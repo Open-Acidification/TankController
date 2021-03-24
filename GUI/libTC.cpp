@@ -91,7 +91,6 @@ double eeprom(uint8_t index) {
 
 void key(char key) {
   Keypad_TC::instance()->_getPuppet()->push_back(key);
-  loop();
 }
 
 const char *lcd(int index) {
@@ -172,6 +171,7 @@ PYBIND11_MODULE(libTC, m) {
   m.def("led", &led, "TankController LED pin value");
   m.def("loop", &loop, "TankController loop");
   m.def("serial", &serial, "TankController serial");
+  m.def("setTemperature", &setTemperature, "TankController set actual tank temperature");
   m.def("setup", &setup, "TankController setup");
   m.def("version", &version, "TankController version");
 }

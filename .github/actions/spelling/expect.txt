@@ -53,6 +53,7 @@ Kd
 Keymap
 Kp
 len
+libgtk
 libtc
 localtime
 LOWTHRESH
@@ -78,6 +79,7 @@ plugin
 png
 pragma
 println
+Ptr
 pwd
 py
 pybind

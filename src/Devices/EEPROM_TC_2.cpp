@@ -1,6 +1,6 @@
 #include "Devices/EEPROM_TC_2.h"
 
-#include "TC_assert.h"
+#include "TC_util.h"
 
 //  instance methods
 bool EEPROM_TC_2::isRightVersion() {

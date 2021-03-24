@@ -10,7 +10,7 @@ class SetTempSetPoint : public NumCollectorState {
 public:
   SetTempSetPoint(TankControllerLib* tc) : NumCollectorState(tc) {
   }
-  String name() {
+  const char* name() {
     return "SetTempSetPoint";
   }
   const char* prompt() {

@@ -10,7 +10,7 @@ class SetGoogleSheetInterval : public NumCollectorState {
 public:
   SetGoogleSheetInterval(TankControllerLib* tc) : NumCollectorState(tc) {
   }
-  String name() {
+  const char* name() {
     return "SetGoogleSheetInterval";
   }
   const char* prompt() {

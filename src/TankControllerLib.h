@@ -1,7 +1,7 @@
 #pragma once
 #include <Arduino.h>
 
-#include "TC_assert.h"
+#include "TC_util.h"
 
 const char TANK_CONTROLLER_VERSION[] = "0.3.0";
 
@@ -17,7 +17,7 @@ public:
   void loop();
   void setNextState(UIState* newState, bool update = false);
   void setup();
-  String stateName();
+  const char* stateName();
   const char* version();
 
 protected:

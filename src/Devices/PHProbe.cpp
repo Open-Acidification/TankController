@@ -1,4 +1,5 @@
 #include "Devices/PHProbe.h"
+
 #include "Devices/Serial_TC.h"
 
 //  class instance variables
@@ -33,11 +34,10 @@ PHProbe::PHProbe() {
 void PHProbe::serialEvent1() {
   String string = Serial1.readStringUntil(13);  // read the string until we see a <CR>
   Serial_TC *serial = Serial_TC::instance();
-  if (string.size() > 0 && isdigit(string[0])) {     // if the first character in the string is a digit
-    value = string.toFloat();                       // convert the string to a floating point number so it can be evaluated by the Arduino
+  if (string.size() > 0 && isdigit(string[0])) {  // if the first character in the string is a digit
+    value = string.toFloat();  // convert the string to a floating point number so it can be evaluated by the Arduino
     serial->print(F("pH = "), false);
     serial->print(value, 3);
     serial->println();
   }
 }
-

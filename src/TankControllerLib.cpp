@@ -99,7 +99,6 @@ void TankControllerLib::serialEvent1() {
   PHProbe::instance()->serialEvent1();
 }
 
-
 /**
  * Set the next state
  */

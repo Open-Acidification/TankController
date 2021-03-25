@@ -2,7 +2,6 @@
 
 #include "Devices/Serial_TC.h"
 
-
 //  class instance variables
 /**
  * static variable for singleton

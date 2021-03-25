@@ -89,7 +89,8 @@ void TankControllerLib::loop() {
 /**
  * This public instance function is called when there is data on the serial port(0).
  */
-void TankControllerLib::serialEvent() {}
+void TankControllerLib::serialEvent() {
+}
 
 /**
  * This public instance function is called when there is data on the serial port(1).

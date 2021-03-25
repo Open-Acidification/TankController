@@ -8,6 +8,7 @@ public:
     return value;
   }
   void serialEvent1();
+
 private:
   // Class variable
   static PHProbe* _instance;

@@ -1,0 +1,10 @@
+---
+BasedOnStyle: Google
+AccessModifierOffset: '-2'
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: 'false'
+AllowShortLoopsOnASingleLine: 'false'
+ColumnLimit: 120
+IndentCaseLabels: 'true'
+IndentWidth: '2'
+IndentWrappedFunctionNames: 'true'

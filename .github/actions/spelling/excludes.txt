@@ -1,0 +1,14 @@
+^\.github/linters/
+^\.github/actions/spelling/
+^\.github/workflows/
+^TEMPLATES/\.\S*
+^GUI/pybind11/
+Gemfile.lock
+\.pdf$
+\.png$
+\.xslx?$
+Doxyfile
+LICENSE
+.all-contributorsrc
+.gitignore
+Makefile

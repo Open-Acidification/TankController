@@ -1,0 +1,23 @@
+########################################
+# Syntax Coloring Map For TankController
+########################################
+
+########################################
+# Datatypes (KEYWORD1)
+########################################
+
+TankController  	KEYWORD1	TankController
+TankControllerProd	KEYWORD1	TankControllerProd
+TankControllerTest	KEYWORD1	TankControllerTest
+
+########################################
+# Methods and Functions (KEYWORD2)
+########################################
+
+setup	KEYWORD2
+loop	KEYWORD2
+
+########################################
+# Constants (LITERAL1)
+########################################
+

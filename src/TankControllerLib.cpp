@@ -89,17 +89,14 @@ void TankControllerLib::loop() {
 /**
  * This public instance function is called when there is data on the serial port(0).
  */
-void TankControllerLib::serialEvent() {
-  String string = Serial.readStringUntil(13);  // read the string until we see a <CR>
-}
+void TankControllerLib::serialEvent() {}
 
 /**
  * This public instance function is called when there is data on the serial port(1).
  * This the Atlas EZO pH circuit probe.
  */
 void TankControllerLib::serialEvent1() {
-  String string = Serial1.readStringUntil(13);  // read the string until we see a <CR>
-  PHProbe::instance()->probeData(string);
+  PHProbe::instance()->serialEvent1();
 }
 
 

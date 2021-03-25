@@ -5,7 +5,7 @@ class PHProbe {
 public:
   static PHProbe* instance();
   double getPH() { return value; }
-  void probeData(String string);
+  void serialEvent1();
 
 private:
   // Class variable

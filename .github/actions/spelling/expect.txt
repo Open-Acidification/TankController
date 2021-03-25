@@ -29,6 +29,7 @@ emoji
 endif
 endl
 EVT
+EZO
 FONTFAMILY
 FONTSTYLE
 FONTWEIGHT
@@ -46,6 +47,7 @@ ifdef
 ine
 ino
 iostream
+isdigit
 isnan
 itoa
 jgfoster

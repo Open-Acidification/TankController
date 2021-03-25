@@ -2,6 +2,7 @@
 
 #include "Devices/Keypad_TC.h"
 #include "Devices/LiquidCrystal_TC.h"
+#include "Devices/PHProbe.h"
 #include "Devices/SD_TC.h"
 #include "Devices/Serial_TC.h"
 #include "TC_util.h"
@@ -84,6 +85,23 @@ void TankControllerLib::loop() {
   blink();  //  blink the on-board LED to show that we are running
   handleUI();
 }
+
+/**
+ * This public instance function is called when there is data on the serial port(0).
+ */
+void TankControllerLib::serialEvent() {
+  String string = Serial.readStringUntil(13);  // read the string until we see a <CR>
+}
+
+/**
+ * This public instance function is called when there is data on the serial port(1).
+ * This the Atlas EZO pH circuit probe.
+ */
+void TankControllerLib::serialEvent1() {
+  String string = Serial1.readStringUntil(13);  // read the string until we see a <CR>
+  PHProbe::instance()->probeData(string);
+}
+
 
 /**
  * Set the next state

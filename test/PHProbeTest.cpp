@@ -27,7 +27,7 @@ unittest(probeData) {
 }
 
 unittest(serialEvent1) {
-  GODMODE()->serialPort[1].dataIn = "7.75\r";             // the queue of data waiting to be read
+  GODMODE()->serialPort[1].dataIn = "7.75\r";  // the queue of data waiting to be read
   TankControllerLib::instance()->serialEvent1();
   assertEqual(7.75, PHProbe::instance()->getPH());
 }

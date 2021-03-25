@@ -4,7 +4,9 @@
 class PHProbe {
 public:
   static PHProbe* instance();
-  double getPH() { return value; }
+  double getPH() {
+    return value;
+  }
   void probeData(String string);
 
 private:

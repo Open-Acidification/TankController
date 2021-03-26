@@ -22,54 +22,63 @@ fi
 # add missing libraries
 export GITHUB="https://github.com/Arduino-CI"
 if [ -d "./Adafruit_BusIO" ]; then
+  echo update Adafruit_BusIO
   (cd Adafruit_BusIO; git pull)
 else
   git clone $SHALLOW_MASTER $GITHUB/Adafruit_BusIO.git
 fi
 
 if [ -d "./Adafruit_MAX31865" ]; then
+  echo update Adafruit_MAX31865
   (cd Adafruit_MAX31865; git pull)
 else
   git clone $SHALLOW_MAIN $GITHUB/Adafruit_MAX31865.git
 fi
 
 if [ -d "./Ethernet" ]; then
+  echo update Ethernet
   (cd Ethernet; git pull)
 else
   git clone $SHALLOW_MASTER $GITHUB/Ethernet.git
 fi
 
 if [ -d "./LiquidCrystal" ]; then
+  echo update LiquidCrystal
   (cd LiquidCrystal; git pull)
 else
   git clone $SHALLOW_MASTER $GITHUB/LiquidCrystal.git
 fi
 
 if [ -d "./RTClib" ]; then
+  echo update RTClib
   (cd RTClib; git pull)
 else
   git clone $SHALLOW_MASTER $GITHUB/RTClib.git
 fi
 
 if [ -d "./Keypad" ]; then
+  echo update Keypad
   (cd Keypad; git pull)
 else
   git clone $SHALLOW_MASTER $GITHUB/Keypad.git
 fi
 
 if [ -d "./Arduino-PID-Library" ]; then
+  echo update Arduino-PID-Library
   (cd Arduino-PID-Library; git pull)
 else
   git clone $SHALLOW_MASTER $GITHUB/Arduino-PID-Library.git
 fi
 
 if [ -d "./Arduino-PID-AutoTune-Library" ]; then
+  echo update Arduino-PID-AutoTune-Library
   (cd Arduino-PID-AutoTune-Library; git pull)
 else
   git clone $SHALLOW_MASTER $GITHUB/Arduino-PID-AutoTune-Library.git
 fi
 
 if [ -d "./SD" ]; then
+  echo update SD
   (cd SD; git pull)
 else
   git clone $SHALLOW_MAIN $GITHUB/SD.git

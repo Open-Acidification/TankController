@@ -8,6 +8,14 @@
 
 TankControllerLib *tank;
 
+void serialEvent() {  // if the hardware serial port_0 receives a char
+  tank->serialEvent();
+}
+
+void serialEvent1() {  // if the hardware serial port_1 receives a char
+  tank->serialEvent1();
+}
+
 void setup() {
   tank = TankControllerLib::instance();
   tank->setup();

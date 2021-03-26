@@ -20,6 +20,7 @@ fi
 export GITHUB="https://github.com/Arduino-CI"
 if [ -d "./Adafruit_BusIO" ]; then
   (
+    echo update Adafruit_BusIO
     cd Adafruit_BusIO
     git pull
   )
@@ -29,6 +30,7 @@ fi
 
 if [ -d "./Adafruit_MAX31865" ]; then
   (
+    echo update Adafruit_MAX31865
     cd Adafruit_MAX31865
     git pull
   )
@@ -38,6 +40,7 @@ fi
 
 if [ -d "./Ethernet" ]; then
   (
+    echo update Ethernet
     cd Ethernet
     git pull
   )
@@ -47,6 +50,7 @@ fi
 
 if [ -d "./LiquidCrystal" ]; then
   (
+    echo update LiquidCrystal
     cd LiquidCrystal
     git pull
   )
@@ -56,6 +60,7 @@ fi
 
 if [ -d "./RTClib" ]; then
   (
+    echo update RTClib
     cd RTClib
     git pull
   )
@@ -65,6 +70,7 @@ fi
 
 if [ -d "./Keypad" ]; then
   (
+    echo update Keypad
     cd Keypad
     git pull
   )
@@ -74,6 +80,7 @@ fi
 
 if [ -d "./Arduino-PID-Library" ]; then
   (
+    echo update Arduino-PID-Library
     cd Arduino-PID-Library
     git pull
   )
@@ -83,6 +90,7 @@ fi
 
 if [ -d "./Arduino-PID-AutoTune-Library" ]; then
   (
+    echo update Arduino-PID-AutoTune-Library
     cd Arduino-PID-AutoTune-Library
     git pull
   )
@@ -92,6 +100,7 @@ fi
 
 if [ -d "./SD" ]; then
   (
+    echo update SD
     cd SD
     git pull
   )

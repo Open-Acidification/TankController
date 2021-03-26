@@ -7,7 +7,7 @@ public:
   double getPH() {
     return value;
   }
-  void probeData(String string);
+  void serialEvent1();
 
 private:
   // Class variable

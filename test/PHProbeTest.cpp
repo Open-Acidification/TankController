@@ -15,20 +15,17 @@ unittest(constructor) {
 }
 
 // tests getPH() as well
-unittest(probeData) {
+unittest(serialEvent1) {
   GodmodeState *state = GODMODE();
   state->reset();
-  assertEqual("", state->serialPort[0].dataOut);
   PHProbe *pPHProbe = PHProbe::instance();
   assertEqual(0, pPHProbe->getPH());
-  pPHProbe->probeData("7.250");
-  assertEqual(7.25, pPHProbe->getPH());
-  assertEqual("pH = 7.250\r\n", state->serialPort[0].dataOut);
-}
-
-unittest(serialEvent1) {
   GODMODE()->serialPort[1].dataIn = "7.75\r";  // the queue of data waiting to be read
-  TankControllerLib::instance()->serialEvent1();
+  TankControllerLib *pTC = TankControllerLib::instance();
+  state->serialPort[0].dataOut = "";
+  assertEqual("", state->serialPort[0].dataOut);
+  pTC->serialEvent1();
+  assertEqual("pH = 7.750\r\n", state->serialPort[0].dataOut);
   assertEqual(7.75, PHProbe::instance()->getPH());
 }
 

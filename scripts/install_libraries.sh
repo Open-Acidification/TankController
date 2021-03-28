@@ -107,9 +107,3 @@ if [ -d "./SD" ]; then
 else
   git clone $SHALLOW_MAIN $GITHUB/SD.git
 fi
-
-if [ -d /github/workspace/other ]; then
-  echo "found other"
-  cd /github/workspace/other
-  ./install.sh
-fi

@@ -1,6 +1,5 @@
 #!/bin/bash
 
-set -x
 if [ ${PWD##*/} != "other" ]; then
   cd other
 fi

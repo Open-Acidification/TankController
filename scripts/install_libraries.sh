@@ -107,3 +107,8 @@ if [ -d "./SD" ]; then
 else
   git clone $SHALLOW_MAIN $GITHUB/SD.git
 fi
+
+if [ -d /github/workspace/other ]; then
+  cd /github/workspace/other
+  ./install.sh
+fi

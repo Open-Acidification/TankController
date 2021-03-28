@@ -29,5 +29,7 @@ Gemfile.lock
 vendor/*
 *.cpp.bin*
 
+*libarduino*
+
 # Doxygen Generated Files
 public

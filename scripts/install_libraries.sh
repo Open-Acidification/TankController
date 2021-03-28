@@ -109,6 +109,7 @@ else
 fi
 
 if [ -d /github/workspace/other ]; then
+  echo "found other"
   cd /github/workspace/other
   ./install.sh
 fi

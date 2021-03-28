@@ -12,3 +12,4 @@ LICENSE
 .all-contributorsrc
 .gitignore
 Makefile
+^other/*

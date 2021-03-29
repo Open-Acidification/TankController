@@ -41,3 +41,19 @@ void PHProbe::serialEvent1() {
     serial->println();
   }
 }
+
+// "pH decreases with increase in temperature. But this does not mean that 
+//  water becomes more acidic at higher temperatures."
+// https://www.westlab.com/blog/2017/11/15/how-does-temperature-affect-ph
+void PHProbe::setTemperatureCompensation(double temperature) {
+  const String PARTIAL_COMMAND = "T,";
+  String fullCommand;
+  if (temperature > 0 && temperature < 100) {
+    fullCommand = PARTIAL_COMMAND + String(temperature, 2);
+  } else {
+    fullCommand = PARTIAL_COMMAND + "20";
+  }
+  Serial.println(fullCommand);
+  Serial1.print(fullCommand);  // send that string to the Atlas Scientific product
+  Serial1.print('\r');       // add a <CR> to the end of the string
+}

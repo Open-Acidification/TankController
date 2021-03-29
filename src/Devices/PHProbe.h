@@ -8,6 +8,7 @@ public:
     return value;
   }
   void serialEvent1();
+  void setTemperatureCompensation(double temperature);
 
 private:
   // Class variable

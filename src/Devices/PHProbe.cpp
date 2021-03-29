@@ -42,7 +42,7 @@ void PHProbe::serialEvent1() {
   }
 }
 
-// "pH decreases with increase in temperature. But this does not mean that 
+// "pH decreases with increase in temperature. But this does not mean that
 //  water becomes more acidic at higher temperatures."
 // https://www.westlab.com/blog/2017/11/15/how-does-temperature-affect-ph
 void PHProbe::setTemperatureCompensation(double temperature) {
@@ -55,5 +55,5 @@ void PHProbe::setTemperatureCompensation(double temperature) {
   }
   Serial.println(fullCommand);
   Serial1.print(fullCommand);  // send that string to the Atlas Scientific product
-  Serial1.print('\r');       // add a <CR> to the end of the string
+  Serial1.print('\r');         // add a <CR> to the end of the string
 }

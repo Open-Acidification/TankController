@@ -44,4 +44,22 @@ unittest(setTemperatureCompensation) {
   assertEqual("T,20\r", GODMODE()->serialPort[1].dataOut);
 }
 
+unittest(onePointCalibration) {
+  GodmodeState *state = GODMODE();
+  state->reset();
+  PHProbe *pPHProbe = PHProbe::instance();
+  assertEqual("", state->serialPort[1].dataOut);
+  pPHProbe->onePointCalibration(10.875);
+  assertEqual("Cal,mid,10.875\r", state->serialPort[1].dataOut);
+}
+
+unittest(twoPointCalibration) {
+  GodmodeState *state = GODMODE();
+  state->reset();
+  PHProbe *pPHProbe = PHProbe::instance();
+  assertEqual("", state->serialPort[1].dataOut);
+  pPHProbe->twoPointCalibration(10.875, 11.875);
+  assertEqual("Cal,mid,11.875\rCal,low,10.875\r", state->serialPort[1].dataOut);
+}
+
 unittest_main()

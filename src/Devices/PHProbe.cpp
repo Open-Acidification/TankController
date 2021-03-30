@@ -28,6 +28,13 @@ PHProbe::PHProbe() {
   Serial1.print(F("C,1\r"));    // Reset pH stamp to continuous measurement: once per second
 }
 
+void PHProbe::onePointCalibration(double midpoint) {
+  const String PARTIAL_COMMAND = "Cal,mid,";
+  String fullCommand;
+  fullCommand = PARTIAL_COMMAND + String(midpoint, 3) + "\r";
+  Serial1.print(fullCommand);  // send that string to the Atlas Scientific product
+}
+
 /**
  * data arriving from probe
  */
@@ -49,11 +56,20 @@ void PHProbe::setTemperatureCompensation(double temperature) {
   const String PARTIAL_COMMAND = "T,";
   String fullCommand;
   if (temperature > 0 && temperature < 100) {
-    fullCommand = PARTIAL_COMMAND + String(temperature, 2);
+    fullCommand = PARTIAL_COMMAND + String(temperature, 2) + "\r";
   } else {
-    fullCommand = PARTIAL_COMMAND + "20";
+    fullCommand = PARTIAL_COMMAND + "20\r";
   }
   Serial.println(fullCommand);
   Serial1.print(fullCommand);  // send that string to the Atlas Scientific product
-  Serial1.print('\r');       // add a <CR> to the end of the string
+}
+
+void PHProbe::twoPointCalibration(double lowpoint, double midpoint) {
+  const String MIDPOINT_PARTIAL_COMMAND = "Cal,mid,";
+  const String LOWPOINT_PARTIAL_COMMAND = "Cal,low,";
+  String fullCommand;
+  fullCommand = MIDPOINT_PARTIAL_COMMAND + String(midpoint, 3) + "\r";
+  Serial1.print(fullCommand);  // send that string to the Atlas Scientific product
+  fullCommand = LOWPOINT_PARTIAL_COMMAND + String(lowpoint, 3) + "\r";
+  Serial1.print(fullCommand);  // send that string to the Atlas Scientific product
 }

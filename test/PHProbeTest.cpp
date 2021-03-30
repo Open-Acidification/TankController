@@ -43,4 +43,5 @@ unittest(setTemperatureCompensation) {
   pPHProbe->setTemperatureCompensation(-1.25);
   assertEqual("T,20\r", GODMODE()->serialPort[1].dataOut);
 }
+
 unittest_main()

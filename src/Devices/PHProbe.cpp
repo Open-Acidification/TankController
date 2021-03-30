@@ -49,7 +49,7 @@ void PHProbe::serialEvent1() {
   }
 }
 
-// "pH decreases with increase in temperature. But this does not mean that 
+// "pH decreases with increase in temperature. But this does not mean that
 //  water becomes more acidic at higher temperatures."
 // https://www.westlab.com/blog/2017/11/15/how-does-temperature-affect-ph
 void PHProbe::setTemperatureCompensation(double temperature) {

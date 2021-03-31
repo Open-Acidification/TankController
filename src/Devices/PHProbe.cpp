@@ -1,6 +1,7 @@
 #include "Devices/PHProbe.h"
 
 #include "Devices/Serial_TC.h"
+#include "TankControllerLib.h"
 
 //  class instance variables
 /**
@@ -28,10 +29,30 @@ PHProbe::PHProbe() {
   Serial1.print(F("C,1\r"));    // Reset pH stamp to continuous measurement: once per second
 }
 
+void PHProbe::clearCalibration() {
+  Serial1.print("Cal,clear\r");  // send that string to the Atlas Scientific product
+}
+
+String PHProbe::getSlope() {
+  Serial1.print(F("Slope,?\r"));  // Sending request for Calibration Slope
+  TankControllerLib *pTC = TankControllerLib::instance();
+  pTC->serialEvent1();
+  slope = slopeResponse.substring(7);
+  slope[slope.length() - 1] = ' ';
+  // output to log
+  Serial_TC *serial = Serial_TC::instance();
+  serial->print(F("Raw String: "));
+  serial->print(slopeResponse);
+  serial->println();
+  serial->print(F("Calibration Slope: "));
+  serial->print(slope);
+  serial->println();
+  return slope;
+}
+
 void PHProbe::onePointCalibration(double midpoint) {
-  const String PARTIAL_COMMAND = "Cal,mid,";
   String fullCommand;
-  fullCommand = PARTIAL_COMMAND + String(midpoint, 3) + "\r";
+  fullCommand = "Cal,mid," + String(midpoint, 3) + "\r";
   Serial1.print(fullCommand);  // send that string to the Atlas Scientific product
 }
 
@@ -39,14 +60,29 @@ void PHProbe::onePointCalibration(double midpoint) {
  * data arriving from probe
  */
 void PHProbe::serialEvent1() {
-  String string = Serial1.readStringUntil(13);  // read the string until we see a <CR>
-  Serial_TC *serial = Serial_TC::instance();
-  if (string.length() > 0 && isdigit(string[0])) {  // if the first character in the string is a digit
-    value = string.toFloat();  // convert the string to a floating point number so it can be evaluated by the Arduino
-    serial->print(F("pH = "), false);
-    serial->print(value, 3);
-    serial->println();
+  while (Serial1.available() > 0) {  // if we see that the Atlas Scientific product has sent a character
+    String string = Serial1.readStringUntil(13);  // read the string until we see a <CR>
+    if (string.length() > 0) {
+      if (isdigit(string[0])) {  // if the first character in the string is a digit
+        value = string.toFloat();  // convert the string to a floating point number so it can be evaluated by the Arduino
+      } else if (string[0] == '?') {  // answer to a previous query
+        if (string.length() > 7 && string.substring(0,7) == "?Slope,") {
+          // for example "?Slope,99.7,100.3, -0.89\r"
+          slopeResponse = string;
+        }
+      }
+    }
   }
+}
+
+double PHProbe::getPhReading() {
+  TankControllerLib *pTC = TankControllerLib::instance();
+  pTC->serialEvent1();
+  Serial_TC *serial = Serial_TC::instance();
+  serial->print(F("pH = "), false);
+  serial->print(value, 3);
+  serial->println();
+  return value;
 }
 
 // "pH decreases with increase in temperature. But this does not mean that
@@ -65,11 +101,10 @@ void PHProbe::setTemperatureCompensation(double temperature) {
 }
 
 void PHProbe::twoPointCalibration(double lowpoint, double midpoint) {
-  const String MIDPOINT_PARTIAL_COMMAND = "Cal,mid,";
-  const String LOWPOINT_PARTIAL_COMMAND = "Cal,low,";
   String fullCommand;
-  fullCommand = MIDPOINT_PARTIAL_COMMAND + String(midpoint, 3) + "\r";
+  // do mid first because it clears low
+  fullCommand = "Cal,mid," + String(midpoint, 3) + "\r";
   Serial1.print(fullCommand);  // send that string to the Atlas Scientific product
-  fullCommand = LOWPOINT_PARTIAL_COMMAND + String(lowpoint, 3) + "\r";
+  fullCommand = "Cal,low," + String(lowpoint, 3) + "\r";
   Serial1.print(fullCommand);  // send that string to the Atlas Scientific product
 }

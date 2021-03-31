@@ -2,19 +2,25 @@
 #include "Arduino.h"
 
 /**
- * Issuing the cal,mid command after the
- * EZO pH circuit has been calibrated, will
+ * wrapper class for EZO pH Circuit | Atlas Scientific
+ * Issuing the "Cal,mid,n\r" command will
  * clear the other calibration points.
- * Full calibration will have to be redone
  */
 
+// getPH() function for testing purposes
 class PHProbe {
 public:
   static PHProbe* instance();
-  void onePointCalibration(double midpoint);
   double getPH() {
     return value;
   }
+  String getSlopeResponse() {
+    return slopeResponse;
+  }
+  void clearCalibration();
+  double getPhReading();
+  void onePointCalibration(double midpoint);
+  String getSlope();
   void serialEvent1();
   void setTemperatureCompensation(double temperature);
   void twoPointCalibration(double lowpoint, double midpoint);
@@ -24,6 +30,8 @@ private:
   static PHProbe* _instance;
   // instance variable
   double value = 0;
+  String slope = "";
+  String slopeResponse = "";
   // Methods
   PHProbe();
 };

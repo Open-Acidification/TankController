@@ -60,13 +60,14 @@ void PHProbe::onePointCalibration(double midpoint) {
  * data arriving from probe
  */
 void PHProbe::serialEvent1() {
-  while (Serial1.available() > 0) {  // if we see that the Atlas Scientific product has sent a character
+  while (Serial1.available() > 0) {               // if we see that the Atlas Scientific product has sent a character
     String string = Serial1.readStringUntil(13);  // read the string until we see a <CR>
     if (string.length() > 0) {
       if (isdigit(string[0])) {  // if the first character in the string is a digit
-        value = string.toFloat();  // convert the string to a floating point number so it can be evaluated by the Arduino
+        value =
+            string.toFloat();  // convert the string to a floating point number so it can be evaluated by the Arduino
       } else if (string[0] == '?') {  // answer to a previous query
-        if (string.length() > 7 && string.substring(0,7) == "?Slope,") {
+        if (string.length() > 7 && string.substring(0, 7) == "?Slope,") {
           // for example "?Slope,99.7,100.3, -0.89\r"
           slopeResponse = string;
         }

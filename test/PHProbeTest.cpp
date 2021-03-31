@@ -66,10 +66,11 @@ unittest(getSlope) {
   GodmodeState *state = GODMODE();
   state->reset();
   PHProbe *pPHProbe = PHProbe::instance();
-  GODMODE()->serialPort[1].dataIn = "?Slope,99.7,100.3,-0.89\r";  // the answer to getSlop() waiting to be read  
+  GODMODE()->serialPort[1].dataIn = "?Slope,99.7,100.3,-0.89\r";  // the answer to getSlop() waiting to be read
   String slope = pPHProbe->getSlope();
   assertEqual("99.7,100.3,-0.89 ", slope);
-  assertEqual("Raw String: \r\n?Slope,99.7,100.3,-0.89\r\r\n\r\nCalibration Slope: \r\n99.7,100.3,-0.89 \r\n\r\n", state->serialPort[0].dataOut);
+  assertEqual("Raw String: \r\n?Slope,99.7,100.3,-0.89\r\r\n\r\nCalibration Slope: \r\n99.7,100.3,-0.89 \r\n\r\n",
+              state->serialPort[0].dataOut);
 }
 
 unittest(getPhReading) {
@@ -87,13 +88,13 @@ unittest(clearCalibration) {
   state->reset();
   PHProbe *pPHProbe = PHProbe::instance();
   pPHProbe->onePointCalibration(10.875);
-  GODMODE()->serialPort[1].dataIn = "?Cal,1\r";  // the answer to getSlop() waiting to be read  
-  Serial1.print("Cal,?\r");  // send that string to the Atlas Scientific product
-  String string = Serial1.readStringUntil(13);  // read the string until we see a <CR>
+  GODMODE()->serialPort[1].dataIn = "?Cal,1\r";  // the answer to getSlop() waiting to be read
+  Serial1.print("Cal,?\r");                      // send that string to the Atlas Scientific product
+  String string = Serial1.readStringUntil(13);   // read the string until we see a <CR>
   assertEqual("?Cal,1\r", string);
   pPHProbe->clearCalibration();
-  GODMODE()->serialPort[1].dataIn = "?Cal,0\r";  // the answer to getSlop() waiting to be read  
-  Serial1.print("Cal,?\r");  // send that string to the Atlas Scientific product
+  GODMODE()->serialPort[1].dataIn = "?Cal,0\r";  // the answer to getSlop() waiting to be read
+  Serial1.print("Cal,?\r");                      // send that string to the Atlas Scientific product
   String string2 = Serial1.readStringUntil(13);  // read the string until we see a <CR>
   assertEqual("?Cal,0\r", string2);
 }

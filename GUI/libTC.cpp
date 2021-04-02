@@ -22,6 +22,7 @@
 #include "LiquidCrystal_TC.h"
 #include "Serial_TC.h"
 #include "TankControllerLib.h"
+#include "TC_util.h"
 #include "TempProbe_TC.h"
 #include "UIState.h"
 #include "pybind11/pybind11.h"
@@ -30,6 +31,7 @@
 
 namespace py = pybind11;
 char lcdLine[20];
+unsigned long msOffset = 0;
 
 // function prototypes
 void loop();
@@ -118,7 +120,7 @@ bool led() {
 void loop() {
   unsigned long millisecondsSinceEpoch =
       std::chrono::system_clock::now().time_since_epoch() / std::chrono::milliseconds(1);
-  int msBehind = millisecondsSinceEpoch - millis();
+  int msBehind = millisecondsSinceEpoch - millis() + msOffset;
   if (msBehind) {
     delay(msBehind);
   }
@@ -138,7 +140,6 @@ void setTemperature(double value) {
 }
 
 void setTime() {
-  int timeDelta = 0;
   time_t rawtime;
   struct tm *timeinfo;
   time(&rawtime);
@@ -147,8 +148,7 @@ void setTime() {
                   timeinfo->tm_min, timeinfo->tm_sec);
   unsigned long millisecondsSinceEpoch =
       std::chrono::system_clock::now().time_since_epoch() / std::chrono::milliseconds(1);
-  timeDelta = millisecondsSinceEpoch - millis();
-  delay(timeDelta);
+  msOffset = millisecondsSinceEpoch - millis();
   now.setAsCurrent();
 }
 

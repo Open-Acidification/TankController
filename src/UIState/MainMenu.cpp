@@ -1,10 +1,10 @@
 #include "MainMenu.h"
 
 #include "CalibrationManagement.h"
+#include "Devices/PHProbe.h"
 #include "Devices/TempProbe_TC.h"
 #include "EnablePID.h"
 #include "PHCalibration.h"
-#include "PHProbe.h"
 #include "PIDTuningMenu.h"
 #include "ResetLCDScreen.h"
 #include "SeeDeviceAddress.h"
@@ -60,17 +60,17 @@ void MainMenu::handleKey(char key) {
       level1 = 0;
       level2 = -1;
       break;
-    case '2':  // down
-      down();
+    case '2':  // up
+      up();
       break;
     case '4':  // left
       left();
       break;
     case '6':  // right
-      down();
+      right();
       break;
-    case '8':  // up
-      up();
+    case '8':  // down
+      down();
       break;
     default:
       // ignore invalid keys
@@ -204,34 +204,39 @@ void MainMenu::selectSet() {
 }
 
 // show current temp and pH
+void MainMenu::idle() {
+  PHProbe *pPHProbe = PHProbe::instance();
+  char output[17];
+  sprintf(output, "pH=%01.3f   %1.3f", pPHProbe->getPH(), 7.125);
+  LiquidCrystal_TC::instance()->writeLine(output, 0);
+  TempProbe_TC *tempProbe = TempProbe_TC::instance();
+  double temp = tempProbe->getRunningAverage();
+  if (temp < 0.0) {
+    temp = 0.0;
+  } else if (99.99 < temp) {
+    temp = 99.99;
+  }
+  sprintf(output, "T=%02.2f  %c %2.2f", temp, 'C', 12.25);
+  LiquidCrystal_TC::instance()->writeLine(output, 1);
+}
+
 void MainMenu::loop() {
-  switch (level1) {
-    case 0: {
-      PHProbe *pPHProbe = PHProbe::instance();
-      char output[17];
-      sprintf(output, "pH=%1.3f   %1.3f", pPHProbe->getPH(), 7.125);
-      LiquidCrystal_TC::instance()->writeLine(output, 0);
-      TempProbe_TC *tempProbe = TempProbe_TC::instance();
-      sprintf(output, "T=%2.2f  %c %2.2f", tempProbe->getRunningAverage(), 'C', 12.25);
-      LiquidCrystal_TC::instance()->writeLine(output, 1);
-    } break;
-    case 1:
+  if (level1 == 0) {
+    idle();
+  } else {
+    if (level1 == 1) {
       if (level2 == -1) {
-        LiquidCrystal_TC::instance()->writeLine("View Menu       ", 0);
-        LiquidCrystal_TC::instance()->writeLine("<4   ^8  2v   6>", 1);
+        LiquidCrystal_TC::instance()->writeLine("View TC settings", 0);
       } else {
-        LiquidCrystal_TC::instance()->writeLine(viewMenus[level2], 0);
-        LiquidCrystal_TC::instance()->writeLine("<4   ^8  2v   6>", 1);
+        LiquidCrystal_TC::instance()->writeLine(viewMenus[level2].c_str(), 0);
       }
-      break;
-    case 2:
+    } else {
       if (level2 == -1) {
-        LiquidCrystal_TC::instance()->writeLine("Set Menu        ", 0);
-        LiquidCrystal_TC::instance()->writeLine("<4   ^8  2v   6>", 1);
+        LiquidCrystal_TC::instance()->writeLine("Change settings ", 0);
       } else {
-        LiquidCrystal_TC::instance()->writeLine(viewMenus[level2].to_c(), 0);
-        LiquidCrystal_TC::instance()->writeLine("<4   ^8  2v   6>", 1);
+        LiquidCrystal_TC::instance()->writeLine(setMenus[level2].c_str(), 0);
       }
-      break;
+    }
+    LiquidCrystal_TC::instance()->writeLine("<4   ^2  8v   6>", 1);
   }
 }

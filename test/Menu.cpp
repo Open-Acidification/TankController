@@ -18,13 +18,50 @@ void enterKey(char key) {
   tc->loop();  // recognize and apply the key entry
 }
 
-unittest(MainMenu) {
-  TempProbe_TC::instance()->setTemperature(12.30);
-  assertEqual(" ONTHANK LAB", lc->getLines().at(0).substr(4));
-  enterKey('A');
+unittest_setup() {
+  TempProbe_TC::instance()->setTemperature(12.25);
   enterKey('D');
-  assertEqual("Main Menu       ", lc->getLines().at(0));
-  assertEqual("Temp=12.30      ", lc->getLines().at(1));
+}
+
+unittest_teardown() {
+  enterKey('D');
+}
+
+unittest(MainMenu) {
+  assertEqual("pH=0.000   7.125", lc->getLines().at(0));
+  assertEqual("T=12.23  C 12.25", lc->getLines().at(1));
+}
+
+unittest(ChangeSettings) {
+  enterKey('2');
+  assertEqual("Change settings ", lc->getLines().at(0));
+  assertEqual("<4   ^2  8v   6>", lc->getLines().at(1));
+  enterKey('D');
+  assertEqual("pH=0.000   7.125", lc->getLines().at(0));
+  assertEqual("T=12.23  C 12.25", lc->getLines().at(1));
+  enterKey('8');
+  enterKey('8');
+  assertEqual("Change settings ", lc->getLines().at(0));
+  assertEqual("<4   ^2  8v   6>", lc->getLines().at(1));
+  enterKey('4');
+  assertEqual("pH=0.000   7.125", lc->getLines().at(0));
+  assertEqual("T=12.23  C 12.25", lc->getLines().at(1));
+}
+
+unittest(ViewSettings) {
+  enterKey('8');
+  assertEqual("View TC settings", lc->getLines().at(0));
+  assertEqual("<4   ^2  8v   6>", lc->getLines().at(1));
+  enterKey('D');
+  assertEqual("pH=0.000   7.125", lc->getLines().at(0));
+  assertEqual("T=12.23  C 12.25", lc->getLines().at(1));
+  enterKey('2');
+  enterKey('2');
+  assertEqual("View TC settings", lc->getLines().at(0));
+  assertEqual("<4   ^2  8v   6>", lc->getLines().at(1));
+  enterKey('D');
+  assertEqual("pH=0.000   7.125", lc->getLines().at(0));
+  assertEqual("T=12.23  C 12.25", lc->getLines().at(1));
 }
 
 unittest(SetPHSetPoint) {
@@ -32,112 +69,26 @@ unittest(SetPHSetPoint) {
   assertEqual("Set pH Set Point", lc->getLines().at(0));
   enterKey('D');
   assertEqual("MainMenu", tc->stateName());
-}
-
-unittest(SetTempSetPoint) {
-  enterKey('B');
-  assertEqual("Set Temperature ", lc->getLines().at(0));
+  enterKey('2');
+  enterKey('6');
+  assertEqual("Set pH target   ", lc->getLines().at(0));
+  assertEqual("<4   ^2  8v   6>", lc->getLines().at(1));
+  enterKey('6');
+  assertEqual("Set pH Set Point", lc->getLines().at(0));
   enterKey('D');
   assertEqual("MainMenu", tc->stateName());
 }
 
-unittest(PHCalibration) {
-  enterKey('C');
-  assertEqual("pH-Calibration  ", lc->getLines().at(0));
-  enterKey('D');
-  assertEqual("MainMenu", tc->stateName());
-}
-
-unittest(CalibrationManagement) {
-  enterKey('D');
-  assertEqual("Cal Management  ", lc->getLines().at(0));
-  enterKey('D');
-  assertEqual("MainMenu", tc->stateName());
-}
-
-unittest(SetTankID) {
-  enterKey('#');
-  assertEqual("Set Tank ID#    ", lc->getLines().at(0));
-  enterKey('D');
-  assertEqual("MainMenu", tc->stateName());
-}
-
-unittest(SetGoogleSheetInterval) {
-  enterKey('*');
-  assertEqual("G Sheet Minutes ", lc->getLines().at(0));
-  enterKey('D');
-  assertEqual("MainMenu", tc->stateName());
-}
-
-unittest(SeeDeviceUptime) {
-  enterKey('0');
+unittest(ViewTime) {
+  enterKey('8');
+  enterKey('6');
+  assertEqual("View time       ", lc->getLines().at(0));
+  assertEqual("<4   ^2  8v   6>", lc->getLines().at(1));
+  enterKey('6');
   assertEqual(DateTime_TC::now().as16CharacterString(), lc->getLines().at(0).c_str());
   delay(6000);
   tc->loop();  // this will set MainMenu as the next state
   tc->loop();  // this will start MainMenu
-  assertEqual("MainMenu", tc->stateName());
-}
-
-unittest(SeeDeviceAddress) {
-  enterKey('1');
-  assertEqual("Device address  ", lc->getLines().at(0));
-  enterKey('D');
-  assertEqual("MainMenu", tc->stateName());
-}
-
-unittest(ResetLCDScreen) {
-  enterKey('2');
-  assertEqual("Clearing Screen ", lc->getLines().at(0));
-  enterKey('D');
-  assertEqual("MainMenu", tc->stateName());
-}
-
-unittest(SeeTankID) {
-  enterKey('3');
-  assertEqual("Tank ID=        ", lc->getLines().at(0));
-  enterKey('D');
-  assertEqual("MainMenu", tc->stateName());
-}
-
-unittest(SeePIDConstants) {
-  enterKey('4');
-  assertEqual("PID Constants   ", lc->getLines().at(0));
-  enterKey('D');
-  assertEqual("MainMenu", tc->stateName());
-}
-
-unittest(PIDTuningMenu) {
-  enterKey('5');
-  assertEqual("PID TUNING      ", lc->getLines().at(0));
-  enterKey('D');
-  assertEqual("MainMenu", tc->stateName());
-}
-
-unittest(TemperatureCalibration) {
-  enterKey('6');
-  assertEqual("Temp Calibration", lc->getLines().at(0));
-  enterKey('D');
-  assertEqual("MainMenu", tc->stateName());
-}
-
-unittest(SetTime) {
-  enterKey('7');
-  assertEqual("Set Year (YYYY):", lc->getLines().at(0));
-  enterKey('D');
-  assertEqual("MainMenu", tc->stateName());
-}
-
-unittest(EnablePID) {
-  enterKey('8');
-  assertEqual("Enable PID?     ", lc->getLines().at(0));
-  enterKey('D');
-  assertEqual("MainMenu", tc->stateName());
-}
-
-unittest(SetChillOrHeat) {
-  enterKey('9');
-  assertEqual("1:Chill; 9:Heat ", lc->getLines().at(0));
-  enterKey('D');
   assertEqual("MainMenu", tc->stateName());
 }
 

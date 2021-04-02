@@ -62,4 +62,5 @@ private:
   void down();
   void selectView();
   void selectSet();
+  void idle();
 };

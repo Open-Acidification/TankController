@@ -3,19 +3,8 @@
 import datetime
 import threading
 import time
-
-try:
-    import libTC
-    print('TankController version ', libTC.version())
-except ImportError:
-    print('libTC not found!')
-    exit()
-
-try:
-    import wx
-except ImportError:
-    print('wxpython is not installed!')
-    exit()
+import libTC
+import wx
 
 
 class TankController(wx.Frame):
@@ -46,31 +35,40 @@ class TankController(wx.Frame):
         self.panel = wx.Panel(self)
         self.panel.Bind(wx.EVT_CHAR, self.Keyboard)
         mainSizer = wx.BoxSizer(wx.VERTICAL)
-        mainSizer.Add(self.layoutTop(), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
-        mainSizer.Add(self.layoutBottom(), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
+        mainSizer.Add(self.layoutTop(), flag=wx.EXPAND |
+                      wx.LEFT | wx.RIGHT, border=5)
+        mainSizer.Add(self.layoutBottom(), flag=wx.EXPAND |
+                      wx.LEFT | wx.RIGHT, border=5)
         self.panel.SetSizer(mainSizer)
 
     def layoutBottom(self):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.Add(self.layoutSerial(), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
+        sizer.Add(self.layoutSerial(), flag=wx.EXPAND |
+                  wx.LEFT | wx.RIGHT, border=5)
         return sizer
 
     def layoutTop(self):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.Add(self.layoutTopLeft(), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
-        sizer.Add(self.layoutEEPROM(), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
+        sizer.Add(self.layoutTopLeft(), flag=wx.EXPAND |
+                  wx.LEFT | wx.RIGHT, border=5)
+        sizer.Add(self.layoutEEPROM(), flag=wx.EXPAND |
+                  wx.LEFT | wx.RIGHT, border=5)
         return sizer
 
     def layoutTopLeft(self):
         sizer = wx.StaticBoxSizer(wx.VERTICAL, self.panel)
-        sizer.Add(self.layoutDevice(), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
-        sizer.Add(self.layoutTank(), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
+        sizer.Add(self.layoutDevice(), flag=wx.EXPAND |
+                  wx.LEFT | wx.RIGHT, border=5)
+        sizer.Add(self.layoutTank(), flag=wx.EXPAND |
+                  wx.LEFT | wx.RIGHT, border=5)
         return sizer
 
     def layoutTank(self):
         sizer = wx.StaticBoxSizer(wx.HORIZONTAL, self.panel)
-        sizer.Add(self.layoutTemp(), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
-        sizer.Add(self.layoutPH(), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
+        sizer.Add(self.layoutTemp(), flag=wx.EXPAND |
+                  wx.LEFT | wx.RIGHT, border=5)
+        sizer.Add(self.layoutPH(), flag=wx.EXPAND |
+                  wx.LEFT | wx.RIGHT, border=5)
         return sizer
 
     def layoutTemp(self):
@@ -100,14 +98,18 @@ class TankController(wx.Frame):
     def layoutDevice(self):
         sizer = wx.StaticBoxSizer(
             wx.VERTICAL, self.panel, label="Tank Controller v" + libTC.version())
-        sizer.Add(self.layoutDisplay(), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
-        sizer.Add(self.layoutKeypad(), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
+        sizer.Add(self.layoutDisplay(), flag=wx.EXPAND |
+                  wx.LEFT | wx.RIGHT, border=5)
+        sizer.Add(self.layoutKeypad(), flag=wx.EXPAND |
+                  wx.LEFT | wx.RIGHT, border=5)
         return sizer
 
     def layoutDisplay(self):
         sizer = wx.StaticBoxSizer(wx.HORIZONTAL, self.panel)
-        sizer.Add(self.layoutLQD(), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
-        sizer.Add(self.layoutPins(), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
+        sizer.Add(self.layoutLQD(), flag=wx.EXPAND |
+                  wx.LEFT | wx.RIGHT, border=5)
+        sizer.Add(self.layoutPins(), flag=wx.EXPAND |
+                  wx.LEFT | wx.RIGHT, border=5)
         return sizer
 
     def layoutLQD(self):
@@ -162,12 +164,14 @@ class TankController(wx.Frame):
         for i, each in enumerate(labels):
             box = wx.StaticBoxSizer(wx.HORIZONTAL, self.panel, label=each)
             value = wx.StaticText(self.panel, label="nan")
-            box.Add(value, flag=wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, border=5)
+            box.Add(value, flag=wx.EXPAND | wx.LEFT |
+                    wx.RIGHT | wx.BOTTOM, border=5)
             if i >= len(labels) / 3 * 2:
                 currentColumn = rightSizer
             elif i >= len(labels) / 3:
                 currentColumn = centerSizer
-            currentColumn.Add(box, flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=10)
+            currentColumn.Add(box, flag=wx.EXPAND |
+                              wx.LEFT | wx.RIGHT, border=10)
             self.eeprom.append(value)
         sizer.Add(leftSizer, flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)
         sizer.Add(centerSizer, flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=5)

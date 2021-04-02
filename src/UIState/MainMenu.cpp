@@ -4,6 +4,7 @@
 #include "Devices/TempProbe_TC.h"
 #include "EnablePID.h"
 #include "PHCalibration.h"
+#include "PHProbe.h"
 #include "PIDTuningMenu.h"
 #include "ResetLCDScreen.h"
 #include "SeeDeviceAddress.h"
@@ -18,6 +19,32 @@
 #include "SetTime.h"
 #include "TemperatureCalibration.h"
 
+MainMenu::MainMenu(TankControllerLib *tc) : UIState(tc) {
+  viewMenus[VIEW_TIME] = String("View time       ");
+  viewMenus[VIEW_PID] = String("View PID        ");
+  viewMenus[VIEW_PH_SLOPE] = String("View pH slope   ");
+  viewMenus[VIEW_TANK_ID] = String("View tank ID    ");
+  viewMenus[VIEW_LOG_FILE] = String("View log file   ");
+  viewMenus[VIEW_GOOGLE_MINS] = String("View Google mins");
+  viewMenus[VIEW_IP_ADDRESS] = String("View IP address ");
+  viewMenus[VIEW_MAC_ADDRESS] = String("View MAC address");
+  viewMenus[VIEW_VERSION] = String("View version    ");
+  viewMenus[VIEW_UPTIME] = String("View uptime     ");
+
+  setMenus[SET_PH] = String("Set pH target   ");
+  setMenus[SET_TEMPERATURE] = String("Set temperature ");
+  setMenus[SET_CALIBRATION_1] = String("1pt pH calibrate");
+  setMenus[SET_CALIBRATION_2] = String("2pt pH calibrate");
+  setMenus[SET_CALIBRATION_CLEAR] = String("Clear pH calibra");
+  setMenus[SET_TEMP_CALIBRATION] = String("Temp calibration");
+  setMenus[SET_PID_AUTO_TUNE] = String("PID auto-tune   ");
+  setMenus[SET_PID_MANUAL_TUNE] = String("PID manual tune ");
+  setMenus[SET_PID_ON_OFF] = String("PID on/off      ");
+  setMenus[SET_CHILL_OR_HEAT] = String("Set chill/heat  ");
+  setMenus[SET_GOOGLE_MINS] = String("Set Google mins ");
+  setMenus[SET_TIME] = String("Set date/time   ");
+}
+
 /**
  * Branch to other states to handle various menu options
  */
@@ -29,58 +56,182 @@ void MainMenu::handleKey(char key) {
     case 'B':  // Set Temperature set_point
       this->setNextState((UIState *)new SetTempSetPoint(tc));
       break;
-    case 'C':  // pH Calibration
-      this->setNextState((UIState *)new PHCalibration(tc));
+    case 'D':  // Reset
+      level1 = 0;
+      level2 = -1;
       break;
-    case 'D':  // Calibration Management
-      this->setNextState((UIState *)new CalibrationManagement(tc));
+    case '2':  // down
+      down();
       break;
-    case '#':  // Set Tank ID
-      this->setNextState((UIState *)new SetTankID(tc));
+    case '4':  // left
+      left();
       break;
-    case '*':  // Set Google Sheet Interval
-      this->setNextState((UIState *)new SetGoogleSheetInterval(tc));
+    case '6':  // right
+      down();
       break;
-    case '0':  // See Device Uptime & Current Time
-      this->setNextState((UIState *)new SeeDeviceUptime(tc));
-      break;
-    case '1':  // See Device addresses
-      this->setNextState((UIState *)new SeeDeviceAddress(tc));
-      break;
-    case '2':  // Reset LCD Screen
-      this->setNextState((UIState *)new ResetLCDScreen(tc));
-      break;
-    case '3':  // See Tank ID and Log File Name
-      this->setNextState((UIState *)new SeeTankID(tc));
-      break;
-    case '4':  // See PID Constants
-      this->setNextState((UIState *)new SeePIDConstants(tc));
-      break;
-    case '5':  // PID Tuning
-      this->setNextState((UIState *)new PIDTuningMenu(tc));
-      break;
-    case '6':  // Temperature Calibration
-      this->setNextState((UIState *)new TemperatureCalibration(tc));
-      break;
-    case '7':  // Manual Set Time
-      this->setNextState((UIState *)new SetTime(tc));
-      break;
-    case '8':  // Enable PID
-      this->setNextState((UIState *)new EnablePID(tc));
-      break;
-    case '9':  // Set Chill or Heat
-      this->setNextState((UIState *)new SetChillOrHeat(tc));
+    case '8':  // up
+      up();
       break;
     default:
-      returnToMainMenu();
+      // ignore invalid keys
+      break;
+  }
+}
+
+void MainMenu::left() {
+  if (level2 == -1) {
+    level1 = 0;
+  } else {
+    level2 = -1;
+  }
+}
+
+void MainMenu::right() {
+  if (level1 == 0) {
+    level1 = 1;
+    level2 = -1;
+  } else if (level2 == -1) {
+    level2 = 0;
+  } else if (level1 == 1) {
+    selectView();
+  } else {
+    selectSet();
+  }
+}
+
+void MainMenu::up() {
+  if (level2 == -1) {
+    level1 = (level1 + 2) % 3;
+  } else {
+    if (level1 == 1) {
+      level2 = (level2 + VIEW_COMMAND_COUNT - 1) % VIEW_COMMAND_COUNT;
+    } else {
+      level2 = (level2 + SET_COMMAND_COUNT - 1) % SET_COMMAND_COUNT;
+    }
+  }
+}
+
+void MainMenu::down() {
+  if (level2 == -1) {
+    level1 = (level1 + 1) % 3;
+  } else {
+    if (level1 == 1) {
+      level2 = (level2 + 1) % VIEW_COMMAND_COUNT;
+    } else {
+      level2 = (level2 + 1) % SET_COMMAND_COUNT;
+    }
+  }
+}
+
+void MainMenu::selectView() {
+  switch (level2) {
+    case VIEW_TIME:
+      this->setNextState((UIState *)new SeeDeviceUptime(tc));
+      break;
+    case VIEW_PID:
+      this->setNextState((UIState *)new SeePIDConstants(tc));
+      break;
+    case VIEW_PH_SLOPE:
+      this->setNextState((UIState *)new SeePIDConstants(tc));
+      break;
+    case VIEW_TANK_ID:
+      this->setNextState((UIState *)new SeeTankID(tc));
+      break;
+    case VIEW_LOG_FILE:
+      this->setNextState((UIState *)new SeeTankID(tc));
+      break;
+    case VIEW_GOOGLE_MINS:
+      this->setNextState((UIState *)new SeeTankID(tc));
+      break;
+    case VIEW_IP_ADDRESS:
+      this->setNextState((UIState *)new SeeDeviceAddress(tc));
+      break;
+    case VIEW_MAC_ADDRESS:
+      this->setNextState((UIState *)new SeeDeviceAddress(tc));
+      break;
+    case VIEW_VERSION:
+      this->setNextState((UIState *)new SeeDeviceAddress(tc));
+      break;
+    case VIEW_UPTIME:
+      this->setNextState((UIState *)new SeeDeviceUptime(tc));
+      break;
+    default:
+      break;
+  }
+}
+
+void MainMenu::selectSet() {
+  switch (level2) {
+    case SET_PH:
+      this->setNextState((UIState *)new SetPHSetPoint(tc));
+      break;
+    case SET_TEMPERATURE:
+      this->setNextState((UIState *)new SetTempSetPoint(tc));
+      break;
+    case SET_CALIBRATION_1:
+      this->setNextState((UIState *)new PHCalibration(tc));
+      break;
+    case SET_CALIBRATION_2:
+      this->setNextState((UIState *)new PHCalibration(tc));
+      break;
+    case SET_CALIBRATION_CLEAR:
+      this->setNextState((UIState *)new PHCalibration(tc));
+      break;
+    case SET_TEMP_CALIBRATION:
+      this->setNextState((UIState *)new TemperatureCalibration(tc));
+      break;
+    case SET_PID_AUTO_TUNE:
+      this->setNextState((UIState *)new PIDTuningMenu(tc));
+      break;
+    case SET_PID_MANUAL_TUNE:
+      this->setNextState((UIState *)new PIDTuningMenu(tc));
+      break;
+    case SET_PID_ON_OFF:
+      this->setNextState((UIState *)new PIDTuningMenu(tc));
+      break;
+    case SET_CHILL_OR_HEAT:
+      this->setNextState((UIState *)new SetChillOrHeat(tc));
+      break;
+    case SET_GOOGLE_MINS:
+      this->setNextState((UIState *)new SetGoogleSheetInterval(tc));
+      break;
+    case SET_TIME:
+      this->setNextState((UIState *)new SetTime(tc));
+      break;
+    default:
       break;
   }
 }
 
 // show current temp and pH
 void MainMenu::loop() {
-  TempProbe_TC *tempProbe = TempProbe_TC::instance();
-  char output[17];
-  sprintf(output, "Temp=%2.2f", tempProbe->getRunningAverage());
-  LiquidCrystal_TC::instance()->writeLine(output, 1);
+  switch (level1) {
+    case 0: {
+      PHProbe *pPHProbe = PHProbe::instance();
+      char output[17];
+      sprintf(output, "pH=%1.3f   %1.3f", pPHProbe->getPH(), 7.125);
+      LiquidCrystal_TC::instance()->writeLine(output, 0);
+      TempProbe_TC *tempProbe = TempProbe_TC::instance();
+      sprintf(output, "T=%2.2f  %c %2.2f", tempProbe->getRunningAverage(), 'C', 12.25);
+      LiquidCrystal_TC::instance()->writeLine(output, 1);
+    } break;
+    case 1:
+      if (level2 == -1) {
+        LiquidCrystal_TC::instance()->writeLine("View Menu       ", 0);
+        LiquidCrystal_TC::instance()->writeLine("<4   ^8  2v   6>", 1);
+      } else {
+        LiquidCrystal_TC::instance()->writeLine(viewMenus[level2], 0);
+        LiquidCrystal_TC::instance()->writeLine("<4   ^8  2v   6>", 1);
+      }
+      break;
+    case 2:
+      if (level2 == -1) {
+        LiquidCrystal_TC::instance()->writeLine("Set Menu        ", 0);
+        LiquidCrystal_TC::instance()->writeLine("<4   ^8  2v   6>", 1);
+      } else {
+        LiquidCrystal_TC::instance()->writeLine(viewMenus[level2].to_c(), 0);
+        LiquidCrystal_TC::instance()->writeLine("<4   ^8  2v   6>", 1);
+      }
+      break;
+  }
 }

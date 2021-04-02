@@ -28,6 +28,7 @@ elif
 emoji
 endif
 endl
+enum
 EVT
 EZO
 FONTFAMILY

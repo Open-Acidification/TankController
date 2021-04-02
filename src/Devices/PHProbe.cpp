@@ -39,7 +39,7 @@ void PHProbe::sendSlopeRequest() {
 
 String PHProbe::getSlope() {
   // for example "?Slope,99.7,100.3, -0.89\r"
-  if(slopeResponse.length() < 10) {
+  if (slopeResponse.length() < 10) {
     return String("");
   }
   String slope = slopeResponse.substring(7);
@@ -62,7 +62,7 @@ void PHProbe::onePointCalibration(double midpoint) {
  * interrupt handler for data arriving from probe
  */
 void PHProbe::serialEvent1() {
-  while (Serial1.available() > 0) {               // if we see that the Atlas Scientific product has sent a character
+  while (Serial1.available() > 0) {  // if we see that the Atlas Scientific product has sent a character
     Serial_TC *serial = Serial_TC::instance();
     String string = Serial1.readStringUntil(13);  // read the string until we see a <CR>
     serial->print(F("Serial1 = "), false);

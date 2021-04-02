@@ -14,19 +14,21 @@ unittest(constructor) {
   assertEqual("*OK,0\rC,1\r", GODMODE()->serialPort[1].dataOut);
 }
 
-// tests getPH() and getSlopeResponse as well
+// tests getPh() and getSlopeResponse as well
 unittest(serialEvent1) {
   GodmodeState *state = GODMODE();
   state->reset();
   TankControllerLib *pTC = TankControllerLib::instance();
-  PHProbe *pPHProbe = PHProbe::instance();
-  pTC->serialEvent1();
-  assertEqual(0, pPHProbe->getPH());
+  state->serialPort[0].dataOut = "";
+  PHProbe *pPHProbe = PHProbe::instance(); // the constructor writes data to the serial port
+  pTC->serialEvent1(); // fake interrupt
+  assertEqual(0, pPHProbe->getPh());
   assertEqual("", pPHProbe->getSlopeResponse());
   GODMODE()->serialPort[1].dataIn = "7.75\r?Slope,99.7,100.3,-0.89\r";  // the queue of data waiting to be read
-  pTC->serialEvent1();
+  pTC->serialEvent1(); // fake interrupt
+  assertEqual("Serial1 = 7.75\r\r\nSerial1 = ?Slope,99.7,100.3,-0.89\r\r\n", state->serialPort[0].dataOut);
   assertEqual("?Slope,99.7,100.3,-0.89\r", pPHProbe->getSlopeResponse());
-  assertEqual(7.75, pPHProbe->getPH());
+  assertEqual(7.75, pPHProbe->getPh());
 }
 
 unittest(setTemperatureCompensation) {
@@ -62,41 +64,52 @@ unittest(twoPointCalibration) {
   assertEqual("Cal,mid,11.875\rCal,low,10.875\r", state->serialPort[1].dataOut);
 }
 
+unittest(sendSlopeRequest) {
+  GodmodeState *state = GODMODE();
+  state->reset();
+  state->serialPort[0].dataOut = "";
+  PHProbe::instance()->sendSlopeRequest();
+  assertEqual("Slope,?\r", GODMODE()->serialPort[1].dataOut);
+}
 unittest(getSlope) {
   GodmodeState *state = GODMODE();
   state->reset();
+  TankControllerLib *pTC = TankControllerLib::instance();
+  state->serialPort[0].dataOut = "";
   PHProbe *pPHProbe = PHProbe::instance();
-  GODMODE()->serialPort[1].dataIn = "?Slope,99.7,100.3,-0.89\r";  // the answer to getSlop() waiting to be read
+  pTC->serialEvent1(); // fake interrupt  
   String slope = pPHProbe->getSlope();
-  assertEqual("99.7,100.3,-0.89 ", slope);
-  assertEqual("Raw String: \r\n?Slope,99.7,100.3,-0.89\r\r\n\r\nCalibration Slope: \r\n99.7,100.3,-0.89 \r\n\r\n",
-              state->serialPort[0].dataOut);
+  assertEqual("99.7,100.3,-0.89", slope);
+  assertEqual("Calibration Slope: 99.7,100.3,-0.89\r\n\r\n",   state->serialPort[0].dataOut);
+  state->serialPort[0].dataOut = "";
+  GODMODE()->serialPort[1].dataIn = "?Slope,98.7,101.3,-0.89\r";  // the answer to getSlop() waiting to be read
+  pTC->serialEvent1(); // fake interrupt
+  assertEqual("Serial1 = ?Slope,98.7,101.3,-0.89\r\r\n", state->serialPort[0].dataOut);
+  state->serialPort[0].dataOut = "";
+  slope = pPHProbe->getSlope();
+  assertEqual("98.7,101.3,-0.89", slope);
+  assertEqual("Calibration Slope: 98.7,101.3,-0.89\r\n\r\n", state->serialPort[0].dataOut);
 }
 
-unittest(getPhReading) {
+unittest(getPh) {
   GodmodeState *state = GODMODE();
+  TankControllerLib *pTC = TankControllerLib::instance();
+  state->serialPort[0].dataOut = "";
   state->reset();
-  GODMODE()->serialPort[1].dataIn = "7.25";  // the queue of data waiting to be read
+  GODMODE()->serialPort[1].dataIn = "7.25\r";  // the queue of data waiting to be read
+  pTC->serialEvent1(); // fake interrupt
+  assertEqual("Serial1 = 7.25\r\r\n", state->serialPort[0].dataOut);
   PHProbe *pPHProbe = PHProbe::instance();
-  double pH = pPHProbe->getPhReading();
+  double pH = pPHProbe->getPh();
   assertEqual(7.25, pH);
-  assertEqual("pH = 7.250\r\n", state->serialPort[0].dataOut);
 }
 
 unittest(clearCalibration) {
   GodmodeState *state = GODMODE();
   state->reset();
-  PHProbe *pPHProbe = PHProbe::instance();
-  pPHProbe->onePointCalibration(10.875);
-  GODMODE()->serialPort[1].dataIn = "?Cal,1\r";  // the answer to getSlop() waiting to be read
-  Serial1.print("Cal,?\r");                      // send that string to the Atlas Scientific product
-  String string = Serial1.readStringUntil(13);   // read the string until we see a <CR>
-  assertEqual("?Cal,1\r", string);
-  pPHProbe->clearCalibration();
-  GODMODE()->serialPort[1].dataIn = "?Cal,0\r";  // the answer to getSlop() waiting to be read
-  Serial1.print("Cal,?\r");                      // send that string to the Atlas Scientific product
-  String string2 = Serial1.readStringUntil(13);  // read the string until we see a <CR>
-  assertEqual("?Cal,0\r", string2);
+  state->serialPort[0].dataOut = "";
+  PHProbe::instance()->clearCalibration();
+  assertEqual("Cal,clear\r", GODMODE()->serialPort[1].dataOut);
 }
 
 unittest_main()

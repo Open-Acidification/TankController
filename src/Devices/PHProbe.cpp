@@ -33,18 +33,20 @@ void PHProbe::clearCalibration() {
   Serial1.print("Cal,clear\r");  // send that string to the Atlas Scientific product
 }
 
-String PHProbe::getSlope() {
+void PHProbe::sendSlopeRequest() {
   Serial1.print(F("Slope,?\r"));  // Sending request for Calibration Slope
-  TankControllerLib *pTC = TankControllerLib::instance();
-  pTC->serialEvent1();
-  slope = slopeResponse.substring(7);
-  slope[slope.length() - 1] = ' ';
+}
+
+String PHProbe::getSlope() {
+  // for example "?Slope,99.7,100.3, -0.89\r"
+  if(slopeResponse.length() < 10) {
+    return String("");
+  }
+  String slope = slopeResponse.substring(7);
+  slope.remove((slope.length() - 1));
   // output to log
   Serial_TC *serial = Serial_TC::instance();
-  serial->print(F("Raw String: "));
-  serial->print(slopeResponse);
-  serial->println();
-  serial->print(F("Calibration Slope: "));
+  serial->print(F("Calibration Slope: "), false);
   serial->print(slope);
   serial->println();
   return slope;
@@ -57,15 +59,18 @@ void PHProbe::onePointCalibration(double midpoint) {
 }
 
 /**
- * data arriving from probe
+ * interrupt handler for data arriving from probe
  */
 void PHProbe::serialEvent1() {
   while (Serial1.available() > 0) {               // if we see that the Atlas Scientific product has sent a character
+    Serial_TC *serial = Serial_TC::instance();
     String string = Serial1.readStringUntil(13);  // read the string until we see a <CR>
+    serial->print(F("Serial1 = "), false);
+    serial->print(string, true);
     if (string.length() > 0) {
       if (isdigit(string[0])) {  // if the first character in the string is a digit
-        value =
-            string.toFloat();  // convert the string to a floating point number so it can be evaluated by the Arduino
+        // convert the string to a floating point number so it can be evaluated by the Arduino
+        value = string.toFloat();
       } else if (string[0] == '?') {  // answer to a previous query
         if (string.length() > 7 && string.substring(0, 7) == "?Slope,") {
           // for example "?Slope,99.7,100.3, -0.89\r"
@@ -74,16 +79,6 @@ void PHProbe::serialEvent1() {
       }
     }
   }
-}
-
-double PHProbe::getPhReading() {
-  TankControllerLib *pTC = TankControllerLib::instance();
-  pTC->serialEvent1();
-  Serial_TC *serial = Serial_TC::instance();
-  serial->print(F("pH = "), false);
-  serial->print(value, 3);
-  serial->println();
-  return value;
 }
 
 // "pH decreases with increase in temperature. But this does not mean that

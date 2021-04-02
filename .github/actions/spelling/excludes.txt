@@ -13,3 +13,4 @@ LICENSE
 .gitignore
 Makefile
 ^other/*
+^docs/Menus.xlsx$

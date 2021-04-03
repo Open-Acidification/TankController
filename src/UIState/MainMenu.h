@@ -37,6 +37,7 @@ public:
     SET_CHILL_OR_HEAT,
     SET_GOOGLE_MINS,
     SET_TIME,
+    SET_TANK_ID,
     SET_COMMAND_COUNT
   };
   MainMenu(TankControllerLib* tc);

@@ -20,28 +20,29 @@
 #include "TemperatureCalibration.h"
 
 MainMenu::MainMenu(TankControllerLib *tc) : UIState(tc) {
-  viewMenus[VIEW_TIME] = String("View time       ");
+  viewMenus[VIEW_GOOGLE_MINS] = String("View Google mins");
+  viewMenus[VIEW_IP_ADDRESS] = String("View IP address ");
+  viewMenus[VIEW_LOG_FILE] = String("View log file   ");
+  viewMenus[VIEW_MAC_ADDRESS] = String("View MAC address");
   viewMenus[VIEW_PID] = String("View PID        ");
   viewMenus[VIEW_PH_SLOPE] = String("View pH slope   ");
   viewMenus[VIEW_TANK_ID] = String("View tank ID    ");
-  viewMenus[VIEW_LOG_FILE] = String("View log file   ");
-  viewMenus[VIEW_GOOGLE_MINS] = String("View Google mins");
-  viewMenus[VIEW_IP_ADDRESS] = String("View IP address ");
-  viewMenus[VIEW_MAC_ADDRESS] = String("View MAC address");
-  viewMenus[VIEW_VERSION] = String("View version    ");
+  viewMenus[VIEW_TIME] = String("View time       ");
   viewMenus[VIEW_UPTIME] = String("View uptime     ");
+  viewMenus[VIEW_VERSION] = String("View version    ");
 
-  setMenus[SET_PH] = String("Set pH target   ");
-  setMenus[SET_TEMPERATURE] = String("Set temperature ");
   setMenus[SET_CALIBRATION_1] = String("1pt pH calibrate");
   setMenus[SET_CALIBRATION_2] = String("2pt pH calibrate");
   setMenus[SET_CALIBRATION_CLEAR] = String("Clear pH calibra");
-  setMenus[SET_TEMP_CALIBRATION] = String("Temp calibration");
+  setMenus[SET_CHILL_OR_HEAT] = String("Set chill/heat  ");
+  setMenus[SET_GOOGLE_MINS] = String("Set Google mins ");
+  setMenus[SET_PH] = String("Set pH target   ");
   setMenus[SET_PID_AUTO_TUNE] = String("PID auto-tune   ");
   setMenus[SET_PID_MANUAL_TUNE] = String("PID manual tune ");
   setMenus[SET_PID_ON_OFF] = String("PID on/off      ");
-  setMenus[SET_CHILL_OR_HEAT] = String("Set chill/heat  ");
-  setMenus[SET_GOOGLE_MINS] = String("Set Google mins ");
+  setMenus[SET_TANK_ID] = String("Set Tank ID     ");
+  setMenus[SET_TEMP_CALIBRATION] = String("Temp calibration");
+  setMenus[SET_TEMPERATURE] = String("Set temperature ");
   setMenus[SET_TIME] = String("Set date/time   ");
 }
 
@@ -125,8 +126,17 @@ void MainMenu::down() {
 
 void MainMenu::selectView() {
   switch (level2) {
-    case VIEW_TIME:
-      this->setNextState((UIState *)new SeeDeviceUptime(tc));
+    case VIEW_GOOGLE_MINS:
+      this->setNextState((UIState *)new SeeTankID(tc));
+      break;
+    case VIEW_IP_ADDRESS:
+      this->setNextState((UIState *)new SeeDeviceAddress(tc));
+      break;
+    case VIEW_LOG_FILE:
+      this->setNextState((UIState *)new SeeTankID(tc));
+      break;
+    case VIEW_MAC_ADDRESS:
+      this->setNextState((UIState *)new SeeDeviceAddress(tc));
       break;
     case VIEW_PID:
       this->setNextState((UIState *)new SeePIDConstants(tc));
@@ -137,23 +147,14 @@ void MainMenu::selectView() {
     case VIEW_TANK_ID:
       this->setNextState((UIState *)new SeeTankID(tc));
       break;
-    case VIEW_LOG_FILE:
-      this->setNextState((UIState *)new SeeTankID(tc));
-      break;
-    case VIEW_GOOGLE_MINS:
-      this->setNextState((UIState *)new SeeTankID(tc));
-      break;
-    case VIEW_IP_ADDRESS:
-      this->setNextState((UIState *)new SeeDeviceAddress(tc));
-      break;
-    case VIEW_MAC_ADDRESS:
-      this->setNextState((UIState *)new SeeDeviceAddress(tc));
-      break;
-    case VIEW_VERSION:
-      this->setNextState((UIState *)new SeeDeviceAddress(tc));
+    case VIEW_TIME:
+      this->setNextState((UIState *)new SeeDeviceUptime(tc));
       break;
     case VIEW_UPTIME:
       this->setNextState((UIState *)new SeeDeviceUptime(tc));
+      break;
+    case VIEW_VERSION:
+      this->setNextState((UIState *)new SeeDeviceAddress(tc));
       break;
     default:
       break;
@@ -162,12 +163,6 @@ void MainMenu::selectView() {
 
 void MainMenu::selectSet() {
   switch (level2) {
-    case SET_PH:
-      this->setNextState((UIState *)new SetPHSetPoint(tc));
-      break;
-    case SET_TEMPERATURE:
-      this->setNextState((UIState *)new SetTempSetPoint(tc));
-      break;
     case SET_CALIBRATION_1:
       this->setNextState((UIState *)new PHCalibration(tc));
       break;
@@ -177,8 +172,14 @@ void MainMenu::selectSet() {
     case SET_CALIBRATION_CLEAR:
       this->setNextState((UIState *)new PHCalibration(tc));
       break;
-    case SET_TEMP_CALIBRATION:
-      this->setNextState((UIState *)new TemperatureCalibration(tc));
+    case SET_CHILL_OR_HEAT:
+      this->setNextState((UIState *)new SetChillOrHeat(tc));
+      break;
+    case SET_GOOGLE_MINS:
+      this->setNextState((UIState *)new SetGoogleSheetInterval(tc));
+      break;
+    case SET_PH:
+      this->setNextState((UIState *)new SetPHSetPoint(tc));
       break;
     case SET_PID_AUTO_TUNE:
       this->setNextState((UIState *)new PIDTuningMenu(tc));
@@ -189,11 +190,14 @@ void MainMenu::selectSet() {
     case SET_PID_ON_OFF:
       this->setNextState((UIState *)new PIDTuningMenu(tc));
       break;
-    case SET_CHILL_OR_HEAT:
-      this->setNextState((UIState *)new SetChillOrHeat(tc));
+    case SET_TANK_ID:
+      this->setNextState((UIState *)new SetTankID(tc));
       break;
-    case SET_GOOGLE_MINS:
-      this->setNextState((UIState *)new SetGoogleSheetInterval(tc));
+    case SET_TEMP_CALIBRATION:
+      this->setNextState((UIState *)new TemperatureCalibration(tc));
+      break;
+    case SET_TEMPERATURE:
+      this->setNextState((UIState *)new SetTempSetPoint(tc));
       break;
     case SET_TIME:
       this->setNextState((UIState *)new SetTime(tc));

@@ -45,7 +45,7 @@ unittest(loop) {
   state->resetClock();
   assertEqual(0, micros());
   tank->loop();
-  assertTrue(0 <= micros() && micros() <= 10000);
+  assertTrue(0 <= micros() && micros() <= 100000);
   delay(1000);
   assertTrue(1000000 <= micros() && micros() <= 1100000);
   tank->loop();

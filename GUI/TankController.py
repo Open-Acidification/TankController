@@ -3,18 +3,8 @@
 import datetime
 import threading
 import time
-
-try:
-    import libTC
-except ImportError:
-    print('libTC not found!')
-    exit()
-
-try:
-    import wx
-except ImportError:
-    print('wxpython is not installed!')
-    exit()
+import libTC
+import wx
 
 
 class TankController(wx.Frame):

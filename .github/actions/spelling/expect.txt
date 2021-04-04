@@ -59,6 +59,7 @@ len
 libgtk
 libtc
 localtime
+lowpoint
 LOWTHRESH
 lqd
 mday

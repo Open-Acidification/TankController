@@ -211,7 +211,7 @@ void MainMenu::selectSet() {
 void MainMenu::idle() {
   PHProbe *pPHProbe = PHProbe::instance();
   char output[17];
-  sprintf(output, "pH=%01.3f   %1.3f", pPHProbe->getPH(), 7.125);
+  sprintf(output, "pH=%01.3f   %1.3f", pPHProbe->getPh(), 7.125);
   LiquidCrystal_TC::instance()->writeLine(output, 0);
   TempProbe_TC *tempProbe = TempProbe_TC::instance();
   double temp = tempProbe->getRunningAverage();

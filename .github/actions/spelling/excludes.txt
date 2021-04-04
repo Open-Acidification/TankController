@@ -12,3 +12,5 @@ LICENSE
 .all-contributorsrc
 .gitignore
 Makefile
+^other/*
+^docs/Menus.xlsx$

@@ -1,7 +1,6 @@
 #include "Devices/PHProbe.h"
 
 #include "Devices/Serial_TC.h"
-#include "TankControllerLib.h"
 
 //  class instance variables
 /**

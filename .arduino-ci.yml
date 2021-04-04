@@ -1,25 +1,32 @@
+platforms:
+  mega2560:
+    gcc:
+      warnings:
+        - no-unknown-attributes
+        - no-address-of-packed-member
+
 unittest:
-    platforms:
-        - mega2560
-    libraries:
-      - "Adafruit BusIO"
-      - "Adafruit MAX31865"
-      - "Arduino-PID-Library"
-      - "Ethernet"
-      - "LiquidCrystal"
-      - "RTClib"
-      - "Keypad"
-      - "SD"
+  platforms:
+      - mega2560
+  libraries:
+    - "Adafruit BusIO"
+    - "Adafruit MAX31865"
+    - "Arduino-PID-Library"
+    - "Ethernet"
+    - "LiquidCrystal"
+    - "RTClib"
+    - "Keypad"
+    - "SD"
 
 compile:
-    platforms:
-      - mega2560
-    libraries:
-      - "Adafruit BusIO"
-      - "Adafruit MAX31865"
-      - "Arduino-PID-Library"
-      - "Ethernet"
-      - "LiquidCrystal"
-      - "RTClib"
-      - "Keypad"
-      - "SD"
+  platforms:
+    - mega2560
+  libraries:
+    - "Adafruit BusIO"
+    - "Adafruit MAX31865"
+    - "Arduino-PID-Library"
+    - "Ethernet"
+    - "LiquidCrystal"
+    - "RTClib"
+    - "Keypad"
+    - "SD"

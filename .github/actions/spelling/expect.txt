@@ -34,6 +34,7 @@ EZO
 FONTFAMILY
 FONTSTYLE
 FONTWEIGHT
+gcc
 Gemfile
 github
 globals

@@ -9,7 +9,7 @@
 #include "TankControllerLib.h"
 #include "UIState/UIState.h"
 
-unittest(TestVerticleScroll) {
+unittest(TestVerticalScroll) {
   TankControllerLib* tc = TankControllerLib::instance();
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
   PID* pPID = PID_TC::instance()->getPID();

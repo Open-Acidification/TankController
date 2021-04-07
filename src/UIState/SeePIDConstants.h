@@ -16,7 +16,7 @@ public:
   }
   void start() {
     msEnd = millis() + (1000 * secondsLeft);
-    // Subract 1 because seconds left needs to be at the end of our current second boundary
+    // Subtract 1 because seconds left needs to be at the end of our current second boundary
     secondsLeft--;
   }
 

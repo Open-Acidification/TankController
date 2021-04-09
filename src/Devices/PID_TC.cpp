@@ -30,7 +30,7 @@ PID_TC::PID_TC() {
     Kd = 0;
   }
   pPID = new PID(&input, &output, &set_point, Kp, Ki, Kd,
-                 DIRECT);  // Starting the PID, Specify the links and initial
+                 REVERSE);  // Starting the PID, Specify the links and initial
                            // tuning parameters
   pPID->SetMode(AUTOMATIC);
   pPID->SetSampleTime(1000);

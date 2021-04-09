@@ -2,7 +2,6 @@
 #include <ArduinoUnitTests.h>
 #include <ci/ObservableDataStream.h>
 
-#include "TankControllerLib.h"
 #include "TemperatureControl.h"
 /**
  * These tests test the UpdateControl virtual function for the heater and chiller subclass and
@@ -13,58 +12,70 @@
 
 // Chiller
 unittest(BeforeIntervalAndWithinDelta) {
+  GodmodeState* state = GODMODE();
+  state->reset();
   Chiller chiller;
-  assertFalse(chiller.getCurrentSwitchState());
+  assertEqual(HIGH, state->digitalPin[chiller.getPIN()]);
   chiller.setTargetTemperature(20);
   chiller.updateControl(20.04);
-  assertFalse(chiller.getCurrentSwitchState());
+  assertEqual(HIGH, state->digitalPin[chiller.getPIN()]);
 }
 
 // Chiller
 unittest(BeforeIntervalAndOutsideDelta) {
+  GodmodeState* state = GODMODE();
+  state->reset();
   Chiller chiller;
-  assertFalse(chiller.getCurrentSwitchState());
+  assertEqual(HIGH, state->digitalPin[chiller.getPIN()]);
   chiller.setTargetTemperature(20);
   chiller.updateControl(20.05);
-  assertFalse(chiller.getCurrentSwitchState());
+  assertEqual(HIGH, state->digitalPin[chiller.getPIN()]);
 }
 
 // Chiller
 unittest(AfterIntervalAndWithinDelta) {
+  GodmodeState* state = GODMODE();
+  state->reset();
   Chiller chiller;
-  assertFalse(chiller.getCurrentSwitchState());
+  assertEqual(HIGH, state->digitalPin[chiller.getPIN()]);
   chiller.setTargetTemperature(20);
   delay(31000);
   chiller.updateControl(20.04);
-  assertFalse(chiller.getCurrentSwitchState());
+  assertEqual(HIGH, state->digitalPin[chiller.getPIN()]);
 }
 
 // Chiller
 unittest(AfterIntervalAndOutsideDelta) {
+  GodmodeState* state = GODMODE();
+  state->reset();
   Chiller chiller;
-  assertFalse(chiller.getCurrentSwitchState());
+  assertEqual(HIGH, state->digitalPin[chiller.getPIN()]);
   chiller.setTargetTemperature(20);
   delay(31000);
   chiller.updateControl(20.05);
-  assertTrue(chiller.getCurrentSwitchState());
+  assertEqual(LOW, state->digitalPin[chiller.getPIN()]);
 }
 
 // Heater
 unittest(WithinDelta) {
+  GodmodeState* state = GODMODE();
+  state->reset();
   Heater heater;
-  assertFalse(heater.getCurrentSwitchState());
+  assertEqual(HIGH, state->digitalPin[heater.getPIN()]);
   heater.setTargetTemperature(20);
   heater.updateControl(19.96);
-  assertFalse(heater.getCurrentSwitchState());
+  assertEqual(HIGH, state->digitalPin[heater.getPIN()]);
 }
 
 // Heater
 unittest(OutsideDelta) {
+  GodmodeState* state = GODMODE();
+  state->reset();
   Heater heater;
-  assertFalse(heater.getCurrentSwitchState());
+  assertEqual(HIGH, state->digitalPin[heater.getPIN()]);
   heater.setTargetTemperature(20);
   heater.updateControl(19.95);
-  assertTrue(heater.getCurrentSwitchState());
+  assertEqual(LOW, state->digitalPin[heater.getPIN()]);
 }
 
 unittest_main()

@@ -13,7 +13,9 @@ protected:
   double targetTemperature;
 
 public:
-  TemperatureControl() {
+  TemperatureControl();
+  const int getPIN() {
+    return PIN;
   }
   void setTargetTemperature(double newTemperature) {
     targetTemperature = newTemperature;

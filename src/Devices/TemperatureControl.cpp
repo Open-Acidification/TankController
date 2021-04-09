@@ -1,5 +1,9 @@
 #include "TemperatureControl.h"
 
+TemperatureControl::TemperatureControl() {
+  digitalWrite(PIN, HIGH);
+}
+
 void Chiller::updateControl(double currentTemperature) {
   unsigned long currentMillis = millis();
   // pause 30 seconds between switching chiller on and off to prevent damage to chiller

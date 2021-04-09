@@ -2,7 +2,6 @@
 
 #include "PID_TC.h"
 
-
 PHControl::PHControl() {
   window_start_time = millis();
   digitalWrite(PIN, HIGH);

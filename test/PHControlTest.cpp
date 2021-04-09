@@ -4,7 +4,7 @@
 
 #include "PHControl.h"
 
-//updateControl function
+// updateControl function
 unittest(beforeTenSeconds) {
   GodmodeState* state = GODMODE();
   state->reset();

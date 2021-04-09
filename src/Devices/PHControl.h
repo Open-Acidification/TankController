@@ -9,6 +9,7 @@ private:
   long onTime = 0;
   long window_start_time;
   bool usePID = true;
+
 public:
   PHControl();
   const int getPIN() {

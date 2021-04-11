@@ -62,8 +62,8 @@ unittest(AfterIntervalAndOutsideDelta) {
 
 // Heater
 unittest(WithinDelta) {
-   const int PIN = 47;
- GodmodeState* state = GODMODE();
+  const int PIN = 47;
+  GodmodeState* state = GODMODE();
   state->reset();
   Heater heater;
   assertEqual(HIGH, state->digitalPin[PIN]);

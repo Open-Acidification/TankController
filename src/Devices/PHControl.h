@@ -12,9 +12,6 @@ private:
 
 public:
   PHControl();
-  const int getPIN() {
-    return PIN;
-  }
   void setTargetPh(double newPh) {
     targetPh = newPh;
   }

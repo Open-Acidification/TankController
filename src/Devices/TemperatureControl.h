@@ -11,20 +11,13 @@ protected:
   const int PIN = 47;
   const double DELTA = 0.05;
   double targetTemperature;
-  bool currentSwitchState = false;
-
-  void turnOn(bool state);
 
 public:
-  TemperatureControl() {
-  }
+  TemperatureControl();
   void setTargetTemperature(double newTemperature) {
     targetTemperature = newTemperature;
   }
   virtual void updateControl(double currentTemperature) = 0;
-  bool getCurrentSwitchState() {
-    return currentSwitchState;
-  }
 };
 
 class Heater : public TemperatureControl {

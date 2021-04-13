@@ -4,8 +4,8 @@
 
 #include <iostream>
 
-#include "TankControllerLib.h"
 #include "TC_util.h"
+#include "TankControllerLib.h"
 
 GodmodeState* state = GODMODE();
 const int LOG_SIZE = 10;

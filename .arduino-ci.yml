@@ -16,7 +16,7 @@ platforms:
 
 unittest:
   platforms:
-      - mega2560
+    - mega2560
   libraries:
     - "Adafruit BusIO"
     - "Adafruit MAX31865"

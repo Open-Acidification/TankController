@@ -1,5 +1,6 @@
 CC = g++ -std=c++17 -O3 -fPIC
 DEFINES = -D__AVR__ -D__AVR_ATmega2560__ -DARDUINO_ARCH_AVR -DARDUINO_AVR_MEGA2560 -DARDUINO=100
+WARNINGS = -Wno-unknown-attributes -Wno-address-of-packed-member
 LIBRARIES = $(shell bundle exec arduino_library_location.rb)
 PY_PATH = $(shell cd ../pybind11; python3 -m pybind11 --includes)
 SUFFIX = $(shell python3-config --extension-suffix)
@@ -13,6 +14,7 @@ $(PY_LIB) : TankControllerLib.o ../pybind11/setup.py ../libTC.cpp
 	echo "===== Compiling PY_LIB ($(PY_LIB)) =====" > /dev/null
 	$(CC) -shared -fPIC												\
 	$(DEFINES)                            	  \
+	$(WARNINGS)                            	  \
 	-Wl,-undefined,dynamic_lookup							\
 	$(PY_PATH)																\
 	-I$(TC_PATH)                      				\
@@ -37,6 +39,7 @@ TankControllerLib.o : Godmode.o
 	echo "===== Compiling TankControllerLib =====" > /dev/null
 	$(CC) -c                              			\
 	$(DEFINES)                            			\
+	$(WARNINGS)                            		  \
 	-I$(TC_PATH)                      				  \
 	-I$(TC_PATH)/Devices               			  	\
 	-I$(TC_PATH)/UIState               			  	\

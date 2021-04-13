@@ -1,6 +1,6 @@
 // https://pybind11.readthedocs.io/en/latest/basics.html
 
-#define NUM_SERIAL_PORTS 1
+#define NUM_SERIAL_PORTS 2
 #define EEPROM_SIZE 4096
 
 #include <sys/time.h>
@@ -20,6 +20,7 @@
 #include "EEPROM_TC.h"
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
+#include "PHProbe.h"
 #include "Serial_TC.h"
 #include "TC_util.h"
 #include "TankControllerLib.h"
@@ -127,11 +128,23 @@ void loop() {
   TankControllerLib::instance()->loop();
 }
 
-string serial() {
+double readPH() {
+  return PHProbe::instance()->getPh();
+}
+
+string readSerial(int port) {
   GodmodeState *state = GODMODE();
-  string result = string(state->serialPort[0].dataOut);
-  state->serialPort[0].dataOut = "";
+  string result = string(state->serialPort[port].dataOut);
+  state->serialPort[port].dataOut = "";
   return result;
+}
+
+string readSerial0() {
+  return readSerial(0);
+}
+
+string readSerial1() {
+  return readSerial(1);
 }
 
 void setTemperature(double value) {
@@ -161,6 +174,11 @@ const char *version() {
   return TankControllerLib::instance()->version();
 }
 
+void writeSerial1(const char *data) {
+  GODMODE()->serialPort[1].dataIn = data;         // the queue of data waiting to be read
+  TankControllerLib::instance()->serialEvent1();  // fake interrupt
+}
+
 PYBIND11_MODULE(libTC, m) {
   m.doc() = "pybind11 example plugin";  // optional module docstring
 
@@ -170,8 +188,10 @@ PYBIND11_MODULE(libTC, m) {
   m.def("lcd", &lcd, "TankController LiquidCrystal");
   m.def("led", &led, "TankController LED pin value");
   m.def("loop", &loop, "TankController loop");
-  m.def("serial", &serial, "TankController serial");
+  m.def("readSerial0", &readSerial0, "From TankController on serial port 0");
+  m.def("readSerial1", &readSerial1, "From TankController on serial port 1");
   m.def("setTemperature", &setTemperature, "TankController set actual tank temperature");
   m.def("setup", &setup, "TankController setup");
   m.def("version", &version, "TankController version");
+  m.def("writeSerial1", &writeSerial1, "To TankController on serial port 1");
 }

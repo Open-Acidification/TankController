@@ -50,7 +50,7 @@ class TankController(wx.Frame):
 
     def layoutBottom(self):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.Add(self.layoutSerial(), flag=wx.EXPAND |
+        sizer.Add(self.layoutSerial0(), flag=wx.EXPAND |
                   wx.LEFT | wx.RIGHT, border=self.border)
         return sizer
 
@@ -68,6 +68,8 @@ class TankController(wx.Frame):
                   wx.LEFT | wx.RIGHT, border=self.border)
         sizer.Add(self.layoutTank(), flag=wx.EXPAND |
                   wx.LEFT | wx.RIGHT, border=self.border)
+        sizer.Add(self.layoutSerial1(), flag=wx.EXPAND |
+                  wx.LEFT | wx.RIGHT, border=self.border)
         return sizer
 
     def layoutTank(self):
@@ -75,6 +77,10 @@ class TankController(wx.Frame):
         sizer.Add(self.layoutTemp(), flag=wx.EXPAND |
                   wx.LEFT | wx.RIGHT, border=self.border)
         sizer.Add(self.layoutPH(), flag=wx.EXPAND |
+                  wx.LEFT | wx.RIGHT, border=self.border)
+        btn = wx.Button(self.panel, -1, "Send\nfrom pH\nProbe")
+        btn.Bind(wx.EVT_BUTTON,self.sendFromPH)
+        sizer.Add(btn, flag=wx.EXPAND |
                   wx.LEFT | wx.RIGHT, border=self.border)
         return sizer
 
@@ -94,15 +100,14 @@ class TankController(wx.Frame):
 
     def layoutPH(self):
         sizer = wx.StaticBoxSizer(
-            wx.VERTICAL, self.panel, label="pH Probe")
-        ph = wx.TextCtrl(
+            wx.VERTICAL, self.panel, label="From pH Probe")
+        self.phProbe = wx.TextCtrl(
             self.panel, value='8.1234', style=wx.TE_RIGHT,
             size=self.FromDIP(wx.Size(120, 24)))
-        ph.Bind(wx.EVT_TEXT, self.onPHChanged)
         font = wx.Font(18, wx.FONTFAMILY_TELETYPE,
                        wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL)
-        ph.SetFont(font)
-        sizer.Add(ph, flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=self.border)
+        self.phProbe.SetFont(font)
+        sizer.Add(self.phProbe, flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=self.border)
         return sizer
 
     def layoutDevice(self):
@@ -195,12 +200,21 @@ class TankController(wx.Frame):
                   wx.RIGHT, border=self.border)
         return sizer
 
-    def layoutSerial(self):
+    def layoutSerial0(self):
         sizer = wx.StaticBoxSizer(
-            wx.VERTICAL, self.panel, label="Serial Log")
-        self.console = wx.TextCtrl(self.panel, size=self.FromDIP(wx.Size(800, 200)),
+            wx.VERTICAL, self.panel, label="Output from TankController on serial port 0")
+        self.serial0 = wx.TextCtrl(self.panel, size=self.FromDIP(wx.Size(800, 200)),
                                    style=wx.TE_READONLY | wx.TE_MULTILINE | wx.HSCROLL)
-        sizer.Add(self.console, flag=wx.EXPAND |
+        sizer.Add(self.serial0, flag=wx.EXPAND |
+                  wx.LEFT | wx.RIGHT, border=self.border)
+        return sizer
+
+    def layoutSerial1(self):
+        sizer = wx.StaticBoxSizer(
+            wx.VERTICAL, self.panel, label="Commands from TankController to pH probe on serial port 1")
+        self.serial1 = wx.TextCtrl(self.panel, size=self.FromDIP(wx.Size(300, 100)),
+                                   style=wx.TE_READONLY | wx.TE_MULTILINE | wx.HSCROLL)
+        sizer.Add(self.serial1, flag=wx.EXPAND |
                   wx.LEFT | wx.RIGHT, border=self.border)
         return sizer
 
@@ -211,7 +225,8 @@ class TankController(wx.Frame):
         for i, each in enumerate(self.eeprom):
             each.SetLabelText('{:.4f}'.format(libTC.eeprom(i)))
         # update Serial output
-        self.console.AppendText(libTC.serial().replace('\r\n', '\n'))
+        self.serial0.AppendText(libTC.readSerial0().replace('\r\n', '\n'))
+        self.serial1.AppendText(libTC.readSerial1().replace('\r\n', '\n'))
         # update pins
         self.pins.SetLabelText('LED:  {}\nHEAT: OFF\nCO2:  OFF'.format(
             'ON' if libTC.led() else 'OFF'))
@@ -234,8 +249,8 @@ class TankController(wx.Frame):
             key = '*'
         self.handleKey(key)
 
-    def onPHChanged(self, event):
-        print("onPHChanged", event.GetString())
+    def sendFromPH(self, event):
+        libTC.writeSerial1(self.phProbe.GetLineText(0) + '\r')
 
     def onTempChanged(self, event):
         libTC.setTemperature(float(event.GetString()))

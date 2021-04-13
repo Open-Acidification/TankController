@@ -4,6 +4,7 @@
 
 #include <iostream>
 
+#include "TC_util.h"
 #include "TankControllerLib.h"
 
 GodmodeState* state = GODMODE();
@@ -24,7 +25,7 @@ public:
     if (logIndex < LOG_SIZE) {
       pinLog[logIndex].time = micros();
       pinLog[logIndex].value = state->digitalPin[LED_PIN];
-      // std::cout << logIndex << ":" << pinLog[logIndex].time << ":" << pinLog[logIndex].value << endl;
+      COUT(logIndex << ":" << pinLog[logIndex].time << ":" << pinLog[logIndex].value);
       logIndex++;
     } else {
       overflowFlag = true;

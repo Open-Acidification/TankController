@@ -5,7 +5,6 @@
 #include "SetKI.h"
 #include "TankControllerLib.h"
 
-
 unittest(test) {
   TankControllerLib* tc = TankControllerLib::instance();
   SetKI* test = new SetKI(tc);

@@ -5,7 +5,6 @@
 #include "SetKD.h"
 #include "TankControllerLib.h"
 
-
 unittest(test) {
   TankControllerLib* tc = TankControllerLib::instance();
   SetKD* test = new SetKD(tc);

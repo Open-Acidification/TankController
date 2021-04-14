@@ -1,10 +1,10 @@
-#include "SetKI.h"
-
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
 #include "EEPROM_TC.h"
+#include "SetKI.h"
 #include "TankControllerLib.h"
+
 
 unittest(test) {
   TankControllerLib* tc = TankControllerLib::instance();

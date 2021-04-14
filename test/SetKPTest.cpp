@@ -1,10 +1,10 @@
-#include "SetKP.h"
-
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
 #include "EEPROM_TC.h"
+#include "SetKP.h"
 #include "TankControllerLib.h"
+
 
 unittest(test) {
   TankControllerLib* tc = TankControllerLib::instance();

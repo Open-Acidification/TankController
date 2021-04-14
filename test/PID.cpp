@@ -39,7 +39,8 @@ unittest(compute) {
   for (int i = 0; i < 1000; i++) {
     delay(200);
     output = pPID->computeOutput(setpoint, input);
-    input = input + (output - input) / 25.6;
+    double delta = output - input;
+    input = input - (delta / 25.6);
   }
   assertEqual(setpoint, round(input));
 }

@@ -84,6 +84,8 @@ void TankControllerLib::loop() {
   COUT("TankControllerLib::loop() for " << state->name());
   blink();  //  blink the on-board LED to show that we are running
   handleUI();
+  // update TemperatureControl
+  // update PHControl
 }
 
 /**

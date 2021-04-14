@@ -26,10 +26,10 @@ Serial_TC::Serial_TC() {
  * printf() uses a variant of sprintf() so supports the expected formats
  */
 void Serial_TC::printf(const char *format, ...) {
-  va_list args;
-  char buf[1000];
-  va_start(args, format);
-  vsnprintf(buf, sizeof(buf), format, args);
-  va_end(args);
-  Serial.println(buf);
+  va_list arguments;
+  char buffer[1000];
+  va_start(arguments, format);
+  vsnprintf(buffer, sizeof(buffer), format, arguments);
+  va_end(arguments);
+  Serial.println(buffer);
 }

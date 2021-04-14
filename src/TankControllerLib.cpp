@@ -34,8 +34,8 @@ TankControllerLib::TankControllerLib() {
   state = new MainMenu(this);
   lcd = LiquidCrystal_TC::instance();
   log = Serial_TC::instance();
-  log->printf(
-      (const char *)F("TankControllerLib::TankControllerLib() - version %s"), (const char *)TANK_CONTROLLER_VERSION);
+  log->printf((const char *)F("TankControllerLib::TankControllerLib() - version %s"),
+              (const char *)TANK_CONTROLLER_VERSION);
   SDClass_TC::instance()->printRootDirectory();
 }
 

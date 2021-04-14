@@ -34,8 +34,8 @@ TankControllerLib::TankControllerLib() {
   state = new MainMenu(this);
   lcd = LiquidCrystal_TC::instance();
   log = Serial_TC::instance();
-  log->print((const char *)F("TankControllerLib::TankControllerLib() - version "),
-             (const char *)TANK_CONTROLLER_VERSION);
+  log->printf(
+      (const char *)F("TankControllerLib::TankControllerLib() - version %s"), (const char *)TANK_CONTROLLER_VERSION);
   SDClass_TC::instance()->printRootDirectory();
 }
 
@@ -67,7 +67,7 @@ void TankControllerLib::handleUI() {
   COUT("TankControllerLib::handleUI() - " << state->name());
   char key = Keypad_TC::instance()->getKey();
   if (key != NO_KEY) {
-    log->print(F("Keypad input: "), key);
+    log->printf((const char *)F("Keypad input: %c"), key);
     COUT("TankControllerLib::handleUI() - " << state->name() << "::handleKey(" << key << ")");
     state->handleKey(key);
   }
@@ -119,7 +119,7 @@ void TankControllerLib::setNextState(UIState *newState, bool update) {
  * Here we do any one-time startup initialization.
  */
 void TankControllerLib::setup() {
-  log->print(F("TankControllerLib::setup()"));
+  log->printf((const char *)F("TankControllerLib::setup()"));
   setNextState(((UIState *)new MainMenu(this)));
   updateState();
   pinMode(LED_BUILTIN, OUTPUT);
@@ -152,6 +152,6 @@ void TankControllerLib::updateState() {
  * What is the current version?
  */
 const char *TankControllerLib::version() {
-  log->print((const char *)F("TankControllerLib::version() = "), (const char *)TANK_CONTROLLER_VERSION);
+  log->printf((const char *)F("TankControllerLib::version() = %s"), (const char *)TANK_CONTROLLER_VERSION);
   return TANK_CONTROLLER_VERSION;
 }

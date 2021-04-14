@@ -19,7 +19,7 @@ void SetTime::setValue(double value) {
     dt.setAsCurrent();
 
     char *buffer = DateTime_TC::now().as16CharacterString();
-    Serial_TC::instance()->print("Set time to ", buffer);
+    Serial_TC::instance()->printf("Set time to %s", buffer);
     LiquidCrystal_TC::instance()->writeLine("New Date/Time:  ", 0);
     LiquidCrystal_TC::instance()->writeLine(buffer, 1);
     returnToMainMenu(1000);  // after 1-second delay

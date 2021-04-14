@@ -57,10 +57,10 @@ char *DateTime_TC::as16CharacterString() {
  * "2020-11-26 18:55:15"
  */
 void DateTime_TC::printToSerial() {
-  char buffer[20];
+  char buffer[21];
   strcpy(buffer, "YYYY-MM-DD hh:mm:ss");
   toString(buffer);
-  Serial_TC::instance()->print(buffer);
+  Serial_TC::instance()->printf(buffer);
 }
 
 /**

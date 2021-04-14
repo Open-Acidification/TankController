@@ -1,7 +1,7 @@
 /**
  * SetKP.h
  *
- * Set the target Temperature
+ * Set the KP for the PID
  */
 #pragma once
 #include "NumberCollectorState.h"

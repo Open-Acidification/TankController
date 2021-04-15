@@ -7,23 +7,21 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHProbe.h"
 #include "Devices/PID_TC.h"
+#include "Serial_TC.h"
 #include "TC_util.h"
 
 void SeePIDConstants::loop() {
   // Precheck
-  if ((msEnd - millis()) <= (1000 * secondsLeft)) {
-    char buffer[100];
-    sprintf(buffer, "Rotate Display Time=%i", msEnd - millis());
-    COUT(buffer);
-    secondsLeft--;
-  }
+  int elapsedSeconds = (millis() - startTime) / 1000;
 
-  switch (secondsLeft) {
-    case 4:
+  Serial_TC *mySerial = Serial_TC::instance();
+  mySerial->print("SeePIDConstants::loop() - 1 CurrentTime ", elapsedSeconds);
+  switch (elapsedSeconds) {
+    case 0:
       loadKp(0);
       loadKi(1);
       break;
-    case 3:
+    case 1:
       loadKi(0);
       loadKd(1);
       break;
@@ -31,17 +29,16 @@ void SeePIDConstants::loop() {
       loadKd(0);
       loadSlope(1);
       break;
-    case 1:
+    case 3:
       loadSlope(0);
       loadKp(1);
       break;
-    case 0:
+    case 4:
       loadKp(0);
       loadKi(1);
       break;
   }
-
-  if (msEnd < millis()) {
+  if (elapsedSeconds >= 5) {
     COUT("done");
     returnToMainMenu();
   }
@@ -50,21 +47,21 @@ void SeePIDConstants::loop() {
 void SeePIDConstants::loadKp(int line) {
   PID *pPID = PID_TC::instance()->getPID();
   char buffer[17];
-  sprintf(buffer, "kp:%.1f", pPID->GetKp());
+  sprintf(buffer, "Kp: %.1f", pPID->GetKp());
   LiquidCrystal_TC::instance()->writeLine(buffer, line);
 }
 
 void SeePIDConstants::loadKi(int line) {
   PID *pPID = PID_TC::instance()->getPID();
   char buffer[17];
-  sprintf(buffer, "ki:%.1f", pPID->GetKi());
+  sprintf(buffer, "Ki: %.1f", pPID->GetKi());
   LiquidCrystal_TC::instance()->writeLine(buffer, line);
 }
 
 void SeePIDConstants::loadKd(int line) {
   PID *pPID = PID_TC::instance()->getPID();
   char buffer[17];
-  sprintf(buffer, "kd:%.1f", pPID->GetKd());
+  sprintf(buffer, "Kd: %.1f", pPID->GetKd());
   LiquidCrystal_TC::instance()->writeLine(buffer, line);
 }
 

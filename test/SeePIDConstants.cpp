@@ -20,7 +20,7 @@ unittest(TestVerticalScroll) {
   double kp = pPID->GetKp();
   double ki = pPID->GetKi();
   double kd = pPID->GetKd();
-  pPID->SetTunings(10000.0, 10000.0, 10000.0);
+  pPID->SetTunings(10001.0, 10002.0, 10003.0);
 
   // Transition states
   assertEqual("MainMenu", tc->stateName());
@@ -29,24 +29,24 @@ unittest(TestVerticalScroll) {
   assertEqual("SeePIDConstants", tc->stateName());
 
   // during the delay we cycle through kp,ki,kd, and ph slope
-  assertEqual("kp:10000.0      ", display->getLines().at(0));
-  assertEqual("ki:10000.0      ", display->getLines().at(1));
+  assertEqual("Kp: 10001.0     ", display->getLines().at(0));
+  assertEqual("Ki: 10002.0     ", display->getLines().at(1));
   delay(1000);
   tc->loop();
-  assertEqual("ki:10000.0      ", display->getLines().at(0));
-  assertEqual("kd:10000.0      ", display->getLines().at(1));
+  assertEqual("Ki: 10002.0     ", display->getLines().at(0));
+  assertEqual("Kd: 10003.0     ", display->getLines().at(1));
   delay(1000);
   tc->loop();
-  assertEqual("kd:10000.0      ", display->getLines().at(0));
+  assertEqual("Kd: 10003.0     ", display->getLines().at(0));
   assertEqual("Slope:0.0       ", display->getLines().at(1));
   delay(1000);
   tc->loop();
   assertEqual("Slope:0.0       ", display->getLines().at(0));
-  assertEqual("kp:10000.0      ", display->getLines().at(1));
+  assertEqual("Kp: 10001.0     ", display->getLines().at(1));
   delay(1000);
   tc->loop();
-  assertEqual("kp:10000.0      ", display->getLines().at(0));
-  assertEqual("ki:10000.0      ", display->getLines().at(1));
+  assertEqual("Kp: 10001.0     ", display->getLines().at(0));
+  assertEqual("Ki: 10002.0     ", display->getLines().at(1));
 
   delay(1000);
   tc->loop();  // SeePIDConstants nextState: MainMenu

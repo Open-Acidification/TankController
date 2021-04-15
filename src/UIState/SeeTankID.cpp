@@ -4,12 +4,11 @@
 
 #include "SeeTankID.h"
 
-void SeeTankID::handleKey(char key) {
-  switch (key) {
-    case 'D':  // Don't save (cancel)
-      returnToMainMenu();
-      break;
-    default:
-      break;
-  };
+#include "../Devices/EEPROM_TC.h"
+#include "../Devices/LiquidCrystal_TC.h"
+
+void SeeTankID::loop() {
+  char id[17];
+  sprintf(id, "%i", EEPROM_TC::instance()->getTankID());
+  LiquidCrystal_TC::instance()->writeLine(id, 1);
 }

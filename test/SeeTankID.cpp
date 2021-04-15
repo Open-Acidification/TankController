@@ -8,16 +8,17 @@
 #include "LiquidCrystal_TC.h"
 #include "TankControllerLib.h"
 
-unittest(testWaitState) {
+unittest(testOutput) {
   TankControllerLib* tc = TankControllerLib::instance();
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
-  EEPROM_TC::instance()->setTankID(1);
   assertEqual("MainMenu", tc->stateName());
   SeeTankID* test = new SeeTankID(tc);
   tc->setNextState(test, true);
   assertEqual("SeeTankID", tc->stateName());
 
   // Test the output
+  EEPROM_TC::instance()->setTankID(1);
+  tc->loop();
   assertEqual("Tank ID:        ", display->getLines().at(0));
   assertEqual("1               ", display->getLines().at(1));
   // Return to mainMenu
@@ -27,7 +28,3 @@ unittest(testWaitState) {
 }
 
 unittest_main()
-
-    // Create a state
-    // Set an ID
-    // Verify It displayed it

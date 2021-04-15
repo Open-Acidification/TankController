@@ -2,6 +2,7 @@
 #include <ArduinoUnitTests.h>
 
 #include "Devices/PHProbe.h"
+#include "TC_util.h"
 #include "TankControllerLib.h"
 
 unittest(singleton) {
@@ -80,15 +81,18 @@ unittest(getSlope) {
   pTC->serialEvent1();  // fake interrupt
   String slope = pPHProbe->getSlope();
   assertEqual("99.7,100.3,-0.89", slope);
-  assertEqual("Calibration Slope: 99.7,100.3,-0.89\r\n\r\n", state->serialPort[0].dataOut);
+  COUT(state->serialPort[0].dataOut.length());
+  assertEqual("Calibration Slope: 99.7,100.3,-0.89\r\n", state->serialPort[0].dataOut);
   state->serialPort[0].dataOut = "";
   GODMODE()->serialPort[1].dataIn = "?Slope,98.7,101.3,-0.89\r";  // the answer to getSlop() waiting to be read
   pTC->serialEvent1();                                            // fake interrupt
+  COUT(state->serialPort[0].dataOut.length());
   assertEqual("Serial1 = ?Slope,98.7,101.3,-0.89\r\r\n", state->serialPort[0].dataOut);
   state->serialPort[0].dataOut = "";
   slope = pPHProbe->getSlope();
   assertEqual("98.7,101.3,-0.89", slope);
-  assertEqual("Calibration Slope: 98.7,101.3,-0.89\r\n\r\n", state->serialPort[0].dataOut);
+  COUT(state->serialPort[0].dataOut.length());
+  assertEqual("Calibration Slope: 98.7,101.3,-0.89\r\n", state->serialPort[0].dataOut);
 }
 
 unittest(getPh) {

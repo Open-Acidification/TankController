@@ -42,7 +42,7 @@ String PHProbe::getSlope() {
     return String("");
   }
   String slope = slopeResponse.substring(7);
-  slope.remove((slope.length() - 1));
+  slope.remove(slope.length() - 1);
   // output to log
   Serial_TC::instance()->printf((const char *)F("Calibration Slope: %s"), (const char *)slope.c_str());
   return slope;
@@ -86,7 +86,7 @@ void PHProbe::setTemperatureCompensation(double temperature) {
   } else {
     fullCommand = PARTIAL_COMMAND + "20\r";
   }
-  Serial.println(fullCommand);
+  Serial_TC::instance()->printf((const char *)fullCommand.c_str());
   Serial1.print(fullCommand);  // send that string to the Atlas Scientific product
 }
 

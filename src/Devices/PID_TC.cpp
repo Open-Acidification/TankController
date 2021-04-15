@@ -46,7 +46,7 @@ double PID_TC::computeOutput(double target, double current) {
 }
 
 void PID_TC::logToSerial() {
-  Serial_TC::instance()->printf("Kp:%6.1f Ki: %6.1f Kd: %6.1f\nPID output: %4.1f", pPID->GetKp(), pPID->GetKi(),
+  Serial_TC::instance()->printf("Kp: %6.1f Ki: %6.1f Kd: %6.1f\r\nPID output (s):%4.1f", pPID->GetKp(), pPID->GetKi(),
                                 pPID->GetKd(), output / 1000);
 }
 

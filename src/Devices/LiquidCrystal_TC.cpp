@@ -1,5 +1,7 @@
 #include "Devices/LiquidCrystal_TC.h"
 
+#include <cstring>
+
 // pins used for our LiquidDisplay
 const int RS = 24, EN = 22, D4 = 26, D5 = 28, D6 = 30, D7 = 32;
 
@@ -86,5 +88,19 @@ void LiquidCrystal_TC::writeLine(const char* text, int line) {
   setCursor(0, line);
   print("                ");
   setCursor(0, line);
-  print(text);
+
+  char result[17];
+  bool moreInput = true;
+  for (int i = 0; i < 16; i++) {
+    if (moreInput && text[i] == '\0') {
+      moreInput = false;
+    }
+    if (moreInput) {
+      result[i] = text[i];
+    } else {
+      result[i] = ' ';
+    }
+  }
+  result[16] = '\0';
+  print(result);
 }

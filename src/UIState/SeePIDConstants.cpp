@@ -11,7 +11,6 @@
 #include "TC_util.h"
 
 void SeePIDConstants::loop() {
-  // Precheck
   int elapsedSeconds = (millis() - startTime) / 1000;
 
   Serial_TC *mySerial = Serial_TC::instance();

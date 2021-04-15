@@ -24,5 +24,5 @@ private:
   void loadKd(int line);
   void loadSlope(int line);
 
-  int long startTime;
+  unsigned long startTime;
 };

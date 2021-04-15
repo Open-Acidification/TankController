@@ -6,10 +6,10 @@
 unittest(Main) {
   // Test singleton
   Ethernet_TC* singleton1 = nullptr;
-  singleton1 = Ethernet_TC::getInstance();
+  singleton1 = Ethernet_TC::instance();
   assertNotNull(singleton1);
   Ethernet_TC* singleton2 = nullptr;
-  singleton2 = Ethernet_TC::getInstance();
+  singleton2 = Ethernet_TC::instance();
   assertNotNull(singleton2);
   assertEqual(singleton1, singleton2);
 

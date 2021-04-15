@@ -10,7 +10,7 @@ class SeeDeviceAddress : public UIState {
 public:
   SeeDeviceAddress(TankControllerLib* tc) : UIState(tc) {
   }
-  void handleKey(char key);
+  void loop();
   const char* name() {
     return "SeeDeviceAddress";
   }

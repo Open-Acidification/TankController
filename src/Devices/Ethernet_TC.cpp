@@ -11,7 +11,7 @@ Ethernet_TC::Ethernet_TC() {
   }
 }
 
-Ethernet_TC *Ethernet_TC::getInstance() {
+Ethernet_TC *Ethernet_TC::instance() {
   if (_instance == nullptr) {
     _instance = new Ethernet_TC;
   }

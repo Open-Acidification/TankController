@@ -12,9 +12,6 @@
 
 void SeePIDConstants::loop() {
   int elapsedSeconds = (millis() - startTime) / 1000;
-
-  Serial_TC *mySerial = Serial_TC::instance();
-  mySerial->print("SeePIDConstants::loop() - 1 CurrentTime ", elapsedSeconds);
   switch (elapsedSeconds) {
     case 0:
       loadKp(0);
@@ -36,10 +33,10 @@ void SeePIDConstants::loop() {
       loadKp(0);
       loadKi(1);
       break;
-  }
-  if (elapsedSeconds >= 5) {
-    COUT("done");
-    returnToMainMenu();
+    default:
+      COUT("done");
+      returnToMainMenu();
+      break;
   }
 }
 

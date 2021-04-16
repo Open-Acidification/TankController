@@ -8,6 +8,7 @@
 // Arduino defines this and thread gets confused with it!
 #undef yield
 
+#include <cassert>
 #include <chrono>
 #include <ctime>
 #include <limits>
@@ -31,11 +32,12 @@
 #define LED_PIN 13
 
 namespace py = pybind11;
-char lcdLine[20];
+char lcdLine[17];
 unsigned long msOffset = 0;
 
 // function prototypes
 void loop();
+unsigned long millisecondsSinceEpoch();
 
 char *dateTime() {
   return DateTime_TC::now().as16CharacterString();
@@ -100,12 +102,14 @@ const char *lcd(int index) {
   std::vector<String> lines = LiquidCrystal_TC::instance()->getLines();
   String line = lines.at(index);
   int size = line.size();
+  assert(size <= 16);
   for (int i = 0; i < size; ++i) {
     if (line.at(i) < 32) {
       line.at(i) = '?';
     }
   }
   strncpy(lcdLine, line.c_str(), size);
+  assert(lcdLine[size] == 0);
   return lcdLine;
 }
 
@@ -119,13 +123,15 @@ bool led() {
 }
 
 void loop() {
-  unsigned long millisecondsSinceEpoch =
-      std::chrono::system_clock::now().time_since_epoch() / std::chrono::milliseconds(1);
-  int msBehind = millisecondsSinceEpoch - millis() + msOffset;
+  int msBehind = millisecondsSinceEpoch() - millis() - msOffset;
   if (msBehind) {
     delay(msBehind);
   }
   TankControllerLib::instance()->loop();
+}
+
+unsigned long millisecondsSinceEpoch() {
+  return std::chrono::system_clock::now().time_since_epoch() / std::chrono::milliseconds(1);
 }
 
 double readPH() {
@@ -159,9 +165,7 @@ void setTime() {
   timeinfo = localtime(&rawtime);
   DateTime_TC now(timeinfo->tm_year + 1900, timeinfo->tm_mon + 1, timeinfo->tm_mday, timeinfo->tm_hour,
                   timeinfo->tm_min, timeinfo->tm_sec);
-  unsigned long millisecondsSinceEpoch =
-      std::chrono::system_clock::now().time_since_epoch() / std::chrono::milliseconds(1);
-  msOffset = millisecondsSinceEpoch - millis();
+  msOffset = millisecondsSinceEpoch() - millis();
   now.setAsCurrent();
 }
 

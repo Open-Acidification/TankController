@@ -1,5 +1,7 @@
 #include "Devices/SD_TC.h"
 
+#include "Serial_TC.h"
+
 //  class variables
 SDClass_TC* SDClass_TC::_instance = nullptr;
 
@@ -33,17 +35,16 @@ void SDClass_TC::printDirectory(File dir, int numTabs) {
       // no more files
       break;
     }
-    for (uint8_t i = 0; i < numTabs; i++) {
-      Serial.print('\t');
+    char tabs[] = "\t\t\t\t\t\t\t\t";
+    if (numTabs < strlen(tabs)) {
+      tabs[numTabs] = '\0';
     }
-    Serial.print(entry.name());
     if (entry.isDirectory()) {
-      Serial.println(F("/"));
+      Serial_TC::instance()->printf((const char*)F("%s%s/"), tabs, entry.name());
       printDirectory(entry, numTabs + 1);
     } else {
       // files have sizes, directories do not
-      Serial.print(F("\t\t"));
-      Serial.println(entry.size(), DEC);
+      Serial_TC::instance()->printf((const char*)F("%s%s\t\t%i"), tabs, entry.name(), entry.size());
     }
     entry.close();
   }

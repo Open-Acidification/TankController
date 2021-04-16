@@ -82,6 +82,7 @@ pdf
 plugin
 png
 pragma
+printf
 println
 Ptr
 pwd
@@ -121,6 +122,7 @@ unixtime
 unshallow
 url
 vscode
+vsnprintf
 wiki
 workflow
 wx

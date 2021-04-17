@@ -13,6 +13,8 @@ public:
   static SDClass_TC* instance();
 
   // instance methods
+  void appendToDataLog(String header, String data);
+  void appendToSerialLog(String data);
   void printRootDirectory();
 
 private:
@@ -20,5 +22,6 @@ private:
   static SDClass_TC* _instance;
 
   // instance methods
+  void appendToPath(String data, String path);
   void printDirectory(File dir, int numTabs);
 };

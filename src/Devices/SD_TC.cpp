@@ -17,6 +17,13 @@ SDClass_TC* SDClass_TC::instance() {
 }
 
 //  instance methods
+
+/**
+ * append data to a path
+ */
+void appendToPath(String data, String path) {
+}
+
 /**
  * print the root directory and all subdirectories
  */

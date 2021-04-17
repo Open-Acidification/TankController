@@ -61,7 +61,5 @@ void SeePIDConstants::loadKd(int line) {
 }
 
 void SeePIDConstants::loadSlope(int line) {
-  char buffer[17];
-  sprintf(buffer, "Slope:%.1f", PHProbe::instance()->getSlope());
-  LiquidCrystal_TC::instance()->writeLine(buffer, line);
+  LiquidCrystal_TC::instance()->writeLine(PHProbe::instance()->getSlope().c_str(), line);
 }

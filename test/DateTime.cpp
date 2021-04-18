@@ -39,18 +39,7 @@ unittest(now) {
 
 unittest(as16CharacterString) {
   DateTime_TC dateTime = DateTime_TC(2021, 03, 19, 15, 50);
-  dateTime.printToSerial();
   assertEqual("2021-03-19 15:50", dateTime.as16CharacterString());
-}
-
-//  This function came from DigitalClockDisplay.ino in old TankController code
-unittest(printToSerial) {
-  GodmodeState *state = GODMODE();
-  state->reset();
-  assertEqual("", state->serialPort[0].dataOut);
-  DateTime_TC dateTime = DateTime_TC(2020, 11, 26, 18, 55, 15);
-  dateTime.printToSerial();
-  assertEqual("2020-11-26 18:55:15\r\n", state->serialPort[0].dataOut);
 }
 
 // DoDirectoryMaintenance.ino

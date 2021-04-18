@@ -3,8 +3,6 @@
 
 #include "TC_util.h"
 
-const char TANK_CONTROLLER_VERSION[] = "0.3.0";
-
 class LiquidCrystal_TC;
 class Serial_TC;
 class UIState;
@@ -22,15 +20,17 @@ public:
   const char* stateName();
   const char* version();
 
-protected:
+private:
   // class variables
   static TankControllerLib* _instance;
+  static const int IDLE_TIMEOUT = 60 * 1000;  // revert to the main menu after 60 seconds of inactivity
 
   // instance variables
   UIState* state = nullptr;
   UIState* nextState = nullptr;
   LiquidCrystal_TC* lcd;
   Serial_TC* log;
+  unsigned long lastKeypadTime = 0;
 
   // instance methods
   TankControllerLib();

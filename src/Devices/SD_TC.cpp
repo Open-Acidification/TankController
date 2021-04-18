@@ -44,7 +44,7 @@ void SDClass_TC::appendDataToPath(String data, String path) {
     i = path.indexOf('/', i);
   }
   File file = SDClass_TC::instance()->open(path, FILE_WRITE);
-  file.write(data.c_str(), data.size());
+  file.write(data.c_str(), data.length());
   file.write("\n", 1);
   file.close();
 }

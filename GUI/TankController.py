@@ -78,8 +78,8 @@ class TankController(wx.Frame):
                   wx.LEFT | wx.RIGHT, border=self.border)
         sizer.Add(self.layoutPH(), flag=wx.EXPAND |
                   wx.LEFT | wx.RIGHT, border=self.border)
-        button = wx.Button(self.panel, -1, "Send\nfrom pH\nProbe")
-        button.Bind(wx.EVT_BUTTON,self.sendFromPH)
+        button = wx.Button(self.panel, -1, "Send")
+        button.Bind(wx.EVT_BUTTON, self.sendFromPH)
         sizer.Add(button, flag=wx.EXPAND |
                   wx.LEFT | wx.RIGHT, border=self.border)
         return sizer
@@ -107,7 +107,8 @@ class TankController(wx.Frame):
         font = wx.Font(18, wx.FONTFAMILY_TELETYPE,
                        wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL)
         self.phProbe.SetFont(font)
-        sizer.Add(self.phProbe, flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=self.border)
+        sizer.Add(self.phProbe, flag=wx.EXPAND |
+                  wx.LEFT | wx.RIGHT, border=self.border)
         return sizer
 
     def layoutDevice(self):

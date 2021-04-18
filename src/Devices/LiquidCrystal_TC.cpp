@@ -84,7 +84,18 @@ void LiquidCrystal_TC::splashScreen() {
 void LiquidCrystal_TC::writeLine(const char* text, int line) {
   line = line % 2;
   setCursor(0, line);
-  print("                ");
-  setCursor(0, line);
-  print(text);
+  char result[17];
+  bool moreText = true;
+  for (int i = 0; i < 16; i++) {
+    if (moreText && text[i] == '\0') {
+      moreText = false;
+    }
+    if (moreText) {
+      result[i] = text[i];
+    } else {
+      result[i] = ' ';
+    }
+  }
+  result[16] = '\0';
+  print(result);
 }

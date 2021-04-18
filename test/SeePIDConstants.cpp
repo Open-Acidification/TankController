@@ -14,6 +14,9 @@ unittest(TestVerticalScroll) {
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
   PID* pPID = PID_TC::instance()->getPID();
   SeePIDConstants* test = new SeePIDConstants(tc);
+  GODMODE()->serialPort[1].dataIn = "?Slope,99.7,100.3,-0.89\r";  // the queue of data waiting to be read
+  tc->serialEvent1();                                             // fake interrupt
+
   char lines[2][17];
 
   // Set up
@@ -38,10 +41,10 @@ unittest(TestVerticalScroll) {
   delay(1000);
   tc->loop();
   assertEqual("Kd: 10003.0     ", display->getLines().at(0));
-  assertEqual("Slope:0.0       ", display->getLines().at(1));
+  assertEqual("99.7,100.3,-0.89", display->getLines().at(1));
   delay(1000);
   tc->loop();
-  assertEqual("Slope:0.0       ", display->getLines().at(0));
+  assertEqual("99.7,100.3,-0.89", display->getLines().at(0));
   assertEqual("Kp: 10001.0     ", display->getLines().at(1));
   delay(1000);
   tc->loop();

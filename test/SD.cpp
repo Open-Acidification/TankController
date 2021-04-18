@@ -14,8 +14,8 @@ unittest_teardown() {
 }
 
 unittest(singleton) {
-  SDClass_TC* thing1 = SDClass_TC::instance();
-  SDClass_TC* thing2 = SDClass_TC::instance();
+  SD_TC* thing1 = SD_TC::instance();
+  SD_TC* thing2 = SD_TC::instance();
   assertTrue(thing1 != nullptr);
   assertEqual(thing1, thing2);
 }
@@ -23,7 +23,7 @@ unittest(singleton) {
 unittest(appendToDataLog) {
   char data[80];
   DateTime_TC d1(2021, 4, 15), d2(2021, 4, 16);
-  SDClass_TC* sd = SDClass_TC::instance();
+  SD_TC* sd = SD_TC::instance();
 
   assertFalse(sd->exists("/data/2021/04/15.txt"));
   assertFalse(sd->exists("/data/2021/04/16.txt"));
@@ -59,7 +59,7 @@ unittest(appendToDataLog) {
 unittest(appendToSerialLog) {
   char data[80];
   DateTime_TC d1(2021, 4, 15), d2(2021, 4, 16);
-  SDClass_TC* sd = SDClass_TC::instance();
+  SD_TC* sd = SD_TC::instance();
 
   assertFalse(sd->exists("/log/2021/04/15.txt"));
   assertFalse(sd->exists("/log/2021/04/16.txt"));

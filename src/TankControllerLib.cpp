@@ -38,7 +38,7 @@ TankControllerLib::TankControllerLib() {
   log = Serial_TC::instance();
   log->printf((const char *)F("TankControllerLib::TankControllerLib() - version %s"),
               (const char *)TANK_CONTROLLER_VERSION);
-  SDClass_TC::instance()->printRootDirectory();
+  SD_TC::instance()->printRootDirectory();
 }
 
 /**

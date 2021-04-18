@@ -1,6 +1,8 @@
 #include "Devices/SD_TC.h"
 
+#include "DateTime_TC.h"
 #include "Serial_TC.h"
+#include "TC_util.h"
 
 //  class variables
 SDClass_TC* SDClass_TC::_instance = nullptr;
@@ -21,7 +23,22 @@ SDClass_TC* SDClass_TC::instance() {
 /**
  * append data to a path
  */
-void appendToPath(String data, String path) {
+void SDClass_TC::appendToPath(String data, String path) {
+}
+
+void SDClass_TC::appendToSerialLog(String data) {
+  DateTime_TC now = DateTime_TC::now();
+  char path[30];
+  SDClass_TC::instance()->mkdir("/log/");
+  sprintf(path, "/log/%4i/", now.year());
+  SDClass_TC::instance()->mkdir(path);
+  sprintf(path, "/log/%4i/%02i/", now.year(), now.month());
+  SDClass_TC::instance()->mkdir(path);
+  sprintf(path, "/log/%4i/%02i/%02i.txt", now.year(), now.month(), now.day());
+  File file = SDClass_TC::instance()->open(path, FILE_WRITE);
+  file.write(data.c_str(), data.size());
+  file.write("\n", 1);
+  file.close();
 }
 
 /**

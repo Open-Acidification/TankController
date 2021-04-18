@@ -6,11 +6,11 @@
 #include "TC_util.h"
 
 unittest_setup() {
-  SD.removeAll();
+  SD_TC::instance()->removeAll();
 }
 
 unittest_teardown() {
-  SD.removeAll();
+  SD_TC::instance()->removeAll();
 }
 
 unittest(singleton) {
@@ -94,17 +94,24 @@ unittest(appendToSerialLog) {
 
 unittest(printRootDirectory) {
   GodmodeState* state = GODMODE();
+  SD_TC* sd = SD_TC::instance();
 
-  SD.open("c", FILE_WRITE).close();
-  SD.open("e", FILE_WRITE).close();
-  SD.mkdir("d");
-  SD.open("d/d1", FILE_WRITE).close();
-  SD.open("d/d2", FILE_WRITE).close();
   state->serialPort[0].dataOut = "";
-  SDClass_TC::instance()->printRootDirectory();
+  sd->printRootDirectory();
+  assertEqual("", state->serialPort[0].dataOut);
+
+  sd->open("c", FILE_WRITE).close();
+  sd->open("e", FILE_WRITE).close();
+  sd->mkdir("d");
+  sd->open("d/d1", FILE_WRITE).close();
+  sd->open("d/d2", FILE_WRITE).close();
+  state->serialPort[0].dataOut = "";
+  sd->printRootDirectory();
   String expect = String("c>>0\r\nd/\r\n>d1>>0\r\n>d2>>0\r\ne>>0\r\n");
   String output = String(state->serialPort[0].dataOut);
   std::replace(output.begin(), output.end(), '\t', '>');
+  // output to serial creates additional files here and we want to ignore them!
+  output = output.substr(0, expect.length());
   assertEqual(expect, output);
 }
 

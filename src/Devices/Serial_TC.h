@@ -13,6 +13,7 @@ public:
   static Serial_TC *instance();
 
   void printf(const char *format, ...);
+  void ts_printf(const char *format, ...);
 
 private:
   //  class variable

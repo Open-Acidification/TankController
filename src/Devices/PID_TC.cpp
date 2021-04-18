@@ -2,6 +2,7 @@
 
 #include "Devices/EEPROM_TC.h"
 #include "Devices/Serial_TC.h"
+#include "TC_util.h"
 
 // class variable
 PID_TC *PID_TC::_instance = nullptr;

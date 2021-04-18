@@ -9,6 +9,8 @@
 #include "UIState/MainMenu.h"
 #include "UIState/UIState.h"
 
+const char TANK_CONTROLLER_VERSION[] = "0.3.0";
+
 // ------------ Class Methods ------------
 /**
  * static variable to hold singleton
@@ -66,10 +68,17 @@ void TankControllerLib::blink() {
 void TankControllerLib::handleUI() {
   COUT("TankControllerLib::handleUI() - " << state->name());
   char key = Keypad_TC::instance()->getKey();
-  if (key != NO_KEY) {
+  if (key == NO_KEY) {
+    // check for idle timeout and return to main menu
+    if (lastKeypadTime && !nextState && (millis() - lastKeypadTime > IDLE_TIMEOUT)) {
+      setNextState((UIState *)new MainMenu(this));
+      lastKeypadTime = 0;  // so we don't do this until another keypress!
+    }
+  } else {
     log->printf((const char *)F("Keypad input: %c"), key);
     COUT("TankControllerLib::handleUI() - " << state->name() << "::handleKey(" << key << ")");
     state->handleKey(key);
+    lastKeypadTime = millis();
   }
   updateState();
   COUT("TankControllerLib::handleUI() - " << state->name() << "::loop()");

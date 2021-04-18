@@ -22,6 +22,6 @@ private:
   static SDClass_TC* _instance;
 
   // instance methods
-  void appendToPath(String data, String path);
+  void appendDataToPath(String data, String path);
   void printDirectory(File dir, int numTabs);
 };

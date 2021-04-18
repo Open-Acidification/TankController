@@ -20,13 +20,46 @@ unittest(singleton) {
   assertEqual(thing1, thing2);
 }
 
-unittest(appendToSerialLog) {
-  char data[20];
+unittest(appendToDataLog) {
+  char data[80];
   DateTime_TC d1(2021, 4, 15), d2(2021, 4, 16);
   SDClass_TC* sd = SDClass_TC::instance();
-  // char buffer[9];
-  // date.yearMonthAsPath(buffer, sizeof(buffer));
-  // assertEqual("/2020/09", buffer);
+
+  assertFalse(sd->exists("/data/2021/04/15.txt"));
+  assertFalse(sd->exists("/data/2021/04/16.txt"));
+
+  // write data for day 15
+  d1.setAsCurrent();
+  sd->appendToDataLog("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd", "line 1");
+  sd->appendToDataLog("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd", "line 2");
+  assertTrue(sd->exists("/data/2021/04/15.txt"));
+  assertFalse(sd->exists("/data/2021/04/16.txt"));
+
+  // write data for day 16
+  d2.setAsCurrent();
+  sd->appendToDataLog("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd", "line 3");
+  assertTrue(sd->exists("/data/2021/04/15.txt"));
+  assertTrue(sd->exists("/data/2021/04/16.txt"));
+
+  // verify contents of 15.txt
+  File file = sd->open("/data/2021/04/15.txt");
+  file.read(data, file.size());
+  data[file.size()] = '\0';
+  assertEqual("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd\nline 1\nline 2\n", data);
+  file.close();
+
+  // verify contents of 16.txt
+  file = sd->open("/data/2021/04/16.txt");
+  file.read(data, file.size());
+  data[file.size()] = '\0';
+  assertEqual("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd\nline 3\n", data);
+  file.close();
+}
+
+unittest(appendToSerialLog) {
+  char data[80];
+  DateTime_TC d1(2021, 4, 15), d2(2021, 4, 16);
+  SDClass_TC* sd = SDClass_TC::instance();
 
   assertFalse(sd->exists("/log/2021/04/15.txt"));
   assertFalse(sd->exists("/log/2021/04/16.txt"));

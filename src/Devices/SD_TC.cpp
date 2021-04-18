@@ -21,24 +21,42 @@ SDClass_TC* SDClass_TC::instance() {
 //  instance methods
 
 /**
- * append data to a path
+ * append data to a data log file
  */
-void SDClass_TC::appendToPath(String data, String path) {
-}
-
-void SDClass_TC::appendToSerialLog(String data) {
+void SDClass_TC::appendToDataLog(String header, String data) {
   DateTime_TC now = DateTime_TC::now();
   char path[30];
-  SDClass_TC::instance()->mkdir("/log/");
-  sprintf(path, "/log/%4i/", now.year());
-  SDClass_TC::instance()->mkdir(path);
-  sprintf(path, "/log/%4i/%02i/", now.year(), now.month());
-  SDClass_TC::instance()->mkdir(path);
-  sprintf(path, "/log/%4i/%02i/%02i.txt", now.year(), now.month(), now.day());
+  sprintf(path, "/data/%4i/%02i/%02i.txt", now.year(), now.month(), now.day());
+  if (!exists(path)) {
+    appendDataToPath(header, path);
+  }
+  appendDataToPath(data, path);
+}
+
+/**
+ * append data to a path
+ */
+void SDClass_TC::appendDataToPath(String data, String path) {
+  int i = path.indexOf('/', 1);
+  while (i > 0) {
+    String s = path.substring(0, ++i);
+    SDClass_TC::instance()->mkdir(s);
+    i = path.indexOf('/', i);
+  }
   File file = SDClass_TC::instance()->open(path, FILE_WRITE);
   file.write(data.c_str(), data.size());
   file.write("\n", 1);
   file.close();
+}
+
+/**
+ * append data to a serial log file
+ */
+void SDClass_TC::appendToSerialLog(String data) {
+  DateTime_TC now = DateTime_TC::now();
+  char path[30];
+  sprintf(path, "/log/%4i/%02i/%02i.txt", now.year(), now.month(), now.day());
+  appendDataToPath(data, path);
 }
 
 /**

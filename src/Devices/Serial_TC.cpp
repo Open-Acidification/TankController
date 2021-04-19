@@ -1,7 +1,5 @@
 #include "Devices/Serial_TC.h"
 
-#include <cstring>
-
 #include "DateTime_TC.h"
 #include "SD_TC.h"
 #include "TC_util.h"

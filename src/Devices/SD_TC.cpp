@@ -24,9 +24,7 @@ SD_TC* SD_TC::instance() {
  * append data to a data log file
  */
 void SD_TC::appendToDataLog(String header, String data) {
-  DateTime_TC now = DateTime_TC::now();
-  char path[30];
-  sprintf(path, "/data/%4i/%02i/%02i.txt", now.year(), now.month(), now.day());
+  String path = todaysDataFileName();
   if (!exists(path)) {
     appendDataToPath(header, path);
   }
@@ -90,4 +88,11 @@ void SD_TC::printDirectory(File dir, int numTabs) {
     }
     entry.close();
   }
+}
+
+String todaysDataFileName() {
+  DateTime_TC now = DateTime_TC::now();
+  char path[30];
+  sprintf(path, "/data/%4i/%02i/%02i.txt", now.year(), now.month(), now.day());
+  return String(path);
 }

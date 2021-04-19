@@ -15,6 +15,7 @@ public:
   // instance methods
   void appendToDataLog(String header, String data);
   void appendToSerialLog(String data);
+  String todaysDataFileName();
   void printRootDirectory();
 
 private:

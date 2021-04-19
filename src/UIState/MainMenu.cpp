@@ -11,6 +11,7 @@
 #include "SeeDeviceUptime.h"
 #include "SeePIDConstants.h"
 #include "SeeTankID.h"
+#include "SeeVersion.h"
 #include "SetChillOrHeat.h"
 #include "SetGoogleSheetInterval.h"
 #include "SetKD.h"
@@ -159,7 +160,7 @@ void MainMenu::selectView() {
       this->setNextState((UIState *)new SeeDeviceUptime(tc));
       break;
     case VIEW_VERSION:
-      this->setNextState((UIState *)new SeeDeviceAddress(tc));
+      this->setNextState((UIState *)new SeeVersion(tc));
       break;
     default:
       break;

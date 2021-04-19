@@ -4,8 +4,8 @@
 
 #include "SeeVersion.h"
 
-#include "../Devices/LiquidCrystal_TC.h"
 #include "../TankControllerLib.h"
+#include "Devices/LiquidCrystal_TC.h"
 
 void SeeVersion::loop() {
   const char* version = TankControllerLib::instance()->version();

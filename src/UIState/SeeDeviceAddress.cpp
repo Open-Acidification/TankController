@@ -4,8 +4,8 @@
 
 #include "SeeDeviceAddress.h"
 
-#include "../Devices/LiquidCrystal_TC.h"
 #include "Devices/Ethernet_TC.h"
+#include "Devices/LiquidCrystal_TC.h"
 #include "Ethernet.h"
 
 void SeeDeviceAddress::start() {

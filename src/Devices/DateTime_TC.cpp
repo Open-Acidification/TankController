@@ -53,17 +53,6 @@ char *DateTime_TC::as16CharacterString() {
 }
 
 /**
- * output dateTime to serialPort(DigitalClockDisplay.ino)
- * "2020-11-26 18:55:15"
- */
-void DateTime_TC::printToSerial() {
-  char buffer[21];
-  strcpy(buffer, "YYYY-MM-DD hh:mm:ss");
-  toString(buffer);
-  Serial_TC::instance()->printf(buffer);
-}
-
-/**
  * populate a buffer with dateTime as a path: "/2020/09"
  */
 void DateTime_TC::yearMonthAsPath(char *buffer, size_t sizeOfBuffer) {

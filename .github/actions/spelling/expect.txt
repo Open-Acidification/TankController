@@ -110,6 +110,7 @@ strncpy
 substr
 sudo
 sys
+tankid
 testfile
 timeinfo
 TODO

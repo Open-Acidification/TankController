@@ -2,8 +2,10 @@
 #include <ArduinoUnitTests.h>
 #include <PID_v1.h>
 
+#include "Devices/DateTime_TC.h"
 #include "Devices/PID_TC.h"
 #include "Devices/Serial_TC.h"
+#include "TC_util.h"
 
 unittest(singleton) {
   PID_TC *singleton1 = PID_TC::instance();
@@ -22,6 +24,8 @@ unittest(constructor) {
 
 unittest(logToSerial) {
   GodmodeState *state = GODMODE();
+  DateTime_TC::now();                 // this puts stuff on the serial port that we want to ignore
+  state->serialPort[0].dataOut = "";  // so here we ignore it!
   PID_TC *singleton = PID_TC::instance();
   singleton->logToSerial();
   assertEqual("Kp: 100000.0 Ki:    0.0 Kd:    0.0\r\nPID output (s): 0.0\r\n", state->serialPort[0].dataOut);

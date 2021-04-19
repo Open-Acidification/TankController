@@ -10,7 +10,7 @@ class SeeVersion : public UIState {
 public:
   SeeVersion(TankControllerLib* tc) : UIState(tc) {
   }
-  void loop();
+  void start();
   const char* name() {
     return "SeeVersion";
   }

@@ -7,7 +7,8 @@
 #include "Devices/EEPROM_TC.h"
 #include "Devices/LiquidCrystal_TC.h"
 
-void SeeTankID::loop() {
+void SeeTankID::start() {
+  LiquidCrystal_TC::instance()->writeLine(prompt(), 0);
   char id[17];
   sprintf(id, "%i", EEPROM_TC::instance()->getTankID());
   LiquidCrystal_TC::instance()->writeLine(id, 1);

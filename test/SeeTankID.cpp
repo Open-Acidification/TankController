@@ -9,6 +9,10 @@
 #include "TankControllerLib.h"
 
 unittest(testOutput) {
+  // Set up
+  int prevID = EEPROM_TC::instance()->getTankID();
+  EEPROM_TC::instance()->setTankID(12);
+
   TankControllerLib* tc = TankControllerLib::instance();
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
   assertEqual("MainMenu", tc->stateName());
@@ -17,14 +21,15 @@ unittest(testOutput) {
   assertEqual("SeeTankID", tc->stateName());
 
   // Test the output
-  EEPROM_TC::instance()->setTankID(1);
-  tc->loop();
   assertEqual("Tank ID:        ", display->getLines().at(0));
-  assertEqual("1               ", display->getLines().at(1));
+  assertEqual("12              ", display->getLines().at(1));
   // Return to mainMenu
   Keypad_TC::instance()->_getPuppet()->push_back('D');
   tc->loop();
   assertEqual("MainMenu", tc->stateName());
+
+  // Clean up
+  EEPROM_TC::instance()->setTankID(prevID);
 }
 
 unittest_main()

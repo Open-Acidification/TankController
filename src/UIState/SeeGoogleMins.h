@@ -10,7 +10,7 @@ class SeeGoogleMins : public UIState {
 public:
   SeeGoogleMins(TankControllerLib* tc) : UIState(tc) {
   }
-  void loop();
+  void start();
   const char* name() {
     return "SeeGoogleMins";
   }

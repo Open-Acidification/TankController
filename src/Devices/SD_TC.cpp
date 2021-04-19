@@ -90,7 +90,7 @@ void SD_TC::printDirectory(File dir, int numTabs) {
   }
 }
 
-String todaysDataFileName() {
+String SD_TC::todaysDataFileName() {
   DateTime_TC now = DateTime_TC::now();
   char path[30];
   sprintf(path, "/data/%4i/%02i/%02i.txt", now.year(), now.month(), now.day());

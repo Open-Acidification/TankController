@@ -9,6 +9,7 @@
 #include "ResetLCDScreen.h"
 #include "SeeDeviceAddress.h"
 #include "SeeDeviceUptime.h"
+#include "SeePHSlope.h"
 #include "SeePIDConstants.h"
 #include "SeeTankID.h"
 #include "SeeVersion.h"
@@ -148,7 +149,7 @@ void MainMenu::selectView() {
       this->setNextState((UIState *)new SeePIDConstants(tc));
       break;
     case VIEW_PH_SLOPE:
-      this->setNextState((UIState *)new SeePIDConstants(tc));
+      this->setNextState((UIState *)new SeePHSlope(tc));
       break;
     case VIEW_TANK_ID:
       this->setNextState((UIState *)new SeeTankID(tc));

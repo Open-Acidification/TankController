@@ -10,7 +10,7 @@
 #include "TC_util.h"
 
 void SeePIDConstants::loop() {
-  int elapsedSeconds = ((millis() - startTime) / 1000) % 5;
+  int elapsedSeconds = ((millis() - startTime) / 1000) % 3;
   switch (elapsedSeconds) {
     case 0:
       loadKp(0);
@@ -22,15 +22,7 @@ void SeePIDConstants::loop() {
       break;
     case 2:
       loadKd(0);
-      loadSlope(1);
-      break;
-    case 3:
-      loadSlope(0);
       loadKp(1);
-      break;
-    case 4:
-      loadKp(0);
-      loadKi(1);
       break;
   }
 }
@@ -54,8 +46,4 @@ void SeePIDConstants::loadKd(int line) {
   char buffer[17];
   sprintf(buffer, "Kd: %.1f", pPID->GetKd());
   LiquidCrystal_TC::instance()->writeLine(buffer, line);
-}
-
-void SeePIDConstants::loadSlope(int line) {
-  LiquidCrystal_TC::instance()->writeLine(PHProbe::instance()->getSlope().c_str(), line);
 }

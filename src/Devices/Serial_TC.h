@@ -1,7 +1,7 @@
 /**
  * This class is a wrapper for Arduino's Serial interface.
- * The only function it supports is printf() and Serial::println()
- * will add a CRLF to the end of each line.
+ * The only function it supports is printf() and
+ * Serial::println() will add a CRLF to the end of each line.
  */
 #pragma once
 
@@ -13,6 +13,7 @@ public:
   static Serial_TC *instance();
 
   void printf(const char *format, ...);
+  void ts_printf(const char *format, ...);
 
 private:
   //  class variable

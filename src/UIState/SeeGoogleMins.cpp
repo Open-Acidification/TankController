@@ -9,6 +9,6 @@
 
 void SeeGoogleMins::loop() {
   char buffer[17];
-  sprintf(buffer, "%i", EEPROM_TC::instance()->getGoogleSheetInterval() / 60000);
+  sprintf(buffer, "%i", EEPROM_TC::instance()->getGoogleSheetInterval());
   LiquidCrystal_TC::instance()->writeLine(buffer, 1);
 }

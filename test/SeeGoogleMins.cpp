@@ -18,10 +18,10 @@ unittest(testOutput) {
 
   // Test the output
   double prevInterval = EEPROM_TC::instance()->getGoogleSheetInterval();
-  EEPROM_TC::instance()->setGoogleSheetInterval(12000060);
+  EEPROM_TC::instance()->setGoogleSheetInterval(60);
   tc->loop();
   assertEqual("Google Mins:    ", display->getLines().at(0));
-  assertEqual("200             ", display->getLines().at(1));
+  assertEqual("60              ", display->getLines().at(1));
   // Return to mainMenu
   Keypad_TC::instance()->_getPuppet()->push_back('D');
   tc->loop();

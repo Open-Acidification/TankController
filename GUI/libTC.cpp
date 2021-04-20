@@ -176,13 +176,15 @@ string sdNextKey() {
 }
 
 string sdNextValue() {
+  char buffer[4096];
   File entry = SD_TC::instance()->open(paths.front());
   size_t size = entry.size();
-  char *buffer = new char(size + 1);
+  if (sizeof(buffer) - 1 < size) {
+    size = sizeof(buffer) - 1;
+  }
   entry.read(buffer, size);
   buffer[size] = '\0';
   string result = string(buffer);
-  delete buffer;
   paths.pop();
   return result;
 }

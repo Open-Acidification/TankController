@@ -1,9 +1,12 @@
 #!python3
 
 import datetime
+import errno
 import threading
 import time
 import libTC
+import os
+import shutil
 import wx
 
 
@@ -50,17 +53,12 @@ class TankController(wx.Frame):
         self.panel.SetSizer(sizer)
 
     def layoutMenu(self):
-        menubar = wx.MenuBar()
+        menuBar = wx.MenuBar()
         fileMenu = wx.Menu()
         item = fileMenu.Append(101, 'Write SD')
         self.Bind(wx.EVT_MENU, self.writeSD, id=101)
-        menubar.Append(fileMenu, '&File')
-        self.SetMenuBar(menubar)
-
-    def writeSD(self, e):
-        libTC.sdInit()
-        while path := libTC.sdNextKey():
-            value = libTC.sdNextValue()
+        menuBar.Append(fileMenu, '&File')
+        self.SetMenuBar(menuBar)
 
     def layoutBottom(self):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -273,6 +271,23 @@ class TankController(wx.Frame):
 
     def onTempChanged(self, event):
         libTC.setTemperature(float(event.GetString()))
+
+    def writeSD(self, e):
+        sd = os.path.join(os.getcwd(), 'SD')
+        if os.path.exists(sd):
+            shutil.rmtree(sd)
+        libTC.sdInit()
+        while sdPath := libTC.sdNextKey():
+            filePath = os.path.join(sd, sdPath[1:])
+            if not os.path.exists(os.path.dirname(filePath)):
+                try:
+                    dirPath = os.path.dirname(filePath)
+                    os.makedirs(dirPath)
+                except OSError as exc:  # Guard against race condition
+                    if exc.errno != errno.EEXIST:
+                        raise
+            with open(filePath, "w") as f:
+                f.write(libTC.sdNextValue())
 
 
 if __name__ == "__main__":

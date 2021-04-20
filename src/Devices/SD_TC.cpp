@@ -57,37 +57,30 @@ void SD_TC::appendToSerialLog(String data) {
   appendDataToPath(data, path);
 }
 
+void printEntry(File entry, String parentPath) {
+  int depth = 0;
+  for (int i = 1; i < parentPath.length(); ++i) {
+    if (parentPath[i] == '/') {
+      ++depth;
+    }
+  }
+  char tabs[] = "\t\t\t\t\t\t\t\t";
+  if (depth < strlen(tabs)) {
+    tabs[depth] = '\0';
+  }
+  if (entry.isDirectory()) {
+    Serial_TC::instance()->printf((const char*)F("%s%s/"), tabs, entry.name());
+  } else {
+    // files have sizes, directories do not
+    Serial_TC::instance()->printf((const char*)F("%s%s\t\t%i"), tabs, entry.name(), entry.size());
+  }
+}
+
 /**
  * print the root directory and all subdirectories
  */
 void SD_TC::printRootDirectory() {
-  File root = open("/");
-  printDirectory(root, 0);
-}
-
-/**
- * print a specified directory with an indent
- */
-void SD_TC::printDirectory(File dir, int numTabs) {
-  while (true) {
-    File entry = dir.openNextFile();
-    if (!entry) {
-      // no more files
-      break;
-    }
-    char tabs[] = "\t\t\t\t\t\t\t\t";
-    if (numTabs < strlen(tabs)) {
-      tabs[numTabs] = '\0';
-    }
-    if (entry.isDirectory()) {
-      Serial_TC::instance()->printf((const char*)F("%s%s/"), tabs, entry.name());
-      printDirectory(entry, numTabs + 1);
-    } else {
-      // files have sizes, directories do not
-      Serial_TC::instance()->printf((const char*)F("%s%s\t\t%i"), tabs, entry.name(), entry.size());
-    }
-    entry.close();
-  }
+  visit(printEntry);
 }
 
 String SD_TC::todaysDataFileName() {
@@ -95,4 +88,23 @@ String SD_TC::todaysDataFileName() {
   char path[30];
   sprintf(path, "/data/%4i/%02i/%02i.txt", now.year(), now.month(), now.day());
   return String(path);
+}
+
+void SD_TC::visit(visitor pFunction) {
+  File root = open("/");
+  visit(pFunction, root, "/");
+}
+
+void SD_TC::visit(visitor pFunction, File dir, String parentPath) {
+  while (true) {
+    File entry = dir.openNextFile();
+    if (!entry) {
+      break;  // no more files
+    }
+    pFunction(entry, parentPath);
+    if (entry.isDirectory()) {
+      visit(pFunction, entry, parentPath + entry.name() + "/");
+    }
+    entry.close();
+  }
 }

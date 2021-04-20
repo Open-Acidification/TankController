@@ -95,6 +95,8 @@ void TankControllerLib::loop() {
   handleUI();
   // update TemperatureControl
   // update PHControl
+  // write data to SD
+  // write data to Google Sheets
 }
 
 /**

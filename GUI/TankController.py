@@ -1,9 +1,12 @@
 #!python3
 
 import datetime
+import errno
 import threading
 import time
 import libTC
+import os
+import shutil
 import wx
 
 
@@ -39,6 +42,7 @@ class TankController(wx.Frame):
         self.timer.Start(100)
 
     def layoutMain(self):
+        self.layoutMenu()
         self.panel = wx.Panel(self)
         self.panel.Bind(wx.EVT_CHAR, self.Keyboard)
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -47,6 +51,14 @@ class TankController(wx.Frame):
         sizer.Add(self.layoutBottom(), flag=wx.EXPAND |
                   wx.LEFT | wx.RIGHT, border=self.border)
         self.panel.SetSizer(sizer)
+
+    def layoutMenu(self):
+        menuBar = wx.MenuBar()
+        fileMenu = wx.Menu()
+        item = fileMenu.Append(101, 'Write SD')
+        self.Bind(wx.EVT_MENU, self.writeSD, id=101)
+        menuBar.Append(fileMenu, '&File')
+        self.SetMenuBar(menuBar)
 
     def layoutBottom(self):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -206,8 +218,8 @@ class TankController(wx.Frame):
             wx.VERTICAL, self.panel, label="Output from TankController on serial port 0")
         self.serial0 = wx.TextCtrl(self.panel, size=self.FromDIP(wx.Size(800, 200)),
                                    style=wx.TE_READONLY | wx.TE_MULTILINE | wx.HSCROLL)
-        sizer.Add(self.serial0, flag=wx.EXPAND |
-                  wx.LEFT | wx.RIGHT, border=self.border)
+        sizer.Add(self.serial0, flag=wx.EXPAND | wx.LEFT | wx.RIGHT,
+                  border=self.border)
         return sizer
 
     def layoutSerial1(self):
@@ -226,8 +238,12 @@ class TankController(wx.Frame):
         for i, each in enumerate(self.eeprom):
             each.SetLabelText('{:.4f}'.format(libTC.eeprom(i)))
         # update Serial output
-        self.serial0.AppendText(libTC.readSerial0().replace('\r\n', '\n'))
-        self.serial1.AppendText(libTC.readSerial1().replace('\r\n', '\n'))
+        string = libTC.readSerial0().replace('\r\n', '\n')
+        if (string):
+            self.serial0.AppendText(string)
+        string = libTC.readSerial1().replace('\r\n', '\n')
+        if (string):
+            self.serial1.AppendText(string)
         # update pins
         self.pins.SetLabelText('LED:  {}\nHEAT: OFF\nCO2:  OFF'.format(
             'ON' if libTC.led() else 'OFF'))
@@ -255,6 +271,23 @@ class TankController(wx.Frame):
 
     def onTempChanged(self, event):
         libTC.setTemperature(float(event.GetString()))
+
+    def writeSD(self, e):
+        sd = os.path.join(os.getcwd(), 'SD')
+        if os.path.exists(sd):
+            shutil.rmtree(sd)
+        libTC.sdInit()
+        while sdPath := libTC.sdNextKey():
+            filePath = os.path.join(sd, sdPath[1:])
+            if not os.path.exists(os.path.dirname(filePath)):
+                try:
+                    dirPath = os.path.dirname(filePath)
+                    os.makedirs(dirPath)
+                except OSError as exc:  # Guard against race condition
+                    if exc.errno != errno.EEXIST:
+                        raise
+            with open(filePath, "w") as f:
+                f.write(libTC.sdNextValue())
 
 
 if __name__ == "__main__":

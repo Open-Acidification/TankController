@@ -7,6 +7,8 @@
 #include <SD.h>
 #endif
 
+typedef void (*visitor)(File entry, String parentPath);
+
 class SD_TC : public SDClass {
 public:
   // class methods
@@ -17,6 +19,7 @@ public:
   void appendToSerialLog(String data);
   String todaysDataFileName();
   void printRootDirectory();
+  void visit(visitor pFunction);
 
 private:
   // class variables
@@ -24,5 +27,5 @@ private:
 
   // instance methods
   void appendDataToPath(String data, String path);
-  void printDirectory(File dir, int numTabs);
+  void visit(visitor pFunction, File dir, String parentPath);
 };

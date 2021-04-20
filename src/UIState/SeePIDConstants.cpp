@@ -10,19 +10,15 @@
 #include "TC_util.h"
 
 void SeePIDConstants::loop() {
-  int elapsedSeconds = ((millis() - startTime) / 1000) % 3;
+  int elapsedSeconds = ((millis() - startTime) / 1000) % 2;
   switch (elapsedSeconds) {
     case 0:
       loadKp(0);
       loadKi(1);
       break;
     case 1:
-      loadKi(0);
-      loadKd(1);
-      break;
-    case 2:
       loadKd(0);
-      loadKp(1);
+      LiquidCrystal_TC::instance()->writeLine("               ", 1);
       break;
   }
 }

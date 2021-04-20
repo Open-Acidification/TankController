@@ -30,15 +30,11 @@ unittest(TestVerticalScroll) {
   // during the delay we cycle through kp,ki, and kd
   assertEqual("Kp: 10001.0     ", display->getLines().at(0));
   assertEqual("Ki: 10002.0     ", display->getLines().at(1));
-  delay(1000);
-  tc->loop();
-  assertEqual("Ki: 10002.0     ", display->getLines().at(0));
-  assertEqual("Kd: 10003.0     ", display->getLines().at(1));
-  delay(1000);
+  delay(3000);
   tc->loop();
   assertEqual("Kd: 10003.0     ", display->getLines().at(0));
-  assertEqual("Kp: 10001.0     ", display->getLines().at(1));
-  delay(1000);
+  assertEqual("                ", display->getLines().at(1));
+  delay(3000);
   tc->loop();
   assertEqual("Kp: 10001.0     ", display->getLines().at(0));
   assertEqual("Ki: 10002.0     ", display->getLines().at(1));

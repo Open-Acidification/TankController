@@ -17,6 +17,7 @@ cpp
 ctime
 datetime
 DHCP
+dirname
 Dnominal
 docstring
 Doxyfile
@@ -29,12 +30,14 @@ emoji
 endif
 endl
 enum
+errno
 EVT
 EZO
 FONTFAMILY
 FONTSTYLE
 FONTWEIGHT
 Gemfile
+getcwd
 github
 globals
 godmode
@@ -62,6 +65,7 @@ localtime
 lowpoint
 LOWTHRESH
 lqd
+makedirs
 mday
 markdownlint
 mega
@@ -95,12 +99,14 @@ READONLY
 REFIN
 REFINHIGH
 REFINLOW
+rmtree
 rpc
 rtc
 rtd
 RTDIN
 RTDINLOW
 setpoint
+shutil
 sizeof
 sprintf
 src

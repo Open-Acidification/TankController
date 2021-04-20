@@ -4,8 +4,8 @@
 
 #include "SeeVersion.h"
 
-#include "../TankControllerLib.h"
 #include "Devices/LiquidCrystal_TC.h"
+#include "TankControllerLib.h"
 
 void SeeVersion::start() {
   LiquidCrystal_TC::instance()->writeLine(prompt(), 0);

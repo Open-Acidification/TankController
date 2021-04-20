@@ -3,8 +3,8 @@
  */
 #include "SetTempSetPoint.h"
 
-#include "../Devices/EEPROM_TC.h"
-#include "../Devices/LiquidCrystal_TC.h"
+#include "Devices/EEPROM_TC.h"
+#include "Devices/LiquidCrystal_TC.h"
 
 void SetTempSetPoint::setValue(double value) {
   EEPROM_TC::instance()->setTemp(value);

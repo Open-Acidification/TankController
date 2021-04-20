@@ -4,10 +4,10 @@
 
 #include "SetTime.h"
 
-#include "../Devices/DateTime_TC.h"
-#include "../Devices/EEPROM_TC.h"
-#include "../Devices/LiquidCrystal_TC.h"
-#include "../Devices/Serial_TC.h"
+#include "Devices/DateTime_TC.h"
+#include "Devices/EEPROM_TC.h"
+#include "Devices/LiquidCrystal_TC.h"
+#include "Devices/Serial_TC.h"
 
 void SetTime::setValue(double value) {
   values[subState++] = value;

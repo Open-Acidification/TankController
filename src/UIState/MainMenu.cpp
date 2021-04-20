@@ -4,7 +4,7 @@
 #include "Devices/PHProbe.h"
 #include "Devices/TempProbe_TC.h"
 #include "EnablePID.h"
-#include "PHCalibration.h"
+#include "PHCalibrationMid.h"
 #include "PIDTuningMenu.h"
 #include "ResetLCDScreen.h"
 #include "SeeDeviceAddress.h"
@@ -34,8 +34,7 @@ MainMenu::MainMenu(TankControllerLib *tc) : UIState(tc) {
   viewMenus[VIEW_UPTIME] = String("View uptime     ");
   viewMenus[VIEW_VERSION] = String("View version    ");
 
-  setMenus[SET_CALIBRATION_1] = String("1pt pH calibrate");
-  setMenus[SET_CALIBRATION_2] = String("2pt pH calibrate");
+  setMenus[SET_CALIBRATION] = String("pH calibration ");
   setMenus[SET_CALIBRATION_CLEAR] = String("Clear pH calibra");
   setMenus[SET_CHILL_OR_HEAT] = String("Set chill/heat  ");
   setMenus[SET_GOOGLE_MINS] = String("Set Google mins ");
@@ -168,15 +167,12 @@ void MainMenu::selectView() {
 
 void MainMenu::selectSet() {
   switch (level2) {
-    case SET_CALIBRATION_1:
-      this->setNextState((UIState *)new PHCalibration(tc));
+    case SET_CALIBRATION:
+      this->setNextState((UIState *)new PHCalibrationMid(tc));
       break;
-    case SET_CALIBRATION_2:
-      this->setNextState((UIState *)new PHCalibration(tc));
-      break;
-    case SET_CALIBRATION_CLEAR:
-      this->setNextState((UIState *)new PHCalibration(tc));
-      break;
+    // case SET_CALIBRATION_CLEAR:
+    //   this->setNextState((UIState *)new PHCalibrationClear(tc));
+    //   break;
     case SET_CHILL_OR_HEAT:
       this->setNextState((UIState *)new SetChillOrHeat(tc));
       break;

@@ -2,7 +2,7 @@
 
 #include <math.h>
 
-#include "../Devices/LiquidCrystal_TC.h"
+#include "Devices/LiquidCrystal_TC.h"
 #include "MainMenu.h"
 
 void NumCollectorState::clear() {

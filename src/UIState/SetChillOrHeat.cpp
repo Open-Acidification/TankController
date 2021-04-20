@@ -4,8 +4,8 @@
 
 #include "SetChillOrHeat.h"
 
-#include "../Devices/EEPROM_TC.h"
-#include "../Devices/LiquidCrystal_TC.h"
+#include "Devices/EEPROM_TC.h"
+#include "Devices/LiquidCrystal_TC.h"
 
 void SetChillOrHeat::setValue(double value) {
   if (!(value == 1.0 || value == 9.0)) {

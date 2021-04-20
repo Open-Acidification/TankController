@@ -4,8 +4,8 @@
 
 #include "SetPHSetPoint.h"
 
-#include "../Devices/EEPROM_TC.h"
-#include "../Devices/LiquidCrystal_TC.h"
+#include "Devices/EEPROM_TC.h"
+#include "Devices/LiquidCrystal_TC.h"
 
 void SetPHSetPoint::setValue(double value) {
   EEPROM_TC::instance()->setPH(value);

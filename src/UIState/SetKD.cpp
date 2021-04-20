@@ -4,8 +4,8 @@
 
 #include "SetKD.h"
 
-#include "../Devices/EEPROM_TC.h"
-#include "../Devices/LiquidCrystal_TC.h"
+#include "Devices/EEPROM_TC.h"
+#include "Devices/LiquidCrystal_TC.h"
 
 void SetKD::setValue(double value) {
   EEPROM_TC::instance()->setKD(value);

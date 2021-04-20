@@ -10,7 +10,7 @@ class SeePHSlope : public UIState {
 public:
   SeePHSlope(TankControllerLib* tc) : UIState(tc) {
   }
-  void loop();
+  void start();
   const char* name() {
     return "SeePHSlope";
   }

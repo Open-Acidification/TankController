@@ -39,6 +39,7 @@ class TankController(wx.Frame):
         self.timer.Start(100)
 
     def layoutMain(self):
+        self.layoutMenu()
         self.panel = wx.Panel(self)
         self.panel.Bind(wx.EVT_CHAR, self.Keyboard)
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -47,6 +48,19 @@ class TankController(wx.Frame):
         sizer.Add(self.layoutBottom(), flag=wx.EXPAND |
                   wx.LEFT | wx.RIGHT, border=self.border)
         self.panel.SetSizer(sizer)
+
+    def layoutMenu(self):
+        menubar = wx.MenuBar()
+        fileMenu = wx.Menu()
+        item = fileMenu.Append(101, 'Write SD')
+        self.Bind(wx.EVT_MENU, self.writeSD, id=101)
+        menubar.Append(fileMenu, '&File')
+        self.SetMenuBar(menubar)
+
+    def writeSD(self, e):
+        libTC.sdInit()
+        while path := libTC.sdNextKey():
+            value = libTC.sdNextValue()
 
     def layoutBottom(self):
         sizer = wx.BoxSizer(wx.HORIZONTAL)

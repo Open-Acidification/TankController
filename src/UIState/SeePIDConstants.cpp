@@ -10,7 +10,7 @@
 #include "TC_util.h"
 
 void SeePIDConstants::loop() {
-  int elapsedSeconds = ((millis() - startTime) / 1000) % 2;
+  int elapsedSeconds = ((millis() - startTime) / 3000) % 2;
   switch (elapsedSeconds) {
     case 0:
       loadKp(0);

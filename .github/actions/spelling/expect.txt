@@ -25,6 +25,7 @@ Doxygen
 dylib
 eep
 eeprom
+EEXIST
 elif
 emoji
 endif

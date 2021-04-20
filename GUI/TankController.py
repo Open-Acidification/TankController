@@ -206,8 +206,8 @@ class TankController(wx.Frame):
             wx.VERTICAL, self.panel, label="Output from TankController on serial port 0")
         self.serial0 = wx.TextCtrl(self.panel, size=self.FromDIP(wx.Size(800, 200)),
                                    style=wx.TE_READONLY | wx.TE_MULTILINE | wx.HSCROLL)
-        sizer.Add(self.serial0, flag=wx.EXPAND |
-                  wx.LEFT | wx.RIGHT, border=self.border)
+        sizer.Add(self.serial0, flag=wx.EXPAND | wx.LEFT | wx.RIGHT,
+                  border=self.border)
         return sizer
 
     def layoutSerial1(self):
@@ -226,8 +226,12 @@ class TankController(wx.Frame):
         for i, each in enumerate(self.eeprom):
             each.SetLabelText('{:.4f}'.format(libTC.eeprom(i)))
         # update Serial output
-        self.serial0.AppendText(libTC.readSerial0().replace('\r\n', '\n'))
-        self.serial1.AppendText(libTC.readSerial1().replace('\r\n', '\n'))
+        string = libTC.readSerial0().replace('\r\n', '\n')
+        if (string):
+            self.serial0.AppendText(string)
+        string = libTC.readSerial1().replace('\r\n', '\n')
+        if (string):
+            self.serial1.AppendText(string)
         # update pins
         self.pins.SetLabelText('LED:  {}\nHEAT: OFF\nCO2:  OFF'.format(
             'ON' if libTC.led() else 'OFF'))

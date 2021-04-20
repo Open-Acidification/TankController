@@ -33,3 +33,4 @@ vendor/*
 
 # Doxygen Generated Files
 public
+GUI/SD

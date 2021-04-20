@@ -9,10 +9,13 @@
 
 class Ethernet_TC {
 public:
-  static Ethernet_TC *getInstance();
+  static Ethernet_TC *instance();
   IPAddress getIP() {
     return IP;
   };
+  byte *getMac() {
+    return mac;
+  }
   int getNumAttemptedDHCPReleases() {
     return numAttemptedDHCPReleases;
   };

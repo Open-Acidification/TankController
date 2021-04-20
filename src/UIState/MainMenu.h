@@ -22,7 +22,7 @@ public:
     VIEW_MAC_ADDRESS,
     VIEW_VERSION,
     VIEW_UPTIME,
-    VIEW_COMMAND_COUNT
+    VIEW_COMMAND_COUNT  // always last
   };
   enum SetCommands {
     SET_PH,
@@ -39,7 +39,7 @@ public:
     SET_GOOGLE_MINS,
     SET_TIME,
     SET_TANK_ID,
-    SET_COMMAND_COUNT
+    SET_COMMAND_COUNT  // always last
   };
   MainMenu(TankControllerLib* tc);
   void handleKey(char key);

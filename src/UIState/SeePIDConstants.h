@@ -10,11 +10,19 @@ class SeePIDConstants : public UIState {
 public:
   SeePIDConstants(TankControllerLib* tc) : UIState(tc) {
   }
-  void handleKey(char key);
+  void loop();
   const char* name() {
     return "SeePIDConstants";
   }
-  const char* prompt() {
-    return "PID Constants   ";
-  };
+  void start() {
+    startTime = millis();
+  }
+
+private:
+  void loadKp(int line);
+  void loadKi(int line);
+  void loadKd(int line);
+  void loadSlope(int line);
+
+  unsigned long startTime;
 };

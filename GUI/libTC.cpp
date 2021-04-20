@@ -12,6 +12,7 @@
 #include <chrono>
 #include <ctime>
 #include <limits>
+#include <queue>
 #include <string>
 #include <thread>
 #include <vector>
@@ -22,6 +23,7 @@
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
 #include "PHProbe.h"
+#include "SD_TC.h"
 #include "Serial_TC.h"
 #include "TC_util.h"
 #include "TankControllerLib.h"
@@ -34,6 +36,7 @@
 namespace py = pybind11;
 char lcdLine[17];
 unsigned long msOffset = 0;
+std::queue<string> paths;
 
 // function prototypes
 void loop();
@@ -153,6 +156,39 @@ string readSerial1() {
   return readSerial(1);
 }
 
+void addPath(File entry, String parentPath) {
+  if (!entry.isDirectory()) {
+    paths.push(parentPath + entry.name());
+  }
+}
+
+void sdInit() {
+  std::queue<string> empty;
+  std::swap(paths, empty);
+  SD_TC::instance()->visit(addPath);
+}
+
+string sdNextKey() {
+  if (paths.empty()) {
+    return string("");
+  }
+  return paths.front();
+}
+
+string sdNextValue() {
+  char buffer[4096];
+  File entry = SD_TC::instance()->open(paths.front());
+  size_t size = entry.size();
+  if (sizeof(buffer) - 1 < size) {
+    size = sizeof(buffer) - 1;
+  }
+  entry.read(buffer, size);
+  buffer[size] = '\0';
+  string result = string(buffer);
+  paths.pop();
+  return result;
+}
+
 void setTemperature(double value) {
   TempProbe_TC *tempProbe = TempProbe_TC::instance();
   tempProbe->setTemperature(value);
@@ -194,6 +230,9 @@ PYBIND11_MODULE(libTC, m) {
   m.def("loop", &loop, "TankController loop");
   m.def("readSerial0", &readSerial0, "From TankController on serial port 0");
   m.def("readSerial1", &readSerial1, "From TankController on serial port 1");
+  m.def("sdInit", &sdInit, "Reset the file system scan");
+  m.def("sdNextKey", &sdNextKey, "Get the next file's full path");
+  m.def("sdNextValue", &sdNextValue, "Get the next file's contents");
   m.def("setTemperature", &setTemperature, "TankController set actual tank temperature");
   m.def("setup", &setup, "TankController setup");
   m.def("version", &version, "TankController version");

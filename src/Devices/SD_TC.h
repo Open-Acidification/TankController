@@ -7,18 +7,25 @@
 #include <SD.h>
 #endif
 
-class SDClass_TC : public SDClass {
+typedef void (*visitor)(File entry, String parentPath);
+
+class SD_TC : public SDClass {
 public:
   // class methods
-  static SDClass_TC* instance();
+  static SD_TC* instance();
 
   // instance methods
+  void appendToDataLog(String header, String data);
+  void appendToSerialLog(String data);
+  String todaysDataFileName();
   void printRootDirectory();
+  void visit(visitor pFunction);
 
 private:
   // class variables
-  static SDClass_TC* _instance;
+  static SD_TC* _instance;
 
   // instance methods
-  void printDirectory(File dir, int numTabs);
+  void appendDataToPath(String data, String path);
+  void visit(visitor pFunction, File dir, String parentPath);
 };

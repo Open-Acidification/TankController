@@ -3,8 +3,8 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
+#include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
-#include "PHProbe.h"
 #include "PID_TC.h"
 #include "TankControllerLib.h"
 #include "UIState/UIState.h"
@@ -14,10 +14,6 @@ unittest(TestVerticalScroll) {
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
   PID* pPID = PID_TC::instance()->getPID();
   SeePIDConstants* test = new SeePIDConstants(tc);
-  GODMODE()->serialPort[1].dataIn = "?Slope,99.7,100.3,-0.89\r";  // the queue of data waiting to be read
-  tc->serialEvent1();                                             // fake interrupt
-
-  char lines[2][17];
 
   // Set up
   double kp = pPID->GetKp();
@@ -31,30 +27,24 @@ unittest(TestVerticalScroll) {
   tc->loop();
   assertEqual("SeePIDConstants", tc->stateName());
 
-  // during the delay we cycle through kp,ki,kd, and ph slope
+  // during the delay we cycle through kp,ki, and kd
   assertEqual("Kp: 10001.0     ", display->getLines().at(0));
   assertEqual("Ki: 10002.0     ", display->getLines().at(1));
   delay(1000);
   tc->loop();
-  assertEqual("Ki: 10002.0     ", display->getLines().at(0));
-  assertEqual("Kd: 10003.0     ", display->getLines().at(1));
-  delay(1000);
+  assertEqual("Kp: 10001.0     ", display->getLines().at(0));
+  assertEqual("Ki: 10002.0     ", display->getLines().at(1));
+  delay(2000);
   tc->loop();
   assertEqual("Kd: 10003.0     ", display->getLines().at(0));
-  assertEqual("99.7,100.3,-0.89", display->getLines().at(1));
-  delay(1000);
-  tc->loop();
-  assertEqual("99.7,100.3,-0.89", display->getLines().at(0));
-  assertEqual("Kp: 10001.0     ", display->getLines().at(1));
-  delay(1000);
+  assertEqual("                ", display->getLines().at(1));
+  delay(3000);
   tc->loop();
   assertEqual("Kp: 10001.0     ", display->getLines().at(0));
   assertEqual("Ki: 10002.0     ", display->getLines().at(1));
 
-  delay(1000);
-  tc->loop();  // SeePIDConstants nextState: MainMenu
-  tc->loop();  // SeePIDConstants -> MainMenu
-  // now we should be back to the main menu
+  Keypad_TC::instance()->_getPuppet()->push_back('D');
+  tc->loop();
   assertEqual("MainMenu", tc->stateName());
 
   // Clean up

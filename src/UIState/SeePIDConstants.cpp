@@ -40,6 +40,6 @@ void SeePIDConstants::loadKi(int line) {
 void SeePIDConstants::loadKd(int line) {
   PID *pPID = PID_TC::instance()->getPID();
   char buffer[17];
-  smprintf(buffer, sizeof(buffer), "Kd: %.1f", pPID->GetKd());
+  snprintf(buffer, sizeof(buffer), "Kd: %.1f", pPID->GetKd());
   LiquidCrystal_TC::instance()->writeLine(buffer, line);
 }

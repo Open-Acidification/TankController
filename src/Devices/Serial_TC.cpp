@@ -27,7 +27,7 @@ Serial_TC::Serial_TC() {
 }
 
 /**
- * printf() uses a variant of sprintf() so supports the expected formats
+ * printf() uses a variant of snprintf() so supports the expected formats
  */
 void Serial_TC::printf(const char *format, ...) {
   va_list arguments;

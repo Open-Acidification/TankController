@@ -8,10 +8,10 @@
 class NumCollectorState : public UIState {
 public:
   NumCollectorState(TankControllerLib* tc) : UIState(tc) {
-    printValue();
   }
   void handleKey(char key);
   virtual void setValue(double value) = 0;
+  virtual void start();
 
 protected:
   // Helper Functions

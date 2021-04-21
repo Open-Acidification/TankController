@@ -2,6 +2,7 @@
 
 #include "CalibrationManagement.h"
 #include "Devices/PHProbe.h"
+#include "Devices/LiquidCrystal_TC.h"
 #include "Devices/TempProbe_TC.h"
 #include "EnablePID.h"
 #include "PHCalibrationMid.h"

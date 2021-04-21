@@ -85,6 +85,12 @@ void PHProbe::setTemperatureCompensation(double temperature) {
   Serial1.print(fullCommand);  // send that string to the Atlas Scientific product
 }
 
+void PHProbe::setHighpointCalibration(double highpoint) {
+  String fullCommand;
+  fullCommand = "Cal,High," + String(highpoint, 3) + "\r";
+  Serial1.print(fullCommand);  // send that string to the Atlas Scientific product
+}
+
 void PHProbe::setLowpointCalibration(double lowpoint) {
   String fullCommand;
   fullCommand = "Cal,low," + String(lowpoint, 3) + "\r";

@@ -21,6 +21,7 @@ public:
   String getSlope();
   void sendSlopeRequest();
   void serialEvent1();
+  void setHighpointCalibration(double highpoint);
   void setLowpointCalibration(double lowpoint);
   void setMidpointCalibration(double midpoint);
   void setTemperatureCompensation(double temperature);

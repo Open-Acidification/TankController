@@ -1,4 +1,5 @@
 #include "Devices/LiquidCrystal_TC.h"
+#include "TC_util.h"
 
 // pins used for our LiquidDisplay
 const int RS = 24, EN = 22, D4 = 26, D5 = 28, D6 = 30, D7 = 32;

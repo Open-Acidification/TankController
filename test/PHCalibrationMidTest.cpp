@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
+#include "Devices/LiquidCrystal_TC.h"
 #include "PHCalibrationMid.h"
 #include "TankControllerLib.h"
 
@@ -12,16 +13,14 @@ unittest(test) {
   test->setValue(12.345);
   // during the delay we showed the new value
   std::vector<String> lines = LiquidCrystal_TC::instance()->getLines();
-  assertEqual("New Mid = 12.345", lines[1]);
-  // assertEqual("PHCalibrationMid", tc->stateName());
-  // tc->loop();  // transition to Wait
-  // assertEqual("Wait", tc->stateName());
-  // delay(1000);
-  // assertEqual("PHCalibrationLow", tc->stateName());
-  // tc->loop();  // queue MainMenu to be next
-  // tc->loop();  // transition to MainMenu
-  // // now we should be back to the main menu
-  // assertEqual("MainMenu", tc->stateName());
+  assertEqual("New Mid = 12.345", lines.at(1));
+  assertEqual("PHCalibrationMid", tc->stateName());
+  tc->loop();  // transition to Wait
+  assertEqual("Wait", tc->stateName());
+  delay(1000);
+  tc->loop();  // after the delay, Wait will call setNextState to prepare to go to PHCalibrationLow
+  tc->loop();  // updateState to PHCalibrationLow
+  assertEqual("PHCalibrationLow", tc->stateName());
 }
 
 unittest_main()

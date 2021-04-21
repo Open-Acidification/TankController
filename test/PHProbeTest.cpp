@@ -65,6 +65,15 @@ unittest(setMidpointCalibration) {
   assertEqual("Cal,mid,11.875\r", state->serialPort[1].dataOut);
 }
 
+unittest(setHighpointCalibration) {
+  GodmodeState *state = GODMODE();
+  state->reset();
+  PHProbe *pPHProbe = PHProbe::instance();
+  assertEqual("", state->serialPort[1].dataOut);
+  pPHProbe->setMidpointCalibration(12.875);
+  assertEqual("Cal,High,12.875\r", state->serialPort[1].dataOut);
+}
+
 unittest(sendSlopeRequest) {
   GodmodeState *state = GODMODE();
   state->reset();

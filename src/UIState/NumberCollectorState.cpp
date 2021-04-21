@@ -4,6 +4,7 @@
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "MainMenu.h"
+#include "TC_util.h"
 
 void NumCollectorState::clear() {
   numDigits = 0;
@@ -62,4 +63,9 @@ void NumCollectorState::printValue() {
     sprintf(strValue, "%.*f", precision, value);
   }
   LiquidCrystal_TC::instance()->writeLine(strValue, 1);
+}
+
+void NumCollectorState::start() {
+  UIState::start();
+  printValue();
 }

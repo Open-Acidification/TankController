@@ -1,8 +1,8 @@
 /**
  * PHCalibrationMid.cpp
  */
-#include "Devices/PHProbe.h"
 #include "Devices/LiquidCrystal_TC.h"
+#include "Devices/PHProbe.h"
 #include "PHCalibrationLow.h"
 #include "PHCalibrationMid.h"
 #include "UIState.h"

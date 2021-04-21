@@ -11,7 +11,7 @@ void SetTankID::setValue(double value) {
   EEPROM_TC::instance()->setTankID(value);
 
   char output[17];
-  sprintf(output, "Tank ID = %i", (int)value);
+  snprintf(output, sizeof(output), "Tank ID = %i", (int)value);
   LiquidCrystal_TC::instance()->writeLine(output, 1);
   returnToMainMenu(1000);  // after 1-second delay
 }

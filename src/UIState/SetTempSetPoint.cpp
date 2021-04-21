@@ -10,7 +10,7 @@ void SetTempSetPoint::setValue(double value) {
   EEPROM_TC::instance()->setTemp(value);
 
   char output[17];
-  sprintf(output, "New Temp=%.2f", value);
+  snprintf(output, sizeof(output), "New Temp=%.2f", value);
   LiquidCrystal_TC::instance()->writeLine(output, 1);
   returnToMainMenu(1000);  // after 1-second delay
 }

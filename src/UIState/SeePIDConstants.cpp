@@ -26,20 +26,20 @@ void SeePIDConstants::loop() {
 void SeePIDConstants::loadKp(int line) {
   PID *pPID = PID_TC::instance()->getPID();
   char buffer[17];
-  sprintf(buffer, "Kp: %.1f", pPID->GetKp());
+  snprintf(buffer, sizeof(buffer), "Kp: %.1f", pPID->GetKp());
   LiquidCrystal_TC::instance()->writeLine(buffer, line);
 }
 
 void SeePIDConstants::loadKi(int line) {
   PID *pPID = PID_TC::instance()->getPID();
   char buffer[17];
-  sprintf(buffer, "Ki: %.1f", pPID->GetKi());
+  snprintf(buffer, sizeof(buffer), "Ki: %.1f", pPID->GetKi());
   LiquidCrystal_TC::instance()->writeLine(buffer, line);
 }
 
 void SeePIDConstants::loadKd(int line) {
   PID *pPID = PID_TC::instance()->getPID();
   char buffer[17];
-  sprintf(buffer, "Kd: %.1f", pPID->GetKd());
+  smprintf(buffer, sizeof(buffer), "Kd: %.1f", pPID->GetKd());
   LiquidCrystal_TC::instance()->writeLine(buffer, line);
 }

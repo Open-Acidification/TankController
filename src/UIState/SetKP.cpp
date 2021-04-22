@@ -11,7 +11,7 @@ void SetKP::setValue(double value) {
   EEPROM_TC::instance()->setKP(value);
 
   char output[17];
-  sprintf(output, "New KP=%.1f", value);
+  snprintf(output, sizeof(output), "New KP=%.1f", value);
   LiquidCrystal_TC::instance()->writeLine(output, 1);
   returnToMainMenu(1000);  // after 1-second delay
 }

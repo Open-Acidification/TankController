@@ -11,7 +11,7 @@ void SetPHSetPoint::setValue(double value) {
   EEPROM_TC::instance()->setPH(value);
 
   char output[17];
-  sprintf(output, "New pH=%.4f", value);
+  snprintf(output, sizeof(output), "New pH=%.4f", value);
   LiquidCrystal_TC::instance()->writeLine(output, 1);
   returnToMainMenu(1000);  // after 1-second delay
 }

@@ -19,7 +19,7 @@ unittest(testOutput) {
 
   // Test the output
   char reference[17];
-  sprintf(reference, "%02i/%02i.txt       ", now.month(), now.day());
+  snprintf(reference, sizeof(reference), "%02i/%02i.txt       ", now.month(), now.day());
   tc->loop();
   assertEqual("Current Log File", display->getLines().at(0));
   assertEqual(reference, display->getLines().at(1).c_str());

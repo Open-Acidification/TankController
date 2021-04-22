@@ -27,7 +27,7 @@ Serial_TC::Serial_TC() {
 }
 
 /**
- * printf() uses a variant of sprintf() so supports the expected formats
+ * printf() uses a variant of snprintf() so supports the expected formats
  */
 void Serial_TC::printf(const char *format, ...) {
   va_list arguments;
@@ -46,7 +46,7 @@ void Serial_TC::ts_printf(const char *format, ...) {
   char buffer[1000];
   unsigned long ms = millis();
   DateTime_TC now = DateTime_TC::now();
-  sprintf(buffer, "Timestamp of next line: YYYY/MM/DD hh:mm:ss.%03i", (int)ms % 1000);
+  snprintf(buffer, sizeof(buffer), "Timestamp of next line: YYYY/MM/DD hh:mm:ss.%03i", (int)ms % 1000);
   now.toString(buffer);
   printf(buffer);
   va_list arguments;

@@ -1,12 +1,14 @@
 /**
  * PHCalibrationMid.cpp
  */
+#include "PHCalibrationMid.h"
+
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHProbe.h"
 #include "PHCalibrationLow.h"
-#include "PHCalibrationMid.h"
 #include "UIState.h"
 #include "Wait.h"
+
 
 void PHCalibrationMid::setValue(double value) {
   PHProbe::instance()->setMidpointCalibration(value);

@@ -70,7 +70,7 @@ unittest(setHighpointCalibration) {
   state->reset();
   PHProbe *pPHProbe = PHProbe::instance();
   assertEqual("", state->serialPort[1].dataOut);
-  pPHProbe->setMidpointCalibration(12.875);
+  pPHProbe->setHighpointCalibration(12.875);
   assertEqual("Cal,High,12.875\r", state->serialPort[1].dataOut);
 }
 

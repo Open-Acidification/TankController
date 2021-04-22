@@ -1,9 +1,11 @@
 /**
  * PHCalibrationHigh.cpp
  */
+#include "PHCalibrationHigh.h"
+
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHProbe.h"
-#include "PHCalibrationHigh.h"
+
 
 void PHCalibrationHigh::setValue(double value) {
   PHProbe::instance()->setHighpointCalibration(value);

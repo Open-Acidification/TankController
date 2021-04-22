@@ -3,6 +3,7 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
+#include "Devices/LiquidCrystal_TC.h"
 #include "TankControllerLib.h"
 
 unittest(Edge_Case) {

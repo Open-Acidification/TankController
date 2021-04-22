@@ -9,7 +9,6 @@
 #include "UIState.h"
 #include "Wait.h"
 
-
 void PHCalibrationLow::setValue(double value) {
   PHProbe::instance()->setLowpointCalibration(value);
 

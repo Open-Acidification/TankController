@@ -48,7 +48,6 @@ String PHProbe::getSlope() {
   return slope;
 }
 
-
 /**
  * interrupt handler for data arriving from probe
  */

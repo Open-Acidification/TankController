@@ -25,7 +25,6 @@
 #include "SetTime.h"
 #include "TemperatureCalibration.h"
 
-
 MainMenu::MainMenu(TankControllerLib *tc) : UIState(tc) {
   viewMenus[VIEW_GOOGLE_MINS] = String("View Google mins");
   viewMenus[VIEW_IP_ADDRESS] = String("View IP address ");

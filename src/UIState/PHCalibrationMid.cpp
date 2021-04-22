@@ -9,7 +9,6 @@
 #include "UIState.h"
 #include "Wait.h"
 
-
 void PHCalibrationMid::setValue(double value) {
   PHProbe::instance()->setMidpointCalibration(value);
 

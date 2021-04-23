@@ -53,7 +53,7 @@ void SD_TC::appendDataToPath(String data, String path) {
 void SD_TC::appendToSerialLog(String data) {
   DateTime_TC now = DateTime_TC::now();
   char path[30];
-  sprintf(path, "/log/%4i/%02i/%02i.txt", now.year(), now.month(), now.day());
+  snprintf(path, sizeof(path), "/log/%4i/%02i/%02i.txt", now.year(), now.month(), now.day());
   appendDataToPath(data, path);
 }
 
@@ -86,7 +86,7 @@ void SD_TC::printRootDirectory() {
 String SD_TC::todaysDataFileName() {
   DateTime_TC now = DateTime_TC::now();
   char path[30];
-  sprintf(path, "/data/%4i/%02i/%02i.txt", now.year(), now.month(), now.day());
+  snprintf(path, sizeof(path), "/data/%4i/%02i/%02i.txt", now.year(), now.month(), now.day());
   return String(path);
 }
 

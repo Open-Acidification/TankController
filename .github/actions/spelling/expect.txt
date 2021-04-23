@@ -110,7 +110,7 @@ RTDINLOW
 setpoint
 shutil
 sizeof
-sprintf
+snprintf
 src
 strcpy
 strlen

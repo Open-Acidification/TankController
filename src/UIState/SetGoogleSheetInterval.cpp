@@ -11,7 +11,7 @@ void SetGoogleSheetInterval::setValue(double value) {
   EEPROM_TC::instance()->setGoogleSheetInterval((int)value);
 
   char output[17];
-  sprintf(output, "New interval=%i", (int)value);
+  snprintf(output, sizeof(output), "New interval=%i", (int)value);
   LiquidCrystal_TC::instance()->writeLine(output, 1);
   returnToMainMenu(1000);  // after 1-second delay
 }

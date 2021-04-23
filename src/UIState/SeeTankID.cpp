@@ -10,6 +10,6 @@
 void SeeTankID::start() {
   LiquidCrystal_TC::instance()->writeLine(prompt(), 0);
   char id[17];
-  sprintf(id, "%i", EEPROM_TC::instance()->getTankID());
+  snprintf(id, sizeof(id), "%i", EEPROM_TC::instance()->getTankID());
   LiquidCrystal_TC::instance()->writeLine(id, 1);
 }

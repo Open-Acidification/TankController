@@ -55,12 +55,12 @@ void NumCollectorState::backSpace() {
 void NumCollectorState::printValue() {
   char strValue[16];
   if (!hasDecimal) {
-    sprintf(strValue, "%.*f", 0, value);
+    snprintf(strValue, sizeof(strValue), "%.*f", 0, value);
   } else if (factor == 10) {
-    sprintf(strValue, "%.*f.", 0, value);
+    snprintf(strValue, sizeof(strValue), "%.*f.", 0, value);
   } else {
     int precision = log10(factor / 10);
-    sprintf(strValue, "%.*f", precision, value);
+    snprintf(strValue, sizeof(strValue), "%.*f", precision, value);
   }
   LiquidCrystal_TC::instance()->writeLine(strValue, 1);
 }

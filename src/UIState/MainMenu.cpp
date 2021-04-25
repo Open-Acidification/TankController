@@ -13,6 +13,7 @@
 #include "SeePIDConstants.h"
 #include "SeeTankID.h"
 #include "SeeVersion.h"
+#include "SetCalibrationClear.h"
 #include "SetChillOrHeat.h"
 #include "SetGoogleSheetInterval.h"
 #include "SetKD.h"
@@ -177,7 +178,7 @@ void MainMenu::selectSet() {
       this->setNextState((UIState *)new PHCalibration(tc));
       break;
     case SET_CALIBRATION_CLEAR:
-      this->setNextState((UIState *)new PHCalibration(tc));
+      this->setNextState((UIState *)new SetCalibrationClear(tc));
       break;
     case SET_CHILL_OR_HEAT:
       this->setNextState((UIState *)new SetChillOrHeat(tc));

@@ -177,9 +177,6 @@ void MainMenu::selectSet() {
     case SET_CALIBRATION_CLEAR:
       this->setNextState((UIState *)new SetCalibrationClear(tc));
       break;
-    // case SET_CALIBRATION_CLEAR:
-    //   this->setNextState((UIState *)new PHCalibrationClear(tc));
-    //   break;
     case SET_CHILL_OR_HEAT:
       this->setNextState((UIState *)new SetChillOrHeat(tc));
       break;

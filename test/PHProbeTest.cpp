@@ -47,22 +47,31 @@ unittest(setTemperatureCompensation) {
   assertEqual("T,20\r", state->serialPort[1].dataOut);
 }
 
-unittest(onePointCalibration) {
+unittest(setLowpointCalibration) {
   GodmodeState *state = GODMODE();
   state->reset();
   PHProbe *pPHProbe = PHProbe::instance();
   assertEqual("", state->serialPort[1].dataOut);
-  pPHProbe->onePointCalibration(10.875);
-  assertEqual("Cal,mid,10.875\r", state->serialPort[1].dataOut);
+  pPHProbe->setLowpointCalibration(10.875);
+  assertEqual("Cal,low,10.875\r", state->serialPort[1].dataOut);
 }
 
-unittest(twoPointCalibration) {
+unittest(setMidpointCalibration) {
   GodmodeState *state = GODMODE();
   state->reset();
   PHProbe *pPHProbe = PHProbe::instance();
   assertEqual("", state->serialPort[1].dataOut);
-  pPHProbe->twoPointCalibration(10.875, 11.875);
-  assertEqual("Cal,mid,11.875\rCal,low,10.875\r", state->serialPort[1].dataOut);
+  pPHProbe->setMidpointCalibration(11.875);
+  assertEqual("Cal,mid,11.875\r", state->serialPort[1].dataOut);
+}
+
+unittest(setHighpointCalibration) {
+  GodmodeState *state = GODMODE();
+  state->reset();
+  PHProbe *pPHProbe = PHProbe::instance();
+  assertEqual("", state->serialPort[1].dataOut);
+  pPHProbe->setHighpointCalibration(12.875);
+  assertEqual("Cal,High,12.875\r", state->serialPort[1].dataOut);
 }
 
 unittest(sendSlopeRequest) {

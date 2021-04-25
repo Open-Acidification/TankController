@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
+#include "Devices/LiquidCrystal_TC.h"
 #include "EEPROM_TC.h"
 #include "SetKP.h"
 #include "TankControllerLib.h"

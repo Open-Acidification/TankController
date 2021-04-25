@@ -48,12 +48,6 @@ String PHProbe::getSlope() {
   return slope;
 }
 
-void PHProbe::onePointCalibration(double midpoint) {
-  String fullCommand;
-  fullCommand = "Cal,mid," + String(midpoint, 3) + "\r";
-  Serial1.print(fullCommand);  // send that string to the Atlas Scientific product
-}
-
 /**
  * interrupt handler for data arriving from probe
  */
@@ -90,11 +84,20 @@ void PHProbe::setTemperatureCompensation(double temperature) {
   Serial1.print(fullCommand);  // send that string to the Atlas Scientific product
 }
 
-void PHProbe::twoPointCalibration(double lowpoint, double midpoint) {
+void PHProbe::setHighpointCalibration(double highpoint) {
   String fullCommand;
-  // do mid first because it clears low
-  fullCommand = "Cal,mid," + String(midpoint, 3) + "\r";
+  fullCommand = "Cal,High," + String(highpoint, 3) + "\r";
   Serial1.print(fullCommand);  // send that string to the Atlas Scientific product
+}
+
+void PHProbe::setLowpointCalibration(double lowpoint) {
+  String fullCommand;
   fullCommand = "Cal,low," + String(lowpoint, 3) + "\r";
+  Serial1.print(fullCommand);  // send that string to the Atlas Scientific product
+}
+
+void PHProbe::setMidpointCalibration(double midpoint) {
+  String fullCommand;
+  fullCommand = "Cal,mid," + String(midpoint, 3) + "\r";
   Serial1.print(fullCommand);  // send that string to the Atlas Scientific product
 }

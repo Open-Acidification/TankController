@@ -13,6 +13,7 @@
 #include "SeePIDConstants.h"
 #include "SeeTankID.h"
 #include "SeeVersion.h"
+#include "SetCalibrationClear.h"
 #include "SetChillOrHeat.h"
 #include "SetGoogleSheetInterval.h"
 #include "SetKD.h"

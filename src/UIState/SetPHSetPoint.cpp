@@ -4,11 +4,11 @@
 
 #include "SetPHSetPoint.h"
 
-#include "Devices/EEPROM_TC.h"
 #include "Devices/LiquidCrystal_TC.h"
+#include "Devices/PHControl.h"
 
 void SetPHSetPoint::setValue(double value) {
-  EEPROM_TC::instance()->setPH(value);
+  PHControl::instance()->setTargetPh(value);
 
   char output[17];
   snprintf(output, sizeof(output), "New pH=%.4f", value);

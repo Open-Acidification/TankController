@@ -4,16 +4,20 @@
 #include <ArduinoUnitTests.h>
 
 #include "Devices/LiquidCrystal_TC.h"
+#include "Devices/PHControl.h"
 #include "EEPROM_TC.h"
 #include "TankControllerLib.h"
 
 unittest(test) {
   TankControllerLib* tc = TankControllerLib::instance();
+  EEPROM_TC::instance()->setPH(7.125);
   SetPHSetPoint* test = new SetPHSetPoint(tc);
+  assertEqual(7.125, PHControl::instance()->getTargetPh());
   tc->setNextState(test, true);
 
   // setValue
   test->setValue(7.1234);
+  assertEqual(7.1234, PHControl::instance()->getTargetPh());
   assertEqual(7.1234, EEPROM_TC::instance()->getPH());
 
   // during the delay we showed the new value

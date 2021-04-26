@@ -2,6 +2,9 @@
 
 class PHControl {
 private:
+  // Class variable
+  static PHControl* _instance;
+  // instance variables
   const int PIN = 49;
   const int SOLENOID_OPENING_TIME = 100;
   double targetPh;
@@ -9,12 +12,14 @@ private:
   long onTime = 0;
   long window_start_time;
   bool usePID = true;
+  PHControl();
 
 public:
-  PHControl();
-  void setTargetPh(double newPh) {
-    targetPh = newPh;
+  static PHControl* instance();
+  double getTargetPh() {
+    return targetPh;
   }
+  void setTargetPh(double newPh);
   void setUsePID(bool flag) {
     usePID = flag;
   }

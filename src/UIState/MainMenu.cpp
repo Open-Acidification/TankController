@@ -2,6 +2,7 @@
 
 #include "CalibrationManagement.h"
 #include "Devices/LiquidCrystal_TC.h"
+#include "Devices/PHControl.h"
 #include "Devices/PHProbe.h"
 #include "Devices/TempProbe_TC.h"
 #include "EnablePID.h"
@@ -220,9 +221,9 @@ void MainMenu::selectSet() {
 
 // show current temp and pH
 void MainMenu::idle() {
-  PHProbe *pPHProbe = PHProbe::instance();
   char output[17];
-  snprintf(output, sizeof(output), "pH=%01.3f   %1.3f", pPHProbe->getPh(), 7.125);
+  snprintf(output, sizeof(output), "pH=%01.3f   %1.3f", PHProbe::instance()->getPh(),
+           PHControl::instance()->getTargetPh());
   LiquidCrystal_TC::instance()->writeLine(output, 0);
   TempProbe_TC *tempProbe = TempProbe_TC::instance();
   double temp = tempProbe->getRunningAverage();

@@ -2,6 +2,7 @@
 
 #include "Devices/Keypad_TC.h"
 #include "Devices/LiquidCrystal_TC.h"
+#include "Devices/PHControl.h"
 #include "Devices/PHProbe.h"
 #include "Devices/SD_TC.h"
 #include "Devices/Serial_TC.h"
@@ -95,6 +96,7 @@ void TankControllerLib::loop() {
   handleUI();
   // update TemperatureControl
   // update PHControl
+  PHControl::instance()->updateControl(PHProbe::instance()->getPh());
   // write data to SD
   // write data to Google Sheets
 }

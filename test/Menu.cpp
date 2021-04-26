@@ -2,6 +2,7 @@
 #include <ArduinoUnitTests.h>
 
 #include "DateTime_TC.h"
+#include "Devices/TemperatureControl.h"
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
 #include "TankControllerLib.h"
@@ -20,6 +21,8 @@ void enterKey(char key) {
 
 unittest_setup() {
   TempProbe_TC::instance()->setTemperature(12.25);
+  TemperatureControl::enableHeater(true);
+  TemperatureControl::instance()->setTargetTemperature(15.75);
   enterKey('D');
 }
 
@@ -29,7 +32,7 @@ unittest_teardown() {
 
 unittest(MainMenu) {
   assertEqual("pH=0.000   7.125", lc->getLines().at(0));
-  assertEqual("T=12.23  C 12.25", lc->getLines().at(1));
+  assertEqual("T=12.23  H 15.75", lc->getLines().at(1));
 }
 
 unittest(ChangeSettings) {
@@ -38,14 +41,14 @@ unittest(ChangeSettings) {
   assertEqual("<4   ^2  8v   6>", lc->getLines().at(1));
   enterKey('D');
   assertEqual("pH=0.000   7.125", lc->getLines().at(0));
-  assertEqual("T=12.23  C 12.25", lc->getLines().at(1));
+  assertEqual("T=12.23  H 15.75", lc->getLines().at(1));
   enterKey('8');
   enterKey('8');
   assertEqual("Change settings ", lc->getLines().at(0));
   assertEqual("<4   ^2  8v   6>", lc->getLines().at(1));
   enterKey('4');
   assertEqual("pH=0.000   7.125", lc->getLines().at(0));
-  assertEqual("T=12.23  C 12.25", lc->getLines().at(1));
+  assertEqual("T=12.23  H 15.75", lc->getLines().at(1));
 }
 
 unittest(ViewSettings) {
@@ -54,14 +57,14 @@ unittest(ViewSettings) {
   assertEqual("<4   ^2  8v   6>", lc->getLines().at(1));
   enterKey('D');
   assertEqual("pH=0.000   7.125", lc->getLines().at(0));
-  assertEqual("T=12.23  C 12.25", lc->getLines().at(1));
+  assertEqual("T=12.23  H 15.75", lc->getLines().at(1));
   enterKey('2');
   enterKey('2');
   assertEqual("View TC settings", lc->getLines().at(0));
   assertEqual("<4   ^2  8v   6>", lc->getLines().at(1));
   enterKey('D');
   assertEqual("pH=0.000   7.125", lc->getLines().at(0));
-  assertEqual("T=12.23  C 12.25", lc->getLines().at(1));
+  assertEqual("T=12.23  H 15.75", lc->getLines().at(1));
 }
 
 unittest(SetPHSetPoint) {

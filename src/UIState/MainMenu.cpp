@@ -5,6 +5,7 @@
 #include "Devices/PHControl.h"
 #include "Devices/PHProbe.h"
 #include "Devices/TempProbe_TC.h"
+#include "Devices/TemperatureControl.h"
 #include "EnablePID.h"
 #include "PHCalibrationMid.h"
 #include "PIDTuningMenu.h"
@@ -225,6 +226,7 @@ void MainMenu::idle() {
   snprintf(output, sizeof(output), "pH=%01.3f   %1.3f", PHProbe::instance()->getPh(),
            PHControl::instance()->getTargetPh());
   LiquidCrystal_TC::instance()->writeLine(output, 0);
+  TemperatureControl *tempControl = TemperatureControl::instance();
   TempProbe_TC *tempProbe = TempProbe_TC::instance();
   double temp = tempProbe->getRunningAverage();
   if (temp < 0.0) {
@@ -232,7 +234,8 @@ void MainMenu::idle() {
   } else if (99.99 < temp) {
     temp = 99.99;
   }
-  snprintf(output, sizeof(output), "T=%02.2f  %c %2.2f", temp, 'C', 12.25);
+  snprintf(output, sizeof(output), "T=%02.2f  %c %2.2f", temp, (tempControl->isHeater() ? 'H' : 'C'),
+           tempControl->getTargetTemperature());
   LiquidCrystal_TC::instance()->writeLine(output, 1);
 }
 

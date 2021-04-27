@@ -121,10 +121,6 @@ double getTemperature() {
   return tempProbe->getRunningAverage();
 }
 
-bool led() {
-  return digitalRead(LED_PIN);
-}
-
 void loop() {
   int msBehind = millisecondsSinceEpoch() - millis() - msOffset;
   if (msBehind) {
@@ -139,6 +135,10 @@ unsigned long millisecondsSinceEpoch() {
 
 double readPH() {
   return PHProbe::instance()->getPh();
+}
+
+bool readPin(int pin) {
+  return digitalRead(pin);
 }
 
 string readSerial(int port) {
@@ -226,8 +226,8 @@ PYBIND11_MODULE(libTC, m) {
   m.def("eeprom", &eeprom, "TankController EEPROM");
   m.def("key", &key, "TankController key");
   m.def("lcd", &lcd, "TankController LiquidCrystal");
-  m.def("led", &led, "TankController LED pin value");
   m.def("loop", &loop, "TankController loop");
+  m.def("readPin", &readPin, "TankController read pin value");
   m.def("readSerial0", &readSerial0, "From TankController on serial port 0");
   m.def("readSerial1", &readSerial1, "From TankController on serial port 1");
   m.def("sdInit", &sdInit, "Reset the file system scan");

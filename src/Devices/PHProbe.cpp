@@ -37,12 +37,11 @@ void PHProbe::sendSlopeRequest() {
 }
 
 String PHProbe::getSlope() {
-  // for example "?Slope,99.7,100.3, -0.89\r"
+  // for example "?Slope,99.7,100.3, -0.89"
   if (slopeResponse.length() < 10) {
     return String("");
   }
   String slope = slopeResponse.substring(7);
-  slope.remove(slope.length() - 1);
   // output to log
   Serial_TC::instance()->printf((const char *)F("Calibration Slope: %s"), (const char *)slope.c_str());
   return slope;
@@ -54,6 +53,7 @@ String PHProbe::getSlope() {
 void PHProbe::serialEvent1() {
   while (Serial1.available() > 0) {               // if we see that the Atlas Scientific product has sent a character
     String string = Serial1.readStringUntil(13);  // read the string until we see a <CR>
+    string.remove(string.length() - 1);
     Serial_TC::instance()->printf((const char *)F("Serial1 = %s"), (const char *)string.c_str());
     if (string.length() > 0) {
       if (isdigit(string[0])) {  // if the first character in the string is a digit

@@ -6,6 +6,8 @@
 #include "Devices/PHProbe.h"
 #include "Devices/SD_TC.h"
 #include "Devices/Serial_TC.h"
+#include "Devices/TempProbe_TC.h"
+#include "Devices/TemperatureControl.h"
 #include "TC_util.h"
 #include "UIState/MainMenu.h"
 #include "UIState/UIState.h"
@@ -95,6 +97,7 @@ void TankControllerLib::loop() {
   blink();  //  blink the on-board LED to show that we are running
   handleUI();
   // update TemperatureControl
+  TemperatureControl::instance()->updateControl(TempProbe_TC::instance()->getRunningAverage());
   // update PHControl
   PHControl::instance()->updateControl(PHProbe::instance()->getPh());
   // write data to SD

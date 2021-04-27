@@ -19,9 +19,10 @@ public:
   double getTargetPh() {
     return targetPh;
   }
-  void setTargetPh(double newPh);
-  void setUsePID(bool flag) {
-    usePID = flag;
+  bool getUsePID() {
+    return usePID;
   }
+  void setTargetPh(double newPh);
+  void setUsePID(bool flag);
   void updateControl(double pH);
 };

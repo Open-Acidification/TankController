@@ -1,6 +1,7 @@
 #include "PHControl.h"
 
 #include "Devices/EEPROM_TC.h"
+#include "Devices/Serial_TC.h"
 #include "PID_TC.h"
 #include "TC_util.h"
 
@@ -35,6 +36,13 @@ PHControl::PHControl() {
 void PHControl::setTargetPh(double newPh) {
   targetPh = newPh;
   EEPROM_TC::instance()->setPH(newPh);
+  Serial_TC::instance()->ts_printf((const char *)F("set target pH to %6.4f"), newPh);
+}
+
+void PHControl::setUsePID(bool flag) {
+  usePID = flag;
+  // save to EERPROM?
+  Serial_TC::instance()->ts_printf((const char *)(flag ? F("enable PID") : F("disable PID")));
 }
 
 void PHControl::updateControl(double pH) {

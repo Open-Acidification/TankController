@@ -1,6 +1,7 @@
 #include "PHControl.h"
 
 #include "Devices/EEPROM_TC.h"
+#include "Devices/Serial_TC.h"
 #include "PID_TC.h"
 #include "TC_util.h"
 
@@ -50,11 +51,15 @@ void PHControl::updateControl(double pH) {
   }
   COUT("target: " << targetPh << "; current: " << pH << "; onTime = " << onTime
                   << "; left = " << now - window_start_time);
+  bool oldValue = digitalRead(PIN);
+  bool newValue = oldValue;
   if ((onTime > SOLENOID_OPENING_TIME) && (onTime >= (now - window_start_time))) {
-    COUT("set pin low");
-    digitalWrite(PIN, LOW);  // OPEN CO2 solenoid
+    newValue = LOW;  // open CO2 solenoid
   } else {
-    COUT("set pin high");
-    digitalWrite(PIN, HIGH);  // CLOSE CO2 solenoid
+    newValue = HIGH;  // close CO2 solenoid
+  }
+  if (newValue != oldValue) {
+    Serial_TC::instance()->ts_printf((const char *)(newValue ? F("CO2 bubbler off") : F("CO2 bubbler on")));
+    digitalWrite(PIN, newValue);
   }
 }

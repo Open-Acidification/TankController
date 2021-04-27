@@ -245,8 +245,10 @@ class TankController(wx.Frame):
         if (string):
             self.serial1.AppendText(string)
         # update pins
-        self.pins.SetLabelText('LED:  {}\nHEAT: OFF\nCO2:  OFF'.format(
-            'ON' if libTC.led() else 'OFF'))
+        self.pins.SetLabelText('LED: {}\nTmp: {}\nCO2: {}'.format(
+            'high' if libTC.readPin(13) else 'low',
+            'high' if libTC.readPin(47) else 'low',
+            'high' if libTC.readPin(49) else 'low'))
 
     def handleKey(self, key):
         libTC.key(key)

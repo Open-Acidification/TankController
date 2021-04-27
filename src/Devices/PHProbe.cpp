@@ -37,12 +37,11 @@ void PHProbe::sendSlopeRequest() {
 }
 
 String PHProbe::getSlope() {
-  // for example "?Slope,99.7,100.3, -0.89\r"
+  // for example "?Slope,99.7,100.3, -0.89"
   if (slopeResponse.length() < 10) {
     return String("");
   }
   String slope = slopeResponse.substring(7);
-  slope.remove(slope.length() - 1);
   // output to log
   Serial_TC::instance()->printf((const char *)F("Calibration Slope: %s"), (const char *)slope.c_str());
   return slope;

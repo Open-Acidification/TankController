@@ -41,7 +41,7 @@ void PHControl::setTargetPh(double newPh) {
 
 void PHControl::setUsePID(bool flag) {
   usePID = flag;
-  // save to EERPROM?
+  // save to EEPROM?
   Serial_TC::instance()->ts_printf((const char *)(flag ? F("enable PID") : F("disable PID")));
 }
 

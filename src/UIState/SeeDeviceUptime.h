@@ -14,10 +14,4 @@ public:
   const char* name() {
     return "SeeDeviceUptime";
   }
-  void start() {
-    msEnd = millis() + 5000;
-  }
-
-private:
-  int msEnd;
 };

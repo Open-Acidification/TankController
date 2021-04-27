@@ -73,7 +73,7 @@ void TankControllerLib::handleUI() {
   char key = Keypad_TC::instance()->getKey();
   if (key == NO_KEY) {
     // check for idle timeout and return to main menu
-    if (lastKeypadTime && !nextState && (millis() - lastKeypadTime > IDLE_TIMEOUT)) {
+    if (!calibrationMode && lastKeypadTime && !nextState && (millis() - lastKeypadTime > IDLE_TIMEOUT)) {
       setNextState((UIState *)new MainMenu(this));
       lastKeypadTime = 0;  // so we don't do this until another keypress!
     }
@@ -96,10 +96,7 @@ void TankControllerLib::loop() {
   COUT("TankControllerLib::loop() for " << state->name());
   blink();  //  blink the on-board LED to show that we are running
   handleUI();
-  // update TemperatureControl
-  TemperatureControl::instance()->updateControl(TempProbe_TC::instance()->getRunningAverage());
-  // update PHControl
-  PHControl::instance()->updateControl(PHProbe::instance()->getPh());
+  updateControls();
   // write data to SD
   // write data to Google Sheets
 }
@@ -116,6 +113,14 @@ void TankControllerLib::serialEvent() {
  */
 void TankControllerLib::serialEvent1() {
   PHProbe::instance()->serialEvent1();
+}
+
+/**
+ * When in calibration mode we don't return to the idle screen and
+ * we don't do any tank control actions.
+ */
+void TankControllerLib::setCalibrationMode(bool flag) {
+  calibrationMode = flag;
 }
 
 /**
@@ -147,6 +152,19 @@ void TankControllerLib::setup() {
  */
 const char *TankControllerLib::stateName() {
   return state->name();
+}
+
+/**
+ * Private member function called by loop to update solonoids
+ */
+void TankControllerLib::updateControls() {
+  if (calibrationMode) {
+    return;
+  }
+  // update TemperatureControl
+  TemperatureControl::instance()->updateControl(TempProbe_TC::instance()->getRunningAverage());
+  // update PHControl
+  PHControl::instance()->updateControl(PHProbe::instance()->getPh());
 }
 
 /**

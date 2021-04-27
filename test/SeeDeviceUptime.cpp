@@ -36,10 +36,9 @@ unittest(testWaitState) {
   delay(1000);
   tc->loop();
   assertEqual("Up d:01 02:03:09", display->getLines().at(1));
-  tc->loop();  // SeeDeviceUptime nextState: MainMenu
-  tc->loop();  // SeeDeviceUptime -> MainMenu
-  // now we should be back to the main menu
-  assertEqual("MainMenu", tc->stateName());
+  delay(1000);
+  tc->loop();
+  assertEqual("Up d:01 02:03:10", display->getLines().at(1));
 }
 
 unittest_main()

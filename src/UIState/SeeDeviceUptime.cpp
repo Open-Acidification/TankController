@@ -21,8 +21,4 @@ void SeeDeviceUptime::loop() {
   LiquidCrystal_TC::instance()->writeLine(DateTime_TC::now().as16CharacterString(), 0);
   LiquidCrystal_TC::instance()->writeLine(buffer, 1);
   COUT(buffer);
-  if (msEnd < millis()) {
-    COUT("done");
-    returnToMainMenu();
-  }
 }

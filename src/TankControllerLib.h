@@ -15,6 +15,7 @@ public:
   void loop();
   void serialEvent();
   void serialEvent1();
+  void setCalibrationMode(bool flag);
   void setNextState(UIState* newState, bool update = false);
   void setup();
   const char* stateName();
@@ -26,6 +27,7 @@ private:
   static const int IDLE_TIMEOUT = 60 * 1000;  // revert to the main menu after 60 seconds of inactivity
 
   // instance variables
+  bool calibrationMode = false;
   UIState* state = nullptr;
   UIState* nextState = nullptr;
   LiquidCrystal_TC* lcd;
@@ -37,5 +39,6 @@ private:
   ~TankControllerLib();
   void blink();
   void handleUI();
+  void updateControls();
   void updateState();
 };

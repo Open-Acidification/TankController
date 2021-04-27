@@ -20,6 +20,7 @@ public:
   void setup();
   const char* stateName();
   const char* version();
+  void writeDataToSD();
 
 private:
   // class variables

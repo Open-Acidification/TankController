@@ -111,6 +111,7 @@ setpoint
 shutil
 sizeof
 snprintf
+solonoids
 src
 strcpy
 strlen

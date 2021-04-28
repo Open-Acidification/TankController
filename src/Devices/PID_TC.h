@@ -8,6 +8,9 @@ public:
   // instance functions
   double computeOutput(double target, double current);
   void logToSerial();
+  void setKd(double Kd);
+  void setKi(double Ki);
+  void setKp(double Kp);
   void setTunings(double Kp, double Ki, double Kd);
   // used by tests to get Kp, Ki, Kd
   PID *getPID() {

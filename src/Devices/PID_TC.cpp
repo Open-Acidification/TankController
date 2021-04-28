@@ -23,12 +23,15 @@ PID_TC::PID_TC() {
   Kd = eeprom->getKD();
   if (isnan(Kp)) {
     Kp = 100000;
+    eeprom->setKP(Kp);
   }
   if (isnan(Ki)) {
     Ki = 0;
+    eeprom->setKI(Ki);
   }
   if (isnan(Kd)) {
     Kd = 0;
+    eeprom->setKD(Kd);
   }
   pPID = new PID(&input, &output, &set_point, Kp, Ki, Kd,
                  REVERSE);  // Starting the PID, Specify the links and initial
@@ -49,6 +52,21 @@ double PID_TC::computeOutput(double target, double current) {
 void PID_TC::logToSerial() {
   Serial_TC::instance()->printf("Kp: %6.1f Ki: %6.1f Kd: %6.1f\r\nPID output (s):%4.1f", pPID->GetKp(), pPID->GetKi(),
                                 pPID->GetKd(), output / 1000);
+}
+
+void PID_TC::setKd(double Kd) {
+  pPID->SetTunings(EEPROM_TC::instance()->getKP(), EEPROM_TC::instance()->getKI(), Kd);
+  EEPROM_TC::instance()->setKD(Kd);
+}
+
+void PID_TC::setKi(double Ki) {
+  pPID->SetTunings(EEPROM_TC::instance()->getKP(), Ki, EEPROM_TC::instance()->getKD());
+  EEPROM_TC::instance()->setKI(Ki);
+}
+
+void PID_TC::setKp(double Kp) {
+  pPID->SetTunings(Kp, EEPROM_TC::instance()->getKI(), EEPROM_TC::instance()->getKD());
+  EEPROM_TC::instance()->setKP(Kp);
 }
 
 void PID_TC::setTunings(double Kp, double Ki, double Kd) {

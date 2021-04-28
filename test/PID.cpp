@@ -62,4 +62,31 @@ unittest(setTunings) {
   assertEqual(10, pPID->GetKd());
 }
 
+unittest(setKp) {
+  PID_TC *singleton = PID_TC::instance();
+  PID *pPID = singleton->getPID();
+  singleton->setKp(2);
+  assertEqual(2, pPID->GetKp());
+  assertEqual(0, pPID->GetKi());
+  assertEqual(0, pPID->GetKd());
+}
+
+unittest(setKi) {
+  PID_TC *singleton = PID_TC::instance();
+  PID *pPID = singleton->getPID();
+  singleton->setKi(5);
+  assertEqual(5, pPID->GetKi());
+  assertEqual(2, pPID->GetKp());
+  assertEqual(0, pPID->GetKd());
+}
+
+unittest(setKd) {
+  PID_TC *singleton = PID_TC::instance();
+  PID *pPID = singleton->getPID();
+  singleton->setKd(1);
+  assertEqual(1, pPID->GetKd());
+  assertEqual(2, pPID->GetKp());
+  assertEqual(5, pPID->GetKi());
+}
+
 unittest_main()

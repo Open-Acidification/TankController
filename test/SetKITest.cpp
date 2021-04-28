@@ -2,8 +2,8 @@
 #include <ArduinoUnitTests.h>
 
 #include "Devices/LiquidCrystal_TC.h"
-#include "Keypad_TC.h"
 #include "EEPROM_TC.h"
+#include "Keypad_TC.h"
 #include "SetKI.h"
 #include "TankControllerLib.h"
 

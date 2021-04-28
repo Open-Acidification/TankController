@@ -108,9 +108,18 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "EvanKropf",
+      "name": "EvanKropf",
+      "avatar_url": "https://avatars.githubusercontent.com/u/59894430?v=4",
+      "profile": "https://github.com/EvanKropf",
+      "contributions": [
+        "code"
+      ]
     }
   ],
-  "projectName": "TankControllerLib",
+  "projectName": "TankController",
   "projectOwner": "Open-Acidification",
   "repoType": "github",
   "repoHost": "https://github.com",

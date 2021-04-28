@@ -1,0 +1,25 @@
+unittest:
+    platforms:
+        - mega2560
+    libraries:
+      - "Adafruit BusIO"
+      - "Adafruit MAX31865"
+      - "Arduino-PID-Library"
+      - "Ethernet"
+      - "LiquidCrystal"
+      - "RTClib"
+      - "Keypad"
+      - "SD"
+
+compile:
+    platforms:
+      - mega2560
+    libraries:
+      - "Adafruit BusIO"
+      - "Adafruit MAX31865"
+      - "Arduino-PID-Library"
+      - "Ethernet"
+      - "LiquidCrystal"
+      - "RTClib"
+      - "Keypad"
+      - "SD"

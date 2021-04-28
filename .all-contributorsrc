@@ -1,0 +1,118 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "contributorsPerLine": 6,
+  "contributorsSortAlphabetically": false,
+  "contributors": [
+    {
+      "login": "KirtOnthank",
+      "name": "Kirt Onthank",
+      "avatar_url": "https://avatars.githubusercontent.com/u/48142545?v=4",
+      "profile": "https://gab.wallawalla.edu/~kirt.onthank/index.html",
+      "contributions": [
+        "business",
+        "code",
+        "design",
+        "ideas",
+        "mentoring"
+      ]
+    },
+    {
+      "login": "prestoncarman",
+      "name": "Preston Carman",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3517157?v=4",
+      "profile": "https://github.com/prestoncarman",
+      "contributions": [
+        "bug",
+        "code",
+        "ideas",
+        "mentoring",
+        "review"
+      ]
+    },
+    {
+      "login": "jgfoster",
+      "name": "James Foster",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1577872?v=4",
+      "profile": "http://programminggems.wordpress.com/",
+      "contributions": [
+        "code",
+        "ideas",
+        "mentoring",
+        "projectManagement",
+        "review",
+        "bug"
+      ]
+    },
+    {
+      "login": "Kavikick",
+      "name": "Kavikick",
+      "avatar_url": "https://avatars.githubusercontent.com/u/50475639?v=4",
+      "profile": "https://github.com/Kavikick",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "eucalvo",
+      "name": "eucalvo",
+      "avatar_url": "https://avatars.githubusercontent.com/u/71796520?v=4",
+      "profile": "https://github.com/eucalvo",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Lizj96",
+      "name": "Lizj96",
+      "avatar_url": "https://avatars.githubusercontent.com/u/71606160?v=4",
+      "profile": "https://github.com/Lizj96",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "khalilxl",
+      "name": "khalilxl",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26103228?v=4",
+      "profile": "https://github.com/khalilxl",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "atg7000",
+      "name": "atg7000",
+      "avatar_url": "https://avatars.githubusercontent.com/u/38963069?v=4",
+      "profile": "https://github.com/atg7000",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "cherbel",
+      "name": "Caleb Herbel",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36583106?v=4",
+      "profile": "https://github.com/cherbel",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "lsaca05",
+      "name": "Lucas Saca",
+      "avatar_url": "https://avatars.githubusercontent.com/u/46550669?v=4",
+      "profile": "https://github.com/lsaca05",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "projectName": "TankControllerLib",
+  "projectOwner": "Open-Acidification",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": false
+}

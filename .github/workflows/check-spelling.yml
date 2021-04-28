@@ -1,0 +1,19 @@
+# This is the name of the workflow, visible on GitHub UI
+name: Spell checking
+
+# Run on a Push or a Pull Request
+on: [push, pull_request]
+
+jobs:
+  spelling:
+    runs-on: ubuntu-latest
+    steps:
+      # Clone the repo using the `checkout` action
+      - uses: actions/checkout@v2
+      # Run check spelling action
+      - uses: check-spelling/check-spelling@0.0.16-alpha
+        with:
+          bucket: .github/actions
+          project: spelling
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

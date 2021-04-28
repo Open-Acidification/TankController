@@ -1,10 +1,10 @@
 /**
  * SetKI.cpp
  */
-#include "Devices/PID_TC.h"
-
 #include "SetKI.h"
+
 #include "Devices/LiquidCrystal_TC.h"
+#include "Devices/PID_TC.h"
 
 void SetKI::setValue(double value) {
   PID_TC::instance()->setKi(value);

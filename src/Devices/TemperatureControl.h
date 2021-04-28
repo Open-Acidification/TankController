@@ -7,22 +7,33 @@
  */
 
 class TemperatureControl {
+private:
+  static TemperatureControl* _instance;
+
 protected:
   const int PIN = 47;
   const double DELTA = 0.05;
   double targetTemperature;
+  TemperatureControl();
 
 public:
-  TemperatureControl();
-  void setTargetTemperature(double newTemperature) {
-    targetTemperature = newTemperature;
+  virtual ~TemperatureControl() {
   }
+  static TemperatureControl* instance();
+  static void enableHeater(bool flag);
+  double getTargetTemperature() {
+    return targetTemperature;
+  }
+  virtual bool isHeater() = 0;
+  void setTargetTemperature(double newTemperature);
   virtual void updateControl(double currentTemperature) = 0;
 };
 
 class Heater : public TemperatureControl {
-private:
 public:
+  bool isHeater() {
+    return true;
+  }
   void updateControl(double currentTemperature);
 };
 
@@ -32,5 +43,8 @@ private:
   unsigned long previousMillis = 0;                 // will store last time chiller state was checked
 
 public:
+  bool isHeater() {
+    return false;
+  }
   void updateControl(double currentTemperature);
 };

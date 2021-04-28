@@ -1,5 +1,6 @@
 #include "Devices/LiquidCrystal_TC.h"
 
+// useful for future debugging
 #include "TC_util.h"
 
 // pins used for our LiquidDisplay

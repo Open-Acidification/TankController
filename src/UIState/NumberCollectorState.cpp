@@ -4,6 +4,7 @@
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "MainMenu.h"
+// useful for future debugging
 #include "TC_util.h"
 
 void NumCollectorState::clear() {

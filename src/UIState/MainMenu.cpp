@@ -2,8 +2,10 @@
 
 #include "CalibrationManagement.h"
 #include "Devices/LiquidCrystal_TC.h"
+#include "Devices/PHControl.h"
 #include "Devices/PHProbe.h"
 #include "Devices/TempProbe_TC.h"
+#include "Devices/TemperatureControl.h"
 #include "EnablePID.h"
 #include "PHCalibrationMid.h"
 #include "PIDTuningMenu.h"
@@ -14,6 +16,7 @@
 #include "SeePIDConstants.h"
 #include "SeeTankID.h"
 #include "SeeVersion.h"
+#include "SetCalibrationClear.h"
 #include "SetChillOrHeat.h"
 #include "SetGoogleSheetInterval.h"
 #include "SetKD.h"
@@ -172,6 +175,12 @@ void MainMenu::selectSet() {
   switch (level2) {
     case SET_CALIBRATION:
       this->setNextState((UIState *)new PHCalibrationMid(tc));
+<<<<<<< HEAD
+=======
+      break;
+    case SET_CALIBRATION_CLEAR:
+      this->setNextState((UIState *)new SetCalibrationClear(tc));
+>>>>>>> eae86cd004da66eb5a4305bc17d117852e9c928e
       break;
     // case SET_CALIBRATION_CLEAR:
     //   this->setNextState((UIState *)new PHCalibrationClear(tc));
@@ -219,10 +228,11 @@ void MainMenu::selectSet() {
 
 // show current temp and pH
 void MainMenu::idle() {
-  PHProbe *pPHProbe = PHProbe::instance();
   char output[17];
-  snprintf(output, sizeof(output), "pH=%01.3f   %1.3f", pPHProbe->getPh(), 7.125);
+  snprintf(output, sizeof(output), "pH=%01.3f   %1.3f", PHProbe::instance()->getPh(),
+           PHControl::instance()->getTargetPh());
   LiquidCrystal_TC::instance()->writeLine(output, 0);
+  TemperatureControl *tempControl = TemperatureControl::instance();
   TempProbe_TC *tempProbe = TempProbe_TC::instance();
   double temp = tempProbe->getRunningAverage();
   if (temp < 0.0) {
@@ -230,7 +240,8 @@ void MainMenu::idle() {
   } else if (99.99 < temp) {
     temp = 99.99;
   }
-  snprintf(output, sizeof(output), "T=%02.2f  %c %2.2f", temp, 'C', 12.25);
+  snprintf(output, sizeof(output), "T=%02.2f  %c %2.2f", temp, (tempControl->isHeater() ? 'H' : 'C'),
+           tempControl->getTargetTemperature());
   LiquidCrystal_TC::instance()->writeLine(output, 1);
 }
 

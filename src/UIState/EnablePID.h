@@ -4,17 +4,17 @@
  * Enable PID Controller
  */
 #pragma once
-#include "UIState.h"
+#include "NumberCollectorState.h"
 
-class EnablePID : public UIState {
+class EnablePID : public NumCollectorState {
 public:
-  EnablePID(TankControllerLib* tc) : UIState(tc) {
+  EnablePID(TankControllerLib* tc) : NumCollectorState(tc) {
   }
-  void handleKey(char key);
   const char* name() {
     return "EnablePID";
   }
   const char* prompt() {
-    return "Enable PID?     ";
+    return "PID 1:on; 9:off ";
   };
+  void setValue(double value);
 };

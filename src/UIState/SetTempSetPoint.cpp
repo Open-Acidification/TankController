@@ -3,11 +3,11 @@
  */
 #include "SetTempSetPoint.h"
 
-#include "Devices/EEPROM_TC.h"
 #include "Devices/LiquidCrystal_TC.h"
+#include "Devices/TemperatureControl.h"
 
 void SetTempSetPoint::setValue(double value) {
-  EEPROM_TC::instance()->setTemp(value);
+  TemperatureControl::instance()->setTargetTemperature(value);
 
   char output[17];
   snprintf(output, sizeof(output), "New Temp=%.2f", value);

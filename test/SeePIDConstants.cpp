@@ -12,7 +12,7 @@
 unittest(TestVerticalScroll) {
   TankControllerLib* tc = TankControllerLib::instance();
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
-  PID* pPID = PID_TC::instance()->getPID();
+  PID_TC* pPID = PID_TC::instance();
   SeePIDConstants* test = new SeePIDConstants(tc);
 
   // Set up

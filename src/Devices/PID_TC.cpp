@@ -55,17 +55,17 @@ void PID_TC::logToSerial() {
 }
 
 void PID_TC::setKd(double Kd) {
-  pPID->SetTunings(EEPROM_TC::instance()->getKP(), EEPROM_TC::instance()->getKI(), Kd);
+  pPID->SetTunings(getKp(), getKi(), Kd);
   EEPROM_TC::instance()->setKD(Kd);
 }
 
 void PID_TC::setKi(double Ki) {
-  pPID->SetTunings(EEPROM_TC::instance()->getKP(), Ki, EEPROM_TC::instance()->getKD());
+  pPID->SetTunings(getKp(), Ki, getKd());
   EEPROM_TC::instance()->setKI(Ki);
 }
 
 void PID_TC::setKp(double Kp) {
-  pPID->SetTunings(Kp, EEPROM_TC::instance()->getKI(), EEPROM_TC::instance()->getKD());
+  pPID->SetTunings(Kp, getKi(), getKd());
   EEPROM_TC::instance()->setKP(Kp);
 }
 

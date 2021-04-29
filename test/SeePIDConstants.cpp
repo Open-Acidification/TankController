@@ -48,7 +48,7 @@ unittest(TestVerticalScroll) {
   assertEqual("MainMenu", tc->stateName());
 
   // Clean up
-  pPID->SetTunings(kp, ki, kd);
+  pPID->setTunings(kp, ki, kd);
 }
 
 unittest_main()

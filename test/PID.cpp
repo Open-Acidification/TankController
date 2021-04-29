@@ -18,7 +18,7 @@ unittest(constructor) {
   assertEqual(100000.0, singleton->getKp());
   assertEqual(0.0, singleton->getKi());
   assertEqual(0.0, singleton->getKd());
-  assertEqual(AUTOMATIC, singleton->GetMode());
+  assertEqual(AUTOMATIC, singleton->getMode());
 }
 
 unittest(logToSerial) {

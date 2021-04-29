@@ -15,9 +15,9 @@ unittest(singleton) {
 
 unittest(constructor) {
   PID_TC *singleton = PID_TC::instance();
-  assertEqual(100000.0, singleton->GetKp());
-  assertEqual(0.0, singleton->GetKi());
-  assertEqual(0.0, singleton->GetKd());
+  assertEqual(100000.0, singleton->getKp());
+  assertEqual(0.0, singleton->getKi());
+  assertEqual(0.0, singleton->getKd());
   assertEqual(AUTOMATIC, singleton->GetMode());
 }
 
@@ -51,37 +51,37 @@ unittest(compute) {
 unittest(setTunings) {
   PID_TC *singleton = PID_TC::instance();
   singleton->setTunings(2, 5, 1);
-  assertEqual(2, singleton->GetKp());
-  assertEqual(5, singleton->GetKi());
-  assertEqual(1, singleton->GetKd());
+  assertEqual(2, singleton->getKp());
+  assertEqual(5, singleton->getKi());
+  assertEqual(1, singleton->getKd());
   singleton->setTunings(20, 50, 10);
-  assertEqual(20, singleton->GetKp());
-  assertEqual(50, singleton->GetKi());
-  assertEqual(10, singleton->GetKd());
+  assertEqual(20, singleton->getKp());
+  assertEqual(50, singleton->getKi());
+  assertEqual(10, singleton->getKd());
 }
 
 unittest(setKp) {
   PID_TC *singleton = PID_TC::instance();
   singleton->setKp(2);
-  assertEqual(2, singleton->GetKp());
-  assertEqual(0, singleton->GetKi());
-  assertEqual(0, singleton->GetKd());
+  assertEqual(2, singleton->getKp());
+  assertEqual(0, singleton->getKi());
+  assertEqual(0, singleton->getKd());
 }
 
 unittest(setKi) {
   PID_TC *singleton = PID_TC::instance();
   singleton->setKi(5);
-  assertEqual(5, singleton->GetKi());
-  assertEqual(2, singleton->GetKp());
-  assertEqual(0, singleton->GetKd());
+  assertEqual(5, singleton->getKi());
+  assertEqual(2, singleton->getKp());
+  assertEqual(0, singleton->getKd());
 }
 
 unittest(setKd) {
   PID_TC *singleton = PID_TC::instance();
   singleton->setKd(1);
-  assertEqual(1, singleton->GetKd());
-  assertEqual(2, singleton->GetKp());
-  assertEqual(5, singleton->GetKi());
+  assertEqual(1, singleton->getKd());
+  assertEqual(2, singleton->getKp());
+  assertEqual(5, singleton->getKi());
 }
 
 unittest_main()

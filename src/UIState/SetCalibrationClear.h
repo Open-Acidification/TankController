@@ -4,7 +4,7 @@
  * Clear pH Calibration
  */
 #pragma once
-#include "UIState.h"
+#include "NumberCollectorState.h"
 
 class SetCalibrationClear : public NumCollectorState {
 public:

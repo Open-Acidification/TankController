@@ -16,8 +16,9 @@ unittest(test) {
   assertEqual("Invalid entry!  ", lines[1]);
   assertEqual("SetCalibrationClear", tc->stateName());
   test->setValue(1.0);
-  std::vector<String> lines = LiquidCrystal_TC::instance()->getLines();
-  assertEqual("Cleared!        ", lines[1]);
+  tc->loop();
+  std::vector<String> lines2 = LiquidCrystal_TC::instance()->getLines();
+  assertEqual("Cleared!        ", lines2[1]);
   assertEqual("SetCalibrationClear", tc->stateName());
   // Return to mainMenu
   Keypad_TC::instance()->_getPuppet()->push_back('D');

@@ -1,11 +1,13 @@
 /**
  * SetCalibrationClear.cpp
  */
-
 #include "SetCalibrationClear.h"
 
-void SetChillOrHeat::setValue(double value) {
-  if (!(value == 1.0) {
+#include "Devices/LiquidCrystal_TC.h"
+#include "Devices/PHProbe.h"
+
+void SetCalibrationClear::setValue(double value) {
+  if (!(value == 1.0)) {
     LiquidCrystal_TC::instance()->writeLine("Invalid entry!  ", 1);
   } else {
     PHProbe::instance()->clearCalibration();

@@ -6,15 +6,15 @@
 #pragma once
 #include "UIState.h"
 
-class SetCalibrationClear : public UIState {
+class SetCalibrationClear : public NumCollectorState {
 public:
-  SetCalibrationClear(TankControllerLib* tc) : UIState(tc) {
+  SetCalibrationClear(TankControllerLib* tc) : NumCollectorState(tc) {
   }
-  void handleKey(char key);
   const char* name() {
     return "SetCalibrationClear";
   }
   const char* prompt() {
     return "Clear pH Calibra";
   };
+  void setValue(double value);
 };

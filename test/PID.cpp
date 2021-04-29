@@ -64,8 +64,8 @@ unittest(setKp) {
   PID_TC *singleton = PID_TC::instance();
   singleton->setKp(2);
   assertEqual(2, singleton->getKp());
-  assertEqual(0, singleton->getKi());
-  assertEqual(0, singleton->getKd());
+  assertEqual(50, singleton->getKi());
+  assertEqual(10, singleton->getKd());
 }
 
 unittest(setKi) {
@@ -73,7 +73,7 @@ unittest(setKi) {
   singleton->setKi(5);
   assertEqual(5, singleton->getKi());
   assertEqual(2, singleton->getKp());
-  assertEqual(0, singleton->getKd());
+  assertEqual(10, singleton->getKd());
 }
 
 unittest(setKd) {

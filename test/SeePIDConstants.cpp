@@ -19,7 +19,7 @@ unittest(TestVerticalScroll) {
   double kp = pPID->getKp();
   double ki = pPID->getKi();
   double kd = pPID->getKd();
-  pPID->SetTunings(10001.0, 10002.0, 10003.0);
+  pPID->setTunings(10001.0, 10002.0, 10003.0);
 
   // Transition states
   assertEqual("MainMenu", tc->stateName());

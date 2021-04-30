@@ -14,7 +14,7 @@ public:
     return "SetCalibrationClear";
   }
   const char* prompt() {
-    return "Clear pH Calibra";
+    return "1: Clear pH Cali";
   };
   void setValue(double value);
 };

@@ -1,10 +1,9 @@
-#include "SetCalibrationClear.h"
-
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "Keypad_TC.h"
+#include "SetCalibrationClear.h"
 #include "TankControllerLib.h"
 
 unittest(test) {

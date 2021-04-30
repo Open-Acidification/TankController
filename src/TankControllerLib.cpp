@@ -117,14 +117,6 @@ void TankControllerLib::serialEvent1() {
 }
 
 /**
- * When in calibration mode we don't return to the idle screen and
- * we don't do any tank control actions.
- */
-void TankControllerLib::setCalibrationMode(bool flag) {
-  calibrationMode = flag;
-}
-
-/**
  * Set the next state
  */
 void TankControllerLib::setNextState(UIState *newState, bool update) {

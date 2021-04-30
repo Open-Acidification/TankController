@@ -15,7 +15,6 @@ public:
   void loop();
   void serialEvent();
   void serialEvent1();
-  void setCalibrationMode(bool flag);
   void setNextState(UIState* newState, bool update = false);
   void setup();
   const char* stateName();

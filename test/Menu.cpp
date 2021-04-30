@@ -20,7 +20,6 @@ void enterKey(char key) {
 }
 
 unittest_setup() {
-  tc->setCalibrationMode(false);
   TempProbe_TC::instance()->setTemperature(12.25);
   TemperatureControl::enableHeater(true);
   TemperatureControl::instance()->setTargetTemperature(15.75);
@@ -28,7 +27,6 @@ unittest_setup() {
 }
 
 unittest_teardown() {
-  tc->setCalibrationMode(false);
   enterKey('D');
 }
 
@@ -101,17 +99,15 @@ unittest(ViewTime) {
   assertEqual("MainMenu", tc->stateName());
 }
 
-unittest(DisableTimeout) {
-  tc->setCalibrationMode(true);
-  enterKey('8');
-  enterKey('6');
-  enterKey('6');
-  assertEqual("SeeDeviceUptime", tc->stateName());
-  delay(65000);  // 60-second delay does not return to main menu
-  tc->loop();
-  tc->loop();
-  assertEqual("SeeDeviceUptime", tc->stateName());
-  tc->setCalibrationMode(false);
-}
+// unittest(DisableTimeout) {
+//   enterKey('8');
+//   enterKey('6');
+//   enterKey('6');
+//   assertEqual("SeeDeviceUptime", tc->stateName());
+//   delay(65000);  // 60-second delay does not return to main menu
+//   tc->loop();
+//   tc->loop();
+//   assertEqual("SeeDeviceUptime", tc->stateName());
+// }
 
 unittest_main()

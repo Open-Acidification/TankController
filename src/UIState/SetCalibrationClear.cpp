@@ -5,6 +5,8 @@
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHProbe.h"
+#include "UIState.h"
+#include "Wait.h"
 
 void SetCalibrationClear::setValue(double value) {
   if (!(value == 1.0)) {
@@ -13,5 +15,4 @@ void SetCalibrationClear::setValue(double value) {
     PHProbe::instance()->clearCalibration();
     LiquidCrystal_TC::instance()->writeLine("Cleared!        ", 1);
   }
-  returnToMainMenu(1000);  // after 1-second delay
 }

@@ -16,7 +16,6 @@ unittest(test) {
   assertEqual("Invalid entry!  ", lines[1]);
   assertEqual("SetCalibrationClear", tc->stateName());
   test->setValue(1.0);
-  tc->loop();
   std::vector<String> lines2 = LiquidCrystal_TC::instance()->getLines();
   assertEqual("Cleared!        ", lines2[1]);
   assertEqual("SetCalibrationClear", tc->stateName());

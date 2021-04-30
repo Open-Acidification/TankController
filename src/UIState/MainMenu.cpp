@@ -12,6 +12,7 @@
 #include "ResetLCDScreen.h"
 #include "SeeDeviceAddress.h"
 #include "SeeDeviceUptime.h"
+#include "SeeLogFile.h"
 #include "SeePHSlope.h"
 #include "SeePIDConstants.h"
 #include "SeeTankID.h"
@@ -143,7 +144,7 @@ void MainMenu::selectView() {
       this->setNextState((UIState *)new SeeDeviceAddress(tc));
       break;
     case VIEW_LOG_FILE:
-      this->setNextState((UIState *)new SeeTankID(tc));
+      this->setNextState((UIState *)new SeeLogFile(tc));
       break;
     case VIEW_MAC_ADDRESS:
       this->setNextState((UIState *)new SeeDeviceAddress(tc));

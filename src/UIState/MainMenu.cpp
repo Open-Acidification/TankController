@@ -12,6 +12,7 @@
 #include "ResetLCDScreen.h"
 #include "SeeDeviceAddress.h"
 #include "SeeDeviceUptime.h"
+#include "SeeGoogleMins.h"
 #include "SeePHSlope.h"
 #include "SeePIDConstants.h"
 #include "SeeTankID.h"

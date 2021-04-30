@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Devices/EEPROM_TC.h"
+#include "EEPROM_TC.h"
 
 class EEPROM_TC_2 : public EEPROM_TC {
 public:

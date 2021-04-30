@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#include "Devices/DateTime_TC.h"
+#include "DateTime_TC.h"
 
 /**
  * year has to be range: 2000-2099
@@ -68,7 +68,7 @@ unittest(setAsCurrent) {
 #include <chrono>
 #include <thread>
 
-#include "UIState/UIState.h"
+#include "UIState.h"
 
 unittest(myDelay) {
   uint32_t t1 = DateTime_TC::now().unixtime();

@@ -4,8 +4,8 @@
 
 #include "SetPHSetPoint.h"
 
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/PHControl.h"
+#include "LiquidCrystal_TC.h"
+#include "PHControl.h"
 
 void SetPHSetPoint::setValue(double value) {
   PHControl::instance()->setTargetPh(value);

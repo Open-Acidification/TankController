@@ -2,8 +2,8 @@
 #include <Serial_TC.h>
 
 #include "ArduinoUnitTests.h"
-#include "Devices/DateTime_TC.h"
-#include "Devices/Serial_TC.h"
+#include "DateTime_TC.h"
+#include "Serial_TC.h"
 #include "TC_util.h"
 
 unittest(SerialTest) {

@@ -4,8 +4,8 @@
 
 #include "SetTankID.h"
 
-#include "Devices/EEPROM_TC.h"
-#include "Devices/LiquidCrystal_TC.h"
+#include "EEPROM_TC.h"
+#include "LiquidCrystal_TC.h"
 
 void SetTankID::setValue(double value) {
   EEPROM_TC::instance()->setTankID(value);

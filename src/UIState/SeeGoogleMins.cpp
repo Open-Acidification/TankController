@@ -4,8 +4,8 @@
 
 #include "SeeGoogleMins.h"
 
-#include "Devices/EEPROM_TC.h"
-#include "Devices/LiquidCrystal_TC.h"
+#include "EEPROM_TC.h"
+#include "LiquidCrystal_TC.h"
 
 void SeeGoogleMins::start() {
   LiquidCrystal_TC::instance()->writeLine(prompt(), 0);

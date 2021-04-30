@@ -1,6 +1,6 @@
-#include "Devices/PHProbe.h"
+#include "PHProbe.h"
 
-#include "Devices/Serial_TC.h"
+#include "Serial_TC.h"
 
 //  class instance variables
 /**

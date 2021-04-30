@@ -1,17 +1,17 @@
 #include "TankControllerLib.h"
 
-#include "Devices/DateTime_TC.h"
-#include "Devices/Keypad_TC.h"
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/PHControl.h"
-#include "Devices/PHProbe.h"
-#include "Devices/SD_TC.h"
-#include "Devices/Serial_TC.h"
-#include "Devices/TempProbe_TC.h"
-#include "Devices/TemperatureControl.h"
+#include "DateTime_TC.h"
+#include "Keypad_TC.h"
+#include "LiquidCrystal_TC.h"
+#include "MainMenu.h"
+#include "PHControl.h"
+#include "PHProbe.h"
+#include "SD_TC.h"
+#include "Serial_TC.h"
 #include "TC_util.h"
-#include "UIState/MainMenu.h"
-#include "UIState/UIState.h"
+#include "TempProbe_TC.h"
+#include "TemperatureControl.h"
+#include "UIState.h"
 
 const char TANK_CONTROLLER_VERSION[] = "0.3.0";
 

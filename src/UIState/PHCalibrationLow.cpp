@@ -3,9 +3,9 @@
  */
 #include "PHCalibrationLow.h"
 
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/PHProbe.h"
+#include "LiquidCrystal_TC.h"
 #include "PHCalibrationHigh.h"
+#include "PHProbe.h"
 #include "UIState.h"
 #include "Wait.h"
 

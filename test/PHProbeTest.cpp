@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#include "Devices/PHProbe.h"
+#include "PHProbe.h"
 #include "TC_util.h"
 #include "TankControllerLib.h"
 

@@ -1,4 +1,4 @@
-#include "Devices/EEPROM_TC_2.h"
+#include "EEPROM_TC_2.h"
 
 #include "TC_util.h"
 

@@ -1,9 +1,9 @@
-#include "Devices/EEPROM_TC.h"
+#include "EEPROM_TC.h"
 
 #include <EEPROM.h>
 
-#include "Devices/EEPROM_TC_2.h"
-#include "Devices/EEPROM_TC_3.h"
+#include "EEPROM_TC_2.h"
+#include "EEPROM_TC_3.h"
 #include "TC_util.h"
 
 //  class variables

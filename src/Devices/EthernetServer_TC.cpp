@@ -1,4 +1,4 @@
-#include "Devices/EthernetServer_TC.h"
+#include "EthernetServer_TC.h"
 
 #include "Serial_TC.h"
 

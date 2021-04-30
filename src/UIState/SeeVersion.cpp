@@ -4,7 +4,7 @@
 
 #include "SeeVersion.h"
 
-#include "Devices/LiquidCrystal_TC.h"
+#include "LiquidCrystal_TC.h"
 #include "TankControllerLib.h"
 
 void SeeVersion::start() {

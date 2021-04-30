@@ -4,8 +4,8 @@
 
 #include "SetGoogleSheetInterval.h"
 
-#include "Devices/EEPROM_TC.h"
-#include "Devices/LiquidCrystal_TC.h"
+#include "EEPROM_TC.h"
+#include "LiquidCrystal_TC.h"
 
 void SetGoogleSheetInterval::setValue(double value) {
   EEPROM_TC::instance()->setGoogleSheetInterval((int)value);

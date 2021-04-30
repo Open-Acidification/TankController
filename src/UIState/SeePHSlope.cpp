@@ -4,8 +4,8 @@
 
 #include "SeePHSlope.h"
 
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/PHProbe.h"
+#include "LiquidCrystal_TC.h"
+#include "PHProbe.h"
 
 void SeePHSlope::start() {
   LiquidCrystal_TC::instance()->writeLine(prompt(), 0);

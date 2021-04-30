@@ -1,4 +1,4 @@
-#include "Devices/Keypad_TC.h"
+#include "Keypad_TC.h"
 
 const byte ROWS = 4;
 const byte COLS = 4;

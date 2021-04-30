@@ -3,10 +3,10 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#include "Devices/DateTime_TC.h"
+#include "DateTime_TC.h"
 #include "LiquidCrystal_TC.h"
 #include "TankControllerLib.h"
-#include "UIState/UIState.h"
+#include "UIState.h"
 
 unittest(testWaitState) {
   TankControllerLib* tc = TankControllerLib::instance();

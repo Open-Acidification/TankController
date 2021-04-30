@@ -1,7 +1,7 @@
-#include "Devices/PID_TC.h"
+#include "PID_TC.h"
 
-#include "Devices/EEPROM_TC.h"
-#include "Devices/Serial_TC.h"
+#include "EEPROM_TC.h"
+#include "Serial_TC.h"
 #include "TC_util.h"
 
 // class variable

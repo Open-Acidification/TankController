@@ -4,8 +4,8 @@
 
 #include "SeeDeviceUptime.h"
 
-#include "Devices/DateTime_TC.h"
-#include "Devices/LiquidCrystal_TC.h"
+#include "DateTime_TC.h"
+#include "LiquidCrystal_TC.h"
 #include "TC_util.h"
 
 void SeeDeviceUptime::loop() {

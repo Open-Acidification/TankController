@@ -1,4 +1,4 @@
-#include "Devices/TempProbe_TC.h"
+#include "TempProbe_TC.h"
 
 //  class instance variables
 /**

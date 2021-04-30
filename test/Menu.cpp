@@ -2,11 +2,11 @@
 #include <ArduinoUnitTests.h>
 
 #include "DateTime_TC.h"
-#include "Devices/TemperatureControl.h"
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
 #include "TankControllerLib.h"
 #include "TempProbe_TC.h"
+#include "TemperatureControl.h"
 
 // globals for the singletons used in every test
 TankControllerLib* tc = TankControllerLib::instance();

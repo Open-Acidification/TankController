@@ -7,7 +7,7 @@
 #include "LiquidCrystal_TC.h"
 #include "PID_TC.h"
 #include "TankControllerLib.h"
-#include "UIState/UIState.h"
+#include "UIState.h"
 
 unittest(TestVerticalScroll) {
   TankControllerLib* tc = TankControllerLib::instance();

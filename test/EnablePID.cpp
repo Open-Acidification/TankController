@@ -3,8 +3,8 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/PHControl.h"
+#include "LiquidCrystal_TC.h"
+#include "PHControl.h"
 #include "TankControllerLib.h"
 
 unittest(EnablePID) {

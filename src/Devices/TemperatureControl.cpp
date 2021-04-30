@@ -1,6 +1,6 @@
 #include "TemperatureControl.h"
 
-#include "Devices/EEPROM_TC.h"
+#include "EEPROM_TC.h"
 #include "Serial_TC.h"
 
 //  class instance variables

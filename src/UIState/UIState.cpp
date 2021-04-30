@@ -1,9 +1,9 @@
 #include "UIState.h"
 
 #include "../TankControllerLib.h"
-#include "Devices/LiquidCrystal_TC.h"
-#include "UIState/MainMenu.h"
-#include "UIState/Wait.h"
+#include "LiquidCrystal_TC.h"
+#include "MainMenu.h"
+#include "Wait.h"
 
 // instance methods
 

@@ -4,9 +4,9 @@
 
 #include "SeeDeviceAddress.h"
 
-#include "Devices/Ethernet_TC.h"
-#include "Devices/LiquidCrystal_TC.h"
 #include "Ethernet.h"
+#include "Ethernet_TC.h"
+#include "LiquidCrystal_TC.h"
 
 void SeeDeviceAddress::start() {
   IPAddress IP = Ethernet_TC::instance()->getIP();

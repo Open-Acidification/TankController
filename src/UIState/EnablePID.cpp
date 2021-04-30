@@ -4,8 +4,8 @@
 
 #include "EnablePID.h"
 
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/PHControl.h"
+#include "LiquidCrystal_TC.h"
+#include "PHControl.h"
 
 void EnablePID::setValue(double value) {
   if (!(value == 1.0 || value == 9.0)) {

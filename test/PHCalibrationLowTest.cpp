@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#include "Devices/LiquidCrystal_TC.h"
+#include "LiquidCrystal_TC.h"
 #include "PHCalibrationLow.h"
 #include "TankControllerLib.h"
 

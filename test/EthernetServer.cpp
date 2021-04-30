@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "Devices/EthernetServer_TC.h"
+#include "EthernetServer_TC.h"
 /**
  * Trivial test to confirm that EthernetServer_TC compiles,
  * is of proper class, and has proper port

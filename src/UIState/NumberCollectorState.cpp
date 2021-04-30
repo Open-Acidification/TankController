@@ -2,7 +2,7 @@
 
 #include <math.h>
 
-#include "Devices/LiquidCrystal_TC.h"
+#include "LiquidCrystal_TC.h"
 #include "MainMenu.h"
 // useful for future debugging
 #include "TC_util.h"

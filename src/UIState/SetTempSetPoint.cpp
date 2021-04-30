@@ -3,8 +3,8 @@
  */
 #include "SetTempSetPoint.h"
 
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/TemperatureControl.h"
+#include "LiquidCrystal_TC.h"
+#include "TemperatureControl.h"
 
 void SetTempSetPoint::setValue(double value) {
   TemperatureControl::instance()->setTargetTemperature(value);

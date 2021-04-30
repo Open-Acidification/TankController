@@ -1,13 +1,11 @@
 #include "MainMenu.h"
 
 #include "CalibrationManagement.h"
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/PHControl.h"
-#include "Devices/PHProbe.h"
-#include "Devices/TempProbe_TC.h"
-#include "Devices/TemperatureControl.h"
 #include "EnablePID.h"
+#include "LiquidCrystal_TC.h"
 #include "PHCalibrationMid.h"
+#include "PHControl.h"
+#include "PHProbe.h"
 #include "PIDTuningMenu.h"
 #include "ResetLCDScreen.h"
 #include "SeeDeviceAddress.h"
@@ -26,7 +24,9 @@
 #include "SetTankID.h"
 #include "SetTempSetPoint.h"
 #include "SetTime.h"
+#include "TempProbe_TC.h"
 #include "TemperatureCalibration.h"
+#include "TemperatureControl.h"
 
 MainMenu::MainMenu(TankControllerLib *tc) : UIState(tc) {
   viewMenus[VIEW_GOOGLE_MINS] = String("View Google mins");

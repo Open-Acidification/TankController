@@ -1,8 +1,8 @@
 #include "PHControl.h"
 
-#include "Devices/EEPROM_TC.h"
-#include "Devices/Serial_TC.h"
+#include "EEPROM_TC.h"
 #include "PID_TC.h"
+#include "Serial_TC.h"
 #include "TC_util.h"
 
 const double DEFAULT_PH = 7.125;

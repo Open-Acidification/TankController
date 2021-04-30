@@ -4,7 +4,7 @@
 #include <ArduinoUnitTests.h>
 
 #include "DateTime_TC.h"
-#include "Devices/LiquidCrystal_TC.h"
+#include "LiquidCrystal_TC.h"
 #include "TankControllerLib.h"
 
 unittest(test) {

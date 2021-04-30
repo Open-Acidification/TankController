@@ -144,7 +144,7 @@ void MainMenu::selectView() {
       this->setNextState((UIState *)new SeeDeviceAddress(tc));
       break;
     case VIEW_LOG_FILE:
-      this->setNextState((UIState *)new SeeLogFile(tc));
+      this->setNextState(static_cast<UIState *>(new SeeLogFile(tc)));
       break;
     case VIEW_MAC_ADDRESS:
       this->setNextState((UIState *)new SeeDeviceAddress(tc));

@@ -4,6 +4,8 @@
 
 #include "PHControl.h"
 
+const int PIN = 49;
+
 /**
  * cycle the control through to a point of being off
  */
@@ -26,7 +28,6 @@ unittest_teardown() {
 
 // updateControl function
 unittest(beforeTenSeconds) {
-  const int PIN = 49;
   GodmodeState* state = GODMODE();
   PHControl* controlSolenoid = PHControl::instance();
   assertEqual(HIGH, state->digitalPin[PIN]);
@@ -39,7 +40,6 @@ unittest(beforeTenSeconds) {
 }
 
 unittest(afterTenSecondsButPhStillHigher) {
-  const int PIN = 49;
   GodmodeState* state = GODMODE();
   PHControl* controlSolenoid = PHControl::instance();
   assertEqual(HIGH, state->digitalPin[PIN]);
@@ -55,7 +55,6 @@ unittest(afterTenSecondsButPhStillHigher) {
 }
 
 unittest(afterTenSecondsAndPhIsLower) {
-  const int PIN = 49;
   GodmodeState* state = GODMODE();
   PHControl* controlSolenoid = PHControl::instance();
   assertEqual(HIGH, state->digitalPin[PIN]);
@@ -71,7 +70,6 @@ unittest(afterTenSecondsAndPhIsLower) {
 }
 
 unittest(beforeTenSecondsButPhIsLower) {
-  const int PIN = 49;
   GodmodeState* state = GODMODE();
   PHControl* controlSolenoid = PHControl::instance();
   assertEqual(HIGH, state->digitalPin[PIN]);
@@ -84,7 +82,6 @@ unittest(beforeTenSecondsButPhIsLower) {
 }
 
 unittest(PhEvenWithTarget) {
-  const int PIN = 49;
   GodmodeState* state = GODMODE();
   PHControl* controlSolenoid = PHControl::instance();
   assertEqual(HIGH, state->digitalPin[PIN]);

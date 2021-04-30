@@ -10,9 +10,10 @@
  * bundle exec arduino_ci.rb --skip-examples-compilation --testfile-select=TemperatureControlTest.cpp
  */
 
+const int PIN = 47;
+
 // Chiller
 unittest(BeforeIntervalAndWithinDelta) {
-  const int PIN = 47;
   GodmodeState* state = GODMODE();
   state->reset();
   Chiller chiller;
@@ -24,7 +25,6 @@ unittest(BeforeIntervalAndWithinDelta) {
 
 // Chiller
 unittest(BeforeIntervalAndOutsideDelta) {
-  const int PIN = 47;
   GodmodeState* state = GODMODE();
   state->reset();
   Chiller chiller;
@@ -36,7 +36,6 @@ unittest(BeforeIntervalAndOutsideDelta) {
 
 // Chiller
 unittest(AfterIntervalAndWithinDelta) {
-  const int PIN = 47;
   GodmodeState* state = GODMODE();
   state->reset();
   Chiller chiller;
@@ -49,7 +48,6 @@ unittest(AfterIntervalAndWithinDelta) {
 
 // Chiller
 unittest(AfterIntervalAndOutsideDelta) {
-  const int PIN = 47;
   GodmodeState* state = GODMODE();
   state->reset();
   Chiller chiller;
@@ -62,7 +60,6 @@ unittest(AfterIntervalAndOutsideDelta) {
 
 // Heater
 unittest(WithinDelta) {
-  const int PIN = 47;
   GodmodeState* state = GODMODE();
   state->reset();
   Heater heater;
@@ -74,7 +71,6 @@ unittest(WithinDelta) {
 
 // Heater
 unittest(OutsideDelta) {
-  const int PIN = 47;
   GodmodeState* state = GODMODE();
   state->reset();
   Heater heater;

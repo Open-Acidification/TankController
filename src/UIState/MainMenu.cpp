@@ -12,6 +12,7 @@
 #include "ResetLCDScreen.h"
 #include "SeeDeviceAddress.h"
 #include "SeeDeviceUptime.h"
+#include "SeeGoogleMins.h"
 #include "SeePHSlope.h"
 #include "SeePIDConstants.h"
 #include "SeeTankID.h"
@@ -137,7 +138,7 @@ void MainMenu::down() {
 void MainMenu::selectView() {
   switch (level2) {
     case VIEW_GOOGLE_MINS:
-      this->setNextState((UIState *)new SeeTankID(tc));
+      this->setNextState(static_cast<UIState *>(new SeeGoogleMins(tc)));
       break;
     case VIEW_IP_ADDRESS:
       this->setNextState((UIState *)new SeeDeviceAddress(tc));

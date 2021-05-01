@@ -15,11 +15,10 @@ unittest(singleton) {
 
 unittest(constructor) {
   PID_TC *singleton = PID_TC::instance();
-  PID *pPID = singleton->getPID();
-  assertEqual(100000.0, pPID->GetKp());
-  assertEqual(0.0, pPID->GetKi());
-  assertEqual(0.0, pPID->GetKd());
-  assertEqual(AUTOMATIC, pPID->GetMode());
+  assertEqual(100000.0, singleton->getKp());
+  assertEqual(0.0, singleton->getKi());
+  assertEqual(0.0, singleton->getKd());
+  assertEqual(AUTOMATIC, singleton->getMode());
 }
 
 unittest(logToSerial) {
@@ -51,15 +50,38 @@ unittest(compute) {
 
 unittest(setTunings) {
   PID_TC *singleton = PID_TC::instance();
-  PID *pPID = singleton->getPID();
   singleton->setTunings(2, 5, 1);
-  assertEqual(2, pPID->GetKp());
-  assertEqual(5, pPID->GetKi());
-  assertEqual(1, pPID->GetKd());
+  assertEqual(2, singleton->getKp());
+  assertEqual(5, singleton->getKi());
+  assertEqual(1, singleton->getKd());
   singleton->setTunings(20, 50, 10);
-  assertEqual(20, pPID->GetKp());
-  assertEqual(50, pPID->GetKi());
-  assertEqual(10, pPID->GetKd());
+  assertEqual(20, singleton->getKp());
+  assertEqual(50, singleton->getKi());
+  assertEqual(10, singleton->getKd());
+}
+
+unittest(setKp) {
+  PID_TC *singleton = PID_TC::instance();
+  singleton->setKp(2);
+  assertEqual(2, singleton->getKp());
+  assertEqual(50, singleton->getKi());
+  assertEqual(10, singleton->getKd());
+}
+
+unittest(setKi) {
+  PID_TC *singleton = PID_TC::instance();
+  singleton->setKi(5);
+  assertEqual(5, singleton->getKi());
+  assertEqual(2, singleton->getKp());
+  assertEqual(10, singleton->getKd());
+}
+
+unittest(setKd) {
+  PID_TC *singleton = PID_TC::instance();
+  singleton->setKd(1);
+  assertEqual(1, singleton->getKd());
+  assertEqual(2, singleton->getKp());
+  assertEqual(5, singleton->getKi());
 }
 
 unittest_main()

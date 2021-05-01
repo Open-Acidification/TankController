@@ -121,13 +121,13 @@ unittest(storeDataToSD) {
   contents = contents.substring(i + 1);
   i = contents.indexOf('\n');
   line = contents.substring(0, i);
-  String expected("04/27/2021 14:24:51,   0, 20.021, 20.000, 7.5000, 7.5000,    0,   0.0,   0.0,   0.0");
+  String expected("04/27/2021 14:24:51,   0, 20.021, 20.000, 7.5000, 7.5000,    0, 100000.0,   0.0,   0.0");
   COUT("expectedSize = " << expected.length() << "; actualSize = " << line.length());
   assertEqual(expected, line);
   contents = contents.substring(i + 1);
   i = contents.indexOf('\n');
   line = contents.substring(0, i);
-  expected = String("04/27/2021 14:24:52,   0, 20.021, 20.000, 7.5000, 7.5000,    0,   0.0,   0.0,   0.0");
+  expected = String("04/27/2021 14:24:52,   0, 20.021, 20.000, 7.5000, 7.5000,    0, 100000.0,   0.0,   0.0");
   COUT("expectedSize = " << expected.length() << "; actualSize = " << line.length());
   assertEqual(expected, line);
   COUT(data);

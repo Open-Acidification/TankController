@@ -12,6 +12,7 @@ public:
   static TankControllerLib* instance();
 
   // instance methods
+  bool isInCalibration();
   void loop();
   void serialEvent();
   void serialEvent1();

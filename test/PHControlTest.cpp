@@ -2,7 +2,10 @@
 #include <ArduinoUnitTests.h>
 #include <ci/ObservableDataStream.h>
 
+#include "MainMenu.h"
+#include "PHCalibrationMid.h"
 #include "PHControl.h"
+#include "TankControllerLib.h"
 
 const int PIN = 49;
 
@@ -16,6 +19,8 @@ void reset() {
   singleton->updateControl(7.00);
   delay(10000);
   singleton->updateControl(7.00);
+  TankControllerLib* tc = TankControllerLib::instance();
+  tc->setNextState(new MainMenu(tc), true);
 }
 
 unittest_setup() {
@@ -72,6 +77,7 @@ unittest(afterTenSecondsAndPhIsLower) {
 unittest(beforeTenSecondsButPhIsLower) {
   GodmodeState* state = GODMODE();
   PHControl* controlSolenoid = PHControl::instance();
+  // device is initially off but turns on when needed
   assertEqual(HIGH, state->digitalPin[PIN]);
   controlSolenoid->setTargetPh(7.00);
   controlSolenoid->updateControl(8.00);
@@ -87,6 +93,21 @@ unittest(PhEvenWithTarget) {
   assertEqual(HIGH, state->digitalPin[PIN]);
   controlSolenoid->setTargetPh(7.00);
   controlSolenoid->updateControl(7.00);
+  assertEqual(HIGH, state->digitalPin[PIN]);
+}
+
+unittest(disableDuringCalibration) {
+  TankControllerLib* tc = TankControllerLib::instance();
+  assertFalse(tc->isInCalibration());
+  PHCalibrationMid* test = new PHCalibrationMid(tc);
+  tc->setNextState(test, true);
+  assertTrue(tc->isInCalibration());
+  GodmodeState* state = GODMODE();
+  PHControl* controlSolenoid = PHControl::instance();
+  // device is initially off and stays off due to calibration
+  assertEqual(HIGH, state->digitalPin[PIN]);
+  controlSolenoid->setTargetPh(7.00);
+  controlSolenoid->updateControl(8.00);
   assertEqual(HIGH, state->digitalPin[PIN]);
 }
 

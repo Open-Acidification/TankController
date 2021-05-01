@@ -2,6 +2,9 @@
 #include <ArduinoUnitTests.h>
 #include <ci/ObservableDataStream.h>
 
+#include "MainMenu.h"
+#include "PHCalibrationMid.h"
+#include "TankControllerLib.h"
 #include "TemperatureControl.h"
 /**
  * These tests test the UpdateControl virtual function for the heater and chiller subclass and
@@ -11,6 +14,16 @@
  */
 
 const int PIN = 47;
+
+unittest_setup() {
+  TankControllerLib* tc = TankControllerLib::instance();
+  tc->setNextState(new MainMenu(tc), true);
+}
+
+unittest_teardown() {
+  TankControllerLib* tc = TankControllerLib::instance();
+  tc->setNextState(new MainMenu(tc), true);
+}
 
 // Chiller
 unittest(BeforeIntervalAndWithinDelta) {
@@ -51,11 +64,31 @@ unittest(AfterIntervalAndOutsideDelta) {
   GodmodeState* state = GODMODE();
   state->reset();
   Chiller chiller;
+  // chiller is initially off and goes on when needed
   assertEqual(HIGH, state->digitalPin[PIN]);
   chiller.setTargetTemperature(20);
   delay(31000);
   chiller.updateControl(20.05);
   assertEqual(LOW, state->digitalPin[PIN]);
+}
+
+// disable chiller during calibration
+unittest(disableChillerDuringCalibration) {
+  TankControllerLib* tc = TankControllerLib::instance();
+  assertFalse(tc->isInCalibration());
+  PHCalibrationMid* test = new PHCalibrationMid(tc);
+  tc->setNextState(test, true);
+  assertTrue(tc->isInCalibration());
+  GodmodeState* state = GODMODE();
+  state->reset();
+  Chiller chiller;
+  // chiller is initially off and stays off during calibration
+  // (test is same as above)
+  assertEqual(HIGH, state->digitalPin[PIN]);
+  chiller.setTargetTemperature(20);
+  delay(31000);
+  chiller.updateControl(20.05);
+  assertEqual(HIGH, state->digitalPin[PIN]);
 }
 
 // Heater
@@ -74,10 +107,29 @@ unittest(OutsideDelta) {
   GodmodeState* state = GODMODE();
   state->reset();
   Heater heater;
+  // heater is initially off, then turns on
   assertEqual(HIGH, state->digitalPin[PIN]);
   heater.setTargetTemperature(20);
   heater.updateControl(19.95);
   assertEqual(LOW, state->digitalPin[PIN]);
+}
+
+// disable heater during calibration
+unittest(disableHeaterDuringCalibration) {
+  TankControllerLib* tc = TankControllerLib::instance();
+  assertFalse(tc->isInCalibration());
+  PHCalibrationMid* test = new PHCalibrationMid(tc);
+  tc->setNextState(test, true);
+  assertTrue(tc->isInCalibration());
+  GodmodeState* state = GODMODE();
+  state->reset();
+  Heater heater;
+  // heater is initially off, and stays off due to calibration
+  // (test is same as above)
+  assertEqual(HIGH, state->digitalPin[PIN]);
+  heater.setTargetTemperature(20);
+  heater.updateControl(19.95);
+  assertEqual(HIGH, state->digitalPin[PIN]);
 }
 
 unittest_main()

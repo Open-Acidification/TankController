@@ -59,7 +59,7 @@ void Chiller::updateControl(double currentTemperature) {
     bool oldValue = digitalRead(PIN);
     bool newValue = oldValue;
     previousMillis = currentMillis;
-    // if in calbration, turn unit off
+    // if in calibration, turn unit off
     if (TankControllerLib::instance()->isInCalibration()) {
       newValue = HIGH;
     }
@@ -81,7 +81,7 @@ void Chiller::updateControl(double currentTemperature) {
 void Heater::updateControl(double currentTemperature) {
   bool oldValue = digitalRead(PIN);
   bool newValue = oldValue;
-  // if in calbration, turn unit off
+  // if in calibration, turn unit off
   if (TankControllerLib::instance()->isInCalibration()) {
     newValue = HIGH;
   }

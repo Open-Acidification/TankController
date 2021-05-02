@@ -3,6 +3,7 @@
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "EEPROM_TC.h"
+#include "Keypad_TC.h"
 #include "SetKP.h"
 #include "TankControllerLib.h"
 
@@ -17,12 +18,9 @@ unittest(test) {
   std::vector<String> lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("New KP=12345.5  ", lines[1]);
   assertEqual("SetKP", tc->stateName());
-  tc->loop();  // transition to Wait
-  assertEqual("Wait", tc->stateName());
-  delay(1000);
-  tc->loop();  // queue MainMenu to be next
-  tc->loop();  // transition to MainMenu
-  // now we should be back to the main menu
+  // Return to mainMenu
+  Keypad_TC::instance()->_getPuppet()->push_back('D');
+  tc->loop();
   assertEqual("MainMenu", tc->stateName());
 }
 

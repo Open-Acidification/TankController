@@ -5,6 +5,7 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHControl.h"
 #include "Devices/PHProbe.h"
+#include "Devices/PID_TC.h"
 #include "Devices/SD_TC.h"
 #include "Devices/Serial_TC.h"
 #include "Devices/TempProbe_TC.h"
@@ -204,13 +205,14 @@ void TankControllerLib::writeDataToSD() {
   if (nextWriteTime <= msNow) {
     char buffer[128];
     DateTime_TC dtNow = DateTime_TC::now();
+    PID_TC *pPID = PID_TC::instance();
     int tankId = 0;
     snprintf(buffer, sizeof(buffer), format, (int)dtNow.month(), (int)dtNow.day(), (int)dtNow.year(), (int)dtNow.hour(),
              (int)dtNow.minute(), (int)dtNow.second(), (int)tankId,
              (double)TempProbe_TC::instance()->getRunningAverage(),
              (double)TemperatureControl::instance()->getTargetTemperature(), (double)PHProbe::instance()->getPh(),
-             (double)PHControl::instance()->getTargetPh(), (int)0, (double)0.0, (double)0.0,
-             (double)0.0);  // onTime, Kp, Ki, Kd)
+             (double)PHControl::instance()->getTargetPh(), (int)0, (double)pPID->getKp(), (double)pPID->getKi(),
+             (double)pPID->getKd());  // still missing onTime
     SD_TC::instance()->appendToDataLog(header, buffer);
     nextWriteTime = msNow / 1000 * 1000 + 1000;  // round up to next second
     COUT(buffer);

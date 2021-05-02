@@ -28,7 +28,6 @@ private:
   static const int IDLE_TIMEOUT = 60 * 1000;  // revert to the main menu after 60 seconds of inactivity
 
   // instance variables
-  bool calibrationMode = false;
   UIState* state = nullptr;
   UIState* nextState = nullptr;
   LiquidCrystal_TC* lcd;

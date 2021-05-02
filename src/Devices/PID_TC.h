@@ -5,6 +5,7 @@ class PID_TC {
 public:
   // declare singleton
   static PID_TC *instance();
+  static void reset();  // used by tests
   // instance functions
   double computeOutput(double target, double current);
   double getKd() {

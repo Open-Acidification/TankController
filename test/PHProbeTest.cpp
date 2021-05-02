@@ -121,7 +121,6 @@ unittest(getPh) {
 unittest(clearCalibration) {
   GodmodeState *state = GODMODE();
   state->reset();
-  state->serialPort[0].dataOut = "";
   PHProbe::instance()->clearCalibration();
   assertEqual("Cal,clear\r", GODMODE()->serialPort[1].dataOut);
 }

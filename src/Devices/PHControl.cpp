@@ -61,12 +61,10 @@ void PHControl::updateControl(double pH) {
                   << "; left = " << now - window_start_time);
   bool oldValue = digitalRead(PIN);
   bool newValue = oldValue;
-  if ((onTime > SOLENOID_OPENING_TIME) && (onTime >= (now - window_start_time))) {
-    if (TankControllerLib::instance()->isInCalibration()) {
-      newValue = HIGH;  // disable device during calibration
-    } else {
-      newValue = LOW;  // open CO2 solenoid
-    }
+  if (TankControllerLib::instance()->isInCalibration()) {
+    newValue = HIGH;  // turn off CO2 while in calibration
+  } else if ((onTime > SOLENOID_OPENING_TIME) && (onTime >= (now - window_start_time))) {
+    newValue = LOW;  // open CO2 solenoid
   } else {
     newValue = HIGH;  // close CO2 solenoid
   }

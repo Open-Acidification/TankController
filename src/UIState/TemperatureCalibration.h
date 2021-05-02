@@ -4,17 +4,20 @@
  * Calibrate the temperature
  */
 #pragma once
-#include "UIState.h"
+#include "NumberCollectorState.h"
 
-class TemperatureCalibration : public UIState {
+class TemperatureCalibration : public NumCollectorState {
 public:
-  TemperatureCalibration(TankControllerLib* tc) : UIState(tc) {
+  TemperatureCalibration(TankControllerLib* tc) : NumCollectorState(tc) {
   }
-  void handleKey(char key);
+  bool isInCalibration() {
+    return NumCollectorState::isInCalibration();
+  }
   const char* name() {
     return "TemperatureCalibration";
   }
   const char* prompt() {
-    return "Temp Calibration";
+    return "Real Temperature";
   };
+  void setValue(double value);
 };

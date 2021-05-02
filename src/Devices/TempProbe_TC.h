@@ -89,6 +89,7 @@
 class TempProbe_TC {
 public:
   static TempProbe_TC* instance();
+  static void reset();
 
   uint16_t getResistance() {
     return thermo.readRTD();

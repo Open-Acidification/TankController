@@ -17,12 +17,20 @@ TempProbe_TC* TempProbe_TC::instance() {
   return _instance;
 }
 
+void TempProbe_TC::reset() {
+  if (_instance) {
+    delete _instance;
+    _instance = nullptr;
+  }
+}
+
 //  instance methods
 /**
  * constructor (private so clients use the singleton)
  */
 TempProbe_TC::TempProbe_TC() {
   thermo.begin(MAX31865_3WIRE);  // Start pt100 temperature probe with 3 wire configuration
+  // load offset from EEPROM
 }
 
 /**

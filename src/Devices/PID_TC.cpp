@@ -50,6 +50,14 @@ PID_TC::PID_TC() {
   pPID->SetOutputLimits(0, WINDOW_SIZE);
 }
 
+// implement destructor
+PID_TC::~PID_TC() {
+  if (pPID) {
+    delete pPID;
+    pPID = nullptr;
+  }
+}
+
 // instance functions
 double PID_TC::computeOutput(double target, double current) {
   if (TankControllerLib::instance()->isInCalibration()) {

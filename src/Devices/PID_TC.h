@@ -29,8 +29,9 @@ public:
 private:
   // class
   static PID_TC *_instance;
-  // declare constructor
+  // declare constructor & destructor
   PID_TC();
+  ~PID_TC();
   // declare necessary private variables
   double input = 0.0;
   double output = 0.0;

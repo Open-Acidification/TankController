@@ -79,24 +79,6 @@ unittest(basicOperation) {
   assertEqual(HIGH, state->digitalPin[PH_PIN]);
 }
 
-// unittest(disableDuringCalibration) {
-//   // verify that solonoids are off
-//   pTC->loop();
-//   assertEqual(HIGH, state->digitalPin[TEMP_PIN]);
-//   assertEqual(HIGH, state->digitalPin[PH_PIN]);
-
-//   // change targets (could also change observed values)
-//   tempControl->setTargetTemperature(21.0);
-//   pPHControl->setTargetPh(7.4);
-
-//   // verify that solonoids remain off
-//   pTC->loop();
-//   delay(10);
-//   pTC->loop();
-//   assertEqual(HIGH, state->digitalPin[TEMP_PIN]);
-//   assertEqual(HIGH, state->digitalPin[PH_PIN]);
-// }
-
 unittest(storeDataToSD) {
   // set date/time (so we can confirm data)
   DateTime_TC dt(2021, 4, 27, 14, 24, 50);

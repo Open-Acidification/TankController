@@ -84,7 +84,9 @@ void TankControllerLib::handleUI() {
   if (key == NO_KEY) {
     // check for idle timeout and return to main menu
     if (!calibrationMode && lastKeypadTime && !nextState && (millis() - lastKeypadTime > IDLE_TIMEOUT)) {
-      setNextState((UIState *)new MainMenu(this));
+      if (!isInCalibration()) {
+        setNextState((UIState *)new MainMenu(this));
+      }
       lastKeypadTime = 0;  // so we don't do this until another keypress!
     }
   } else {

@@ -4,17 +4,17 @@
  * Clear pH Calibration
  */
 #pragma once
-#include "UIState.h"
+#include "NumberCollectorState.h"
 
-class SetCalibrationClear : public UIState {
+class SetCalibrationClear : public NumCollectorState {
 public:
-  SetCalibrationClear(TankControllerLib* tc) : UIState(tc) {
+  SetCalibrationClear(TankControllerLib* tc) : NumCollectorState(tc) {
   }
-  void handleKey(char key);
   const char* name() {
     return "SetCalibrationClear";
   }
   const char* prompt() {
-    return "Clear pH Calibra";
+    return "1: Clear pH Cali";
   };
+  void setValue(double value);
 };

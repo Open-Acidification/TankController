@@ -22,7 +22,7 @@ unittest(test) {
   tc->setNextState(test, true);
   enterKey('A');
   std::vector<String> lines2 = lc->getLines();
-  assertEqual("Cleared Calibrat", lines2[1]);
+  assertEqual("Cleared pH Calib", lines2[1]);
   assertEqual("SetCalibrationClear", tc->stateName());
   // Return to mainMenu
   enterKey('D');

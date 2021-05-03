@@ -10,7 +10,7 @@ void SetCalibrationClear::handleKey(char key) {
   switch (key) {
     case 'A':  // Save (clear calibration)
       PHProbe::instance()->clearCalibration();
-      LiquidCrystal_TC::instance()->writeLine("Cleared Calibrat", 1);
+      LiquidCrystal_TC::instance()->writeLine("Cleared pH Calib", 1);
       break;
     case 'D':  // Don't save (cancel)
       returnToMainMenu();

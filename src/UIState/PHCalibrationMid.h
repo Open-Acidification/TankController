@@ -10,6 +10,9 @@ class PHCalibrationMid : public NumCollectorState {
 public:
   PHCalibrationMid(TankControllerLib* tc) : NumCollectorState(tc) {
   }
+  virtual bool isInCalibration() {
+    return true;  // disable controls during calibration
+  }
   const char* name() {
     return "PHCalibrationMid";
   }

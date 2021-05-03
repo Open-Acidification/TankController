@@ -50,7 +50,6 @@ As more features get added to the library, they should only be added when testin
     * May need to review log process
   * See PID Constants
   * Tuning
-    * Remove autotune
     * Manual tune is only working process
   * Sine wave
     * Set baseline, amplitude, and interval

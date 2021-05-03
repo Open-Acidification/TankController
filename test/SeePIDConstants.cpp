@@ -12,14 +12,14 @@
 unittest(TestVerticalScroll) {
   TankControllerLib* tc = TankControllerLib::instance();
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
-  PID* pPID = PID_TC::instance()->getPID();
+  PID_TC* pPID = PID_TC::instance();
   SeePIDConstants* test = new SeePIDConstants(tc);
 
   // Set up
-  double kp = pPID->GetKp();
-  double ki = pPID->GetKi();
-  double kd = pPID->GetKd();
-  pPID->SetTunings(10001.0, 10002.0, 10003.0);
+  double kp = pPID->getKp();
+  double ki = pPID->getKi();
+  double kd = pPID->getKd();
+  pPID->setTunings(10001.0, 10002.0, 10003.0);
 
   // Transition states
   assertEqual("MainMenu", tc->stateName());
@@ -48,7 +48,7 @@ unittest(TestVerticalScroll) {
   assertEqual("MainMenu", tc->stateName());
 
   // Clean up
-  pPID->SetTunings(kp, ki, kd);
+  pPID->setTunings(kp, ki, kd);
 }
 
 unittest_main()

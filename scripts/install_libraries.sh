@@ -88,16 +88,6 @@ else
   git clone $SHALLOW_MASTER $GITHUB/Arduino-PID-Library.git
 fi
 
-if [ -d "./Arduino-PID-AutoTune-Library" ]; then
-  (
-    echo update Arduino-PID-AutoTune-Library
-    cd Arduino-PID-AutoTune-Library
-    git pull
-  )
-else
-  git clone $SHALLOW_MASTER $GITHUB/Arduino-PID-AutoTune-Library.git
-fi
-
 if [ -d "./SD" ]; then
   (
     echo update SD

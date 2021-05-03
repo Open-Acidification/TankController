@@ -22,9 +22,6 @@ PHControl *pPHControl = PHControl::instance();
 SD_TC *sd = SD_TC::instance();
 
 unittest_setup() {
-  // allow controls to work
-  pTC->setCalibrationMode(false);
-
   // set temperature
   tempProbe->setTemperature(20.0);
   tempProbe->setCorrection(0.0);
@@ -48,7 +45,6 @@ unittest_setup() {
 }
 
 unittest_teardown() {
-  pTC->setCalibrationMode(false);
   SD_TC::instance()->removeAll();
 }
 
@@ -83,30 +79,6 @@ unittest(basicOperation) {
   assertEqual(HIGH, state->digitalPin[PH_PIN]);
 }
 
-unittest(disableDuringCalibration) {
-  // verify that solonoids are off
-  pTC->loop();
-  assertEqual(HIGH, state->digitalPin[TEMP_PIN]);
-  assertEqual(HIGH, state->digitalPin[PH_PIN]);
-
-  // start calibration
-  pTC->setCalibrationMode(true);
-
-  // change targets (could also change observed values)
-  tempControl->setTargetTemperature(21.0);
-  pPHControl->setTargetPh(7.4);
-
-  // verify that solonoids remain off
-  pTC->loop();
-  delay(10);
-  pTC->loop();
-  assertEqual(HIGH, state->digitalPin[TEMP_PIN]);
-  assertEqual(HIGH, state->digitalPin[PH_PIN]);
-
-  // end calibration
-  pTC->setCalibrationMode(false);
-}
-
 unittest(storeDataToSD) {
   // set date/time (so we can confirm data)
   DateTime_TC dt(2021, 4, 27, 14, 24, 50);
@@ -131,13 +103,13 @@ unittest(storeDataToSD) {
   contents = contents.substring(i + 1);
   i = contents.indexOf('\n');
   line = contents.substring(0, i);
-  String expected("04/27/2021 14:24:51,   0, 20.021, 20.000, 7.5000, 7.5000,    0,   0.0,   0.0,   0.0");
+  String expected("04/27/2021 14:24:51,   0, 20.021, 20.000, 7.5000, 7.5000,    0, 100000.0,   0.0,   0.0");
   COUT("expectedSize = " << expected.length() << "; actualSize = " << line.length());
   assertEqual(expected, line);
   contents = contents.substring(i + 1);
   i = contents.indexOf('\n');
   line = contents.substring(0, i);
-  expected = String("04/27/2021 14:24:52,   0, 20.021, 20.000, 7.5000, 7.5000,    0,   0.0,   0.0,   0.0");
+  expected = String("04/27/2021 14:24:52,   0, 20.021, 20.000, 7.5000, 7.5000,    0, 100000.0,   0.0,   0.0");
   COUT("expectedSize = " << expected.length() << "; actualSize = " << line.length());
   assertEqual(expected, line);
   COUT(data);

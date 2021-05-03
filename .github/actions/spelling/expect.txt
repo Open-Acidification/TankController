@@ -2,7 +2,6 @@ Adafruit
 admins
 arduino
 ASingle
-autotune
 avr
 cassert
 cfg

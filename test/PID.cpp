@@ -5,7 +5,13 @@
 #include "Devices/DateTime_TC.h"
 #include "Devices/PID_TC.h"
 #include "Devices/Serial_TC.h"
+#include "PHCalibrationHigh.h"
 #include "TC_util.h"
+#include "TankControllerLib.h"
+
+unittest_setup() {
+  PID_TC::reset();
+}
 
 unittest(singleton) {
   PID_TC *singleton1 = PID_TC::instance();
@@ -37,6 +43,8 @@ unittest(compute) {
   double input = 50;
   double setpoint = 100;
   double output;
+  output = pPID->computeOutput(setpoint, input);
+  assertEqual(0.0, output);
 
   // turn the PID on
   for (int i = 0; i < 1000; i++) {
@@ -46,6 +54,30 @@ unittest(compute) {
     input = input - (delta / 25.6);
   }
   assertEqual(setpoint, round(input));
+}
+
+unittest(computeDuringCalibration) {
+  // set UI to one of the calibration states
+  TankControllerLib *tc = TankControllerLib::instance();
+  tc->setNextState(new PHCalibrationHigh(tc), true);
+
+  PID_TC *pPID = PID_TC::instance();
+  pPID->setTunings(2, 5, 1);
+  // initialize the variables we're linked to
+  double input = 50;
+  double setpoint = 100;
+  double output;
+  output = pPID->computeOutput(setpoint, input);
+  assertEqual(0.0, output);
+
+  // turn the PID on
+  for (int i = 0; i < 1000; i++) {
+    delay(200);
+    output = pPID->computeOutput(setpoint, input);
+    double delta = output - input;
+    input = input - (delta / 25.6);
+  }
+  assertEqual(0.0, output);
 }
 
 unittest(setTunings) {
@@ -62,6 +94,7 @@ unittest(setTunings) {
 
 unittest(setKp) {
   PID_TC *singleton = PID_TC::instance();
+  singleton->setTunings(20, 50, 10);
   singleton->setKp(2);
   assertEqual(2, singleton->getKp());
   assertEqual(50, singleton->getKi());
@@ -70,6 +103,7 @@ unittest(setKp) {
 
 unittest(setKi) {
   PID_TC *singleton = PID_TC::instance();
+  singleton->setTunings(2, 50, 10);
   singleton->setKi(5);
   assertEqual(5, singleton->getKi());
   assertEqual(2, singleton->getKp());
@@ -78,6 +112,7 @@ unittest(setKi) {
 
 unittest(setKd) {
   PID_TC *singleton = PID_TC::instance();
+  singleton->setTunings(2, 5, 10);
   singleton->setKd(1);
   assertEqual(1, singleton->getKd());
   assertEqual(2, singleton->getKp());

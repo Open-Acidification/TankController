@@ -2,7 +2,12 @@
 #include <ArduinoUnitTests.h>
 #include <ci/ObservableDataStream.h>
 
+#include "MainMenu.h"
+#include "PHCalibrationMid.h"
 #include "PHControl.h"
+#include "TankControllerLib.h"
+
+const int PIN = 49;
 
 /**
  * cycle the control through to a point of being off
@@ -14,6 +19,8 @@ void reset() {
   singleton->updateControl(7.00);
   delay(10000);
   singleton->updateControl(7.00);
+  TankControllerLib* tc = TankControllerLib::instance();
+  tc->setNextState(new MainMenu(tc), true);
 }
 
 unittest_setup() {
@@ -26,7 +33,6 @@ unittest_teardown() {
 
 // updateControl function
 unittest(beforeTenSeconds) {
-  const int PIN = 49;
   GodmodeState* state = GODMODE();
   PHControl* controlSolenoid = PHControl::instance();
   assertEqual(HIGH, state->digitalPin[PIN]);
@@ -39,7 +45,6 @@ unittest(beforeTenSeconds) {
 }
 
 unittest(afterTenSecondsButPhStillHigher) {
-  const int PIN = 49;
   GodmodeState* state = GODMODE();
   PHControl* controlSolenoid = PHControl::instance();
   assertEqual(HIGH, state->digitalPin[PIN]);
@@ -55,7 +60,6 @@ unittest(afterTenSecondsButPhStillHigher) {
 }
 
 unittest(afterTenSecondsAndPhIsLower) {
-  const int PIN = 49;
   GodmodeState* state = GODMODE();
   PHControl* controlSolenoid = PHControl::instance();
   assertEqual(HIGH, state->digitalPin[PIN]);
@@ -70,10 +74,14 @@ unittest(afterTenSecondsAndPhIsLower) {
   assertEqual(HIGH, state->digitalPin[PIN]);
 }
 
+/**
+ * Test that CO2 b is turned on when needed
+ * \see unittest(disableDuringCalibration)
+ */
 unittest(beforeTenSecondsButPhIsLower) {
-  const int PIN = 49;
   GodmodeState* state = GODMODE();
   PHControl* controlSolenoid = PHControl::instance();
+  // device is initially off but turns on when needed
   assertEqual(HIGH, state->digitalPin[PIN]);
   controlSolenoid->setTargetPh(7.00);
   controlSolenoid->updateControl(8.00);
@@ -84,12 +92,30 @@ unittest(beforeTenSecondsButPhIsLower) {
 }
 
 unittest(PhEvenWithTarget) {
-  const int PIN = 49;
   GodmodeState* state = GODMODE();
   PHControl* controlSolenoid = PHControl::instance();
   assertEqual(HIGH, state->digitalPin[PIN]);
   controlSolenoid->setTargetPh(7.00);
   controlSolenoid->updateControl(7.00);
+  assertEqual(HIGH, state->digitalPin[PIN]);
+}
+
+/**
+ * Test that CO2 bubbler is turned on when needed
+ * \see unittest(beforeTenSecondsButPhIsLower)
+ */
+unittest(disableDuringCalibration) {
+  TankControllerLib* tc = TankControllerLib::instance();
+  assertFalse(tc->isInCalibration());
+  PHCalibrationMid* test = new PHCalibrationMid(tc);
+  tc->setNextState(test, true);
+  assertTrue(tc->isInCalibration());
+  GodmodeState* state = GODMODE();
+  PHControl* controlSolenoid = PHControl::instance();
+  // device is initially off and stays off due to calibration
+  assertEqual(HIGH, state->digitalPin[PIN]);
+  controlSolenoid->setTargetPh(7.00);
+  controlSolenoid->updateControl(8.00);
   assertEqual(HIGH, state->digitalPin[PIN]);
 }
 

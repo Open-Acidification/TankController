@@ -2,6 +2,7 @@
 
 #include "Devices/EEPROM_TC.h"
 #include "Serial_TC.h"
+#include "TankControllerLib.h"
 
 //  class instance variables
 /**
@@ -58,8 +59,12 @@ void Chiller::updateControl(double currentTemperature) {
     bool oldValue = digitalRead(PIN);
     bool newValue = oldValue;
     previousMillis = currentMillis;
+    // if in calibration, turn unit off
+    if (TankControllerLib::instance()->isInCalibration()) {
+      newValue = HIGH;
+    }
     // if the observed temperature is above the set point turn on the chiller
-    if (currentTemperature >= targetTemperature + DELTA) {
+    else if (currentTemperature >= targetTemperature + DELTA) {
       newValue = LOW;
     }
     // if the observed temperature is below the set point turn off the chiller
@@ -76,8 +81,12 @@ void Chiller::updateControl(double currentTemperature) {
 void Heater::updateControl(double currentTemperature) {
   bool oldValue = digitalRead(PIN);
   bool newValue = oldValue;
+  // if in calibration, turn unit off
+  if (TankControllerLib::instance()->isInCalibration()) {
+    newValue = HIGH;
+  }
   // if the observed temperature is below the temperature set-point turn on the heater
-  if (currentTemperature <= targetTemperature - DELTA) {
+  else if (currentTemperature <= targetTemperature - DELTA) {
     newValue = LOW;
   }
   // if the observed temperature is above the temperature set-point turn off the heater

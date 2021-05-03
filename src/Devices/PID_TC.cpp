@@ -3,6 +3,7 @@
 #include "Devices/EEPROM_TC.h"
 #include "Devices/Serial_TC.h"
 #include "TC_util.h"
+#include "TankControllerLib.h"
 
 // class variable
 PID_TC *PID_TC::_instance = nullptr;
@@ -14,6 +15,14 @@ PID_TC *PID_TC::instance() {
   }
   return _instance;
 }
+
+void PID_TC::reset() {
+  if (_instance) {
+    delete _instance;
+    _instance = nullptr;
+  }
+}
+
 // implement constructor
 PID_TC::PID_TC() {
   double Kp, Ki, Kd;
@@ -41,8 +50,20 @@ PID_TC::PID_TC() {
   pPID->SetOutputLimits(0, WINDOW_SIZE);
 }
 
+// implement destructor
+PID_TC::~PID_TC() {
+  if (pPID) {
+    delete pPID;
+    pPID = nullptr;
+  }
+}
+
 // instance functions
 double PID_TC::computeOutput(double target, double current) {
+  if (TankControllerLib::instance()->isInCalibration()) {
+    // current value will likely be wrong during calibration, so don't make any changes
+    return output;
+  }
   set_point = target;
   input = current;
   pPID->Compute();

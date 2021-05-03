@@ -109,9 +109,7 @@ public:
     thermo.clearFault();
   }
 
-  void setCorrection(float value) {
-    correction = value;
-  }
+  void setCorrection(float value);
 
 #ifdef MOCK_PINS_COUNT
   // set a temperature in the mock

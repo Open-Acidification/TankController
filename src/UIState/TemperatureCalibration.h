@@ -11,7 +11,7 @@ public:
   TemperatureCalibration(TankControllerLib* tc) : NumCollectorState(tc) {
   }
   bool isInCalibration() {
-    return NumCollectorState::isInCalibration();
+    return true;
   }
   const char* name() {
     return "TemperatureCalibration";

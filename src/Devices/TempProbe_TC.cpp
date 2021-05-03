@@ -1,5 +1,9 @@
 #include "Devices/TempProbe_TC.h"
 
+#include "EEPROM_TC.h"
+#include "Serial_TC.h"
+#include "TC_util.h"
+
 //  class instance variables
 /**
  * static variable for singleton
@@ -29,8 +33,15 @@ void TempProbe_TC::reset() {
  * constructor (private so clients use the singleton)
  */
 TempProbe_TC::TempProbe_TC() {
-  thermo.begin(MAX31865_3WIRE);  // Start pt100 temperature probe with 3 wire configuration
+  // Start pt100 temperature probe with 3 wire configuration
+  thermo.begin(MAX31865_3WIRE);
+
   // load offset from EEPROM
+  correction = EEPROM_TC::instance()->getCorrectedTemp();
+  if (isnan(correction)) {
+    correction = 0;
+    EEPROM_TC::instance()->setCorrectedTemp(correction);
+  }
 }
 
 /**
@@ -38,9 +49,8 @@ TempProbe_TC::TempProbe_TC() {
  *
  * Read the current temperature and return a running average
  */
-
 double TempProbe_TC::getRunningAverage() {
-  double temp = this->getRawTemperature() + correction;
+  double temp = this->getRawTemperature();
   if (firstTime) {
     for (int i = 0; i < HISTORY_SIZE; ++i) {
       history[i] = temp;
@@ -53,5 +63,19 @@ double TempProbe_TC::getRunningAverage() {
   for (int i = 0; i < HISTORY_SIZE; ++i) {
     sum += history[i];
   }
-  return sum / HISTORY_SIZE;
+  return sum / HISTORY_SIZE + correction;
+}
+
+/**
+ * setCorrection(float value)
+ *
+ * Set a new value for the correction offset
+ */
+void TempProbe_TC::setCorrection(float value) {
+  COUT("old = " << correction << "; new = " << value);
+  if (value != correction) {
+    correction = value;
+    EEPROM_TC::instance()->setCorrectedTemp(correction);
+    Serial_TC::instance()->ts_printf("Set temperature correction to %f", correction);
+  }
 }

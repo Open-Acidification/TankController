@@ -67,6 +67,14 @@ void TankControllerLib::blink() {
 }
 
 /**
+ * Is the current UIState one that should disable controls?
+ * We don't want to turn on the heat/chill if the temperature probe is out of the tank!
+ */
+bool TankControllerLib::isInCalibration() {
+  return state->isInCalibration();
+}
+
+/**
  * Private member function called by loop
  * Handles keypresses
  */

@@ -13,6 +13,7 @@ public:
 
   // instance methods
   void loop();
+  bool isInCalibration();
   void serialEvent();
   void serialEvent1();
   void setCalibrationMode(bool flag);

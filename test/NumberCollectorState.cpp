@@ -88,32 +88,42 @@ unittest(printing) {
   std::vector<String> lines;
   TestNumCollectorState test(TankControllerLib::instance());
   test.start();
+  test.setPriorValue(0.0);
+  test.setPriorValuePrecision(1);
   lines = testLcd->getLines();
-  assertEqual("0-> 0           ", lines.at(1));
+  assertEqual("0.0-> 0         ", lines.at(1));
 
+  test.setPriorValue(3.341);
   test.handleKey('2');
   lines = testLcd->getLines();
-  assertEqual("0-> 2           ", lines.at(1));
+  assertEqual("3.3-> 2         ", lines.at(1));
 
+  test.setPriorValue(31.341);
   test.handleKey('1');
   lines = testLcd->getLines();
-  assertEqual("0-> 21          ", lines.at(1));
+  assertEqual("31.3-> 21       ", lines.at(1));
 
+  test.setPriorValue(31.0);
   test.handleKey('*');
   lines = testLcd->getLines();
-  assertEqual("0-> 21.         ", lines.at(1));
+  assertEqual("31.3-> 21.      ", lines.at(1));
 
+  test.setPriorValue(31.3);
   test.handleKey('3');
   lines = testLcd->getLines();
-  assertEqual("0-> 21.3        ", lines.at(1));
+  assertEqual("31.3-> 21.3     ", lines.at(1));
 
+  test.setPriorValue(31.34);
+  test.setPriorValuePrecision(2);
   test.handleKey('4');
   lines = testLcd->getLines();
-  assertEqual("0-> 21.34       ", lines.at(1));
+  assertEqual("31.34-> 21.34   ", lines.at(1));
 
+  test.setPriorValue(31.341);
+  test.setPriorValuePrecision(3);
   test.handleKey('1');
   lines = testLcd->getLines();
-  assertEqual("0-> 21.341      ", lines.at(1));
+  assertEqual("31.341-> 21.341 ", lines.at(1));
 }
 
 unittest(integer) {

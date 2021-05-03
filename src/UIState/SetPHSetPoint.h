@@ -13,10 +13,10 @@ public:
   const char* name() {
     return "SetPHSetPoint";
   }
-  float priorValue() {
+  float getPriorValue() {
     return 0.0;
   }
-  int priorValuePrecision() {
+  int getPriorValuePrecision() {
     return 3;
   }
   const char* prompt() {

@@ -16,7 +16,7 @@ public:
   const char* name() {
     return "SetGoogleSheetInterval";
   }
-  float priorValue() {
+  float getPriorValue() {
     return 0.0;
   }
   const char* prompt() {

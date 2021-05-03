@@ -22,8 +22,8 @@ protected:
     return false;
   }
   void printValue();
-  virtual float priorValue() = 0;
-  virtual int priorValuePrecision() {
+  virtual float getPriorValue() = 0;
+  virtual int getPriorValuePrecision() {
     return 0;
   };
 
@@ -45,8 +45,11 @@ public:
   const char* name() {
     return "TestNumCollectorState";
   }
-  float priorValue() {
-    return 0;
+  float getPriorValue() {
+    return priorValue;
+  }
+  int getPriorValuePrecision() {
+    return priorValuePrecision;
   }
   const char* prompt() {
     return "Test:";
@@ -59,9 +62,17 @@ public:
   double getStoredValue() {
     return storedValue;
   };
+  void setPriorValue(double aValue) {
+    priorValue = aValue;
+  }
+  void setPriorValuePrecision(int aValue) {
+    priorValuePrecision = aValue;
+  }
 
 private:
   double storedValue = 0.0;
+  double priorValue = 0.0;
+  int priorValuePrecision = 0;
 };
 
 class TestIntNumCollectorState : public TestNumCollectorState {

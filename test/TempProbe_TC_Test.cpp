@@ -1,7 +1,30 @@
 #include "TempProbe_TC.h"
 
-#include "Arduino.h"
-#include "ArduinoUnitTests.h"
+#include <Arduino.h>
+#include <ArduinoUnitTests.h>
+
+#include "EEPROM_TC.h"
+
+unittest_setup() {
+  TempProbe_TC::reset();
+}
+
+unittest(readFromEepromOnStartup) {
+  EEPROM_TC::instance()->setCorrectedTemp(-1);
+  TempProbe_TC* tempProbe = TempProbe_TC::instance();
+  tempProbe->setTemperature(11.0);
+  for (int i = 0; i < 100; ++i) {
+    tempProbe->getRunningAverage();
+  }
+  double temp = tempProbe->getRunningAverage();
+  assertTrue(9.9 <= temp && temp <= 10.1);
+}
+
+unittest(writeToEepromWhenCorrectionChanged) {
+  TempProbe_TC* tempProbe = TempProbe_TC::instance();
+  tempProbe->setCorrection(0.5);
+  assertEqual(0.5, EEPROM_TC::instance()->getCorrectedTemp());
+}
 
 unittest(TempProbe_Test) {
   // Instance

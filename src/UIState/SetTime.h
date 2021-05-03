@@ -16,7 +16,7 @@ public:
   const char* name() {
     return "SetTime";
   }
-  float priorValue() {
+  float getPriorValue() {
     return 0.0;
   }
   const char* prompt() {

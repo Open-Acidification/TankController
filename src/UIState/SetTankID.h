@@ -16,7 +16,7 @@ public:
   const char* name() {
     return "SetTankID";
   }
-  float priorValue() {
+  float getPriorValue() {
     return 0.0;
   }
   const char* prompt() {

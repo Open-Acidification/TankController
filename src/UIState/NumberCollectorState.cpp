@@ -55,15 +55,15 @@ void NumCollectorState::backSpace() {
 
 void NumCollectorState::printValue() {
   char strValue[16];
-  double prior = priorValue();
+  double prior = getPriorValue();
 
   if (!hasDecimal) {
-    snprintf(strValue, sizeof(strValue), "%i-> %i", (int)prior, (int)value);
+    snprintf(strValue, sizeof(strValue), "%.*f-> %i", getPriorValuePrecision(), prior, (int)value);
   } else if (factor == 10) {
-    snprintf(strValue, sizeof(strValue), "%.*f-> %.*f.", priorValuePrecision(), prior, 0, value);
+    snprintf(strValue, sizeof(strValue), "%.*f-> %.*f.", getPriorValuePrecision(), prior, 0, value);
   } else {
     int precision = log10(factor / 10);
-    snprintf(strValue, sizeof(strValue), "%.*f-> %.*f", priorValuePrecision(), prior, precision, value);
+    snprintf(strValue, sizeof(strValue), "%.*f-> %.*f", getPriorValuePrecision(), prior, precision, value);
   }
   LiquidCrystal_TC::instance()->writeLine(strValue, 1);
 }

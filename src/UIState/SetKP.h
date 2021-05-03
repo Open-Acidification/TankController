@@ -13,10 +13,10 @@ public:
   const char* name() {
     return "SetKP";
   }
-  float priorValue() {
+  float getPriorValue() {
     return 0.0;
   }
-  int priorValuePrecision() {
+  int getPriorValuePrecision() {
     return 1;
   }
   const char* prompt() {

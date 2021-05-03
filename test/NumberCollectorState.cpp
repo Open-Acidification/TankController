@@ -89,31 +89,31 @@ unittest(printing) {
   TestNumCollectorState test(TankControllerLib::instance());
   test.start();
   lines = testLcd->getLines();
-  assertEqual("0               ", lines.at(1));
+  assertEqual("0-> 0           ", lines.at(1));
 
   test.handleKey('2');
   lines = testLcd->getLines();
-  assertEqual("2               ", lines.at(1));
+  assertEqual("0-> 2           ", lines.at(1));
 
   test.handleKey('1');
   lines = testLcd->getLines();
-  assertEqual("21              ", lines.at(1));
+  assertEqual("0-> 21          ", lines.at(1));
 
   test.handleKey('*');
   lines = testLcd->getLines();
-  assertEqual("21.             ", lines.at(1));
+  assertEqual("0-> 21.         ", lines.at(1));
 
   test.handleKey('3');
   lines = testLcd->getLines();
-  assertEqual("21.3            ", lines.at(1));
+  assertEqual("0-> 21.3        ", lines.at(1));
 
   test.handleKey('4');
   lines = testLcd->getLines();
-  assertEqual("21.34           ", lines.at(1));
+  assertEqual("0-> 21.34       ", lines.at(1));
 
   test.handleKey('1');
   lines = testLcd->getLines();
-  assertEqual("21.341          ", lines.at(1));
+  assertEqual("0-> 21.341      ", lines.at(1));
 }
 
 unittest(integer) {

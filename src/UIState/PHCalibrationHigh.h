@@ -19,6 +19,9 @@ public:
   float priorValue() {
     return 0.0;
   }
+  int priorValuePrecision() {
+    return 3;
+  }
   const char* prompt() {
     return "pH-Highpoint    ";
   };

@@ -23,6 +23,9 @@ protected:
   }
   void printValue();
   virtual float priorValue() = 0;
+  virtual int priorValuePrecision() {
+    return 0;
+  };
 
   double value = 0.0;
   int numDigits = 0;
@@ -41,6 +44,9 @@ public:
   }
   const char* name() {
     return "TestNumCollectorState";
+  }
+  float priorValue() {
+    return 0;
   }
   const char* prompt() {
     return "Test:";

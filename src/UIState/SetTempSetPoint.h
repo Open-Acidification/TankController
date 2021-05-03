@@ -16,6 +16,9 @@ public:
   float priorValue() {
     return 0.0;
   }
+  int priorValuePrecision() {
+    return 2;
+  }
   const char* prompt() {
     return "Set Temperature ";
   };

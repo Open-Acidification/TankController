@@ -16,11 +16,11 @@ public:
   const char* name() {
     return "SetCalibrationClear";
   }
-  const char* prompt() {
-    return "1: Clear pH Cali";
-  };
   float priorValue() {
     return 0.0;
   }
+  const char* prompt() {
+    return "1: Clear pH Cali";
+  };
   void setValue(double value);
 };

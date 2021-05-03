@@ -5,6 +5,8 @@
 #include "Devices/TemperatureControl.h"
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
+#include "MainMenu.h"
+#include "PHCalibrationHigh.h"
 #include "TankControllerLib.h"
 #include "TempProbe_TC.h"
 
@@ -20,7 +22,7 @@ void enterKey(char key) {
 }
 
 unittest_setup() {
-  tc->setCalibrationMode(false);
+  tc->setNextState(new MainMenu(tc), true);
   TempProbe_TC::instance()->setTemperature(12.25);
   TemperatureControl::enableHeater(true);
   TemperatureControl::instance()->setTargetTemperature(15.75);
@@ -28,7 +30,6 @@ unittest_setup() {
 }
 
 unittest_teardown() {
-  tc->setCalibrationMode(false);
   enterKey('D');
 }
 
@@ -102,16 +103,17 @@ unittest(ViewTime) {
 }
 
 unittest(DisableTimeout) {
-  tc->setCalibrationMode(true);
+  enterKey('8');
   enterKey('8');
   enterKey('6');
+  enterKey('8');
+  enterKey('8');
   enterKey('6');
-  assertEqual("SeeDeviceUptime", tc->stateName());
-  delay(65000);  // 60-second delay does not return to main menu
+  assertEqual("PHCalibrationMid", tc->stateName());
+  delay(65000);  // wait for over 60 seconds to verify that it does not return to main menu
   tc->loop();
   tc->loop();
-  assertEqual("SeeDeviceUptime", tc->stateName());
-  tc->setCalibrationMode(false);
+  assertEqual("PHCalibrationMid", tc->stateName());
 }
 
 unittest_main()

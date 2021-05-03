@@ -10,6 +10,9 @@ class PHCalibrationLow : public NumCollectorState {
 public:
   PHCalibrationLow(TankControllerLib* tc) : NumCollectorState(tc) {
   }
+  virtual bool isInCalibration() {
+    return true;  // disable controls during calibration
+  }
   const char* name() {
     return "PHCalibrationLow";
   }

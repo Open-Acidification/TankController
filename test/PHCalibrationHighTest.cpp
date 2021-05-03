@@ -10,6 +10,7 @@ unittest(test) {
   TankControllerLib* tc = TankControllerLib::instance();
   PHCalibrationHigh* test = new PHCalibrationHigh(tc);
   tc->setNextState(test, true);
+  assertTrue(tc->isInCalibration());
   // setValue
   test->setValue(12.345);
   // during the delay we showed the new value

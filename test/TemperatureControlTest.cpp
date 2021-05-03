@@ -59,7 +59,10 @@ unittest(AfterIntervalAndWithinDelta) {
   assertEqual(HIGH, state->digitalPin[PIN]);
 }
 
-// Chiller
+/**
+ * Test that chilller is turned on when needed
+ * \see unittest(disableChillerDuringCalibration)
+ */
 unittest(AfterIntervalAndOutsideDelta) {
   GodmodeState* state = GODMODE();
   state->reset();
@@ -72,7 +75,10 @@ unittest(AfterIntervalAndOutsideDelta) {
   assertEqual(LOW, state->digitalPin[PIN]);
 }
 
-// disable chiller during calibration
+/**
+ * Test that chilller is not turned on during calibration
+ * \see unittest(AfterIntervalAndOutsideDelta)
+ */
 unittest(disableChillerDuringCalibration) {
   TankControllerLib* tc = TankControllerLib::instance();
   assertFalse(tc->isInCalibration());
@@ -102,7 +108,10 @@ unittest(WithinDelta) {
   assertEqual(HIGH, state->digitalPin[PIN]);
 }
 
-// Heater
+/**
+ * Test that heater is turned on when needed
+ * \see unittest(disableHeaterDuringCalibration)
+ */
 unittest(OutsideDelta) {
   GodmodeState* state = GODMODE();
   state->reset();
@@ -114,7 +123,10 @@ unittest(OutsideDelta) {
   assertEqual(LOW, state->digitalPin[PIN]);
 }
 
-// disable heater during calibration
+/**
+ * Test that heater is not turned on during calibration
+ * \see unittest(OutsideDelta)
+ */
 unittest(disableHeaterDuringCalibration) {
   TankControllerLib* tc = TankControllerLib::instance();
   assertFalse(tc->isInCalibration());

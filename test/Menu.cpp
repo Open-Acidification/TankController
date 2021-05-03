@@ -103,12 +103,17 @@ unittest(ViewTime) {
 }
 
 unittest(DisableTimeout) {
-  tc->setNextState(new PHCalibrationHigh(tc), true);
-  assertEqual("PHCalibrationHigh", tc->stateName());
-  delay(65000);  // 60-second delay does not return to main menu
+  enterKey('8');
+  enterKey('8');
+  enterKey('6');
+  enterKey('8');
+  enterKey('8');
+  enterKey('6');
+  assertEqual("PHCalibrationMid", tc->stateName());
+  delay(65000);  // wait for over 60 seconds to verify that it does not return to main menu
   tc->loop();
   tc->loop();
-  assertEqual("PHCalibrationHigh", tc->stateName());
+  assertEqual("PHCalibrationMid", tc->stateName());
 }
 
 unittest_main()

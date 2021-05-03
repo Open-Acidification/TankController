@@ -74,6 +74,10 @@ unittest(afterTenSecondsAndPhIsLower) {
   assertEqual(HIGH, state->digitalPin[PIN]);
 }
 
+/**
+ * Test that CO2 bubler is turned on when needed
+ * \see unittest(disableDuringCalibration)
+ */
 unittest(beforeTenSecondsButPhIsLower) {
   GodmodeState* state = GODMODE();
   PHControl* controlSolenoid = PHControl::instance();
@@ -96,6 +100,10 @@ unittest(PhEvenWithTarget) {
   assertEqual(HIGH, state->digitalPin[PIN]);
 }
 
+/**
+ * Test that CO2 bubler is turned on when needed
+ * \see unittest(beforeTenSecondsButPhIsLower)
+ */
 unittest(disableDuringCalibration) {
   TankControllerLib* tc = TankControllerLib::instance();
   assertFalse(tc->isInCalibration());

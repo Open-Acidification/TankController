@@ -14,7 +14,6 @@ public:
   // instance methods
   bool isInCalibration();
   void loop();
-  bool isInCalibration();
   void serialEvent();
   void serialEvent1();
   void setNextState(UIState* newState, bool update = false);
@@ -26,7 +25,7 @@ public:
 private:
   // class variables
   static TankControllerLib* _instance;
-  static const int IDLE_TIMEOUT = 60 * 1000;  // revert to the main menu after 60 seconds of inactivity
+  static const unsigned long IDLE_TIMEOUT = 60 * 1000;  // revert to the main menu after 60 seconds of inactivity
 
   // instance variables
   UIState* state = nullptr;

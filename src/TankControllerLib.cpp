@@ -82,8 +82,14 @@ void TankControllerLib::handleUI() {
   COUT("TankControllerLib::handleUI() - " << state->name());
   char key = Keypad_TC::instance()->getKey();
   if (key == NO_KEY) {
-    // check for idle timeout and return to main menu
-    if (!calibrationMode && lastKeypadTime && !nextState && (millis() - lastKeypadTime > IDLE_TIMEOUT)) {
+    if (!lastKeypadTime) {
+      // we have already reached an idle state, so don't do other checks
+    } else if (isInCalibration()) {
+      // we are in calibration, so don't return to main menu
+    } else if (nextState) {
+      // we already have a next state teed-up, do don't try to return to main menu
+    } else if (millis() - lastKeypadTime > IDLE_TIMEOUT) {
+      // time since last keypress exceeds the idle timeout, so return to main menu
       setNextState((UIState *)new MainMenu(this));
       lastKeypadTime = 0;  // so we don't do this until another keypress!
     }
@@ -126,14 +132,6 @@ void TankControllerLib::serialEvent1() {
 }
 
 /**
- * When in calibration mode we don't return to the idle screen and
- * we don't do any tank control actions.
- */
-void TankControllerLib::setCalibrationMode(bool flag) {
-  calibrationMode = flag;
-}
-
-/**
  * Set the next state
  */
 void TankControllerLib::setNextState(UIState *newState, bool update) {
@@ -168,9 +166,6 @@ const char *TankControllerLib::stateName() {
  * Private member function called by loop to update solonoids
  */
 void TankControllerLib::updateControls() {
-  if (calibrationMode) {
-    return;
-  }
   // update TemperatureControl
   TemperatureControl::instance()->updateControl(TempProbe_TC::instance()->getRunningAverage());
   // update PHControl

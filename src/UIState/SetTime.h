@@ -10,6 +10,9 @@ class SetTime : public NumCollectorState {
 public:
   SetTime(TankControllerLib* tc) : NumCollectorState(tc) {
   }
+  virtual bool isInteger() {
+    return true;
+  }
   const char* name() {
     return "SetTime";
   }

@@ -4,12 +4,10 @@
 
 #include "TemperatureCalibration.h"
 
-void TemperatureCalibration::handleKey(char key) {
-  switch (key) {
-    case 'D':  // Don't save (cancel)
-      returnToMainMenu();
-      break;
-    default:
-      break;
-  };
+#include "Devices/TempProbe_TC.h"
+
+void TemperatureCalibration::setValue(double value) {
+  TempProbe_TC *pProbe = TempProbe_TC::instance();
+  double average = pProbe->getRunningAverage();
+  pProbe->setCorrection(value - average);
 }

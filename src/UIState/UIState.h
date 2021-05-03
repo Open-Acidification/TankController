@@ -20,6 +20,9 @@ public:
 
   // instance methods
   virtual void handleKey(char key);
+  virtual bool isInCalibration() {
+    return false;  // override to return true to disable controls
+  }
   virtual bool isMainMenu() {
     return false;
   }

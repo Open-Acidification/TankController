@@ -13,6 +13,9 @@ public:
   const char* name() {
     return "SetTime";
   }
+  float priorValue() {
+    return 0.0;
+  }
   const char* prompt() {
     return prompts[subState];
   }

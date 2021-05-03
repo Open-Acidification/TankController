@@ -10,11 +10,17 @@ class SetChillOrHeat : public NumCollectorState {
 public:
   SetChillOrHeat(TankControllerLib* tc) : NumCollectorState(tc) {
   }
+  virtual bool isInteger() {
+    return true;
+  }
   const char* name() {
     return "SetChillOrHeat";
   }
   const char* prompt() {
     return "1:Chill; 9:Heat ";
   };
+  float priorValue() {
+    return 0.0;
+  }
   void setValue(double value);
 };

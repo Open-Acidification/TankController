@@ -10,8 +10,14 @@ class EnablePID : public NumCollectorState {
 public:
   EnablePID(TankControllerLib* tc) : NumCollectorState(tc) {
   }
+  virtual bool isInteger() {
+    return true;
+  }
   const char* name() {
     return "EnablePID";
+  }
+  float priorValue() {
+    return 0.0;
   }
   const char* prompt() {
     return "PID 1:on; 9:off ";

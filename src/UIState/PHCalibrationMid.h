@@ -13,6 +13,10 @@ public:
   const char* name() {
     return "PHCalibrationMid";
   }
+  float priorValue() {
+    return 0.0;
+  }
+
   const char* prompt() {
     return "pH-Midpoint     ";
   };

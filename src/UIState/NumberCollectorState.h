@@ -18,10 +18,11 @@ protected:
   void backSpace();
   void clear();
   void handleDigit(int digit);
-  void printValue();
   virtual bool isInteger() {
     return false;
   }
+  void printValue();
+  virtual float priorValue() = 0;
 
   double value = 0.0;
   int numDigits = 0;

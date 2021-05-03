@@ -13,6 +13,9 @@ public:
   const char* name() {
     return "PHCalibrationHigh";
   }
+  float priorValue() {
+    return 0.0;
+  }
   const char* prompt() {
     return "pH-Highpoint    ";
   };

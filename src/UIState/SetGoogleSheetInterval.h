@@ -10,8 +10,14 @@ class SetGoogleSheetInterval : public NumCollectorState {
 public:
   SetGoogleSheetInterval(TankControllerLib* tc) : NumCollectorState(tc) {
   }
+  virtual bool isInteger() {
+    return true;
+  }
   const char* name() {
     return "SetGoogleSheetInterval";
+  }
+  float priorValue() {
+    return 0.0;
   }
   const char* prompt() {
     return "G Sheet Minutes ";

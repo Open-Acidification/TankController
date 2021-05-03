@@ -60,7 +60,7 @@ unittest(AfterIntervalAndWithinDelta) {
 }
 
 /**
- * Test that chilller is turned on when needed
+ * Test that  is turned on when needed
  * \see unittest(disableChillerDuringCalibration)
  */
 unittest(AfterIntervalAndOutsideDelta) {
@@ -76,7 +76,7 @@ unittest(AfterIntervalAndOutsideDelta) {
 }
 
 /**
- * Test that chilller is not turned on during calibration
+ * Test that chiller is not turned on during calibration
  * \see unittest(AfterIntervalAndOutsideDelta)
  */
 unittest(disableChillerDuringCalibration) {

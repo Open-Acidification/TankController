@@ -75,7 +75,7 @@ unittest(afterTenSecondsAndPhIsLower) {
 }
 
 /**
- * Test that CO2 bubler is turned on when needed
+ * Test that CO2 b is turned on when needed
  * \see unittest(disableDuringCalibration)
  */
 unittest(beforeTenSecondsButPhIsLower) {
@@ -101,7 +101,7 @@ unittest(PhEvenWithTarget) {
 }
 
 /**
- * Test that CO2 bubler is turned on when needed
+ * Test that CO2 bubbler is turned on when needed
  * \see unittest(beforeTenSecondsButPhIsLower)
  */
 unittest(disableDuringCalibration) {

@@ -99,15 +99,15 @@ void printEntry(File entry, String parentPath) {
       ++depth;
     }
   }
-  char tabs[] = "- - - - - - - - ";
-  if (depth * 2 < strlen(tabs)) {
-    tabs[depth * 2] = '\0';
+  char prefix[] = "- - - - - - - - ";
+  if (depth * 2 < strnlen(prefix, sizeof(prefix))) {
+    prefix[depth * 2] = '\0';
   }
   if (entry.isDirectory()) {
-    serial("%s%12s/", tabs, entry.name());
+    serial("%s%12s/", prefix, entry.name());
   } else {
     // files have sizes, directories do not
-    serial("%s%12s (%6u)", tabs, entry.name(), entry.size());
+    serial("%s%12s (%6u)", prefix, entry.name(), entry.size());
   }
 }
 

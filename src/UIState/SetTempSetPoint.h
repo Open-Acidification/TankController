@@ -13,10 +13,10 @@ public:
   const char* name() {
     return "SetTempSetPoint";
   }
-  float getPriorValue() {
+  float getCurrentValue() {
     return 0.0;
   }
-  int getPriorValuePrecision() {
+  int getCurrentValuePrecision() {
     return 2;
   }
   const char* prompt() {

@@ -7,7 +7,7 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHControl.h"
 
-float EnablePID::getPriorValue() {
+float EnablePID::getCurrentValue() {
   return PHControl::instance()->getUsePID() ? 1 : 9;
 }
 

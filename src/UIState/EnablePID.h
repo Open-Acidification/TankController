@@ -16,7 +16,7 @@ public:
   const char* name() {
     return "EnablePID";
   }
-  float getPriorValue();
+  float getCurrentValue();
   const char* prompt() {
     return "PID 1:on; 9:off ";
   };

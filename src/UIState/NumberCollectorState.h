@@ -22,8 +22,8 @@ protected:
     return false;
   }
   void printValue();
-  virtual float getPriorValue() = 0;
-  virtual int getPriorValuePrecision() {
+  virtual float getCurrentValue() = 0;
+  virtual int getCurrentValuePrecision() {
     return 0;
   };
 
@@ -45,10 +45,10 @@ public:
   const char* name() {
     return "TestNumCollectorState";
   }
-  float getPriorValue() {
+  float getCurrentValue() {
     return priorValue;
   }
-  int getPriorValuePrecision() {
+  int getCurrentValuePrecision() {
     return priorValuePrecision;
   }
   const char* prompt() {

@@ -16,8 +16,11 @@ public:
   const char* name() {
     return "TemperatureCalibration";
   }
-  float getPriorValue() {
+  float getCurrentValue() {
     return 0;
+  }
+  int getCurrentValuePrecision() {
+    return 2;
   }
   const char* prompt() {
     return "Real Temperature";

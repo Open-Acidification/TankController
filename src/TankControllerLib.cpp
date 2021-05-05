@@ -14,7 +14,6 @@
 #include "UIState/MainMenu.h"
 #include "UIState/UIState.h"
 
-// echo "#define GIT_HASH " `git rev-parse --short HEAD` > GitHash.h
 const char TANK_CONTROLLER_VERSION[] = "21.05.0";
 
 // ------------ Class Methods ------------

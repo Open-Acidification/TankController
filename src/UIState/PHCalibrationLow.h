@@ -16,10 +16,10 @@ public:
   const char* name() {
     return "PHCalibrationLow";
   }
-  float getPriorValue() {
+  float getCurrentValue() {
     return 0.0;
   }
-  int getPriorValuePrecision() {
+  int getCurrentValuePrecision() {
     return 3;
   }
   const char* prompt() {

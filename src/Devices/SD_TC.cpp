@@ -2,7 +2,7 @@
 
 #include "DateTime_TC.h"
 #include "Serial_TC.h"
-#define DEBUG 1
+#define DEBUG 0
 #include "TC_util.h"
 
 //  class variables
@@ -52,14 +52,16 @@ void SD_TC::appendToDataLog(String header, String data) {
 void SD_TC::appendDataToPath(String data, String path) {
   int i = path.indexOf('/', 1);
   while (i > 0) {
-    String s = path.substring(1, i);
-    bool flag = SD.mkdir(s.c_str());
-    if (!flag) {
-      if (!hasHadError) {
-        hasHadError = true;
-        serial("Unable to create directory: \"%s\"", s.c_str());
+    String s = path.substring(0, i);
+    if (!SD.exists(s)) {
+      if (!SD.mkdir(s.c_str())) {
+        if (!hasHadError) {
+          hasHadError = true;
+          serial("Unable to create directory: \"%s\"", s.c_str());
+          COUT("Unable to create directory: \"" << s.c_str() << "\"");
+        }
+        return;
       }
-      return;
     }
     i = path.indexOf('/', i + 2);
   }
@@ -72,6 +74,7 @@ void SD_TC::appendDataToPath(String data, String path) {
     if (!hasHadError) {
       hasHadError = true;
       serial("Unable to open file: \"%s\"", path.c_str());
+      COUT("Unable to open file: \"" << path.c_str() << "\"");
       return;
     }
   }
@@ -88,8 +91,8 @@ void SD_TC::appendToSerialLog(String data) {
 }
 
 void printEntry(File entry, String parentPath) {
-  int depth = 0;
-  for (int i = 1; i < parentPath.length(); ++i) {
+  size_t depth = 0;
+  for (size_t i = 1; i < parentPath.length(); ++i) {
     if (parentPath[i] == '/') {
       ++depth;
     }
@@ -119,6 +122,7 @@ String SD_TC::todaysDataFileName() {
   DateTime_TC now = DateTime_TC::now();
   char path[30];
   snprintf(path, sizeof(path), "/data/%4i/%02i/%02i.txt", now.year(), now.month(), now.day());
+  COUT(path);
   return String(path);
 }
 

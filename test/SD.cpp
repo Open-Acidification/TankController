@@ -106,7 +106,7 @@ unittest(printRootDirectory) {
   sd->open("d/d1", FILE_WRITE).close();
   sd->open("d/d2", FILE_WRITE).close();
   state->serialPort[0].dataOut = "";
-  sd->printRootDirectory();
+  sd->printRootDirectory(false);
   String expect = String("c>>0\r\nd/\r\n>d1>>0\r\n>d2>>0\r\ne>>0\r\n");
   String output = String(state->serialPort[0].dataOut);
   std::replace(output.begin(), output.end(), '\t', '>');

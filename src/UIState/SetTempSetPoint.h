@@ -13,6 +13,12 @@ public:
   const char* name() {
     return "SetTempSetPoint";
   }
+  float getCurrentValue() {
+    return 0.0;
+  }
+  int getCurrentValuePrecision() {
+    return 2;
+  }
   const char* prompt() {
     return "Set Temperature ";
   };

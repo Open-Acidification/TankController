@@ -13,6 +13,12 @@ public:
   const char* name() {
     return "SetPHSetPoint";
   }
+  float getCurrentValue() {
+    return 0.0;
+  }
+  int getCurrentValuePrecision() {
+    return 3;
+  }
   const char* prompt() {
     return "Set pH Set Point";
   };

@@ -31,7 +31,6 @@ private:
   UIState* state = nullptr;
   UIState* nextState = nullptr;
   LiquidCrystal_TC* lcd;
-  Serial_TC* log;
   unsigned long lastKeypadTime = 0;
 
   // instance methods

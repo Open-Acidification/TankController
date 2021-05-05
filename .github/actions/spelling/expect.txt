@@ -1,6 +1,7 @@
 Adafruit
 admins
 arduino
+args
 ASingle
 avr
 Calib
@@ -132,6 +133,7 @@ unittest
 unixtime
 unshallow
 url
+vprintf
 vscode
 vsnprintf
 wiki

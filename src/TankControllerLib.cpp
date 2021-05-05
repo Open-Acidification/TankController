@@ -40,9 +40,7 @@ TankControllerLib::TankControllerLib() {
   assert(!_instance);
   state = new MainMenu(this);
   lcd = LiquidCrystal_TC::instance();
-  log = Serial_TC::instance();
-  log->printf((const char *)F("TankControllerLib::TankControllerLib() - version %s"),
-              (const char *)TANK_CONTROLLER_VERSION);
+  serial(F("TankControllerLib::TankControllerLib() - version %s"), TANK_CONTROLLER_VERSION);
   SD_TC::instance()->printRootDirectory();
 }
 
@@ -94,7 +92,7 @@ void TankControllerLib::handleUI() {
       lastKeypadTime = 0;  // so we don't do this until another keypress!
     }
   } else {
-    log->printf((const char *)F("Keypad input: %c"), key);
+    serial(F("Keypad input: %c"), key);
     COUT("TankControllerLib::handleUI() - " << state->name() << "::handleKey(" << key << ")");
     state->handleKey(key);
     lastKeypadTime = millis();
@@ -148,7 +146,7 @@ void TankControllerLib::setNextState(UIState *newState, bool update) {
  * Here we do any one-time startup initialization.
  */
 void TankControllerLib::setup() {
-  log->printf((const char *)F("TankControllerLib::setup()"));
+  serial(F("TankControllerLib::setup()"));
   setNextState(((UIState *)new MainMenu(this)));
   updateState();
   pinMode(LED_BUILTIN, OUTPUT);
@@ -191,7 +189,7 @@ void TankControllerLib::updateState() {
  * What is the current version?
  */
 const char *TankControllerLib::version() {
-  log->printf((const char *)F("TankControllerLib::version() = %s"), (const char *)TANK_CONTROLLER_VERSION);
+  serial(F("TankControllerLib::version() = %s"), TANK_CONTROLLER_VERSION);
   return TANK_CONTROLLER_VERSION;
 }
 

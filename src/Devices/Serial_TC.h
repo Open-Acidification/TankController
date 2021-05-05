@@ -7,17 +7,17 @@
 
 #include <Arduino.h>
 
-// helpful macros
-#define serial(...) Serial_TC::instance()->printf(__VA_ARGS__)
-#define serialWithTime(...) Serial_TC::instance()->ts_printf(__VA_ARGS__)
+void serial(const char *format...);
+void serial(const __FlashStringHelper *format...);
+void serialWithTime(const char *format...);
+void serialWithTime(const __FlashStringHelper *format...);
 
 class Serial_TC {
 public:
   //  class methods
   static Serial_TC *instance();
 
-  void printf(const char *format, ...);
-  void ts_printf(const char *format, ...);
+  void vprintf(const char *format, va_list args);
 
 private:
   //  class variable

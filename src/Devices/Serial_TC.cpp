@@ -5,6 +5,46 @@
 #include "TC_util.h"
 
 /**
+ * global serial() functions
+ */
+void serial(const char *format...) {
+  va_list args;
+  va_start(args, format);
+  Serial_TC::instance()->vprintf(format, args);
+  va_end(args);
+}
+void serial(const __FlashStringHelper *format...) {
+  va_list args;
+  va_start(args, format);
+  Serial_TC::instance()->vprintf((const char *)format, args);
+  va_end(args);
+}
+void serialWithTime(const char *format...) {
+  char buffer[100];
+  unsigned long ms = millis();
+  DateTime_TC now = DateTime_TC::now();
+  snprintf(buffer, sizeof(buffer), "Timestamp of next line: YYYY/MM/DD hh:mm:ss.%03i", (int)ms % 1000);
+  now.toString(buffer);
+  serial(buffer);
+  va_list args;
+  va_start(args, format);
+  Serial_TC::instance()->vprintf(format, args);
+  va_end(args);
+}
+void serialWithTime(const __FlashStringHelper *format...) {
+  char buffer[100];
+  unsigned long ms = millis();
+  DateTime_TC now = DateTime_TC::now();
+  snprintf(buffer, sizeof(buffer), "Timestamp of next line: YYYY/MM/DD hh:mm:ss.%03i", (int)ms % 1000);
+  now.toString(buffer);
+  serial(buffer);
+  va_list args;
+  va_start(args, format);
+  Serial_TC::instance()->vprintf((const char *)format, args);
+  va_end(args);
+}
+
+/**
  * static variable for singleton
  */
 Serial_TC *Serial_TC::_instance = nullptr;
@@ -29,12 +69,9 @@ Serial_TC::Serial_TC() {
 /**
  * printf() uses a variant of snprintf() so supports the expected formats
  */
-void Serial_TC::printf(const char *format, ...) {
-  va_list arguments;
+void Serial_TC::vprintf(const char *format, va_list args) {
   char buffer[256];
-  va_start(arguments, format);
-  vsnprintf(buffer, sizeof(buffer), format, arguments);
-  va_end(arguments);
+  vsnprintf(buffer, sizeof(buffer), format, args);
   Serial.println(buffer);
   Serial.flush();
   // need to avoid recursion since SD_TC could call serial()
@@ -43,19 +80,4 @@ void Serial_TC::printf(const char *format, ...) {
     SD_TC::instance()->appendToSerialLog(buffer);
     printIsActive = false;
   }
-}
-
-/**
- * ts_printf() prints a timestamp first
- */
-void Serial_TC::ts_printf(const char *format, ...) {
-  char buffer[1000];
-  unsigned long ms = millis();
-  DateTime_TC now = DateTime_TC::now();
-  snprintf(buffer, sizeof(buffer), "Timestamp of next line: YYYY/MM/DD hh:mm:ss.%03i", (int)ms % 1000);
-  now.toString(buffer);
-  printf(buffer);
-  va_list arguments;
-  printf(format, arguments);
-  va_end(arguments);
 }

@@ -72,7 +72,7 @@ void Chiller::updateControl(double currentTemperature) {
       newValue = HIGH;
     }
     if (newValue != oldValue) {
-      Serial_TC::instance()->ts_printf((const char *)(newValue ? F("chiller off") : F("chiller on")));
+      serialWithTime((const char *)(newValue ? F("chiller off") : F("chiller on")));
       digitalWrite(PIN, newValue);
     }
   }
@@ -94,7 +94,7 @@ void Heater::updateControl(double currentTemperature) {
     newValue = HIGH;
   }
   if (newValue != oldValue) {
-    Serial_TC::instance()->ts_printf((const char *)(newValue ? F("heater off") : F("heater on")));
+    serialWithTime((const char *)(newValue ? F("heater off") : F("heater on")));
     digitalWrite(PIN, newValue);
   }
 }

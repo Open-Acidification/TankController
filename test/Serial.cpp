@@ -14,14 +14,13 @@ unittest(SerialTest) {
   state->serialPort[0].dataOut = "";  // the history of data written
 
   // basic serial output
-  Serial_TC* mySerial = Serial_TC::instance();
-  mySerial->printf("abc %s %i %.4f", "XYZ", 42, 1.375);
+  serial("abc %s %i %.4f", "XYZ", 42, 1.375);
   assertEqual("", state->serialPort[0].dataIn);
   assertEqual("abc XYZ 42 1.3750\r\n", state->serialPort[0].dataOut);
 
   // serial output with timestamp
   state->serialPort[0].dataOut = "";  // the history of data written
-  mySerial->ts_printf("foo");
+  serialWithTime("foo");
   assertEqual("Timestamp of next line: 202", state->serialPort[0].dataOut.substr(0, 27));
   assertEqual(".000\r\nfoo\r\n", state->serialPort[0].dataOut.substr(27 + 16));
 }

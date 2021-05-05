@@ -69,10 +69,10 @@ void printEntry(File entry, String parentPath) {
     tabs[depth] = '\0';
   }
   if (entry.isDirectory()) {
-    Serial_TC::instance()->printf((const char*)F("%s%s/"), tabs, entry.name());
+    serial((const char*)F("%s%s/"), tabs, entry.name());
   } else {
     // files have sizes, directories do not
-    Serial_TC::instance()->printf((const char*)F("%s%s\t\t%i"), tabs, entry.name(), entry.size());
+    serial((const char*)F("%s%s\t\t%i"), tabs, entry.name(), entry.size());
   }
 }
 

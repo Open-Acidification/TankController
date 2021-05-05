@@ -7,7 +7,7 @@ Ethernet_TC *Ethernet_TC::_instance = nullptr;
 // Establishes the Ethernet connection and sets class variables
 Ethernet_TC::Ethernet_TC() {
   if (Ethernet.begin(mac) == 0) {
-    Serial_TC::instance()->printf((const char *)F("Failed to configure Ethernet using DHCP"));
+    serial((const char *)F("Failed to configure Ethernet using DHCP"));
     Ethernet.begin(mac, defaultIP);
     IP = defaultIP;
   }

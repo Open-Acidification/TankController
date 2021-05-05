@@ -25,7 +25,12 @@ private:
   // class variables
   static SD_TC* _instance;
 
+  // instance variables
+  const int PIN = 10;
+  bool hasHadError = false;
+
   // instance methods
+  SD_TC();
   void appendDataToPath(String data, String path);
   void visit(visitor pFunction, File dir, String parentPath);
 };

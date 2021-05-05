@@ -9,6 +9,7 @@
 unittest(SerialTest) {
   GodmodeState* state = GODMODE();
   DateTime_TC::now();                 // this puts stuff on the serial port that we want to ignore
+  serial("foo");                      // "Unable to create directory"
   state->serialPort[0].dataIn = "";   // the queue of data waiting to be read
   state->serialPort[0].dataOut = "";  // the history of data written
 

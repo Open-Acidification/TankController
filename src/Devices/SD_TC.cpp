@@ -2,6 +2,7 @@
 
 #include "DateTime_TC.h"
 #include "Serial_TC.h"
+#define DEBUG 1
 #include "TC_util.h"
 
 //  class variables
@@ -21,14 +22,28 @@ SD_TC* SD_TC::instance() {
 //  instance methods
 
 /**
+ * constructor
+ */
+SD_TC::SD_TC() {
+  assert(_instance == nullptr);
+  serial("SD_TC::SD_TC()");
+  pinMode(PIN, OUTPUT);
+  digitalWrite(PIN, HIGH);
+  begin(4);
+}
+
+/**
  * append data to a data log file
  */
 void SD_TC::appendToDataLog(String header, String data) {
   String path = todaysDataFileName();
+  COUT(path);
   if (!exists(path)) {
     appendDataToPath(header, path);
+    COUT(header);
   }
   appendDataToPath(data, path);
+  COUT(data);
 }
 
 /**
@@ -37,14 +52,29 @@ void SD_TC::appendToDataLog(String header, String data) {
 void SD_TC::appendDataToPath(String data, String path) {
   int i = path.indexOf('/', 1);
   while (i > 0) {
-    String s = path.substring(0, ++i);
-    SD_TC::instance()->mkdir(s);
-    i = path.indexOf('/', i);
+    String s = path.substring(1, i);
+    bool flag = SD.mkdir(s.c_str());
+    if (!flag) {
+      if (!hasHadError) {
+        hasHadError = true;
+        serial("Unable to create directory: \"%s\"", s.c_str());
+      }
+      return;
+    }
+    i = path.indexOf('/', i + 2);
   }
   File file = SD_TC::instance()->open(path, FILE_WRITE);
-  file.write(data.c_str(), data.length());
-  file.write("\n", 1);
-  file.close();
+  if (file) {
+    file.write(data.c_str(), data.length());
+    file.write("\n", 1);
+    file.close();
+  } else {
+    if (!hasHadError) {
+      hasHadError = true;
+      serial("Unable to open file: \"%s\"", path.c_str());
+      return;
+    }
+  }
 }
 
 /**
@@ -64,15 +94,15 @@ void printEntry(File entry, String parentPath) {
       ++depth;
     }
   }
-  char tabs[] = "\t\t\t\t\t\t\t\t";
-  if (depth < strlen(tabs)) {
-    tabs[depth] = '\0';
+  char tabs[] = "- - - - - - - - ";
+  if (depth * 2 < strlen(tabs)) {
+    tabs[depth * 2] = '\0';
   }
   if (entry.isDirectory()) {
-    Serial_TC::instance()->printf((const char*)F("%s%s/"), tabs, entry.name());
+    serial("%s%s/", tabs, entry.name());
   } else {
     // files have sizes, directories do not
-    Serial_TC::instance()->printf((const char*)F("%s%s\t\t%i"), tabs, entry.name(), entry.size());
+    serial("%s%12s (%6u)", tabs, entry.name(), entry.size());
   }
 }
 
@@ -80,7 +110,9 @@ void printEntry(File entry, String parentPath) {
  * print the root directory and all subdirectories
  */
 void SD_TC::printRootDirectory() {
+  serial("SD_TC::printRootDirectory() - start");
   visit(printEntry);
+  serial("SD_TC::printRootDirectory() - end");
 }
 
 String SD_TC::todaysDataFileName() {
@@ -92,14 +124,19 @@ String SD_TC::todaysDataFileName() {
 
 void SD_TC::visit(visitor pFunction) {
   File root = open("/");
-  visit(pFunction, root, "/");
+  if (root) {
+    visit(pFunction, root, "/");
+  } else {
+    serial("Unable to open root directory of SD card!");
+  }
 }
 
 void SD_TC::visit(visitor pFunction, File dir, String parentPath) {
-  while (true) {
+  int i = 0;
+  while (i++ < 100) {
     File entry = dir.openNextFile();
     if (!entry) {
-      break;  // no more files
+      return;  // no more files
     }
     pFunction(entry, parentPath);
     if (entry.isDirectory()) {
@@ -107,4 +144,5 @@ void SD_TC::visit(visitor pFunction, File dir, String parentPath) {
     }
     entry.close();
   }
+  serial("Stopped after 100 entries");
 }

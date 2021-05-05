@@ -14,7 +14,7 @@
 #include "UIState/MainMenu.h"
 #include "UIState/UIState.h"
 
-const char TANK_CONTROLLER_VERSION[] = "0.3.0";
+const char TANK_CONTROLLER_VERSION[] = "21.05.0";
 
 // ------------ Class Methods ------------
 /**
@@ -37,21 +37,24 @@ TankControllerLib *TankControllerLib::instance() {
  * Constructor
  */
 TankControllerLib::TankControllerLib() {
+  serial("TankControllerLib::TankControllerLib() - version %s", TANK_CONTROLLER_VERSION);
   assert(!_instance);
+  LiquidCrystal_TC::instance();  // ensure we have an instance
   state = new MainMenu(this);
-  lcd = LiquidCrystal_TC::instance();
-  log = Serial_TC::instance();
-  log->printf((const char *)F("TankControllerLib::TankControllerLib() - version %s"),
-              (const char *)TANK_CONTROLLER_VERSION);
-  SD_TC::instance()->printRootDirectory();
 }
 
 /**
  * Destructor
  */
 TankControllerLib::~TankControllerLib() {
-  delete state;
-  delete nextState;
+  if (state) {
+    delete state;
+    state = nullptr;
+  }
+  if (nextState) {
+    delete nextState;
+    nextState = nullptr;
+  }
 }
 
 /**
@@ -94,7 +97,7 @@ void TankControllerLib::handleUI() {
       lastKeypadTime = 0;  // so we don't do this until another keypress!
     }
   } else {
-    log->printf((const char *)F("Keypad input: %c"), key);
+    serial("Keypad input: %c", key);
     COUT("TankControllerLib::handleUI() - " << state->name() << "::handleKey(" << key << ")");
     state->handleKey(key);
     lastKeypadTime = millis();
@@ -107,6 +110,7 @@ void TankControllerLib::handleUI() {
 /**
  * This is one of two public instance functions.
  * It is called repeatedly while the board is on.
+ * (It appears to be called about once every 15 ms.)
  */
 void TankControllerLib::loop() {
   COUT("TankControllerLib::loop() for " << state->name());
@@ -148,9 +152,7 @@ void TankControllerLib::setNextState(UIState *newState, bool update) {
  * Here we do any one-time startup initialization.
  */
 void TankControllerLib::setup() {
-  log->printf((const char *)F("TankControllerLib::setup()"));
-  setNextState(((UIState *)new MainMenu(this)));
-  updateState();
+  SD_TC::instance()->printRootDirectory();
   pinMode(LED_BUILTIN, OUTPUT);
 }
 
@@ -191,7 +193,7 @@ void TankControllerLib::updateState() {
  * What is the current version?
  */
 const char *TankControllerLib::version() {
-  log->printf((const char *)F("TankControllerLib::version() = %s"), (const char *)TANK_CONTROLLER_VERSION);
+  serial("TankControllerLib::version() = %s", (const char *)TANK_CONTROLLER_VERSION);
   return TANK_CONTROLLER_VERSION;
 }
 

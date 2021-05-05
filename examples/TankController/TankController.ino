@@ -6,7 +6,7 @@
 
 #include "TankControllerLib.h"
 
-TankControllerLib *tank;
+TankControllerLib *tank = nullptr;
 
 void serialEvent() {  // if the hardware serial port_0 receives a char
   tank->serialEvent();
@@ -17,6 +17,8 @@ void serialEvent1() {  // if the hardware serial port_1 receives a char
 }
 
 void setup() {
+  // the install process is followed by a reset and we get two startups
+  delay(500);
   tank = TankControllerLib::instance();
   tank->setup();
 }

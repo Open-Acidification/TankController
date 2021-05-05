@@ -7,6 +7,10 @@
 
 #include <Arduino.h>
 
+// helpful macros
+#define serial(...) Serial_TC::instance()->printf(__VA_ARGS__)
+#define serialWithTime(...) Serial_TC::instance()->ts_printf(__VA_ARGS__)
+
 class Serial_TC {
 public:
   //  class methods
@@ -18,6 +22,9 @@ public:
 private:
   //  class variable
   static Serial_TC *_instance;
+
+  // instance variable
+  bool printIsActive = false;
 
   //  instance methods
   Serial_TC();

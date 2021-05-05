@@ -36,7 +36,13 @@ void Serial_TC::printf(const char *format, ...) {
   vsnprintf(buffer, sizeof(buffer), format, arguments);
   va_end(arguments);
   Serial.println(buffer);
-  SD_TC::instance()->appendToSerialLog(buffer);
+  Serial.flush();
+  // need to avoid recursion since SD_TC could call serial()
+  if (!printIsActive) {
+    printIsActive = true;
+    SD_TC::instance()->appendToSerialLog(buffer);
+    printIsActive = false;
+  }
 }
 
 /**

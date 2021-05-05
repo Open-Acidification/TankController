@@ -77,6 +77,7 @@ void Serial_TC::vprintf(const char *format, va_list args) {
   // need to avoid recursion since SD_TC could call serial()
   if (!printIsActive) {
     printIsActive = true;
+    // this seems to cause problems on the actual hardware
     SD_TC::instance()->appendToSerialLog(buffer);
     printIsActive = false;
   }

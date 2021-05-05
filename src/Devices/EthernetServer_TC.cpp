@@ -22,7 +22,7 @@ EthernetServer_TC* EthernetServer_TC::instance() {
  */
 EthernetServer_TC::EthernetServer_TC(uint16_t port) : EthernetServer(port) {
   begin();
-  serial((const char*)F("Ethernet Server is listening on port 80 of ??????"));
+  serial(F("Ethernet Server is listening on port 80 of ??????"));
   //   TODO: Need Mock board for .localIP to work
   //   serial(Ethernet.localIP());
 }
@@ -42,6 +42,6 @@ void EthernetServer_TC::handleRequest() {
     // delay(ONE_SECOND_DELAY_IN_MILLIS);
     // close the connection:
     rpc_client.stop();
-    serial((const char*)F("rpc_client disconnected"));
+    serial(F("rpc_client disconnected"));
   }
 }

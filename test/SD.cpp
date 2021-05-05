@@ -95,9 +95,7 @@ unittest(appendToSerialLog) {
 unittest(printRootDirectory) {
   GodmodeState* state = GODMODE();
   SD_TC* sd = SD_TC::instance();
-
   state->serialPort[0].dataOut = "";
-  sd->printRootDirectory();
   assertEqual("", state->serialPort[0].dataOut);
 
   sd->open("c", FILE_WRITE).close();
@@ -106,13 +104,27 @@ unittest(printRootDirectory) {
   sd->open("d/d1", FILE_WRITE).close();
   sd->open("d/d2", FILE_WRITE).close();
   state->serialPort[0].dataOut = "";
-  sd->printRootDirectory(false);
-  String expect = String("c>>0\r\nd/\r\n>d1>>0\r\n>d2>>0\r\ne>>0\r\n");
+  sd->printRootDirectory();
   String output = String(state->serialPort[0].dataOut);
-  std::replace(output.begin(), output.end(), '\t', '>');
-  // output to serial creates additional files here and we want to ignore them!
-  output = output.substr(0, expect.length());
-  assertEqual(expect, output);
+  int index;
+  index = output.indexOf("           c (     0)\r\n");
+  assertNotEqual(-1, index);
+  index = output.indexOf("           d/\r\n");
+  assertNotEqual(-1, index);
+  index = output.indexOf("-           d1 (     0)\r\n");
+  assertNotEqual(-1, index);
+  index = output.indexOf("-           d2 (     0)\r\n");
+  assertNotEqual(-1, index);
+  index = output.indexOf("           e (     0)\r\n");
+  assertNotEqual(-1, index);
 }
+
+/*
+           c (     0)
+d/
+-           d1 (     0)
+-           d2 (     0)
+           e (     0)
+*/
 
 unittest_main()

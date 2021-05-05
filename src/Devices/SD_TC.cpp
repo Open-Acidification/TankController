@@ -102,7 +102,7 @@ void printEntry(File entry, String parentPath) {
     tabs[depth * 2] = '\0';
   }
   if (entry.isDirectory()) {
-    serial("%s%s/", tabs, entry.name());
+    serial("%s%12s/", tabs, entry.name());
   } else {
     // files have sizes, directories do not
     serial("%s%12s (%6u)", tabs, entry.name(), entry.size());

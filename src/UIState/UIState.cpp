@@ -8,6 +8,8 @@
 // instance methods
 
 void UIState::handleKey(char key) {
+  // use value just to avoid compiler warning
+  (void)key;
   // default is to just return to main menu
   // this is useful for display-only actions
   this->returnToMainMenu();

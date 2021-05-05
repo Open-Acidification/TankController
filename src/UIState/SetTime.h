@@ -10,8 +10,14 @@ class SetTime : public NumCollectorState {
 public:
   SetTime(TankControllerLib* tc) : NumCollectorState(tc) {
   }
+  virtual bool isInteger() {
+    return true;
+  }
   const char* name() {
     return "SetTime";
+  }
+  float getCurrentValue() {
+    return 0.0;
   }
   const char* prompt() {
     return prompts[subState];

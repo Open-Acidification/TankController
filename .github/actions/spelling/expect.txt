@@ -116,6 +116,7 @@ solonoids
 src
 strcpy
 strlen
+strnlen
 strncpy
 substr
 sudo

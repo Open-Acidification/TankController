@@ -6,7 +6,7 @@
 #include "TC_util.h"
 #include "TankControllerLib.h"
 
-const double DEFAULT_PH = 7.125;
+const double DEFAULT_PH = 8.1;
 
 //  class instance variables
 /**
@@ -31,13 +31,17 @@ PHControl::PHControl() {
   targetPh = EEPROM_TC::instance()->getPH();
   if (isnan(targetPh)) {
     targetPh = DEFAULT_PH;
+    EEPROM_TC::instance()->setPH(targetPh);
   }
+  serial("PHControl::PHControl() with target pH = %f", targetPh);
 }
 
 void PHControl::setTargetPh(double newPh) {
-  targetPh = newPh;
-  EEPROM_TC::instance()->setPH(newPh);
-  serialWithTime("set target pH to %6.4f", newPh);
+  if (targetPh != newPh) {
+    serialWithTime("change target pH from %6.4f to %6.4f", targetPh, newPh);
+    targetPh = newPh;
+    EEPROM_TC::instance()->setPH(newPh);
+  }
 }
 
 void PHControl::setUsePID(bool flag) {

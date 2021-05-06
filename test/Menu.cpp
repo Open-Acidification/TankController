@@ -34,7 +34,7 @@ unittest_teardown() {
 }
 
 unittest(MainMenu) {
-  assertEqual("pH=0.000   7.125", lc->getLines().at(0));
+  assertEqual("pH=0.000   8.100", lc->getLines().at(0));
   assertEqual("T=12.23  H 15.75", lc->getLines().at(1));
 }
 
@@ -43,14 +43,14 @@ unittest(ChangeSettings) {
   assertEqual("Change settings ", lc->getLines().at(0));
   assertEqual("<4   ^2  8v   6>", lc->getLines().at(1));
   enterKey('D');
-  assertEqual("pH=0.000   7.125", lc->getLines().at(0));
+  assertEqual("pH=0.000   8.100", lc->getLines().at(0));
   assertEqual("T=12.23  H 15.75", lc->getLines().at(1));
   enterKey('8');
   enterKey('8');
   assertEqual("Change settings ", lc->getLines().at(0));
   assertEqual("<4   ^2  8v   6>", lc->getLines().at(1));
   enterKey('4');
-  assertEqual("pH=0.000   7.125", lc->getLines().at(0));
+  assertEqual("pH=0.000   8.100", lc->getLines().at(0));
   assertEqual("T=12.23  H 15.75", lc->getLines().at(1));
 }
 
@@ -59,14 +59,14 @@ unittest(ViewSettings) {
   assertEqual("View TC settings", lc->getLines().at(0));
   assertEqual("<4   ^2  8v   6>", lc->getLines().at(1));
   enterKey('D');
-  assertEqual("pH=0.000   7.125", lc->getLines().at(0));
+  assertEqual("pH=0.000   8.100", lc->getLines().at(0));
   assertEqual("T=12.23  H 15.75", lc->getLines().at(1));
   enterKey('2');
   enterKey('2');
   assertEqual("View TC settings", lc->getLines().at(0));
   assertEqual("<4   ^2  8v   6>", lc->getLines().at(1));
   enterKey('D');
-  assertEqual("pH=0.000   7.125", lc->getLines().at(0));
+  assertEqual("pH=0.000   8.100", lc->getLines().at(0));
   assertEqual("T=12.23  H 15.75", lc->getLines().at(1));
 }
 

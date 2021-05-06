@@ -4,6 +4,8 @@
 #include "Serial_TC.h"
 #include "TankControllerLib.h"
 
+const double DEFAULT_TEMPERATURE = 20.0;
+
 //  class instance variables
 /**
  * static variable for singleton
@@ -33,23 +35,41 @@ void TemperatureControl::enableHeater(bool flag) {
   if (_instance && (_instance->isHeater() != flag)) {
     delete _instance;
     _instance = nullptr;
+    serial("TemperatureControl::enableHeater(%s)", flag ? "true" : "false");
+    instance();
   }
 }
 
 /**
- * private constructor
+ * protected constructor
  */
 TemperatureControl::TemperatureControl() {
   targetTemperature = EEPROM_TC::instance()->getTemp();
+  if (isnan(targetTemperature)) {
+    targetTemperature = DEFAULT_TEMPERATURE;
+    EEPROM_TC::instance()->setTemp(targetTemperature);
+  }
   digitalWrite(PIN, HIGH);
+  serial("TemperatureControl::TemperatureControl() constructing %s with target Temperature of %f",
+         this->isHeater() ? "Heater" : "Chiller", targetTemperature);
+}
+
+/**
+ * is heater
+ */
+bool TemperatureControl::isHeater() {
+  return true;
 }
 
 /**
  * set target temperature and save in EEPROM
  */
 void TemperatureControl::setTargetTemperature(double newTemperature) {
-  EEPROM_TC::instance()->setTemp(newTemperature);
-  targetTemperature = newTemperature;
+  if (targetTemperature != newTemperature) {
+    serial("Change target temperature from %6.3f to %6.3f", targetTemperature, newTemperature);
+    EEPROM_TC::instance()->setTemp(newTemperature);
+    targetTemperature = newTemperature;
+  }
 }
 
 void Chiller::updateControl(double currentTemperature) {

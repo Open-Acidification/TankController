@@ -1,6 +1,7 @@
 #include "TankControllerLib.h"
 
 #include "Devices/DateTime_TC.h"
+#include "Devices/EEPROM_TC.h"
 #include "Devices/Keypad_TC.h"
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHControl.h"
@@ -39,7 +40,14 @@ TankControllerLib *TankControllerLib::instance() {
 TankControllerLib::TankControllerLib() {
   serial("TankControllerLib::TankControllerLib() - version %s", TANK_CONTROLLER_VERSION);
   assert(!_instance);
-  LiquidCrystal_TC::instance();  // ensure we have an instance
+  // ensure we have instances
+  EEPROM_TC::instance();
+  Keypad_TC::instance();
+  LiquidCrystal_TC::instance();
+  TempProbe_TC::instance();
+  TemperatureControl::instance();
+  PHProbe::instance();
+  PHControl::instance();
   state = new MainMenu(this);
 }
 

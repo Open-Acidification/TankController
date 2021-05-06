@@ -8,9 +8,7 @@
 #include <Arduino.h>
 
 void serial(const char *format...);
-void serial(const __FlashStringHelper *format...);
 void serialWithTime(const char *format...);
-void serialWithTime(const __FlashStringHelper *format...);
 
 class Serial_TC {
 public:

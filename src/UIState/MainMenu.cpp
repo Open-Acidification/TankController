@@ -198,7 +198,7 @@ void MainMenu::selectSet() {
       this->setNextState((UIState *)new SetKP(tc));
       break;
     case SET_PID_ON_OFF:
-      this->setNextState((UIState *)new PIDTuningMenu(tc));
+      this->setNextState((UIState *)new Set_PID_ON_OFF(tc));
       break;
     case SET_TANK_ID:
       this->setNextState((UIState *)new SetTankID(tc));

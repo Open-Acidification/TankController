@@ -2,6 +2,7 @@
 
 #include "DateTime_TC.h"
 #include "Serial_TC.h"
+#define DEBUG 0
 #include "TC_util.h"
 
 //  class variables
@@ -14,6 +15,7 @@ SD_TC* SD_TC::_instance = nullptr;
 SD_TC* SD_TC::instance() {
   if (!_instance) {
     _instance = new SD_TC();
+    serial("SD_TC::instance() called SD_TC::SD_TC()");
   }
   return _instance;
 }
@@ -21,14 +23,27 @@ SD_TC* SD_TC::instance() {
 //  instance methods
 
 /**
+ * constructor
+ */
+SD_TC::SD_TC() {
+  assert(_instance == nullptr);
+  pinMode(PIN, OUTPUT);
+  digitalWrite(PIN, HIGH);
+  begin(4);
+}
+
+/**
  * append data to a data log file
  */
 void SD_TC::appendToDataLog(String header, String data) {
   String path = todaysDataFileName();
+  COUT(path);
   if (!exists(path)) {
     appendDataToPath(header, path);
+    COUT(header);
   }
   appendDataToPath(data, path);
+  COUT(data);
 }
 
 /**
@@ -37,14 +52,32 @@ void SD_TC::appendToDataLog(String header, String data) {
 void SD_TC::appendDataToPath(String data, String path) {
   int i = path.indexOf('/', 1);
   while (i > 0) {
-    String s = path.substring(0, ++i);
-    SD_TC::instance()->mkdir(s);
-    i = path.indexOf('/', i);
+    String s = path.substring(0, i);
+    if (!SD.exists(s)) {
+      if (!SD.mkdir(s.c_str())) {
+        if (!hasHadError) {
+          hasHadError = true;
+          serial("Unable to create directory: \"%s\"", s.c_str());
+          COUT("Unable to create directory: \"" << s.c_str() << "\"");
+        }
+        return;
+      }
+    }
+    i = path.indexOf('/', i + 2);
   }
   File file = SD_TC::instance()->open(path, FILE_WRITE);
-  file.write(data.c_str(), data.length());
-  file.write("\n", 1);
-  file.close();
+  if (file) {
+    file.write(data.c_str(), data.length());
+    file.write("\n", 1);
+    file.close();
+  } else {
+    if (!hasHadError) {
+      hasHadError = true;
+      serial("Unable to open file: \"%s\"", path.c_str());
+      COUT("Unable to open file: \"" << path.c_str() << "\"");
+      return;
+    }
+  }
 }
 
 /**
@@ -58,21 +91,21 @@ void SD_TC::appendToSerialLog(String data) {
 }
 
 void printEntry(File entry, String parentPath) {
-  int depth = 0;
-  for (int i = 1; i < parentPath.length(); ++i) {
+  size_t depth = 0;
+  for (size_t i = 1; i < parentPath.length(); ++i) {
     if (parentPath[i] == '/') {
       ++depth;
     }
   }
-  char tabs[] = "\t\t\t\t\t\t\t\t";
-  if (depth < strlen(tabs)) {
-    tabs[depth] = '\0';
+  char prefix[] = "- - - - - - - - ";
+  if (depth * 2 < strnlen(prefix, sizeof(prefix))) {
+    prefix[depth * 2] = '\0';
   }
   if (entry.isDirectory()) {
-    serial((const char*)F("%s%s/"), tabs, entry.name());
+    serial("%s%12s/", prefix, entry.name());
   } else {
     // files have sizes, directories do not
-    serial((const char*)F("%s%s\t\t%i"), tabs, entry.name(), entry.size());
+    serial("%s%12s (%6u)", prefix, entry.name(), entry.size());
   }
 }
 
@@ -80,26 +113,34 @@ void printEntry(File entry, String parentPath) {
  * print the root directory and all subdirectories
  */
 void SD_TC::printRootDirectory() {
+  serial("SD_TC::printRootDirectory() - start");
   visit(printEntry);
+  serial("SD_TC::printRootDirectory() - end");
 }
 
 String SD_TC::todaysDataFileName() {
   DateTime_TC now = DateTime_TC::now();
   char path[30];
   snprintf(path, sizeof(path), "/data/%4i/%02i/%02i.txt", now.year(), now.month(), now.day());
+  COUT(path);
   return String(path);
 }
 
 void SD_TC::visit(visitor pFunction) {
   File root = open("/");
-  visit(pFunction, root, "/");
+  if (root) {
+    visit(pFunction, root, "/");
+  } else {
+    serial("Unable to open root directory of SD card!");
+  }
 }
 
 void SD_TC::visit(visitor pFunction, File dir, String parentPath) {
-  while (true) {
+  int i = 0;
+  while (i++ < 100) {
     File entry = dir.openNextFile();
     if (!entry) {
-      break;  // no more files
+      return;  // no more files
     }
     pFunction(entry, parentPath);
     if (entry.isDirectory()) {
@@ -107,4 +148,5 @@ void SD_TC::visit(visitor pFunction, File dir, String parentPath) {
     }
     entry.close();
   }
+  serial("Stopped after 100 entries");
 }

@@ -30,7 +30,6 @@ private:
   // instance variables
   UIState* state = nullptr;
   UIState* nextState = nullptr;
-  LiquidCrystal_TC* lcd;
   unsigned long lastKeypadTime = 0;
 
   // instance methods

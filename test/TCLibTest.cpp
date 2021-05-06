@@ -96,6 +96,7 @@ unittest(storeDataToSD) {
   char data[4096];
   file.read(data, file.size());
   data[file.size()] = '\0';
+  COUT(data);
   String contents(data), line;
   int i = contents.indexOf('\n');
   line = contents.substring(0, i);

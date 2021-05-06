@@ -23,6 +23,9 @@ private:
   //  class variable
   static Serial_TC *_instance;
 
+  // instance variable
+  bool printIsActive = false;
+
   //  instance methods
   Serial_TC();
 };

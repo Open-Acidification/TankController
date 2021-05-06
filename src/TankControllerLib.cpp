@@ -37,19 +37,24 @@ TankControllerLib *TankControllerLib::instance() {
  * Constructor
  */
 TankControllerLib::TankControllerLib() {
+  serial("TankControllerLib::TankControllerLib() - version %s", TANK_CONTROLLER_VERSION);
   assert(!_instance);
+  LiquidCrystal_TC::instance();  // ensure we have an instance
   state = new MainMenu(this);
-  lcd = LiquidCrystal_TC::instance();
-  serial(F("TankControllerLib::TankControllerLib() - version %s"), TANK_CONTROLLER_VERSION);
-  SD_TC::instance()->printRootDirectory();
 }
 
 /**
  * Destructor
  */
 TankControllerLib::~TankControllerLib() {
-  delete state;
-  delete nextState;
+  if (state) {
+    delete state;
+    state = nullptr;
+  }
+  if (nextState) {
+    delete nextState;
+    nextState = nullptr;
+  }
 }
 
 /**
@@ -105,6 +110,7 @@ void TankControllerLib::handleUI() {
 /**
  * This is one of two public instance functions.
  * It is called repeatedly while the board is on.
+ * (It appears to be called about once every 15 ms.)
  */
 void TankControllerLib::loop() {
   COUT("TankControllerLib::loop() for " << state->name());
@@ -147,8 +153,7 @@ void TankControllerLib::setNextState(UIState *newState, bool update) {
  */
 void TankControllerLib::setup() {
   serial(F("TankControllerLib::setup()"));
-  setNextState(((UIState *)new MainMenu(this)));
-  updateState();
+  SD_TC::instance()->printRootDirectory();
   pinMode(LED_BUILTIN, OUTPUT);
 }
 

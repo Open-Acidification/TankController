@@ -35,7 +35,7 @@ double EEPROM_TC::eepromReadDouble(int address) {
   assert(address >= 0);
   double value = 0.0;
   byte* p = (byte*)(void*)&value;
-  for (int i = 0; i < sizeof(value); i++) {
+  for (size_t i = 0; i < sizeof(value); i++) {
     *p++ = EEPROM.read(address++);
   }
   return value;
@@ -44,7 +44,7 @@ double EEPROM_TC::eepromReadDouble(int address) {
 void EEPROM_TC::eepromWriteDouble(int address, double value) {
   assert(address >= 0);
   byte* p = (byte*)(void*)&value;
-  for (int i = 0; i < sizeof(value); i++) {
+  for (size_t i = 0; i < sizeof(value); i++) {
     EEPROM.update(address++, *p++);
   }
 }
@@ -53,7 +53,7 @@ int EEPROM_TC::eepromReadInt(int address) {
   assert(address >= 0);
   int value = 0.0;
   byte* p = (byte*)(void*)&value;
-  for (int i = 0; i < sizeof(value); i++) {
+  for (size_t i = 0; i < sizeof(value); i++) {
     *p++ = EEPROM.read(address++);
   }
   return value;
@@ -62,7 +62,7 @@ int EEPROM_TC::eepromReadInt(int address) {
 void EEPROM_TC::eepromWriteInt(int address, int value) {
   assert(address >= 0);
   byte* p = (byte*)(void*)&value;
-  for (int i = 0; i < sizeof(value); i++) {
+  for (size_t i = 0; i < sizeof(value); i++) {
     EEPROM.update(address++, *p++);
   }
 }

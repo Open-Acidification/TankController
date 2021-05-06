@@ -82,6 +82,7 @@ unittest(sendSlopeRequest) {
   assertEqual("Slope,?\r", GODMODE()->serialPort[1].dataOut);
 }
 
+// this test assumes that earlier tests have run and that there is a slope available
 unittest(getSlope) {
   GodmodeState *state = GODMODE();
   state->reset();

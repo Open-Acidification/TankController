@@ -47,7 +47,6 @@ MainMenu::MainMenu(TankControllerLib *tc) : UIState(tc) {
   setMenus[SET_CHILL_OR_HEAT] = String("Set chill/heat  ");
   setMenus[SET_GOOGLE_MINS] = String("Set Google mins ");
   setMenus[SET_PH] = String("Set pH target   ");
-  setMenus[SET_PID_AUTO_TUNE] = String("PID auto-tune   ");
   setMenus[SET_KD] = String("Set KD          ");
   setMenus[SET_KI] = String("Set KI          ");
   setMenus[SET_KP] = String("Set KP          ");
@@ -189,9 +188,6 @@ void MainMenu::selectSet() {
       break;
     case SET_PH:
       this->setNextState((UIState *)new SetPHSetPoint(tc));
-      break;
-    case SET_PID_AUTO_TUNE:
-      this->setNextState((UIState *)new PIDTuningMenu(tc));
       break;
     case SET_KD:
       this->setNextState((UIState *)new SetKD(tc));

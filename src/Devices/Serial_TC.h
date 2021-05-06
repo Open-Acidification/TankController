@@ -7,17 +7,24 @@
 
 #include <Arduino.h>
 
+void serial(const char *format...);
+void serial(const __FlashStringHelper *format...);
+void serialWithTime(const char *format...);
+void serialWithTime(const __FlashStringHelper *format...);
+
 class Serial_TC {
 public:
   //  class methods
   static Serial_TC *instance();
 
-  void printf(const char *format, ...);
-  void ts_printf(const char *format, ...);
+  void vprintf(const char *format, va_list args);
 
 private:
   //  class variable
   static Serial_TC *_instance;
+
+  // instance variable
+  bool printIsActive = false;
 
   //  instance methods
   Serial_TC();

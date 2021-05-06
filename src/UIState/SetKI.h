@@ -13,6 +13,12 @@ public:
   const char* name() {
     return "SetKI";
   }
+  float getCurrentValue() {
+    return 0.0;
+  }
+  int getCurrentValuePrecision() {
+    return 1;
+  }
   const char* prompt() {
     return "Set KI          ";
   };

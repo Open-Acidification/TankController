@@ -18,10 +18,14 @@ protected:
   void backSpace();
   void clear();
   void handleDigit(int digit);
-  void printValue();
   virtual bool isInteger() {
     return false;
   }
+  void printValue();
+  virtual float getCurrentValue() = 0;
+  virtual int getCurrentValuePrecision() {
+    return 0;
+  };
 
   double value = 0.0;
   int numDigits = 0;
@@ -41,6 +45,12 @@ public:
   const char* name() {
     return "TestNumCollectorState";
   }
+  float getCurrentValue() {
+    return priorValue;
+  }
+  int getCurrentValuePrecision() {
+    return priorValuePrecision;
+  }
   const char* prompt() {
     return "Test:";
   }
@@ -52,9 +62,17 @@ public:
   double getStoredValue() {
     return storedValue;
   };
+  void setPriorValue(double aValue) {
+    priorValue = aValue;
+  }
+  void setPriorValuePrecision(int aValue) {
+    priorValuePrecision = aValue;
+  }
 
 private:
   double storedValue = 0.0;
+  double priorValue = 0.0;
+  int priorValuePrecision = 0;
 };
 
 class TestIntNumCollectorState : public TestNumCollectorState {

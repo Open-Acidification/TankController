@@ -16,6 +16,12 @@ public:
   const char* name() {
     return "PHCalibrationHigh";
   }
+  float getCurrentValue() {
+    return 0.0;
+  }
+  int getCurrentValuePrecision() {
+    return 3;
+  }
   const char* prompt() {
     return "pH-Highpoint    ";
   };

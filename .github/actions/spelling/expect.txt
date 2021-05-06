@@ -1,6 +1,7 @@
 Adafruit
 admins
 arduino
+args
 ASingle
 avr
 Calib
@@ -115,6 +116,7 @@ solonoids
 src
 strcpy
 strlen
+strnlen
 strncpy
 substr
 sudo
@@ -132,6 +134,7 @@ unittest
 unixtime
 unshallow
 url
+vprintf
 vscode
 vsnprintf
 wiki

@@ -30,6 +30,7 @@ unittest(constructor) {
 unittest(logToSerial) {
   GodmodeState *state = GODMODE();
   DateTime_TC::now();                 // this puts stuff on the serial port that we want to ignore
+  serial("foo");                      // this should get the directory creation error (if any)
   state->serialPort[0].dataOut = "";  // so here we ignore it!
   PID_TC *singleton = PID_TC::instance();
   singleton->logToSerial();

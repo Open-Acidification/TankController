@@ -43,7 +43,7 @@ String PHProbe::getSlope() {
   }
   String slope = slopeResponse.substring(7);
   // output to log
-  Serial_TC::instance()->printf((const char *)F("Calibration Slope: %s"), (const char *)slope.c_str());
+  serial(F("Calibration Slope: %s"), (const char *)slope.c_str());
   return slope;
 }
 
@@ -54,7 +54,7 @@ void PHProbe::serialEvent1() {
   while (Serial1.available() > 0) {               // if we see that the Atlas Scientific product has sent a character
     String string = Serial1.readStringUntil(13);  // read the string until we see a <CR>
     string.remove(string.length() - 1);
-    Serial_TC::instance()->printf((const char *)F("Serial1 = %s"), (const char *)string.c_str());
+    serial(F("Serial1 = %s"), (const char *)string.c_str());
     if (string.length() > 0) {
       if (isdigit(string[0])) {  // if the first character in the string is a digit
         // convert the string to a floating point number so it can be evaluated by the Arduino
@@ -80,7 +80,7 @@ void PHProbe::setTemperatureCompensation(double temperature) {
   } else {
     fullCommand = PARTIAL_COMMAND + "20\r";
   }
-  Serial_TC::instance()->printf((const char *)fullCommand.c_str());
+  serial("PHProbe::setTemperatureCompensation) - ", (const char *)fullCommand.c_str());
   Serial1.print(fullCommand);  // send that string to the Atlas Scientific product
 }
 

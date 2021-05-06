@@ -1,5 +1,7 @@
 #include "Devices/LiquidCrystal_TC.h"
 
+#include "Devices/Serial_TC.h"
+
 // useful for future debugging
 #include "TC_util.h"
 
@@ -25,6 +27,7 @@ LiquidCrystal_TC* LiquidCrystal_TC::instance() {
  * Constructor sets pins, dimensions, and shows splash screen
  */
 LiquidCrystal_TC::LiquidCrystal_TC() : LiquidCrystal(RS, EN, D4, D5, D6, D7) {
+  serial("LiquidCrystal_TC::LiquidCrystal_TC()");
   begin(16, 2);
   splashScreen();
 }

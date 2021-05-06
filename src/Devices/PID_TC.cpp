@@ -71,8 +71,8 @@ double PID_TC::computeOutput(double target, double current) {
 }
 
 void PID_TC::logToSerial() {
-  serial("Kp: %6.1f Ki: %6.1f Kd: %6.1f\r\nPID output (s):%4.1f", pPID->GetKp(), pPID->GetKi(), pPID->GetKd(),
-         output / 1000);
+  serial(F("%s %6.1f %s %6.1f %s %6.1f\r\n%s%4.1f"), F("Kp:"), pPID->GetKp(), F("Ki:"), pPID->GetKi(), F("Kd:"),
+         pPID->GetKd(), F("PID output (s):"), output / 1000);
 }
 
 void PID_TC::setKd(double Kd) {

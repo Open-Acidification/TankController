@@ -13,14 +13,14 @@ RTC_PCF8523 *DateTime_TC::rtc() {
     _rtc = new RTC_PCF8523;
     // look for Real Time Clock
     if (!_rtc->begin()) {
-      serial(F("Couldn't find RTC!"));
+      serial(F("%s"), F("Couldn't find RTC!"));
       while (true)
         ;  // infinite loop; hang forever
     }
 
     // has the time been set?
     if (!_rtc->initialized()) {
-      serial(F("RTC has not been initialized! Date and time is wrong!"));
+      serial(F("%s"), F("RTC has not been initialized! Date and time is wrong!"));
       // set the RTC to the date & time this file was compiled
       _rtc->adjust(DateTime(F(__DATE__), F(__TIME__)));
     }

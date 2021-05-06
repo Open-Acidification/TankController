@@ -15,7 +15,7 @@ SD_TC* SD_TC::_instance = nullptr;
 SD_TC* SD_TC::instance() {
   if (!_instance) {
     _instance = new SD_TC();
-    serial("SD_TC::instance() called SD_TC::SD_TC()");
+    serial(F("%s"), F("SD_TC::instance() called SD_TC::SD_TC()"));
   }
   return _instance;
 }
@@ -57,7 +57,7 @@ void SD_TC::appendDataToPath(String data, String path) {
       if (!SD.mkdir(s.c_str())) {
         if (!hasHadError) {
           hasHadError = true;
-          serial("Unable to create directory: \"%s\"", s.c_str());
+          serial(F("%s%s%s"), F("Unable to create directory: \""), s.c_str(), F("\""));
           COUT("Unable to create directory: \"" << s.c_str() << "\"");
         }
         return;
@@ -73,7 +73,7 @@ void SD_TC::appendDataToPath(String data, String path) {
   } else {
     if (!hasHadError) {
       hasHadError = true;
-      serial("Unable to open file: \"%s\"", path.c_str());
+      serial(F("%s%s%s"), F("Unable to open file: \""), path.c_str(), F("%s\""));
       COUT("Unable to open file: \"" << path.c_str() << "\"");
       return;
     }
@@ -102,10 +102,10 @@ void printEntry(File entry, String parentPath) {
     prefix[depth * 2] = '\0';
   }
   if (entry.isDirectory()) {
-    serial("%s%12s/", prefix, entry.name());
+    serial(F("%s%12s%s"), prefix, entry.name(), F("/"));
   } else {
     // files have sizes, directories do not
-    serial("%s%12s (%6u)", prefix, entry.name(), entry.size());
+    serial(F("%s%12s (%6u)"), prefix, entry.name(), entry.size());
   }
 }
 
@@ -113,9 +113,9 @@ void printEntry(File entry, String parentPath) {
  * print the root directory and all subdirectories
  */
 void SD_TC::printRootDirectory() {
-  serial("SD_TC::printRootDirectory() - start");
+  serial(F("%s"), F("SD_TC::printRootDirectory() - start"));
   visit(printEntry);
-  serial("SD_TC::printRootDirectory() - end");
+  serial(F("%s"), F("SD_TC::printRootDirectory() - end"));
 }
 
 String SD_TC::todaysDataFileName() {
@@ -131,7 +131,7 @@ void SD_TC::visit(visitor pFunction) {
   if (root) {
     visit(pFunction, root, "/");
   } else {
-    serial("Unable to open root directory of SD card!");
+    serial(F("%s"), F("Unable to open root directory of SD card!"));
   }
 }
 
@@ -148,5 +148,5 @@ void SD_TC::visit(visitor pFunction, File dir, String parentPath) {
     }
     entry.close();
   }
-  serial("Stopped after 100 entries");
+  serial(F("%s"), F("Stopped after 100 entries"));
 }

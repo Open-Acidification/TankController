@@ -24,6 +24,7 @@
 #include "SetKI.h"
 #include "SetKP.h"
 #include "SetPHSetPoint.h"
+#include "SetPIDOnOff.h"
 #include "SetTankID.h"
 #include "SetTempSetPoint.h"
 #include "SetTime.h"
@@ -198,7 +199,7 @@ void MainMenu::selectSet() {
       this->setNextState((UIState *)new SetKP(tc));
       break;
     case SET_PID_ON_OFF:
-      this->setNextState((UIState *)new Set_PID_ON_OFF(tc));
+      this->setNextState((UIState *)new SetPIDOnOff(tc));
       break;
     case SET_TANK_ID:
       this->setNextState((UIState *)new SetTankID(tc));

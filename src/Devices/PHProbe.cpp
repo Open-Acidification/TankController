@@ -24,8 +24,8 @@ PHProbe *PHProbe::instance() {
  * constructor (private so clients use the singleton)
  */
 PHProbe::PHProbe() {
-  Serial1.print(F("*OK,0\r"));  // Turn off the returning of OK after command to EZO pH
-  Serial1.print(F("C,1\r"));    // Reset pH stamp to continuous measurement: once per second
+  Serial1.print("*OK,0\r");  // Turn off the returning of OK after command to EZO pH
+  Serial1.print("C,1\r");    // Reset pH stamp to continuous measurement: once per second
 }
 
 void PHProbe::clearCalibration() {
@@ -33,7 +33,7 @@ void PHProbe::clearCalibration() {
 }
 
 void PHProbe::sendSlopeRequest() {
-  Serial1.print(F("Slope,?\r"));  // Sending request for Calibration Slope
+  Serial1.print("Slope,?\r");  // Sending request for Calibration Slope
 }
 
 String PHProbe::getSlope() {
@@ -43,7 +43,7 @@ String PHProbe::getSlope() {
   }
   String slope = slopeResponse.substring(7);
   // output to log
-  serial(F("Calibration Slope: %s"), (const char *)slope.c_str());
+  serial("Calibration Slope: %s", slope.c_str());
   return slope;
 }
 
@@ -54,7 +54,7 @@ void PHProbe::serialEvent1() {
   while (Serial1.available() > 0) {               // if we see that the Atlas Scientific product has sent a character
     String string = Serial1.readStringUntil(13);  // read the string until we see a <CR>
     string.remove(string.length() - 1);
-    serial(F("Serial1 = %s"), (const char *)string.c_str());
+    serial("Serial1 = %s", string.c_str());
     if (string.length() > 0) {
       if (isdigit(string[0])) {  // if the first character in the string is a digit
         // convert the string to a floating point number so it can be evaluated by the Arduino

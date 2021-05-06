@@ -78,7 +78,7 @@ void Serial_TC::vprintf(const char *format, va_list args) {
   if (!printIsActive) {
     printIsActive = true;
     // this seems to cause problems on the actual hardware
-    SD_TC::instance()->appendToSerialLog(buffer);
+    // SD_TC::instance()->appendToSerialLog(buffer);    // JGF
     printIsActive = false;
   }
 }

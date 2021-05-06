@@ -37,13 +37,13 @@ PHControl::PHControl() {
 void PHControl::setTargetPh(double newPh) {
   targetPh = newPh;
   EEPROM_TC::instance()->setPH(newPh);
-  serialWithTime(F("set target pH to %6.4f"), newPh);
+  serialWithTime("set target pH to %6.4f", newPh);
 }
 
 void PHControl::setUsePID(bool flag) {
   usePID = flag;
   // save to EEPROM?
-  serialWithTime((flag ? F("enable PID") : F("disable PID")));
+  serialWithTime((flag ? "enable PID" : "disable PID"));
 }
 
 void PHControl::updateControl(double pH) {
@@ -69,7 +69,7 @@ void PHControl::updateControl(double pH) {
     newValue = HIGH;  // close CO2 solenoid
   }
   if (newValue != oldValue) {
-    serialWithTime((newValue ? F("CO2 bubbler off") : F("CO2 bubbler on")));
+    serialWithTime((newValue ? "CO2 bubbler off" : "CO2 bubbler on"));
     digitalWrite(PIN, newValue);
   }
 }

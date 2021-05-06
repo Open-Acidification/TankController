@@ -14,8 +14,8 @@ SD_TC* SD_TC::_instance = nullptr;
  */
 SD_TC* SD_TC::instance() {
   if (!_instance) {
-    new SD_TC();
-    assert(_instance);
+    _instance = new SD_TC();
+    serial("SD_TC::instance() called SD_TC::SD_TC()");
   }
   return _instance;
 }
@@ -27,8 +27,6 @@ SD_TC* SD_TC::instance() {
  */
 SD_TC::SD_TC() {
   assert(_instance == nullptr);
-  _instance = this;
-  serial("SD_TC::SD_TC()");
   pinMode(PIN, OUTPUT);
   digitalWrite(PIN, HIGH);
   begin(4);

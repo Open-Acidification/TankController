@@ -34,7 +34,7 @@ void PHProbe::clearCalibration() {
 
 void PHProbe::sendSlopeRequest() {
   Serial1.print(F("Slope,?\r"));  // Sending request for Calibration Slope
-  slopeResponse = "       Slope requested!";
+  slopeResponse = "Slope requested!";
 }
 
 String PHProbe::getSlope() {

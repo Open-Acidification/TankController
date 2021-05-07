@@ -59,14 +59,14 @@ void NumCollectorState::printValue() {
 
   if (!hasDecimal) {
     // show user entry as an integer (no decimal yet)
-    snprintf(strValue, sizeof(strValue), "%.*f-> %i ", getCurrentValuePrecision(), prior, (int)value);
+    snprintf(strValue, sizeof(strValue), "%.*f-> %i ", getCurrentValuePrecision(), prior, (int)value);  // FLOAT
   } else if (factor == 10) {
     // show user entry with a decimal but nothing beyond
-    snprintf(strValue, sizeof(strValue), "%.*f-> %i.", getCurrentValuePrecision(), prior, (int)value);
+    snprintf(strValue, sizeof(strValue), "%.*f-> %i.", getCurrentValuePrecision(), prior, (int)value);  // FLOAT
   } else {
     // show user entry with appropriate precision (based on digits user has entered)
     int precision = log10(factor / 10);
-    snprintf(strValue, sizeof(strValue), "%.*f-> %.*f", getCurrentValuePrecision(), prior, precision, value);
+    snprintf(strValue, sizeof(strValue), "%.*f-> %.*f", getCurrentValuePrecision(), prior, precision, value);  // FLOAT
   }
   LiquidCrystal_TC::instance()->writeLine(strValue, 1);
 }

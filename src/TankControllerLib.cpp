@@ -205,7 +205,7 @@ void TankControllerLib::writeDataToSD() {
   static unsigned long nextWriteTime = 0;
   static const char header[] = "time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd";
   static const char format[] =
-      "%02i/%02i/%4i %02i:%02i:%02i, %3i, %2.3f, %2.3f, %1.4f, %1.4f, %4i, %5.1f, %5.1f, %5.1f";
+      "%02i/%02i/%4i %02i:%02i:%02i, %3i, %2i.%03i, %2i.%03i, %1i.%04i, %1i.%04i, %4i, %5i.%1i, %5i.%1i, %5i.%1i";
   unsigned long msNow = millis();
   COUT("nextWriteTime: " << nextWriteTime << "; now = " << msNow);
   if (nextWriteTime <= msNow) {
@@ -215,10 +215,11 @@ void TankControllerLib::writeDataToSD() {
     int tankId = 0;
     snprintf(buffer, sizeof(buffer), format, (int)dtNow.month(), (int)dtNow.day(), (int)dtNow.year(), (int)dtNow.hour(),
              (int)dtNow.minute(), (int)dtNow.second(), (int)tankId,
-             (double)TempProbe_TC::instance()->getRunningAverage(),
-             (double)TemperatureControl::instance()->getTargetTemperature(), (double)PHProbe::instance()->getPh(),
-             (double)PHControl::instance()->getTargetPh(), (int)0, (double)pPID->getKp(), (double)pPID->getKi(),
-             (double)pPID->getKd());  // still missing onTime
+             FLOAT((double)TempProbe_TC::instance()->getRunningAverage(), 3),
+             FLOAT((double)TemperatureControl::instance()->getTargetTemperature(), 3),
+             FLOAT((double)PHProbe::instance()->getPh(), 4), FLOAT((double)PHControl::instance()->getTargetPh(), 4),
+             (int)0, FLOAT((double)pPID->getKp(), 1), FLOAT((double)pPID->getKi(), 1),
+             FLOAT((double)pPID->getKd(), 1));  // still missing onTime
     SD_TC::instance()->appendToDataLog(header, buffer);
     nextWriteTime = msNow / 1000 * 1000 + 1000;  // round up to next second
     COUT(buffer);

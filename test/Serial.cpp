@@ -14,7 +14,7 @@ unittest(SerialTest) {
   state->serialPort[0].dataOut = "";  // the history of data written
 
   // basic serial output
-  serial("abc %s %i %.4f", "XYZ", 42, 1.375);
+  serial("abc %s %i %1i.%04i", "XYZ", 42, FLOAT(1.375, 4));
   assertEqual("", state->serialPort[0].dataIn);
   assertEqual("abc XYZ 42 1.3750\r\n", state->serialPort[0].dataOut);
 

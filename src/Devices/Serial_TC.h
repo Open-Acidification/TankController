@@ -7,6 +7,10 @@
 
 #include <Arduino.h>
 
+// The default Arduino library does not support printf() for float values.
+// A workaround is to print two integers separated by a decimal point.
+#define FLOAT(x, p) ((int)x), ((int)(fabs(x) * pow(10, p) + 0.5) % (int)pow(10, p))
+
 void serial(const char *format...);
 void serial(const __FlashStringHelper *format...);
 void serialWithTime(const char *format...);

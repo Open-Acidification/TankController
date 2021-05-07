@@ -4,6 +4,7 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHControl.h"
 #include "Devices/PHProbe.h"
+#include "Devices/Serial_TC.h"
 #include "Devices/TempProbe_TC.h"
 #include "Devices/TemperatureControl.h"
 #include "EnablePID.h"
@@ -236,8 +237,8 @@ void MainMenu::idle() {
   } else if (99.99 < temp) {
     temp = 99.99;
   }
-  snprintf(output, sizeof(output), "T=%02.2f  %c %2.2f", temp, (tempControl->isHeater() ? 'H' : 'C'),
-           tempControl->getTargetTemperature());
+  snprintf(output, sizeof(output), "T=%02i.%02i  %c %02i.%02i", FLOAT(temp, 2), (tempControl->isHeater() ? 'H' : 'C'),
+           FLOAT(tempControl->getTargetTemperature(), 2));
   LiquidCrystal_TC::instance()->writeLine(output, 1);
 }
 

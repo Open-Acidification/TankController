@@ -80,7 +80,7 @@ void PHProbe::setTemperatureCompensation(double temperature) {
   } else {
     fullCommand = PARTIAL_COMMAND + "20\r";
   }
-  serial("PHProbe::setTemperatureCompensation) - ", (const char *)fullCommand.c_str());
+  serial("PHProbe::setTemperatureCompensation) - %s", fullCommand.c_str());
   Serial1.print(fullCommand);  // send that string to the Atlas Scientific product
 }
 

@@ -42,14 +42,27 @@ void TemperatureControl::enableHeater(bool flag) {
 TemperatureControl::TemperatureControl() {
   targetTemperature = EEPROM_TC::instance()->getTemp();
   digitalWrite(PIN, HIGH);
+  serial("TemperatureControl::TemperatureControl() constructing %s with target Temperature of %2i.%03i",
+         this->isHeater() ? "Heater" : "Chiller", FLOAT(targetTemperature, 3));
+}
+
+/**
+ * is heater
+ */
+bool TemperatureControl::isHeater() {
+  return true;
 }
 
 /**
  * set target temperature and save in EEPROM
  */
 void TemperatureControl::setTargetTemperature(double newTemperature) {
-  EEPROM_TC::instance()->setTemp(newTemperature);
-  targetTemperature = newTemperature;
+  if (targetTemperature != newTemperature) {
+    serial("Change target temperature from %2i.%03i to %2i.%03i", FLOAT(targetTemperature, 3),
+           FLOAT(newTemperature, 3));
+    EEPROM_TC::instance()->setTemp(newTemperature);
+    targetTemperature = newTemperature;
+  }
 }
 
 void Chiller::updateControl(double currentTemperature) {

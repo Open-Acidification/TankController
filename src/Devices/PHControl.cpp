@@ -32,6 +32,7 @@ PHControl::PHControl() {
   if (isnan(targetPh)) {
     targetPh = DEFAULT_PH;
   }
+  serial("PHControl::PHControl() with target pH = %i.%04i", FLOAT(targetPh, 4));
 }
 
 void PHControl::setTargetPh(double newPh) {

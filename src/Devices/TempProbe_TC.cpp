@@ -42,6 +42,7 @@ TempProbe_TC::TempProbe_TC() {
     correction = 0;
     EEPROM_TC::instance()->setCorrectedTemp(correction);
   }
+  serial("TempProbe_TC::TempProbe_TC() with temperature correction of %2i.%03i", FLOAT(correction, 3));
 }
 
 /**

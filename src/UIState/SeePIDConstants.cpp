@@ -7,6 +7,7 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHProbe.h"
 #include "Devices/PID_TC.h"
+#include "Devices/Serial_TC.h"
 #include "TC_util.h"
 
 void SeePIDConstants::loop() {
@@ -25,18 +26,18 @@ void SeePIDConstants::loop() {
 
 void SeePIDConstants::loadKp(int line) {
   char buffer[17];
-  snprintf(buffer, sizeof(buffer), "Kp: %.1f", PID_TC::instance()->getKp());
+  snprintf(buffer, sizeof(buffer), "Kp: %5i.%1i", FLOAT(PID_TC::instance()->getKp(), 1));
   LiquidCrystal_TC::instance()->writeLine(buffer, line);
 }
 
 void SeePIDConstants::loadKi(int line) {
   char buffer[17];
-  snprintf(buffer, sizeof(buffer), "Ki: %.1f", PID_TC::instance()->getKi());
+  snprintf(buffer, sizeof(buffer), "Ki: %5i.%1i", FLOAT(PID_TC::instance()->getKi(), 1));
   LiquidCrystal_TC::instance()->writeLine(buffer, line);
 }
 
 void SeePIDConstants::loadKd(int line) {
   char buffer[17];
-  snprintf(buffer, sizeof(buffer), "Kd: %.1f", PID_TC::instance()->getKd());
+  snprintf(buffer, sizeof(buffer), "Kd: %5i.%1i", FLOAT(PID_TC::instance()->getKd(), 1));
   LiquidCrystal_TC::instance()->writeLine(buffer, line);
 }

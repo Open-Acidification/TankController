@@ -74,13 +74,13 @@ void LiquidCrystal_TC::splashScreen() {
   write(uint8_t(1));
   write(uint8_t(2));
   write(uint8_t(3));
-  print(F(" ONTHANK LAB"));
+  print(" ONTHANK LAB");
   setCursor(0, 1);
   write(uint8_t(4));
   write(uint8_t(5));
   write(uint8_t(6));
   write(uint8_t(7));
-  print(F("TANK CONTROL"));
+  print("TANK CONTROL");
 }
 
 /**

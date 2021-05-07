@@ -13,12 +13,7 @@ void serial(const char *format...) {
   Serial_TC::instance()->vprintf(format, args);
   va_end(args);
 }
-void serial(const __FlashStringHelper *format...) {
-  va_list args;
-  va_start(args, format);
-  Serial_TC::instance()->vprintf((const char *)format, args);
-  va_end(args);
-}
+
 void serialWithTime(const char *format...) {
   char buffer[100];
   unsigned long ms = millis();
@@ -29,18 +24,6 @@ void serialWithTime(const char *format...) {
   va_list args;
   va_start(args, format);
   Serial_TC::instance()->vprintf(format, args);
-  va_end(args);
-}
-void serialWithTime(const __FlashStringHelper *format...) {
-  char buffer[100];
-  unsigned long ms = millis();
-  DateTime_TC now = DateTime_TC::now();
-  snprintf(buffer, sizeof(buffer), "Timestamp of next line: YYYY/MM/DD hh:mm:ss.%03i", (int)ms % 1000);
-  now.toString(buffer);
-  serial(buffer);
-  va_list args;
-  va_start(args, format);
-  Serial_TC::instance()->vprintf((const char *)format, args);
   va_end(args);
 }
 
@@ -78,7 +61,7 @@ void Serial_TC::vprintf(const char *format, va_list args) {
   if (!printIsActive) {
     printIsActive = true;
     // this seems to cause problems on the actual hardware
-    SD_TC::instance()->appendToSerialLog(buffer);
+    // SD_TC::instance()->appendToSerialLog(buffer);
     printIsActive = false;
   }
 }

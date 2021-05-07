@@ -89,11 +89,12 @@ unittest(getSlope) {
   TankControllerLib *pTC = TankControllerLib::instance();
   state->serialPort[0].dataOut = "";
   PHProbe *pPHProbe = PHProbe::instance();
-  pTC->serialEvent1();  // fake interrupt
+  GODMODE()->serialPort[1].dataIn = "?Slope,99.7,100.3,-0.89\r";  // the queue of data waiting to be read
+  pTC->serialEvent1();                                            // fake interrupt
   String slope = pPHProbe->getSlope();
   assertEqual("99.7,100.3,-0.89", slope);
   COUT(state->serialPort[0].dataOut.length());
-  assertEqual("Calibration Slope: 99.7,100.3,-0.89\r\n", state->serialPort[0].dataOut);
+  assertEqual("Serial1 = ?Slope,99.7,100.3,-0.89\r\nCalibration Slope: 99.7,100.3,-0.89\r\n", state->serialPort[0].dataOut);
   state->serialPort[0].dataOut = "";
   GODMODE()->serialPort[1].dataIn = "?Slope,98.7,101.3,-0.89\r";  // the answer to getSlop() waiting to be read
   pTC->serialEvent1();                                            // fake interrupt

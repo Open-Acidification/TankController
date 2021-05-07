@@ -10,9 +10,9 @@
 
 unittest(test) {
   TankControllerLib* tc = TankControllerLib::instance();
-  EEPROM_TC::instance()->setPH(7.125);
+  EEPROM_TC::instance()->setPH(8.100);
   SetPHSetPoint* test = new SetPHSetPoint(tc);
-  assertEqual(7.125, PHControl::instance()->getTargetPh());
+  assertEqual(8.100, PHControl::instance()->getTargetPh());
   tc->setNextState(test, true);
 
   // setValue

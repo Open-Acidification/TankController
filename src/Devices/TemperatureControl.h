@@ -24,13 +24,14 @@ public:
   double getTargetTemperature() {
     return targetTemperature;
   }
-  virtual bool isHeater() = 0;
+  virtual bool isHeater();
   void setTargetTemperature(double newTemperature);
   virtual void updateControl(double currentTemperature) = 0;
 };
 
 class Heater : public TemperatureControl {
 public:
+  Heater() : TemperatureControl(){};
   bool isHeater() {
     return true;
   }
@@ -43,6 +44,7 @@ private:
   unsigned long previousMillis = 0;                 // will store last time chiller state was checked
 
 public:
+  Chiller() : TemperatureControl(){};
   bool isHeater() {
     return false;
   }

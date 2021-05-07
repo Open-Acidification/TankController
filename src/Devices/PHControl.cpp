@@ -6,7 +6,7 @@
 #include "TC_util.h"
 #include "TankControllerLib.h"
 
-const double DEFAULT_PH = 7.125;
+const double DEFAULT_PH = 8.1;
 
 //  class instance variables
 /**
@@ -31,20 +31,23 @@ PHControl::PHControl() {
   targetPh = EEPROM_TC::instance()->getPH();
   if (isnan(targetPh)) {
     targetPh = DEFAULT_PH;
+    EEPROM_TC::instance()->setPH(targetPh);
   }
   serial("PHControl::PHControl() with target pH = %i.%04i", FLOAT(targetPh, 4));
 }
 
 void PHControl::setTargetPh(double newPh) {
-  targetPh = newPh;
-  EEPROM_TC::instance()->setPH(newPh);
-  serialWithTime(F("set target pH to %6.4f"), newPh);
+  if (targetPh != newPh) {
+    serialWithTime("change target pH from %6.4f to %6.4f", targetPh, newPh);
+    targetPh = newPh;
+    EEPROM_TC::instance()->setPH(newPh);
+  }
 }
 
 void PHControl::setUsePID(bool flag) {
   usePID = flag;
   // save to EEPROM?
-  serialWithTime((flag ? F("enable PID") : F("disable PID")));
+  serialWithTime((flag ? "enable PID" : "disable PID"));
 }
 
 void PHControl::updateControl(double pH) {
@@ -70,7 +73,7 @@ void PHControl::updateControl(double pH) {
     newValue = HIGH;  // close CO2 solenoid
   }
   if (newValue != oldValue) {
-    serialWithTime((newValue ? F("CO2 bubbler off") : F("CO2 bubbler on")));
+    serialWithTime((newValue ? "CO2 bubbler off" : "CO2 bubbler on"));
     digitalWrite(PIN, newValue);
   }
 }

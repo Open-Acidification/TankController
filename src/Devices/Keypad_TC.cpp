@@ -1,5 +1,7 @@
 #include "Devices/Keypad_TC.h"
 
+#include "Devices/Serial_TC.h"
+
 const byte ROWS = 4;
 const byte COLS = 4;
 char STD_KEYS[ROWS][COLS] = {{'1', '2', '3', 'A'}, {'4', '5', '6', 'B'}, {'7', '8', '9', 'C'}, {'*', '0', '#', 'D'}};
@@ -20,6 +22,7 @@ Keypad_TC::Keypad_TC() {
 Keypad_TC* Keypad_TC::instance() {
   if (!_instance) {
     _instance = new Keypad_TC();
+    serial("Keypad_TC::instance()");
   }
   return _instance;
 }

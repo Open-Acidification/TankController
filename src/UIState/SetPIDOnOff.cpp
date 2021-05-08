@@ -1,10 +1,10 @@
 /**
- * PIDTuningMenu.cpp
+ * SetPIDOnOff.cpp
  */
 
-#include "PIDTuningMenu.h"
+#include "SetPIDOnOff.h"
 
-void PIDTuningMenu::handleKey(char key) {
+void SetPIDOnOff::handleKey(char key) {
   switch (key) {
     case 'D':  // Don't save (cancel)
       returnToMainMenu();

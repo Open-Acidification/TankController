@@ -1,18 +1,18 @@
 /**
- * PIDTuningMenu.h
+ * SetPIDOnOff.h
  *
- * PID Tuning
+ * Turn PID on/off
  */
 #pragma once
 #include "UIState.h"
 
-class PIDTuningMenu : public UIState {
+class SetPIDOnOff : public UIState {
 public:
-  PIDTuningMenu(TankControllerLib* tc) : UIState(tc) {
+  SetPIDOnOff(TankControllerLib* tc) : UIState(tc) {
   }
   void handleKey(char key);
   const char* name() {
-    return "PIDTuningMenu";
+    return "SetPIDOnOff";
   }
   const char* prompt() {
     return "PID TUNING      ";

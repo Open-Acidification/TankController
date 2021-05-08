@@ -11,6 +11,7 @@ public:
   SeePHSlope(TankControllerLib* tc) : UIState(tc) {
   }
   void start();
+  void loop();
   const char* name() {
     return "SeePHSlope";
   }

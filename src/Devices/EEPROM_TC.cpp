@@ -4,6 +4,7 @@
 
 #include "Devices/EEPROM_TC_2.h"
 #include "Devices/EEPROM_TC_3.h"
+#include "Devices/Serial_TC.h"
 #include "TC_util.h"
 
 //  class variables
@@ -21,12 +22,14 @@ EEPROM_TC* EEPROM_TC::instance(int version) {
   _instance = new EEPROM_TC_3();
   if (_instance->isRightVersion()) {
     if (version == 0 || _instance->getVersion() == version) {
+      serial("new EEPROM_TC_3()");
       return _instance;
     }
   }
   delete _instance;
   _instance = new EEPROM_TC_2();
   assert(version == 0 || _instance->getVersion() == version);
+  serial("new EEPROM_TC_2()");
   return _instance;
 }
 

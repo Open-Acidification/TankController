@@ -3,6 +3,7 @@
 #include <math.h>
 
 #include "Devices/LiquidCrystal_TC.h"
+#include "Devices/Serial_TC.h"
 #include "MainMenu.h"
 // useful for future debugging
 #include "TC_util.h"
@@ -54,20 +55,44 @@ void NumCollectorState::backSpace() {
 }
 
 void NumCollectorState::printValue() {
-  char strValue[16];
-  double prior = getCurrentValue();
+  char strValue[20];
+  double current = getCurrentValue();
+  int precision = getCurrentValuePrecision();
+  int intWidth = 6 - precision;
+  Serial.print("<A");
+  Serial.print(current);
+  Serial.print(" ");
+  Serial.print(precision);
+  Serial.print(" ");
+  Serial.print(intWidth);
+  snprintf(strValue, sizeof(strValue), "%*i->", 3, 12);
+  // snprintf(strValue, 10, "%*i.%*i->", intWidth, (int)current, FLOAT((current - (int)current) + precision,
+  // precision));
+  Serial.print(" \"");
+  Serial.print(strValue);
+  Serial.print("\" ");
 
+  int size = strlen(strValue);
+  Serial.print(size);
+  char* ptr = &strValue[size];
+  size = sizeof(strValue) - size;
+  Serial.print(" ");
+  Serial.print(size);
+  Serial.println("</A>");
   if (!hasDecimal) {
     // show user entry as an integer (no decimal yet)
-    snprintf(strValue, sizeof(strValue), "%.*f-> %i ", getCurrentValuePrecision(), prior, (int)value);  // FLOAT
+    snprintf(ptr, size, "%i ", (int)value);
   } else if (factor == 10) {
     // show user entry with a decimal but nothing beyond
-    snprintf(strValue, sizeof(strValue), "%.*f-> %i.", getCurrentValuePrecision(), prior, (int)value);  // FLOAT
+    snprintf(ptr, size, "%i.", (int)value);
   } else {
     // show user entry with appropriate precision (based on digits user has entered)
-    int precision = log10(factor / 10);
-    snprintf(strValue, sizeof(strValue), "%.*f-> %.*f", getCurrentValuePrecision(), prior, precision, value);  // FLOAT
+    precision = log10(factor / 10);
+    snprintf(ptr, size, "%*i.%*i", intWidth, FLOAT(value, precision));
   }
+  Serial.print("<B>");
+  Serial.print(strValue);
+  Serial.println("</B>");
   LiquidCrystal_TC::instance()->writeLine(strValue, 1);
 }
 

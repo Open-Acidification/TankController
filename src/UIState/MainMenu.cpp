@@ -226,8 +226,8 @@ void MainMenu::selectSet() {
 // show current temp and pH
 void MainMenu::idle() {
   char output[17];
-  snprintf(output, sizeof(output), "pH=%01.3f   %1.3f", PHProbe::instance()->getPh(),
-           PHControl::instance()->getTargetPh());
+  snprintf(output, sizeof(output), "pH=%1i.%03i   %1i.%03i", FLOAT(PHProbe::instance()->getPh(), 3),
+           FLOAT(PHControl::instance()->getTargetPh(), 3));
   LiquidCrystal_TC::instance()->writeLine(output, 0);
   TemperatureControl *tempControl = TemperatureControl::instance();
   TempProbe_TC *tempProbe = TempProbe_TC::instance();

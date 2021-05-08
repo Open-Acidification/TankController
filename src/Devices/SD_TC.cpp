@@ -35,7 +35,7 @@ SD_TC::SD_TC() {
 /**
  * append data to a data log file
  */
-void SD_TC::appendToDataLog(String header, String data) {
+void SD_TC::appendToDataLog(const String header, const String data) {
   String path = todaysDataFileName();
   COUT(path);
   if (!exists(path)) {
@@ -49,7 +49,7 @@ void SD_TC::appendToDataLog(String header, String data) {
 /**
  * append data to a path
  */
-void SD_TC::appendDataToPath(String data, String path) {
+void SD_TC::appendDataToPath(const String data, const String path) {
   int i = path.indexOf('/', 1);
   while (i > 0) {
     String s = path.substring(0, i);
@@ -83,14 +83,14 @@ void SD_TC::appendDataToPath(String data, String path) {
 /**
  * append data to a serial log file
  */
-void SD_TC::appendToSerialLog(String data) {
+void SD_TC::appendToSerialLog(const String data) {
   DateTime_TC now = DateTime_TC::now();
   char path[30];
   snprintf(path, sizeof(path), "/log/%4i/%02i/%02i.txt", now.year(), now.month(), now.day());
   appendDataToPath(data, path);
 }
 
-void printEntry(File entry, String parentPath) {
+void printEntry(File entry, const String parentPath) {
   size_t depth = 0;
   for (size_t i = 1; i < parentPath.length(); ++i) {
     if (parentPath[i] == '/') {
@@ -113,9 +113,10 @@ void printEntry(File entry, String parentPath) {
  * print the root directory and all subdirectories
  */
 void SD_TC::printRootDirectory() {
-  serial("SD_TC::printRootDirectory() - start");
-  visit(printEntry);
-  serial("SD_TC::printRootDirectory() - end");
+  // THIS SEEMS TO BE BROKEN SO WE SKIP FOR NOW!
+  // serial("SD_TC::printRootDirectory() - start");
+  // visit(printEntry);
+  // serial("SD_TC::printRootDirectory() - end");
 }
 
 String SD_TC::todaysDataFileName() {
@@ -135,7 +136,7 @@ void SD_TC::visit(visitor pFunction) {
   }
 }
 
-void SD_TC::visit(visitor pFunction, File dir, String parentPath) {
+void SD_TC::visit(visitor pFunction, File dir, const String parentPath) {
   int i = 0;
   while (i++ < 100) {
     File entry = dir.openNextFile();

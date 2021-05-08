@@ -8,7 +8,6 @@
 #include "Devices/TemperatureControl.h"
 #include "EnablePID.h"
 #include "PHCalibrationMid.h"
-#include "PIDTuningMenu.h"
 #include "ResetLCDScreen.h"
 #include "SeeDeviceAddress.h"
 #include "SeeDeviceUptime.h"
@@ -25,6 +24,7 @@
 #include "SetKI.h"
 #include "SetKP.h"
 #include "SetPHSetPoint.h"
+#include "SetPIDOnOff.h"
 #include "SetTankID.h"
 #include "SetTempSetPoint.h"
 #include "SetTime.h"
@@ -47,7 +47,6 @@ MainMenu::MainMenu(TankControllerLib *tc) : UIState(tc) {
   setMenus[SET_CHILL_OR_HEAT] = String("Set chill/heat  ");
   setMenus[SET_GOOGLE_MINS] = String("Set Google mins ");
   setMenus[SET_PH] = String("Set pH target   ");
-  setMenus[SET_PID_AUTO_TUNE] = String("PID auto-tune   ");
   setMenus[SET_KD] = String("Set KD          ");
   setMenus[SET_KI] = String("Set KI          ");
   setMenus[SET_KP] = String("Set KP          ");
@@ -190,9 +189,6 @@ void MainMenu::selectSet() {
     case SET_PH:
       this->setNextState((UIState *)new SetPHSetPoint(tc));
       break;
-    case SET_PID_AUTO_TUNE:
-      this->setNextState((UIState *)new PIDTuningMenu(tc));
-      break;
     case SET_KD:
       this->setNextState((UIState *)new SetKD(tc));
       break;
@@ -203,7 +199,7 @@ void MainMenu::selectSet() {
       this->setNextState((UIState *)new SetKP(tc));
       break;
     case SET_PID_ON_OFF:
-      this->setNextState((UIState *)new PIDTuningMenu(tc));
+      this->setNextState(static_cast<UIState *>(new SetPIDOnOff(tc)));
       break;
     case SET_TANK_ID:
       this->setNextState((UIState *)new SetTankID(tc));

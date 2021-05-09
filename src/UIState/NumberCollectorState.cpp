@@ -3,11 +3,13 @@
 #include <math.h>
 
 #include "Devices/LiquidCrystal_TC.h"
+#include "Devices/Serial_TC.h"
 #include "MainMenu.h"
 // useful for future debugging
 #include "TC_util.h"
 
 void NumCollectorState::clear() {
+  hasDecimal = false;
   numDigits = 0;
   value = 0;
 }
@@ -54,21 +56,26 @@ void NumCollectorState::backSpace() {
 }
 
 void NumCollectorState::printValue() {
-  char strValue[16];
-  double prior = getCurrentValue();
+  char format[20], string[20];
+  // The Arduino does not support variable widths, so we construct the format string at runtime!
+  snprintf(format, sizeof(format), "%%7.%if->", getCurrentValuePrecision());
+  snprintf(string, sizeof(string), format, getCurrentValue());
 
   if (!hasDecimal) {
     // show user entry as an integer (no decimal yet)
-    snprintf(strValue, sizeof(strValue), "%.*f-> %i ", getCurrentValuePrecision(), prior, (int)value);
+    snprintf(format, sizeof(format), "%s%%6i", string);
+    snprintf(string, sizeof(string), format, (int)value);
   } else if (factor == 10) {
     // show user entry with a decimal but nothing beyond
-    snprintf(strValue, sizeof(strValue), "%.*f-> %i.", getCurrentValuePrecision(), prior, (int)value);
+    snprintf(format, sizeof(format), "%s%%6i.", string);
+    snprintf(string, sizeof(string), format, (int)value);
   } else {
     // show user entry with appropriate precision (based on digits user has entered)
     int precision = log10(factor / 10);
-    snprintf(strValue, sizeof(strValue), "%.*f-> %.*f", getCurrentValuePrecision(), prior, precision, value);
+    snprintf(format, sizeof(format), "%s%%7.%if", string, precision);
+    snprintf(string, sizeof(string), format, value);
   }
-  LiquidCrystal_TC::instance()->writeLine(strValue, 1);
+  LiquidCrystal_TC::instance()->writeLine(string, 1);
 }
 
 void NumCollectorState::start() {

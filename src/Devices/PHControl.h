@@ -23,6 +23,6 @@ public:
     return usePID;
   }
   void setTargetPh(double newPh);
-  void setUsePID(bool flag);
+  void enablePID(bool flag);
   void updateControl(double pH);
 };

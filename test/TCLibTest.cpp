@@ -37,7 +37,7 @@ unittest_setup() {
   pTC->serialEvent1();                    // fake interrupt
 
   // set target pH
-  pPHControl->setUsePID(false);
+  pPHControl->enablePID(false);
   pPHControl->setTargetPh(7.5);
 
   // clear SD card

@@ -1,10 +1,9 @@
-#include "SetTempSetPoint.h"
-
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "EEPROM_TC.h"
+#include "SetTempSetPoint.h"
 #include "TankControllerLib.h"
 
 unittest(test) {

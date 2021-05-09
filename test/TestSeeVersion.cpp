@@ -1,10 +1,9 @@
-#include "SeeVersion.h"
-
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
+#include "SeeVersion.h"
 #include "TankControllerLib.h"
 
 unittest(testOutput) {

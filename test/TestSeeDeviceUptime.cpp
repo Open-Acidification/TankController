@@ -1,10 +1,9 @@
-#include "SeeDeviceUptime.h"
-
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
 #include "Devices/DateTime_TC.h"
 #include "LiquidCrystal_TC.h"
+#include "SeeDeviceUptime.h"
 #include "TankControllerLib.h"
 #include "UIState/UIState.h"
 

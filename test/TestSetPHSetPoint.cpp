@@ -1,11 +1,10 @@
-#include "SetPHSetPoint.h"
-
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHControl.h"
 #include "EEPROM_TC.h"
+#include "SetPHSetPoint.h"
 #include "TankControllerLib.h"
 
 unittest(test) {

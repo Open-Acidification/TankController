@@ -2,7 +2,7 @@
 # Without this we can't see floating point numbers!
 # Then using the Tools menu to select ARV printf support.
 #
-# My file is at /Users/jfoster/Library/Arduino15/packages/arduino/hardware/avr/1.8.3
+# My file is at ~/Library/Arduino15/packages/arduino/hardware/avr/1.8.3
 #
 # For background see the following:
 # https://forum.arduino.cc/t/no-sprintf-float-formatting-come-back-five-year/331790/6

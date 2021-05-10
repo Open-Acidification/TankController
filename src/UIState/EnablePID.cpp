@@ -16,7 +16,7 @@ void EnablePID::setValue(double value) {
     LiquidCrystal_TC::instance()->writeLine("Invalid entry!  ", 1);
   } else {
     bool flag = (int)value == 1;
-    PHControl::instance()->setUsePID(flag);
+    PHControl::instance()->enablePID(flag);
     if (flag) {
       LiquidCrystal_TC::instance()->writeLine("PID enabled     ", 1);
     } else {

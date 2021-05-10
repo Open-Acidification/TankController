@@ -44,7 +44,7 @@ void PHControl::setTargetPh(double newPh) {
   }
 }
 
-void PHControl::setUsePID(bool flag) {
+void PHControl::enablePID(bool flag) {
   usePID = flag;
   // save to EEPROM?
   serialWithTime((flag ? "enable PID" : "disable PID"));

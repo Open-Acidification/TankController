@@ -13,9 +13,7 @@ public:
   const char* name() {
     return "SetPHSetPoint";
   }
-  float getCurrentValue() {
-    return 0.0;
-  }
+  float getCurrentValue();
   int getCurrentValuePrecision() {
     return 3;
   }

@@ -18,7 +18,7 @@ void serialWithTime(const char *format...) {
   char buffer[100];
   unsigned long ms = millis();
   DateTime_TC now = DateTime_TC::now();
-  snprintf(buffer, sizeof(buffer), "Timestamp of next line: YYYY/MM/DD hh:mm:ss.%03i", (int)ms % 1000);
+  snprintf(buffer, sizeof(buffer), "Timestamp of next line: YYYY/MM/DD hh:mm:ss.%03lu", ms % 1000);
   now.toString(buffer);
   serial(buffer);
   va_list args;

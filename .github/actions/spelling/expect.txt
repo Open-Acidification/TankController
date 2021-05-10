@@ -135,6 +135,7 @@ unittest
 unixtime
 unshallow
 url
+vfprintf
 vprintf
 vscode
 vsnprintf

@@ -7,6 +7,10 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHControl.h"
 
+float SetPHSetPoint::getCurrentValue() {
+  return PHControl::instance()->getTargetPh();
+}
+
 void SetPHSetPoint::setValue(double value) {
   PHControl::instance()->setTargetPh(value);
 

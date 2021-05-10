@@ -10,9 +10,31 @@
 
 Arduino library for the Open Acidification pH Stat Controller
 
-## Installation
+## Use
 
-Use [`scripts/install.sh`](scripts/install.sh) to do the initial install. To build the GUI simulator, see [GUI/build.sh](GUI/build.sh).
+### Development
+
+*   Clone (or fork and clone if you might contribute to the project) this repository to the [Arduino Libraries directory](https://www.arduino.cc/en/Hacking/Libraries).
+*   Use [`scripts/install.sh`](scripts/install.sh) to do the initial install.
+*   After that use [`scripts/testAndBuild.sh`](scripts/testAndBuild.sh) to test.
+*   To build the GUI simulator, see [GUI/build.sh](GUI/build.sh).
+
+### Install
+
+To install onto an Arduino Mega2560 use the [Arduino IDE](https://www.arduino.cc/en/software).
+
+By default, the Arduino compiler links to a `printf` library that does not support printing floating point numbers. To get that feature (which we use!), add the following lines to `boards.txt` and use the Tools menu to select "`RV printf Version: "Full printf"`. On macOS, the `boards.txt` is located at `~/Library/Arduino15/packages/arduino/hardware/avr/1.8.3`. For background see [here](https://forum.arduino.cc/t/no-sprintf-float-formatting-come-back-five-year/331790/6).
+
+```text
+menu.printf=AVR printf Version
+
+mega.menu.printf.default=Default printf
+mega.menu.printf.default.compiler.c.elf.extra_flags=
+mega.menu.printf.full=Full printf
+mega.menu.printf.full.compiler.c.elf.extra_flags=-Wl,-u,vfprintf -lprintf_flt
+mega.menu.printf.minimal=Minimal printf
+mega.menu.printf.minimal.compiler.c.elf.extra_flags=-Wl,-u,vfprintf -lprintf_min
+```
 
 ## Contributors ✨
 

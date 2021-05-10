@@ -1,24 +1,27 @@
-#include "SeeVersion.h"
-
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
+#include "DateTime_TC.h"
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
+#include "SeeLogFile.h"
 #include "TankControllerLib.h"
 
 unittest(testOutput) {
   TankControllerLib* tc = TankControllerLib::instance();
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
+  DateTime_TC now = DateTime_TC::now();
   assertEqual("MainMenu", tc->stateName());
-  SeeVersion* test = new SeeVersion(tc);
+  SeeLogFile* test = new SeeLogFile(tc);
   tc->setNextState(test, true);
-  assertEqual("SeeVersion", tc->stateName());
+  assertEqual("SeeLogFile", tc->stateName());
 
   // Test the output
+  char reference[17];
+  snprintf(reference, sizeof(reference), "%02i/%02i.txt       ", now.month(), now.day());
   tc->loop();
-  assertEqual("Software Version", display->getLines().at(0));
-  assertEqual("21.05.0         ", display->getLines().at(1));
+  assertEqual("Current Log File", display->getLines().at(0));
+  assertEqual(reference, display->getLines().at(1).c_str());
   // Return to mainMenu
   Keypad_TC::instance()->_getPuppet()->push_back('D');
   tc->loop();

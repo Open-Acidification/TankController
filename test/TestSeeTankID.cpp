@@ -1,32 +1,34 @@
-#include "SeeLogFile.h"
-
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#include "DateTime_TC.h"
+#include "EEPROM_TC.h"
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
+#include "SeeTankID.h"
 #include "TankControllerLib.h"
 
 unittest(testOutput) {
+  // Set up
+  int prevID = EEPROM_TC::instance()->getTankID();
+  EEPROM_TC::instance()->setTankID(12);
+
   TankControllerLib* tc = TankControllerLib::instance();
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
-  DateTime_TC now = DateTime_TC::now();
   assertEqual("MainMenu", tc->stateName());
-  SeeLogFile* test = new SeeLogFile(tc);
+  SeeTankID* test = new SeeTankID(tc);
   tc->setNextState(test, true);
-  assertEqual("SeeLogFile", tc->stateName());
+  assertEqual("SeeTankID", tc->stateName());
 
   // Test the output
-  char reference[17];
-  snprintf(reference, sizeof(reference), "%02i/%02i.txt       ", now.month(), now.day());
-  tc->loop();
-  assertEqual("Current Log File", display->getLines().at(0));
-  assertEqual(reference, display->getLines().at(1).c_str());
+  assertEqual("Tank ID:        ", display->getLines().at(0));
+  assertEqual("12              ", display->getLines().at(1));
   // Return to mainMenu
   Keypad_TC::instance()->_getPuppet()->push_back('D');
   tc->loop();
   assertEqual("MainMenu", tc->stateName());
+
+  // Clean up
+  EEPROM_TC::instance()->setTankID(prevID);
 }
 
 unittest_main()

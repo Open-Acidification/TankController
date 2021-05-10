@@ -1,25 +1,24 @@
-#include "SetGoogleSheetInterval.h"
-
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "EEPROM_TC.h"
+#include "SetTankID.h"
 #include "TankControllerLib.h"
 
 unittest(test) {
   TankControllerLib* tc = TankControllerLib::instance();
-  SetGoogleSheetInterval* test = new SetGoogleSheetInterval(tc);
+  SetTankID* test = new SetTankID(tc);
   tc->setNextState(test, true);
 
   // setValue
-  test->setValue(30);
-  assertEqual(30, EEPROM_TC::instance()->getGoogleSheetInterval());
+  test->setValue(12);
+  assertEqual(12, EEPROM_TC::instance()->getTankID());
 
   // during the delay we showed the new value
   std::vector<String> lines = LiquidCrystal_TC::instance()->getLines();
-  assertEqual("New interval=30 ", lines[1]);
-  assertEqual("SetGoogleSheetInterval", tc->stateName());
+  assertEqual("Tank ID = 12    ", lines[1]);
+  assertEqual("SetTankID", tc->stateName());
   tc->loop();  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(1000);

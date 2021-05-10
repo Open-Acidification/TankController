@@ -1,9 +1,8 @@
-#include "TempProbe_TC.h"
-
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
 #include "EEPROM_TC.h"
+#include "TempProbe_TC.h"
 
 unittest_setup() {
   TempProbe_TC::reset();

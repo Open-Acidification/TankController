@@ -3,16 +3,38 @@
 [![testing status](https://github.com/Open-Acidification/TankControllerLib/workflows/Arduino%20CI/badge.svg)](https://github.com/Open-Acidification/TankControllerLib/actions)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/Open-Acidification/TankControllerLib/blob/master/CONTRIBUTING.md)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-11-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 # Tank Controller Library
 
 Arduino library for the Open Acidification pH Stat Controller
 
-## Installation
+## Use
 
-Use [`scripts/install.sh`](scripts/install.sh) to do the initial install. To build the GUI simulator, see [GUI/build.sh](GUI/build.sh).
+### Development
+
+*   Clone (or fork and clone if you might contribute to the project) this repository to the [Arduino Libraries directory](https://www.arduino.cc/en/Hacking/Libraries).
+*   Use [`scripts/install.sh`](scripts/install.sh) to do the initial install.
+*   After that use [`scripts/testAndBuild.sh`](scripts/testAndBuild.sh) to test.
+*   To build the GUI simulator, see [GUI/build.sh](GUI/build.sh).
+
+### Install
+
+To install onto an Arduino Mega2560 use the [Arduino IDE](https://www.arduino.cc/en/software).
+
+By default, the Arduino compiler links to a `printf` library that does not support printing floating point numbers. To get that feature (which we use!), add the following lines to `boards.txt` and use the Tools menu to select "`RV printf Version: "Full printf"`. On macOS, the `boards.txt` is located at `~/Library/Arduino15/packages/arduino/hardware/avr/1.8.3`. For background see [here](https://forum.arduino.cc/t/no-sprintf-float-formatting-come-back-five-year/331790/6).
+
+```text
+menu.printf=AVR printf Version
+
+mega.menu.printf.default=Default printf
+mega.menu.printf.default.compiler.c.elf.extra_flags=
+mega.menu.printf.full=Full printf
+mega.menu.printf.full.compiler.c.elf.extra_flags=-Wl,-u,vfprintf -lprintf_flt
+mega.menu.printf.minimal=Minimal printf
+mega.menu.printf.minimal.compiler.c.elf.extra_flags=-Wl,-u,vfprintf -lprintf_min
+```
 
 ## Contributors ✨
 
@@ -36,6 +58,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/cherbel"><img src="https://avatars.githubusercontent.com/u/36583106?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Caleb Herbel</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankController/commits?author=cherbel" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/lsaca05"><img src="https://avatars.githubusercontent.com/u/46550669?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Lucas Saca</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankController/commits?author=lsaca05" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/EvanKropf"><img src="https://avatars.githubusercontent.com/u/59894430?v=4?s=100" width="100px;" alt=""/><br /><sub><b>EvanKropf</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankController/commits?author=EvanKropf" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/genevea"><img src="https://avatars.githubusercontent.com/u/83893683?v=4?s=100" width="100px;" alt=""/><br /><sub><b>genevea</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankController/commits?author=genevea" title="Code">💻</a></td>
   </tr>
 </table>
 

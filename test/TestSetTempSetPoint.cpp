@@ -1,29 +1,25 @@
-#include "SetPHSetPoint.h"
-
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
 #include "Devices/LiquidCrystal_TC.h"
-#include "Devices/PHControl.h"
 #include "EEPROM_TC.h"
+#include "SetTempSetPoint.h"
 #include "TankControllerLib.h"
 
 unittest(test) {
   TankControllerLib* tc = TankControllerLib::instance();
-  EEPROM_TC::instance()->setPH(8.100);
-  SetPHSetPoint* test = new SetPHSetPoint(tc);
-  assertEqual(8.100, PHControl::instance()->getTargetPh());
+  SetTempSetPoint* test = new SetTempSetPoint(tc);
+  assertEqual("MainMenu", tc->stateName());
   tc->setNextState(test, true);
 
   // setValue
-  test->setValue(7.1234);
-  assertEqual(7.1234, PHControl::instance()->getTargetPh());
-  assertEqual(7.1234, EEPROM_TC::instance()->getPH());
+  test->setValue(50.05);
+  assertEqual(50.05, EEPROM_TC::instance()->getTemp());
 
   // during the delay we showed the new value
   std::vector<String> lines = LiquidCrystal_TC::instance()->getLines();
-  assertEqual("New pH=7.1234   ", lines[1]);
-  assertEqual("SetPHSetPoint", tc->stateName());
+  assertEqual("New Temp=50.05  ", lines[1]);
+  assertEqual("SetTempSetPoint", tc->stateName());
   tc->loop();  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(1000);

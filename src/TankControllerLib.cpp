@@ -227,7 +227,7 @@ void TankControllerLib::writeDataToSD() {
              (double)TemperatureControl::instance()->getTargetTemperature(), (double)PHProbe::instance()->getPh(),
              (double)PHControl::instance()->getTargetPh(), (int)0, (double)pPID->getKp(), (double)pPID->getKi(),
              (double)pPID->getKd());  // still missing onTime
-    SD_TC::instance()->appendToDataLog(header, buffer);
+    SD_TC::instance()->appendData(header, buffer);
     nextWriteTime = msNow / 1000 * 1000 + 1000;  // round up to next second
     COUT(buffer);
   }

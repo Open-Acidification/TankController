@@ -20,7 +20,7 @@ unittest(singleton) {
   assertEqual(thing1, thing2);
 }
 
-unittest(appendToDataLog) {
+unittest(appendData) {
   char data[80];
   DateTime_TC d1(2021, 4, 15), d2(2021, 4, 16);
   SD_TC* sd = SD_TC::instance();
@@ -30,14 +30,14 @@ unittest(appendToDataLog) {
 
   // write data for day 15
   d1.setAsCurrent();
-  sd->appendToDataLog("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd", "line 1");
-  sd->appendToDataLog("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd", "line 2");
+  sd->appendData("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd", "line 1");
+  sd->appendData("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd", "line 2");
   assertTrue(sd->exists("/data/2021/04/15.txt"));
   assertFalse(sd->exists("/data/2021/04/16.txt"));
 
   // write data for day 16
   d2.setAsCurrent();
-  sd->appendToDataLog("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd", "line 3");
+  sd->appendData("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd", "line 3");
   assertTrue(sd->exists("/data/2021/04/15.txt"));
   assertTrue(sd->exists("/data/2021/04/16.txt"));
 
@@ -56,7 +56,7 @@ unittest(appendToDataLog) {
   file.close();
 }
 
-unittest(appendToSerialLog) {
+unittest(appendToLog) {
   char data[80];
   DateTime_TC d1(2021, 4, 15), d2(2021, 4, 16);
   SD_TC* sd = SD_TC::instance();
@@ -66,14 +66,14 @@ unittest(appendToSerialLog) {
 
   // write data for day 15
   d1.setAsCurrent();
-  sd->appendToSerialLog("line 1");
-  sd->appendToSerialLog("line 2");
+  sd->appendToLog("line 1");
+  sd->appendToLog("line 2");
   assertTrue(sd->exists("/log/2021/04/15.txt"));
   assertFalse(sd->exists("/log/2021/04/16.txt"));
 
   // write data for day 16
   d2.setAsCurrent();
-  sd->appendToSerialLog("line 3");
+  sd->appendToLog("line 3");
   assertTrue(sd->exists("/log/2021/04/15.txt"));
   assertTrue(sd->exists("/log/2021/04/16.txt"));
 

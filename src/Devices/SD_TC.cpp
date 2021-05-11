@@ -27,33 +27,35 @@ SD_TC* SD_TC::instance() {
  */
 SD_TC::SD_TC() {
   assert(_instance == nullptr);
-  pinMode(PIN, OUTPUT);
-  digitalWrite(PIN, HIGH);
-  begin(4);
+  pinMode(IO_PIN, OUTPUT);
+  digitalWrite(IO_PIN, HIGH);
+  if (!begin(SELECT_PIN)) {
+    Serial.println("SD_TC failed to initialize!");
+  }
 }
 
 /**
  * append data to a data log file
  */
-void SD_TC::appendToDataLog(String header, String data) {
+void SD_TC::appendData(String header, String line) {
   String path = todaysDataFileName();
-  COUT(path);
-  if (!exists(path)) {
-    appendDataToPath(header, path);
+  if (!exists(path.c_str())) {
+    appendDataToPath(header, path.c_str());
     COUT(header);
   }
-  appendDataToPath(data, path);
+  appendDataToPath(line, path.c_str());
   COUT(data);
 }
 
 /**
  * append data to a path
  */
-void SD_TC::appendDataToPath(String data, String path) {
+void SD_TC::appendDataToPath(String line, String path) {
+  serial("SD_TC::appendDataToPath(\"%s\", \"%s\")", line.c_str(), path.c_str());
   int i = path.indexOf('/', 1);
   while (i > 0) {
-    String s = path.substring(0, i);
-    if (!SD.exists(s)) {
+    String s = path.substring(1, i);
+    if (!SD.exists(s.c_str())) {
       if (!SD.mkdir(s.c_str())) {
         if (!hasHadError) {
           hasHadError = true;
@@ -67,7 +69,7 @@ void SD_TC::appendDataToPath(String data, String path) {
   }
   File file = SD_TC::instance()->open(path, FILE_WRITE);
   if (file) {
-    file.write(data.c_str(), data.length());
+    file.write(line.c_str(), line.length());
     file.write("\n", 1);
     file.close();
   } else {
@@ -83,14 +85,14 @@ void SD_TC::appendDataToPath(String data, String path) {
 /**
  * append data to a serial log file
  */
-void SD_TC::appendToSerialLog(String data) {
+void SD_TC::appendToLog(String line) {
   DateTime_TC now = DateTime_TC::now();
   char path[30];
-  snprintf(path, sizeof(path), "/log/%4i/%02i/%02i.txt", now.year(), now.month(), now.day());
-  appendDataToPath(data, path);
+  snprintf(path, sizeof(path), "%4i-%02i-%02i.log", now.year(), now.month(), now.day());
+  appendDataToPath(line, path);
 }
 
-void printEntry(File entry, String parentPath) {
+void printEntry(File* pEntry, String parentPath) {
   size_t depth = 0;
   for (size_t i = 1; i < parentPath.length(); ++i) {
     if (parentPath[i] == '/') {
@@ -102,14 +104,14 @@ void printEntry(File entry, String parentPath) {
     prefix[depth * 2] = '\0';
   }
   Serial.print(prefix);
-  Serial.print(entry.name());
-  if (entry.isDirectory()) {
+  Serial.print(pEntry->name());
+  if (pEntry->isDirectory()) {
     Serial.println("/");
-    // serial("%s%12s/", prefix, entry.name());  // This line causes a crash
+    serial("%s%12s/", prefix, pEntry->name());  // This line causes a crash
   } else {
     // files have sizes, directories do not
     Serial.print(" (");
-    Serial.print(entry.size());
+    Serial.print(pEntry->size());
     Serial.println(")");
     // serial("%s%12s (%6u)", prefix, entry.name(), entry.size());  // This line crashes!
   }
@@ -127,7 +129,7 @@ void SD_TC::printRootDirectory() {
 String SD_TC::todaysDataFileName() {
   DateTime_TC now = DateTime_TC::now();
   char path[30];
-  snprintf(path, sizeof(path), "/data/%4i/%02i/%02i.txt", now.year(), now.month(), now.day());
+  snprintf(path, sizeof(path), "%4i-%02i-%02i.csv", now.year(), now.month(), now.day());
   COUT(path);
   return String(path);
 }
@@ -135,22 +137,22 @@ String SD_TC::todaysDataFileName() {
 void SD_TC::visit(visitor pFunction) {
   File root = open("/");
   if (root) {
-    visit(pFunction, root, "/");
+    visit(pFunction, &root, "/");
   } else {
     serial("Unable to open root directory of SD card!");
   }
 }
 
-void SD_TC::visit(visitor pFunction, File dir, String parentPath) {
+void SD_TC::visit(visitor pFunction, File* pDir, String parentPath) {
   int i = 0;
   while (i++ < 100) {
-    File entry = dir.openNextFile();
+    File entry = pDir->openNextFile();
     if (!entry) {
       return;  // no more files
     }
-    pFunction(entry, parentPath);
+    pFunction(&entry, parentPath);
     if (entry.isDirectory()) {
-      visit(pFunction, entry, parentPath + entry.name() + "/");
+      visit(pFunction, &entry, parentPath + entry.name() + "/");
     }
     entry.close();
   }

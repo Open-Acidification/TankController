@@ -47,6 +47,9 @@ Serial_TC *Serial_TC::instance() {
  */
 Serial_TC::Serial_TC() {
   Serial.begin(9600);
+  // wait for Serial Monitor to connect. Needed for native USB port boards only:
+  while (!Serial)
+    ;
 }
 
 /**
@@ -61,7 +64,7 @@ void Serial_TC::vprintf(const char *format, va_list args) {
   if (!printIsActive) {
     printIsActive = true;
     // this seems to cause problems on the actual hardware
-    // SD_TC::instance()->appendToSerialLog(buffer);
+    // SD_TC::instance()->appendToLog(buffer);
     printIsActive = false;
   }
 }

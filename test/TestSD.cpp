@@ -107,24 +107,16 @@ unittest(printRootDirectory) {
   sd->printRootDirectory();
   String output = String(state->serialPort[0].dataOut);
   int index;
-  index = output.indexOf("           c (     0)\r\n");
+  index = output.indexOf("c (0)\r\n");
   assertNotEqual(-1, index);
-  index = output.indexOf("           d/\r\n");
+  index = output.indexOf("d/\r\n");
   assertNotEqual(-1, index);
-  index = output.indexOf("-           d1 (     0)\r\n");
+  index = output.indexOf("- d1 (0)\r\n");
   assertNotEqual(-1, index);
-  index = output.indexOf("-           d2 (     0)\r\n");
+  index = output.indexOf("- d2 (0)\r\n");
   assertNotEqual(-1, index);
-  index = output.indexOf("           e (     0)\r\n");
+  index = output.indexOf("e (0)\r\n");
   assertNotEqual(-1, index);
 }
-
-/*
-           c (     0)
-d/
--           d1 (     0)
--           d2 (     0)
-           e (     0)
-*/
 
 unittest_main()

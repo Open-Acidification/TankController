@@ -101,11 +101,17 @@ void printEntry(File entry, String parentPath) {
   if (depth * 2 < strnlen(prefix, sizeof(prefix))) {
     prefix[depth * 2] = '\0';
   }
+  Serial.print(prefix);
+  Serial.print(entry.name());
   if (entry.isDirectory()) {
-    serial("%s%12s/", prefix, entry.name());
+    Serial.println("/");
+    // serial("%s%12s/", prefix, entry.name());  // This line causes a crash
   } else {
     // files have sizes, directories do not
-    serial("%s%12s (%6u)", prefix, entry.name(), entry.size());
+    Serial.print(" (");
+    Serial.print(entry.size());
+    Serial.println(")");
+    // serial("%s%12s (%6u)", prefix, entry.name(), entry.size());  // This line crashes!
   }
 }
 

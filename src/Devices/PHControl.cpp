@@ -38,7 +38,8 @@ PHControl::PHControl() {
 
 void PHControl::setTargetPh(double newPh) {
   if (targetPh != newPh) {
-    serialWithTime("change target pH from %6.4f to %6.4f", targetPh, newPh);
+    DateTime_TC::now().printToSerial();
+    serial("change target pH from %6.4f to %6.4f", targetPh, newPh);
     targetPh = newPh;
     EEPROM_TC::instance()->setPH(newPh);
   }
@@ -47,7 +48,8 @@ void PHControl::setTargetPh(double newPh) {
 void PHControl::enablePID(bool flag) {
   usePID = flag;
   // save to EEPROM?
-  serialWithTime((flag ? "enable PID" : "disable PID"));
+  DateTime_TC::now().printToSerial();
+  serial((flag ? "enable PID" : "disable PID"));
 }
 
 void PHControl::updateControl(double pH) {

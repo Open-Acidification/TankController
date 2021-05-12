@@ -8,7 +8,6 @@
 #include <Arduino.h>
 
 void serial(const char *format...);
-void serialWithTime(const char *format...);
 
 class Serial_TC {
 public:

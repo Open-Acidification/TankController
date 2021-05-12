@@ -77,6 +77,7 @@ void TempProbe_TC::setCorrection(float value) {
   if (value != correction) {
     correction = value;
     EEPROM_TC::instance()->setCorrectedTemp(correction);
-    serialWithTime("Set temperature correction to %f", correction);
+    DateTime_TC::now().printToSerial();
+    serial("Set temperature correction to %f", correction);
   }
 }

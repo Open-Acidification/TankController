@@ -63,6 +63,15 @@ unittest(setAsCurrent) {
   assertEqual(24, now1.second());
 }
 
+unittest(printToSerial) {
+  GodmodeState *state = GODMODE();
+  DateTime_TC january(2021, 1, 15, 1, 48, 24);
+  january.setAsCurrent();
+  state->serialPort[0].dataOut = "";  // the history of data written
+  DateTime_TC::now().printToSerial();
+  assertEqual("2021-01-15 01:48:24\r\n", state->serialPort[0].dataOut);
+}
+
 // Remaining test deals with simulated delays
 #undef yield
 #include <chrono>

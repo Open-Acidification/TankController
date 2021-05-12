@@ -4,6 +4,7 @@
 
 #include "MainMenu.h"
 #include "PHCalibrationMid.h"
+#include "Serial_TC.h"
 #include "TankControllerLib.h"
 #include "TemperatureControl.h"
 /**
@@ -60,19 +61,21 @@ unittest(AfterIntervalAndWithinDelta) {
 }
 
 /**
- * Test that  is turned on when needed
+ * Test that is turned on when needed
  * \see unittest(disableChillerDuringCalibration)
  */
 unittest(AfterIntervalAndOutsideDelta) {
   GodmodeState* state = GODMODE();
   state->reset();
   Chiller chiller;
+  state->serialPort[0].dataOut = "";  // the history of data written
   // chiller is initially off and goes on when needed
   assertEqual(HIGH, state->digitalPin[PIN]);
   chiller.setTargetTemperature(20);
   delay(31000);
   chiller.updateControl(20.05);
   assertEqual(LOW, state->digitalPin[PIN]);
+  assertEqual("chiller on after 31000 ms\r\n", state->serialPort[0].dataOut);
 }
 
 /**
@@ -116,11 +119,13 @@ unittest(OutsideDelta) {
   GodmodeState* state = GODMODE();
   state->reset();
   Heater heater;
+  state->serialPort[0].dataOut = "";  // the history of data written
   // heater is initially off, then turns on
   assertEqual(HIGH, state->digitalPin[PIN]);
   heater.setTargetTemperature(20);
   heater.updateControl(19.95);
   assertEqual(LOW, state->digitalPin[PIN]);
+  assertEqual("heater on after 0 ms\r\n", state->serialPort[0].dataOut);
 }
 
 /**

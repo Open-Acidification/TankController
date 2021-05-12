@@ -35,10 +35,12 @@ unittest_teardown() {
 unittest(beforeTenSeconds) {
   GodmodeState* state = GODMODE();
   PHControl* controlSolenoid = PHControl::instance();
+  state->serialPort[0].dataOut = "";  // the history of data written
   assertEqual(HIGH, state->digitalPin[PIN]);
   controlSolenoid->setTargetPh(7.00);
   controlSolenoid->updateControl(8.00);
   assertEqual(LOW, state->digitalPin[PIN]);
+  assertEqual("CO2 bubbler on after 10155 ms\r\n", state->serialPort[0].dataOut);
   delay(9500);
   controlSolenoid->updateControl(8.00);
   assertEqual(LOW, state->digitalPin[PIN]);

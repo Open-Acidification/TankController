@@ -73,7 +73,9 @@ void PHControl::updateControl(double pH) {
     newValue = HIGH;  // close CO2 solenoid
   }
   if (newValue != oldValue) {
-    serialWithTime((newValue ? "CO2 bubbler off" : "CO2 bubbler on"));
+    unsigned long currentMS = millis();
+    serial((newValue ? "CO2 bubbler off after %lu ms" : "CO2 bubbler on after %lu ms"), currentMS - lastSwitchMS);
+    lastSwitchMS = currentMS;
     digitalWrite(PIN, newValue);
   }
 }

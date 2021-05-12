@@ -15,8 +15,10 @@ unittest(test) {
   tempProbe->setCorrection(0.0);
   assertEqual(0.0, EEPROM_TC::instance()->getCorrectedTemp());
   for (int i = 0; i < 100; ++i) {
+    delay(1000);
     tempProbe->getRunningAverage();
   }
+  delay(1000);
   double temp = tempProbe->getRunningAverage();
   assertTrue(9.9 <= temp && temp <= 10.1);
 
@@ -40,8 +42,10 @@ unittest(test) {
   // A new measured temperature should also be adjusted
   tempProbe->setTemperature(15.5);
   for (int i = 0; i < 100; ++i) {
+    delay(1000);
     tempProbe->getRunningAverage();
   }
+  delay(1000);
   temp = tempProbe->getRunningAverage();
   assertTrue(15.9 <= temp && temp <= 16.1);
   temp = EEPROM_TC::instance()->getCorrectedTemp();

@@ -43,4 +43,3 @@ private:
   void updateControls();
   void updateState();
 };
-

@@ -15,7 +15,6 @@ SD_TC* SD_TC::_instance = nullptr;
 SD_TC* SD_TC::instance() {
   if (!_instance) {
     _instance = new SD_TC();
-    serial("SD_TC::instance() called SD_TC::SD_TC()");
   }
   return _instance;
 }
@@ -26,6 +25,7 @@ SD_TC* SD_TC::instance() {
  * constructor
  */
 SD_TC::SD_TC() {
+  Serial.println("SD_TC");  // Serial_TC might not be ready yet
   assert(_instance == nullptr);
   if (!SD.begin(SELECT_PIN)) {
     Serial.println("SD_TC failed to initialize!");

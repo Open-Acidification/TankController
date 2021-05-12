@@ -50,6 +50,7 @@ TankControllerLib::TankControllerLib() {
   PHProbe::instance();
   PHControl::instance();
   state = new MainMenu(this);
+  pinMode(LED_BUILTIN, OUTPUT);
 }
 
 /**
@@ -122,7 +123,6 @@ void TankControllerLib::handleUI() {
  * (It appears to be called about once every 15 ms.)
  */
 void TankControllerLib::loop() {
-  COUT("TankControllerLib::loop() for " << state->name());
   blink();           // blink the on-board LED to show that we are running
   handleUI();        // look at keypad, update LCD
   updateControls();  // turn CO2 and temperature controls on or off
@@ -163,7 +163,6 @@ void TankControllerLib::setNextState(UIState *newState, bool update) {
 void TankControllerLib::setup() {
   serial("TankControllerLib::setup()");
   SD_TC::instance()->printRootDirectory();
-  pinMode(LED_BUILTIN, OUTPUT);
 }
 
 /**

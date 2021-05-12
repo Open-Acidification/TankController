@@ -30,10 +30,10 @@ unittest(BeforeIntervalAndWithinDelta) {
   GodmodeState* state = GODMODE();
   state->reset();
   Chiller chiller;
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
   chiller.setTargetTemperature(20);
   chiller.updateControl(20.04);
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
 }
 
 // Chiller
@@ -41,10 +41,10 @@ unittest(BeforeIntervalAndOutsideDelta) {
   GodmodeState* state = GODMODE();
   state->reset();
   Chiller chiller;
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
   chiller.setTargetTemperature(20);
   chiller.updateControl(20.05);
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
 }
 
 // Chiller
@@ -52,11 +52,11 @@ unittest(AfterIntervalAndWithinDelta) {
   GodmodeState* state = GODMODE();
   state->reset();
   Chiller chiller;
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
   chiller.setTargetTemperature(20);
   delay(31000);
   chiller.updateControl(20.04);
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
 }
 
 /**
@@ -68,11 +68,11 @@ unittest(AfterIntervalAndOutsideDelta) {
   state->reset();
   Chiller chiller;
   // chiller is initially off and goes on when needed
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
   chiller.setTargetTemperature(20);
   delay(31000);
   chiller.updateControl(20.05);
-  assertEqual(LOW, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_ON, state->digitalPin[PIN]);
 }
 
 /**
@@ -90,11 +90,11 @@ unittest(disableChillerDuringCalibration) {
   Chiller chiller;
   // chiller is initially off and stays off during calibration
   // (test is same as above)
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
   chiller.setTargetTemperature(20);
   delay(31000);
   chiller.updateControl(20.05);
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
 }
 
 // Heater
@@ -102,10 +102,10 @@ unittest(WithinDelta) {
   GodmodeState* state = GODMODE();
   state->reset();
   Heater heater;
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
   heater.setTargetTemperature(20);
   heater.updateControl(19.96);
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
 }
 
 /**
@@ -117,10 +117,10 @@ unittest(OutsideDelta) {
   state->reset();
   Heater heater;
   // heater is initially off, then turns on
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
   heater.setTargetTemperature(20);
   heater.updateControl(19.95);
-  assertEqual(LOW, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_ON, state->digitalPin[PIN]);
 }
 
 /**
@@ -138,10 +138,10 @@ unittest(disableHeaterDuringCalibration) {
   Heater heater;
   // heater is initially off, and stays off due to calibration
   // (test is same as above)
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
   heater.setTargetTemperature(20);
   heater.updateControl(19.95);
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
 }
 
 unittest_main()

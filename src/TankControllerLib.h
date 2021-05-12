@@ -3,6 +3,9 @@
 
 #include "TC_util.h"
 
+#define TURN_SOLENOID_OFF HIGH
+#define TURN_SOLENOID_ON LOW
+
 class LiquidCrystal_TC;
 class Serial_TC;
 class UIState;
@@ -40,3 +43,4 @@ private:
   void updateControls();
   void updateState();
 };
+

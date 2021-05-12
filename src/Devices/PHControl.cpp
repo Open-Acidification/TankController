@@ -29,7 +29,7 @@ PHControl *PHControl::instance() {
 PHControl::PHControl() {
   window_start_time = millis();
   pinMode(PIN, OUTPUT);
-  pinValue = HIGH;
+  pinValue = TURN_SOLENOID_OFF;
   digitalWrite(PIN, pinValue);
   targetPh = EEPROM_TC::instance()->getPH();
   if (isnan(targetPh)) {
@@ -73,11 +73,11 @@ void PHControl::updateControl(double pH) {
                   << "; left = " << now - window_start_time);
   bool newValue = pinValue;
   if (TankControllerLib::instance()->isInCalibration()) {
-    newValue = HIGH;  // turn off CO2 while in calibration
+    newValue = TURN_SOLENOID_OFF;  // turn off CO2 while in calibration
   } else if ((onTime > SOLENOID_OPENING_TIME) && (onTime >= (now - window_start_time))) {
-    newValue = LOW;  // open CO2 solenoid
+    newValue = TURN_SOLENOID_ON;  // open CO2 solenoid
   } else {
-    newValue = HIGH;  // close CO2 solenoid
+    newValue = TURN_SOLENOID_OFF;  // close CO2 solenoid
   }
   if (newValue != pinValue) {
     pinValue = newValue;

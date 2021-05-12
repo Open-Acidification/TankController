@@ -56,8 +56,8 @@ unittest(basicOperation) {
   assertEqual(7.5, pPHProbe->getPh());
   pPHControl->enablePID(false);  // Stay on continually if needed
   pTC->loop();
-  assertEqual(HIGH, state->digitalPin[TEMP_PIN]);  // solenoid off
-  assertEqual(HIGH, state->digitalPin[PH_PIN]);    // solenoid off
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_PIN]);  // solenoid off
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_PIN]);    // solenoid off
 
   // change targets
   tempControl->setTargetTemperature(21.0);
@@ -68,8 +68,8 @@ unittest(basicOperation) {
   pTC->loop();
   delay(1000);
   pTC->loop();
-  assertEqual(LOW, state->digitalPin[TEMP_PIN]);  // solenoid on
-  assertEqual(LOW, state->digitalPin[PH_PIN]);    // solenoid on
+  assertEqual(TURN_SOLENOID_ON, state->digitalPin[TEMP_PIN]);  // solenoid on
+  assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_PIN]);    // solenoid on
 
   // reset targets
   tempControl->setTargetTemperature(19.0);
@@ -80,8 +80,8 @@ unittest(basicOperation) {
   pTC->loop();
   delay(1000);
   pTC->loop();
-  assertEqual(HIGH, state->digitalPin[TEMP_PIN]);
-  assertEqual(HIGH, state->digitalPin[PH_PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_PIN]);
 }
 
 unittest(storeDataToSD) {

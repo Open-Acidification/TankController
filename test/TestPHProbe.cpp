@@ -27,7 +27,6 @@ unittest(serialEvent1) {
   assertEqual("", pPHProbe->getSlopeResponse());
   GODMODE()->serialPort[1].dataIn = "7.75\r?Slope,99.7,100.3,-0.89\r";  // the queue of data waiting to be read
   pTC->serialEvent1();                                                  // fake interrupt
-  assertEqual("Serial1 = 7.75\r\nSerial1 = ?Slope,99.7,100.3,-0.89\r\n", state->serialPort[0].dataOut);
   assertEqual("?Slope,99.7,100.3,-0.89", pPHProbe->getSlopeResponse());
   assertEqual(7.75, pPHProbe->getPh());
 }
@@ -94,13 +93,9 @@ unittest(getSlope) {
   String slope = pPHProbe->getSlope();
   assertEqual("99.7,100.3,-0.89", slope);
   COUT(state->serialPort[0].dataOut.length());
-  assertEqual("Serial1 = ?Slope,99.7,100.3,-0.89\r\nCalibration Slope: 99.7,100.3,-0.89\r\n",
-              state->serialPort[0].dataOut);
-  state->serialPort[0].dataOut = "";
   GODMODE()->serialPort[1].dataIn = "?Slope,98.7,101.3,-0.89\r";  // the answer to getSlop() waiting to be read
   pTC->serialEvent1();                                            // fake interrupt
   COUT(state->serialPort[0].dataOut.length());
-  assertEqual("Serial1 = ?Slope,98.7,101.3,-0.89\r\n", state->serialPort[0].dataOut);
   state->serialPort[0].dataOut = "";
   slope = pPHProbe->getSlope();
   assertEqual("98.7,101.3,-0.89", slope);
@@ -115,7 +110,6 @@ unittest(getPh) {
   state->reset();
   GODMODE()->serialPort[1].dataIn = "7.25\r";  // the queue of data waiting to be read
   pTC->serialEvent1();                         // fake interrupt
-  assertEqual("Serial1 = 7.25\r\n", state->serialPort[0].dataOut);
   PHProbe *pPHProbe = PHProbe::instance();
   double pH = pPHProbe->getPh();
   assertEqual(7.25, pH);

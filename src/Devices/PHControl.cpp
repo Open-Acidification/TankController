@@ -1,5 +1,6 @@
 #include "PHControl.h"
 
+#include "Devices/DateTime_TC.h"
 #include "Devices/EEPROM_TC.h"
 #include "Devices/Serial_TC.h"
 #include "PID_TC.h"
@@ -27,18 +28,21 @@ PHControl *PHControl::instance() {
 
 PHControl::PHControl() {
   window_start_time = millis();
-  digitalWrite(PIN, HIGH);
+  pinMode(PIN, OUTPUT);
+  pinValue = HIGH;
+  digitalWrite(PIN, pinValue);
   targetPh = EEPROM_TC::instance()->getPH();
   if (isnan(targetPh)) {
     targetPh = DEFAULT_PH;
     EEPROM_TC::instance()->setPH(targetPh);
   }
-  serial("PHControl::PHControl() with target pH = %f", targetPh);
+  serial("PHControl with target pH = %5.3f", targetPh);
 }
 
 void PHControl::setTargetPh(double newPh) {
   if (targetPh != newPh) {
-    serialWithTime("change target pH from %6.4f to %6.4f", targetPh, newPh);
+    DateTime_TC::now().printToSerial();
+    serial("change target pH from %6.4f to %6.4f", targetPh, newPh);
     targetPh = newPh;
     EEPROM_TC::instance()->setPH(newPh);
   }
@@ -47,7 +51,8 @@ void PHControl::setTargetPh(double newPh) {
 void PHControl::enablePID(bool flag) {
   usePID = flag;
   // save to EEPROM?
-  serialWithTime((flag ? "enable PID" : "disable PID"));
+  DateTime_TC::now().printToSerial();
+  serial((flag ? "enable PID" : "disable PID"));
 }
 
 void PHControl::updateControl(double pH) {
@@ -57,14 +62,16 @@ void PHControl::updateControl(double pH) {
     onTime = pH > targetPh ? 10000 : 0;
   }
   long now = millis();
+  while (window_start_time + 2 * WINDOW_SIZE < now) {
+    window_start_time += WINDOW_SIZE;
+  }
   if (now - window_start_time > WINDOW_SIZE) {  // time to shift the Relay Window
     window_start_time += WINDOW_SIZE;
     COUT("now: " << now << "; window_start_time: " << window_start_time);
   }
   COUT("target: " << targetPh << "; current: " << pH << "; onTime = " << onTime
                   << "; left = " << now - window_start_time);
-  bool oldValue = digitalRead(PIN);
-  bool newValue = oldValue;
+  bool newValue = pinValue;
   if (TankControllerLib::instance()->isInCalibration()) {
     newValue = HIGH;  // turn off CO2 while in calibration
   } else if ((onTime > SOLENOID_OPENING_TIME) && (onTime >= (now - window_start_time))) {
@@ -72,8 +79,12 @@ void PHControl::updateControl(double pH) {
   } else {
     newValue = HIGH;  // close CO2 solenoid
   }
-  if (newValue != oldValue) {
-    serialWithTime((newValue ? "CO2 bubbler off" : "CO2 bubbler on"));
-    digitalWrite(PIN, newValue);
+  if (newValue != pinValue) {
+    pinValue = newValue;
+    DateTime_TC::now().printToSerial();
+    const char *message = pinValue ? "CO2 bubbler off" : "CO2 bubbler on";
+    COUT(message);
+    serial(message);
+    digitalWrite(PIN, pinValue);
   }
 }

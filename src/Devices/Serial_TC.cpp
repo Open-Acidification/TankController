@@ -14,19 +14,6 @@ void serial(const char *format...) {
   va_end(args);
 }
 
-void serialWithTime(const char *format...) {
-  char buffer[100];
-  unsigned long ms = millis();
-  DateTime_TC now = DateTime_TC::now();
-  snprintf(buffer, sizeof(buffer), "Timestamp of next line: YYYY/MM/DD hh:mm:ss.%03lu", ms % 1000);
-  now.toString(buffer);
-  serial(buffer);
-  va_list args;
-  va_start(args, format);
-  Serial_TC::instance()->vprintf(format, args);
-  va_end(args);
-}
-
 /**
  * static variable for singleton
  */
@@ -47,6 +34,9 @@ Serial_TC *Serial_TC::instance() {
  */
 Serial_TC::Serial_TC() {
   Serial.begin(9600);
+  // wait for Serial Monitor to connect. Needed for native USB port boards only:
+  while (!Serial)
+    ;
 }
 
 /**
@@ -61,7 +51,7 @@ void Serial_TC::vprintf(const char *format, va_list args) {
   if (!printIsActive) {
     printIsActive = true;
     // this seems to cause problems on the actual hardware
-    // SD_TC::instance()->appendToSerialLog(buffer);
+    // SD_TC::instance()->appendToLog(buffer);
     printIsActive = false;
   }
 }

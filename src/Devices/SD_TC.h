@@ -7,16 +7,16 @@
 #include <SD.h>
 #endif
 
-typedef void (*visitor)(File entry, String parentPath);
+typedef void (*visitor)(File* pEntry, String parentPath);
 
-class SD_TC : public SDClass {
+class SD_TC {
 public:
   // class methods
   static SD_TC* instance();
 
   // instance methods
-  void appendToDataLog(String header, String data);
-  void appendToSerialLog(String data);
+  void appendData(String header, String line);
+  void appendToLog(String line);
   String todaysDataFileName();
   void printRootDirectory();
   void visit(visitor pFunction);
@@ -26,11 +26,12 @@ private:
   static SD_TC* _instance;
 
   // instance variables
-  const int PIN = 10;
+  const int IO_PIN = 10;
+  const int SELECT_PIN = 4;
   bool hasHadError = false;
 
   // instance methods
   SD_TC();
   void appendDataToPath(String data, String path);
-  void visit(visitor pFunction, File dir, String parentPath);
+  void visit(visitor pFunction, File* pDir, String parentPath);
 };

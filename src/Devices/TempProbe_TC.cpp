@@ -1,5 +1,6 @@
 #include "Devices/TempProbe_TC.h"
 
+#include "DateTime_TC.h"
 #include "EEPROM_TC.h"
 #include "Serial_TC.h"
 #include "TC_util.h"
@@ -42,24 +43,29 @@ TempProbe_TC::TempProbe_TC() {
     correction = 0;
     EEPROM_TC::instance()->setCorrectedTemp(correction);
   }
-  serial("TempProbe_TC::TempProbe_TC() with temperature correction of %6.3f", correction);
+  serial("Temperature probe with correction of %6.3f", correction);
 }
 
 /**
  * getRunningAverage()
  *
- * Read the current temperature and return a running average
+ * Read the current temperature and return a running average.
+ * Do this only once per second since device is unreliable beyond that.
  */
 double TempProbe_TC::getRunningAverage() {
-  double temp = this->getRawTemperature();
-  if (firstTime) {
-    for (int i = 0; i < HISTORY_SIZE; ++i) {
-      history[i] = temp;
+  unsigned long currentTime = millis();
+  if (firstTime || lastTime + 1000 <= currentTime) {
+    double temp = this->getRawTemperature();
+    if (firstTime) {
+      for (int i = 0; i < HISTORY_SIZE; ++i) {
+        history[i] = temp;
+      }
+      firstTime = false;
     }
-    firstTime = false;
+    historyIndex = (historyIndex + 1) % HISTORY_SIZE;
+    history[historyIndex] = temp;
+    lastTime = currentTime;
   }
-  historyIndex = (historyIndex + 1) % HISTORY_SIZE;
-  history[historyIndex] = temp;
   double sum = 0.0;
   for (int i = 0; i < HISTORY_SIZE; ++i) {
     sum += history[i];
@@ -77,6 +83,7 @@ void TempProbe_TC::setCorrection(float value) {
   if (value != correction) {
     correction = value;
     EEPROM_TC::instance()->setCorrectedTemp(correction);
-    serialWithTime("Set temperature correction to %f", correction);
+    DateTime_TC::now().printToSerial();
+    serial("Set temperature correction to %f", correction);
   }
 }

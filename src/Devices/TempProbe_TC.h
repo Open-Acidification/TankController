@@ -131,6 +131,7 @@ private:
   double history[HISTORY_SIZE];
   int historyIndex = 0;
   double correction = 0.0;
+  unsigned long lastTime = 0;
 
   // Methods
   TempProbe_TC();

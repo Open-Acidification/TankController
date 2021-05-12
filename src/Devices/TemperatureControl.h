@@ -14,6 +14,7 @@ protected:
   const int PIN = 47;
   const double DELTA = 0.05;
   double targetTemperature;
+  bool pinValue = HIGH;
   TemperatureControl();
 
 public:

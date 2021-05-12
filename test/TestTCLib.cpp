@@ -42,11 +42,11 @@ unittest_setup() {
   pPHControl->setTargetPh(7.5);
 
   // clear SD card
-  SD_TC::instance()->removeAll();
+  SD.removeAll();
 }
 
 unittest_teardown() {
-  SD_TC::instance()->removeAll();
+  SD.removeAll();
 }
 
 unittest(basicOperation) {
@@ -97,7 +97,7 @@ unittest(storeDataToSD) {
   04/27/2021 14:24:50,   0, 20.021, 20.000, 7.5000, 7.5000,    0,   0.0,   0.0,   0.0
   04/27/2021 14:24:51,   0, 20.021, 20.000, 7.5000, 7.5000,    0,   0.0,   0.0,   0.0
   */
-  File file = sd->open("/data/2021/04/27.txt");
+  File file = SD.open("20210427.csv");
   char data[4096];
   file.read(data, file.size());
   data[file.size()] = '\0';

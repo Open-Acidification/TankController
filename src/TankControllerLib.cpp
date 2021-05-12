@@ -41,6 +41,7 @@ TankControllerLib::TankControllerLib() {
   serial("TankControllerLib::TankControllerLib() - version %s", TANK_CONTROLLER_VERSION);
   assert(!_instance);
   // ensure we have instances
+  SD_TC::instance();
   EEPROM_TC::instance();
   Keypad_TC::instance();
   LiquidCrystal_TC::instance();

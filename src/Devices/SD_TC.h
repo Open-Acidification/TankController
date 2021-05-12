@@ -9,7 +9,7 @@
 
 typedef void (*visitor)(File* pEntry, String parentPath);
 
-class SD_TC : public SDClass {
+class SD_TC {
 public:
   // class methods
   static SD_TC* instance();

@@ -14,7 +14,7 @@ const int PIN = 49;
  */
 void reset() {
   PHControl* singleton = PHControl::instance();
-  singleton->setUsePID(false);
+  singleton->enablePID(false);
   singleton->setTargetPh(7.00);
   singleton->updateControl(7.00);
   delay(10000);

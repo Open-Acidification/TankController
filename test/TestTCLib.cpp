@@ -26,6 +26,7 @@ unittest_setup() {
   tempProbe->setTemperature(20.0);
   tempProbe->setCorrection(0.0);
   for (int i = 0; i < 100; ++i) {
+    delay(1000);
     tempProbe->getRunningAverage();
   }
 
@@ -37,43 +38,47 @@ unittest_setup() {
   pTC->serialEvent1();                    // fake interrupt
 
   // set target pH
-  pPHControl->setUsePID(false);
+  pPHControl->enablePID(false);
   pPHControl->setTargetPh(7.5);
 
   // clear SD card
-  SD_TC::instance()->removeAll();
+  SD.removeAll();
 }
 
 unittest_teardown() {
-  SD_TC::instance()->removeAll();
+  SD.removeAll();
 }
 
 unittest(basicOperation) {
   // verify startup state, including that solonoids are off
+  delay(1000);
   assertEqual(20, (int)tempProbe->getRunningAverage());
   assertEqual(7.5, pPHProbe->getPh());
+  pPHControl->enablePID(false);  // Stay on continually if needed
   pTC->loop();
-  assertEqual(HIGH, state->digitalPin[TEMP_PIN]);
-  assertEqual(HIGH, state->digitalPin[PH_PIN]);
+  assertEqual(HIGH, state->digitalPin[TEMP_PIN]);  // solenoid off
+  assertEqual(HIGH, state->digitalPin[PH_PIN]);    // solenoid off
 
   // change targets
   tempControl->setTargetTemperature(21.0);
   pPHControl->setTargetPh(7.4);
 
   // verify that solonoids are on
+  delay(1000);
   pTC->loop();
-  delay(10);
+  delay(1000);
   pTC->loop();
-  assertEqual(LOW, state->digitalPin[TEMP_PIN]);
-  assertEqual(LOW, state->digitalPin[PH_PIN]);
+  assertEqual(LOW, state->digitalPin[TEMP_PIN]);  // solenoid on
+  assertEqual(LOW, state->digitalPin[PH_PIN]);    // solenoid on
 
   // reset targets
   tempControl->setTargetTemperature(19.0);
   pPHControl->setTargetPh(7.6);
 
   // verify that solonoids are off
+  delay(1000);
   pTC->loop();
-  delay(10);
+  delay(1000);
   pTC->loop();
   assertEqual(HIGH, state->digitalPin[TEMP_PIN]);
   assertEqual(HIGH, state->digitalPin[PH_PIN]);
@@ -89,10 +94,10 @@ unittest(storeDataToSD) {
   }
   /*
   time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd
+  04/27/2021 14:24:50,   0, 20.021, 20.000, 7.5000, 7.5000,    0,   0.0,   0.0,   0.0
   04/27/2021 14:24:51,   0, 20.021, 20.000, 7.5000, 7.5000,    0,   0.0,   0.0,   0.0
-  04/27/2021 14:24:52,   0, 20.021, 20.000, 7.5000, 7.5000,    0,   0.0,   0.0,   0.0
   */
-  File file = sd->open("/data/2021/04/27.txt");
+  File file = SD.open("20210427.csv");
   char data[4096];
   file.read(data, file.size());
   data[file.size()] = '\0';
@@ -104,13 +109,13 @@ unittest(storeDataToSD) {
   contents = contents.substring(i + 1);
   i = contents.indexOf('\n');
   line = contents.substring(0, i);
-  String expected("04/27/2021 14:24:51,   0, 20.021, 20.000, 7.5000, 7.5000,    0, 100000.0,   0.0,   0.0");
+  String expected("04/27/2021 14:24:50,   0, 20.021, 20.000, 7.5000, 7.5000,    0, 100000.0,   0.0,   0.0");
   COUT("expectedSize = " << expected.length() << "; actualSize = " << line.length());
   assertEqual(expected, line);
   contents = contents.substring(i + 1);
   i = contents.indexOf('\n');
   line = contents.substring(0, i);
-  expected = String("04/27/2021 14:24:52,   0, 20.021, 20.000, 7.5000, 7.5000,    0, 100000.0,   0.0,   0.0");
+  expected = String("04/27/2021 14:24:51,   0, 20.021, 20.000, 7.5000, 7.5000,    0, 100000.0,   0.0,   0.0");
   COUT("expectedSize = " << expected.length() << "; actualSize = " << line.length());
   assertEqual(expected, line);
   COUT(data);

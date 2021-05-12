@@ -13,6 +13,7 @@ Keypad_TC* Keypad_TC::_instance = nullptr;
 Keypad Keypad_TC::puppetPad = Keypad(makeKeymap(STD_KEYS), ROW_PINS, COL_PINS, 4, 4);
 
 Keypad_TC::Keypad_TC() {
+  Serial.println("Keypad_TC");  // Serial_TC might not be ready yet
 }
 
 //  class methods
@@ -22,7 +23,6 @@ Keypad_TC::Keypad_TC() {
 Keypad_TC* Keypad_TC::instance() {
   if (!_instance) {
     _instance = new Keypad_TC();
-    serial("Keypad_TC::instance()");
   }
   return _instance;
 }

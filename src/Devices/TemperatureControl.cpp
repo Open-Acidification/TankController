@@ -1,5 +1,6 @@
 #include "TemperatureControl.h"
 
+#include "Devices/DateTime_TC.h"
 #include "Devices/EEPROM_TC.h"
 #include "Serial_TC.h"
 #include "TankControllerLib.h"
@@ -49,9 +50,10 @@ TemperatureControl::TemperatureControl() {
     targetTemperature = DEFAULT_TEMPERATURE;
     EEPROM_TC::instance()->setTemp(targetTemperature);
   }
-  digitalWrite(PIN, HIGH);
-  serial("TemperatureControl::TemperatureControl() constructing %s with target Temperature of %f",
-         this->isHeater() ? "Heater" : "Chiller", targetTemperature);
+  pinMode(PIN, OUTPUT);
+  pinValue = HIGH;
+  digitalWrite(PIN, pinValue);
+  serial("%s with target temperature of %5.2f C", this->isHeater() ? "Heater" : "Chiller", targetTemperature);
 }
 
 /**
@@ -66,7 +68,7 @@ bool TemperatureControl::isHeater() {
  */
 void TemperatureControl::setTargetTemperature(double newTemperature) {
   if (targetTemperature != newTemperature) {
-    serial("Change target temperature from %6.3f to %6.3f", targetTemperature, newTemperature);
+    serial("Change target temperature from %5.2f to %5.2f", targetTemperature, newTemperature);
     EEPROM_TC::instance()->setTemp(newTemperature);
     targetTemperature = newTemperature;
   }
@@ -76,8 +78,7 @@ void Chiller::updateControl(double currentTemperature) {
   unsigned long currentMillis = millis();
   // pause 30 seconds between switching chiller on and off to prevent damage to chiller
   if (currentMillis - previousMillis >= TIME_INTERVAL) {
-    bool oldValue = digitalRead(PIN);
-    bool newValue = oldValue;
+    bool newValue = pinValue;
     previousMillis = currentMillis;
     // if in calibration, turn unit off
     if (TankControllerLib::instance()->isInCalibration()) {
@@ -91,18 +92,19 @@ void Chiller::updateControl(double currentTemperature) {
     else if (currentTemperature <= targetTemperature - DELTA) {
       newValue = HIGH;
     }
-    if (newValue != oldValue) {
+    if (newValue != pinValue) {
+      pinValue = newValue;
+      DateTime_TC::now().printToSerial();
       unsigned long currentMS = millis();
-      serial((newValue ? "chiller off after %lu ms" : "chiller on after %lu ms"), currentMS - lastSwitchMS);
+      serial((pinValue ? "chiller off after %lu ms" : "chiller on after %lu ms"), currentMS - lastSwitchMS);
       lastSwitchMS = currentMS;
-      digitalWrite(PIN, newValue);
+      digitalWrite(PIN, pinValue);
     }
   }
 }
 
 void Heater::updateControl(double currentTemperature) {
-  bool oldValue = digitalRead(PIN);
-  bool newValue = oldValue;
+  bool newValue = pinValue;
   // if in calibration, turn unit off
   if (TankControllerLib::instance()->isInCalibration()) {
     newValue = HIGH;
@@ -115,10 +117,12 @@ void Heater::updateControl(double currentTemperature) {
   else if (currentTemperature >= targetTemperature + DELTA) {
     newValue = HIGH;
   }
-  if (newValue != oldValue) {
+  if (newValue != pinValue) {
+    pinValue = newValue;
+    DateTime_TC::now().printToSerial();
     unsigned long currentMS = millis();
     serial((newValue ? "heater off after %lu ms" : "heater on after %lu ms"), currentMS - lastSwitchMS);
     lastSwitchMS = currentMS;
-    digitalWrite(PIN, newValue);
+    digitalWrite(PIN, pinValue);
   }
 }

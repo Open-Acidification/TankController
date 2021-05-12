@@ -22,14 +22,14 @@ EEPROM_TC* EEPROM_TC::instance(int version) {
   _instance = new EEPROM_TC_3();
   if (_instance->isRightVersion()) {
     if (version == 0 || _instance->getVersion() == version) {
-      serial("new EEPROM_TC_3()");
+      Serial.println("EEPROM_TC_3");  // Serial_TC might not be ready yet
       return _instance;
     }
   }
   delete _instance;
   _instance = new EEPROM_TC_2();
   assert(version == 0 || _instance->getVersion() == version);
-  serial("new EEPROM_TC_2()");
+  Serial.println("EEPROM_TC_2");  // Serial_TC might not be ready yet
   return _instance;
 }
 

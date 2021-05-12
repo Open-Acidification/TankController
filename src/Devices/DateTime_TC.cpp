@@ -52,6 +52,13 @@ char *DateTime_TC::as16CharacterString() {
   return buffer;
 }
 
+void DateTime_TC::printToSerial() {
+  char buffer[] = "YYYY-MM-DD hh:mm:ss";
+  DateTime_TC now = DateTime_TC::now();
+  now.toString(buffer);
+  serial(buffer);
+}
+
 /**
  * populate a buffer with dateTime as a path: "/2020/09"
  */

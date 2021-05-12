@@ -13,6 +13,7 @@ private:
   long onTime = 0;
   long window_start_time;
   bool usePID = true;
+  bool pinValue = HIGH;
   PHControl();
 
 public:
@@ -24,6 +25,6 @@ public:
     return usePID;
   }
   void setTargetPh(double newPh);
-  void setUsePID(bool flag);
+  void enablePID(bool flag);
   void updateControl(double pH);
 };

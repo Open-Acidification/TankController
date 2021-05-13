@@ -78,8 +78,7 @@ unittest(AfterIntervalAndOutsideDelta) {
   delay(31000);
   chiller.updateControl(20.05);
   assertEqual(LOW, state->digitalPin[PIN]);
-  assertEqual("2021-01-15 01:48:55\r\nchiller on after 31000 ms\r\n",
-              state->serialPort[0].dataOut);
+  assertEqual("2021-01-15 01:48:55\r\nchiller on after 31000 ms\r\n", state->serialPort[0].dataOut);
 }
 
 /**

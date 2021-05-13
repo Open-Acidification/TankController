@@ -51,7 +51,7 @@ TemperatureControl::TemperatureControl() {
     EEPROM_TC::instance()->setTemp(targetTemperature);
   }
   pinMode(PIN, OUTPUT);
-  pinValue = HIGH;
+  pinValue = TURN_SOLENOID_OFF;
   digitalWrite(PIN, pinValue);
   serial("%s with target temperature of %5.2f C", this->isHeater() ? "Heater" : "Chiller", targetTemperature);
 }
@@ -82,15 +82,15 @@ void Chiller::updateControl(double currentTemperature) {
     previousMillis = currentMillis;
     // if in calibration, turn unit off
     if (TankControllerLib::instance()->isInCalibration()) {
-      newValue = HIGH;
+      newValue = TURN_SOLENOID_OFF;
     }
     // if the observed temperature is above the set point turn on the chiller
     else if (currentTemperature >= targetTemperature + DELTA) {
-      newValue = LOW;
+      newValue = TURN_SOLENOID_ON;
     }
     // if the observed temperature is below the set point turn off the chiller
     else if (currentTemperature <= targetTemperature - DELTA) {
-      newValue = HIGH;
+      newValue = TURN_SOLENOID_OFF;
     }
     if (newValue != pinValue) {
       pinValue = newValue;
@@ -107,15 +107,15 @@ void Heater::updateControl(double currentTemperature) {
   bool newValue = pinValue;
   // if in calibration, turn unit off
   if (TankControllerLib::instance()->isInCalibration()) {
-    newValue = HIGH;
+    newValue = TURN_SOLENOID_OFF;
   }
   // if the observed temperature is below the temperature set-point turn on the heater
   else if (currentTemperature <= targetTemperature - DELTA) {
-    newValue = LOW;
+    newValue = TURN_SOLENOID_ON;
   }
   // if the observed temperature is above the temperature set-point turn off the heater
   else if (currentTemperature >= targetTemperature + DELTA) {
-    newValue = HIGH;
+    newValue = TURN_SOLENOID_OFF;
   }
   if (newValue != pinValue) {
     pinValue = newValue;

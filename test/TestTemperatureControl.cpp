@@ -2,6 +2,7 @@
 #include <ArduinoUnitTests.h>
 #include <ci/ObservableDataStream.h>
 
+#include "Devices/DateTime_TC.h"
 #include "MainMenu.h"
 #include "PHCalibrationMid.h"
 #include "Serial_TC.h"
@@ -68,6 +69,8 @@ unittest(AfterIntervalAndOutsideDelta) {
   GodmodeState* state = GODMODE();
   state->reset();
   Chiller chiller;
+  DateTime_TC january(2021, 1, 15, 1, 48, 24);
+  january.setAsCurrent();
   state->serialPort[0].dataOut = "";  // the history of data written
   // chiller is initially off and goes on when needed
   assertEqual(HIGH, state->digitalPin[PIN]);
@@ -75,7 +78,8 @@ unittest(AfterIntervalAndOutsideDelta) {
   delay(31000);
   chiller.updateControl(20.05);
   assertEqual(LOW, state->digitalPin[PIN]);
-  assertEqual("chiller on after 31000 ms\r\n", state->serialPort[0].dataOut);
+  assertEqual("2021-01-15 01:48:55\r\nchiller on after 31000 ms\r\n",
+              state->serialPort[0].dataOut);
 }
 
 /**
@@ -125,7 +129,7 @@ unittest(OutsideDelta) {
   heater.setTargetTemperature(20);
   heater.updateControl(19.95);
   assertEqual(LOW, state->digitalPin[PIN]);
-  assertEqual("heater on after 0 ms\r\n", state->serialPort[0].dataOut);
+  assertEqual("2021-01-15 01:48:24\r\nheater on after 0 ms\r\n", state->serialPort[0].dataOut);
 }
 
 /**

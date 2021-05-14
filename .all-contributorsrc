@@ -126,6 +126,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "thomca",
+      "name": "Catherine",
+      "avatar_url": "https://avatars.githubusercontent.com/u/56854904?v=4",
+      "profile": "https://github.com/thomca",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "projectName": "TankController",

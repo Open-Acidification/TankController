@@ -3,7 +3,7 @@
 [![testing status](https://github.com/Open-Acidification/TankControllerLib/workflows/Arduino%20CI/badge.svg)](https://github.com/Open-Acidification/TankControllerLib/actions)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/Open-Acidification/TankControllerLib/blob/master/CONTRIBUTING.md)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 # Tank Controller Library
@@ -59,6 +59,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/lsaca05"><img src="https://avatars.githubusercontent.com/u/46550669?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Lucas Saca</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankController/commits?author=lsaca05" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/EvanKropf"><img src="https://avatars.githubusercontent.com/u/59894430?v=4?s=100" width="100px;" alt=""/><br /><sub><b>EvanKropf</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankController/commits?author=EvanKropf" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/genevea"><img src="https://avatars.githubusercontent.com/u/83893683?v=4?s=100" width="100px;" alt=""/><br /><sub><b>genevea</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankController/commits?author=genevea" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/thomca"><img src="https://avatars.githubusercontent.com/u/56854904?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Catherine</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankController/commits?author=thomca" title="Code">💻</a></td>
   </tr>
 </table>
 

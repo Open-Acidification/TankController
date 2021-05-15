@@ -84,11 +84,11 @@ void Chiller::updateControl(double currentTemperature) {
     if (TankControllerLib::instance()->isInCalibration()) {
       newValue = TURN_SOLENOID_OFF;
     }
-    // if the observed temperature is above the set point turn on the chiller
+    // if the observed temperature is above the set-point range turn on the chiller
     else if (currentTemperature >= targetTemperature + DELTA) {
       newValue = TURN_SOLENOID_ON;
     }
-    // if the observed temperature is below the set point turn off the chiller
+    // if the observed temperature is below the set-point range turn off the chiller
     else if (currentTemperature <= targetTemperature - DELTA) {
       newValue = TURN_SOLENOID_OFF;
     }
@@ -96,7 +96,7 @@ void Chiller::updateControl(double currentTemperature) {
       pinValue = newValue;
       DateTime_TC::now().printToSerial();
       unsigned long currentMS = millis();
-      serial("chiller %s after %lu ms", pinValue ? "off" : "on", currentMS - lastSwitchMS);
+      serial("chiller turned %s after %lu ms", pinValue ? "off" : "on", currentMS - lastSwitchMS);
       lastSwitchMS = currentMS;
       digitalWrite(PIN, pinValue);
     }
@@ -109,11 +109,11 @@ void Heater::updateControl(double currentTemperature) {
   if (TankControllerLib::instance()->isInCalibration()) {
     newValue = TURN_SOLENOID_OFF;
   }
-  // if the observed temperature is below the temperature set-point turn on the heater
+  // if the observed temperature is below the temperature set-point range turn on the heater
   else if (currentTemperature <= targetTemperature - DELTA) {
     newValue = TURN_SOLENOID_ON;
   }
-  // if the observed temperature is above the temperature set-point turn off the heater
+  // if the observed temperature is above the temperature set-point range turn off the heater
   else if (currentTemperature >= targetTemperature + DELTA) {
     newValue = TURN_SOLENOID_OFF;
   }
@@ -121,7 +121,7 @@ void Heater::updateControl(double currentTemperature) {
     pinValue = newValue;
     DateTime_TC::now().printToSerial();
     unsigned long currentMS = millis();
-    serial((newValue ? "heater off after %lu ms" : "heater on after %lu ms"), currentMS - lastSwitchMS);
+    serial("heater turned %s after %lu ms", pinValue ? "off" : "on", currentMS - lastSwitchMS);
     lastSwitchMS = currentMS;
     digitalWrite(PIN, pinValue);
   }

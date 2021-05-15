@@ -78,7 +78,12 @@ unittest(AfterIntervalAndOutsideDelta) {
   delay(31000);
   chiller.updateControl(20.05);
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PIN]);
-  assertEqual("2021-01-15 01:48:55\r\nchiller on after 31000 ms\r\n", state->serialPort[0].dataOut);
+  assertEqual("2021-01-15 01:48:55\r\nchiller turned on after 31000 ms\r\n", state->serialPort[0].dataOut);
+  state->serialPort[0].dataOut = "";  // the history of data written
+  delay(31000);
+  chiller.updateControl(19.95);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
+  assertEqual("2021-01-15 01:49:26\r\nchiller turned off after 31000 ms\r\n", state->serialPort[0].dataOut);
 }
 
 /**
@@ -128,7 +133,11 @@ unittest(OutsideDelta) {
   heater.setTargetTemperature(20);
   heater.updateControl(19.95);
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PIN]);
-  assertEqual("2021-01-15 01:48:24\r\nheater on after 0 ms\r\n", state->serialPort[0].dataOut);
+  assertEqual("2021-01-15 01:48:24\r\nheater turned on after 0 ms\r\n", state->serialPort[0].dataOut);
+  state->serialPort[0].dataOut = "";  // the history of data written
+  delay(300);
+  heater.updateControl(20.05);
+  assertEqual("2021-01-15 01:48:24\r\nheater turned off after 300 ms\r\n", state->serialPort[0].dataOut);
 }
 
 /**

@@ -2,8 +2,10 @@
 #include <ArduinoUnitTests.h>
 #include <ci/ObservableDataStream.h>
 
+#include "Devices/DateTime_TC.h"
 #include "MainMenu.h"
 #include "PHCalibrationMid.h"
+#include "Serial_TC.h"
 #include "TankControllerLib.h"
 #include "TemperatureControl.h"
 /**
@@ -30,10 +32,10 @@ unittest(BeforeIntervalAndWithinDelta) {
   GodmodeState* state = GODMODE();
   state->reset();
   Chiller chiller;
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
   chiller.setTargetTemperature(20);
   chiller.updateControl(20.04);
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
 }
 
 // Chiller
@@ -41,10 +43,10 @@ unittest(BeforeIntervalAndOutsideDelta) {
   GodmodeState* state = GODMODE();
   state->reset();
   Chiller chiller;
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
   chiller.setTargetTemperature(20);
   chiller.updateControl(20.05);
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
 }
 
 // Chiller
@@ -52,27 +54,36 @@ unittest(AfterIntervalAndWithinDelta) {
   GodmodeState* state = GODMODE();
   state->reset();
   Chiller chiller;
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
   chiller.setTargetTemperature(20);
   delay(31000);
   chiller.updateControl(20.04);
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
 }
 
 /**
- * Test that  is turned on when needed
+ * Test that is turned on when needed
  * \see unittest(disableChillerDuringCalibration)
  */
 unittest(AfterIntervalAndOutsideDelta) {
   GodmodeState* state = GODMODE();
   state->reset();
   Chiller chiller;
+  DateTime_TC january(2021, 1, 15, 1, 48, 24);
+  january.setAsCurrent();
+  state->serialPort[0].dataOut = "";  // the history of data written
   // chiller is initially off and goes on when needed
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
   chiller.setTargetTemperature(20);
   delay(31000);
   chiller.updateControl(20.05);
-  assertEqual(LOW, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_ON, state->digitalPin[PIN]);
+  assertEqual("2021-01-15 01:48:55\r\nchiller turned on after 31000 ms\r\n", state->serialPort[0].dataOut);
+  state->serialPort[0].dataOut = "";  // the history of data written
+  delay(31000);
+  chiller.updateControl(19.95);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
+  assertEqual("2021-01-15 01:49:26\r\nchiller turned off after 31000 ms\r\n", state->serialPort[0].dataOut);
 }
 
 /**
@@ -90,11 +101,11 @@ unittest(disableChillerDuringCalibration) {
   Chiller chiller;
   // chiller is initially off and stays off during calibration
   // (test is same as above)
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
   chiller.setTargetTemperature(20);
   delay(31000);
   chiller.updateControl(20.05);
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
 }
 
 // Heater
@@ -102,10 +113,10 @@ unittest(WithinDelta) {
   GodmodeState* state = GODMODE();
   state->reset();
   Heater heater;
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
   heater.setTargetTemperature(20);
   heater.updateControl(19.96);
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
 }
 
 /**
@@ -116,11 +127,17 @@ unittest(OutsideDelta) {
   GodmodeState* state = GODMODE();
   state->reset();
   Heater heater;
+  state->serialPort[0].dataOut = "";  // the history of data written
   // heater is initially off, then turns on
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
   heater.setTargetTemperature(20);
   heater.updateControl(19.95);
-  assertEqual(LOW, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_ON, state->digitalPin[PIN]);
+  assertEqual("2021-01-15 01:48:24\r\nheater turned on after 0 ms\r\n", state->serialPort[0].dataOut);
+  state->serialPort[0].dataOut = "";  // the history of data written
+  delay(300);
+  heater.updateControl(20.05);
+  assertEqual("2021-01-15 01:48:24\r\nheater turned off after 300 ms\r\n", state->serialPort[0].dataOut);
 }
 
 /**
@@ -138,10 +155,10 @@ unittest(disableHeaterDuringCalibration) {
   Heater heater;
   // heater is initially off, and stays off due to calibration
   // (test is same as above)
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
   heater.setTargetTemperature(20);
   heater.updateControl(19.95);
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
 }
 
 unittest_main()

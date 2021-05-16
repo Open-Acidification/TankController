@@ -5,6 +5,7 @@ private:
   // Class variable
   static PHControl* _instance;
   // instance variables
+  unsigned long lastSwitchMS = 0;
   const int PIN = 49;
   const int SOLENOID_OPENING_TIME = 100;
   double targetPh;
@@ -12,6 +13,7 @@ private:
   long onTime = 0;
   long window_start_time;
   bool usePID = true;
+  bool pinValue = HIGH;
   PHControl();
 
 public:
@@ -23,6 +25,6 @@ public:
     return usePID;
   }
   void setTargetPh(double newPh);
-  void setUsePID(bool flag);
+  void enablePID(bool flag);
   void updateControl(double pH);
 };

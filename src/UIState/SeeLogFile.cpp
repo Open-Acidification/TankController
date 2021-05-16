@@ -10,8 +10,5 @@
 
 void SeeLogFile::start() {
   LiquidCrystal_TC::instance()->writeLine(prompt(), 0);
-  char fileName[10];
-  SD_TC::instance()->todaysDataFileName().substring(11).toCharArray(fileName, 9);
-  fileName[9] = '\0';
-  LiquidCrystal_TC::instance()->writeLine(fileName, 1);
+  LiquidCrystal_TC::instance()->writeLine(SD_TC::instance()->todaysDataFileName().c_str(), 1);
 }

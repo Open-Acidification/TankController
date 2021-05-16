@@ -2,6 +2,7 @@
 #include <ArduinoUnitTests.h>
 #include <ci/ObservableDataStream.h>
 
+#include "Devices/DateTime_TC.h"
 #include "MainMenu.h"
 #include "PHCalibrationMid.h"
 #include "PHControl.h"
@@ -14,7 +15,7 @@ const int PIN = 49;
  */
 void reset() {
   PHControl* singleton = PHControl::instance();
-  singleton->setUsePID(false);
+  singleton->enablePID(false);
   singleton->setTargetPh(7.00);
   singleton->updateControl(7.00);
   delay(10000);
@@ -35,43 +36,51 @@ unittest_teardown() {
 unittest(beforeTenSeconds) {
   GodmodeState* state = GODMODE();
   PHControl* controlSolenoid = PHControl::instance();
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  DateTime_TC january(2021, 1, 15, 1, 48, 24);
+  january.setAsCurrent();
+  state->serialPort[0].dataOut = "";  // the history of data written
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
   controlSolenoid->setTargetPh(7.00);
   controlSolenoid->updateControl(8.00);
-  assertEqual(LOW, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_ON, state->digitalPin[PIN]);
+  assertEqual("2021-01-15 01:48:24\r\nCO2 bubbler turned on after 10155 ms\r\n", state->serialPort[0].dataOut);
   delay(9500);
   controlSolenoid->updateControl(8.00);
-  assertEqual(LOW, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_ON, state->digitalPin[PIN]);
 }
 
 unittest(afterTenSecondsButPhStillHigher) {
   GodmodeState* state = GODMODE();
   PHControl* controlSolenoid = PHControl::instance();
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
   controlSolenoid->setTargetPh(7.00);
   controlSolenoid->updateControl(8.00);
-  assertEqual(LOW, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_ON, state->digitalPin[PIN]);
   delay(9500);
   controlSolenoid->updateControl(8.00);
-  assertEqual(LOW, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_ON, state->digitalPin[PIN]);
   delay(1000);
   controlSolenoid->updateControl(7.25);
-  assertEqual(LOW, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_ON, state->digitalPin[PIN]);
 }
 
 unittest(afterTenSecondsAndPhIsLower) {
   GodmodeState* state = GODMODE();
   PHControl* controlSolenoid = PHControl::instance();
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  state->serialPort[0].dataOut = "";  // the history of data written
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
   controlSolenoid->setTargetPh(7.00);
   controlSolenoid->updateControl(8.00);
-  assertEqual(LOW, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_ON, state->digitalPin[PIN]);
+  assertEqual("2021-01-15 01:49:24\r\nCO2 bubbler turned on after 20014 ms\r\n", state->serialPort[0].dataOut);
+  state->serialPort[0].dataOut = "";  // the history of data written
   delay(9500);
   controlSolenoid->updateControl(8.00);
-  assertEqual(LOW, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_ON, state->digitalPin[PIN]);
   delay(1000);
   controlSolenoid->updateControl(6.75);
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
+  assertEqual("2021-01-15 01:49:34\r\nCO2 bubbler turned off after 10500 ms\r\n", state->serialPort[0].dataOut);
 }
 
 /**
@@ -82,22 +91,22 @@ unittest(beforeTenSecondsButPhIsLower) {
   GodmodeState* state = GODMODE();
   PHControl* controlSolenoid = PHControl::instance();
   // device is initially off but turns on when needed
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
   controlSolenoid->setTargetPh(7.00);
   controlSolenoid->updateControl(8.00);
-  assertEqual(LOW, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_ON, state->digitalPin[PIN]);
   delay(7500);
   controlSolenoid->updateControl(6.75);
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
 }
 
 unittest(PhEvenWithTarget) {
   GodmodeState* state = GODMODE();
   PHControl* controlSolenoid = PHControl::instance();
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
   controlSolenoid->setTargetPh(7.00);
   controlSolenoid->updateControl(7.00);
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
 }
 
 /**
@@ -113,10 +122,10 @@ unittest(disableDuringCalibration) {
   GodmodeState* state = GODMODE();
   PHControl* controlSolenoid = PHControl::instance();
   // device is initially off and stays off due to calibration
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
   controlSolenoid->setTargetPh(7.00);
   controlSolenoid->updateControl(8.00);
-  assertEqual(HIGH, state->digitalPin[PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
 }
 
 unittest_main()

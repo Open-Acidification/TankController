@@ -41,6 +41,7 @@ TankControllerLib::TankControllerLib() {
   serial("TankControllerLib::TankControllerLib() - version %s", TANK_CONTROLLER_VERSION);
   assert(!_instance);
   // ensure we have instances
+  SD_TC::instance();
   EEPROM_TC::instance();
   Keypad_TC::instance();
   LiquidCrystal_TC::instance();
@@ -49,6 +50,7 @@ TankControllerLib::TankControllerLib() {
   PHProbe::instance();
   PHControl::instance();
   state = new MainMenu(this);
+  pinMode(LED_BUILTIN, OUTPUT);
 }
 
 /**
@@ -121,7 +123,6 @@ void TankControllerLib::handleUI() {
  * (It appears to be called about once every 15 ms.)
  */
 void TankControllerLib::loop() {
-  COUT("TankControllerLib::loop() for " << state->name());
   blink();           // blink the on-board LED to show that we are running
   handleUI();        // look at keypad, update LCD
   updateControls();  // turn CO2 and temperature controls on or off
@@ -162,7 +163,6 @@ void TankControllerLib::setNextState(UIState *newState, bool update) {
 void TankControllerLib::setup() {
   serial("TankControllerLib::setup()");
   SD_TC::instance()->printRootDirectory();
-  pinMode(LED_BUILTIN, OUTPUT);
 }
 
 /**
@@ -227,7 +227,7 @@ void TankControllerLib::writeDataToSD() {
              (double)TemperatureControl::instance()->getTargetTemperature(), (double)PHProbe::instance()->getPh(),
              (double)PHControl::instance()->getTargetPh(), (int)0, (double)pPID->getKp(), (double)pPID->getKi(),
              (double)pPID->getKd());  // still missing onTime
-    SD_TC::instance()->appendToDataLog(header, buffer);
+    SD_TC::instance()->appendData(header, buffer);
     nextWriteTime = msNow / 1000 * 1000 + 1000;  // round up to next second
     COUT(buffer);
   }

@@ -2,6 +2,7 @@
 #include <ArduinoUnitTests.h>
 #include <ci/ObservableDataStream.h>
 
+#include "Devices/DateTime_TC.h"
 #include "MainMenu.h"
 #include "PHCalibrationMid.h"
 #include "PHControl.h"
@@ -35,10 +36,14 @@ unittest_teardown() {
 unittest(beforeTenSeconds) {
   GodmodeState* state = GODMODE();
   PHControl* controlSolenoid = PHControl::instance();
+  DateTime_TC january(2021, 1, 15, 1, 48, 24);
+  january.setAsCurrent();
+  state->serialPort[0].dataOut = "";  // the history of data written
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
   controlSolenoid->setTargetPh(7.00);
   controlSolenoid->updateControl(8.00);
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PIN]);
+  assertEqual("2021-01-15 01:48:24\r\nCO2 bubbler turned on after 10155 ms\r\n", state->serialPort[0].dataOut);
   delay(9500);
   controlSolenoid->updateControl(8.00);
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PIN]);
@@ -62,16 +67,20 @@ unittest(afterTenSecondsButPhStillHigher) {
 unittest(afterTenSecondsAndPhIsLower) {
   GodmodeState* state = GODMODE();
   PHControl* controlSolenoid = PHControl::instance();
+  state->serialPort[0].dataOut = "";  // the history of data written
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
   controlSolenoid->setTargetPh(7.00);
   controlSolenoid->updateControl(8.00);
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PIN]);
+  assertEqual("2021-01-15 01:49:24\r\nCO2 bubbler turned on after 20014 ms\r\n", state->serialPort[0].dataOut);
+  state->serialPort[0].dataOut = "";  // the history of data written
   delay(9500);
   controlSolenoid->updateControl(8.00);
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PIN]);
   delay(1000);
   controlSolenoid->updateControl(6.75);
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PIN]);
+  assertEqual("2021-01-15 01:49:34\r\nCO2 bubbler turned off after 10500 ms\r\n", state->serialPort[0].dataOut);
 }
 
 /**

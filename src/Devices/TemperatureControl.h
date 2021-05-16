@@ -13,6 +13,7 @@ private:
 protected:
   const int PIN = 47;
   const double DELTA = 0.05;
+  unsigned long lastSwitchMS = 0;
   double targetTemperature;
   bool pinValue = HIGH;
   TemperatureControl();

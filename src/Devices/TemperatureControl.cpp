@@ -84,18 +84,20 @@ void Chiller::updateControl(double currentTemperature) {
     if (TankControllerLib::instance()->isInCalibration()) {
       newValue = TURN_SOLENOID_OFF;
     }
-    // if the observed temperature is above the set point turn on the chiller
+    // if the observed temperature is above the set-point range turn on the chiller
     else if (currentTemperature >= targetTemperature + DELTA) {
       newValue = TURN_SOLENOID_ON;
     }
-    // if the observed temperature is below the set point turn off the chiller
+    // if the observed temperature is below the set-point range turn off the chiller
     else if (currentTemperature <= targetTemperature - DELTA) {
       newValue = TURN_SOLENOID_OFF;
     }
     if (newValue != pinValue) {
       pinValue = newValue;
       DateTime_TC::now().printToSerial();
-      serial(pinValue ? "chiller off" : "chiller on");
+      unsigned long currentMS = millis();
+      serial("chiller turned %s after %lu ms", pinValue ? "off" : "on", currentMS - lastSwitchMS);
+      lastSwitchMS = currentMS;
       digitalWrite(PIN, pinValue);
     }
   }
@@ -107,18 +109,20 @@ void Heater::updateControl(double currentTemperature) {
   if (TankControllerLib::instance()->isInCalibration()) {
     newValue = TURN_SOLENOID_OFF;
   }
-  // if the observed temperature is below the temperature set-point turn on the heater
+  // if the observed temperature is below the temperature set-point range turn on the heater
   else if (currentTemperature <= targetTemperature - DELTA) {
     newValue = TURN_SOLENOID_ON;
   }
-  // if the observed temperature is above the temperature set-point turn off the heater
+  // if the observed temperature is above the temperature set-point range turn off the heater
   else if (currentTemperature >= targetTemperature + DELTA) {
     newValue = TURN_SOLENOID_OFF;
   }
   if (newValue != pinValue) {
     pinValue = newValue;
     DateTime_TC::now().printToSerial();
-    serial(pinValue ? "heater off" : "heater on");
+    unsigned long currentMS = millis();
+    serial("heater turned %s after %lu ms", pinValue ? "off" : "on", currentMS - lastSwitchMS);
+    lastSwitchMS = currentMS;
     digitalWrite(PIN, pinValue);
   }
 }

@@ -5,6 +5,7 @@ private:
   // Class variable
   static PHControl* _instance;
   // instance variables
+  unsigned long lastSwitchMS = 0;
   const int PIN = 49;
   const int SOLENOID_OPENING_TIME = 100;
   double targetPh;

@@ -82,9 +82,9 @@ void PHControl::updateControl(double pH) {
   if (newValue != pinValue) {
     pinValue = newValue;
     DateTime_TC::now().printToSerial();
-    const char *message = pinValue ? "CO2 bubbler off" : "CO2 bubbler on";
-    COUT(message);
-    serial(message);
+    unsigned long currentMS = millis();
+    serial("CO2 bubbler turned %s after %lu ms", pinValue ? "off" : "on", currentMS - lastSwitchMS);
+    lastSwitchMS = currentMS;
     digitalWrite(PIN, pinValue);
   }
 }

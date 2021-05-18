@@ -7,9 +7,13 @@
 #include "SetPHSetPoint.h"
 #include "TankControllerLib.h"
 
+unittest_setup() {
+  GODMODE()->resetEEPROM();
+}
+
 unittest(test) {
-  TankControllerLib* tc = TankControllerLib::instance();
   EEPROM_TC::instance()->setPH(8.100);
+  TankControllerLib* tc = TankControllerLib::instance();
   SetPHSetPoint* test = new SetPHSetPoint(tc);
   assertEqual(8.100, PHControl::instance()->getTargetPh());
   tc->setNextState(test, true);

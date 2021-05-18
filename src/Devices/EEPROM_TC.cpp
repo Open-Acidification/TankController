@@ -58,70 +58,70 @@ void EEPROM_TC::eepromWriteInt(int address, int value) {
 }
 
 // getter methods
-double EEPROM_TC::getAmplitude() {
+float EEPROM_TC::getAmplitude() {
   return eepromReadFloat(AMPLITUDE_ADDRESS);
 }
-double EEPROM_TC::getCorrectedTemp() {
+float EEPROM_TC::getCorrectedTemp() {
   return eepromReadFloat(TEMP_CORR_ADDRESS);
 }
-double EEPROM_TC::getFrequency() {
+float EEPROM_TC::getFrequency() {
   return eepromReadFloat(FREQUENCY_ADDRESS);
 }
 int EEPROM_TC::getGoogleSheetInterval() {
   return eepromReadInt(GOOGLE_INTERVAL_ADDRESS);
 }
-double EEPROM_TC::getGranularity() {
+float EEPROM_TC::getGranularity() {
   return eepromReadFloat(GRANULARITY_ADDRESS);
 }
 bool EEPROM_TC::getHeat() {
   return (bool)eepromReadFloat(HEAT_ADDRESS);
 }
-double EEPROM_TC::getKD() {
+float EEPROM_TC::getKD() {
   return eepromReadFloat(KD_ADDRESS);
 }
-double EEPROM_TC::getKI() {
+float EEPROM_TC::getKI() {
   return eepromReadFloat(KI_ADDRESS);
 }
-double EEPROM_TC::getKP() {
+float EEPROM_TC::getKP() {
   return eepromReadFloat(KP_ADDRESS);
 }
-double EEPROM_TC::getMac() {
+float EEPROM_TC::getMac() {
   return eepromReadFloat(MAC_ADDRESS);
 }
-double EEPROM_TC::getMaxDataAge() {
+float EEPROM_TC::getMaxDataAge() {
   return eepromReadFloat(MAX_DATA_AGE_ADDRESS);
 }
-double EEPROM_TC::getPH() {
+float EEPROM_TC::getPH() {
   return eepromReadFloat(PH_ADDRESS);
 }
-double EEPROM_TC::getPHDelay() {
+float EEPROM_TC::getPHDelay() {
   return eepromReadFloat(PH_DELAY_ADDRESS);
 }
-double EEPROM_TC::getPHInterval() {
+float EEPROM_TC::getPHInterval() {
   return eepromReadFloat(PH_INTERVAL_ADDRESS);
 }
-double EEPROM_TC::getPHSeriesPointer() {
+float EEPROM_TC::getPHSeriesPointer() {
   return eepromReadFloat(PH_SERIES_POINTER_ADDRESS);
 }
-double EEPROM_TC::getPHSeriesSize() {
+float EEPROM_TC::getPHSeriesSize() {
   return eepromReadFloat(PH_SERIES_SIZE_ADDRESS);
 }
 int EEPROM_TC::getTankID() {
   return (int)eepromReadFloat(TANK_ID_ADDRESS);
 }
-double EEPROM_TC::getTemp() {
+float EEPROM_TC::getTemp() {
   return eepromReadFloat(TEMP_ADDRESS);
 }
-double EEPROM_TC::getTempDelay() {
+float EEPROM_TC::getTempDelay() {
   return eepromReadFloat(TEMP_DELAY_ADDRESS);
 }
-double EEPROM_TC::getTempInterval() {
+float EEPROM_TC::getTempInterval() {
   return eepromReadFloat(TEMP_INTERVAL_ADDRESS);
 }
-double EEPROM_TC::getTempSeriesPointer() {
+float EEPROM_TC::getTempSeriesPointer() {
   return eepromReadFloat(TEMP_SERIES_POINTER_ADDRESS);
 }
-double EEPROM_TC::getTempSeriesSize() {
+float EEPROM_TC::getTempSeriesSize() {
   return eepromReadFloat(TEMP_SERIES_SIZE_ADDRESS);
 }
 int EEPROM_TC::getVersion() {
@@ -129,69 +129,69 @@ int EEPROM_TC::getVersion() {
 }
 
 // setter methods
-void EEPROM_TC::setAmplitude(double value) {
+void EEPROM_TC::setAmplitude(float value) {
   eepromWriteFloat(AMPLITUDE_ADDRESS, value);
 }
-void EEPROM_TC::setCorrectedTemp(double value) {
+void EEPROM_TC::setCorrectedTemp(float value) {
   eepromWriteFloat(TEMP_CORR_ADDRESS, value);
 }
-void EEPROM_TC::setFrequency(double value) {
+void EEPROM_TC::setFrequency(float value) {
   eepromWriteFloat(FREQUENCY_ADDRESS, value);
 }
 void EEPROM_TC::setGoogleSheetInterval(int value) {
   eepromWriteInt(GOOGLE_INTERVAL_ADDRESS, value);
 }
-void EEPROM_TC::setGranularity(double value) {
+void EEPROM_TC::setGranularity(float value) {
   eepromWriteFloat(GRANULARITY_ADDRESS, value);
 }
 void EEPROM_TC::setHeat(bool value) {
-  eepromWriteFloat(HEAT_ADDRESS, (double)value);
+  eepromWriteFloat(HEAT_ADDRESS, (float)value);
 }
-void EEPROM_TC::setKD(double value) {
+void EEPROM_TC::setKD(float value) {
   eepromWriteFloat(KD_ADDRESS, value);
 }
-void EEPROM_TC::setKI(double value) {
+void EEPROM_TC::setKI(float value) {
   eepromWriteFloat(KI_ADDRESS, value);
 }
-void EEPROM_TC::setKP(double value) {
+void EEPROM_TC::setKP(float value) {
   eepromWriteFloat(KP_ADDRESS, value);
 }
-void EEPROM_TC::setMac(double value) {
+void EEPROM_TC::setMac(float value) {
   eepromWriteFloat(MAC_ADDRESS, value);
 }
-void EEPROM_TC::setMaxDataAge(double value) {
+void EEPROM_TC::setMaxDataAge(float value) {
   eepromWriteFloat(MAX_DATA_AGE_ADDRESS, value);
 }
-void EEPROM_TC::setPH(double value) {
+void EEPROM_TC::setPH(float value) {
   eepromWriteFloat(PH_ADDRESS, value);
 }
-void EEPROM_TC::setPHDelay(double value) {
+void EEPROM_TC::setPHDelay(float value) {
   eepromWriteFloat(PH_DELAY_ADDRESS, value);
 }
-void EEPROM_TC::setPHInterval(double value) {
+void EEPROM_TC::setPHInterval(float value) {
   eepromWriteFloat(PH_INTERVAL_ADDRESS, value);
 }
-void EEPROM_TC::setPHSeriesPointer(double value) {
+void EEPROM_TC::setPHSeriesPointer(float value) {
   eepromWriteFloat(PH_SERIES_POINTER_ADDRESS, value);
 }
-void EEPROM_TC::setPHSeriesSize(double value) {
+void EEPROM_TC::setPHSeriesSize(float value) {
   eepromWriteFloat(PH_SERIES_SIZE_ADDRESS, value);
 }
 void EEPROM_TC::setTankID(int value) {
-  eepromWriteFloat(TANK_ID_ADDRESS, (double)value);
+  eepromWriteFloat(TANK_ID_ADDRESS, (float)value);
 }
-void EEPROM_TC::setTemp(double value) {
+void EEPROM_TC::setTemp(float value) {
   eepromWriteFloat(TEMP_ADDRESS, value);
 }
-void EEPROM_TC::setTempDelay(double value) {
+void EEPROM_TC::setTempDelay(float value) {
   eepromWriteFloat(TEMP_DELAY_ADDRESS, value);
 }
-void EEPROM_TC::setTempInterval(double value) {
+void EEPROM_TC::setTempInterval(float value) {
   eepromWriteFloat(TEMP_INTERVAL_ADDRESS, value);
 }
-void EEPROM_TC::setTempSeriesPointer(double value) {
+void EEPROM_TC::setTempSeriesPointer(float value) {
   eepromWriteFloat(TEMP_SERIES_POINTER_ADDRESS, value);
 }
-void EEPROM_TC::setTempSeriesSize(double value) {
+void EEPROM_TC::setTempSeriesSize(float value) {
   eepromWriteFloat(TEMP_SERIES_SIZE_ADDRESS, value);
 }

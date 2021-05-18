@@ -12,10 +12,11 @@ unittest_setup() {
 }
 
 unittest(test) {
-  EEPROM_TC::instance()->setPH(8.100);
+  assertNAN(EEPROM_TC::instance()->getPH());
+  EEPROM_TC::instance()->setPH(8.25);
+  assertEqual(8.25, PHControl::instance()->getTargetPh());
   TankControllerLib* tc = TankControllerLib::instance();
   SetPHSetPoint* test = new SetPHSetPoint(tc);
-  assertEqual(8.100, PHControl::instance()->getTargetPh());
   tc->setNextState(test, true);
 
   // setValue

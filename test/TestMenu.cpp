@@ -2,6 +2,8 @@
 #include <ArduinoUnitTests.h>
 
 #include "DateTime_TC.h"
+#include "Devices/EEPROM_TC.h"
+#include "Devices/PHControl.h"
 #include "Devices/TemperatureControl.h"
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
@@ -22,6 +24,8 @@ void enterKey(char key) {
 }
 
 unittest_setup() {
+  EEPROM_TC::instance()->setPH(8.100);
+  PHControl::instance()->setTargetPh(8.100);
   tc->setNextState(new MainMenu(tc), true);
   TempProbe_TC::instance()->setTemperature(12.25);
   TemperatureControl::enableHeater(true);

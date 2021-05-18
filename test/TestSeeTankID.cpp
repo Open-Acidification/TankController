@@ -9,11 +9,9 @@
 
 unittest(testOutput) {
   // Set up
-  int prevID = EEPROM_TC::instance()->getTankID();
-  EEPROM_TC::instance()->setTankID(12);
-
   TankControllerLib* tc = TankControllerLib::instance();
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
+  EEPROM_TC::instance()->setTankID(12);
   assertEqual("MainMenu", tc->stateName());
   SeeTankID* test = new SeeTankID(tc);
   tc->setNextState(test, true);
@@ -26,9 +24,6 @@ unittest(testOutput) {
   Keypad_TC::instance()->_getPuppet()->push_back('D');
   tc->loop();
   assertEqual("MainMenu", tc->stateName());
-
-  // Clean up
-  EEPROM_TC::instance()->setTankID(prevID);
 }
 
 unittest_main()

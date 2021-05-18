@@ -6,7 +6,7 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHProbe.h"
 
-void PHCalibrationHigh::setValue(double value) {
+void PHCalibrationHigh::setValue(float value) {
   PHProbe::instance()->setHighpointCalibration(value);
 
   char output[17];

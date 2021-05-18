@@ -6,7 +6,7 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/TemperatureControl.h"
 
-void SetTempSetPoint::setValue(double value) {
+void SetTempSetPoint::setValue(float value) {
   TemperatureControl::instance()->setTargetTemperature(value);
 
   char output[17];

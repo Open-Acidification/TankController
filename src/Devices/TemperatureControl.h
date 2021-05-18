@@ -12,9 +12,9 @@ private:
 
 protected:
   const int PIN = 47;
-  const double DELTA = 0.05;
+  const float DELTA = 0.05;
   unsigned long lastSwitchMS = 0;
-  double targetTemperature;
+  float targetTemperature;
   bool pinValue = HIGH;
   TemperatureControl();
 
@@ -23,12 +23,12 @@ public:
   }
   static TemperatureControl* instance();
   static void enableHeater(bool flag);
-  double getTargetTemperature() {
+  float getTargetTemperature() {
     return targetTemperature;
   }
   virtual bool isHeater();
-  void setTargetTemperature(double newTemperature);
-  virtual void updateControl(double currentTemperature) = 0;
+  void setTargetTemperature(float newTemperature);
+  virtual void updateControl(float currentTemperature) = 0;
 };
 
 class Heater : public TemperatureControl {
@@ -37,7 +37,7 @@ public:
   bool isHeater() {
     return true;
   }
-  void updateControl(double currentTemperature);
+  void updateControl(float currentTemperature);
 };
 
 class Chiller : public TemperatureControl {
@@ -50,5 +50,5 @@ public:
   bool isHeater() {
     return false;
   }
-  void updateControl(double currentTemperature);
+  void updateControl(float currentTemperature);
 };

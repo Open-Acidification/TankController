@@ -34,9 +34,9 @@ EEPROM_TC* EEPROM_TC::instance(int version) {
 }
 
 //  instance methods
-double EEPROM_TC::eepromReadDouble(int address) {
+float EEPROM_TC::eepromReadFloat(int address) {
   assert(address >= 0);
-  double value = 0.0;
+  float value = 0.0;
   byte* p = (byte*)(void*)&value;
   for (size_t i = 0; i < sizeof(value); i++) {
     *p++ = EEPROM.read(address++);
@@ -44,7 +44,7 @@ double EEPROM_TC::eepromReadDouble(int address) {
   return value;
 }
 
-void EEPROM_TC::eepromWriteDouble(int address, double value) {
+void EEPROM_TC::eepromWriteFloat(int address, float value) {
   assert(address >= 0);
   byte* p = (byte*)(void*)&value;
   for (size_t i = 0; i < sizeof(value); i++) {

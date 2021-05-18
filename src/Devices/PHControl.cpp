@@ -7,7 +7,7 @@
 #include "TC_util.h"
 #include "TankControllerLib.h"
 
-const double DEFAULT_PH = 8.1;
+const float DEFAULT_PH = 8.1;
 
 //  class instance variables
 /**
@@ -39,7 +39,7 @@ PHControl::PHControl() {
   serial("PHControl with target pH = %5.3f", targetPh);
 }
 
-void PHControl::setTargetPh(double newPh) {
+void PHControl::setTargetPh(float newPh) {
   if (targetPh != newPh) {
     DateTime_TC::now().printToSerial();
     serial("change target pH from %6.4f to %6.4f", targetPh, newPh);
@@ -55,7 +55,7 @@ void PHControl::enablePID(bool flag) {
   serial((flag ? "enable PID" : "disable PID"));
 }
 
-void PHControl::updateControl(double pH) {
+void PHControl::updateControl(float pH) {
   if (usePID) {
     onTime = PID_TC::instance()->computeOutput(targetPh, pH);
   } else {

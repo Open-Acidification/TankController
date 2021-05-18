@@ -25,12 +25,12 @@ unittest(eeprom_Read_and_Write_Double) {
   const int TEST_ADDRESS = 4000;  // beyond the end of our use
 
   // integer
-  test->eepromWriteDouble(TEST_ADDRESS, 10);
-  assertEqual(10, test->eepromReadDouble(TEST_ADDRESS));
+  test->eepromWriteFloat(TEST_ADDRESS, 10);
+  assertEqual(10, test->eepromReadFloat(TEST_ADDRESS));
 
-  // double
-  test->eepromWriteDouble(TEST_ADDRESS, 12.23);
-  assertEqual(12.23, test->eepromReadDouble(TEST_ADDRESS));
+  // float
+  test->eepromWriteFloat(TEST_ADDRESS, 12.25);
+  assertEqual(12.25, test->eepromReadFloat(TEST_ADDRESS));
 }
 
 unittest(eeprom_Read_and_Write_Int) {
@@ -43,8 +43,8 @@ unittest(eeprom_Read_and_Write_Int) {
 unittest(PH) {
   EEPROM_TC* singleton = EEPROM_TC::instance();
   assertNAN(singleton->getPH());
-  singleton->setPH(3.05);
-  assertEqual(3.05, singleton->getPH());
+  singleton->setPH(3.125);
+  assertEqual(3.125, singleton->getPH());
 }
 
 unittest(Temp) {

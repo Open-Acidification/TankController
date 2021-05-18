@@ -46,7 +46,7 @@ char *dateTime() {
   return DateTime_TC::now().as16CharacterString();
 }
 
-double eeprom(uint8_t index) {
+float eeprom(uint8_t index) {
   switch (index) {
     case 0:
       return EEPROM_TC::instance()->getPH();
@@ -93,7 +93,7 @@ double eeprom(uint8_t index) {
     case 21:
       return EEPROM_TC::instance()->getGoogleSheetInterval();
     default:
-      return std::numeric_limits<double>::quiet_NaN();
+      return std::numeric_limits<float>::quiet_NaN();
   }
 }
 
@@ -116,7 +116,7 @@ const char *lcd(int index) {
   return lcdLine;
 }
 
-double getTemperature() {
+float getTemperature() {
   TempProbe_TC *tempProbe = TempProbe_TC::instance();
   return tempProbe->getRunningAverage();
 }
@@ -133,7 +133,7 @@ unsigned long millisecondsSinceEpoch() {
   return std::chrono::system_clock::now().time_since_epoch() / std::chrono::milliseconds(1);
 }
 
-double readPH() {
+float readPH() {
   return PHProbe::instance()->getPh();
 }
 
@@ -156,9 +156,9 @@ string readSerial1() {
   return readSerial(1);
 }
 
-void addPath(File entry, String parentPath) {
-  if (!entry.isDirectory()) {
-    paths.push(parentPath + entry.name());
+void addPath(File *entry, String parentPath) {
+  if (!entry->isDirectory()) {
+    paths.push(parentPath + entry->name());
   }
 }
 
@@ -189,7 +189,7 @@ string sdNextValue() {
   return result;
 }
 
-void setTemperature(double value) {
+void setTemperature(float value) {
   TempProbe_TC *tempProbe = TempProbe_TC::instance();
   tempProbe->setTemperature(value);
 }

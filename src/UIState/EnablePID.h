@@ -20,5 +20,5 @@ public:
   const char* prompt() {
     return "PID 1:on; 9:off ";
   };
-  void setValue(double value);
+  void setValue(float value);
 };

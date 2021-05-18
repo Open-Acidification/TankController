@@ -5,53 +5,53 @@
 class EEPROM_TC_3 : public EEPROM_TC {
 public:
   // accessor methods
-  double getAmplitude();
-  double getCorrectedTemp();
-  double getFrequency();
+  float getAmplitude();
+  float getCorrectedTemp();
+  float getFrequency();
   int getGoogleSheetInterval();
-  double getGranularity();
+  float getGranularity();
   bool getHeat();
-  double getKD();
-  double getKI();
-  double getKP();
-  double getMac();
-  double getMaxDataAge();
-  double getPH();
-  double getPHDelay();
-  double getPHInterval();
-  double getPHSeriesPointer();
-  double getPHSeriesSize();
+  float getKD();
+  float getKI();
+  float getKP();
+  float getMac();
+  float getMaxDataAge();
+  float getPH();
+  float getPHDelay();
+  float getPHInterval();
+  float getPHSeriesPointer();
+  float getPHSeriesSize();
   int getTankID();
-  double getTemp();
-  double getTempDelay();
-  double getTempInterval();
-  double getTempSeriesPointer();
-  double getTempSeriesSize();
+  float getTemp();
+  float getTempDelay();
+  float getTempInterval();
+  float getTempSeriesPointer();
+  float getTempSeriesSize();
   int getVersion();
 
   // setter methods
-  void setAmplitude(double value);
-  void setCorrectedTemp(double value);
-  void setFrequency(double value);
+  void setAmplitude(float value);
+  void setCorrectedTemp(float value);
+  void setFrequency(float value);
   void setGoogleSheetInterval(int value);
-  void setGranularity(double value);
+  void setGranularity(float value);
   void setHeat(bool value);
-  void setKD(double value);
-  void setKI(double value);
-  void setKP(double value);
-  void setMac(double value);
-  void setMaxDataAge(double value);
-  void setPH(double value);
-  void setPHDelay(double value);
-  void setPHInterval(double value);
-  void setPHSeriesPointer(double value);
-  void setPHSeriesSize(double value);
+  void setKD(float value);
+  void setKI(float value);
+  void setKP(float value);
+  void setMac(float value);
+  void setMaxDataAge(float value);
+  void setPH(float value);
+  void setPHDelay(float value);
+  void setPHInterval(float value);
+  void setPHSeriesPointer(float value);
+  void setPHSeriesSize(float value);
   void setTankID(int value);
-  void setTemp(double value);
-  void setTempDelay(double value);
-  void setTempInterval(double value);
-  void setTempSeriesPointer(double value);
-  void setTempSeriesSize(double value);
+  void setTemp(float value);
+  void setTempDelay(float value);
+  void setTempInterval(float value);
+  void setTempSeriesPointer(float value);
+  void setTempSeriesSize(float value);
   void setVersion();
 
 protected:
@@ -67,9 +67,9 @@ private:
   const int PH_ADDRESS = HEAT_ADDRESS + 4;          // 9.999
   const int TEMP_ADDRESS = PH_ADDRESS + 8;          // 99.99
   const int TEMP_CORR_ADDRESS = TEMP_ADDRESS + 8;   // 99.99
-  const int KP_ADDRESS = TEMP_CORR_ADDRESS + 8;     // double
-  const int KI_ADDRESS = KP_ADDRESS + 8;            // double
-  const int KD_ADDRESS = KI_ADDRESS + 8;            // double
+  const int KP_ADDRESS = TEMP_CORR_ADDRESS + 8;     // float
+  const int KI_ADDRESS = KP_ADDRESS + 8;            // float
+  const int KD_ADDRESS = KI_ADDRESS + 8;            // float
   const int MAC_ADDRESS = KD_ADDRESS + 8;           // 8 byte
   // new with v0.2
   const int AMPLITUDE_ADDRESS = MAC_ADDRESS + 8;

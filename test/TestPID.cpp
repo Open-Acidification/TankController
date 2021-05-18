@@ -41,9 +41,9 @@ unittest(compute) {
   PID_TC *pPID = PID_TC::instance();
   pPID->setTunings(2, 5, 1);
   // initialize the variables we're linked to
-  double input = 50;
-  double setpoint = 100;
-  double output;
+  float input = 50;
+  float setpoint = 100;
+  float output;
   output = pPID->computeOutput(setpoint, input);
   assertEqual(0.0, output);
 
@@ -51,7 +51,7 @@ unittest(compute) {
   for (int i = 0; i < 1000; i++) {
     delay(200);
     output = pPID->computeOutput(setpoint, input);
-    double delta = output - input;
+    float delta = output - input;
     input = input - (delta / 25.6);
   }
   assertEqual(setpoint, round(input));
@@ -65,9 +65,9 @@ unittest(computeDuringCalibration) {
   PID_TC *pPID = PID_TC::instance();
   pPID->setTunings(2, 5, 1);
   // initialize the variables we're linked to
-  double input = 50;
-  double setpoint = 100;
-  double output;
+  float input = 50;
+  float setpoint = 100;
+  float output;
   output = pPID->computeOutput(setpoint, input);
   assertEqual(0.0, output);
 
@@ -75,7 +75,7 @@ unittest(computeDuringCalibration) {
   for (int i = 0; i < 1000; i++) {
     delay(200);
     output = pPID->computeOutput(setpoint, input);
-    double delta = output - input;
+    float delta = output - input;
     input = input - (delta / 25.6);
   }
   assertEqual(0.0, output);

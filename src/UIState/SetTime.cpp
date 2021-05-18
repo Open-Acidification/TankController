@@ -9,7 +9,7 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/Serial_TC.h"
 
-void SetTime::setValue(double value) {
+void SetTime::setValue(float value) {
   values[subState++] = value;
   if (subState < NUM_VALUES) {
     clear();

@@ -86,7 +86,7 @@ unittest(myDelay) {
   std::this_thread::sleep_for(std::chrono::milliseconds(1));
   delay(10000);  // this should be seen by arduino_ci, but not the underlying system
   auto end = std::chrono::high_resolution_clock::now();
-  std::chrono::duration<double, std::milli> elapsed = end - start;
+  std::chrono::duration<float, std::milli> elapsed = end - start;
   // actual delay should a few milliseconds
   assertTrue(1 <= elapsed.count() && elapsed.count() <= 5);
 

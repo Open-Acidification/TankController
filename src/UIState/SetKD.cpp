@@ -6,7 +6,7 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PID_TC.h"
 
-void SetKD::setValue(double value) {
+void SetKD::setValue(float value) {
   PID_TC::instance()->setKd(value);
 
   char output[17];

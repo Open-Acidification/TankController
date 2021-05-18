@@ -19,7 +19,7 @@ unittest(test) {
     tempProbe->getRunningAverage();
   }
   delay(1000);
-  double temp = tempProbe->getRunningAverage();
+  float temp = tempProbe->getRunningAverage();
   assertTrue(9.9 <= temp && temp <= 10.1);
 
   // set UI to TemperatureCalibration state

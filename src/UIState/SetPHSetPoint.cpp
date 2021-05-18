@@ -11,7 +11,7 @@ float SetPHSetPoint::getCurrentValue() {
   return PHControl::instance()->getTargetPh();
 }
 
-void SetPHSetPoint::setValue(double value) {
+void SetPHSetPoint::setValue(float value) {
   PHControl::instance()->setTargetPh(value);
 
   char output[17];

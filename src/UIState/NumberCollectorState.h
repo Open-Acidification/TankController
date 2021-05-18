@@ -10,7 +10,7 @@ public:
   NumCollectorState(TankControllerLib* tc) : UIState(tc) {
   }
   void handleKey(char key);
-  virtual void setValue(double value) = 0;
+  virtual void setValue(float value) = 0;
   virtual void start();
 
 protected:
@@ -27,7 +27,7 @@ protected:
     return 0;
   };
 
-  double value = 0.0;
+  float value = 0.0;
   int numDigits = 0;
   int factor = 10;
   bool hasDecimal = false;
@@ -39,7 +39,7 @@ public:
   TestNumCollectorState(TankControllerLib* tc) : NumCollectorState(tc) {
   }
   // Implementation
-  void setValue(double value) {
+  void setValue(float value) {
     storedValue = value;
   }
   const char* name() {
@@ -56,13 +56,13 @@ public:
   }
 
   // Testing
-  double getValue() {
+  float getValue() {
     return value;
   }
-  double getStoredValue() {
+  float getStoredValue() {
     return storedValue;
   };
-  void setPriorValue(double aValue) {
+  void setPriorValue(float aValue) {
     priorValue = aValue;
   }
   void setPriorValuePrecision(int aValue) {
@@ -70,8 +70,8 @@ public:
   }
 
 private:
-  double storedValue = 0.0;
-  double priorValue = 0.0;
+  float storedValue = 0.0;
+  float priorValue = 0.0;
   int priorValuePrecision = 0;
 };
 

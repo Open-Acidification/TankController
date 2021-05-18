@@ -7,7 +7,7 @@
 #include "Devices/EEPROM_TC.h"
 #include "Devices/LiquidCrystal_TC.h"
 
-void SetGoogleSheetInterval::setValue(double value) {
+void SetGoogleSheetInterval::setValue(float value) {
   EEPROM_TC::instance()->setGoogleSheetInterval((int)value);
 
   char output[17];

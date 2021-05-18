@@ -13,7 +13,7 @@
  */
 unittest(getVersion2) {
   union {
-    double d;
+    float d;
     uint8_t b[8];
   } u;
   u.d = 7.2;

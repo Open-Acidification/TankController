@@ -35,7 +35,6 @@ public:
   float getTempInterval();
   float getTempSeriesPointer();
   float getTempSeriesSize();
-  int getVersion();
 
   // setter methods
   void setAmplitude(float value);

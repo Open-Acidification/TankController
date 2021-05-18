@@ -107,7 +107,7 @@ float EEPROM_TC::getPHSeriesSize() {
   return eepromReadFloat(PH_SERIES_SIZE_ADDRESS);
 }
 int EEPROM_TC::getTankID() {
-  return (int)eepromReadFloat(TANK_ID_ADDRESS);
+  return static_cast<int>(eepromReadFloat(TANK_ID_ADDRESS));
 }
 float EEPROM_TC::getTemp() {
   return eepromReadFloat(TEMP_ADDRESS);
@@ -124,10 +124,6 @@ float EEPROM_TC::getTempSeriesPointer() {
 float EEPROM_TC::getTempSeriesSize() {
   return eepromReadFloat(TEMP_SERIES_SIZE_ADDRESS);
 }
-int EEPROM_TC::getVersion() {
-  return 2;  // we assume so!
-}
-
 // setter methods
 void EEPROM_TC::setAmplitude(float value) {
   eepromWriteFloat(AMPLITUDE_ADDRESS, value);

@@ -3,10 +3,8 @@
 
 #include "EEPROM_TC.h"
 
-unittest(version2) {
-  // Test singleton
-  EEPROM_TC* eeprom = EEPROM_TC::instance();
-  assertEqual(2, eeprom->getVersion());
+unittest_setup() {
+  GODMODE()->resetEEPROM();
 }
 
 unittest(singleton) {
@@ -47,18 +45,9 @@ unittest(Temp) {
   assertEqual(4, singleton->getTemp());
 }
 
-// Confirm that memory overlap bug does not exist
-// We thought that a double was 8 bytes but it is only 4 bytes!
-unittest(writing_PH_should_corrupt_Temp) {
-  EEPROM_TC* singleton = EEPROM_TC::instance();
-  assertEqual(4, singleton->getTemp());
-  singleton->setPH(3.05);
-  assertEqual(4, singleton->getTemp());
-}
-
 unittest(TankID) {
   EEPROM_TC* singleton = EEPROM_TC::instance();
-  // Because the temperature (above) overwrites this field we can't check its default
+  assertEqual(-2147483648, singleton->getTankID());
   singleton->setTankID(5);
   assertEqual(5, singleton->getTankID());
 }

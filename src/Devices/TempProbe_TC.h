@@ -99,7 +99,7 @@ public:
     return thermo.temperature(RTDnominal, refResistor);
   }
 
-  double getRunningAverage();
+  float getRunningAverage();
 
   uint8_t readFault() {
     return thermo.readFault();
@@ -128,9 +128,9 @@ private:
   Adafruit_MAX31865 thermo = Adafruit_MAX31865(45, 43, 41, 39);
   bool firstTime = true;
   static const int HISTORY_SIZE = 10;
-  double history[HISTORY_SIZE];
+  float history[HISTORY_SIZE];
   int historyIndex = 0;
-  double correction = 0.0;
+  float correction = 0.0;
   unsigned long lastTime = 0;
 
   // Methods

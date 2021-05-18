@@ -25,5 +25,5 @@ public:
   const char* prompt() {
     return "pH-Lowpoint     ";
   };
-  void setValue(double value);
+  void setValue(float value);
 };

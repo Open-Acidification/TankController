@@ -52,10 +52,10 @@ TempProbe_TC::TempProbe_TC() {
  * Read the current temperature and return a running average.
  * Do this only once per second since device is unreliable beyond that.
  */
-double TempProbe_TC::getRunningAverage() {
+float TempProbe_TC::getRunningAverage() {
   unsigned long currentTime = millis();
   if (firstTime || lastTime + 1000 <= currentTime) {
-    double temp = this->getRawTemperature();
+    float temp = this->getRawTemperature();
     if (firstTime) {
       for (int i = 0; i < HISTORY_SIZE; ++i) {
         history[i] = temp;
@@ -66,7 +66,7 @@ double TempProbe_TC::getRunningAverage() {
     history[historyIndex] = temp;
     lastTime = currentTime;
   }
-  double sum = 0.0;
+  float sum = 0.0;
   for (int i = 0; i < HISTORY_SIZE; ++i) {
     sum += history[i];
   }

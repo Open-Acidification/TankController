@@ -7,9 +7,9 @@ public:
   static EEPROM_TC* instance();
 
   // read and write
-  double eepromReadDouble(int address);
+  float eepromReadFloat(int address);
   int eepromReadInt(int address);
-  void eepromWriteDouble(int address, double value);
+  void eepromWriteFloat(int address, float value);
   void eepromWriteInt(int address, int value);
 
   // accessor methods

@@ -5,7 +5,7 @@
 #include "Serial_TC.h"
 #include "TankControllerLib.h"
 
-const double DEFAULT_TEMPERATURE = 20.0;
+const float DEFAULT_TEMPERATURE = 20.0;
 
 //  class instance variables
 /**
@@ -66,7 +66,7 @@ bool TemperatureControl::isHeater() {
 /**
  * set target temperature and save in EEPROM
  */
-void TemperatureControl::setTargetTemperature(double newTemperature) {
+void TemperatureControl::setTargetTemperature(float newTemperature) {
   if (targetTemperature != newTemperature) {
     serial("Change target temperature from %5.2f to %5.2f", targetTemperature, newTemperature);
     EEPROM_TC::instance()->setTemp(newTemperature);
@@ -74,7 +74,7 @@ void TemperatureControl::setTargetTemperature(double newTemperature) {
   }
 }
 
-void Chiller::updateControl(double currentTemperature) {
+void Chiller::updateControl(float currentTemperature) {
   unsigned long currentMillis = millis();
   // pause 30 seconds between switching chiller on and off to prevent damage to chiller
   if (currentMillis - previousMillis >= TIME_INTERVAL) {
@@ -103,7 +103,7 @@ void Chiller::updateControl(double currentTemperature) {
   }
 }
 
-void Heater::updateControl(double currentTemperature) {
+void Heater::updateControl(float currentTemperature) {
   bool newValue = pinValue;
   // if in calibration, turn unit off
   if (TankControllerLib::instance()->isInCalibration()) {

@@ -25,19 +25,19 @@ unittest(eeprom_Read_and_Write_Double) {
   const int TEST_ADDRESS = 4000;  // beyond the end of our use
 
   // integer
-  test->eepromWriteDouble(TEST_ADDRESS, 10);
-  assertEqual(10, test->eepromReadDouble(TEST_ADDRESS));
+  test->eepromWriteFloat(TEST_ADDRESS, 10);
+  assertEqual(10, test->eepromReadFloat(TEST_ADDRESS));
 
-  // double
-  test->eepromWriteDouble(TEST_ADDRESS, 12.23);
-  assertEqual(12.23, test->eepromReadDouble(TEST_ADDRESS));
+  // float
+  test->eepromWriteFloat(TEST_ADDRESS, 12.25);
+  assertEqual(12.25, test->eepromReadFloat(TEST_ADDRESS));
 }
 
 unittest(PH) {
   EEPROM_TC* singleton = EEPROM_TC::instance();
   assertNAN(singleton->getPH());
-  singleton->setPH(3.05);
-  assertEqual(3.05, singleton->getPH());
+  singleton->setPH(3.125);
+  assertEqual(3.125, singleton->getPH());
 }
 
 unittest(Temp) {
@@ -47,12 +47,13 @@ unittest(Temp) {
   assertEqual(4, singleton->getTemp());
 }
 
-// Confirm that memory overlap bug exists (fixed in EEPROM3)
+// Confirm that memory overlap bug does not exist
+// We thought that a double was 8 bytes but it is only 4 bytes!
 unittest(writing_PH_should_corrupt_Temp) {
   EEPROM_TC* singleton = EEPROM_TC::instance();
   assertEqual(4, singleton->getTemp());
   singleton->setPH(3.05);
-  assertNotEqual(4, singleton->getTemp());  // THIS IS THE BUG!!
+  assertEqual(4, singleton->getTemp());
 }
 
 unittest(TankID) {

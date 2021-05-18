@@ -5,6 +5,7 @@
 #include "Devices/PHControl.h"
 #include "EEPROM_TC.h"
 #include "SetPHSetPoint.h"
+#include "TC_util.h"
 #include "TankControllerLib.h"
 
 unittest_setup() {
@@ -12,21 +13,22 @@ unittest_setup() {
 }
 
 unittest(test) {
-  assertNAN(EEPROM_TC::instance()->getPH());
-  EEPROM_TC::instance()->setPH(8.25);
-  assertEqual(8.25, PHControl::instance()->getTargetPh());
+  EEPROM_TC::instance()->setPH(8.125);
   TankControllerLib* tc = TankControllerLib::instance();
+  assertEqual(8.125, EEPROM_TC::instance()->getPH());
+  assertEqual(0, 8.125 - EEPROM_TC::instance()->getPH());
   SetPHSetPoint* test = new SetPHSetPoint(tc);
+  assertEqual(8.125, PHControl::instance()->getTargetPh());
   tc->setNextState(test, true);
 
   // setValue
-  test->setValue(7.1234);
-  assertEqual(7.1234, PHControl::instance()->getTargetPh());
-  assertEqual(7.1234, EEPROM_TC::instance()->getPH());
+  test->setValue(7.125);
+  assertEqual(7.125, PHControl::instance()->getTargetPh());
+  assertEqual(7.125, EEPROM_TC::instance()->getPH());
 
   // during the delay we showed the new value
   std::vector<String> lines = LiquidCrystal_TC::instance()->getLines();
-  assertEqual("New pH=7.1234   ", lines[1]);
+  assertEqual("New pH=7.125    ", lines[1]);
   assertEqual("SetPHSetPoint", tc->stateName());
   tc->loop();  // transition to Wait
   assertEqual("Wait", tc->stateName());

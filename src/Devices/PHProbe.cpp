@@ -76,7 +76,7 @@ void PHProbe::serialEvent1() {
 // "pH decreases with increase in temperature. But this does not mean that
 //  water becomes more acidic at higher temperatures."
 // https://www.westlab.com/blog/2017/11/15/how-does-temperature-affect-ph
-void PHProbe::setTemperatureCompensation(double temperature) {
+void PHProbe::setTemperatureCompensation(float temperature) {
   const String PARTIAL_COMMAND = "T,";
   String fullCommand;
   if (temperature > 0 && temperature < 100) {
@@ -88,19 +88,19 @@ void PHProbe::setTemperatureCompensation(double temperature) {
   Serial1.print(fullCommand);  // send that string to the Atlas Scientific product
 }
 
-void PHProbe::setHighpointCalibration(double highpoint) {
+void PHProbe::setHighpointCalibration(float highpoint) {
   String fullCommand;
   fullCommand = "Cal,High," + String(highpoint, 3) + "\r";
   Serial1.print(fullCommand);  // send that string to the Atlas Scientific product
 }
 
-void PHProbe::setLowpointCalibration(double lowpoint) {
+void PHProbe::setLowpointCalibration(float lowpoint) {
   String fullCommand;
   fullCommand = "Cal,low," + String(lowpoint, 3) + "\r";
   Serial1.print(fullCommand);  // send that string to the Atlas Scientific product
 }
 
-void PHProbe::setMidpointCalibration(double midpoint) {
+void PHProbe::setMidpointCalibration(float midpoint) {
   String fullCommand;
   fullCommand = "Cal,mid," + String(midpoint, 3) + "\r";
   Serial1.print(fullCommand);  // send that string to the Atlas Scientific product

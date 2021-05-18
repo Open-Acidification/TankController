@@ -111,7 +111,7 @@ unittest(getPh) {
   GODMODE()->serialPort[1].dataIn = "7.25\r";  // the queue of data waiting to be read
   pTC->serialEvent1();                         // fake interrupt
   PHProbe *pPHProbe = PHProbe::instance();
-  double pH = pPHProbe->getPh();
+  float pH = pPHProbe->getPh();
   assertEqual(7.25, pH);
 }
 

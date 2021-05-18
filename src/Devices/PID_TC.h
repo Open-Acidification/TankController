@@ -7,24 +7,24 @@ public:
   static PID_TC *instance();
   static void reset();  // used by tests
   // instance functions
-  double computeOutput(double target, double current);
-  double getKd() {
+  float computeOutput(float target, float current);
+  float getKd() {
     return pPID->GetKd();
   }
-  double getKi() {
+  float getKi() {
     return pPID->GetKi();
   }
-  double getKp() {
+  float getKp() {
     return pPID->GetKp();
   }
   int getMode() {
     return pPID->GetMode();
   }
   void logToSerial();
-  void setKd(double Kd);
-  void setKi(double Ki);
-  void setKp(double Kp);
-  void setTunings(double Kp, double Ki, double Kd);
+  void setKd(float Kd);
+  void setKi(float Ki);
+  void setKp(float Kp);
+  void setTunings(float Kp, float Ki, float Kd);
 
 private:
   // class
@@ -33,6 +33,7 @@ private:
   PID_TC();
   ~PID_TC();
   // declare necessary private variables
+  // note that on the Mega2560 the `double` type is 4 bytes!
   double input = 0.0;
   double output = 0.0;
   double set_point = 0.0;

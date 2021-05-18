@@ -9,7 +9,7 @@
 #include "UIState.h"
 #include "Wait.h"
 
-void PHCalibrationMid::setValue(double value) {
+void PHCalibrationMid::setValue(float value) {
   PHProbe::instance()->setMidpointCalibration(value);
 
   char output[17];

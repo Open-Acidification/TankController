@@ -17,7 +17,7 @@ unittest(readFromEepromOnStartup) {
     tempProbe->getRunningAverage();
   }
   delay(1000);
-  double temp = tempProbe->getRunningAverage();
+  float temp = tempProbe->getRunningAverage();
   assertTrue(9.9 <= temp && temp <= 10.1);
 }
 
@@ -76,7 +76,7 @@ unittest(adjustment) {
   tempProbe->setTemperature(10.0);
   tempProbe->setCorrection(0.5);
   delay(1000);
-  double temp = tempProbe->getRunningAverage();
+  float temp = tempProbe->getRunningAverage();
   assertTrue(10.49 <= temp && temp <= 10.51);
 }
 
@@ -89,7 +89,7 @@ unittest(runningAverage) {
     tempProbe->getRunningAverage();
   }
   delay(1000);
-  double temp = tempProbe->getRunningAverage();
+  float temp = tempProbe->getRunningAverage();
   assertTrue(9.9 <= temp && temp <= 10.1);
   tempProbe->setTemperature(20.0);
   delay(1000);

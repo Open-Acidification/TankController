@@ -11,7 +11,7 @@
 class PHProbe {
 public:
   static PHProbe* instance();
-  double getPh() {
+  float getPh() {
     return value;
   }
   String getSlopeResponse() {
@@ -21,16 +21,16 @@ public:
   String getSlope();
   void sendSlopeRequest();
   void serialEvent1();
-  void setHighpointCalibration(double highpoint);
-  void setLowpointCalibration(double lowpoint);
-  void setMidpointCalibration(double midpoint);
-  void setTemperatureCompensation(double temperature);
+  void setHighpointCalibration(float highpoint);
+  void setLowpointCalibration(float lowpoint);
+  void setMidpointCalibration(float midpoint);
+  void setTemperatureCompensation(float temperature);
 
 private:
   // Class variable
   static PHProbe* _instance;
   // instance variable
-  double value = 0;
+  float value = 0;
   String slopeResponse = "";
   // Methods
   PHProbe();

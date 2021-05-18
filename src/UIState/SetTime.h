@@ -22,7 +22,7 @@ public:
   const char* prompt() {
     return prompts[subState];
   }
-  void setValue(double value);
+  void setValue(float value);
 
 private:
   static const int NUM_VALUES = 5;

@@ -9,7 +9,7 @@
 
 unittest(testOutput) {
   // Set up
-  double prevInterval = EEPROM_TC::instance()->getGoogleSheetInterval();
+  float prevInterval = EEPROM_TC::instance()->getGoogleSheetInterval();
   EEPROM_TC::instance()->setGoogleSheetInterval(60);
 
   TankControllerLib* tc = TankControllerLib::instance();

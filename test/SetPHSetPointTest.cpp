@@ -8,6 +8,10 @@
 #include "TC_util.h"
 #include "TankControllerLib.h"
 
+unittest_setup() {
+  GODMODE()->resetEEPROM();
+}
+
 unittest(test) {
   EEPROM_TC::instance()->setPH(8.125);
   TankControllerLib* tc = TankControllerLib::instance();

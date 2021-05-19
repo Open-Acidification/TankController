@@ -34,7 +34,7 @@ void NumCollectorState::handleKey(char key) {
 
 void NumCollectorState::handleDigit(int digit) {
   if (hasDecimal) {
-    value = value + (double)digit / factor;
+    value = value + (float)digit / factor;
     factor = factor * 10;
   } else {
     value = value * 10 + digit;

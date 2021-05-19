@@ -22,5 +22,5 @@ public:
   const char* prompt() {
     return "1:Chill; 9:Heat ";
   };
-  void setValue(double value);
+  void setValue(float value);
 };

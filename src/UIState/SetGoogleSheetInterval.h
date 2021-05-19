@@ -22,5 +22,5 @@ public:
   const char* prompt() {
     return "G Sheet Minutes ";
   };
-  void setValue(double value);
+  void setValue(float value);
 };

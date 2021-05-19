@@ -10,9 +10,9 @@ unittest(Edge_Case) {
   test.handleKey('9');
   test.handleKey('0');
   test.handleKey('*');
-  test.handleKey('0');
-  test.handleKey('9');
-  assertEqual(90.09, test.getValue());
+  test.handleKey('2');
+  test.handleKey('5');
+  assertEqual(90.25, test.getValue());
 }
 
 unittest(A_Digit_NoDecimal) {
@@ -28,9 +28,9 @@ unittest(A_Digit_WithDecimal) {
   testDecimal.handleKey('1');
   testDecimal.handleKey('2');
   testDecimal.handleKey('*');
-  testDecimal.handleKey('3');
-  testDecimal.handleKey('4');
-  assertEqual(12.34, testDecimal.getValue());
+  testDecimal.handleKey('7');
+  testDecimal.handleKey('5');
+  assertEqual(12.75, testDecimal.getValue());
 }
 
 unittest(A_Digit_MultipleDecimals) {
@@ -39,10 +39,10 @@ unittest(A_Digit_MultipleDecimals) {
   testDecimal.handleKey('2');
   testDecimal.handleKey('*');
   testDecimal.handleKey('*');
-  testDecimal.handleKey('3');
+  testDecimal.handleKey('2');
   testDecimal.handleKey('*');
-  testDecimal.handleKey('4');
-  assertEqual(12.34, testDecimal.getValue());
+  testDecimal.handleKey('5');
+  assertEqual(12.25, testDecimal.getValue());
 }
 
 unittest(backSpace) {

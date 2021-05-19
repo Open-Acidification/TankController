@@ -225,7 +225,7 @@ void MainMenu::idle() {
   LiquidCrystal_TC::instance()->writeLine(output, 0);
   TemperatureControl *tempControl = TemperatureControl::instance();
   TempProbe_TC *tempProbe = TempProbe_TC::instance();
-  double temp = tempProbe->getRunningAverage();
+  float temp = tempProbe->getRunningAverage();
   if (temp < 0.0) {
     temp = 0.0;
   } else if (99.99 < temp) {

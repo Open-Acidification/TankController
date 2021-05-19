@@ -9,7 +9,7 @@
 #include "UIState.h"
 #include "Wait.h"
 
-void PHCalibrationLow::setValue(double value) {
+void PHCalibrationLow::setValue(float value) {
   PHProbe::instance()->setLowpointCalibration(value);
 
   char output[17];

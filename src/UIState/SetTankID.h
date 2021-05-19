@@ -22,5 +22,5 @@ public:
   const char* prompt() {
     return "Set Tank ID#    ";
   };
-  void setValue(double value);
+  void setValue(float value);
 };

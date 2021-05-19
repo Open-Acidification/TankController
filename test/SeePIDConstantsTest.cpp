@@ -15,9 +15,9 @@ unittest(TestVerticalScroll) {
   SeePIDConstants* test = new SeePIDConstants(tc);
 
   // Set up
-  double kp = pPID->getKp();
-  double ki = pPID->getKi();
-  double kd = pPID->getKd();
+  float kp = pPID->getKp();
+  float ki = pPID->getKi();
+  float kd = pPID->getKd();
   pPID->setTunings(10001.0, 10002.0, 10003.0);
 
   // Transition states

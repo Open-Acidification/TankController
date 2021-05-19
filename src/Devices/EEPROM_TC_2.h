@@ -5,53 +5,53 @@
 class EEPROM_TC_2 : public EEPROM_TC {
 public:
   // accessor methods
-  double getAmplitude();
-  double getCorrectedTemp();
-  double getFrequency();
+  float getAmplitude();
+  float getCorrectedTemp();
+  float getFrequency();
   int getGoogleSheetInterval();
-  double getGranularity();
+  float getGranularity();
   bool getHeat();
-  double getKD();
-  double getKI();
-  double getKP();
-  double getMac();
-  double getMaxDataAge();
-  double getPH();
-  double getPHDelay();
-  double getPHInterval();
-  double getPHSeriesPointer();
-  double getPHSeriesSize();
+  float getKD();
+  float getKI();
+  float getKP();
+  float getMac();
+  float getMaxDataAge();
+  float getPH();
+  float getPHDelay();
+  float getPHInterval();
+  float getPHSeriesPointer();
+  float getPHSeriesSize();
   int getTankID();
-  double getTemp();
-  double getTempDelay();
-  double getTempInterval();
-  double getTempSeriesPointer();
-  double getTempSeriesSize();
+  float getTemp();
+  float getTempDelay();
+  float getTempInterval();
+  float getTempSeriesPointer();
+  float getTempSeriesSize();
   int getVersion();
 
   // setter methods
-  void setAmplitude(double value);
-  void setCorrectedTemp(double value);
-  void setFrequency(double value);
+  void setAmplitude(float value);
+  void setCorrectedTemp(float value);
+  void setFrequency(float value);
   void setGoogleSheetInterval(int value);
-  void setGranularity(double value);
+  void setGranularity(float value);
   void setHeat(bool value);
-  void setKD(double value);
-  void setKI(double value);
-  void setKP(double value);
-  void setMac(double value);
-  void setMaxDataAge(double value);
-  void setPH(double value);
-  void setPHDelay(double value);
-  void setPHInterval(double value);
-  void setPHSeriesPointer(double value);
-  void setPHSeriesSize(double value);
+  void setKD(float value);
+  void setKI(float value);
+  void setKP(float value);
+  void setMac(float value);
+  void setMaxDataAge(float value);
+  void setPH(float value);
+  void setPHDelay(float value);
+  void setPHInterval(float value);
+  void setPHSeriesPointer(float value);
+  void setPHSeriesSize(float value);
   void setTankID(int value);
-  void setTemp(double value);
-  void setTempDelay(double value);
-  void setTempInterval(double value);
-  void setTempSeriesPointer(double value);
-  void setTempSeriesSize(double value);
+  void setTemp(float value);
+  void setTempDelay(float value);
+  void setTempInterval(float value);
+  void setTempSeriesPointer(float value);
+  void setTempSeriesSize(float value);
   void setVersion() {  // Nothing to be done here!
   }
 
@@ -59,7 +59,7 @@ protected:
   virtual bool isRightVersion();
 
 private:
-  // NOTE BUG: many addresses provide for 4 bytes for a double
+  // NOTE BUG: many addresses provide for 4 bytes for a float
   // this is wrong and is fixed in EEPROM_TC_3
 
   // instance variables from v0.197
@@ -67,9 +67,9 @@ private:
   const int TEMP_ADDRESS = 4;        // 99.99
   const int TANK_ID_ADDRESS = 8;     // 999
   const int TEMP_CORR_ADDRESS = 12;  // 99.99
-  const int KP_ADDRESS = 20;         // double
-  const int KI_ADDRESS = 28;         // double
-  const int KD_ADDRESS = 36;         // double
+  const int KP_ADDRESS = 20;         // float
+  const int KI_ADDRESS = 28;         // float
+  const int KD_ADDRESS = 36;         // float
   const int MAC_ADDRESS = 44;        // 8 byte
   const int HEAT_ADDRESS = 52;       // bool
   // new with v0.2

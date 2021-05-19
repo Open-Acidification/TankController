@@ -7,7 +7,7 @@
 #include "Devices/EEPROM_TC.h"
 #include "Devices/LiquidCrystal_TC.h"
 
-void SetTankID::setValue(double value) {
+void SetTankID::setValue(float value) {
   EEPROM_TC::instance()->setTankID(value);
 
   char output[17];

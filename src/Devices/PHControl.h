@@ -8,7 +8,7 @@ private:
   unsigned long lastSwitchMS = 0;
   const int PIN = 49;
   const int SOLENOID_OPENING_TIME = 100;
-  double targetPh;
+  float targetPh;
   const int WINDOW_SIZE = 10000;  // 10 second Time Proportional output window
   long onTime = 0;
   long window_start_time;
@@ -18,13 +18,13 @@ private:
 
 public:
   static PHControl* instance();
-  double getTargetPh() {
+  float getTargetPh() {
     return targetPh;
   }
   bool getUsePID() {
     return usePID;
   }
-  void setTargetPh(double newPh);
+  void setTargetPh(float newPh);
   void enablePID(bool flag);
-  void updateControl(double pH);
+  void updateControl(float pH);
 };

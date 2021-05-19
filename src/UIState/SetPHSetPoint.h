@@ -20,5 +20,5 @@ public:
   const char* prompt() {
     return "Set pH Set Point";
   };
-  void setValue(double value);
+  void setValue(float value);
 };

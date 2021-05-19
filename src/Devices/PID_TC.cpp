@@ -25,7 +25,7 @@ void PID_TC::reset() {
 
 // implement constructor
 PID_TC::PID_TC() {
-  double Kp, Ki, Kd;
+  float Kp, Ki, Kd;
   EEPROM_TC *eeprom = EEPROM_TC::instance();
   Kp = eeprom->getKP();
   Ki = eeprom->getKI();
@@ -59,37 +59,37 @@ PID_TC::~PID_TC() {
 }
 
 // instance functions
-double PID_TC::computeOutput(double target, double current) {
+float PID_TC::computeOutput(float target, float current) {
   if (TankControllerLib::instance()->isInCalibration()) {
     // current value will likely be wrong during calibration, so don't make any changes
-    return output;
+    return static_cast<float>(output);
   }
-  set_point = target;
-  input = current;
+  set_point = static_cast<float>(target);
+  input = static_cast<double>(current);
   pPID->Compute();
-  return output;
+  return static_cast<float>(static_cast<float>(output));
 }
 
 void PID_TC::logToSerial() {
   serial("Kp: %6.1f Ki: %6.1f Kd: %6.1f\r\nPID output (s):%4.1f", pPID->GetKp(), pPID->GetKi(), pPID->GetKd(),
-         output / 1000);
+         static_cast<float>(output) / 1000);
 }
 
-void PID_TC::setKd(double Kd) {
+void PID_TC::setKd(float Kd) {
   pPID->SetTunings(getKp(), getKi(), Kd);
   EEPROM_TC::instance()->setKD(Kd);
 }
 
-void PID_TC::setKi(double Ki) {
+void PID_TC::setKi(float Ki) {
   pPID->SetTunings(getKp(), Ki, getKd());
   EEPROM_TC::instance()->setKI(Ki);
 }
 
-void PID_TC::setKp(double Kp) {
+void PID_TC::setKp(float Kp) {
   pPID->SetTunings(Kp, getKi(), getKd());
   EEPROM_TC::instance()->setKP(Kp);
 }
 
-void PID_TC::setTunings(double Kp, double Ki, double Kd) {
+void PID_TC::setTunings(float Kp, float Ki, float Kd) {
   pPID->SetTunings(Kp, Ki, Kd);
 }

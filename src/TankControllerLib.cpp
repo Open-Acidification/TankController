@@ -2,6 +2,7 @@
 
 #include "Devices/DateTime_TC.h"
 #include "Devices/EEPROM_TC.h"
+#include "Devices/Ethernet_TC.h"
 #include "Devices/Keypad_TC.h"
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHControl.h"
@@ -130,6 +131,58 @@ void TankControllerLib::loop() {
   // write data to Google Sheets
 }
 
+void TankControllerLib::sendDataToGoogleSheets() {
+  static unsigned long nextWriteTime = 0;
+  unsigned long msNow = millis();
+  COUT("nextWriteTime: " << nextWriteTime << "; now = " << msNow);
+  // Ethernet_TC::instance()->connect("api.pushingbox.com", 80);
+  // if (nextWriteTime <= msNow) {
+  //     Serial.println(F("Starting upload to Google Docs"));
+  //     wdt_reset();
+      
+  //     lcd.setCursor(9, 0);
+  //     lcd.write((uint8_t)0);
+  //     pinMode(4, OUTPUT);
+  //     digitalWrite(4, HIGH);
+
+  //     previousMillis = currentMillis;                     // save the last time you updated Google Sheets
+
+  //     packData();                                          //packing GET query with data
+
+  //     Serial.println(F("connecting..."));
+  //     if (client.connect(server, 80)) {
+  //       sendData();
+  //       cxn = true;                                        //connected = true
+  //     }
+  //     else {
+  //       Serial.println(F("connection failed"));
+  //     }
+  //     // loop
+  //     while (cxn) {
+  //       if (client.available()) {
+  //         char c = client.read(); //save http header to c
+  //         Serial.print(c); //print http header to serial monitor
+  //       }
+  //       if (!client.connected()) {
+  //         Serial.println();
+  //         Serial.println(F("disconnecting."));
+  //         Serial.print(F("Temperature Sent :"));
+  //         Serial.println(temp); //print sent value to serial monitor
+
+  //         client.stop();
+  //         cxn = false;
+
+  //         data = ""; //data reset
+
+  //       }
+  //     }
+  //     Serial.println(F("exiting Google Docs loop"));
+  //     lcd.setCursor(9, 0);
+  //     lcd.write(" ");
+  //   nextWriteTime = msNow / 1000 * 1000 + 1000;  // round up to next second
+  //   }
+
+}
 /**
  * This public instance function is called when there is data on the serial port(0).
  */

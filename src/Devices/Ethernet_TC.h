@@ -6,6 +6,7 @@
 #pragma once
 
 #include "Ethernet.h"
+#include <SPI.h>
 
 class Ethernet_TC {
 public:
@@ -35,7 +36,7 @@ private:
   IPAddress IP;
   unsigned long previous_lease = 0;
   const unsigned long LEASE_INTERVAL = 345600000;  // 4 days in milliseconds
-
+  EthernetClient client;
   // testing
   int numAttemptedDHCPReleases = 0;
 };

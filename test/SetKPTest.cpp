@@ -21,7 +21,6 @@ unittest(test) {
   assertEqual("New KP=123456.5 ", lines[1]);
   assertEqual("SetKP", tc->stateName());
 
- 
   tc->loop();  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(3000);

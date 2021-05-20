@@ -11,13 +11,16 @@ unittest(test) {
   TankControllerLib* tc = TankControllerLib::instance();
   SetKP* test = new SetKP(tc);
   tc->setNextState(test, true);
+
   // setValue
-  test->setValue(12345.5);
-  assertEqual(12345.5, EEPROM_TC::instance()->getKP());
-  // during the delay we showed the new value
+  test->setValue(123456.5);
+  assertEqual(123456.5, EEPROM_TC::instance()->getKP());
+
+  // show the new value
   std::vector<String> lines = LiquidCrystal_TC::instance()->getLines();
-  assertEqual("New KP=12345.5  ", lines[1]);
+  assertEqual("New KP=123456.5 ", lines[1]);
   assertEqual("SetKP", tc->stateName());
+
   // Return to mainMenu
   Keypad_TC::instance()->_getPuppet()->push_back('D');
   tc->loop();

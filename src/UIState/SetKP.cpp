@@ -11,4 +11,5 @@ void SetKP::setValue(float value) {
   char output[17];
   snprintf(output, sizeof(output), "New KP=%.1f", value);
   LiquidCrystal_TC::instance()->writeLine(output, 1);
+  returnToMainMenu(3000);
 }

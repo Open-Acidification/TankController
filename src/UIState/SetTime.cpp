@@ -22,6 +22,6 @@ void SetTime::setValue(float value) {
     serial("Set time to %s", buffer);
     LiquidCrystal_TC::instance()->writeLine("New Date/Time:  ", 0);
     LiquidCrystal_TC::instance()->writeLine(buffer, 1);
-    returnToMainMenu(1000);  // after 1-second delay
+    returnToMainMenu(3000);  // after 3-second delay
   }
 }

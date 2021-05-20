@@ -14,7 +14,7 @@ unittest(ignoreInvalidValues) {
   test->setValue(2.0);
   assertTrue(EEPROM_TC::instance()->getHeat());
   tc->loop();  // transition to Wait
-  delay(1000);
+  delay(3000);
   tc->loop();  // queue MainMenu to be next
   tc->loop();  // transition to MainMenu
   // now we should be back to the main menu
@@ -29,7 +29,7 @@ unittest(switchToHeat) {
   test->setValue(9.0);
   assertTrue(EEPROM_TC::instance()->getHeat());
   tc->loop();  // transition to Wait
-  delay(1000);
+  delay(3000);
   tc->loop();  // queue MainMenu to be next
   tc->loop();  // transition to MainMenu
   // now we should be back to the main menu
@@ -49,7 +49,7 @@ unittest(switchToChill) {
   assertEqual("SetChillOrHeat", tc->stateName());
   tc->loop();  // transition to Wait
   assertEqual("Wait", tc->stateName());
-  delay(1000);
+  delay(3000);
   tc->loop();  // queue MainMenu to be next
   tc->loop();  // transition to MainMenu
   // now we should be back to the main menu

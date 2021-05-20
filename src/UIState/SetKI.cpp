@@ -12,4 +12,5 @@ void SetKI::setValue(float value) {
   char output[17];
   snprintf(output, sizeof(output), "New KI=%.1f", value);  // "New KI=12345.5"
   LiquidCrystal_TC::instance()->writeLine(output, 1);
+  returnToMainMenu(3000);
 }

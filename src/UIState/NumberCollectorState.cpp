@@ -22,6 +22,7 @@ void NumCollectorState::handleKey(char key) {
     hasDecimal = isInteger() ? false : true;
   } else if (key == 'A') {  // Accept
     setValue(value);
+    return;                 // don't print the value again
   } else if (key == 'B') {  // Backspace
     backSpace();
   } else if (key == 'C') {  // Clear
@@ -64,11 +65,11 @@ void NumCollectorState::printValue() {
   if (!hasDecimal) {
     // show user entry as an integer (no decimal yet)
     snprintf(format, sizeof(format), "%s%%6i", strValue);
-    snprintf(strValue, sizeof(strValue), format, (uint16_t)value);
+    snprintf(strValue, sizeof(strValue), format, (uint32_t)value);
   } else if (factor == 10) {
     // show user entry with a decimal but nothing beyond
     snprintf(format, sizeof(format), "%s%%6i.", strValue);
-    snprintf(strValue, sizeof(strValue), format, (uint16_t)value);
+    snprintf(strValue, sizeof(strValue), format, (uint32_t)value);
   } else {
     // show user entry with appropriate precision (based on digits user has entered)
     uint16_t precision = log10(factor / 10);

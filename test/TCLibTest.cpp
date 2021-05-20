@@ -10,8 +10,8 @@
 #include "TempProbe_TC.h"
 #include "TemperatureControl.h"
 
-const int TEMP_PIN = 47;
-const int PH_PIN = 49;
+const uint16_t TEMP_PIN = 47;
+const uint16_t PH_PIN = 49;
 
 GodmodeState *state = GODMODE();
 TankControllerLib *pTC = TankControllerLib::instance();
@@ -25,7 +25,7 @@ unittest_setup() {
   // set temperature
   tempProbe->setTemperature(20.0);
   tempProbe->setCorrection(0.0);
-  for (int i = 0; i < 100; ++i) {
+  for (size_t i = 0; i < 100; ++i) {
     delay(1000);
     tempProbe->getRunningAverage();
   }
@@ -52,7 +52,7 @@ unittest_teardown() {
 unittest(basicOperation) {
   // verify startup state, including that solonoids are off
   delay(1000);
-  assertEqual(20, (int)tempProbe->getRunningAverage());
+  assertEqual(20, (int16_t)tempProbe->getRunningAverage());
   assertEqual(7.5, pPHProbe->getPh());
   pPHControl->enablePID(false);  // Stay on continually if needed
   pTC->loop();
@@ -88,7 +88,7 @@ unittest(storeDataToSD) {
   // set date/time (so we can confirm data)
   DateTime_TC dt(2021, 4, 27, 14, 24, 50);
   dt.setAsCurrent();
-  for (int i = 0; i < 4; ++i) {
+  for (size_t i = 0; i < 4; ++i) {
     delay(500);
     pTC->loop();
   }
@@ -103,7 +103,7 @@ unittest(storeDataToSD) {
   data[file.size()] = '\0';
   COUT(data);
   String contents(data), line;
-  int i = contents.indexOf('\n');
+  int16_t i = contents.indexOf('\n');
   line = contents.substring(0, i);
   assertEqual("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd", line.c_str());
   contents = contents.substring(i + 1);

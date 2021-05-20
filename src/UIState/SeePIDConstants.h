@@ -4,6 +4,7 @@
  * See PID Constants
  */
 #pragma once
+#include "TC_util.h"
 #include "UIState.h"
 
 class SeePIDConstants : public UIState {
@@ -19,10 +20,10 @@ public:
   }
 
 private:
-  void loadKp(int line);
-  void loadKi(int line);
-  void loadKd(int line);
-  void loadSlope(int line);
+  void loadKp(uint16_t line);
+  void loadKi(uint16_t line);
+  void loadKd(uint16_t line);
+  void loadSlope(uint16_t line);
 
-  unsigned long startTime;
+  uint32_t startTime;
 };

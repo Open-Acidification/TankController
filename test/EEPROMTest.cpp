@@ -20,7 +20,7 @@ unittest(singleton) {
 
 unittest(eeprom_Read_and_Write_Double) {
   EEPROM_TC* test = EEPROM_TC::instance();
-  const int TEST_ADDRESS = 4000;  // beyond the end of our use
+  const uint16_t TEST_ADDRESS = 4000;  // beyond the end of our use
 
   // integer
   test->eepromWriteFloat(TEST_ADDRESS, 10);
@@ -47,7 +47,7 @@ unittest(Temp) {
 
 unittest(TankID) {
   EEPROM_TC* singleton = EEPROM_TC::instance();
-  assertEqual(-2147483648, singleton->getTankID());
+  assertEqual(0, singleton->getTankID());
   singleton->setTankID(5);
   assertEqual(5, singleton->getTankID());
 }
@@ -182,7 +182,7 @@ unittest(TempDelay) {
 
 unittest(GoogleSheetIntervalMinutes) {
   EEPROM_TC* singleton = EEPROM_TC::instance();
-  assertEqual(-1, singleton->getGoogleSheetInterval());
+  assertEqual(65535, singleton->getGoogleSheetInterval());
   singleton->setGoogleSheetInterval(20);
   assertEqual(20, singleton->getGoogleSheetInterval());
 }

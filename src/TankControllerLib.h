@@ -28,12 +28,12 @@ public:
 private:
   // class variables
   static TankControllerLib* _instance;
-  static const unsigned long IDLE_TIMEOUT = 60L * 1000L;  // revert to the main menu after 60 seconds of inactivity
+  static const uint32_t IDLE_TIMEOUT = 60L * 1000L;  // revert to the main menu after 60 seconds of inactivity
 
   // instance variables
   UIState* state = nullptr;
   UIState* nextState = nullptr;
-  unsigned long lastKeypadTime = 0;
+  uint32_t lastKeypadTime = 0;
 
   // instance methods
   TankControllerLib();

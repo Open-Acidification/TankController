@@ -8,14 +8,14 @@
 #include "TankControllerLib.h"
 
 GodmodeState* state = GODMODE();
-const int LOG_SIZE = 10;
+const uint16_t LOG_SIZE = 10;
 struct {
   long time;
   bool value;
 } pinLog[LOG_SIZE];
-int logIndex = 0;
+uint16_t logIndex = 0;
 bool overflowFlag = false;
-const int LED_PIN = 13;
+const uint16_t LED_PIN = 13;
 
 class BitCollector : public DataStreamObserver {
 public:

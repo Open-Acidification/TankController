@@ -53,11 +53,11 @@ TempProbe_TC::TempProbe_TC() {
  * Do this only once per second since device is unreliable beyond that.
  */
 float TempProbe_TC::getRunningAverage() {
-  unsigned long currentTime = millis();
+  uint32_t currentTime = millis();
   if (firstTime || lastTime + 1000 <= currentTime) {
     float temp = this->getRawTemperature();
     if (firstTime) {
-      for (int i = 0; i < HISTORY_SIZE; ++i) {
+      for (size_t i = 0; i < HISTORY_SIZE; ++i) {
         history[i] = temp;
       }
       firstTime = false;
@@ -67,7 +67,7 @@ float TempProbe_TC::getRunningAverage() {
     lastTime = currentTime;
   }
   float sum = 0.0;
-  for (int i = 0; i < HISTORY_SIZE; ++i) {
+  for (size_t i = 0; i < HISTORY_SIZE; ++i) {
     sum += history[i];
   }
   return sum / HISTORY_SIZE + correction;

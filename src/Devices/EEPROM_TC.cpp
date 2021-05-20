@@ -21,7 +21,7 @@ EEPROM_TC* EEPROM_TC::instance() {
 }
 
 //  instance methods
-float EEPROM_TC::eepromReadFloat(int address) {
+float EEPROM_TC::eepromReadFloat(uint16_t address) {
   assert(address >= 0);
   float value = 0.0;
   byte* p = (byte*)(void*)&value;
@@ -31,7 +31,7 @@ float EEPROM_TC::eepromReadFloat(int address) {
   return value;
 }
 
-void EEPROM_TC::eepromWriteFloat(int address, float value) {
+void EEPROM_TC::eepromWriteFloat(uint16_t address, float value) {
   assert(address >= 0);
   byte* p = (byte*)(void*)&value;
   for (size_t i = 0; i < sizeof(value); i++) {
@@ -39,9 +39,9 @@ void EEPROM_TC::eepromWriteFloat(int address, float value) {
   }
 }
 
-int EEPROM_TC::eepromReadInt(int address) {
+int32_t EEPROM_TC::eepromReadInt(uint16_t address) {
   assert(address >= 0);
-  int value = 0.0;
+  int32_t value = 0;
   byte* p = (byte*)(void*)&value;
   for (size_t i = 0; i < sizeof(value); i++) {
     *p++ = EEPROM.read(address++);
@@ -49,7 +49,7 @@ int EEPROM_TC::eepromReadInt(int address) {
   return value;
 }
 
-void EEPROM_TC::eepromWriteInt(int address, int value) {
+void EEPROM_TC::eepromWriteInt(uint16_t address, int32_t value) {
   assert(address >= 0);
   byte* p = (byte*)(void*)&value;
   for (size_t i = 0; i < sizeof(value); i++) {
@@ -67,7 +67,7 @@ float EEPROM_TC::getCorrectedTemp() {
 float EEPROM_TC::getFrequency() {
   return eepromReadFloat(FREQUENCY_ADDRESS);
 }
-int EEPROM_TC::getGoogleSheetInterval() {
+uint16_t EEPROM_TC::getGoogleSheetInterval() {
   return eepromReadInt(GOOGLE_INTERVAL_ADDRESS);
 }
 float EEPROM_TC::getGranularity() {
@@ -106,8 +106,8 @@ float EEPROM_TC::getPHSeriesPointer() {
 float EEPROM_TC::getPHSeriesSize() {
   return eepromReadFloat(PH_SERIES_SIZE_ADDRESS);
 }
-int EEPROM_TC::getTankID() {
-  return static_cast<int>(eepromReadFloat(TANK_ID_ADDRESS));
+uint16_t EEPROM_TC::getTankID() {
+  return static_cast<uint16_t>(eepromReadFloat(TANK_ID_ADDRESS));
 }
 float EEPROM_TC::getTemp() {
   return eepromReadFloat(TEMP_ADDRESS);
@@ -134,7 +134,7 @@ void EEPROM_TC::setCorrectedTemp(float value) {
 void EEPROM_TC::setFrequency(float value) {
   eepromWriteFloat(FREQUENCY_ADDRESS, value);
 }
-void EEPROM_TC::setGoogleSheetInterval(int value) {
+void EEPROM_TC::setGoogleSheetInterval(uint16_t value) {
   eepromWriteInt(GOOGLE_INTERVAL_ADDRESS, value);
 }
 void EEPROM_TC::setGranularity(float value) {
@@ -173,7 +173,7 @@ void EEPROM_TC::setPHSeriesPointer(float value) {
 void EEPROM_TC::setPHSeriesSize(float value) {
   eepromWriteFloat(PH_SERIES_SIZE_ADDRESS, value);
 }
-void EEPROM_TC::setTankID(int value) {
+void EEPROM_TC::setTankID(uint16_t value) {
   eepromWriteFloat(TANK_ID_ADDRESS, (float)value);
 }
 void EEPROM_TC::setTemp(float value) {

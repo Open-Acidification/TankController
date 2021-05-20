@@ -11,9 +11,9 @@ private:
   static TemperatureControl* _instance;
 
 protected:
-  const int PIN = 47;
+  const uint16_t PIN = 47;
   const float DELTA = 0.05;
-  unsigned long lastSwitchMS = 0;
+  uint32_t lastSwitchMS = 0;
   float targetTemperature;
   bool pinValue = HIGH;
   TemperatureControl();
@@ -42,8 +42,8 @@ public:
 
 class Chiller : public TemperatureControl {
 private:
-  const unsigned long TIME_INTERVAL = 30 * 1000UL;  // interval at which to change chiller state
-  unsigned long previousMillis = 0;                 // will store last time chiller state was checked
+  const uint32_t TIME_INTERVAL = 30 * 1000UL;  // interval at which to change chiller state
+  uint32_t previousMillis = 0;                 // will store last time chiller state was checked
 
 public:
   Chiller() : TemperatureControl(){};

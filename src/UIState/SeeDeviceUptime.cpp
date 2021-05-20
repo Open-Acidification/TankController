@@ -9,12 +9,12 @@
 #include "TC_util.h"
 
 void SeeDeviceUptime::loop() {
-  unsigned long ms = millis();
+  uint32_t ms = millis();
   COUT("SeeDeviceUptime::loop() at " << ms);
-  int days = ms / 86400000;
-  int hours = (ms - (days * 86400000)) / 3600000;
-  int minutes = (ms - (days * 86400000) - (hours * 3600000)) / 60000;
-  int seconds = (ms - (days * 86400000) - (hours * 3600000) - (minutes * 60000)) / 1000;
+  uint16_t days = ms / 86400000;
+  uint16_t hours = (ms - (days * 86400000)) / 3600000;
+  uint16_t minutes = (ms - (days * 86400000) - (hours * 3600000)) / 60000;
+  uint16_t seconds = (ms - (days * 86400000) - (hours * 3600000) - (minutes * 60000)) / 1000;
   char buffer[17];
   COUT("days: " << days << "; hours: " << hours << "; mins: " << minutes << "; secs: " << seconds);
   snprintf(buffer, sizeof(buffer), "Up d:%02i %02i:%02i:%02i", days, hours, minutes, seconds);

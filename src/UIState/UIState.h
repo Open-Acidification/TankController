@@ -36,6 +36,6 @@ public:
 
 protected:
   void setNextState(UIState* state);
-  void returnToMainMenu(int msDelay = 0);
+  void returnToMainMenu(uint16_t msDelay = 0);
   TankControllerLib* tc = nullptr;
 };

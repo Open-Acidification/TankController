@@ -119,7 +119,7 @@ void SD_TC::visit(visitor pFunction) {
 }
 
 void SD_TC::visit(visitor pFunction, File* pDir, String parentPath) {
-  int i = 0;
+  uint16_t i = 0;
   while (i++ < 100) {
     File entry = pDir->openNextFile();
     if (!entry) {

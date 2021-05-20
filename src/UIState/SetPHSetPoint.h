@@ -14,7 +14,7 @@ public:
     return "SetPHSetPoint";
   }
   float getCurrentValue();
-  int getCurrentValuePrecision() {
+  uint16_t getCurrentValuePrecision() {
     return 3;
   }
   const char* prompt() {

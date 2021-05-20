@@ -70,7 +70,7 @@ void DateTime_TC::yearMonthAsPath(char *buffer, size_t sizeOfBuffer) {
   buffer[0] = '/';
   itoa(year(), buffer + 1, 10);
   buffer[5] = '/';
-  int i = 6;
+  uint16_t i = 6;
   if (month() < 10) {
     buffer[i++] = '0';
   }

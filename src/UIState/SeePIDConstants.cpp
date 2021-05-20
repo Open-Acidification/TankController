@@ -10,7 +10,7 @@
 #include "TC_util.h"
 
 void SeePIDConstants::loop() {
-  int elapsedSeconds = ((millis() - startTime) / 3000) % 2;
+  int32_t elapsedSeconds = ((millis() - startTime) / 3000) % 2;
   switch (elapsedSeconds) {
     case 0:
       loadKp(0);
@@ -23,19 +23,19 @@ void SeePIDConstants::loop() {
   }
 }
 
-void SeePIDConstants::loadKp(int line) {
+void SeePIDConstants::loadKp(uint16_t line) {
   char buffer[17];
   snprintf(buffer, sizeof(buffer), "Kp: %.1f", PID_TC::instance()->getKp());
   LiquidCrystal_TC::instance()->writeLine(buffer, line);
 }
 
-void SeePIDConstants::loadKi(int line) {
+void SeePIDConstants::loadKi(uint16_t line) {
   char buffer[17];
   snprintf(buffer, sizeof(buffer), "Ki: %.1f", PID_TC::instance()->getKi());
   LiquidCrystal_TC::instance()->writeLine(buffer, line);
 }
 
-void SeePIDConstants::loadKd(int line) {
+void SeePIDConstants::loadKd(uint16_t line) {
   char buffer[17];
   snprintf(buffer, sizeof(buffer), "Kd: %.1f", PID_TC::instance()->getKd());
   LiquidCrystal_TC::instance()->writeLine(buffer, line);

@@ -8,7 +8,7 @@
 #include "PHControl.h"
 #include "TankControllerLib.h"
 
-const int PIN = 49;
+const uint16_t PIN = 49;
 
 /**
  * cycle the control through to a point of being off

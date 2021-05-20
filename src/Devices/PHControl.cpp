@@ -82,7 +82,7 @@ void PHControl::updateControl(float pH) {
   if (newValue != pinValue) {
     pinValue = newValue;
     DateTime_TC::now().printToSerial();
-    unsigned long currentMS = millis();
+    uint32_t currentMS = millis();
     serial("CO2 bubbler turned %s after %lu ms", pinValue ? "off" : "on", currentMS - lastSwitchMS);
     lastSwitchMS = currentMS;
     digitalWrite(PIN, pinValue);

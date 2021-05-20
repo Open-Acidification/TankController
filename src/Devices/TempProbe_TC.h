@@ -123,15 +123,15 @@ private:
   static TempProbe_TC* _instance;
 
   //  Instance variables
-  static const int RTDnominal = 100;
-  static const int refResistor = 430;
+  static const uint16_t RTDnominal = 100;
+  static const uint16_t refResistor = 430;
   Adafruit_MAX31865 thermo = Adafruit_MAX31865(45, 43, 41, 39);
   bool firstTime = true;
-  static const int HISTORY_SIZE = 10;
+  static const uint16_t HISTORY_SIZE = 10;
   float history[HISTORY_SIZE];
-  int historyIndex = 0;
+  uint16_t historyIndex = 0;
   float correction = 0.0;
-  unsigned long lastTime = 0;
+  uint32_t lastTime = 0;
 
   // Methods
   TempProbe_TC();

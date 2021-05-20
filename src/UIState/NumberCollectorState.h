@@ -17,19 +17,19 @@ protected:
   // Helper Functions
   void backSpace();
   void clear();
-  void handleDigit(int digit);
+  void handleDigit(uint16_t digit);
   virtual bool isInteger() {
     return false;
   }
   void printValue();
   virtual float getCurrentValue() = 0;
-  virtual int getCurrentValuePrecision() {
+  virtual uint16_t getCurrentValuePrecision() {
     return 0;
   };
 
   float value = 0.0;
-  int numDigits = 0;
-  int factor = 10;
+  uint16_t numDigits = 0;
+  uint16_t factor = 10;
   bool hasDecimal = false;
 };
 
@@ -48,7 +48,7 @@ public:
   float getCurrentValue() {
     return priorValue;
   }
-  int getCurrentValuePrecision() {
+  uint16_t getCurrentValuePrecision() {
     return priorValuePrecision;
   }
   const char* prompt() {
@@ -65,14 +65,14 @@ public:
   void setPriorValue(float aValue) {
     priorValue = aValue;
   }
-  void setPriorValuePrecision(int aValue) {
+  void setPriorValuePrecision(uint16_t aValue) {
     priorValuePrecision = aValue;
   }
 
 private:
   float storedValue = 0.0;
   float priorValue = 0.0;
-  int priorValuePrecision = 0;
+  uint16_t priorValuePrecision = 0;
 };
 
 class TestIntNumCollectorState : public TestNumCollectorState {

@@ -210,22 +210,22 @@ const char *TankControllerLib::version() {
  * once per second write the current data to the SD card
  */
 void TankControllerLib::writeDataToSD() {
-  static unsigned long nextWriteTime = 0;
+  static uint32_t nextWriteTime = 0;
   static const char header[] = "time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd";
   static const char format[] =
       "%02i/%02i/%4i %02i:%02i:%02i, %3i, %2.3f, %2.3f, %1.4f, %1.4f, %4i, %5.1f, %5.1f, %5.1f";
-  unsigned long msNow = millis();
+  uint32_t msNow = millis();
   COUT("nextWriteTime: " << nextWriteTime << "; now = " << msNow);
   if (nextWriteTime <= msNow) {
     char buffer[128];
     DateTime_TC dtNow = DateTime_TC::now();
     PID_TC *pPID = PID_TC::instance();
-    int tankId = 0;
-    snprintf(buffer, sizeof(buffer), format, (int)dtNow.month(), (int)dtNow.day(), (int)dtNow.year(), (int)dtNow.hour(),
-             (int)dtNow.minute(), (int)dtNow.second(), (int)tankId,
+    uint16_t tankId = 0;
+    snprintf(buffer, sizeof(buffer), format, (uint16_t)dtNow.month(), (uint16_t)dtNow.day(), (uint16_t)dtNow.year(),
+             (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(), (uint16_t)dtNow.second(), (uint16_t)tankId,
              (float)TempProbe_TC::instance()->getRunningAverage(),
              (float)TemperatureControl::instance()->getTargetTemperature(), (float)PHProbe::instance()->getPh(),
-             (float)PHControl::instance()->getTargetPh(), (int)0, (float)pPID->getKp(), (float)pPID->getKi(),
+             (float)PHControl::instance()->getTargetPh(), (uint16_t)0, (float)pPID->getKp(), (float)pPID->getKi(),
              (float)pPID->getKd());  // still missing onTime
     SD_TC::instance()->appendData(header, buffer);
     nextWriteTime = msNow / 1000 * 1000 + 1000;  // round up to next second

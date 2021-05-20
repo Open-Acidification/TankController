@@ -106,7 +106,7 @@ unittest(printRootDirectory) {
   state->serialPort[0].dataOut = "";
   sd->printRootDirectory();
   String output = String(state->serialPort[0].dataOut);
-  int index;
+  uint16_t index;
   index = output.indexOf("           c (     0)\r\n");
   assertNotEqual(-1, index);
   index = output.indexOf("           d/\r\n");

@@ -15,7 +15,7 @@
  * bundle exec arduino_ci.rb --skip-examples-compilation --testfile-select=TemperatureControlTest.cpp
  */
 
-const int PIN = 47;
+const uint16_t PIN = 47;
 
 unittest_setup() {
   TankControllerLib* tc = TankControllerLib::instance();

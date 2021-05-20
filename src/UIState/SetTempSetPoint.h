@@ -16,7 +16,7 @@ public:
   float getCurrentValue() {
     return 0.0;
   }
-  int getCurrentValuePrecision() {
+  uint16_t getCurrentValuePrecision() {
     return 2;
   }
   const char* prompt() {

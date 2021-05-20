@@ -32,7 +32,7 @@ void NumCollectorState::handleKey(char key) {
   printValue();
 }
 
-void NumCollectorState::handleDigit(int digit) {
+void NumCollectorState::handleDigit(uint16_t digit) {
   if (hasDecimal) {
     value = value + (float)digit / factor;
     factor = factor * 10;
@@ -64,14 +64,14 @@ void NumCollectorState::printValue() {
   if (!hasDecimal) {
     // show user entry as an integer (no decimal yet)
     snprintf(format, sizeof(format), "%s%%6i", strValue);
-    snprintf(strValue, sizeof(strValue), format, (int)value);
+    snprintf(strValue, sizeof(strValue), format, (uint16_t)value);
   } else if (factor == 10) {
     // show user entry with a decimal but nothing beyond
     snprintf(format, sizeof(format), "%s%%6i.", strValue);
-    snprintf(strValue, sizeof(strValue), format, (int)value);
+    snprintf(strValue, sizeof(strValue), format, (uint16_t)value);
   } else {
     // show user entry with appropriate precision (based on digits user has entered)
-    int precision = log10(factor / 10);
+    uint16_t precision = log10(factor / 10);
     snprintf(format, sizeof(format), "%s%%7.%if", strValue, precision);
     snprintf(strValue, sizeof(strValue), format, value);
   }

@@ -177,7 +177,7 @@ string sdNextKey() {
 
 string sdNextValue() {
   char buffer[4096];
-  File entry = SD_TC::instance()->open(paths.front());
+  File entry = SD_TC::instance()->open(String(paths.front().c_str()));
   size_t size = entry.size();
   if (sizeof(buffer) - 1 < size) {
     size = sizeof(buffer) - 1;

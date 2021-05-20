@@ -17,6 +17,7 @@ public:
   // instance methods
   void appendData(String header, String line);
   void appendToLog(String line);
+  File open(String path);
   String todaysDataFileName();
   void printRootDirectory();
   void visit(visitor pFunction);

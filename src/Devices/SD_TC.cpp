@@ -74,6 +74,10 @@ void SD_TC::appendToLog(String line) {
   appendDataToPath(line, path);
 }
 
+File SD_TC::open(String path) {
+  return SD.open(path);
+}
+
 void printEntry(File* pEntry, String parentPath) {
   size_t depth = 0;
   for (size_t i = 1; i < parentPath.length(); ++i) {

@@ -5,8 +5,12 @@
 
 #pragma once
 
-#include "Ethernet.h"
-#include <SPI.h>
+#include <Arduino.h>
+#ifdef MOCK_PINS_COUNT
+#include <Ethernet_CI.h>
+#else
+#include <Ethernet.h>
+#endif
 
 class Ethernet_TC {
 public:
@@ -20,6 +24,7 @@ public:
   int getNumAttemptedDHCPReleases() {
     return numAttemptedDHCPReleases;
   };
+  void sendPushingBoxData(String data, byte server[], EthernetClient &client);
   void renewDHCPLease();
   bool gotDHCPLease() {
     return IP != defaultIP;
@@ -36,7 +41,6 @@ private:
   IPAddress IP;
   unsigned long previous_lease = 0;
   const unsigned long LEASE_INTERVAL = 345600000;  // 4 days in milliseconds
-  EthernetClient client;
   // testing
   int numAttemptedDHCPReleases = 0;
 };

@@ -22,5 +22,6 @@ void EnablePID::setValue(float value) {
     } else {
       LiquidCrystal_TC::instance()->writeLine("PID disabled    ", 1);
     }
+    returnToMainMenu(3000);
   }
 }

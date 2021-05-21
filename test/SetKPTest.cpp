@@ -21,9 +21,11 @@ unittest(test) {
   assertEqual("New KP=123456.5 ", lines[1]);
   assertEqual("SetKP", tc->stateName());
 
-  // Return to mainMenu
-  Keypad_TC::instance()->_getPuppet()->push_back('D');
-  tc->loop();
+  tc->loop();  // transition to Wait
+  assertEqual("Wait", tc->stateName());
+  delay(3000);
+  tc->loop();  // queue MainMenu to be next
+  tc->loop();  // transition to MainMenu
   assertEqual("MainMenu", tc->stateName());
 }
 

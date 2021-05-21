@@ -19,5 +19,5 @@ void SetChillOrHeat::setValue(float value) {
       LiquidCrystal_TC::instance()->writeLine("Use chiller     ", 1);
     }
   }
-  returnToMainMenu(1000);  // after 1-second delay
+  returnToMainMenu(3000);  // after 1-second delay
 }

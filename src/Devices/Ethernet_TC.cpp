@@ -20,11 +20,6 @@ Ethernet_TC *Ethernet_TC::instance() {
   return _instance;
 }
 
-void Ethernet_TC::sendPushingBoxData(String data, byte server[], EthernetClient &client) {
-  if(client.connect(server, 80))
-    client.write(data.c_str(), data.size());
-}
-
 void Ethernet_TC::renewDHCPLease() {
   unsigned long current_millis = millis();
   if ((current_millis - previous_lease) >= LEASE_INTERVAL || current_millis < previous_lease) {

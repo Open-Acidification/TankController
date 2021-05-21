@@ -24,7 +24,6 @@ public:
   int getNumAttemptedDHCPReleases() {
     return numAttemptedDHCPReleases;
   };
-  void sendPushingBoxData(String data, byte server[], EthernetClient &client);
   void renewDHCPLease();
   bool gotDHCPLease() {
     return IP != defaultIP;

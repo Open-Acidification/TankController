@@ -8,6 +8,7 @@
 #include "Devices/PHControl.h"
 #include "Devices/PHProbe.h"
 #include "Devices/PID_TC.h"
+#include "Devices/PushingBox.h"
 #include "Devices/SD_TC.h"
 #include "Devices/Serial_TC.h"
 #include "Devices/TempProbe_TC.h"
@@ -128,14 +129,13 @@ void TankControllerLib::loop() {
   handleUI();        // look at keypad, update LCD
   updateControls();  // turn CO2 and temperature controls on or off
   writeDataToSD();   // record current state to data log
-  // write data to Google Sheets
+  PushingBox::instance()->loop(tankId, temperature, pH);  // write data to Google Sheets
 }
 
 void TankControllerLib::sendDataToGoogleSheets() {
   static unsigned long nextWriteTime = 0;
   unsigned long msNow = millis();
   COUT("nextWriteTime: " << nextWriteTime << "; now = " << msNow);
-  // Ethernet_TC::instance()->connect("api.pushingbox.com", 80);
   // if (nextWriteTime <= msNow) {
   //     Serial.println(F("Starting upload to Google Docs"));
   //     wdt_reset();

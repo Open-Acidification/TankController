@@ -15,7 +15,8 @@ class PushingBox {
   byte *getServer() {
     return server;
   }
-  void sendData(int tankId, float temperature, float pH);
+  void loop();
+  void sendDataHTTPRequest();
 
   private:
   // class variables
@@ -24,5 +25,6 @@ class PushingBox {
   //instance variables
   EthernetClient client;
   const char *DevID = "v172D35C152EDA6C"; //DeviceID from Pushingbox
+  unsigned long nextSendTime= 0;
   byte server[4] = { 64, 233, 187, 99 };
 };

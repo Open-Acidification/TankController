@@ -2,7 +2,9 @@
 
 #include "Devices/Ethernet_TC.h"
 #include "Devices/EEPROM_TC.h"
+#include "Devices/PHProbe.h"
 #include "Devices/Serial_TC.h"
+#include "Devices/TempProbe_TC.h"
 
 //  class variables
 PushingBox* PushingBox::_instance = nullptr;
@@ -23,13 +25,13 @@ void PushingBox::loop() {
   // is client ready?
   if (!client) {
     // will this output every 15 ms?
-    serial("Ethernet client not ready");
-    return;
+    serial("PushingBox: Ethernet client not ready!?");
+    // return;
   }
   // is it time to send ?
   unsigned long now = millis();
   if (now >= nextSendTime) {
-    sendDataHTTPRequest();
+    sendData();
     unsigned long interval = EEPROM_TC::instance()->getGoogleSheetInterval();
     // jump to the next multiple of interval
     nextSendTime = (now / interval + 1) * interval;
@@ -37,23 +39,23 @@ void PushingBox::loop() {
   // are we still connected? 
   if (client.connected()) {
     // if so , read response
-    while (client.available()) {
-      char c = client.read(); //save http header to c
-      Serial.print(c); //print http header to serial monitor
+    int next;
+    while ((next = client.read()) != -1) {
+      Serial.print((char)next); //print response if any to serial
     }
   } else {
     // will this close every 15 ms?
-    client.close();
+    client.stop();
   }
 }
 
-void PushingBox::sendDataHTTPRequest() {
+void PushingBox::sendData() {
   serial("attepting to connect to pushing box...");
   if(!client.connected() && !client.connect(server, 80)) {
-    serial(F("connection failed"));
+    serial("connection failed");
     return;
   }
-  serial(F("connected"));
+  serial("connected");
   char format[] = 
     "GET /pushingbox?devid=%s&tankid=%i&tempData=%.2f&pHdata=%.3f HTTP/1.1\r\n" 
     "Host: api.pushingbox.com\r\n" 
@@ -62,6 +64,8 @@ void PushingBox::sendDataHTTPRequest() {
   char buffer[200];
   // look up tankid, temperature, ph
   int tankId = EEPROM_TC::instance()->getTankID();
+  float temperature = TempProbe_TC::instance()->getRunningAverage();
+  float pH = PHProbe::instance()->getPh();
   snprintf(buffer, sizeof(buffer), format, DevID, tankId, temperature, pH);
   client.write(buffer, strnlen(buffer, sizeof(buffer)));
 }

@@ -47,6 +47,7 @@ TankControllerLib::TankControllerLib() {
   EEPROM_TC::instance();
   Keypad_TC::instance();
   LiquidCrystal_TC::instance();
+  DateTime_TC::rtc();
   TempProbe_TC::instance();
   TemperatureControl::instance();
   PHProbe::instance();
@@ -129,7 +130,7 @@ void TankControllerLib::loop() {
   handleUI();        // look at keypad, update LCD
   updateControls();  // turn CO2 and temperature controls on or off
   writeDataToSD();   // record current state to data log
-  PushingBox::instance()->loop(tankId, temperature, pH);  // write data to Google Sheets
+  PushingBox::instance()->loop();  // write data to Google Sheets
 }
 
 void TankControllerLib::sendDataToGoogleSheets() {

@@ -16,7 +16,7 @@ class PushingBox {
     return server;
   }
   void loop();
-  void sendDataHTTPRequest();
+  void sendData();
 
   private:
   // class variables

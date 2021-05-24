@@ -2,11 +2,13 @@
 
 #include "Devices/DateTime_TC.h"
 #include "Devices/EEPROM_TC.h"
+#include "Devices/Ethernet_TC.h"
 #include "Devices/Keypad_TC.h"
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHControl.h"
 #include "Devices/PHProbe.h"
 #include "Devices/PID_TC.h"
+#include "Devices/PushingBox.h"
 #include "Devices/SD_TC.h"
 #include "Devices/Serial_TC.h"
 #include "Devices/TempProbe_TC.h"
@@ -45,6 +47,7 @@ TankControllerLib::TankControllerLib() {
   EEPROM_TC::instance();
   Keypad_TC::instance();
   LiquidCrystal_TC::instance();
+  DateTime_TC::rtc();
   TempProbe_TC::instance();
   TemperatureControl::instance();
   PHProbe::instance();
@@ -127,7 +130,7 @@ void TankControllerLib::loop() {
   handleUI();        // look at keypad, update LCD
   updateControls();  // turn CO2 and temperature controls on or off
   writeDataToSD();   // record current state to data log
-  // write data to Google Sheets
+  PushingBox::instance()->loop();  // write data to Google Sheets
 }
 
 /**

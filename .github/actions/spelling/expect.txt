@@ -1,8 +1,10 @@
 Adafruit
 admins
+api
 arduino
 args
 ASingle
+attepting
 avr
 Calib
 cassert
@@ -18,6 +20,8 @@ cpp
 csv
 ctime
 datetime
+deque
+devid
 DHCP
 dirname
 Dnominal
@@ -45,6 +49,7 @@ github
 globals
 godmode
 Google
+Hdata
 hh
 highpoint
 HIGHTHRESH
@@ -94,6 +99,7 @@ pragma
 printf
 println
 Ptr
+pushingbox
 pwd
 py
 pybind

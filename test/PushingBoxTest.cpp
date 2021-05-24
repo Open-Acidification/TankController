@@ -48,7 +48,6 @@ unittest(pushingbox) {
 
   assertEqual(expected1, bufferResult.c_str());
   char expected2[] =
-      "PushingBox: Ethernet client not ready!?\r\n"
       "attepting to connect to pushing box...\r\n"
       "connected\r\nA";
   assertEqual(expected2, state->serialPort[0].dataOut);

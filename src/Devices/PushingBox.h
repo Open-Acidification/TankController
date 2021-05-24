@@ -4,9 +4,9 @@
 #include "Ethernet_TC.h"
 
 class PushingBox {
-  public:
+public:
   // class methods
-  static PushingBox* instance();
+  static PushingBox *instance();
 
   // instance methods
   EthernetClient *getClient() {
@@ -17,15 +17,15 @@ class PushingBox {
   }
   void loop();
 
-  private:
+private:
   // class variables
-  static PushingBox* _instance;
+  static PushingBox *_instance;
 
-  //instance variables
+  // instance variables
   EthernetClient client;
-  const char *DevID = "v172D35C152EDA6C"; //DeviceID from Pushingbox
-  unsigned long nextSendTime= 0;
-  byte server[4] = { 64, 233, 187, 99 };
+  const char *DevID = "v172D35C152EDA6C";  // DeviceID from Pushingbox
+  unsigned long nextSendTime = 0;
+  byte server[4] = {64, 233, 187, 99};
 
   // instance method
   void sendData();

@@ -7,7 +7,6 @@
 #include "Devices/TempProbe_TC.h"
 #include "TankControllerLib.h"
 
-
 unittest(pushingbox) {
   GodmodeState *state = GODMODE();
   state->reset();

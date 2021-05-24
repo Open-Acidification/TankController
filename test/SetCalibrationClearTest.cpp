@@ -23,9 +23,10 @@ unittest(test) {
   enterKey('A');
   std::vector<String> lines2 = lc->getLines();
   assertEqual("Cleared pH Calib", lines2[1]);
-  assertEqual("SetCalibrationClear", tc->stateName());
-  // Return to mainMenu
-  enterKey('D');
+  assertEqual("Wait", tc->stateName());
+  delay(3000);
+  tc->loop();  // queue MainMenu to be next
+  tc->loop();  // transition to MainMenu
   assertEqual("MainMenu", tc->stateName());
 }
 

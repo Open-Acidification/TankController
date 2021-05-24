@@ -75,7 +75,7 @@ void TemperatureControl::setTargetTemperature(float newTemperature) {
 }
 
 void Chiller::updateControl(float currentTemperature) {
-  unsigned long currentMillis = millis();
+  uint32_t currentMillis = millis();
   // pause 30 seconds between switching chiller on and off to prevent damage to chiller
   if (currentMillis - previousMillis >= TIME_INTERVAL) {
     bool newValue = pinValue;
@@ -95,7 +95,7 @@ void Chiller::updateControl(float currentTemperature) {
     if (newValue != pinValue) {
       pinValue = newValue;
       DateTime_TC::now().printToSerial();
-      unsigned long currentMS = millis();
+      uint32_t currentMS = millis();
       serial("chiller turned %s after %lu ms", pinValue ? "off" : "on", currentMS - lastSwitchMS);
       lastSwitchMS = currentMS;
       digitalWrite(PIN, pinValue);
@@ -120,7 +120,7 @@ void Heater::updateControl(float currentTemperature) {
   if (newValue != pinValue) {
     pinValue = newValue;
     DateTime_TC::now().printToSerial();
-    unsigned long currentMS = millis();
+    uint32_t currentMS = millis();
     serial("heater turned %s after %lu ms", pinValue ? "off" : "on", currentMS - lastSwitchMS);
     lastSwitchMS = currentMS;
     digitalWrite(PIN, pinValue);

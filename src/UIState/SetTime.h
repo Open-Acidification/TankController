@@ -25,9 +25,9 @@ public:
   void setValue(float value);
 
 private:
-  static const int NUM_VALUES = 5;
-  int subState = 0;
-  int values[NUM_VALUES] = {0, 0, 0, 0, 0};
+  static const uint16_t NUM_VALUES = 5;
+  uint16_t subState = 0;
+  uint16_t values[NUM_VALUES] = {0, 0, 0, 0, 0};
   const char* prompts[NUM_VALUES] = {
       "Set Year (YYYY):", "Month (1-12):   ", "Day (1-31):     ", "Hour (0-23):    ", "Minute (0-59):  "};
 };

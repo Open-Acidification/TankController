@@ -21,7 +21,7 @@ public:
   byte *getMac() {
     return mac;
   }
-  int getNumAttemptedDHCPReleases() {
+  uint16_t getNumAttemptedDHCPReleases() {
     return numAttemptedDHCPReleases;
   };
   void renewDHCPLease();
@@ -39,8 +39,9 @@ private:
   IPAddress time_serverIP;
   const int IO_PIN = 4;
   IPAddress IP;
-  unsigned long previous_lease = 0;
-  const unsigned long LEASE_INTERVAL = 345600000;  // 4 days in milliseconds
+  uint32_t previous_lease = 0;
+  const uint32_t LEASE_INTERVAL = 345600000;  // 4 days in milliseconds
+
   // testing
-  int numAttemptedDHCPReleases = 0;
+  uint16_t numAttemptedDHCPReleases = 0;
 };

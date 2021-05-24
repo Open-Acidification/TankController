@@ -17,7 +17,7 @@ public:
   float getKp() {
     return pPID->GetKp();
   }
-  int getMode() {
+  uint16_t getMode() {
     return pPID->GetMode();
   }
   void logToSerial();
@@ -37,6 +37,6 @@ private:
   double input = 0.0;
   double output = 0.0;
   double set_point = 0.0;
-  const int WINDOW_SIZE = 10000;
+  const uint16_t WINDOW_SIZE = 10000;
   PID *pPID;
 };

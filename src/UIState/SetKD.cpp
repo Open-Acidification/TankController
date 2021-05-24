@@ -12,4 +12,5 @@ void SetKD::setValue(float value) {
   char output[17];
   snprintf(output, sizeof(output), "New KD=%.1f", value);
   LiquidCrystal_TC::instance()->writeLine(output, 1);
+  returnToMainMenu(3000);
 }

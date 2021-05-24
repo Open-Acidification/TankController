@@ -48,7 +48,7 @@ unittest(compute) {
   assertEqual(0.0, output);
 
   // turn the PID on
-  for (int i = 0; i < 1000; i++) {
+  for (size_t i = 0; i < 1000; i++) {
     delay(200);
     output = pPID->computeOutput(setpoint, input);
     float delta = output - input;
@@ -72,7 +72,7 @@ unittest(computeDuringCalibration) {
   assertEqual(0.0, output);
 
   // turn the PID on
-  for (int i = 0; i < 1000; i++) {
+  for (size_t i = 0; i < 1000; i++) {
     delay(200);
     output = pPID->computeOutput(setpoint, input);
     float delta = output - input;

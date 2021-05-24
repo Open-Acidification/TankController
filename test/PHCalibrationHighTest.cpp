@@ -17,9 +17,11 @@ unittest(test) {
   std::vector<String> lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("New High=12.345 ", lines[1]);
   assertEqual("PHCalibrationHigh", tc->stateName());
-  // Return to mainMenu
-  Keypad_TC::instance()->_getPuppet()->push_back('D');
-  tc->loop();
+  tc->loop();  // transition to Wait
+  assertEqual("Wait", tc->stateName());
+  delay(3000);
+  tc->loop();  // after the delay, Wait will call setNextState to prepare to go to PHCalibrationLow
+  tc->loop();  // updateState to PHCalibrationLow
   assertEqual("MainMenu", tc->stateName());
 }
 

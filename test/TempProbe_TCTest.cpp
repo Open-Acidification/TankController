@@ -2,6 +2,7 @@
 #include <ArduinoUnitTests.h>
 
 #include "EEPROM_TC.h"
+#include "TC_util.h"
 #include "TempProbe_TC.h"
 
 unittest_setup() {
@@ -12,7 +13,7 @@ unittest(readFromEepromOnStartup) {
   EEPROM_TC::instance()->setCorrectedTemp(-1);
   TempProbe_TC* tempProbe = TempProbe_TC::instance();
   tempProbe->setTemperature(11.0);
-  for (int i = 0; i < 100; ++i) {
+  for (size_t i = 0; i < 100; ++i) {
     delay(1000);
     tempProbe->getRunningAverage();
   }
@@ -37,7 +38,7 @@ unittest(TempProbe_Test) {
 
   // Test getRawTemperature()
   float testTemp = tempProbe->getRawTemperature();
-  assertEqual(-242, (int)testTemp);
+  assertEqual(-242, (int16_t)testTemp);
 
   // Test readFault()
   uint8_t testFault = tempProbe->readFault();
@@ -84,7 +85,7 @@ unittest(runningAverage) {
   TempProbe_TC* tempProbe = TempProbe_TC::instance();
   tempProbe->setTemperature(10.0);
   tempProbe->setCorrection(0.0);
-  for (int i = 0; i < 100; ++i) {
+  for (size_t i = 0; i < 100; ++i) {
     delay(1000);
     tempProbe->getRunningAverage();
   }

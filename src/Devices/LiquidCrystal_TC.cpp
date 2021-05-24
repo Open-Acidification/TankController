@@ -6,7 +6,7 @@
 #include "TC_util.h"
 
 // pins used for our LiquidDisplay
-const int RS = 24, EN = 22, D4 = 26, D5 = 28, D6 = 30, D7 = 32;
+const uint16_t RS = 24, EN = 22, D4 = 26, D5 = 28, D6 = 30, D7 = 32;
 
 //  class variables
 LiquidCrystal_TC* LiquidCrystal_TC::_instance = nullptr;
@@ -87,12 +87,12 @@ void LiquidCrystal_TC::splashScreen() {
  * Prints an input string to the desired line of the LCD screen
  * Even numbers go on the bottom line, odd ones go on the top line
  */
-void LiquidCrystal_TC::writeLine(const char* text, int line) {
+void LiquidCrystal_TC::writeLine(const char* text, uint16_t line) {
   line = line % 2;
   setCursor(0, line);
   char result[17];
   bool moreText = true;
-  for (int i = 0; i < 16; i++) {
+  for (size_t i = 0; i < 16; i++) {
     if (moreText && text[i] == '\0') {
       moreText = false;
     }

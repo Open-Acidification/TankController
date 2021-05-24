@@ -23,7 +23,7 @@ Ethernet_TC *Ethernet_TC::instance() {
 }
 
 void Ethernet_TC::renewDHCPLease() {
-  unsigned long current_millis = millis();
+  uint32_t current_millis = millis();
   if ((current_millis - previous_lease) >= LEASE_INTERVAL || current_millis < previous_lease) {
     Ethernet.maintain();
     previous_lease = current_millis;

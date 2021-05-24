@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include "TC_util.h"
 #include "UIState.h"
 
 class TankControllerLib;  // forward reference
@@ -54,8 +55,8 @@ public:
   void loop();
 
 private:
-  int level1 = 0;
-  int level2 = -1;
+  int16_t level1 = 0;
+  int16_t level2 = -1;
   String viewMenus[VIEW_COMMAND_COUNT];
   String setMenus[SET_COMMAND_COUNT];
   void left();

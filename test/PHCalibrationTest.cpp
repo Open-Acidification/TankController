@@ -18,7 +18,7 @@ unittest(test) {
   assertEqual("PHCalibrationMid", tc->stateName());
   tc->loop();  // transition to Wait
   assertEqual("Wait", tc->stateName());
-  delay(1000);
+  delay(3000);
   tc->loop();  // after the delay, Wait will call setNextState to prepare to go to PHCalibrationLow
   tc->loop();  // updateState to PHCalibrationLow
   assertEqual("PHCalibrationLow", tc->stateName());

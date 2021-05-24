@@ -35,12 +35,12 @@
 
 namespace py = pybind11;
 char lcdLine[17];
-unsigned long msOffset = 0;
+uint32_t msOffset = 0;
 std::queue<string> paths;
 
 // function prototypes
 void loop();
-unsigned long millisecondsSinceEpoch();
+uint32_t millisecondsSinceEpoch();
 
 char *dateTime() {
   return DateTime_TC::now().as16CharacterString();
@@ -101,12 +101,12 @@ void key(char key) {
   Keypad_TC::instance()->_getPuppet()->push_back(key);
 }
 
-const char *lcd(int index) {
+const char *lcd(uint16_t index) {
   std::vector<String> lines = LiquidCrystal_TC::instance()->getLines();
   String line = lines.at(index);
-  int size = line.size();
+  uint16_t size = line.size();
   assert(size <= 16);
-  for (int i = 0; i < size; ++i) {
+  for (size_t i = 0; i < size; ++i) {
     if (line.at(i) < 32) {
       line.at(i) = '?';
     }
@@ -122,14 +122,14 @@ float getTemperature() {
 }
 
 void loop() {
-  int msBehind = millisecondsSinceEpoch() - millis() - msOffset;
+  int32_t msBehind = millisecondsSinceEpoch() - millis() - msOffset;
   if (msBehind) {
     delay(msBehind);
   }
   TankControllerLib::instance()->loop();
 }
 
-unsigned long millisecondsSinceEpoch() {
+uint32_t millisecondsSinceEpoch() {
   return std::chrono::system_clock::now().time_since_epoch() / std::chrono::milliseconds(1);
 }
 
@@ -137,11 +137,11 @@ float readPH() {
   return PHProbe::instance()->getPh();
 }
 
-bool readPin(int pin) {
+bool readPin(uint16_t pin) {
   return digitalRead(pin);
 }
 
-string readSerial(int port) {
+string readSerial(uint16_t port) {
   GodmodeState *state = GODMODE();
   string result = string(state->serialPort[port].dataOut);
   state->serialPort[port].dataOut = "";
@@ -177,7 +177,7 @@ string sdNextKey() {
 
 string sdNextValue() {
   char buffer[4096];
-  File entry = SD_TC::instance()->open(paths.front());
+  File entry = SD_TC::instance()->open(String(paths.front().c_str()));
   size_t size = entry.size();
   if (sizeof(buffer) - 1 < size) {
     size = sizeof(buffer) - 1;

@@ -86,12 +86,12 @@ Godmode.o :
 	# install wx
 	python -m pip install -U wxPython
 	# build pybind11
-	mkdir -p ../pybind11/build
-	cd ../pybind11/build; cmake ..
+	mkdir -p ../pybind11/.build
+	cd ../pybind11/.build; cmake ..
 	# compile and run tests
 	# make check -j 4
 	echo
 
 .PHONY: clean
 clean :
-	rm -rf build *.o *.so *.dylib $(PY_LIB) 2> /dev/null || echo
+	rm -rf .build *.o *.so *.dylib $(PY_LIB) 2> /dev/null || echo

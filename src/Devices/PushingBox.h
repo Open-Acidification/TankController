@@ -16,7 +16,6 @@ class PushingBox {
     return server;
   }
   void loop();
-  void sendData();
 
   private:
   // class variables
@@ -27,4 +26,7 @@ class PushingBox {
   const char *DevID = "v172D35C152EDA6C"; //DeviceID from Pushingbox
   unsigned long nextSendTime= 0;
   byte server[4] = { 64, 233, 187, 99 };
+
+  // instance method
+  void sendData();
 };

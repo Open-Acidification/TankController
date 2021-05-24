@@ -22,12 +22,6 @@ PushingBox* PushingBox::instance() {
 }
 
 void PushingBox::loop() {
-  // is client ready?
-  if (!client) {
-    // will this output every 15 ms?
-    serial("PushingBox: Ethernet client not ready!?");
-    // return;
-  }
   // is it time to send ?
   unsigned long now = millis();
   if (now >= nextSendTime) {
@@ -38,7 +32,7 @@ void PushingBox::loop() {
   }
   // are we still connected? 
   if (client.connected()) {
-    // if so , read response
+    // if so, read response
     int next;
     while ((next = client.read()) != -1) {
       Serial.print((char)next); //print response if any to serial

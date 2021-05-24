@@ -17,7 +17,6 @@ public:
   // instance methods
   bool isInCalibration();
   void loop();
-  void sendDataToGoogleSheets();
   void serialEvent();
   void serialEvent1();
   void setNextState(UIState* newState, bool update = false);

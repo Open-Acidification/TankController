@@ -126,10 +126,10 @@ void TankControllerLib::handleUI() {
  * (It appears to be called about once every 15 ms.)
  */
 void TankControllerLib::loop() {
-  blink();           // blink the on-board LED to show that we are running
-  handleUI();        // look at keypad, update LCD
-  updateControls();  // turn CO2 and temperature controls on or off
-  writeDataToSD();   // record current state to data log
+  blink();                         // blink the on-board LED to show that we are running
+  handleUI();                      // look at keypad, update LCD
+  updateControls();                // turn CO2 and temperature controls on or off
+  writeDataToSD();                 // record current state to data log
   PushingBox::instance()->loop();  // write data to Google Sheets
 }
 

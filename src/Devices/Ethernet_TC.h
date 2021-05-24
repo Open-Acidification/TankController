@@ -6,11 +6,7 @@
 #pragma once
 
 #include <Arduino.h>
-#ifdef MOCK_PINS_COUNT
 #include <Ethernet_CI.h>
-#else
-#include <Ethernet.h>
-#endif
 
 class Ethernet_TC {
 public:

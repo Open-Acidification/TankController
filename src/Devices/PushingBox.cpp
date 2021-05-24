@@ -4,8 +4,8 @@
 #include "Devices/Ethernet_TC.h"
 #include "Devices/PHProbe.h"
 #include "Devices/Serial_TC.h"
-#include "TC_util.h"
 #include "Devices/TempProbe_TC.h"
+#include "TC_util.h"
 
 //  class variables
 PushingBox* PushingBox::_instance = nullptr;

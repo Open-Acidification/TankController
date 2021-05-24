@@ -4,7 +4,6 @@ api
 arduino
 args
 ASingle
-attepting
 avr
 Calib
 cassert

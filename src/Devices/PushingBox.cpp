@@ -45,7 +45,7 @@ void PushingBox::loop() {
 }
 
 void PushingBox::sendData() {
-  serial("attepting to connect to pushing box...");
+  serial("attempting to connect to pushing box...");
   if (!client.connected() && !client.connect(server, 80)) {
     serial("connection failed");
     return;

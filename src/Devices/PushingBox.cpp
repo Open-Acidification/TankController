@@ -36,7 +36,7 @@ void PushingBox::loop() {
     // if so, read response
     int next;
     while ((next = client.read()) != -1) {  // Flawfinder: ignore
-      Serial.print((char)next);  // print response if any to serial
+      Serial.print((char)next);             // print response if any to serial
     }
   } else {
     // will this close every 15 ms?

@@ -39,6 +39,7 @@ enum
 errno
 EVT
 EZO
+Flawfinder
 FONTFAMILY
 FONTSTYLE
 FONTWEIGHT

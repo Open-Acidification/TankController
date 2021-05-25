@@ -35,7 +35,7 @@ void PushingBox::loop() {
   if (client.connected()) {
     // if so, read response
     int next;
-    while ((next = client.read()) != -1) {
+    while ((next = client.read()) != -1) {  // Flawfinder: ignore
       Serial.print((char)next);  // print response if any to serial
     }
   } else {

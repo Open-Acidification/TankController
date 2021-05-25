@@ -25,7 +25,7 @@ private:
   EthernetClient client;
   const char *DevID = "v172D35C152EDA6C";  // DeviceID from Pushingbox
   unsigned long nextSendTime = 0;
-  byte server[4] = {64, 233, 187, 99};
+  const char *server = "api.pushingbox.com";
 
   // instance method
   void sendData();

@@ -12,7 +12,7 @@ public:
   EthernetClient *getClient() {
     return &client;
   }
-  byte *getServer() {
+  const char *getServer() {
     return server;
   }
   void loop();

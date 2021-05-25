@@ -2,7 +2,6 @@
 
 #include "DateTime_TC.h"
 #include "Serial_TC.h"
-#define DEBUG 0
 #include "TC_util.h"
 
 //  class variables

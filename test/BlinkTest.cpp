@@ -4,6 +4,7 @@
 
 #include <iostream>
 
+#include "Devices/PushingBox.h"
 #include "TC_util.h"
 #include "TankControllerLib.h"
 
@@ -41,6 +42,7 @@ unittest(loop) {
   BitCollector led;
   logIndex = 0;
   TankControllerLib* tank = TankControllerLib::instance();
+  PushingBox::instance();
   state->digitalPin[LED_PIN].addObserver("led", &led);
   tank->setup();
   state->resetClock();

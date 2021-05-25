@@ -22,9 +22,6 @@ unittest(testWaitState) {
   delay(1000);
   tc->loop();
   assertEqual(DateTime_TC::now().as16CharacterString(), display->getLines().at(0).c_str());
-  assertEqual("Up d:01 02:03:05", display->getLines().at(1));
-  delay(1000);
-  tc->loop();
   assertEqual("Up d:01 02:03:06", display->getLines().at(1));
   delay(1000);
   tc->loop();
@@ -38,6 +35,9 @@ unittest(testWaitState) {
   delay(1000);
   tc->loop();
   assertEqual("Up d:01 02:03:10", display->getLines().at(1));
+  delay(1000);
+  tc->loop();
+  assertEqual("Up d:01 02:03:11", display->getLines().at(1));
 }
 
 unittest_main()

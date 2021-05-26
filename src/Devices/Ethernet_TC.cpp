@@ -10,8 +10,8 @@ Ethernet_TC::Ethernet_TC() {
   digitalWrite(IO_PIN, HIGH);
   serial("Attempting to connect to Ethernet");
   if (Ethernet.begin(mac)) {
-    IPAddress ip = Ethernet.localIP();
-    serial("DHCP address is %i.%i.%i.%i", ip[0], ip[1], ip[2], ip[3]);
+    IPAddress local = Ethernet.localIP();
+    serial("DHCP address is %i.%i.%i.%i", local[0], local[1], local[2], local[3]);
   } else {
     serial("DHCP failed, trying %i.%i.%i.%i", defaultIP[0], defaultIP[1], defaultIP[2], defaultIP[3]);
     Ethernet.begin(mac, defaultIP);

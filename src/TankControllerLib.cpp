@@ -48,6 +48,7 @@ TankControllerLib::TankControllerLib() {
   Keypad_TC::instance();
   LiquidCrystal_TC::instance();
   DateTime_TC::rtc();
+  Ethernet_TC::instance();
   TempProbe_TC::instance();
   TemperatureControl::instance();
   PHProbe::instance();

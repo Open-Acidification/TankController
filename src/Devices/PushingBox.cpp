@@ -17,7 +17,6 @@ PushingBox* PushingBox::_instance = nullptr;
 PushingBox* PushingBox::instance() {
   if (!_instance) {
     _instance = new PushingBox();
-    Ethernet_TC::instance();
   }
   return _instance;
 }
@@ -27,9 +26,14 @@ void PushingBox::loop() {
   unsigned long now = millis();
   if (now >= nextSendTime) {
     sendData();
-    unsigned long interval = EEPROM_TC::instance()->getGoogleSheetInterval();
+    uint16_t minutes = EEPROM_TC::instance()->getGoogleSheetInterval();
+    if (minutes == 0xffff) {
+      minutes = 20;
+    }
+    unsigned long interval = minutes * 60 * 1000;
     // jump to the next multiple of interval
     nextSendTime = (now / interval + 1) * interval;
+    serial("now = %lu; next = %lu; interval = %lu, minutes = %u", now, nextSendTime, interval, minutes);
   }
   // are we still connected?
   if (client.connected()) {
@@ -58,9 +62,12 @@ void PushingBox::sendData() {
       "\r\n";
   char buffer[200];
   // look up tankid, temperature, ph
-  int tankId = EEPROM_TC::instance()->getTankID();
+  int tankID = EEPROM_TC::instance()->getTankID();
+  if (!tankID) {
+    tankID = 99;
+  }
   float temperature = TempProbe_TC::instance()->getRunningAverage();
   float pH = PHProbe::instance()->getPh();
-  snprintf(buffer, sizeof(buffer), format, DevID, tankId, temperature, pH);
+  snprintf(buffer, sizeof(buffer), format, DevID, tankID, temperature, pH);
   client.write(buffer, strnlen(buffer, sizeof(buffer)));
 }

@@ -8,9 +8,14 @@ Ethernet_TC *Ethernet_TC::_instance = nullptr;
 Ethernet_TC::Ethernet_TC() {
   pinMode(IO_PIN, OUTPUT);
   digitalWrite(IO_PIN, HIGH);
-  if (Ethernet.begin(mac) == 0) {
-    serial("Failed to configure Ethernet using DHCP");
+  serial("Attempting to connect to Ethernet");
+  if (Ethernet.begin(mac)) {
+    IPAddress ip = Ethernet.localIP();
+    serial("DHCP address is %i.%i.%i.%i", ip[0], ip[1], ip[2], ip[3]);
+  } else {
+    serial("DHCP failed, trying %i.%i.%i.%i", defaultIP[0], defaultIP[1], defaultIP[2], defaultIP[3]);
     Ethernet.begin(mac, defaultIP);
+    serial("Done with Ethernet setup");
     IP = defaultIP;
   }
 }

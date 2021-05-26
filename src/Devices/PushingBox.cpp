@@ -26,14 +26,13 @@ void PushingBox::loop() {
   unsigned long now = millis();
   if (now >= nextSendTime) {
     sendData();
-    uint16_t minutes = EEPROM_TC::instance()->getGoogleSheetInterval();
+    unsigned long minutes = EEPROM_TC::instance()->getGoogleSheetInterval();
     if (minutes == 0xffff) {
       minutes = 20;
     }
-    unsigned long interval = minutes * 60 * 1000;
+    unsigned long interval = minutes * 60l * 1000l;
     // jump to the next multiple of interval
     nextSendTime = (now / interval + 1) * interval;
-    serial("now = %lu; next = %lu; interval = %lu, minutes = %u", now, nextSendTime, interval, minutes);
   }
   // are we still connected?
   if (client.connected()) {
@@ -49,7 +48,7 @@ void PushingBox::loop() {
 }
 
 void PushingBox::sendData() {
-  serial("attempting to connect to pushing box...");
+  serial("attempting to connect to PushingBox...");
   if (!client.connected() && !client.connect(server, 80)) {
     serial("connection failed");
     return;

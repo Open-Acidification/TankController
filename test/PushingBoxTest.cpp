@@ -48,7 +48,7 @@ unittest(pushingbox) {
 
   assertEqual(expected1, bufferResult.c_str());
   char expected2[] =
-      "attempting to connect to pushing box...\r\n"
+      "attempting to connect to PushingBox...\r\n"
       "connected\r\nA";
   assertEqual(expected2, state->serialPort[0].dataOut);
   EthernetClient::stopMockServer(pPushingBox->getServer(), 80);

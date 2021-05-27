@@ -48,6 +48,11 @@ void PushingBox::loop() {
 }
 
 void PushingBox::sendData() {
+  int tankID = EEPROM_TC::instance()->getTankID();
+  if (!tankID) {
+    serial("Set Tank ID in order to send data to PushingBox");
+    return;
+  }
   serial("attempting to connect to PushingBox...");
   if (!client.connected() && !client.connect(server, 80)) {
     serial("connection failed");
@@ -61,10 +66,6 @@ void PushingBox::sendData() {
       "\r\n";
   char buffer[200];
   // look up tankid, temperature, ph
-  int tankID = EEPROM_TC::instance()->getTankID();
-  if (!tankID) {
-    tankID = 99;
-  }
   float temperature = TempProbe_TC::instance()->getRunningAverage();
   float pH = PHProbe::instance()->getPh();
   snprintf(buffer, sizeof(buffer), format, DevID, tankID, temperature, pH);

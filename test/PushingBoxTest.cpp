@@ -5,9 +5,26 @@
 #include "Devices/EthernetServer_TC.h"
 #include "Devices/PushingBox.h"
 #include "Devices/TempProbe_TC.h"
+#include "Devices/TemperatureControl.h"
 #include "TankControllerLib.h"
 
-unittest(pushingbox) {
+unittest(NoTankID) {
+  // set tank id to 0, set time interval to 1 minute
+  EEPROM_TC::instance()->setTankID(0);
+  EEPROM_TC::instance()->setGoogleSheetInterval(1);
+
+  GodmodeState *state = GODMODE();
+  PushingBox *pPushingBox = PushingBox::instance();
+  TankControllerLib *pTC = TankControllerLib::instance();
+  pTC->loop();
+  delay(60 * 1000);  // one minute
+  state->serialPort[0].dataOut = "";
+  pTC->loop();
+  char expected[] = "Set Tank ID in order to send data to PushingBox\r\n";
+  assertEqual(expected, state->serialPort[0].dataOut);
+}
+
+unittest(SendData) {
   GodmodeState *state = GODMODE();
   state->reset();
   state->serialPort[0].dataOut = "";
@@ -19,6 +36,7 @@ unittest(pushingbox) {
   EEPROM_TC::instance()->setTankID(99);
 
   // set temperature
+  TemperatureControl::instance()->setTargetTemperature(20.25);
   tempProbe->setTemperature(20.25);
   tempProbe->setCorrection(0.0);
   for (int i = 0; i < 100; ++i) {
@@ -34,6 +52,7 @@ unittest(pushingbox) {
   assertEqual(0, pPushingBox->getClient()->writeBuffer().size());
   pPushingBox->getClient()->pushToReadBuffer('A');
   state->serialPort[0].dataOut = "";
+  delay(60 * 1000);  // wait for one minute to ensure we send again
   pTC->loop();
   deque<uint8_t> buffer = pPushingBox->getClient()->writeBuffer();
   String bufferResult;

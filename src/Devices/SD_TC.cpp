@@ -99,9 +99,9 @@ void printEntry(File* pEntry, String parentPath) {
  * print the root directory and all subdirectories
  */
 void SD_TC::printRootDirectory() {
-  serial("SD_TC::printRootDirectory() - start");
-  visit(printEntry);
-  serial("SD_TC::printRootDirectory() - end");
+  // serial("SD_TC::printRootDirectory() - start");
+  // visit(printEntry);
+  // serial("SD_TC::printRootDirectory() - end");
 }
 
 String SD_TC::todaysDataFileName() {

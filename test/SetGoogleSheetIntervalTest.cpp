@@ -12,7 +12,7 @@ unittest(test) {
   tc->setNextState(test, true);
 
   // getCurrentValue
-  assertEqual(0, EEPROM_TC::instance()->getGoogleSheetInterval());
+  assertEqual(65535, test->getCurrentValue());
 
   // setValue
   test->setValue(30);

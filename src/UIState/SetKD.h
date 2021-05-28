@@ -6,6 +6,8 @@
 #pragma once
 #include "NumberCollectorState.h"
 
+#include "Devices/EEPROM_TC.h"
+
 class SetKD : public NumCollectorState {
 public:
   SetKD(TankControllerLib* tc) : NumCollectorState(tc) {
@@ -14,7 +16,7 @@ public:
     return "SetKD";
   }
   float getCurrentValue() {
-    return 0.0;
+    return EEPROM_TC::instance()->getKD();
   }
   uint16_t getCurrentValuePrecision() {
     return 1;

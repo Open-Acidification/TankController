@@ -6,6 +6,8 @@
 #pragma once
 #include "NumberCollectorState.h"
 
+#include "EEPROM_TC.h"
+
 class SetTempSetPoint : public NumCollectorState {
 public:
   SetTempSetPoint(TankControllerLib* tc) : NumCollectorState(tc) {
@@ -14,7 +16,7 @@ public:
     return "SetTempSetPoint";
   }
   float getCurrentValue() {
-    return 0.0;
+    return EEPROM_TC::instance()->getTemp();
   }
   uint16_t getCurrentValuePrecision() {
     return 2;

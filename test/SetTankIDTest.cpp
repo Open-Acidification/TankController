@@ -11,6 +11,9 @@ unittest(test) {
   SetTankID* test = new SetTankID(tc);
   tc->setNextState(test, true);
 
+  // getCurrentValue
+  assertEqual(0, test->getCurrentValue());
+
   // setValue
   test->setValue(12);
   assertEqual(12, EEPROM_TC::instance()->getTankID());

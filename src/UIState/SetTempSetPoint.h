@@ -4,9 +4,8 @@
  * Set the target Temperature
  */
 #pragma once
-#include "NumberCollectorState.h"
-
 #include "EEPROM_TC.h"
+#include "NumberCollectorState.h"
 
 class SetTempSetPoint : public NumCollectorState {
 public:

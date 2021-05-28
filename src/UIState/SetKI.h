@@ -4,9 +4,8 @@
  * Set the KI for the PID
  */
 #pragma once
-#include "NumberCollectorState.h"
-
 #include "Devices/EEPROM_TC.h"
+#include "NumberCollectorState.h"
 
 class SetKI : public NumCollectorState {
 public:

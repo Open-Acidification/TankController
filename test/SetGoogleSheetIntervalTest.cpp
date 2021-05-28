@@ -11,6 +11,9 @@ unittest(test) {
   SetGoogleSheetInterval* test = new SetGoogleSheetInterval(tc);
   tc->setNextState(test, true);
 
+  // getCurrentValue
+  assertEqual(0, EEPROM_TC::instance()->getGoogleSheetInterval());
+
   // setValue
   test->setValue(30);
   assertEqual(30, EEPROM_TC::instance()->getGoogleSheetInterval());

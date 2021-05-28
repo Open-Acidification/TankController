@@ -6,6 +6,8 @@
 #pragma once
 #include "NumberCollectorState.h"
 
+#include "Devices/EEPROM_TC.h"
+
 class SetGoogleSheetInterval : public NumCollectorState {
 public:
   SetGoogleSheetInterval(TankControllerLib* tc) : NumCollectorState(tc) {
@@ -17,7 +19,7 @@ public:
     return "SetGoogleSheetInterval";
   }
   float getCurrentValue() {
-    return 0.0;
+    return EEPROM_TC::instance()->getGoogleSheetInterval();
   }
   const char* prompt() {
     return "G Sheet Minutes ";

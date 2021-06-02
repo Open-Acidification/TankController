@@ -4,6 +4,7 @@
  * Set the KP for the PID
  */
 #pragma once
+#include "Devices/EEPROM_TC.h"
 #include "NumberCollectorState.h"
 
 class SetKP : public NumCollectorState {
@@ -14,7 +15,7 @@ public:
     return "SetKP";
   }
   float getCurrentValue() {
-    return 0.0;
+    return EEPROM_TC::instance()->getKP();
   }
   uint16_t getCurrentValuePrecision() {
     return 1;

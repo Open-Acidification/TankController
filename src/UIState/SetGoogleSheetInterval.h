@@ -4,6 +4,7 @@
  * Change Google Sheet Interval
  */
 #pragma once
+#include "Devices/EEPROM_TC.h"
 #include "NumberCollectorState.h"
 
 class SetGoogleSheetInterval : public NumCollectorState {
@@ -17,7 +18,7 @@ public:
     return "SetGoogleSheetInterval";
   }
   float getCurrentValue() {
-    return 0.0;
+    return EEPROM_TC::instance()->getGoogleSheetInterval();
   }
   const char* prompt() {
     return "G Sheet Minutes ";

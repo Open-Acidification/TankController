@@ -11,12 +11,14 @@ unittest(test) {
   SetGoogleSheetInterval* test = new SetGoogleSheetInterval(tc);
   tc->setNextState(test, true);
 
-  // getCurrentValue
+  // getCurrentValue (default)
   assertEqual(65535, test->getCurrentValue());
 
   // setValue
   test->setValue(30);
   assertEqual(30, EEPROM_TC::instance()->getGoogleSheetInterval());
+  // getCurrentValue (modified)
+  assertEqual(30, test->getCurrentValue());
 
   // during the delay we showed the new value
   std::vector<String> lines = LiquidCrystal_TC::instance()->getLines();

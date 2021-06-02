@@ -4,6 +4,7 @@
  * Set the target Temperature
  */
 #pragma once
+#include "Devices/EEPROM_TC.h"
 #include "NumberCollectorState.h"
 
 class SetTempSetPoint : public NumCollectorState {
@@ -14,7 +15,7 @@ public:
     return "SetTempSetPoint";
   }
   float getCurrentValue() {
-    return 0.0;
+    return EEPROM_TC::instance()->getTemp();
   }
   uint16_t getCurrentValuePrecision() {
     return 2;

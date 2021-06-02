@@ -17,7 +17,7 @@ public:
     return "SetTime";
   }
   float getCurrentValue();
-  
+
   const char* prompt() {
     return prompts[subState];
   }

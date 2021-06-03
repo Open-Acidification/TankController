@@ -9,6 +9,19 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/Serial_TC.h"
 
+float SetTime::getCurrentValue() {
+  if (subState == 0) {
+    // initialize current values with current date time
+    DateTime_TC now = DateTime_TC::now();
+    current[0] = now.year();
+    current[1] = now.month();
+    current[2] = now.day();
+    current[3] = now.hour();
+    current[4] = now.minute();
+  }
+  return current[subState];
+}
+
 void SetTime::setValue(float value) {
   values[subState++] = value;
   if (subState < NUM_VALUES) {

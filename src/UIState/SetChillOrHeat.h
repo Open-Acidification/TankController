@@ -16,9 +16,7 @@ public:
   const char* name() {
     return "SetChillOrHeat";
   }
-  float getCurrentValue() {
-    return 0.0;
-  }
+  float getCurrentValue();
   const char* prompt() {
     return "1:Chill; 9:Heat ";
   };

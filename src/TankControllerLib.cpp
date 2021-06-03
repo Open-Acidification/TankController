@@ -217,7 +217,7 @@ void TankControllerLib::writeDataToSD() {
   static uint32_t nextWriteTime = 0;
   static const char header[] = "time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd";
   static const char format[] =
-      "%02i/%02i/%4i %02i:%02i:%02i, %3i, %2.3f, %2.3f, %1.4f, %1.4f, %4i, %5.1f, %5.1f, %5.1f";
+      "%02i/%02i/%4i %02i:%02i:%02i, %3i, %4.2f, %4.2f, %5.3f, %5.3f, %4i, %8.1f, %8.1f, %8.1f";
   uint32_t msNow = millis();
   COUT("nextWriteTime: " << nextWriteTime << "; now = " << msNow);
   if (nextWriteTime <= msNow) {

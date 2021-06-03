@@ -9,7 +9,7 @@
 
 void TemperatureCalibration::setValue(float value) {
   TempProbe_TC *pProbe = TempProbe_TC::instance();
-  float uncorrectedAverage = pProbe->getRunningAverage() - pProbe->getCorrection();
+  float uncorrectedAverage = pProbe->getUncorrectedRunningAverage();
   pProbe->setCorrection(value - uncorrectedAverage);
   char output[17];
   snprintf(output, sizeof(output), "New correction=%.2f", value - uncorrectedAverage);

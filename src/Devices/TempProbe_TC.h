@@ -91,9 +91,6 @@ public:
   static TempProbe_TC* instance();
   static void reset();
 
-  float getCorrection() {
-    return correction;
-  }
   uint16_t getResistance() {
     return thermo.readRTD();
   }
@@ -102,7 +99,11 @@ public:
     return thermo.temperature(RTDnominal, refResistor);
   }
 
-  float getRunningAverage();
+  float getRunningAverage() {
+    return getUncorrectedRunningAverage() + correction;
+  }
+
+  float getUncorrectedRunningAverage();
 
   uint8_t readFault() {
     return thermo.readFault();

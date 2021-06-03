@@ -91,6 +91,9 @@ public:
   static TempProbe_TC* instance();
   static void reset();
 
+  float getCorrection() {
+    return correction;
+  }
   uint16_t getResistance() {
     return thermo.readRTD();
   }

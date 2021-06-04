@@ -24,7 +24,8 @@ private:
   // instance variables
   EthernetClient client;
   const char *DevID = "v172D35C152EDA6C";  // DeviceID from Pushingbox
-  unsigned long nextSendTime = 0;
+  // wait a bit for first reading (https://github.com/Open-Acidification/TankController/issues/179)
+  unsigned long nextSendTime = 70000;      
   const char *server = "api.pushingbox.com";
 
   // instance method

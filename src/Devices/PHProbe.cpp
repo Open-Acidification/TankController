@@ -58,7 +58,7 @@ String PHProbe::getSlope() {
 void PHProbe::serialEvent1() {
   while (Serial1.available() > 0) {                 // if we see that the Atlas Scientific product has sent a character
     String string = Serial1.readStringUntil('\r');  // read the string until we see a <CR>
-    if (string.length() > 0 && string.at(string.size() - 1) == '\r') {
+    if (string.length() > 0 && string[string.length() - 1] == '\r') {
       // We should not see the CR (https://github.com/Arduino-CI/arduino_ci/pull/302)
       string.remove(string.length() - 1);
     }

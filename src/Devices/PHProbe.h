@@ -3,12 +3,12 @@
 
 /**
  * wrapper class for EZO pH Circuit | Atlas Scientific
- * 
+ *
  * https://www.atlas-scientific.com/files/pH_EZO_Datasheet.pdf
- * 
+ *
  * Issuing the "Cal,mid,n\r" command will
  * clear the other calibration points.
- * 
+ *
  * While the data sheet uses "Slope" the actual string is "SLOPE"
  */
 

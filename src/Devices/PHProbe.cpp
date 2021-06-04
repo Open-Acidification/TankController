@@ -56,9 +56,12 @@ String PHProbe::getSlope() {
  * interrupt handler for data arriving from probe
  */
 void PHProbe::serialEvent1() {
-  while (Serial1.available() > 0) {               // if we see that the Atlas Scientific product has sent a character
-    String string = Serial1.readStringUntil(13);  // read the string until we see a <CR>
-    string.remove(string.length() - 1);
+  while (Serial1.available() > 0) {                 // if we see that the Atlas Scientific product has sent a character
+    String string = Serial1.readStringUntil('\r');  // read the string until we see a <CR>
+    if (string.length() > 0 && string.at(string.size() - 1) == '\r') {
+      // We should not see the CR (https://github.com/Arduino-CI/arduino_ci/pull/302)
+      string.remove(string.length() - 1);
+    }
     if (string.length() > 0) {
       if (isdigit(string[0])) {  // if the first character in the string is a digit
         // convert the string to a floating point number so it can be evaluated by the Arduino

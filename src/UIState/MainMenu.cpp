@@ -140,31 +140,31 @@ void MainMenu::selectView() {
       this->setNextState(static_cast<UIState *>(new SeeGoogleMins(tc)));
       break;
     case VIEW_IP_ADDRESS:
-      this->setNextState(static_cast<UIState *>(new SeeDeviceAddress(tc));
+      this->setNextState(static_cast<UIState *>(new SeeDeviceAddress(tc)));
       break;
     case VIEW_LOG_FILE:
       this->setNextState(static_cast<UIState *>(new SeeLogFile(tc)));
       break;
     case VIEW_MAC_ADDRESS:
-      this->setNextState(static_cast<UIState *>(new SeeDeviceAddress(tc));
+      this->setNextState(static_cast<UIState *>(new SeeDeviceAddress(tc)));
       break;
     case VIEW_PID:
-      this->setNextState(static_cast<UIState *>(new SeePIDConstants(tc));
+      this->setNextState(static_cast<UIState *>(new SeePIDConstants(tc)));
       break;
     case VIEW_PH_SLOPE:
-      this->setNextState(static_cast<UIState *>(new SeePHSlope(tc));
+      this->setNextState(static_cast<UIState *>(new SeePHSlope(tc)));
       break;
     case VIEW_TANK_ID:
-      this->setNextState(static_cast<UIState *>(new SeeTankID(tc));
+      this->setNextState(static_cast<UIState *>(new SeeTankID(tc)));
       break;
     case VIEW_TIME:
-      this->setNextState(static_cast<UIState *>(new SeeDeviceUptime(tc));
+      this->setNextState(static_cast<UIState *>(new SeeDeviceUptime(tc)));
       break;
     case VIEW_UPTIME:
-      this->setNextState(static_cast<UIState *>(new SeeDeviceUptime(tc));
+      this->setNextState(static_cast<UIState *>(new SeeDeviceUptime(tc)));
       break;
     case VIEW_VERSION:
-      this->setNextState(static_cast<UIState *>(new SeeVersion(tc));
+      this->setNextState(static_cast<UIState *>(new SeeVersion(tc)));
       break;
     default:
       break;
@@ -174,43 +174,43 @@ void MainMenu::selectView() {
 void MainMenu::selectSet() {
   switch (level2) {
     case SET_CALIBRATION:
-      this->setNextState(static_cast<UIState *>(new PHCalibrationMid(tc));
+      this->setNextState(static_cast<UIState *>(new PHCalibrationMid(tc)));
       break;
     case SET_CALIBRATION_CLEAR:
-      this->setNextState(static_cast<UIState *>(new SetCalibrationClear(tc));
+      this->setNextState(static_cast<UIState *>(new SetCalibrationClear(tc)));
       break;
     case SET_CHILL_OR_HEAT:
-      this->setNextState(static_cast<UIState *>(new SetChillOrHeat(tc));
+      this->setNextState(static_cast<UIState *>(new SetChillOrHeat(tc)));
       break;
     case SET_GOOGLE_MINS:
-      this->setNextState(static_cast<UIState *>(new SetGoogleSheetInterval(tc));
+      this->setNextState(static_cast<UIState *>(new SetGoogleSheetInterval(tc)));
       break;
     case SET_PH:
-      this->setNextState(static_cast<UIState *>(new SetPHSetPoint(tc));
+      this->setNextState(static_cast<UIState *>(new SetPHSetPoint(tc)));
       break;
     case SET_KD:
-      this->setNextState(static_cast<UIState *>(new SetKD(tc));
+      this->setNextState(static_cast<UIState *>(new SetKD(tc)));
       break;
     case SET_KI:
-      this->setNextState(static_cast<UIState *>(new SetKI(tc));
+      this->setNextState(static_cast<UIState *>(new SetKI(tc)));
       break;
     case SET_KP:
-      this->setNextState(static_cast<UIState *>(new SetKP(tc));
+      this->setNextState(static_cast<UIState *>(new SetKP(tc)));
       break;
     case SET_PID_ON_OFF:
       this->setNextState(static_cast<UIState *>(new EnablePID(tc)));
       break;
     case SET_TANK_ID:
-      this->setNextState(static_cast<UIState *>(new SetTankID(tc));
+      this->setNextState(static_cast<UIState *>(new SetTankID(tc)));
       break;
     case SET_TEMP_CALIBRATION:
-      this->setNextState(static_cast<UIState *>(new TemperatureCalibration(tc));
+      this->setNextState(static_cast<UIState *>(new TemperatureCalibration(tc)));
       break;
     case SET_TEMPERATURE:
-      this->setNextState(static_cast<UIState *>(new SetTempSetPoint(tc));
+      this->setNextState(static_cast<UIState *>(new SetTempSetPoint(tc)));
       break;
     case SET_TIME:
-      this->setNextState(static_cast<UIState *>(new SetTime(tc));
+      this->setNextState(static_cast<UIState *>(new SetTime(tc)));
       break;
     default:
       break;

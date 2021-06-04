@@ -6,6 +6,8 @@ Ethernet_TC *Ethernet_TC::_instance = nullptr;
 
 // Establishes the Ethernet connection and sets class variables
 Ethernet_TC::Ethernet_TC() {
+  pinMode(IO_PIN, OUTPUT);
+  digitalWrite(IO_PIN, HIGH);
   if (Ethernet.begin(mac) == 0) {
     serial("Failed to configure Ethernet using DHCP");
     Ethernet.begin(mac, defaultIP);

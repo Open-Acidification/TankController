@@ -5,7 +5,8 @@
 
 #pragma once
 
-#include "Ethernet.h"
+#include <Arduino.h>
+#include <Ethernet_CI.h>
 
 class Ethernet_TC {
 public:
@@ -32,6 +33,7 @@ private:
   byte mac[6] = {0x90, 0xA2, 0xDA, 0x00, 0x00, 0x00};
   IPAddress defaultIP = IPAddress(192, 168, 1, 2);
   IPAddress time_serverIP;
+  const int IO_PIN = 4;
   IPAddress IP;
   uint32_t previous_lease = 0;
   const uint32_t LEASE_INTERVAL = 345600000;  // 4 days in milliseconds

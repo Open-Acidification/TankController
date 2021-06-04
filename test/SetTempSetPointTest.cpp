@@ -11,6 +11,10 @@ unittest(test) {
   SetTempSetPoint* test = new SetTempSetPoint(tc);
   assertEqual("MainMenu", tc->stateName());
   tc->setNextState(test, true);
+  // EEPROM_TC::instance()->setTemp(4);
+
+  // getCurrentValue
+  assertEqual(20, test->getCurrentValue());
 
   // setValue
   test->setValue(50.25);

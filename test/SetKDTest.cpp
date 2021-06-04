@@ -11,6 +11,9 @@ unittest(test) {
   TankControllerLib* tc = TankControllerLib::instance();
   SetKD* test = new SetKD(tc);
   tc->setNextState(test, true);
+  EEPROM_TC::instance()->setKD(9);
+  // getCurrentValue
+  assertEqual(9, test->getCurrentValue());
   // setValue
   test->setValue(12345.5);
   assertEqual(12345.5, EEPROM_TC::instance()->getKD());

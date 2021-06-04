@@ -11,26 +11,38 @@ unittest(test) {
   TankControllerLib* tc = TankControllerLib::instance();
   SetTime* test = new SetTime(tc);
   tc->setNextState(test, true);
+  DateTime_TC june(2021, 06, 01, 20, 57, 15);
+  june.setAsCurrent();
 
   DateTime_TC now = DateTime_TC::now();
   // the default time is the code compile time
-  assertTrue(now.year() > 2020);
+  assertTrue(now.year() == 2021);
 
   // get currently displayed lines
   std::vector<String> lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("Set Year (YYYY):", lines.at(0));
+  assertEqual("   2021->     0 ", lines.at(1));
+  assertEqual(2021, test->getCurrentValue());
   test->setValue(2020);
   lines = lcd->getLines();
   assertEqual("Month (1-12):   ", lines.at(0));
+  assertEqual("      6->     0 ", lines.at(1));
+  assertEqual(06, test->getCurrentValue());
   test->setValue(03);
   lines = lcd->getLines();
   assertEqual("Day (1-31):     ", lines.at(0));
+  assertEqual("      1->     0 ", lines.at(1));
+  assertEqual(01, test->getCurrentValue());
   test->setValue(18);
   lines = lcd->getLines();
   assertEqual("Hour (0-23):    ", lines.at(0));
+  assertEqual("     20->     0 ", lines.at(1));
+  assertEqual(20, test->getCurrentValue());
   test->setValue(13);
   lines = lcd->getLines();
   assertEqual("Minute (0-59):  ", lines.at(0));
+  assertEqual("     57->     0 ", lines.at(1));
+  assertEqual(57, test->getCurrentValue());
   test->setValue(15);
 
   // during the delay we showed the new value

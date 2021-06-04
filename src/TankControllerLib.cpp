@@ -17,7 +17,7 @@
 #include "UIState/MainMenu.h"
 #include "UIState/UIState.h"
 
-const char TANK_CONTROLLER_VERSION[] = "21.05.2";
+const char TANK_CONTROLLER_VERSION[] = "21.05.3";
 
 // ------------ Class Methods ------------
 /**
@@ -48,6 +48,7 @@ TankControllerLib::TankControllerLib() {
   Keypad_TC::instance();
   LiquidCrystal_TC::instance();
   DateTime_TC::rtc();
+  Ethernet_TC::instance();
   TempProbe_TC::instance();
   TemperatureControl::instance();
   PHProbe::instance();

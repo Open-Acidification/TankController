@@ -25,7 +25,7 @@ if [ -d "./Adafruit_BusIO" ]; then
     git pull
   )
 else
-  git clone $SHALLOW_MASTER $GITHUB/Adafruit_BusIO.git
+  git clone $SHALLOW_MASTER "$GITHUB/Adafruit_BusIO.git"
 fi
 
 if [ -d "./Adafruit_MAX31865" ]; then
@@ -35,7 +35,7 @@ if [ -d "./Adafruit_MAX31865" ]; then
     git pull
   )
 else
-  git clone $SHALLOW_MAIN $GITHUB/Adafruit_MAX31865.git
+  git clone $SHALLOW_MAIN "$GITHUB/Adafruit_MAX31865.git"
 fi
 
 if [ -d "./Ethernet" ]; then
@@ -45,7 +45,7 @@ if [ -d "./Ethernet" ]; then
     git pull
   )
 else
-  git clone $SHALLOW_MASTER $GITHUB/Ethernet.git
+  git clone $SHALLOW_MASTER "$GITHUB/Ethernet.git"
 fi
 
 if [ -d "./LiquidCrystal" ]; then
@@ -55,7 +55,7 @@ if [ -d "./LiquidCrystal" ]; then
     git pull
   )
 else
-  git clone $SHALLOW_MASTER $GITHUB/LiquidCrystal.git
+  git clone $SHALLOW_MASTER "$GITHUB/LiquidCrystal.git"
 fi
 
 if [ -d "./RTClib" ]; then
@@ -65,7 +65,7 @@ if [ -d "./RTClib" ]; then
     git pull
   )
 else
-  git clone $SHALLOW_MASTER $GITHUB/RTClib.git
+  git clone $SHALLOW_MASTER "$GITHUB/RTClib.git"
 fi
 
 if [ -d "./Keypad" ]; then
@@ -75,7 +75,7 @@ if [ -d "./Keypad" ]; then
     git pull
   )
 else
-  git clone $SHALLOW_MASTER $GITHUB/Keypad.git
+  git clone $SHALLOW_MASTER "$GITHUB/Keypad.git"
 fi
 
 if [ -d "./Arduino-PID-Library" ]; then
@@ -85,7 +85,7 @@ if [ -d "./Arduino-PID-Library" ]; then
     git pull
   )
 else
-  git clone $SHALLOW_MASTER $GITHUB/Arduino-PID-Library.git
+  git clone $SHALLOW_MASTER "$GITHUB/Arduino-PID-Library.git"
 fi
 
 if [ -d "./SD" ]; then
@@ -95,5 +95,5 @@ if [ -d "./SD" ]; then
     git pull
   )
 else
-  git clone $SHALLOW_MAIN $GITHUB/SD.git
+  git clone $SHALLOW_MAIN "$GITHUB/SD.git"
 fi

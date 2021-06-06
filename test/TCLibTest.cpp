@@ -22,10 +22,8 @@ TemperatureControl *tempControl = TemperatureControl::instance();
 PHProbe *pPHProbe = PHProbe::instance();
 PHControl *pPHControl = PHControl::instance();
 SD_TC *sd = SD_TC::instance();
-bool flag = false;
 
 unittest_setup() {
-  flag = true;
   // reset time so offset is consistent
   state->resetClock();
 
@@ -47,8 +45,8 @@ unittest_setup() {
   pTC->serialEvent1();                      // fake interrupt
 
   // set target pH
-  pPHControl->enablePID(false);
-  pPHControl->setTargetPh(6.825);
+  pPHControl->enablePID(false);  // Stay on continually if needed
+  pPHControl->setTargetPh(7.325);
 
   // set Kp, Ki, and Kd
   EEPROM_TC::instance()->setKP(123456.7);
@@ -64,18 +62,17 @@ unittest_teardown() {
 }
 
 unittest(basicOperation) {
-  assert(flag);
   // verify startup state, including that solonoids are off
   delay(1000);
-  assertEqual(16.75, (int16_t)tempProbe->getRunningAverage());
+  float avgTemp = static_cast<int16_t>((tempProbe->getRunningAverage() * 100.0 + 0.5)) / 100.0;
+  assertEqual(16.75, avgTemp);
   assertEqual(7.125, pPHProbe->getPh());
-  pPHControl->enablePID(false);  // Stay on continually if needed
   pTC->loop();
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_PIN]);  // solenoid off
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_PIN]);    // solenoid off
 
   // change targets
-  tempControl->setTargetTemperature(16.25);
+  tempControl->setTargetTemperature(17.25);
   pPHControl->setTargetPh(6.875);
 
   // verify that solonoids are on
@@ -87,7 +84,7 @@ unittest(basicOperation) {
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_PIN]);    // solenoid on
 
   // reset targets
-  tempControl->setTargetTemperature(17.25);
+  tempControl->setTargetTemperature(16.25);
   pPHControl->setTargetPh(7.375);
 
   // verify that solonoids are off

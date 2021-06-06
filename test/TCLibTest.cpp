@@ -22,8 +22,10 @@ TemperatureControl *tempControl = TemperatureControl::instance();
 PHProbe *pPHProbe = PHProbe::instance();
 PHControl *pPHControl = PHControl::instance();
 SD_TC *sd = SD_TC::instance();
+bool flag = false;
 
 unittest_setup() {
+  flag = true;
   // reset time so offset is consistent
   state->resetClock();
 
@@ -62,6 +64,7 @@ unittest_teardown() {
 }
 
 unittest(basicOperation) {
+  assert(flag);
   // verify startup state, including that solonoids are off
   delay(1000);
   assertEqual(16.75, (int16_t)tempProbe->getRunningAverage());

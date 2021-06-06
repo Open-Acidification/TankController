@@ -47,12 +47,12 @@ TempProbe_TC::TempProbe_TC() {
 }
 
 /**
- * getRunningAverage()
+ * getUncorrectedRunningAverage()
  *
  * Read the current temperature and return a running average.
  * Do this only once per second since device is unreliable beyond that.
  */
-float TempProbe_TC::getRunningAverage() {
+float TempProbe_TC::getUncorrectedRunningAverage() {
   uint32_t currentTime = millis();
   if (firstTime || lastTime + 1000 <= currentTime) {
     float temp = this->getRawTemperature();
@@ -70,7 +70,7 @@ float TempProbe_TC::getRunningAverage() {
   for (size_t i = 0; i < HISTORY_SIZE; ++i) {
     sum += history[i];
   }
-  return sum / HISTORY_SIZE + correction;
+  return sum / HISTORY_SIZE;
 }
 
 /**

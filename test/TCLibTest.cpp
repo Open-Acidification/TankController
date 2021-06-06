@@ -1,7 +1,9 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
+#define DEBUG 1
 #include "DateTime_TC.h"
+#include "EEPROM_TC.h"
 #include "PHControl.h"
 #include "PHProbe.h"
 #include "SD_TC.h"
@@ -22,8 +24,13 @@ PHControl *pPHControl = PHControl::instance();
 SD_TC *sd = SD_TC::instance();
 
 unittest_setup() {
+  // reset time so offset is consistent
+  state->resetClock();
+
+  EEPROM_TC::instance()->setTankID(42);
+
   // set temperature
-  tempProbe->setTemperature(20.0);
+  tempProbe->setTemperature(16.75);
   tempProbe->setCorrection(0.0);
   for (size_t i = 0; i < 100; ++i) {
     delay(1000);
@@ -31,15 +38,20 @@ unittest_setup() {
   }
 
   // set target temperature
-  tempControl->setTargetTemperature(20.0);
+  tempControl->setTargetTemperature(16.25);
 
   // set pH
-  state->serialPort[1].dataIn = "7.5\r";  // the queue of data waiting to be read
-  pTC->serialEvent1();                    // fake interrupt
+  state->serialPort[1].dataIn = "7.125\r";  // the queue of data waiting to be read
+  pTC->serialEvent1();                      // fake interrupt
 
   // set target pH
   pPHControl->enablePID(false);
-  pPHControl->setTargetPh(7.5);
+  pPHControl->setTargetPh(6.825);
+
+  // set Kp, Ki, and Kd
+  EEPROM_TC::instance()->setKP(123456.7);
+  EEPROM_TC::instance()->setKI(12345.6);
+  EEPROM_TC::instance()->setKD(1234.5);
 
   // clear SD card
   SD.removeAll();
@@ -52,16 +64,16 @@ unittest_teardown() {
 unittest(basicOperation) {
   // verify startup state, including that solonoids are off
   delay(1000);
-  assertEqual(20, (int16_t)tempProbe->getRunningAverage());
-  assertEqual(7.5, pPHProbe->getPh());
+  assertEqual(16.75, (int16_t)tempProbe->getRunningAverage());
+  assertEqual(7.125, pPHProbe->getPh());
   pPHControl->enablePID(false);  // Stay on continually if needed
   pTC->loop();
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_PIN]);  // solenoid off
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_PIN]);    // solenoid off
 
   // change targets
-  tempControl->setTargetTemperature(21.0);
-  pPHControl->setTargetPh(7.4);
+  tempControl->setTargetTemperature(16.25);
+  pPHControl->setTargetPh(6.875);
 
   // verify that solonoids are on
   delay(1000);
@@ -72,8 +84,8 @@ unittest(basicOperation) {
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_PIN]);    // solenoid on
 
   // reset targets
-  tempControl->setTargetTemperature(19.0);
-  pPHControl->setTargetPh(7.6);
+  tempControl->setTargetTemperature(17.25);
+  pPHControl->setTargetPh(7.375);
 
   // verify that solonoids are off
   delay(1000);
@@ -94,8 +106,9 @@ unittest(storeDataToSD) {
   }
   /*
   time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd
-  04/27/2021 14:24:50,   0, 20.021, 20.000, 7.5000, 7.5000,    0,   0.0,   0.0,   0.0
-  04/27/2021 14:24:51,   0, 20.021, 20.000, 7.5000, 7.5000,    0,   0.0,   0.0,   0.0
+04/27/2021 14:24:50,  42, 16.75, 16.25, 7.125, 6.825,    0, 123456.7,  12345.6,   1234.5
+04/27/2021 14:24:51,  42, 16.75, 16.25, 7.125, 6.825,    0, 123456.7,  12345.6,   1234.5
+04/27/2021 14:24:52,  42, 16.75, 16.25, 7.125, 6.825,    0, 123456.7,  12345.6,   1234.5
   */
   File file = SD.open("20210427.csv");
   char data[4096];
@@ -109,13 +122,13 @@ unittest(storeDataToSD) {
   contents = contents.substring(i + 1);
   i = contents.indexOf('\n');
   line = contents.substring(0, i);
-  String expected("04/27/2021 14:24:50,   0, 20.02, 20.00, 7.500, 7.500,    0, 100000.0,      0.0,      0.0");
+  String expected("04/27/2021 14:24:50,  42, 16.75, 16.25, 7.125, 6.825,    0, 123456.7,  12345.6,   1234.5");
   COUT("expectedSize = " << expected.length() << "; actualSize = " << line.length());
   assertEqual(expected, line);
   contents = contents.substring(i + 1);
   i = contents.indexOf('\n');
   line = contents.substring(0, i);
-  expected = String("04/27/2021 14:24:51,   0, 20.02, 20.00, 7.500, 7.500,    0, 100000.0,      0.0,      0.0");
+  expected = String("04/27/2021 14:24:51,  42, 16.75, 16.25, 7.125, 6.825,    0, 123456.7,  12345.6,   1234.5");
   COUT("expectedSize = " << expected.length() << "; actualSize = " << line.length());
   assertEqual(expected, line);
   COUT(data);

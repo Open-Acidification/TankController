@@ -230,8 +230,8 @@ void TankControllerLib::writeDataToSD() {
              (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(), (uint16_t)dtNow.second(), (uint16_t)tankId,
              (float)TempProbe_TC::instance()->getRunningAverage(),
              (float)TemperatureControl::instance()->getTargetTemperature(), (float)PHProbe::instance()->getPh(),
-             (float)PHControl::instance()->getTargetPh(), (uint16_t)0, (float)pPID->getKp(), (float)pPID->getKi(),
-             (float)pPID->getKd());  // still missing onTime
+             (float)PHControl::instance()->getTargetPh(), (uint16_t)(millis() / 1000), (float)pPID->getKp(),
+             (float)pPID->getKi(), (float)pPID->getKd());
     SD_TC::instance()->appendData(header, buffer);
     nextWriteTime = msNow / 1000 * 1000 + 1000;  // round up to next second
     COUT(buffer);

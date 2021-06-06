@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#define DEBUG 1
 #include "DateTime_TC.h"
 #include "EEPROM_TC.h"
 #include "PHControl.h"
@@ -98,18 +97,19 @@ unittest(basicOperation) {
 
 unittest(storeDataToSD) {
   // set date/time (so we can confirm data)
-  DateTime_TC dt(2021, 4, 27, 14, 24, 50);
+  DateTime_TC dt(2021, 4, 27, 14, 24, 40);
   dt.setAsCurrent();
+  delay(10000);
   for (size_t i = 0; i < 4; ++i) {
     delay(500);
     pTC->loop();
   }
   /*
-  time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd
-04/27/2021 14:24:50,  42, 16.75, 16.25, 7.125, 6.825,    0, 123456.7,  12345.6,   1234.5
-04/27/2021 14:24:51,  42, 16.75, 16.25, 7.125, 6.825,    0, 123456.7,  12345.6,   1234.5
-04/27/2021 14:24:52,  42, 16.75, 16.25, 7.125, 6.825,    0, 123456.7,  12345.6,   1234.5
+    time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd
+    04/27/2021 14:24:50,  42, 16.75, 16.25, 7.125, 6.825,  110, 123456.7,  12345.6,   1234.5
+    04/27/2021 14:24:51,  42, 16.75, 16.25, 7.125, 6.825,  111, 123456.7,  12345.6,   1234.5
   */
+  assert(SD.exists("20210427.csv"));
   File file = SD.open("20210427.csv");
   char data[4096];
   file.read(data, file.size());
@@ -122,13 +122,13 @@ unittest(storeDataToSD) {
   contents = contents.substring(i + 1);
   i = contents.indexOf('\n');
   line = contents.substring(0, i);
-  String expected("04/27/2021 14:24:50,  42, 16.75, 16.25, 7.125, 6.825,    0, 123456.7,  12345.6,   1234.5");
+  String expected("04/27/2021 14:24:50,  42, 16.75, 16.25, 7.125, 7.325,  110, 123456.7,  12345.6,   1234.5");
   COUT("expectedSize = " << expected.length() << "; actualSize = " << line.length());
   assertEqual(expected, line);
   contents = contents.substring(i + 1);
   i = contents.indexOf('\n');
   line = contents.substring(0, i);
-  expected = String("04/27/2021 14:24:51,  42, 16.75, 16.25, 7.125, 6.825,    0, 123456.7,  12345.6,   1234.5");
+  expected = String("04/27/2021 14:24:51,  42, 16.75, 16.25, 7.125, 7.325,  111, 123456.7,  12345.6,   1234.5");
   COUT("expectedSize = " << expected.length() << "; actualSize = " << line.length());
   assertEqual(expected, line);
   COUT(data);

@@ -225,7 +225,7 @@ void TankControllerLib::writeDataToSD() {
     char buffer[128];
     DateTime_TC dtNow = DateTime_TC::now();
     PID_TC *pPID = PID_TC::instance();
-    uint16_t tankId = 0;
+    uint16_t tankId = EEPROM_TC::instance()->getTankID();
     snprintf(buffer, sizeof(buffer), format, (uint16_t)dtNow.month(), (uint16_t)dtNow.day(), (uint16_t)dtNow.year(),
              (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(), (uint16_t)dtNow.second(), (uint16_t)tankId,
              (float)TempProbe_TC::instance()->getRunningAverage(),

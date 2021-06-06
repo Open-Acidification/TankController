@@ -16,9 +16,8 @@ public:
   const char* name() {
     return "SetTime";
   }
-  float getCurrentValue() {
-    return 0.0;
-  }
+  float getCurrentValue();
+
   const char* prompt() {
     return prompts[subState];
   }
@@ -28,6 +27,7 @@ private:
   static const uint16_t NUM_VALUES = 5;
   uint16_t subState = 0;
   uint16_t values[NUM_VALUES] = {0, 0, 0, 0, 0};
+  float current[NUM_VALUES] = {0.0, 0.0, 0.0, 0.0, 0.0};
   const char* prompts[NUM_VALUES] = {
       "Set Year (YYYY):", "Month (1-12):   ", "Day (1-31):     ", "Hour (0-23):    ", "Minute (0-59):  "};
 };

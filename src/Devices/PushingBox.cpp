@@ -53,12 +53,6 @@ void PushingBox::sendData() {
     serial("Set Tank ID in order to send data to PushingBox");
     return;
   }
-  serial("attempting to connect to PushingBox...");
-  if (!client.connected() && !client.connect(server, 80)) {
-    serial("connection failed");
-    return;
-  }
-  serial("connected");
   char format[] =
       "GET /pushingbox?devid=%s&tankid=%i&tempData=%.2f&pHdata=%.3f HTTP/1.1\r\n"
       "Host: api.pushingbox.com\r\n"
@@ -69,5 +63,12 @@ void PushingBox::sendData() {
   float temperature = TempProbe_TC::instance()->getRunningAverage();
   float pH = PHProbe::instance()->getPh();
   snprintf(buffer, sizeof(buffer), format, DevID, tankID, temperature, pH);
-  client.write(buffer, strnlen(buffer, sizeof(buffer)));
+  serial(buffer);
+  serial("attempting to connect to PushingBox...");
+  if (client.connected() || client.connect(server, 80)) {
+    serial("connected");
+    client.write(buffer, strnlen(buffer, sizeof(buffer)));
+  } else {
+    serial("connection failed");
+  }
 }

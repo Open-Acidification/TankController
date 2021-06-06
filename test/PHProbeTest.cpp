@@ -25,10 +25,10 @@ unittest(serialEvent1) {
   pTC->serialEvent1();                      // fake interrupt
   assertEqual(0, pPHProbe->getPh());
   assertEqual("", pPHProbe->getSlopeResponse());
-  GODMODE()->serialPort[1].dataIn = "7.75\r?SLOPE,99.7,100.3,-0.89\r";  // the queue of data waiting to be read
-  pTC->serialEvent1();                                                  // fake interrupt
+  GODMODE()->serialPort[1].dataIn = "7.125\r?Slope,99.7,100.3,-0.89\r";  // the queue of data waiting to be read
+  pTC->serialEvent1();                                                   // fake interrupt
   assertEqual("?SLOPE,99.7,100.3,-0.89", pPHProbe->getSlopeResponse());
-  assertEqual(7.75, pPHProbe->getPh());
+  assertEqual(7.125, pPHProbe->getPh());
 }
 
 unittest(setTemperatureCompensation) {

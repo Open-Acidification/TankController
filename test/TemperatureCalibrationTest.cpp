@@ -36,7 +36,6 @@ unittest(test) {
   temp = tempProbe->getRawTemperature();
   assertTrue(9.9 <= temp && temp <= 10.1);
   temp = tempProbe->getRunningAverage();
-  COUT(temp);
   assertTrue(10.49 <= temp && temp <= 10.51);
 
   // A new measured temperature should also be adjusted
@@ -50,6 +49,20 @@ unittest(test) {
   assertTrue(15.9 <= temp && temp <= 16.1);
   temp = EEPROM_TC::instance()->getCorrectedTemp();
   assertTrue(0.49 < temp && temp < 0.51);
+
+  // test for issue #174
+  tc->loop();
+  tc->loop();
+  test = new TemperatureCalibration(tc);
+  tc->setNextState(test, true);
+  test->setValue(16.0);
+  for (size_t i = 0; i < 100; ++i) {
+    delay(1000);
+    tempProbe->getRunningAverage();
+  }
+  delay(1000);
+  temp = tempProbe->getRunningAverage();
+  assertEqual(16.0, temp);
 }
 
 unittest_main()

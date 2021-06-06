@@ -37,18 +37,16 @@ void PHProbe::clearCalibration() {
 }
 
 void PHProbe::sendSlopeRequest() {
-  Serial1.print(F("Slope,?\r"));  // Sending request for Calibration Slope
+  Serial1.print("SLOPE,?\r");  // Sending request for Calibration Slope
   slopeResponse = "       Slope requested!";
 }
 
 String PHProbe::getSlope() {
-  // for example "?Slope,99.7,100.3, -0.89"
+  // for example "?SLOPE,99.7,100.3, -0.89"
   if (slopeResponse.length() < 10) {
     return String("");
   }
   String slope = slopeResponse.substring(7);
-  // output to log
-  serial("Calibration Slope: %s", slope.c_str());
   return slope;
 }
 
@@ -67,8 +65,9 @@ void PHProbe::serialEvent1() {
         // convert the string to a floating point number so it can be evaluated by the Arduino
         value = string.toFloat();
       } else if (string[0] == '?') {  // answer to a previous query
-        if (string.length() > 7 && string.substring(0, 7) == "?Slope,") {
-          // for example "?Slope,99.7,100.3, -0.89\r"
+        serial("PHProbe serialEvent1: \"%s\"", string.c_str());
+        if (string.length() > 7 && string.substring(0, 7) == "?SLOPE,") {
+          // for example "?SLOPE,16.1,100.0"
           slopeResponse = string;
         }
       }

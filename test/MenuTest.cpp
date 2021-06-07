@@ -60,14 +60,14 @@ unittest(ChangeSettings) {
 
 unittest(ViewSettings) {
   enterKey('8');
-  assertEqual("View TC settings", lc->getLines().at(0));
+  assertEqual("View settings   ", lc->getLines().at(0));
   assertEqual("<4   ^2  8v   6>", lc->getLines().at(1));
   enterKey('D');
   assertEqual("pH=0.000   8.100", lc->getLines().at(0));
   assertEqual("T=12.23 H 15.75 ", lc->getLines().at(1));
   enterKey('2');
   enterKey('2');
-  assertEqual("View TC settings", lc->getLines().at(0));
+  assertEqual("View settings   ", lc->getLines().at(0));
   assertEqual("<4   ^2  8v   6>", lc->getLines().at(1));
   enterKey('D');
   assertEqual("pH=0.000   8.100", lc->getLines().at(0));

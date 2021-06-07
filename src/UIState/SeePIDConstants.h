@@ -24,7 +24,6 @@ private:
   void loadKi(uint16_t line);
   void loadKd(uint16_t line);
   void loadPID(uint16_t line);
-//   void loadSlope(uint16_t line);
 
   uint32_t startTime;
 };

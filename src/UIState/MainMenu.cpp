@@ -242,7 +242,7 @@ void MainMenu::loop() {
   } else {
     if (level1 == 1) {
       if (level2 == -1) {
-        LiquidCrystal_TC::instance()->writeLine("View TC settings", 0);
+        LiquidCrystal_TC::instance()->writeLine("View settings", 0);
       } else {
         LiquidCrystal_TC::instance()->writeLine(viewMenus[level2].c_str(), 0);
       }

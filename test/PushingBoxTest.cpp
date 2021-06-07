@@ -17,7 +17,7 @@ unittest(NoTankID) {
   PushingBox *pPushingBox = PushingBox::instance();
   TankControllerLib *pTC = TankControllerLib::instance();
   pTC->loop();
-  delay(60 * 1000);  // one minute
+  delay(75 * 1000);  // a bit over one minute
   state->serialPort[0].dataOut = "";
   pTC->loop();
   char expected[] = "Set Tank ID in order to send data to PushingBox\r\n";
@@ -67,8 +67,14 @@ unittest(SendData) {
 
   assertEqual(expected1, bufferResult.c_str());
   char expected2[] =
+      "GET /pushingbox?devid=v172D35C152EDA6C&tankid=99&tempData=20.26&pHdata=7.125 HTTP/1.1\r\n"
+      "Host: api.pushingbox.com\r\n"
+      "Connection: close\r\n"
+      "\r\n"
+      "\r\n"
       "attempting to connect to PushingBox...\r\n"
-      "connected\r\nA";
+      "connected\r\n"
+      "A";
   assertEqual(expected2, state->serialPort[0].dataOut);
   EthernetClient::stopMockServer(pPushingBox->getServer(), 80);
 }

@@ -4,8 +4,13 @@
 
 #include "SetChillOrHeat.h"
 
+#include "Devices/EEPROM_TC.h"
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/TemperatureControl.h"
+
+float SetChillOrHeat::getCurrentValue() {
+  return EEPROM_TC::instance()->getHeat() ? 9 : 1;
+}
 
 void SetChillOrHeat::setValue(float value) {
   if (!(value == 1.0 || value == 9.0)) {

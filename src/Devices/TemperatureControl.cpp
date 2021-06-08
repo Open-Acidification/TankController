@@ -28,9 +28,6 @@ TemperatureControl *TemperatureControl::instance() {
   return _instance;
 }
 
-/**
- * static member function to return singleton
- */
 void TemperatureControl::enableHeater(bool flag) {
   EEPROM_TC::instance()->setHeat(flag);
   if (_instance && (_instance->isHeater() != flag)) {

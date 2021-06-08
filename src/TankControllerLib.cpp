@@ -240,7 +240,7 @@ void TankControllerLib::writeDataToSD() {
 }
 
 /**
- * once per minutee write the current data to the serial port
+ * once per minute write the current data to the serial port
  */
 void TankControllerLib::writeDataToSerial() {
   static uint32_t nextWriteTime = 0;

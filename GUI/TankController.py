@@ -1,8 +1,6 @@
 #!python3
 
-import datetime
 import errno
-import threading
 import time
 import libTC
 import os

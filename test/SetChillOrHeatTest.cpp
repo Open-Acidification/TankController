@@ -26,6 +26,7 @@ unittest(switchToHeat) {
   SetChillOrHeat* test = new SetChillOrHeat(tc);
   tc->setNextState(test, true);
   EEPROM_TC::instance()->setHeat(false);
+  assertEqual(1, test->getCurrentValue());
   test->setValue(9.0);
   assertTrue(EEPROM_TC::instance()->getHeat());
   tc->loop();  // transition to Wait
@@ -41,6 +42,7 @@ unittest(switchToChill) {
   SetChillOrHeat* test = new SetChillOrHeat(tc);
   tc->setNextState(test, true);
   EEPROM_TC::instance()->setHeat(true);
+  assertEqual(9, test->getCurrentValue());
   test->setValue(1.0);
   assertFalse(EEPROM_TC::instance()->getHeat());
   // during the delay we showed the new value

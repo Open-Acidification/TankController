@@ -99,7 +99,11 @@ public:
     return thermo.temperature(RTDnominal, refResistor);
   }
 
-  float getRunningAverage();
+  float getRunningAverage() {
+    return getUncorrectedRunningAverage() + correction;
+  }
+
+  float getUncorrectedRunningAverage();
 
   uint8_t readFault() {
     return thermo.readFault();

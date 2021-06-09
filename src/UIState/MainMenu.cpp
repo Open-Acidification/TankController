@@ -31,7 +31,7 @@
 
 MainMenu::MainMenu(TankControllerLib *tc) : UIState(tc) {
   viewMenus[VIEW_GOOGLE_MINS] = String("View Google mins");
-  viewMenus[VIEW_ADDRESS] = String("View address    ");
+  viewMenus[VIEW_ADDRESS] = String("View IP and MAC ");
   viewMenus[VIEW_LOG_FILE] = String("View log file   ");
   viewMenus[VIEW_PID] = String("View PID        ");
   viewMenus[VIEW_PH_SLOPE] = String("View pH slope   ");

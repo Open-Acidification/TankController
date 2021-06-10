@@ -162,6 +162,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "BenjaminWachter",
+      "name": "benwach",
+      "avatar_url": "https://avatars.githubusercontent.com/u/81596850?v=4",
+      "profile": "https://github.com/BenjaminWachter",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "projectName": "TankController",

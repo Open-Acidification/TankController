@@ -84,13 +84,13 @@ unittest(inCalibration) {
   state->reset();
   state->serialPort[0].dataOut = "";
   PushingBox *pPushingBox = PushingBox::instance();
-  pPushingBox->getClient()->stop();         // clears the writeBuffer and readBuffer
+  pPushingBox->getClient()->stop();  // clears the writeBuffer and readBuffer
   TankControllerLib *pTC = TankControllerLib::instance();
   TempProbe_TC *tempProbe = TempProbe_TC::instance();
 
   // set tank id
   EEPROM_TC::instance()->setTankID(99);
-  PHCalibrationMid* test = new PHCalibrationMid(pTC);
+  PHCalibrationMid *test = new PHCalibrationMid(pTC);
   pTC->setNextState(test, true);
   assertTrue(pTC->isInCalibration());
   EthernetClient::startMockServer(pPushingBox->getServer(), 80);

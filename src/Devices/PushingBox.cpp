@@ -71,7 +71,7 @@ void PushingBox::sendData() {
     // look up tankid, temperature, ph
     float temperature = TempProbe_TC::instance()->getRunningAverage();
     float pH = PHProbe::instance()->getPh();
-    snprintf(buffer, sizeof(buffer), format, DevID, tankID, temperature, pH);   
+    snprintf(buffer, sizeof(buffer), format, DevID, tankID, temperature, pH);
   }
   serial(buffer);
   serial("attempting to connect to PushingBox...");

@@ -37,10 +37,10 @@ unittest(tankControllerLoop) {
     file.read(data, file.size());
     data[file.size()] = '\0';
     assertEqual(
-      "time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd\n"
-      "04/15/2021 00:00:00,   0, -242.02, 20.00, 0.000, 8.100,    1, 100000.0,      0.0,      0.0\n"
-      "04/15/2021 00:00:01,   0, -242.02, 20.00, 0.000, 8.100,    2, 100000.0,      0.0,      0.0\n",
-      data);
+        "time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd\n"
+        "04/15/2021 00:00:00,   0, -242.02, 20.00, 0.000, 8.100,    1, 100000.0,      0.0,      0.0\n"
+        "04/15/2021 00:00:01,   0, -242.02, 20.00, 0.000, 8.100,    2, 100000.0,      0.0,      0.0\n",
+        data);
   }
   file.close();
 }

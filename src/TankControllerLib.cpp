@@ -216,6 +216,11 @@ const char *TankControllerLib::version() {
  */
 void TankControllerLib::writeDataToSD() {
   static uint32_t nextWriteTime = 0;
+  uint32_t msNow = millis();
+  COUT("nextWriteTime: " << nextWriteTime << "; now = " << msNow);
+  if (nextWriteTime > msNow) {
+    return;
+  }
   char currentTemp[10];
   char currentPh[10];
   if (isInCalibration()) {
@@ -227,20 +232,16 @@ void TankControllerLib::writeDataToSD() {
   }
   static const char header[] = "time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd";
   static const char format[] = "%02i/%02i/%4i %02i:%02i:%02i, %3i, %s, %4.2f, %s, %5.3f, %4i, %8.1f, %8.1f, %8.1f";
-  uint32_t msNow = millis();
-  COUT("nextWriteTime: " << nextWriteTime << "; now = " << msNow);
-  if (nextWriteTime <= msNow) {
-    char buffer[128];
-    DateTime_TC dtNow = DateTime_TC::now();
-    PID_TC *pPID = PID_TC::instance();
-    uint16_t tankId = EEPROM_TC::instance()->getTankID();
-    snprintf(buffer, sizeof(buffer), format, (uint16_t)dtNow.month(), (uint16_t)dtNow.day(), (uint16_t)dtNow.year(),
-             (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(), (uint16_t)dtNow.second(), (uint16_t)tankId, currentTemp,
-             (float)TemperatureControl::instance()->getTargetTemperature(), currentPh,
-             (float)PHControl::instance()->getTargetPh(), (uint16_t)(millis() / 1000), (float)pPID->getKp(),
-             (float)pPID->getKi(), (float)pPID->getKd());
-    SD_TC::instance()->appendData(header, buffer);
-    nextWriteTime = msNow / 1000 * 1000 + 1000;  // round up to next second
-    COUT(buffer);
-  }
+  char buffer[128];
+  DateTime_TC dtNow = DateTime_TC::now();
+  PID_TC *pPID = PID_TC::instance();
+  uint16_t tankId = EEPROM_TC::instance()->getTankID();
+  snprintf(buffer, sizeof(buffer), format, (uint16_t)dtNow.month(), (uint16_t)dtNow.day(), (uint16_t)dtNow.year(),
+          (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(), (uint16_t)dtNow.second(), (uint16_t)tankId, currentTemp,
+          (float)TemperatureControl::instance()->getTargetTemperature(), currentPh,
+          (float)PHControl::instance()->getTargetPh(), (uint16_t)(millis() / 1000), (float)pPID->getKp(),
+          (float)pPID->getKi(), (float)pPID->getKd());
+  SD_TC::instance()->appendData(header, buffer);
+  nextWriteTime = msNow / 1000 * 1000 + 1000;  // round up to next second
+  COUT(buffer);
 }

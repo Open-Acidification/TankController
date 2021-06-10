@@ -135,6 +135,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "IDzyre",
+      "name": "Dzyre",
+      "avatar_url": "https://avatars.githubusercontent.com/u/46759635?v=4",
+      "profile": "https://github.com/IDzyre",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "projectName": "TankController",

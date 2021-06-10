@@ -28,7 +28,7 @@ unittest(NoTankID) {
   state->serialPort[0].dataOut = "";
   pTC->loop();
   char expected[] =
-      // "15:26 pH=0.000 temp=-242.02\r\n"
+      "15:26 pH=0.000 temp=-242.02\r\n"
       "Set Tank ID in order to send data to PushingBox\r\n";
   assertEqual(expected, state->serialPort[0].dataOut);
 }
@@ -78,7 +78,7 @@ unittest(SendData) {
       "\r\n";
   assertEqual(expected1, bufferResult.c_str());
   char expected2[] =
-      // "15:26 pH=7.125 temp=20.26\r\n"
+      "15:26 pH=7.125 temp=20.26\r\n"
       "GET /pushingbox?devid=PushingBoxIdentifier&tankid=99&tempData=20.26&pHdata=7.125 HTTP/1.1\r\n"
       "attempting to connect to PushingBox...\r\n"
       "connected\r\n"

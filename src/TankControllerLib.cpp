@@ -132,6 +132,7 @@ void TankControllerLib::loop() {
   handleUI();                      // look at keypad, update LCD
   updateControls();                // turn CO2 and temperature controls on or off
   writeDataToSD();                 // record current state to data log
+  writeDataToSerial();             // record current pH and temperature to serial
   PushingBox::instance()->loop();  // write data to Google Sheets
 }
 
@@ -235,6 +236,21 @@ void TankControllerLib::writeDataToSD() {
              (float)pPID->getKi(), (float)pPID->getKd());
     SD_TC::instance()->appendData(header, buffer);
     nextWriteTime = msNow / 1000 * 1000 + 1000;  // round up to next second
+    COUT(buffer);
+  }
+}
+
+/**
+ * once per minute write the current data to the serial port
+ */
+void TankControllerLib::writeDataToSerial() {
+  static uint32_t nextWriteTime = 0;
+  uint32_t msNow = millis();
+  if (nextWriteTime <= msNow) {
+    DateTime_TC dtNow = DateTime_TC::now();
+    serial("%02d:%02d pH=%5.3f temp=%5.2f", (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(),
+           (float)PHProbe::instance()->getPh(), (float)TempProbe_TC::instance()->getRunningAverage());
+    nextWriteTime = msNow / 60000 * 60000 + 60000;  // round up to next minute
     COUT(buffer);
   }
 }

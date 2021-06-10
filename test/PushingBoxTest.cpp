@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
+#include "Devices/DateTime_TC.h"
 #include "Devices/EEPROM_TC.h"
 #include "Devices/EthernetServer_TC.h"
 #include "Devices/PushingBox.h"
@@ -8,6 +9,11 @@
 #include "Devices/TemperatureControl.h"
 #include "TankControllerLib.h"
 #include "UIState/PHCalibrationMid.h"
+
+unittest_setup() {
+  DateTime_TC now(2021, 6, 8, 15, 25, 15);
+  now.setAsCurrent();
+}
 
 unittest(NoTankID) {
   // set tank id to 0, set time interval to 1 minute
@@ -21,7 +27,9 @@ unittest(NoTankID) {
   delay(75 * 1000);  // a bit over one minute
   state->serialPort[0].dataOut = "";
   pTC->loop();
-  char expected[] = "Set Tank ID in order to send data to PushingBox\r\n";
+  char expected[] =
+      "15:26 pH=0.000 temp=-242.02\r\n"
+      "Set Tank ID in order to send data to PushingBox\r\n";
   assertEqual(expected, state->serialPort[0].dataOut);
 }
 
@@ -67,6 +75,7 @@ unittest(SendData) {
 
   assertEqual(expected1, bufferResult.c_str());
   char expected2[] =
+      "15:26 pH=7.125 temp=20.26\r\n"
       "GET /pushingbox?devid=v172D35C152EDA6C&tankid=99&tempData=20.26&pHdata=7.125 HTTP/1.1\r\n"
       "Host: api.pushingbox.com\r\n"
       "Connection: close\r\n"

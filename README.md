@@ -3,7 +3,7 @@
 [![testing status](https://github.com/Open-Acidification/TankControllerLib/workflows/Arduino%20CI/badge.svg)](https://github.com/Open-Acidification/TankControllerLib/actions)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/Open-Acidification/TankControllerLib/blob/master/CONTRIBUTING.md)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-17-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 # Tank Controller Library
@@ -49,7 +49,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/prestoncarman"><img src="https://avatars.githubusercontent.com/u/3517157?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Preston Carman</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankController/issues?q=author%3Aprestoncarman" title="Bug reports">🐛</a> <a href="https://github.com/Open-Acidification/TankController/commits?author=prestoncarman" title="Code">💻</a> <a href="#ideas-prestoncarman" title="Ideas, Planning, & Feedback">🤔</a> <a href="#mentoring-prestoncarman" title="Mentoring">🧑‍🏫</a> <a href="https://github.com/Open-Acidification/TankController/pulls?q=is%3Apr+reviewed-by%3Aprestoncarman" title="Reviewed Pull Requests">👀</a></td>
     <td align="center"><a href="http://programminggems.wordpress.com/"><img src="https://avatars.githubusercontent.com/u/1577872?v=4?s=100" width="100px;" alt=""/><br /><sub><b>James Foster</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankController/commits?author=jgfoster" title="Code">💻</a> <a href="#ideas-jgfoster" title="Ideas, Planning, & Feedback">🤔</a> <a href="#mentoring-jgfoster" title="Mentoring">🧑‍🏫</a> <a href="#projectManagement-jgfoster" title="Project Management">📆</a> <a href="https://github.com/Open-Acidification/TankController/pulls?q=is%3Apr+reviewed-by%3Ajgfoster" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/Open-Acidification/TankController/issues?q=author%3Ajgfoster" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/Kavikick"><img src="https://avatars.githubusercontent.com/u/50475639?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Kavikick</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankController/commits?author=Kavikick" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/eucalvo"><img src="https://avatars.githubusercontent.com/u/71796520?v=4?s=100" width="100px;" alt=""/><br /><sub><b>eucalvo</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankController/commits?author=eucalvo" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/eucalvo"><img src="https://avatars.githubusercontent.com/u/71796520?v=4?s=100" width="100px;" alt=""/><br /><sub><b>eucalvo</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankController/commits?author=eucalvo" title="Code">💻</a> <a href="https://github.com/Open-Acidification/TankController/issues?q=author%3Aeucalvo" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/Lizj96"><img src="https://avatars.githubusercontent.com/u/71606160?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Lizj96</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankController/commits?author=Lizj96" title="Code">💻</a></td>
   </tr>
   <tr>
@@ -62,6 +62,10 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/thomca"><img src="https://avatars.githubusercontent.com/u/56854904?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Catherine</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankController/commits?author=thomca" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/IDzyre"><img src="https://avatars.githubusercontent.com/u/46759635?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Dzyre</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankController/commits?author=IDzyre" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Paydenb"><img src="https://avatars.githubusercontent.com/u/83844058?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Paydenb</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankController/commits?author=Paydenb" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/TaylorSmith28"><img src="https://avatars.githubusercontent.com/u/83837157?v=4?s=100" width="100px;" alt=""/><br /><sub><b>TaylorSmith28</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankController/commits?author=TaylorSmith28" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/BenjaminWachter"><img src="https://avatars.githubusercontent.com/u/81596850?v=4?s=100" width="100px;" alt=""/><br /><sub><b>benwach</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankController/commits?author=BenjaminWachter" title="Code">💻</a></td>
   </tr>
 </table>
 

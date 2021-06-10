@@ -67,11 +67,11 @@ unittest(SendData) {
   for (int i = 0; i < buffer.size(); i++) {
     bufferResult += buffer[i];
   }
-  char expected1[] = "GET /pushingbox?devid=v172D35C152EDA6C&tankid=99&tempData=20.26&pHdata=7.125 HTTP/1.1";
+  char expected1[] = "GET /pushingbox?devid=PushingBoxIdentifier&tankid=99&tempData=20.26&pHdata=7.125 HTTP/1.1";
   assertEqual(expected1, bufferResult.c_str());
   char expected2[] =
       "15:26 pH=7.125 temp=20.26\r\n"
-      "GET /pushingbox?devid=v172D35C152EDA6C&tankid=99&tempData=20.26&pHdata=7.125 HTTP/1.1\r\n"
+      "GET /pushingbox?devid=PushingBoxIdentifier&tankid=99&tempData=20.26&pHdata=7.125 HTTP/1.1\r\n"
       "attempting to connect to PushingBox...\r\n"
       "connected\r\n"
       "A";

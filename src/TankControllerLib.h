@@ -12,7 +12,7 @@ class UIState;
 class TankControllerLib {
 public:
   // class methods
-  static TankControllerLib* instance();
+  static TankControllerLib* instance(const char* pushingBoxID = nullptr);
 
   // instance methods
   bool isInCalibration();
@@ -23,6 +23,7 @@ public:
   void setup();
   const char* stateName();
   const char* version();
+  void writeDataToSD();
 
 private:
   // class variables
@@ -41,6 +42,4 @@ private:
   void handleUI();
   void updateControls();
   void updateState();
-  void writeDataToSD();
-  void writeDataToSerial();
 };

@@ -6,9 +6,10 @@
 class PushingBox {
 public:
   // class methods
-  static PushingBox *instance();
+  static PushingBox *instance(const char *pushingBoxID = nullptr);
 
   // instance methods
+  PushingBox(const char *pushingBoxID);
   EthernetClient *getClient() {
     return &client;
   }
@@ -23,7 +24,7 @@ private:
 
   // instance variables
   EthernetClient client;
-  const char *DevID = "v172D35C152EDA6C";  // DeviceID from Pushingbox
+  const char *DevID = nullptr;  // DeviceID assigned by PushingBox and passed-in from TankController.ino
   // wait a bit for first reading (https://github.com/Open-Acidification/TankController/issues/179)
   unsigned long nextSendTime = 70000;
   const char *server = "api.pushingbox.com";

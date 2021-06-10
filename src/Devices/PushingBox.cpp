@@ -14,11 +14,15 @@ PushingBox* PushingBox::_instance = nullptr;
 /**
  * accessor for singleton
  */
-PushingBox* PushingBox::instance() {
+PushingBox* PushingBox::instance(const char* pushingBoxID) {
   if (!_instance) {
-    _instance = new PushingBox();
+    _instance = new PushingBox(pushingBoxID);
   }
   return _instance;
+}
+
+PushingBox::PushingBox(const char* pushingBoxID) {
+  DevID = pushingBoxID;
 }
 
 void PushingBox::loop() {

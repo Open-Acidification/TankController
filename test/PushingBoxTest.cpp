@@ -89,9 +89,6 @@ unittest(SendData) {
 }
 
 unittest(inCalibration) {
-  GodmodeState *state = GODMODE();
-  state->reset();
-  state->serialPort[0].dataOut = "";
   PushingBox *pPushingBox = PushingBox::instance();
   pPushingBox->getClient()->stop();  // clears the writeBuffer and readBuffer
   TankControllerLib *pTC = TankControllerLib::instance();
@@ -105,7 +102,6 @@ unittest(inCalibration) {
   EthernetClient::startMockServer(pPushingBox->getServer(), 80);
   assertEqual(0, pPushingBox->getClient()->writeBuffer().size());
   pPushingBox->getClient()->pushToReadBuffer('A');
-  state->serialPort[0].dataOut = "";
   delay(60 * 20 * 1000);  // wait for 20 minutes to ensure we send again
   pTC->loop();
   deque<uint8_t> buffer = pPushingBox->getClient()->writeBuffer();

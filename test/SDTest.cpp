@@ -5,6 +5,7 @@
 #include "SD_TC.h"
 #include "TC_util.h"
 #include "TankControllerLib.h"
+#include "UIState/PHCalibrationMid.h"
 
 unittest_setup() {
   SD.removeAll();
@@ -40,6 +41,33 @@ unittest(tankControllerLoop) {
         "time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd\n"
         "04/15/2021 00:00:00,   0, -242.02, 20.00, 0.000, 8.100,    1, 100000.0,      0.0,      0.0\n"
         "04/15/2021 00:00:01,   0, -242.02, 20.00, 0.000, 8.100,    2, 100000.0,      0.0,      0.0\n",
+        data);
+  }
+  file.close();
+}
+
+unittest(loopInCalibration) {
+  TankControllerLib *pTC = TankControllerLib::instance();
+  PHCalibrationMid *test = new PHCalibrationMid(pTC);
+  pTC->setNextState(test, true);
+  assertTrue(pTC->isInCalibration());
+  char data[250];
+  TankControllerLib* tc = TankControllerLib::instance();
+  DateTime_TC d1(2021, 4, 15);
+  d1.setAsCurrent();
+  assertFalse(SD.exists("20210415.csv"));
+  tc->loop();
+  delay(1000);
+  tc->loop();
+  assertTrue(SD.exists("20210415.csv"));
+  File file = SD.open("20210415.csv");
+  assertTrue(file.size() < sizeof(data));
+  if (file.size() < sizeof(data)) {
+    file.read(data, file.size());
+    data[file.size()] = '\0';
+    assertEqual(
+        "time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd\n"
+        "04/15/2021 00:00:01,   0, C, 20.00, C, 8.100,    3, 100000.0,      0.0,      0.0\n",
         data);
   }
   file.close();

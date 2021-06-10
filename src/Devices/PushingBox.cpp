@@ -40,13 +40,15 @@ void PushingBox::loop() {
   }
   // are we still connected?
   if (client.connected()) {
-    // if so, read response
-    serial("===== PushingBox response:");
-    int next;
-    while ((next = client.read()) != -1) {    // Flawfinder: ignore
-      Serial.print(next ? (char)next : '?');  // print response if any to serial
+    if (client.available()) {
+      // if so, read response
+      serial("===== PushingBox response:");
+      int next;
+      while ((next = client.read()) != -1) {    // Flawfinder: ignore
+        Serial.print(next ? (char)next : '?');  // print response if any to serial
+      }
+      serial("===== end of PushingBox response");
     }
-    serial("===== end of PushingBox response");
   } else {
     // will this close every 15 ms?
     client.stop();

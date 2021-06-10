@@ -5,6 +5,7 @@
 #include "Devices/PHProbe.h"
 #include "Devices/Serial_TC.h"
 #include "Devices/TempProbe_TC.h"
+#include "TankControllerLib.h"
 #include "TC_util.h"
 
 //  class variables
@@ -53,16 +54,25 @@ void PushingBox::sendData() {
     serial("Set Tank ID in order to send data to PushingBox");
     return;
   }
-  char format[] =
-      "GET /pushingbox?devid=%s&tankid=%i&tempData=%.2f&pHdata=%.3f HTTP/1.1\r\n"
-      "Host: api.pushingbox.com\r\n"
-      "Connection: close\r\n"
-      "\r\n";
   char buffer[200];
-  // look up tankid, temperature, ph
-  float temperature = TempProbe_TC::instance()->getRunningAverage();
-  float pH = PHProbe::instance()->getPh();
-  snprintf(buffer, sizeof(buffer), format, DevID, tankID, temperature, pH);
+  if (TankControllerLib::instance()->isInCalibration()) {
+    char format[] =
+        "GET /pushingbox?devid=%s&tankid=%i&tempData=C&pHdata=C HTTP/1.1\r\n"
+        "Host: api.pushingbox.com\r\n"
+        "Connection: close\r\n"
+        "\r\n";
+    snprintf(buffer, sizeof(buffer), format, DevID, tankID);
+  } else {
+    char format[] =
+        "GET /pushingbox?devid=%s&tankid=%i&tempData=%.2f&pHdata=%.3f HTTP/1.1\r\n"
+        "Host: api.pushingbox.com\r\n"
+        "Connection: close\r\n"
+        "\r\n";
+    // look up tankid, temperature, ph
+    float temperature = TempProbe_TC::instance()->getRunningAverage();
+    float pH = PHProbe::instance()->getPh();
+    snprintf(buffer, sizeof(buffer), format, DevID, tankID, temperature, pH);   
+  }
   serial(buffer);
   serial("attempting to connect to PushingBox...");
   if (client.connected() || client.connect(server, 80)) {

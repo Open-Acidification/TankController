@@ -5,8 +5,8 @@
 #include "Devices/PHProbe.h"
 #include "Devices/Serial_TC.h"
 #include "Devices/TempProbe_TC.h"
-#include "TankControllerLib.h"
 #include "TC_util.h"
+#include "TankControllerLib.h"
 
 //  class variables
 PushingBox* PushingBox::_instance = nullptr;

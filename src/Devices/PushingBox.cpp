@@ -14,11 +14,15 @@ PushingBox* PushingBox::_instance = nullptr;
 /**
  * accessor for singleton
  */
-PushingBox* PushingBox::instance() {
+PushingBox* PushingBox::instance(const char* pushingBoxID) {
   if (!_instance) {
-    _instance = new PushingBox();
+    _instance = new PushingBox(pushingBoxID);
   }
   return _instance;
+}
+
+PushingBox::PushingBox(const char* pushingBoxID) {
+  DevID = pushingBoxID;
 }
 
 void PushingBox::loop() {
@@ -36,10 +40,14 @@ void PushingBox::loop() {
   }
   // are we still connected?
   if (client.connected()) {
-    // if so, read response
-    int next;
-    while ((next = client.read()) != -1) {  // Flawfinder: ignore
-      Serial.print((char)next);             // print response if any to serial
+    if (client.available()) {
+      // if so, read response
+      serial("===== PushingBox response:");
+      int next;
+      while ((next = client.read()) != -1) {    // Flawfinder: ignore
+        Serial.print(next ? (char)next : '?');  // print response if any to serial
+      }
+      serial("===== end of PushingBox response");
     }
   } else {
     // will this close every 15 ms?
@@ -63,7 +71,15 @@ void PushingBox::sendData() {
   float temperature = TempProbe_TC::instance()->getRunningAverage();
   float pH = PHProbe::instance()->getPh();
   snprintf(buffer, sizeof(buffer), format, DevID, tankID, temperature, pH);
+  size_t i = 0;
+  for (; i < sizeof(buffer); ++i) {
+    if (buffer[i] == '\r') {
+      buffer[i] = '\0';
+      break;
+    }
+  }
   serial(buffer);
+  buffer[i] = '\r';
   serial("attempting to connect to PushingBox...");
   if (client.connected() || client.connect(server, 80)) {
     serial("connected");

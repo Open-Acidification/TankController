@@ -28,9 +28,10 @@ TankControllerLib *TankControllerLib::_instance = nullptr;
 /**
  * static function to return singleton
  */
-TankControllerLib *TankControllerLib::instance() {
+TankControllerLib *TankControllerLib::instance(const char *pushingBoxID) {
   if (!_instance) {
     _instance = new TankControllerLib;
+    PushingBox::instance(pushingBoxID);
   }
   return _instance;
 }

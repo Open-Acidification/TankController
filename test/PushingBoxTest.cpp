@@ -10,6 +10,7 @@
 #include "TankControllerLib.h"
 
 unittest_setup() {
+  TankControllerLib::instance("PushingBoxIdentifier");
   DateTime_TC now(2021, 6, 8, 15, 25, 15);
   now.setAsCurrent();
 }
@@ -58,7 +59,10 @@ unittest(SendData) {
 
   EthernetClient::startMockServer(pPushingBox->getServer(), 80);
   assertEqual(0, pPushingBox->getClient()->writeBuffer().size());
-  pPushingBox->getClient()->pushToReadBuffer('A');
+  const uint8_t response[] = "[PushingBox response]\r\n";
+  for (int i = 0; i < sizeof(response); ++i) {
+    pPushingBox->getClient()->pushToReadBuffer(response[i]);
+  }
   state->serialPort[0].dataOut = "";
   delay(60 * 1000);  // wait for one minute to ensure we send again
   pTC->loop();
@@ -68,22 +72,19 @@ unittest(SendData) {
     bufferResult += buffer[i];
   }
   char expected1[] =
-      "GET /pushingbox?devid=v172D35C152EDA6C&tankid=99&tempData=20.26&pHdata=7.125 HTTP/1.1\r\n"
+      "GET /pushingbox?devid=PushingBoxIdentifier&tankid=99&tempData=20.26&pHdata=7.125 HTTP/1.1\r\n"
       "Host: api.pushingbox.com\r\n"
       "Connection: close\r\n"
       "\r\n";
-
   assertEqual(expected1, bufferResult.c_str());
   char expected2[] =
       "15:26 pH=7.125 temp=20.26\r\n"
-      "GET /pushingbox?devid=v172D35C152EDA6C&tankid=99&tempData=20.26&pHdata=7.125 HTTP/1.1\r\n"
-      "Host: api.pushingbox.com\r\n"
-      "Connection: close\r\n"
-      "\r\n"
-      "\r\n"
+      "GET /pushingbox?devid=PushingBoxIdentifier&tankid=99&tempData=20.26&pHdata=7.125 HTTP/1.1\r\n"
       "attempting to connect to PushingBox...\r\n"
       "connected\r\n"
-      "A";
+      "===== PushingBox response:\r\n"
+      "[PushingBox response]\r\n?"
+      "===== end of PushingBox response\r\n";
   assertEqual(expected2, state->serialPort[0].dataOut);
   EthernetClient::stopMockServer(pPushingBox->getServer(), 80);
 }

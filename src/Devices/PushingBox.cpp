@@ -80,16 +80,16 @@ void PushingBox::sendData() {
     float temperature = TempProbe_TC::instance()->getRunningAverage();
     float pH = PHProbe::instance()->getPh();
     snprintf(buffer, sizeof(buffer), format, DevID, tankID, temperature, pH);
-    size_t i = 0;
-    for (; i < sizeof(buffer); ++i) {
-      if (buffer[i] == '\r') {
-        buffer[i] = '\0';
-        break;
-      }
-    }
-    serial(buffer);
-    buffer[i] = '\r';
   }
+  size_t i = 0;
+  for (; i < sizeof(buffer); ++i) {
+    if (buffer[i] == '\r') {
+      buffer[i] = '\0';
+      break;
+    }
+  }
+  serial(buffer);
+  buffer[i] = '\r';
   serial("attempting to connect to PushingBox...");
   if (client.connected() || client.connect(server, 80)) {
     serial("connected");

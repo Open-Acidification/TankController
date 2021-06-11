@@ -102,7 +102,6 @@ unittest(inCalibration) {
   assertTrue(pTC->isInCalibration());
   EthernetClient::startMockServer(pPushingBox->getServer(), 80);
   assertEqual(0, pPushingBox->getClient()->writeBuffer().size());
-  pPushingBox->getClient()->pushToReadBuffer('A');
   delay(60 * 20 * 1000);  // wait for 20 minutes to ensure we send again
   pTC->loop();
   deque<uint8_t> buffer = pPushingBox->getClient()->writeBuffer();
@@ -111,7 +110,7 @@ unittest(inCalibration) {
     bufferResult += buffer[i];
   }
   char expected1[] =
-      "GET /pushingbox?devid=v172D35C152EDA6C&tankid=99&tempData=C&pHdata=C HTTP/1.1\r\n"
+      "GET /pushingbox?devid=PushingBoxIdentifier&tankid=99&tempData=C&pHdata=C HTTP/1.1\r\n"
       "Host: api.pushingbox.com\r\n"
       "Connection: close\r\n"
       "\r\n";

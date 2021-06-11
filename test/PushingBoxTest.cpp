@@ -8,6 +8,7 @@
 #include "Devices/TempProbe_TC.h"
 #include "Devices/TemperatureControl.h"
 #include "TankControllerLib.h"
+#include "UIState/PHCalibrationMid.h"
 
 unittest_setup() {
   TankControllerLib::instance("PushingBoxIdentifier");
@@ -56,7 +57,6 @@ unittest(SendData) {
   // set pH
   state->serialPort[1].dataIn = "7.125\r";  // the queue of data waiting to be read
   pTC->serialEvent1();                      // fake interrupt
-
   EthernetClient::startMockServer(pPushingBox->getServer(), 80);
   assertEqual(0, pPushingBox->getClient()->writeBuffer().size());
   const uint8_t response[] = "[PushingBox response]\r\n";
@@ -89,4 +89,31 @@ unittest(SendData) {
   EthernetClient::stopMockServer(pPushingBox->getServer(), 80);
 }
 
+unittest(inCalibration) {
+  PushingBox *pPushingBox = PushingBox::instance();
+  pPushingBox->getClient()->stop();  // clears the writeBuffer and readBuffer
+  TankControllerLib *pTC = TankControllerLib::instance();
+  TempProbe_TC *tempProbe = TempProbe_TC::instance();
+
+  // set tank id
+  EEPROM_TC::instance()->setTankID(99);
+  PHCalibrationMid *test = new PHCalibrationMid(pTC);
+  pTC->setNextState(test, true);
+  assertTrue(pTC->isInCalibration());
+  EthernetClient::startMockServer(pPushingBox->getServer(), 80);
+  assertEqual(0, pPushingBox->getClient()->writeBuffer().size());
+  delay(60 * 20 * 1000);  // wait for 20 minutes to ensure we send again
+  pTC->loop();
+  deque<uint8_t> buffer = pPushingBox->getClient()->writeBuffer();
+  String bufferResult;
+  for (int i = 0; i < buffer.size(); i++) {
+    bufferResult += buffer[i];
+  }
+  char expected1[] =
+      "GET /pushingbox?devid=PushingBoxIdentifier&tankid=99&tempData=C&pHdata=C HTTP/1.1\r\n"
+      "Host: api.pushingbox.com\r\n"
+      "Connection: close\r\n"
+      "\r\n";
+  assertEqual(expected1, bufferResult.c_str());
+}
 unittest_main()

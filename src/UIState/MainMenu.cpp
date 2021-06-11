@@ -61,10 +61,10 @@ MainMenu::MainMenu(TankControllerLib *tc) : UIState(tc) {
 void MainMenu::handleKey(char key) {
   switch (key) {
     case 'A':  // Set pH set_point
-      this->setNextState((UIState *)new SetPHSetPoint(tc));
+      this->setNextState(static_cast<UIState *>(new SetPHSetPoint(tc)));
       break;
     case 'B':  // Set Temperature set_point
-      this->setNextState((UIState *)new SetTempSetPoint(tc));
+      this->setNextState(static_cast<UIState *>(new SetTempSetPoint(tc)));
       break;
     case 'D':  // Reset
       level1 = 0;

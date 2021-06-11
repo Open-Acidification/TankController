@@ -4,6 +4,8 @@
  * used in the mock environment.
  */
 
+const char pushingBoxID[] = "PushingBoxIdentifier";  // <<== REPLACE THIS!
+
 #include "TankControllerLib.h"
 
 TankControllerLib *tank = nullptr;
@@ -19,7 +21,7 @@ void serialEvent1() {  // if the hardware serial port_1 receives a char
 void setup() {
   // the install process is followed by a reset and we get two startups
   delay(500);
-  tank = TankControllerLib::instance();
+  tank = TankControllerLib::instance(pushingBoxID);
   tank->setup();
 }
 

@@ -12,7 +12,7 @@ class UIState;
 class TankControllerLib {
 public:
   // class methods
-  static TankControllerLib* instance();
+  static TankControllerLib* instance(const char* pushingBoxID = nullptr);
 
   // instance methods
   bool isInCalibration();

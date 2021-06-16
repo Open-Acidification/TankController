@@ -1,5 +1,6 @@
 #include "Ethernet_TC.h"
 
+#include "Devices/EEPROM_TC.h"
 #include "Serial_TC.h"
 
 Ethernet_TC *Ethernet_TC::_instance = nullptr;
@@ -13,6 +14,8 @@ Ethernet_TC::Ethernet_TC() {
     IP = Ethernet.localIP();
     serial("DHCP address is %i.%i.%i.%i", IP[0], IP[1], IP[2], IP[3]);
   } else {
+    // update IP by adding tank ID to last octet
+    defaultIP[3] += EEPROM_TC::instance()->getTankID();
     serial("DHCP failed, trying %i.%i.%i.%i", defaultIP[0], defaultIP[1], defaultIP[2], defaultIP[3]);
     Ethernet.begin(mac, defaultIP);
     serial("Done with Ethernet setup");

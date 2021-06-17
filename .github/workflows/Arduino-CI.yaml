@@ -17,10 +17,5 @@ jobs:
       - name: Check style, functionality, and usage
         run: |
           g++ -v
-          bundle install
-          gem install rubocop
-          bundle exec rubocop --version
-          bundle exec rubocop -D .
-          bundle exec rspec --backtrace
           scripts/install_libraries.sh
           scripts/testAndBuild.sh

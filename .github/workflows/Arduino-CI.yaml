@@ -5,14 +5,20 @@ name: Arduino CI
 on: [push, pull_request]
 
 jobs:
-  arduino_ci: 
+  arduino_ci:
     runs-on: ubuntu-latest
     steps:
       # Clone the repo using the `checkout` action
       - uses: actions/checkout@v2
-      # Use prebuild Arduino-CI
-      - uses: Arduino-CI/action@stable-1.x
-        env:
-          EXPECT_EXAMPLES: true
-          EXPECT_UNITTESTS: true
-          CUSTOM_INIT_SCRIPT: scripts/install_libraries.sh
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+      - name: Check style, functionality, and usage
+        run: |
+          g++ -v
+          bundle exec rubocop --version
+          bundle exec rubocop -D .
+          bundle exec rspec --backtrace
+          scripts/install_libraries.sh
+          scripts/testAndBuild.sh

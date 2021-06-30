@@ -17,7 +17,7 @@ unittest(testOutput) {
   // Test the output
   tc->loop();
   assertEqual("192.168.001.010 ", display->getLines().at(0));
-  assertEqual("90A2:DA00:0000  ", display->getLines().at(1));
+  assertEqual("90A2:DAFB:F6F1  ", display->getLines().at(1));
   // Return to mainMenu
   Keypad_TC::instance()->_getPuppet()->push_back('D');
   tc->loop();

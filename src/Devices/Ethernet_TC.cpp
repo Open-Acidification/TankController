@@ -9,6 +9,7 @@ Ethernet_TC *Ethernet_TC::_instance = nullptr;
 Ethernet_TC::Ethernet_TC() {
   pinMode(IO_PIN, OUTPUT);
   digitalWrite(IO_PIN, HIGH);
+  readMac();
   serial("Attempting to connect to Ethernet");
   if (Ethernet.begin(mac, 5000)) {
     IP = Ethernet.localIP();
@@ -37,4 +38,21 @@ void Ethernet_TC::renewDHCPLease() {
     previous_lease = current_millis;
   }
   numAttemptedDHCPReleases++;
+}
+
+void Ethernet_TC::readMac(bool forceReset) {
+  uint8_t bytes[6];
+  EEPROM_TC::instance()->getMac(bytes);
+  if (forceReset || bytes[0] != '#') {
+    randomSeed(analogRead(0) + millis());
+    bytes[0] = '#';
+    bytes[3] = random(256);
+    bytes[4] = random(256);
+    bytes[5] = random(256);
+    EEPROM_TC::instance()->setMac(bytes);
+  }
+  mac[3] = bytes[3];
+  mac[4] = bytes[4];
+  mac[5] = bytes[5];
+  serial("MAC address is %02x:%02x:%02x:%02x:%02x:%02x", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
 }

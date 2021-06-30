@@ -63,7 +63,7 @@ float eeprom(uint8_t index) {
     case 6:
       return EEPROM_TC::instance()->getKD();
     case 7:
-      return EEPROM_TC::instance()->getMac();  // See issue #57 about this function
+      return -1.0;  // not really a float!
     case 8:
       return EEPROM_TC::instance()->getHeat();
     case 9:

@@ -27,6 +27,17 @@ unittest(Main) {
   assertEqual(0xF6, (int)bytes[4]);
   assertEqual(0xF1, (int)bytes[5]);
 
+  GODMODE()->resetClock();
+  delay(1);
+  singleton1->readMac(true);
+  bytes = singleton1->getMac();
+  assertEqual(0x90, (int)bytes[0]);
+  assertEqual(0xA2, (int)bytes[1]);
+  assertEqual(0xDA, (int)bytes[2]);
+  assertEqual(0xFC, (int)bytes[3]);
+  assertEqual(0xF7, (int)bytes[4]);
+  assertEqual(0xF2, (int)bytes[5]);
+
   // Test that the default IP was used as a fall back (Assuming that there is no DHCP server to talk to)
   // test that the default is the defaultIP[3] plus the tank ID
   int tankID = EEPROM_TC::instance()->getTankID();

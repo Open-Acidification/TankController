@@ -17,6 +17,7 @@ public:
   byte *getMac() {
     return mac;
   }
+  void readMac(bool forceReset = false);
   uint16_t getNumAttemptedDHCPReleases() {
     return numAttemptedDHCPReleases;
   };

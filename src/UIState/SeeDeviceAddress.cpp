@@ -8,6 +8,18 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Ethernet.h"
 
+void SeeDeviceAddress::handleKey(char key) {
+  switch (key) {
+    case 'C':  // Reset MAC address
+      Ethernet_TC::instance()->readMac(true);
+      start();
+      break;
+    default:
+      returnToMainMenu();
+      break;
+  };
+}
+
 void SeeDeviceAddress::start() {
   IPAddress IP = Ethernet_TC::instance()->getIP();
   byte* mac = Ethernet_TC::instance()->getMac();

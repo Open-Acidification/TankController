@@ -87,7 +87,7 @@ float EEPROM_TC::getKP() {
 }
 void EEPROM_TC::getMac(uint8_t* bytes) {
   for (int i = 0; i < 6; ++i) {
-    bytes[i] = EEPROM.read(MAC_ADDRESS + i);
+    bytes[i] = EEPROM.read(MAC_ADDRESS + i);  // Flawfinder: ignore
   }
 }
 float EEPROM_TC::getMaxDataAge() {

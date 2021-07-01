@@ -75,7 +75,7 @@ if [ -d "./Keypad" ]; then
     git pull
   )
 else
-  git clone $SHALLOW_MASTER "$GITHUB/Keypad.git"
+  git clone $SHALLOW_MAIN "$GITHUB/Keypad.git"
 fi
 
 if [ -d "./Arduino-PID-Library" ]; then

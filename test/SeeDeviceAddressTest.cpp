@@ -19,7 +19,7 @@ unittest(testOutput) {
   tc->loop();
   assertEqual("192.168.001.010 ", display->getLines().at(0));
   char buffer[8];
-  strncpy(buffer, display->getLines().at(1).c_str(), 7);
+  strncpy(buffer, display->getLines().at(1).c_str(), sizeof(buffer) - 1);
   assertEqual("90A2:DA", buffer);
 
   // Reset MAC address

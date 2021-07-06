@@ -8,7 +8,6 @@
 #include "TankControllerLib.h"
 
 unittest(testOutput) {
-  GODMODE()->resetClock();
   TankControllerLib* tc = TankControllerLib::instance();
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
   assertEqual("MainMenu", tc->stateName());
@@ -19,7 +18,9 @@ unittest(testOutput) {
   // Test the output
   tc->loop();
   assertEqual("192.168.001.010 ", display->getLines().at(0));
-  assertEqual("90A2:DA8F:8A85  ", display->getLines().at(1));
+  char buffer[8];
+  strncpy(buffer, display->getLines().at(1).c_str(), 7);
+  assertEqual("90A2:DA", buffer);
 
   // Reset MAC address
   GODMODE()->resetClock();
@@ -27,6 +28,10 @@ unittest(testOutput) {
   Keypad_TC::instance()->_getPuppet()->push_back('C');
   tc->loop();
   assertEqual("90A2:DAFC:F7F2  ", display->getLines().at(1));
+  delay(1);
+  Keypad_TC::instance()->_getPuppet()->push_back('C');
+  tc->loop();
+  assertEqual("90A2:DA03:FEF9  ", display->getLines().at(1));
 
   // Return to mainMenu
   Keypad_TC::instance()->_getPuppet()->push_back('D');

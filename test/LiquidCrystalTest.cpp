@@ -14,7 +14,7 @@ unittest(loop) {
   assertEqual("LiquidCrystal_CI", lcd->className());
   // get currently displayed lines
   std::vector<String> lines = lcd->getLines();
-  // verify that display contains the spash screen
+  // verify that display contains the splash screen
   assertEqual(2, lines.size());
   assertEqual(16, lines.at(0).length());
   assertEqual(16, lines.at(1).length());

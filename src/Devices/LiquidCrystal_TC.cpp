@@ -16,7 +16,7 @@ LiquidCrystal_TC* LiquidCrystal_TC::_instance = nullptr;
 /**
  * accessor for singleton
  */
-LiquidCrystal_TC* LiquidCrystal_TC::instance(const char *version) {
+LiquidCrystal_TC* LiquidCrystal_TC::instance(const char* version) {
   if (!_instance) {
     _instance = new LiquidCrystal_TC(version);
   }
@@ -27,13 +27,13 @@ LiquidCrystal_TC* LiquidCrystal_TC::instance(const char *version) {
 /**
  * Constructor sets pins, dimensions, and shows splash screen
  */
-LiquidCrystal_TC::LiquidCrystal_TC(const char *version) : LiquidCrystal(RS, EN, D4, D5, D6, D7) {
+LiquidCrystal_TC::LiquidCrystal_TC(const char* version) : LiquidCrystal(RS, EN, D4, D5, D6, D7) {
   Serial.println("LiquidCrystal_TC");  // Serial_TC might not be ready yet
   begin(16, 2);
   splashScreen(version);
 }
 
-void LiquidCrystal_TC::splashScreen(const char *version) {
+void LiquidCrystal_TC::splashScreen(const char* version) {
   clear();
   print("Tank Controller ");
   setCursor(0, 1);

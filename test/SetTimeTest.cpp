@@ -20,6 +20,8 @@ unittest(test) {
 
   // get currently displayed lines
   std::vector<String> lines = LiquidCrystal_TC::instance()->getLines();
+  assertEqual(16, lines.at(0).length());
+  assertEqual(16, lines.at(1).length());
   assertEqual("Set Year (YYYY):", lines.at(0));
   assertEqual("   2021->     0 ", lines.at(1));
   assertEqual(2021, test->getCurrentValue());

@@ -37,7 +37,6 @@ MainMenu::MainMenu(TankControllerLib *tc) : UIState(tc) {
   viewMenus[VIEW_PH_SLOPE] = String("View pH slope   ");
   viewMenus[VIEW_TANK_ID] = String("View tank ID    ");
   viewMenus[VIEW_TIME] = String("View time       ");
-  viewMenus[VIEW_UPTIME] = String("View uptime     ");
   viewMenus[VIEW_VERSION] = String("View version    ");
 
   setMenus[SET_CALIBRATION] = String("pH calibration ");
@@ -154,9 +153,6 @@ void MainMenu::selectView() {
       this->setNextState(static_cast<UIState *>(new SeeTankID(tc)));
       break;
     case VIEW_TIME:
-      this->setNextState(static_cast<UIState *>(new SeeDeviceUptime(tc)));
-      break;
-    case VIEW_UPTIME:
       this->setNextState(static_cast<UIState *>(new SeeDeviceUptime(tc)));
       break;
     case VIEW_VERSION:

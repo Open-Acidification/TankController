@@ -10,6 +10,10 @@
 
 void SeeDeviceAddress::handleKey(char key) {
   switch (key) {
+    case 'B':  // Infinite loop to test Watchdog Timer
+      do {
+      } while (true);
+      break;
     case 'C':  // Reset MAC address
       Ethernet_TC::instance()->readMac(true);
       start();

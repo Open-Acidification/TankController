@@ -85,8 +85,10 @@ float EEPROM_TC::getKI() {
 float EEPROM_TC::getKP() {
   return eepromReadFloat(KP_ADDRESS);
 }
-float EEPROM_TC::getMac() {
-  return eepromReadFloat(MAC_ADDRESS);
+void EEPROM_TC::getMac(uint8_t* bytes) {
+  for (int i = 0; i < 6; ++i) {
+    bytes[i] = EEPROM.read(MAC_ADDRESS + i);  // Flawfinder: ignore
+  }
 }
 float EEPROM_TC::getMaxDataAge() {
   return eepromReadFloat(MAX_DATA_AGE_ADDRESS);
@@ -152,8 +154,10 @@ void EEPROM_TC::setKI(float value) {
 void EEPROM_TC::setKP(float value) {
   eepromWriteFloat(KP_ADDRESS, value);
 }
-void EEPROM_TC::setMac(float value) {
-  eepromWriteFloat(MAC_ADDRESS, value);
+void EEPROM_TC::setMac(uint8_t* bytes) {
+  for (int i = 0; i < 6; ++i) {
+    EEPROM.update(MAC_ADDRESS + i, bytes[i]);
+  }
 }
 void EEPROM_TC::setMaxDataAge(float value) {
   eepromWriteFloat(MAX_DATA_AGE_ADDRESS, value);

@@ -1,12 +1,14 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
+#include "Devices/EEPROM_TC.h"
 #include "Ethernet_TC.h"
 
 const int PIN = 4;
 
 unittest(Main) {
   GodmodeState* state = GODMODE();
+  EEPROM_TC::instance()->setTankID(99);
   // Test singleton
   Ethernet_TC* singleton1 = nullptr;
   singleton1 = Ethernet_TC::instance();
@@ -17,9 +19,30 @@ unittest(Main) {
   assertEqual(singleton1, singleton2);
   assertEqual(HIGH, state->digitalPin[PIN]);
 
+  uint8_t* bytes = singleton1->getMac();
+  assertEqual(0x90, (int)bytes[0]);
+  assertEqual(0xA2, (int)bytes[1]);
+  assertEqual(0xDA, (int)bytes[2]);
+  assertEqual(0xFB, (int)bytes[3]);
+  assertEqual(0xF6, (int)bytes[4]);
+  assertEqual(0xF1, (int)bytes[5]);
+
+  GODMODE()->resetClock();
+  delay(1);
+  singleton1->readMac(true);
+  bytes = singleton1->getMac();
+  assertEqual(0x90, (int)bytes[0]);
+  assertEqual(0xA2, (int)bytes[1]);
+  assertEqual(0xDA, (int)bytes[2]);
+  assertEqual(0xFC, (int)bytes[3]);
+  assertEqual(0xF7, (int)bytes[4]);
+  assertEqual(0xF2, (int)bytes[5]);
+
   // Test that the default IP was used as a fall back (Assuming that there is no DHCP server to talk to)
-  IPAddress defaultIP(192, 168, 1, 2);
-  assertTrue(singleton1->getIP() == defaultIP);
+  // test that the default is the defaultIP[3] plus the tank ID
+  int tankID = EEPROM_TC::instance()->getTankID();
+  IPAddress defaultIP(192, 168, 1, (10 + tankID));
+  assertEqual(singleton1->getIP(), defaultIP);
 
   // Test DHCP is being maintained
   singleton1->renewDHCPLease();

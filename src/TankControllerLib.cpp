@@ -19,7 +19,7 @@
 #include "UIState/MainMenu.h"
 #include "UIState/UIState.h"
 
-const char TANK_CONTROLLER_VERSION[] = "21.06.1";
+const char TANK_CONTROLLER_VERSION[] = "21.07.1";
 
 // ------------ Class Methods ------------
 /**
@@ -30,9 +30,10 @@ TankControllerLib *TankControllerLib::_instance = nullptr;
 /**
  * static function to return singleton
  */
-TankControllerLib *TankControllerLib::instance() {
+TankControllerLib *TankControllerLib::instance(const char *pushingBoxID) {
   if (!_instance) {
     _instance = new TankControllerLib;
+    PushingBox::instance(pushingBoxID);
   }
   return _instance;
 }
@@ -48,7 +49,7 @@ TankControllerLib::TankControllerLib() {
   SD_TC::instance();
   EEPROM_TC::instance();
   Keypad_TC::instance();
-  LiquidCrystal_TC::instance();
+  LiquidCrystal_TC::instance(TANK_CONTROLLER_VERSION);
   DateTime_TC::rtc();
   Ethernet_TC::instance();
   TempProbe_TC::instance();
@@ -134,6 +135,7 @@ void TankControllerLib::loop() {
   handleUI();                      // look at keypad, update LCD
   updateControls();                // turn CO2 and temperature controls on or off
   writeDataToSD();                 // record current state to data log
+  writeDataToSerial();             // record current pH and temperature to serial
   PushingBox::instance()->loop();  // write data to Google Sheets
 }
 
@@ -220,24 +222,47 @@ const char *TankControllerLib::version() {
  */
 void TankControllerLib::writeDataToSD() {
   static uint32_t nextWriteTime = 0;
-  static const char header[] = "time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd";
-  static const char format[] =
-      "%02i/%02i/%4i %02i:%02i:%02i, %3i, %4.2f, %4.2f, %5.3f, %5.3f, %4i, %8.1f, %8.1f, %8.1f";
   uint32_t msNow = millis();
   COUT("nextWriteTime: " << nextWriteTime << "; now = " << msNow);
+  if (nextWriteTime > msNow) {
+    return;
+  }
+  char currentTemp[10];
+  char currentPh[10];
+  if (isInCalibration()) {
+    snprintf(currentTemp, sizeof(currentTemp), "C");
+    snprintf(currentPh, sizeof(currentPh), "C");
+  } else {
+    snprintf(currentTemp, sizeof(currentTemp), "%4.2f", (float)TempProbe_TC::instance()->getRunningAverage());
+    snprintf(currentPh, sizeof(currentPh), "%5.3f", (float)PHProbe::instance()->getPh());
+  }
+  static const char header[] = "time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd";
+  static const char format[] = "%02i/%02i/%4i %02i:%02i:%02i, %3i, %s, %4.2f, %s, %5.3f, %4i, %8.1f, %8.1f, %8.1f";
+  char buffer[128];
+  DateTime_TC dtNow = DateTime_TC::now();
+  PID_TC *pPID = PID_TC::instance();
+  uint16_t tankId = EEPROM_TC::instance()->getTankID();
+  snprintf(buffer, sizeof(buffer), format, (uint16_t)dtNow.month(), (uint16_t)dtNow.day(), (uint16_t)dtNow.year(),
+           (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(), (uint16_t)dtNow.second(), (uint16_t)tankId, currentTemp,
+           (float)TemperatureControl::instance()->getTargetTemperature(), currentPh,
+           (float)PHControl::instance()->getTargetPh(), (uint16_t)(millis() / 1000), (float)pPID->getKp(),
+           (float)pPID->getKi(), (float)pPID->getKd());
+  SD_TC::instance()->appendData(header, buffer);
+  nextWriteTime = msNow / 1000 * 1000 + 1000;  // round up to next second
+  COUT(buffer);
+}
+
+/**
+ * once per minute write the current data to the serial port
+ */
+void TankControllerLib::writeDataToSerial() {
+  static uint32_t nextWriteTime = 0;
+  uint32_t msNow = millis();
   if (nextWriteTime <= msNow) {
-    char buffer[128];
     DateTime_TC dtNow = DateTime_TC::now();
-    PID_TC *pPID = PID_TC::instance();
-    uint16_t tankId = EEPROM_TC::instance()->getTankID();
-    snprintf(buffer, sizeof(buffer), format, (uint16_t)dtNow.month(), (uint16_t)dtNow.day(), (uint16_t)dtNow.year(),
-             (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(), (uint16_t)dtNow.second(), (uint16_t)tankId,
-             (float)TempProbe_TC::instance()->getRunningAverage(),
-             (float)TemperatureControl::instance()->getTargetTemperature(), (float)PHProbe::instance()->getPh(),
-             (float)PHControl::instance()->getTargetPh(), (uint16_t)(millis() / 1000), (float)pPID->getKp(),
-             (float)pPID->getKi(), (float)pPID->getKd());
-    SD_TC::instance()->appendData(header, buffer);
-    nextWriteTime = msNow / 1000 * 1000 + 1000;  // round up to next second
+    serial("%02d:%02d pH=%5.3f temp=%5.2f", (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(),
+           (float)PHProbe::instance()->getPh(), (float)TempProbe_TC::instance()->getRunningAverage());
+    nextWriteTime = msNow / 60000 * 60000 + 60000;  // round up to next minute
     COUT(buffer);
   }
 }

@@ -23,7 +23,7 @@ public:
   float getKD();
   float getKI();
   float getKP();
-  float getMac();
+  void getMac(uint8_t* bytes);
   float getMaxDataAge();
   float getPH();
   float getPHDelay();
@@ -47,7 +47,7 @@ public:
   void setKD(float value);
   void setKI(float value);
   void setKP(float value);
-  void setMac(float value);
+  void setMac(uint8_t* bytes);
   void setMaxDataAge(float value);
   void setPH(float value);
   void setPHDelay(float value);

@@ -31,9 +31,8 @@
 
 MainMenu::MainMenu(TankControllerLib *tc) : UIState(tc) {
   viewMenus[VIEW_GOOGLE_MINS] = String("View Google mins");
-  viewMenus[VIEW_IP_ADDRESS] = String("View IP address ");
+  viewMenus[VIEW_ADDRESS] = String("View IP and MAC ");
   viewMenus[VIEW_LOG_FILE] = String("View log file   ");
-  viewMenus[VIEW_MAC_ADDRESS] = String("View MAC address");
   viewMenus[VIEW_PID] = String("View PID        ");
   viewMenus[VIEW_PH_SLOPE] = String("View pH slope   ");
   viewMenus[VIEW_TANK_ID] = String("View tank ID    ");
@@ -62,10 +61,10 @@ MainMenu::MainMenu(TankControllerLib *tc) : UIState(tc) {
 void MainMenu::handleKey(char key) {
   switch (key) {
     case 'A':  // Set pH set_point
-      this->setNextState((UIState *)new SetPHSetPoint(tc));
+      this->setNextState(static_cast<UIState *>(new SetPHSetPoint(tc)));
       break;
     case 'B':  // Set Temperature set_point
-      this->setNextState((UIState *)new SetTempSetPoint(tc));
+      this->setNextState(static_cast<UIState *>(new SetTempSetPoint(tc)));
       break;
     case 'D':  // Reset
       level1 = 0;
@@ -139,14 +138,11 @@ void MainMenu::selectView() {
     case VIEW_GOOGLE_MINS:
       this->setNextState(static_cast<UIState *>(new SeeGoogleMins(tc)));
       break;
-    case VIEW_IP_ADDRESS:
+    case VIEW_ADDRESS:
       this->setNextState(static_cast<UIState *>(new SeeDeviceAddress(tc)));
       break;
     case VIEW_LOG_FILE:
       this->setNextState(static_cast<UIState *>(new SeeLogFile(tc)));
-      break;
-    case VIEW_MAC_ADDRESS:
-      this->setNextState(static_cast<UIState *>(new SeeDeviceAddress(tc)));
       break;
     case VIEW_PID:
       this->setNextState(static_cast<UIState *>(new SeePIDConstants(tc)));

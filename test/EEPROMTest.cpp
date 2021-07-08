@@ -81,10 +81,23 @@ unittest(KD) {
 }
 
 unittest(Mac) {
+  uint8_t bytes[6];
   EEPROM_TC* singleton = EEPROM_TC::instance();
-  assertNAN(singleton->getMac());
-  singleton->setMac(10);
-  assertEqual(10, singleton->getMac());
+  singleton->getMac(bytes);
+  for (int i = 0; i < 6; ++i) {
+    assertEqual(255, bytes[i]);
+  }
+  for (int i = 0; i < 6; ++i) {
+    bytes[i] = i + 10;
+  }
+  singleton->setMac(bytes);
+  for (int i = 0; i < 6; ++i) {
+    bytes[i] = 0;
+  }
+  singleton->getMac(bytes);
+  for (int i = 0; i < 6; ++i) {
+    assertEqual(i + 10, bytes[i]);
+  }
 }
 
 unittest(Heat) {

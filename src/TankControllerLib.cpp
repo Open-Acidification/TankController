@@ -1,5 +1,7 @@
 #include "TankControllerLib.h"
 
+#include <avr/wdt.h>
+
 #include "Devices/DateTime_TC.h"
 #include "Devices/EEPROM_TC.h"
 #include "Devices/Ethernet_TC.h"
@@ -128,6 +130,7 @@ void TankControllerLib::handleUI() {
  * (It appears to be called about once every 15 ms.)
  */
 void TankControllerLib::loop() {
+  wdt_reset();
   blink();                         // blink the on-board LED to show that we are running
   handleUI();                      // look at keypad, update LCD
   updateControls();                // turn CO2 and temperature controls on or off
@@ -168,6 +171,7 @@ void TankControllerLib::setNextState(UIState *newState, bool update) {
  * Here we do any one-time startup initialization.
  */
 void TankControllerLib::setup() {
+  wdt_enable(WDTO_8S);
   serial("TankControllerLib::setup()");
   SD_TC::instance()->printRootDirectory();
 }

@@ -146,6 +146,8 @@ vfprintf
 vprintf
 vscode
 vsnprintf
+wdt
+WDTO
 wiki
 workflow
 wx

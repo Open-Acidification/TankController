@@ -1,5 +1,7 @@
 #include "Ethernet_TC.h"
 
+#include <avr/wdt.h>
+
 #include "Devices/EEPROM_TC.h"
 #include "Serial_TC.h"
 
@@ -11,6 +13,7 @@ Ethernet_TC::Ethernet_TC() {
   digitalWrite(IO_PIN, HIGH);
   readMac();
   serial("Attempting to connect to Ethernet");
+  wdt_disable();
   if (Ethernet.begin(mac, 5000)) {
     IP = Ethernet.localIP();
     serial("DHCP address is %i.%i.%i.%i", IP[0], IP[1], IP[2], IP[3]);
@@ -22,6 +25,7 @@ Ethernet_TC::Ethernet_TC() {
     serial("Done with Ethernet setup");
     IP = defaultIP;
   }
+  wdt_enable(WDTO_8S);
 }
 
 Ethernet_TC *Ethernet_TC::instance() {

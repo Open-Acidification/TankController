@@ -21,7 +21,6 @@ public:
     VIEW_GOOGLE_MINS,
     VIEW_ADDRESS,
     VIEW_VERSION,
-    VIEW_UPTIME,
     VIEW_COMMAND_COUNT  // always last
   };
   enum SetCommands {

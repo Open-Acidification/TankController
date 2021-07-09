@@ -21,6 +21,7 @@ public:
     VIEW_GOOGLE_MINS,
     VIEW_ADDRESS,
     VIEW_VERSION,
+    VIEW_FREE_MEMORY,
     VIEW_COMMAND_COUNT  // always last
   };
   enum SetCommands {
@@ -45,7 +46,7 @@ public:
     return "MainMenu";
   }
   const char* prompt() {
-    return "Main Menu       ";
+    return "Main Menu";
   };
   bool isMainMenu() {
     return true;
@@ -55,8 +56,8 @@ public:
 private:
   int16_t level1 = 0;
   int16_t level2 = -1;
-  String viewMenus[VIEW_COMMAND_COUNT];
-  String setMenus[SET_COMMAND_COUNT];
+  const char* viewMenus[VIEW_COMMAND_COUNT];
+  const char* setMenus[SET_COMMAND_COUNT];
   void left();
   void right();
   void up();

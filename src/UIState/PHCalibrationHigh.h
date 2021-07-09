@@ -14,7 +14,7 @@ public:
     return "PHCalibrationHigh";
   }
   const char* prompt() {
-    return "pH-Highpoint    ";
+    return "pH-Highpoint";
   };
   void setValue(float value);
 };

@@ -16,6 +16,6 @@ public:
     return "SeePHSlope";
   }
   const char* prompt() {
-    return "PH Slope:       ";
+    return "PH Slope:";
   };
 };

@@ -21,7 +21,7 @@ public:
     return EEPROM_TC::instance()->getTankID();
   }
   const char* prompt() {
-    return "Set Tank ID#    ";
+    return "Set Tank ID#";
   };
   void setValue(float value);
 };

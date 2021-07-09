@@ -15,6 +15,6 @@ public:
     return "SeeGoogleMins";
   }
   const char* prompt() {
-    return "Google Mins:    ";
+    return "Google Mins:";
   };
 };

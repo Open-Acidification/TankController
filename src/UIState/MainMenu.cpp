@@ -11,6 +11,7 @@
 #include "ResetLCDScreen.h"
 #include "SeeDeviceAddress.h"
 #include "SeeDeviceUptime.h"
+#include "SeeFreeMemory.h"
 #include "SeeGoogleMins.h"
 #include "SeeLogFile.h"
 #include "SeePHSlope.h"
@@ -30,28 +31,29 @@
 #include "TemperatureCalibration.h"
 
 MainMenu::MainMenu(TankControllerLib *tc) : UIState(tc) {
-  viewMenus[VIEW_GOOGLE_MINS] = String("View Google mins");
-  viewMenus[VIEW_ADDRESS] = String("View IP and MAC ");
-  viewMenus[VIEW_LOG_FILE] = String("View log file   ");
-  viewMenus[VIEW_PID] = String("View PID        ");
-  viewMenus[VIEW_PH_SLOPE] = String("View pH slope   ");
-  viewMenus[VIEW_TANK_ID] = String("View tank ID    ");
-  viewMenus[VIEW_TIME] = String("View time       ");
-  viewMenus[VIEW_VERSION] = String("View version    ");
+  viewMenus[VIEW_GOOGLE_MINS] = "View Google mins";
+  viewMenus[VIEW_ADDRESS] = "View IP and MAC";
+  viewMenus[VIEW_FREE_MEMORY] = "View free memory";
+  viewMenus[VIEW_LOG_FILE] = "View log file";
+  viewMenus[VIEW_PID] = "View PID";
+  viewMenus[VIEW_PH_SLOPE] = "View pH slope";
+  viewMenus[VIEW_TANK_ID] = "View tank ID";
+  viewMenus[VIEW_TIME] = "View time";
+  viewMenus[VIEW_VERSION] = "View version";
 
-  setMenus[SET_CALIBRATION] = String("pH calibration ");
-  setMenus[SET_CALIBRATION_CLEAR] = String("Clear pH calibra");
-  setMenus[SET_CHILL_OR_HEAT] = String("Set chill/heat  ");
-  setMenus[SET_GOOGLE_MINS] = String("Set Google mins ");
-  setMenus[SET_PH] = String("Set pH target   ");
-  setMenus[SET_KD] = String("Set KD          ");
-  setMenus[SET_KI] = String("Set KI          ");
-  setMenus[SET_KP] = String("Set KP          ");
-  setMenus[SET_PID_ON_OFF] = String("PID on/off      ");
-  setMenus[SET_TANK_ID] = String("Set Tank ID     ");
-  setMenus[SET_TEMP_CALIBRATION] = String("Temp calibration");
-  setMenus[SET_TEMPERATURE] = String("Set temperature ");
-  setMenus[SET_TIME] = String("Set date/time   ");
+  setMenus[SET_CALIBRATION] = "pH calibration";
+  setMenus[SET_CALIBRATION_CLEAR] = "Clear pH calibra";
+  setMenus[SET_CHILL_OR_HEAT] = "Set chill/heat";
+  setMenus[SET_GOOGLE_MINS] = "Set Google mins";
+  setMenus[SET_PH] = "Set pH target";
+  setMenus[SET_KD] = "Set KD";
+  setMenus[SET_KI] = "Set KI";
+  setMenus[SET_KP] = "Set KP";
+  setMenus[SET_PID_ON_OFF] = "PID on/off";
+  setMenus[SET_TANK_ID] = "Set Tank ID";
+  setMenus[SET_TEMP_CALIBRATION] = "Temp calibration";
+  setMenus[SET_TEMPERATURE] = "Set temperature";
+  setMenus[SET_TIME] = "Set date/time";
 }
 
 /**
@@ -139,6 +141,9 @@ void MainMenu::selectView() {
       break;
     case VIEW_ADDRESS:
       this->setNextState(static_cast<UIState *>(new SeeDeviceAddress(tc)));
+      break;
+    case VIEW_FREE_MEMORY:
+      this->setNextState(static_cast<UIState *>(new SeeFreeMemory(tc)));
       break;
     case VIEW_LOG_FILE:
       this->setNextState(static_cast<UIState *>(new SeeLogFile(tc)));
@@ -236,13 +241,13 @@ void MainMenu::loop() {
       if (level2 == -1) {
         LiquidCrystal_TC::instance()->writeLine("View settings", 0);
       } else {
-        LiquidCrystal_TC::instance()->writeLine(viewMenus[level2].c_str(), 0);
+        LiquidCrystal_TC::instance()->writeLine(viewMenus[level2], 0);
       }
     } else {
       if (level2 == -1) {
         LiquidCrystal_TC::instance()->writeLine("Change settings ", 0);
       } else {
-        LiquidCrystal_TC::instance()->writeLine(setMenus[level2].c_str(), 0);
+        LiquidCrystal_TC::instance()->writeLine(setMenus[level2], 0);
       }
     }
     LiquidCrystal_TC::instance()->writeLine("<4   ^2  8v   6>", 1);

@@ -21,7 +21,7 @@ public:
     return EEPROM_TC::instance()->getGoogleSheetInterval();
   }
   const char* prompt() {
-    return "G Sheet Minutes ";
+    return "G Sheet Minutes";
   };
   void setValue(float value);
 };

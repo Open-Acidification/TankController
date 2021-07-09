@@ -14,7 +14,7 @@ public:
     return "PHCalibrationMid";
   }
   const char* prompt() {
-    return "pH-Midpoint     ";
+    return "pH-Midpoint";
   };
   void setValue(float value);
 };

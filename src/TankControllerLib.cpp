@@ -19,7 +19,7 @@
 #include "UIState/MainMenu.h"
 #include "UIState/UIState.h"
 
-const char TANK_CONTROLLER_VERSION[] = "21.07.1";
+const char TANK_CONTROLLER_VERSION[] = "21.07.2";
 
 // ------------ Class Methods ------------
 /**
@@ -84,6 +84,23 @@ void TankControllerLib::blink() {
   } else {
     digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
   }
+}
+
+// https://github.com/maniacbug/MemoryFree/blob/master/MemoryFree.cpp
+size_t TankControllerLib::freeMemory() {
+#ifdef MOCK_PINS_COUNT
+  int *__brkval = 0;
+  int __bss_end = 0;
+#else
+  extern int *__brkval;
+  extern int __bss_end;
+#endif
+  int topOfStack;
+
+  if ((size_t)__brkval == 0) {
+    return ((size_t)&topOfStack) - ((size_t)&__bss_end);
+  }
+  return ((size_t)&topOfStack) - ((size_t)__brkval);
 }
 
 /**
@@ -174,6 +191,7 @@ void TankControllerLib::setup() {
   wdt_enable(WDTO_8S);
   serial("TankControllerLib::setup()");
   SD_TC::instance()->printRootDirectory();
+  serial("Free memory = %i", freeMemory());
 }
 
 /**

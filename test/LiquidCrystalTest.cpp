@@ -19,7 +19,10 @@ unittest(loop) {
   assertEqual(16, lines.at(0).length());
   assertEqual(16, lines.at(1).length());
   assertEqual("Tank Controller ", lines.at(0));
-  assertEqual("v21.07.1 loading", lines.at(1));
+  assertEqual(
+      "v"
+      "21.07.2 loading",  // this allows a word-search to find the number
+      lines.at(1));
 }
 
 unittest(writeLine) {

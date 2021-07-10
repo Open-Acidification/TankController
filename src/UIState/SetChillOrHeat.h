@@ -18,7 +18,7 @@ public:
   }
   float getCurrentValue();
   const char* prompt() {
-    return "1:Chill; 9:Heat ";
+    return "1:Chill; 9:Heat";
   };
   void setValue(float value);
 };

@@ -21,7 +21,7 @@ public:
     return 2;
   }
   const char* prompt() {
-    return "Set Temperature ";
+    return "Set Temperature";
   };
   void setValue(float value);
 };

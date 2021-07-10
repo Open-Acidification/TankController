@@ -18,7 +18,7 @@ public:
   }
   float getCurrentValue();
   const char* prompt() {
-    return "PID 1:on; 9:off ";
+    return "PID 1:on; 9:off";
   };
   void setValue(float value);
 };

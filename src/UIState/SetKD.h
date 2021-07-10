@@ -21,7 +21,7 @@ public:
     return 1;
   }
   const char* prompt() {
-    return "Set KD          ";
+    return "Set KD";
   };
   void setValue(float value);
 };

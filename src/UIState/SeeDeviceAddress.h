@@ -16,6 +16,6 @@ public:
     return "SeeDeviceAddress";
   }
   const char* prompt() {
-    return "Device address  ";
+    return "Device address";
   };
 };

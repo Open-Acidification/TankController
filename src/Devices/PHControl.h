@@ -26,6 +26,7 @@ public:
   bool getUsePID() {
     return usePID;
   }
+  bool isOn();
   void setTargetPh(float newPh);
   void enablePID(bool flag);
   void updateControl(float pH);

@@ -55,6 +55,10 @@ void PHControl::enablePID(bool flag) {
   serial((flag ? "enable PID" : "disable PID"));
 }
 
+bool PHControl::isOn() {
+  return digitalRead(PH_CONTROL_PIN) == TURN_SOLENOID_ON;
+}
+
 void PHControl::updateControl(float pH) {
   if (usePID) {
     onTime = PID_TC::instance()->computeOutput(targetPh, pH);

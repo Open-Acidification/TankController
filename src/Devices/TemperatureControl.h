@@ -16,7 +16,7 @@ protected:
   const float DELTA = 0.05;
   uint32_t lastSwitchMS = 0;
   float targetTemperature;
-  bool pinValue = HIGH;
+  bool pinValue = TURN_SOLENOID_OFF;
   TemperatureControl();
 
 public:

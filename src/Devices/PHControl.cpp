@@ -28,9 +28,9 @@ PHControl *PHControl::instance() {
 
 PHControl::PHControl() {
   window_start_time = millis();
-  pinMode(PIN, OUTPUT);
+  pinMode(PH_CONTROL_PIN, OUTPUT);
   pinValue = TURN_SOLENOID_OFF;
-  digitalWrite(PIN, pinValue);
+  digitalWrite(PH_CONTROL_PIN, pinValue);
   targetPh = EEPROM_TC::instance()->getPH();
   if (isnan(targetPh)) {
     targetPh = DEFAULT_PH;
@@ -85,6 +85,6 @@ void PHControl::updateControl(float pH) {
     uint32_t currentMS = millis();
     serial("CO2 bubbler turned %s after %lu ms", pinValue ? "off" : "on", currentMS - lastSwitchMS);
     lastSwitchMS = currentMS;
-    digitalWrite(PIN, pinValue);
+    digitalWrite(PH_CONTROL_PIN, pinValue);
   }
 }

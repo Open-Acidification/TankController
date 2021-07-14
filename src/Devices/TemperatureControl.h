@@ -1,6 +1,8 @@
 #pragma once
 #include <Arduino.h>
 
+#include "TankControllerLib.h"
+
 /**
  * Temperature Control
  * Controlling the tank temperature is done by external devices that are controlled by setting

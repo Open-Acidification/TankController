@@ -23,11 +23,11 @@ unittest(NoTankID) {
 
   GodmodeState *state = GODMODE();
   PushingBox *pPushingBox = PushingBox::instance();
-  TankControllerLib *pTC = TankControllerLib::instance();
-  pTC->loop();
+  TankControllerLib *tc = TankControllerLib::instance();
+  tc->loop();
   delay(75 * 1000);  // a bit over one minute
   state->serialPort[0].dataOut = "";
-  pTC->loop();
+  tc->loop();
   char expected[] =
       "15:26 pH=0.000 temp=-242.02\r\n"
       "Set Tank ID in order to send data to PushingBox\r\n";
@@ -39,7 +39,7 @@ unittest(SendData) {
   state->reset();
   state->serialPort[0].dataOut = "";
   PushingBox *pPushingBox = PushingBox::instance();
-  TankControllerLib *pTC = TankControllerLib::instance();
+  TankControllerLib *tc = TankControllerLib::instance();
   TempProbe_TC *tempProbe = TempProbe_TC::instance();
 
   // set tank id
@@ -56,7 +56,7 @@ unittest(SendData) {
 
   // set pH
   state->serialPort[1].dataIn = "7.125\r";  // the queue of data waiting to be read
-  pTC->serialEvent1();                      // fake interrupt
+  tc->serialEvent1();                       // fake interrupt
   EthernetClient::startMockServer(pPushingBox->getServer(), 80);
   assertEqual(0, pPushingBox->getClient()->writeBuffer().size());
   const uint8_t response[] = "[PushingBox response]\r\n";
@@ -65,7 +65,7 @@ unittest(SendData) {
   }
   state->serialPort[0].dataOut = "";
   delay(60 * 1000);  // wait for one minute to ensure we send again
-  pTC->loop();
+  tc->loop();
   deque<uint8_t> buffer = pPushingBox->getClient()->writeBuffer();
   String bufferResult;
   for (int i = 0; i < buffer.size(); i++) {
@@ -92,18 +92,18 @@ unittest(SendData) {
 unittest(inCalibration) {
   PushingBox *pPushingBox = PushingBox::instance();
   pPushingBox->getClient()->stop();  // clears the writeBuffer and readBuffer
-  TankControllerLib *pTC = TankControllerLib::instance();
+  TankControllerLib *tc = TankControllerLib::instance();
   TempProbe_TC *tempProbe = TempProbe_TC::instance();
 
   // set tank id
   EEPROM_TC::instance()->setTankID(99);
-  PHCalibrationMid *test = new PHCalibrationMid(pTC);
-  pTC->setNextState(test, true);
-  assertTrue(pTC->isInCalibration());
+  PHCalibrationMid *test = new PHCalibrationMid(tc);
+  tc->setNextState(test, true);
+  assertTrue(tc->isInCalibration());
   EthernetClient::startMockServer(pPushingBox->getServer(), 80);
   assertEqual(0, pPushingBox->getClient()->writeBuffer().size());
   delay(60 * 20 * 1000);  // wait for 20 minutes to ensure we send again
-  pTC->loop();
+  tc->loop();
   deque<uint8_t> buffer = pPushingBox->getClient()->writeBuffer();
   String bufferResult;
   for (int i = 0; i < buffer.size(); i++) {

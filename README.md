@@ -42,8 +42,8 @@ To navigate through the menus, press 2, 4, 6, or 8 on the keypad.
 
 The following are "hidden" commands:
 *   From the 'SeeDeviceAddress' command:
-  *   'B' goes into an infinite loop that should trigger a reset by the watchdog timer in 8 seconds
-  *   'C' regenerates a new (random) MAC address that will take effect on the next restart
+    *   'B' goes into an infinite loop that should trigger a reset by the watchdog timer in 8 seconds
+    *   'C' regenerates a new (random) MAC address that will take effect on the next restart
 
 ## Contributors ✨
 

@@ -99,14 +99,14 @@ unittest(afterTenSecondsButPhStillHigher) {
 unittest(afterTenSecondsAndPhIsLower) {
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
-  assertEqual("pH=7.000   7.000", lc->getLines().at(0));
+  assertEqual("pH 7.000   7.000", lc->getLines().at(0));
   controlSolenoid->setTargetPh(7.00);
   setPhMeasurementTo(8.00);
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
   assertEqual("CO2 bubbler turned on after 7 ms\r\n", state->serialPort[0].dataOut);
   tc->loop();
-  assertEqual("pH=8.000 B 7.000", lc->getLines().at(0));
+  assertEqual("pH 8.000 B 7.000", lc->getLines().at(0));
   delay(8000);
   tc->loop();
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);

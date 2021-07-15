@@ -47,9 +47,9 @@ TemperatureControl::TemperatureControl() {
     targetTemperature = DEFAULT_TEMPERATURE;
     EEPROM_TC::instance()->setTemp(targetTemperature);
   }
-  pinMode(PIN, OUTPUT);
+  pinMode(TEMP_CONTROL_PIN, OUTPUT);
   pinValue = TURN_SOLENOID_OFF;
-  digitalWrite(PIN, pinValue);
+  digitalWrite(TEMP_CONTROL_PIN, pinValue);
   serial("%s with target temperature of %5.2f C", this->isHeater() ? "Heater" : "Chiller", targetTemperature);
 }
 
@@ -95,7 +95,7 @@ void Chiller::updateControl(float currentTemperature) {
       uint32_t currentMS = millis();
       serial("chiller turned %s after %lu ms", pinValue ? "off" : "on", currentMS - lastSwitchMS);
       lastSwitchMS = currentMS;
-      digitalWrite(PIN, pinValue);
+      digitalWrite(TEMP_CONTROL_PIN, pinValue);
     }
   }
 }
@@ -120,6 +120,6 @@ void Heater::updateControl(float currentTemperature) {
     uint32_t currentMS = millis();
     serial("heater turned %s after %lu ms", pinValue ? "off" : "on", currentMS - lastSwitchMS);
     lastSwitchMS = currentMS;
-    digitalWrite(PIN, pinValue);
+    digitalWrite(TEMP_CONTROL_PIN, pinValue);
   }
 }

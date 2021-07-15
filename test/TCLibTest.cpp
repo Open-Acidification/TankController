@@ -15,7 +15,7 @@ const uint16_t TEMP_PIN = 47;
 const uint16_t PH_PIN = 49;
 
 GodmodeState *state = GODMODE();
-TankControllerLib *pTC = TankControllerLib::instance();
+TankControllerLib *tc = TankControllerLib::instance();
 TempProbe_TC *tempProbe = TempProbe_TC::instance();
 TemperatureControl *tempControl = TemperatureControl::instance();
 PHProbe *pPHProbe = PHProbe::instance();
@@ -41,7 +41,7 @@ unittest_setup() {
 
   // set pH
   state->serialPort[1].dataIn = "7.125\r";  // the queue of data waiting to be read
-  pTC->serialEvent1();                      // fake interrupt
+  tc->serialEvent1();                       // fake interrupt
 
   // set target pH
   pPHControl->enablePID(false);  // Stay on continually if needed
@@ -66,7 +66,7 @@ unittest(basicOperation) {
   float avgTemp = static_cast<int16_t>((tempProbe->getRunningAverage() * 100.0 + 0.5)) / 100.0;
   assertEqual(16.75, avgTemp);
   assertEqual(7.125, pPHProbe->getPh());
-  pTC->loop();
+  tc->loop();
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_PIN]);  // solenoid off
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_PIN]);    // solenoid off
 
@@ -76,9 +76,9 @@ unittest(basicOperation) {
 
   // verify that solonoids are on
   delay(1000);
-  pTC->loop();
+  tc->loop();
   delay(1000);
-  pTC->loop();
+  tc->loop();
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[TEMP_PIN]);  // solenoid on
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_PIN]);    // solenoid on
 
@@ -88,9 +88,9 @@ unittest(basicOperation) {
 
   // verify that solonoids are off
   delay(1000);
-  pTC->loop();
+  tc->loop();
   delay(1000);
-  pTC->loop();
+  tc->loop();
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_PIN]);
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_PIN]);
 }
@@ -102,7 +102,7 @@ unittest(storeDataToSD) {
   delay(10000);
   for (size_t i = 0; i < 4; ++i) {
     delay(500);
-    pTC->loop();
+    tc->loop();
   }
   /*
     time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd

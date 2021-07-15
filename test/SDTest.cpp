@@ -47,12 +47,11 @@ unittest(tankControllerLoop) {
 }
 
 unittest(loopInCalibration) {
-  TankControllerLib* pTC = TankControllerLib::instance();
-  PHCalibrationMid* test = new PHCalibrationMid(pTC);
-  pTC->setNextState(test, true);
-  assertTrue(pTC->isInCalibration());
-  char data[250];
   TankControllerLib* tc = TankControllerLib::instance();
+  PHCalibrationMid* test = new PHCalibrationMid(tc);
+  tc->setNextState(test, true);
+  assertTrue(tc->isInCalibration());
+  char data[250];
   DateTime_TC d1(2021, 4, 15);
   d1.setAsCurrent();
   assertFalse(SD.exists("20210415.csv"));

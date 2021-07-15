@@ -1,6 +1,8 @@
 #pragma once
 #include <Arduino.h>
 
+#include "TankControllerLib.h"
+
 /**
  * Temperature Control
  * Controlling the tank temperature is done by external devices that are controlled by setting
@@ -12,11 +14,11 @@ private:
   static TemperatureControl* _instance;
 
 protected:
-  const uint16_t PIN = 47;
+  const uint16_t TEMP_CONTROL_PIN = 47;
   const float DELTA = 0.05;
   uint32_t lastSwitchMS = 0;
   float targetTemperature;
-  bool pinValue = HIGH;
+  bool pinValue = TURN_SOLENOID_OFF;
   TemperatureControl();
 
 public:

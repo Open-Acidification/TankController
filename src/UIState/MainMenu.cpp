@@ -217,8 +217,10 @@ void MainMenu::selectSet() {
 // show current temp and pH
 void MainMenu::idle() {
   char output[17];
-  snprintf(output, sizeof(output), "pH=%5.3f   %5.3f", PHProbe::instance()->getPh(),
-           PHControl::instance()->getTargetPh());
+  PHControl *phControl = PHControl::instance();
+  char equals = millis() / 1000 % 2 ? '=' : ' ';
+  snprintf(output, sizeof(output), "pH%c%5.3f %c %5.3f", equals, PHProbe::instance()->getPh(),
+           (phControl->isOn() ? 'B' : ' '), PHControl::instance()->getTargetPh());
   LiquidCrystal_TC::instance()->writeLine(output, 0);
   TemperatureControl *tempControl = TemperatureControl::instance();
   TempProbe_TC *tempProbe = TempProbe_TC::instance();
@@ -228,7 +230,7 @@ void MainMenu::idle() {
   } else if (99.99 < temp) {
     temp = 99.99;
   }
-  snprintf(output, sizeof(output), "T=%5.2f %c %5.2f", temp, (tempControl->isHeater() ? 'H' : 'C'),
+  snprintf(output, sizeof(output), "T%c%5.2f %c %5.2f", equals, temp, (tempControl->isHeater() ? 'H' : 'C'),
            tempControl->getTargetTemperature());
   LiquidCrystal_TC::instance()->writeLine(output, 1);
 }

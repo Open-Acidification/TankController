@@ -47,7 +47,7 @@ unittest_teardown() {
 }
 
 // During the first time window the pH is high, so we turn on the solenoid
-unittest(bublerTurnsOnAndOff) {
+unittest(bubblerTurnsOnAndOff) {
   assertEqual(6, millis());
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());

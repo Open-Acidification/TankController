@@ -4,16 +4,32 @@
 #include "Devices/DateTime_TC.h"
 #include "Devices/EEPROM_TC.h"
 #include "Devices/EthernetServer_TC.h"
+#include "Devices/PHControl.h"
 #include "Devices/PushingBox.h"
 #include "Devices/TempProbe_TC.h"
 #include "Devices/TemperatureControl.h"
 #include "TankControllerLib.h"
 #include "UIState/PHCalibrationMid.h"
 
+GodmodeState *state = GODMODE();
+PushingBox *pPushingBox;
+TankControllerLib *tc;
+TempProbe_TC *tempProbe;
+PHControl *controlSolenoid;
+
 unittest_setup() {
-  TankControllerLib::instance("PushingBoxIdentifier");
+  tc = TankControllerLib::instance("PushingBoxIdentifier");
+  pPushingBox = PushingBox::instance();
+  tempProbe = TempProbe_TC::instance();
+  controlSolenoid = PHControl::instance();
   DateTime_TC now(2021, 6, 8, 15, 25, 15);
   now.setAsCurrent();
+  controlSolenoid->enablePID(false);
+  controlSolenoid->setTargetPh(7.00);
+  state->serialPort[1].dataIn = "7.00\r";  // the queue of data waiting to be read
+  tc->serialEvent1();                      // fake interrupt to update the current pH reading
+  tc->loop();                              // update the controls based on the current readings
+  state->serialPort[0].dataOut = "";       // clear serial output
 }
 
 unittest(NoTankID) {
@@ -21,26 +37,18 @@ unittest(NoTankID) {
   EEPROM_TC::instance()->setTankID(0);
   EEPROM_TC::instance()->setGoogleSheetInterval(1);
 
-  GodmodeState *state = GODMODE();
-  PushingBox *pPushingBox = PushingBox::instance();
-  TankControllerLib *tc = TankControllerLib::instance();
   tc->loop();
   delay(75 * 1000);  // a bit over one minute
   state->serialPort[0].dataOut = "";
   tc->loop();
   char expected[] =
-      "15:26 pH=0.000 temp=-242.02\r\n"
+      "15:26 pH=7.000 temp=-242.02\r\n"
       "Set Tank ID in order to send data to PushingBox\r\n";
   assertEqual(expected, state->serialPort[0].dataOut);
 }
 
 unittest(SendData) {
-  GodmodeState *state = GODMODE();
   state->reset();
-  state->serialPort[0].dataOut = "";
-  PushingBox *pPushingBox = PushingBox::instance();
-  TankControllerLib *tc = TankControllerLib::instance();
-  TempProbe_TC *tempProbe = TempProbe_TC::instance();
 
   // set tank id
   EEPROM_TC::instance()->setTankID(99);
@@ -68,8 +76,12 @@ unittest(SendData) {
   tc->loop();
   deque<uint8_t> buffer = pPushingBox->getClient()->writeBuffer();
   String bufferResult;
+  bool flag = false;
   for (int i = 0; i < buffer.size(); i++) {
-    bufferResult += buffer[i];
+    flag = flag || buffer[i] == 'G';
+    if (flag) {
+      bufferResult += buffer[i];
+    }
   }
   char expected1[] =
       "GET /pushingbox?devid=PushingBoxIdentifier&tankid=99&tempData=20.26&pHdata=7.125 HTTP/1.1\r\n"
@@ -90,10 +102,7 @@ unittest(SendData) {
 }
 
 unittest(inCalibration) {
-  PushingBox *pPushingBox = PushingBox::instance();
   pPushingBox->getClient()->stop();  // clears the writeBuffer and readBuffer
-  TankControllerLib *tc = TankControllerLib::instance();
-  TempProbe_TC *tempProbe = TempProbe_TC::instance();
 
   // set tank id
   EEPROM_TC::instance()->setTankID(99);

@@ -16,16 +16,26 @@ TankControllerLib* tc = TankControllerLib::instance();
 PHControl* controlSolenoid = PHControl::instance();
 LiquidCrystal_TC* lc = LiquidCrystal_TC::instance();
 
+void setPhMeasurementTo(float value) {
+  char buffer[10];
+  snprintf(buffer, sizeof(buffer), "%f\r", value);
+  state->serialPort[1].dataIn = buffer;  // the queue of data waiting to be read
+  tc->serialEvent1();                    // fake interrupt to update the current pH reading
+  tc->loop();                            // update the controls based on the current readings
+}
+
 /**
  * cycle the control through to a point of being off
  */
 void reset() {
+  tc->setNextState(new MainMenu(tc), true);
+  state->resetClock();
+  DateTime_TC january(2021, 1, 15, 1, 48, 24);
+  january.setAsCurrent();
   controlSolenoid->enablePID(false);
   controlSolenoid->setTargetPh(7.00);
-  controlSolenoid->updateControl(7.00);
-  delay(10000);
-  controlSolenoid->updateControl(7.00);
-  tc->setNextState(new MainMenu(tc), true);
+  setPhMeasurementTo(7.00);
+  state->serialPort[0].dataOut = "";  // the history of data written
 }
 
 unittest_setup() {
@@ -36,87 +46,98 @@ unittest_teardown() {
   reset();
 }
 
-// updateControl function
-unittest(beforeTenSeconds) {
-  tc->loop();
-  state->resetClock();
-  DateTime_TC january(2021, 1, 15, 1, 48, 24);
-  january.setAsCurrent();
-  delay(1000);
-  state->serialPort[0].dataOut = "";  // the history of data written
+// During the first time window the pH is high, so we turn on the solenoid
+unittest(bublerTurnsOnAndOff) {
+  assertEqual(6, millis());
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
-  controlSolenoid->setTargetPh(7.00);
-  state->serialPort[0].dataOut = "";
   state->serialPort[1].dataIn = "8.00\r";  // the queue of data waiting to be read
-  tc->serialEvent1();                      // fake interrupt
-  tc->loop();
+  tc->serialEvent1();                      // fake interrupt to update the current pH reading
+  tc->loop();                              // update the controls based on the current readings
+  assertEqual(13, millis());
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
-  assertEqual("2021-01-15 01:48:25\r\nCO2 bubbler turned on after 1006 ms\r\n", state->serialPort[0].dataOut);
+  String serialOutput = state->serialPort[0].dataOut;
+  String line;
+  int i = 0, j = 0;
+  do {
+    j = serialOutput.indexOf('\r', i);
+    if (j == -1) {
+      assertTrue(false);  // we came to the end without finding the expected line
+      break;
+    }
+    assertEqual('\r', serialOutput.charAt(j));
+    line = serialOutput.substr(i, j);
+    i = j + 2;
+  } while (line.charAt(0) != 'C');
+  assertEqual((int)'C', line.charAt(0));
+  assertEqual("CO2 bubbler turned on after 13 ms", line);
+  assertEqual(13, millis());
   delay(9500);
-  controlSolenoid->updateControl(8.00);
-  assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
-  assertTrue(controlSolenoid->isOn());
+  tc->loop();  // solenoid should turn off briefly at end of window
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
+  assertFalse(controlSolenoid->isOn());
 }
 
 unittest(afterTenSecondsButPhStillHigher) {
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
   controlSolenoid->setTargetPh(7.00);
-  controlSolenoid->updateControl(8.00);
+  setPhMeasurementTo(8.00);
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
-  delay(9500);
-  controlSolenoid->updateControl(8.00);
+  delay(8000);
+  setPhMeasurementTo(8.00);
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
-  delay(1000);
-  controlSolenoid->updateControl(7.25);
+  delay(2000);
+  setPhMeasurementTo(7.25);
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
 }
 
 unittest(afterTenSecondsAndPhIsLower) {
-  state->serialPort[0].dataOut = "";  // the history of data written
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
-  tc->loop();
-  assertEqual("pH=8.000   7.000", lc->getLines().at(0));
+  assertEqual("pH=7.000   7.000", lc->getLines().at(0));
   controlSolenoid->setTargetPh(7.00);
-  controlSolenoid->updateControl(8.00);
+  setPhMeasurementTo(8.00);
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
-  assertEqual("2021-01-15 01:49:25\r\nCO2 bubbler turned on after 20021 ms\r\n01:49 pH=8.000 temp=-242.02\r\n",
-              state->serialPort[0].dataOut);
+  assertEqual("CO2 bubbler turned on after 7 ms\r\n", state->serialPort[0].dataOut);
   tc->loop();
   assertEqual("pH=8.000 B 7.000", lc->getLines().at(0));
-  state->serialPort[0].dataOut = "";  // the history of data written
-  delay(9500);
-  controlSolenoid->updateControl(8.00);
+  delay(8000);
+  tc->loop();
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
+  state->serialPort[0].dataOut = "";  // the history of data written
   delay(1000);
-  controlSolenoid->updateControl(6.75);
+  tc->loop();
+  assertEqual("CO2 bubbler turned off after 9021 ms\r\n", state->serialPort[0].dataOut);
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
-  assertEqual("2021-01-15 01:49:35\r\nCO2 bubbler turned off after 10507 ms\r\n", state->serialPort[0].dataOut);
+  delay(1000);
+  setPhMeasurementTo(6.75);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
+  assertFalse(controlSolenoid->isOn());
 }
 
 /**
- * Test that CO2 b is turned on when needed
+ * Test that CO2 bubbler is turned on when needed
  * \see unittest(disableDuringCalibration)
  */
 unittest(beforeTenSecondsButPhIsLower) {
   // device is initially off but turns on when needed
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
+  delay(1000);
   controlSolenoid->setTargetPh(7.00);
-  controlSolenoid->updateControl(8.00);
+  setPhMeasurementTo(8.00);
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
   delay(7500);
-  controlSolenoid->updateControl(6.75);
+  setPhMeasurementTo(6.75);
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
 }
@@ -125,7 +146,7 @@ unittest(PhEvenWithTarget) {
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
   controlSolenoid->setTargetPh(7.00);
-  controlSolenoid->updateControl(7.00);
+  setPhMeasurementTo(7.00);
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
 }
@@ -143,7 +164,7 @@ unittest(disableDuringCalibration) {
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
   controlSolenoid->setTargetPh(7.00);
-  controlSolenoid->updateControl(8.00);
+  setPhMeasurementTo(8.00);
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
 }

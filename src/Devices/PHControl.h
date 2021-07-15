@@ -8,14 +8,12 @@ private:
   static PHControl* _instance;
   // instance variables
   uint32_t lastSwitchMS = 0;
+  uint32_t lastWarnMS = 0;
   const uint16_t PH_CONTROL_PIN = 49;
   const uint16_t SOLENOID_OPENING_TIME = 100;
   float targetPh;
-  const uint16_t WINDOW_SIZE = 10000;  // 10 second Time Proportional output window
-  long onTime = 0;
-  long window_start_time;
+  const uint16_t WINDOW_SIZE = 10000;  // 10 second Proportional output window (for PID)
   bool usePID = true;
-  bool pinValue = TURN_SOLENOID_OFF;
   PHControl();
 
 public:

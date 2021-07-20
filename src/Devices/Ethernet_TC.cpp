@@ -35,12 +35,9 @@ Ethernet_TC *Ethernet_TC::instance() {
   return _instance;
 }
 
-void Ethernet_TC::renewDHCPLease() {
-  uint32_t current_millis = millis();
-  if ((current_millis - previous_lease) >= LEASE_INTERVAL || current_millis < previous_lease) {
-    Ethernet.maintain();
-    previous_lease = current_millis;
-  }
+void Ethernet_TC::loop() {
+  // "just call it on every loop() invocation" https://www.arduino.cc/en/Reference/EthernetMaintain
+  Ethernet.maintain();
   numAttemptedDHCPReleases++;
 }
 

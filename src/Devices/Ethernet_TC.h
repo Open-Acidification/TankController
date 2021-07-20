@@ -21,10 +21,7 @@ public:
   uint16_t getNumAttemptedDHCPReleases() {
     return numAttemptedDHCPReleases;
   };
-  void renewDHCPLease();
-  bool gotDHCPLease() {
-    return IP != defaultIP;
-  };
+  void loop();
 
 protected:
   Ethernet_TC();
@@ -36,8 +33,6 @@ private:
   IPAddress time_serverIP;
   const int IO_PIN = 4;
   IPAddress IP;
-  uint32_t previous_lease = 0;
-  const uint32_t LEASE_INTERVAL = 345600000;  // 4 days in milliseconds
 
   // testing
   uint16_t numAttemptedDHCPReleases = 0;

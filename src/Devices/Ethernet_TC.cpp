@@ -14,7 +14,7 @@ Ethernet_TC::Ethernet_TC() {
   readMac();
   serial("Attempting to connect to Ethernet");
   wdt_disable();
-  if (Ethernet.begin(mac, 5000)) {
+  if (Ethernet.begin(mac)) {
     IP = Ethernet.localIP();
     serial("DHCP address is %i.%i.%i.%i", IP[0], IP[1], IP[2], IP[3]);
   } else {

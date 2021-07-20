@@ -19,7 +19,7 @@
 #include "UIState/MainMenu.h"
 #include "UIState/UIState.h"
 
-const char TANK_CONTROLLER_VERSION[] = "21.07.3";
+const char TANK_CONTROLLER_VERSION[] = "21.07.4";
 
 // ------------ Class Methods ------------
 /**

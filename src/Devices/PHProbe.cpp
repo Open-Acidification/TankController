@@ -71,7 +71,8 @@ void PHProbe::serialEvent1() {
           wdt_disable();
           wdt_enable(WDTO_15MS);
           serial("pH value dropped to %5.3f so trigger a reset!", value);
-          while (true) {}
+          while (true) {
+          }
         }
       } else if (string[0] == '?') {  // answer to a previous query
         serial("PHProbe serialEvent1: \"%s\"", string.c_str());

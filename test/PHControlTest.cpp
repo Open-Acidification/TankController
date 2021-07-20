@@ -33,8 +33,8 @@ void reset() {
   DateTime_TC january(2021, 1, 15, 1, 48, 24);
   january.setAsCurrent();
   controlSolenoid->enablePID(false);
-  controlSolenoid->setTargetPh(7.00);
-  setPhMeasurementTo(7.00);
+  controlSolenoid->setTargetPh(7.50);
+  setPhMeasurementTo(7.50);
   state->serialPort[0].dataOut = "";  // the history of data written
 }
 
@@ -82,16 +82,16 @@ unittest(bubblerTurnsOnAndOff) {
 unittest(afterTenSecondsButPhStillHigher) {
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
-  controlSolenoid->setTargetPh(7.00);
-  setPhMeasurementTo(8.00);
+  controlSolenoid->setTargetPh(7.50);
+  setPhMeasurementTo(8.50);
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
   delay(8000);
-  setPhMeasurementTo(8.00);
+  setPhMeasurementTo(8.50);
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
   delay(2000);
-  setPhMeasurementTo(7.25);
+  setPhMeasurementTo(7.75);
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
 }
@@ -99,14 +99,14 @@ unittest(afterTenSecondsButPhStillHigher) {
 unittest(afterTenSecondsAndPhIsLower) {
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
-  assertEqual("pH 7.000   7.000", lc->getLines().at(0));
-  controlSolenoid->setTargetPh(7.00);
-  setPhMeasurementTo(8.00);
+  assertEqual("pH 7.500   7.500", lc->getLines().at(0));
+  controlSolenoid->setTargetPh(7.50);
+  setPhMeasurementTo(8.50);
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
   assertEqual("CO2 bubbler turned on after 7 ms\r\n", state->serialPort[0].dataOut);
   tc->loop();
-  assertEqual("pH 8.000 B 7.000", lc->getLines().at(0));
+  assertEqual("pH 8.500 B 7.500", lc->getLines().at(0));
   delay(8000);
   tc->loop();
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
@@ -118,7 +118,7 @@ unittest(afterTenSecondsAndPhIsLower) {
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
   delay(1000);
-  setPhMeasurementTo(6.75);
+  setPhMeasurementTo(7.25);
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
 }
@@ -132,12 +132,12 @@ unittest(beforeTenSecondsButPhIsLower) {
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
   delay(1000);
-  controlSolenoid->setTargetPh(7.00);
-  setPhMeasurementTo(8.00);
+  controlSolenoid->setTargetPh(7.50);
+  setPhMeasurementTo(8.50);
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
   delay(7500);
-  setPhMeasurementTo(6.75);
+  setPhMeasurementTo(7.25);
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
 }
@@ -145,8 +145,8 @@ unittest(beforeTenSecondsButPhIsLower) {
 unittest(PhEvenWithTarget) {
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
-  controlSolenoid->setTargetPh(7.00);
-  setPhMeasurementTo(7.00);
+  controlSolenoid->setTargetPh(7.50);
+  setPhMeasurementTo(7.50);
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
 }
@@ -163,8 +163,8 @@ unittest(disableDuringCalibration) {
   // device is initially off and stays off due to calibration
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
-  controlSolenoid->setTargetPh(7.00);
-  setPhMeasurementTo(8.00);
+  controlSolenoid->setTargetPh(7.50);
+  setPhMeasurementTo(8.50);
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
 }

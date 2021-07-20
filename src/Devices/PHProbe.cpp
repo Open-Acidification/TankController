@@ -1,5 +1,7 @@
 #include "Devices/PHProbe.h"
 
+#include <avr/wdt.h>
+
 #include "Devices/Serial_TC.h"
 
 //  class instance variables
@@ -64,6 +66,13 @@ void PHProbe::serialEvent1() {
       if (isdigit(string[0])) {  // if the first character in the string is a digit
         // convert the string to a floating point number so it can be evaluated by the Arduino
         value = string.toFloat();
+        // we have seen situations where the CO2 bubbler stays on and drives the pH down
+        if (value < 7.0) {  // hang so as to trigger the watchdog timer reset
+          wdt_disable();
+          wdt_enable(WDTO_15MS);
+          serial("pH value dropped to %5.3f so trigger a reset!", value);
+          while (true) {}
+        }
       } else if (string[0] == '?') {  // answer to a previous query
         serial("PHProbe serialEvent1: \"%s\"", string.c_str());
         if (string.length() > 7 && string.substring(0, 7) == "?SLOPE,") {

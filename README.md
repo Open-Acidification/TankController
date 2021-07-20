@@ -23,7 +23,7 @@ Arduino library for the Open Acidification pH Stat Controller
 
 To install onto an Arduino Mega2560 use the [Arduino IDE](https://www.arduino.cc/en/software).
 
-By default, the Arduino compiler links to a `printf` library that does not support printing floating point numbers. To get that feature (which we use!), add the following lines to `boards.txt` and use the Tools menu to select "`RV printf Version: "Full printf"`. On macOS, the `boards.txt` is located at `~/Library/Arduino15/packages/arduino/hardware/avr/1.8.3`. For background see [here](https://forum.arduino.cc/t/no-sprintf-float-formatting-come-back-five-year/331790/6).
+By default, the Arduino compiler links to a `printf` library that does not support printing floating point numbers. To get that feature (which we use!), add the following lines to `boards.txt` and use the Tools menu to select "`ARV printf Version: "Full printf"`. On macOS, the `boards.txt` is located at `~/Library/Arduino15/packages/arduino/hardware/avr/1.8.3`. For background see [here](https://forum.arduino.cc/t/no-sprintf-float-formatting-come-back-five-year/331790/6). (The `avr` directory should get created by a successful run of `scripts/testAndBuild.sh`.)
 
 ```text
 menu.printf=AVR printf Version

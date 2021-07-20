@@ -45,9 +45,9 @@ unittest(Main) {
   assertEqual(singleton1->getIP(), defaultIP);
 
   // Test DHCP is being maintained
-  singleton1->renewDHCPLease();
-  singleton1->renewDHCPLease();
-  singleton1->renewDHCPLease();
+  singleton1->loop();
+  singleton1->loop();
+  singleton1->loop();
   assertEqual(singleton1->getNumAttemptedDHCPReleases(), 3);
 }
 

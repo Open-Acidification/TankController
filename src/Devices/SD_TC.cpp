@@ -24,9 +24,9 @@ SD_TC* SD_TC::instance() {
  * constructor
  */
 SD_TC::SD_TC() {
-  Serial.println("SD_TC");  // Serial_TC might not be ready yet
+  Serial.println("SD_TC()");  // Serial_TC might not be ready yet
   assert(_instance == nullptr);
-  if (!SD.begin(SELECT_PIN)) {
+  if (!sd.begin(SD_SELECT_PIN)) {
     Serial.println("SD_TC failed to initialize!");
   }
 }
@@ -36,7 +36,7 @@ SD_TC::SD_TC() {
  */
 void SD_TC::appendData(String header, String line) {
   String path = todaysDataFileName();
-  if (!SD.exists(path.c_str())) {
+  if (!sd.exists(path.c_str())) {
     appendDataToPath(header, path.c_str());
     COUT(header);
   }
@@ -48,7 +48,7 @@ void SD_TC::appendData(String header, String line) {
  * append data to a path
  */
 void SD_TC::appendDataToPath(String line, String path) {
-  File file = SD.open(path, FILE_WRITE);
+  File file = sd.open(path, O_WRONLY);
   if (file) {
     file.write(line.c_str(), line.length());
     file.write("\n", 1);
@@ -73,35 +73,27 @@ void SD_TC::appendToLog(String line) {
   appendDataToPath(line, path);
 }
 
-File SD_TC::open(String path) {
-  return SD.open(path);
+bool SD_TC::exists(const char* path) {
+  return sd.exists(path);
 }
 
-void printEntry(File* pEntry, String parentPath) {
-  size_t depth = 0;
-  for (size_t i = 1; i < parentPath.length(); ++i) {
-    if (parentPath[i] == '/') {
-      ++depth;
-    }
-  }
-  char prefix[] = "- - - - - - - - ";
-  if (depth * 2 < strnlen(prefix, sizeof(prefix))) {
-    prefix[depth * 2] = '\0';
-  }
-  if (pEntry->isDirectory()) {
-    serial("%s%12s/", prefix, pEntry->name());
-  } else {
-    serial("%s%12s (%6u)", prefix, pEntry->name(), pEntry->size());
-  }
+bool SD_TC::format() {
+  return sd.format();
+}
+
+bool SD_TC::mkdir(const char* path) {
+  return sd.mkdir(path);
+}
+
+File SD_TC::open(const char* path, oflag_t oflag) {
+  return sd.open(path, oflag);
 }
 
 /**
  * print the root directory and all subdirectories
  */
 void SD_TC::printRootDirectory() {
-  // serial("SD_TC::printRootDirectory() - start");
-  // visit(printEntry);
-  // serial("SD_TC::printRootDirectory() - end");
+  // serial("SD_TC::printRootDirectory()");
 }
 
 String SD_TC::todaysDataFileName() {
@@ -110,29 +102,4 @@ String SD_TC::todaysDataFileName() {
   snprintf(path, sizeof(path), "%4i%02i%02i.csv", now.year(), now.month(), now.day());
   COUT(path);
   return String(path);
-}
-
-void SD_TC::visit(visitor pFunction) {
-  File root = SD.open("/");
-  if (root) {
-    visit(pFunction, &root, "/");
-  } else {
-    serial("Unable to open root directory of SD card!");
-  }
-}
-
-void SD_TC::visit(visitor pFunction, File* pDir, String parentPath) {
-  uint16_t i = 0;
-  while (i++ < 100) {
-    File entry = pDir->openNextFile();
-    if (!entry) {
-      return;  // no more files
-    }
-    pFunction(&entry, parentPath);
-    if (entry.isDirectory()) {
-      visit(pFunction, &entry, parentPath + entry.name() + "/");
-    }
-    entry.close();
-  }
-  serial("Stopped after 100 entries");
 }

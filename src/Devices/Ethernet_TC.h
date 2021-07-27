@@ -31,7 +31,7 @@ private:
   byte mac[6] = {0x90, 0xA2, 0xDA, 0x00, 0x00, 0x00};
   IPAddress defaultIP = IPAddress(192, 168, 1, 10);
   IPAddress time_serverIP;
-  const int IO_PIN = 4;
+  const int SD_IO_PIN = 4;
   IPAddress IP;
 
   // testing

@@ -8,11 +8,11 @@
 #include "UIState/PHCalibrationMid.h"
 
 unittest_setup() {
-  SD.removeAll();
+  SD_TC::instance()->format();
 }
 
 unittest_teardown() {
-  SD.removeAll();
+  SD_TC::instance()->format();
 }
 
 unittest(singleton) {
@@ -27,12 +27,12 @@ unittest(tankControllerLoop) {
   TankControllerLib* tc = TankControllerLib::instance();
   DateTime_TC d1(2021, 4, 15);
   d1.setAsCurrent();
-  assertFalse(SD.exists("20210415.csv"));
+  assertFalse(SD_TC::instance()->exists("20210415.csv"));
   tc->loop();
   delay(1000);
   tc->loop();
-  assertTrue(SD.exists("20210415.csv"));
-  File file = SD.open("20210415.csv");
+  assertTrue(SD_TC::instance()->exists("20210415.csv"));
+  File file = SD_TC::instance()->open("20210415.csv");
   assertTrue(file.size() < sizeof(data));
   if (file.size() < sizeof(data)) {
     file.read(data, file.size());
@@ -54,12 +54,12 @@ unittest(loopInCalibration) {
   char data[250];
   DateTime_TC d1(2021, 4, 15);
   d1.setAsCurrent();
-  assertFalse(SD.exists("20210415.csv"));
+  assertFalse(SD_TC::instance()->exists("20210415.csv"));
   tc->loop();
   delay(1000);
   tc->loop();
-  assertTrue(SD.exists("20210415.csv"));
-  File file = SD.open("20210415.csv");
+  assertTrue(SD_TC::instance()->exists("20210415.csv"));
+  File file = SD_TC::instance()->open("20210415.csv");
   assertTrue(file.size() < sizeof(data));
   if (file.size() < sizeof(data)) {
     file.read(data, file.size());
@@ -77,31 +77,31 @@ unittest(appendData) {
   DateTime_TC d1(2021, 4, 15), d2(2021, 4, 16);
   SD_TC* sd = SD_TC::instance();
 
-  assertFalse(SD.exists("20210415.csv"));
-  assertFalse(SD.exists("20210416.csv"));
+  assertFalse(SD_TC::instance()->exists("20210415.csv"));
+  assertFalse(SD_TC::instance()->exists("20210416.csv"));
 
   // write data for day 15
   d1.setAsCurrent();
   sd->appendData("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd", "line 1");
   sd->appendData("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd", "line 2");
-  assertTrue(SD.exists("20210415.csv"));
-  assertFalse(SD.exists("20210416.csv"));
+  assertTrue(SD_TC::instance()->exists("20210415.csv"));
+  assertFalse(SD_TC::instance()->exists("20210416.csv"));
 
   // write data for day 16
   d2.setAsCurrent();
   sd->appendData("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd", "line 3");
-  assertTrue(SD.exists("20210415.csv"));
-  assertTrue(SD.exists("20210416.csv"));
+  assertTrue(SD_TC::instance()->exists("20210415.csv"));
+  assertTrue(SD_TC::instance()->exists("20210416.csv"));
 
   // verify contents of 15.csv
-  File file = SD.open("20210415.csv");
+  File file = SD_TC::instance()->open("20210415.csv");
   file.read(data, file.size());
   data[file.size()] = '\0';
   assertEqual("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd\nline 1\nline 2\n", data);
   file.close();
 
   // verify contents of 16.csv
-  file = SD.open("20210416.csv");
+  file = SD_TC::instance()->open("20210416.csv");
   file.read(data, file.size());
   data[file.size()] = '\0';
   assertEqual("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd\nline 3\n", data);
@@ -113,31 +113,31 @@ unittest(appendToLog) {
   DateTime_TC d1(2021, 4, 15), d2(2021, 4, 16);
   SD_TC* sd = SD_TC::instance();
 
-  assertFalse(SD.exists("20210415.log"));
-  assertFalse(SD.exists("20210416.log"));
+  assertFalse(SD_TC::instance()->exists("20210415.log"));
+  assertFalse(SD_TC::instance()->exists("20210416.log"));
 
   // write data for day 15
   d1.setAsCurrent();
   sd->appendToLog("line 1");
   sd->appendToLog("line 2");
-  assertTrue(SD.exists("20210415.log"));
-  assertFalse(SD.exists("20210416.log"));
+  assertTrue(SD_TC::instance()->exists("20210415.log"));
+  assertFalse(SD_TC::instance()->exists("20210416.log"));
 
   // write data for day 16
   d2.setAsCurrent();
   sd->appendToLog("line 3");
-  assertTrue(SD.exists("20210415.log"));
-  assertTrue(SD.exists("20210416.log"));
+  assertTrue(SD_TC::instance()->exists("20210415.log"));
+  assertTrue(SD_TC::instance()->exists("20210416.log"));
 
   // verify contents of 15.log
-  File file = SD.open("20210415.log");
+  File file = SD_TC::instance()->open("20210415.log");
   file.read(data, file.size());
   data[file.size()] = '\0';
   assertEqual("line 1\nline 2\n", data);
   file.close();
 
   // verify contents of 16.log
-  file = SD.open("20210416.log");
+  file = SD_TC::instance()->open("20210416.log");
   file.read(data, file.size());
   data[file.size()] = '\0';
   assertEqual("line 3\n", data);
@@ -150,11 +150,11 @@ unittest(printRootDirectory) {
   state->serialPort[0].dataOut = "";
   assertEqual("", state->serialPort[0].dataOut);
 
-  SD.open("c", FILE_WRITE).close();
-  SD.open("e", FILE_WRITE).close();
-  SD.mkdir("d");
-  SD.open("d/d1", FILE_WRITE).close();
-  SD.open("d/d2", FILE_WRITE).close();
+  SD_TC::instance()->open("c", O_WRONLY).close();
+  SD_TC::instance()->open("e", O_WRONLY).close();
+  SD_TC::instance()->mkdir("d");
+  SD_TC::instance()->open("d/d1", O_WRONLY).close();
+  SD_TC::instance()->open("d/d2", O_WRONLY).close();
   state->serialPort[0].dataOut = "";
   sd->printRootDirectory();
   String output = String(state->serialPort[0].dataOut);

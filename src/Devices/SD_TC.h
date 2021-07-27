@@ -26,7 +26,6 @@ private:
   static SD_TC* _instance;
 
   // instance variables
-  const uint8_t SD_IO_PIN = 10;
   const uint8_t SD_SELECT_PIN = 4;
   bool hasHadError = false;
   SD sd;

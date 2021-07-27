@@ -9,8 +9,8 @@ Ethernet_TC *Ethernet_TC::_instance = nullptr;
 
 // Establishes the Ethernet connection and sets class variables
 Ethernet_TC::Ethernet_TC() {
-  pinMode(SD_IO_PIN, OUTPUT);
-  digitalWrite(SD_IO_PIN, HIGH);
+  pinMode(SD_SELECT_PIN, OUTPUT);
+  digitalWrite(SD_SELECT_PIN, HIGH);
   readMac();
   serial("Attempting to connect to Ethernet");
   wdt_disable();

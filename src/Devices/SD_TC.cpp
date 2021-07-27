@@ -41,18 +41,20 @@ void SD_TC::appendData(String header, String line) {
     COUT(header);
   }
   appendDataToPath(line, path.c_str());
-  COUT(data);
+  COUT(line);
 }
 
 /**
  * append data to a path
  */
 void SD_TC::appendDataToPath(String line, String path) {
-  File file = sd.open(path, O_WRONLY);
+  COUT(path);
+  File file = sd.open(path, O_CREAT | O_WRONLY | O_APPEND);
   if (file) {
     file.write(line.c_str(), line.length());
     file.write("\n", 1);
     file.close();
+    COUT(file);
   } else {
     if (!hasHadError) {
       hasHadError = true;

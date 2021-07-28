@@ -1,11 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
-#ifdef MOCK_PINS_COUNT
-#include <SD_CI.h>
-#else
 #include <SD.h>
-#endif
 
 typedef void (*visitor)(File* pEntry, String parentPath);
 
@@ -17,7 +13,10 @@ public:
   // instance methods
   void appendData(String header, String line);
   void appendToLog(String line);
-  File open(String path);
+  bool exists(const char* path);
+  bool format();
+  bool mkdir(const char* path);
+  File open(const char* path, oflag_t oflag = 0x00);
   String todaysDataFileName();
   void printRootDirectory();
   void visit(visitor pFunction);
@@ -27,12 +26,11 @@ private:
   static SD_TC* _instance;
 
   // instance variables
-  const uint16_t IO_PIN = 10;
-  const uint16_t SELECT_PIN = 4;
+  const uint8_t SD_SELECT_PIN = 4;
   bool hasHadError = false;
+  SD sd;
 
   // instance methods
   SD_TC();
   void appendDataToPath(String data, String path);
-  void visit(visitor pFunction, File* pDir, String parentPath);
 };

@@ -89,6 +89,7 @@ MULTILINE
 namespace
 nullptr
 numwires
+oflag
 ONTHANK
 OVUV
 pdf
@@ -151,6 +152,7 @@ wdt
 WDTO
 wiki
 workflow
+WRONLY
 wx
 wxpython
 xslx

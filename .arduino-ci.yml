@@ -9,7 +9,7 @@ unittest:
       - "LiquidCrystal"
       - "RTClib"
       - "Keypad"
-      - "SD"
+      - "SdFat"
 
 compile:
     platforms:
@@ -22,4 +22,4 @@ compile:
       - "LiquidCrystal"
       - "RTClib"
       - "Keypad"
-      - "SD"
+      - "SdFat"

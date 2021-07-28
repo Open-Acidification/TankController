@@ -53,11 +53,11 @@ unittest_setup() {
   EEPROM_TC::instance()->setKD(1234.5);
 
   // clear SD card
-  SD.removeAll();
+  sd->format();
 }
 
 unittest_teardown() {
-  SD.removeAll();
+  sd->format();
 }
 
 unittest(basicOperation) {
@@ -109,8 +109,8 @@ unittest(storeDataToSD) {
     04/27/2021 14:24:50,  42, 16.75, 16.25, 7.125, 6.825,  110, 123456.7,  12345.6,   1234.5
     04/27/2021 14:24:51,  42, 16.75, 16.25, 7.125, 6.825,  111, 123456.7,  12345.6,   1234.5
   */
-  assert(SD.exists("20210427.csv"));
-  File file = SD.open("20210427.csv");
+  assert(sd->exists("20210427.csv"));
+  File file = sd->open("20210427.csv");
   char data[4096];
   file.read(data, file.size());
   data[file.size()] = '\0';

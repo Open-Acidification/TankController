@@ -88,12 +88,12 @@ else
   git clone $SHALLOW_MASTER "$GITHUB/Arduino-PID-Library.git"
 fi
 
-if [ -d "./SD" ]; then
+if [ -d "./SdFat" ]; then
   (
-    echo update SD
-    cd SD
+    echo update SdFat
+    cd SdFat
     git pull
   )
 else
-  git clone $SHALLOW_MAIN "$GITHUB/SD.git"
+  git clone $SHALLOW_MAIN "$GITHUB/SdFat.git"
 fi

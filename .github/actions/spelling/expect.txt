@@ -68,6 +68,7 @@ Kd
 Keymap
 Kp
 len
+LGPL
 libgtk
 libtc
 localtime
@@ -157,3 +158,4 @@ wx
 wxpython
 xslx
 yaml
+yml

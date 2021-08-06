@@ -88,4 +88,4 @@ This project follows the [all-contributors](https://github.com/all-contributors/
 
 ## Other
 
-* [Libraries](docs/libraries.md) lists the external libraries and their licenses.
+*   [Libraries](docs/libraries.md) lists the external libraries and their licenses.

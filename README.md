@@ -44,6 +44,7 @@ The following are "hidden" commands:
 *   From the 'SeeDeviceAddress' command:
     *   'B' goes into an infinite loop that should trigger a reset by the watchdog timer in 8 seconds
     *   'C' regenerates a new (random) MAC address that will take effect on the next restart
+*   On startup you can avoid the 60-second DHCP attempt by pressing any key
 
 ## Contributors ✨
 
@@ -84,3 +85,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+
+## Other
+
+*   [Libraries](docs/libraries.md) lists the external libraries and their licenses.

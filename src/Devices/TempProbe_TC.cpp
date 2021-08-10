@@ -1,5 +1,10 @@
 #include "Devices/TempProbe_TC.h"
 
+#include "DateTime_TC.h"
+#include "EEPROM_TC.h"
+#include "Serial_TC.h"
+#include "TC_util.h"
+
 //  class instance variables
 /**
  * static variable for singleton
@@ -17,33 +22,68 @@ TempProbe_TC* TempProbe_TC::instance() {
   return _instance;
 }
 
+void TempProbe_TC::reset() {
+  if (_instance) {
+    delete _instance;
+    _instance = nullptr;
+  }
+}
+
 //  instance methods
 /**
  * constructor (private so clients use the singleton)
  */
 TempProbe_TC::TempProbe_TC() {
-  thermo.begin(MAX31865_3WIRE);  // Start pt100 temperature probe with 3 wire configuration
+  // Start pt100 temperature probe with 3 wire configuration
+  thermo.begin(MAX31865_3WIRE);
+
+  // load offset from EEPROM
+  correction = EEPROM_TC::instance()->getCorrectedTemp();
+  if (isnan(correction)) {
+    correction = 0;
+    EEPROM_TC::instance()->setCorrectedTemp(correction);
+  }
+  serial("Temperature probe with correction of %6.3f", correction);
 }
 
 /**
- * getRunningAverage()
+ * getUncorrectedRunningAverage()
  *
- * Read the current temperature and return a running average
+ * Read the current temperature and return a running average.
+ * Do this only once per second since device is unreliable beyond that.
  */
-
-double TempProbe_TC::getRunningAverage() {
-  double temp = this->getRawTemperature() + correction;
-  if (firstTime) {
-    for (int i = 0; i < HISTORY_SIZE; ++i) {
-      history[i] = temp;
+float TempProbe_TC::getUncorrectedRunningAverage() {
+  uint32_t currentTime = millis();
+  if (firstTime || lastTime + 1000 <= currentTime) {
+    float temp = this->getRawTemperature();
+    if (firstTime) {
+      for (size_t i = 0; i < HISTORY_SIZE; ++i) {
+        history[i] = temp;
+      }
+      firstTime = false;
     }
-    firstTime = false;
+    historyIndex = (historyIndex + 1) % HISTORY_SIZE;
+    history[historyIndex] = temp;
+    lastTime = currentTime;
   }
-  historyIndex = (historyIndex + 1) % HISTORY_SIZE;
-  history[historyIndex] = temp;
-  double sum = 0.0;
-  for (int i = 0; i < HISTORY_SIZE; ++i) {
+  float sum = 0.0;
+  for (size_t i = 0; i < HISTORY_SIZE; ++i) {
     sum += history[i];
   }
   return sum / HISTORY_SIZE;
+}
+
+/**
+ * setCorrection(float value)
+ *
+ * Set a new value for the correction offset
+ */
+void TempProbe_TC::setCorrection(float value) {
+  COUT("old = " << correction << "; new = " << value);
+  if (value != correction) {
+    correction = value;
+    EEPROM_TC::instance()->setCorrectedTemp(correction);
+    DateTime_TC::now().printToSerial();
+    serial("Set temperature correction to %f", correction);
+  }
 }

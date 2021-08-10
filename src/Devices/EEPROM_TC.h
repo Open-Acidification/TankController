@@ -1,75 +1,95 @@
 #pragma once
 
-#include <Arduino.h>
+#include "Devices/EEPROM_TC.h"
+#include "TC_util.h"
 
 class EEPROM_TC {
 public:
-  // class methods
-  // return singleton (the current version by default)
-  static EEPROM_TC* instance(int version = 0);
+  static EEPROM_TC* instance();
 
-  // destructor
-  virtual ~EEPROM_TC() {
-  }
+  // read and write
+  float eepromReadFloat(uint16_t address);
+  int32_t eepromReadInt(uint16_t address);
+  void eepromWriteFloat(uint16_t address, float value);
+  void eepromWriteInt(uint16_t address, int32_t value);
 
   // accessor methods
-  virtual double getAmplitude() = 0;
-  virtual double getCorrectedTemp() = 0;
-  virtual double getFrequency() = 0;
-  virtual int getGoogleSheetInterval() = 0;
-  virtual double getGranularity() = 0;
-  virtual bool getHeat() = 0;
-  virtual double getKD() = 0;
-  virtual double getKI() = 0;
-  virtual double getKP() = 0;
-  virtual double getMac() = 0;
-  virtual double getMaxDataAge() = 0;
-  virtual double getPH() = 0;
-  virtual double getPHDelay() = 0;
-  virtual double getPHInterval() = 0;
-  virtual double getPHSeriesPointer() = 0;
-  virtual double getPHSeriesSize() = 0;
-  virtual int getTankID() = 0;
-  virtual double getTemp() = 0;
-  virtual double getTempDelay() = 0;
-  virtual double getTempInterval() = 0;
-  virtual double getTempSeriesPointer() = 0;
-  virtual double getTempSeriesSize() = 0;
-  virtual int getVersion() = 0;
-  // setter methods
-  virtual void setAmplitude(double value) = 0;
-  virtual void setCorrectedTemp(double value) = 0;
-  virtual void setFrequency(double value) = 0;
-  virtual void setGoogleSheetInterval(int value) = 0;
-  virtual void setGranularity(double value) = 0;
-  virtual void setHeat(bool value) = 0;
-  virtual void setKD(double value) = 0;
-  virtual void setKI(double value) = 0;
-  virtual void setKP(double value) = 0;
-  virtual void setMac(double value) = 0;
-  virtual void setMaxDataAge(double value) = 0;
-  virtual void setPH(double value) = 0;
-  virtual void setPHDelay(double value) = 0;
-  virtual void setPHInterval(double value) = 0;
-  virtual void setPHSeriesPointer(double value) = 0;
-  virtual void setPHSeriesSize(double value) = 0;
-  virtual void setTankID(int value) = 0;
-  virtual void setTemp(double value) = 0;
-  virtual void setTempDelay(double value) = 0;
-  virtual void setTempInterval(double value) = 0;
-  virtual void setTempSeriesPointer(double value) = 0;
-  virtual void setTempSeriesSize(double value) = 0;
-  virtual void setVersion() = 0;
-  // read and write
-  double eepromReadDouble(int address);
-  int eepromReadInt(int address);
-  void eepromWriteDouble(int address, double value);
-  void eepromWriteInt(int address, int value);
+  float getAmplitude();
+  float getCorrectedTemp();
+  float getFrequency();
+  uint16_t getGoogleSheetInterval();
+  float getGranularity();
+  bool getHeat();
+  float getKD();
+  float getKI();
+  float getKP();
+  void getMac(uint8_t* bytes);
+  float getMaxDataAge();
+  float getPH();
+  float getPHDelay();
+  float getPHInterval();
+  float getPHSeriesPointer();
+  float getPHSeriesSize();
+  uint16_t getTankID();
+  float getTemp();
+  float getTempDelay();
+  float getTempInterval();
+  float getTempSeriesPointer();
+  float getTempSeriesSize();
 
-protected:
-  virtual bool isRightVersion() = 0;
+  // setter methods
+  void setAmplitude(float value);
+  void setCorrectedTemp(float value);
+  void setFrequency(float value);
+  void setGoogleSheetInterval(uint16_t value);
+  void setGranularity(float value);
+  void setHeat(bool value);
+  void setKD(float value);
+  void setKI(float value);
+  void setKP(float value);
+  void setMac(uint8_t* bytes);
+  void setMaxDataAge(float value);
+  void setPH(float value);
+  void setPHDelay(float value);
+  void setPHInterval(float value);
+  void setPHSeriesPointer(float value);
+  void setPHSeriesSize(float value);
+  void setTankID(uint16_t value);
+  void setTemp(float value);
+  void setTempDelay(float value);
+  void setTempInterval(float value);
+  void setTempSeriesPointer(float value);
+  void setTempSeriesSize(float value);
+  void setVersion() {  // Nothing to be done here!
+  }
 
 private:
+  // instance variables from v0.197
+  const uint16_t PH_ADDRESS = 0;          // 9.999
+  const uint16_t TEMP_ADDRESS = 4;        // 99.99
+  const uint16_t TANK_ID_ADDRESS = 8;     // 999
+  const uint16_t TEMP_CORR_ADDRESS = 12;  // 99.99
+  const uint16_t KP_ADDRESS = 20;         // float
+  const uint16_t KI_ADDRESS = 28;         // float
+  const uint16_t KD_ADDRESS = 36;         // float
+  const uint16_t MAC_ADDRESS = 44;        // 8 byte
+  const uint16_t HEAT_ADDRESS = 52;       // bool
+  // new with v0.2
+  const uint16_t AMPLITUDE_ADDRESS = 56;
+  const uint16_t FREQUENCY_ADDRESS = 60;
+  const uint16_t GRANULARITY_ADDRESS = 64;   // granularity for SD logging interval
+  const uint16_t MAX_DATA_AGE_ADDRESS = 68;  // max data age for SD card
+  const uint16_t PH_SERIES_SIZE_ADDRESS = 72;
+  const uint16_t PH_SERIES_POINTER_ADDRESS = 76;
+  const uint16_t TEMP_SERIES_SIZE_ADDRESS = 80;
+  const uint16_t TEMP_SERIES_POINTER_ADDRESS = 84;
+  const uint16_t PH_INTERVAL_ADDRESS = 88;
+  const uint16_t PH_DELAY_ADDRESS = 92;
+  const uint16_t TEMP_INTERVAL_ADDRESS = 96;
+  const uint16_t TEMP_DELAY_ADDRESS = 100;
+  // new with v0.3
+  const uint16_t GOOGLE_INTERVAL_ADDRESS = 108;
+
   // class variables
   static EEPROM_TC* _instance;
 };

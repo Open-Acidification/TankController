@@ -7,7 +7,9 @@
 #define assert(p) (void)0
 #endif
 
+#if !defined(DEBUG)
 #define DEBUG 0
+#endif
 #if DEBUG
 #define COUT(x)                                                          \
   do {                                                                   \

@@ -17,10 +17,10 @@ public:
   // class methods
   static EthernetServer_TC* instance();
   // instance methods
-  void handleRequest();
-  virtual String className() const {
+  const char* className() const {
     return "EthernetServer_TC";
   }
+  void handleRequest();
 
 private:
   // class variables

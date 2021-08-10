@@ -8,12 +8,14 @@
 // instance methods
 
 void UIState::handleKey(char key) {
+  // use value just to avoid compiler warning
+  (void)key;
   // default is to just return to main menu
   // this is useful for display-only actions
   this->returnToMainMenu();
 }
 
-void UIState::returnToMainMenu(int msDelay) {
+void UIState::returnToMainMenu(uint16_t msDelay) {
   if (msDelay) {
     this->setNextState((UIState*)new Wait(tc, msDelay));
   } else {

@@ -1,5 +1,7 @@
 #include "Devices/EthernetServer_TC.h"
 
+#include "Serial_TC.h"
+
 //  class variables
 EthernetServer_TC* EthernetServer_TC::_instance = nullptr;
 
@@ -20,9 +22,9 @@ EthernetServer_TC* EthernetServer_TC::instance() {
  */
 EthernetServer_TC::EthernetServer_TC(uint16_t port) : EthernetServer(port) {
   begin();
-  Serial.print(F("Ethernet Server is listening on port 80 of ??????"));
+  serial("Ethernet Server is listening on port 80 of ??????");
   //   TODO: Need Mock board for .localIP to work
-  //   Serial.println(Ethernet.localIP());
+  //   serial(Ethernet.localIP());
 }
 
 /**
@@ -40,6 +42,6 @@ void EthernetServer_TC::handleRequest() {
     // delay(ONE_SECOND_DELAY_IN_MILLIS);
     // close the connection:
     rpc_client.stop();
-    Serial.println(F("rpc_client disconnected"));
+    serial("rpc_client disconnected");
   }
 }

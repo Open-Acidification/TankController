@@ -3,14 +3,14 @@
  */
 #include "SetTempSetPoint.h"
 
-#include "../Devices/EEPROM_TC.h"
-#include "../Devices/LiquidCrystal_TC.h"
+#include "Devices/LiquidCrystal_TC.h"
+#include "Devices/TemperatureControl.h"
 
-void SetTempSetPoint::setValue(double value) {
-  EEPROM_TC::instance()->setTemp(value);
+void SetTempSetPoint::setValue(float value) {
+  TemperatureControl::instance()->setTargetTemperature(value);
 
   char output[17];
-  sprintf(output, "New Temp=%.2f", value);
+  snprintf(output, sizeof(output), "New Temp=%.2f", value);
   LiquidCrystal_TC::instance()->writeLine(output, 1);
-  returnToMainMenu(1000);  // after 1-second delay
+  returnToMainMenu(3000);  // after 3-second delay
 }

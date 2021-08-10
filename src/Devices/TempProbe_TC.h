@@ -89,6 +89,7 @@
 class TempProbe_TC {
 public:
   static TempProbe_TC* instance();
+  static void reset();
 
   uint16_t getResistance() {
     return thermo.readRTD();
@@ -98,7 +99,11 @@ public:
     return thermo.temperature(RTDnominal, refResistor);
   }
 
-  double getRunningAverage();
+  float getRunningAverage() {
+    return getUncorrectedRunningAverage() + correction;
+  }
+
+  float getUncorrectedRunningAverage();
 
   uint8_t readFault() {
     return thermo.readFault();
@@ -108,9 +113,7 @@ public:
     thermo.clearFault();
   }
 
-  void setCorrection(float value) {
-    correction = value;
-  }
+  void setCorrection(float value);
 
 #ifdef MOCK_PINS_COUNT
   // set a temperature in the mock
@@ -124,14 +127,15 @@ private:
   static TempProbe_TC* _instance;
 
   //  Instance variables
-  static const int RTDnominal = 100;
-  static const int refResistor = 430;
+  static const uint16_t RTDnominal = 100;
+  static const uint16_t refResistor = 430;
   Adafruit_MAX31865 thermo = Adafruit_MAX31865(45, 43, 41, 39);
   bool firstTime = true;
-  static const int HISTORY_SIZE = 10;
-  double history[HISTORY_SIZE];
-  int historyIndex = 0;
-  double correction = 0.0;
+  static const uint16_t HISTORY_SIZE = 10;
+  float history[HISTORY_SIZE];
+  uint16_t historyIndex = 0;
+  float correction = 0.0;
+  uint32_t lastTime = 0;
 
   // Methods
   TempProbe_TC();

@@ -15,6 +15,6 @@ public:
     return "CalibrationManagement";
   }
   const char* prompt() {
-    return "Cal Management  ";
+    return "Cal Management";
   };
 };

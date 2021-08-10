@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include "TC_util.h"
 #include "UIState.h"
 
 class TankControllerLib;  // forward reference
@@ -18,27 +19,26 @@ public:
     VIEW_TANK_ID,
     VIEW_LOG_FILE,
     VIEW_GOOGLE_MINS,
-    VIEW_IP_ADDRESS,
-    VIEW_MAC_ADDRESS,
+    VIEW_ADDRESS,
     VIEW_VERSION,
-    VIEW_UPTIME,
-    VIEW_COMMAND_COUNT
+    VIEW_FREE_MEMORY,
+    VIEW_COMMAND_COUNT  // always last
   };
   enum SetCommands {
     SET_PH,
     SET_TEMPERATURE,
-    SET_CALIBRATION_1,
-    SET_CALIBRATION_2,
+    SET_CALIBRATION,
     SET_CALIBRATION_CLEAR,
     SET_TEMP_CALIBRATION,
-    SET_PID_AUTO_TUNE,
-    SET_PID_MANUAL_TUNE,
+    SET_KP,
+    SET_KI,
+    SET_KD,
     SET_PID_ON_OFF,
     SET_CHILL_OR_HEAT,
     SET_GOOGLE_MINS,
     SET_TIME,
     SET_TANK_ID,
-    SET_COMMAND_COUNT
+    SET_COMMAND_COUNT  // always last
   };
   MainMenu(TankControllerLib* tc);
   void handleKey(char key);
@@ -46,7 +46,7 @@ public:
     return "MainMenu";
   }
   const char* prompt() {
-    return "Main Menu       ";
+    return "Main Menu";
   };
   bool isMainMenu() {
     return true;
@@ -54,10 +54,10 @@ public:
   void loop();
 
 private:
-  int level1 = 0;
-  int level2 = -1;
-  String viewMenus[VIEW_COMMAND_COUNT];
-  String setMenus[SET_COMMAND_COUNT];
+  int16_t level1 = 0;
+  int16_t level2 = -1;
+  const char* viewMenus[VIEW_COMMAND_COUNT];
+  const char* setMenus[SET_COMMAND_COUNT];
   void left();
   void right();
   void up();

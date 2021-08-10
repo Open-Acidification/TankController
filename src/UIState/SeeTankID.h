@@ -10,11 +10,11 @@ class SeeTankID : public UIState {
 public:
   SeeTankID(TankControllerLib* tc) : UIState(tc) {
   }
-  void handleKey(char key);
+  void start();
   const char* name() {
     return "SeeTankID";
   }
   const char* prompt() {
-    return "Tank ID=        ";
+    return "Tank ID:";
   };
 };

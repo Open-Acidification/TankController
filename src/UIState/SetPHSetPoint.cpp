@@ -4,14 +4,18 @@
 
 #include "SetPHSetPoint.h"
 
-#include "../Devices/EEPROM_TC.h"
-#include "../Devices/LiquidCrystal_TC.h"
+#include "Devices/LiquidCrystal_TC.h"
+#include "Devices/PHControl.h"
 
-void SetPHSetPoint::setValue(double value) {
-  EEPROM_TC::instance()->setPH(value);
+float SetPHSetPoint::getCurrentValue() {
+  return PHControl::instance()->getTargetPh();
+}
+
+void SetPHSetPoint::setValue(float value) {
+  PHControl::instance()->setTargetPh(value);
 
   char output[17];
-  sprintf(output, "New pH=%.4f", value);
+  snprintf(output, sizeof(output), "New pH=%.3f", value);
   LiquidCrystal_TC::instance()->writeLine(output, 1);
-  returnToMainMenu(1000);  // after 1-second delay
+  returnToMainMenu(3000);  // after 3-second delay
 }

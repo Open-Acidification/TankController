@@ -4,6 +4,7 @@
  * Set the target Temperature
  */
 #pragma once
+#include "Devices/EEPROM_TC.h"
 #include "NumberCollectorState.h"
 
 class SetTempSetPoint : public NumCollectorState {
@@ -13,8 +14,14 @@ public:
   const char* name() {
     return "SetTempSetPoint";
   }
+  float getCurrentValue() {
+    return EEPROM_TC::instance()->getTemp();
+  }
+  uint16_t getCurrentValuePrecision() {
+    return 2;
+  }
   const char* prompt() {
-    return "Set Temperature ";
+    return "Set Temperature";
   };
-  void setValue(double value);
+  void setValue(float value);
 };

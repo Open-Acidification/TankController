@@ -19,7 +19,7 @@ public:
 
   // instance methods
   char *as16CharacterString();
-  void printToSerial();                             // DigitalClockDisplay.ino
+  void printToSerial();
   void yearMonthAsPath(char *buffer, size_t size);  // DoDirectoryMaintenance.ino
   void setAsCurrent();
 

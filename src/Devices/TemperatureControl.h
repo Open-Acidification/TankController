@@ -1,4 +1,7 @@
+#pragma once
 #include <Arduino.h>
+
+#include "TankControllerLib.h"
 
 /**
  * Temperature Control
@@ -7,37 +10,48 @@
  */
 
 class TemperatureControl {
-protected:
-  const int PIN = 47;
-  const double DELTA = 0.05;
-  double targetTemperature;
-  bool currentSwitchState = false;
+private:
+  static TemperatureControl* _instance;
 
-  void turnOn(bool state);
+protected:
+  const uint16_t TEMP_CONTROL_PIN = 47;
+  const float DELTA = 0.05;
+  uint32_t lastSwitchMS = 0;
+  float targetTemperature;
+  TemperatureControl();
 
 public:
-  TemperatureControl() {
+  virtual ~TemperatureControl() {
   }
-  void setTargetTemperature(double newTemperature) {
-    targetTemperature = newTemperature;
+  static TemperatureControl* instance();
+  static void enableHeater(bool flag);
+  float getTargetTemperature() {
+    return targetTemperature;
   }
-  virtual void updateControl(double currentTemperature) = 0;
-  bool getCurrentSwitchState() {
-    return currentSwitchState;
-  }
+  virtual bool isHeater();
+  bool isOn();
+  void setTargetTemperature(float newTemperature);
+  virtual void updateControl(float currentTemperature) = 0;
 };
 
 class Heater : public TemperatureControl {
-private:
 public:
-  void updateControl(double currentTemperature);
+  Heater() : TemperatureControl(){};
+  bool isHeater() {
+    return true;
+  }
+  void updateControl(float currentTemperature);
 };
 
 class Chiller : public TemperatureControl {
 private:
-  const unsigned long TIME_INTERVAL = 30 * 1000UL;  // interval at which to change chiller state
-  unsigned long previousMillis = 0;                 // will store last time chiller state was checked
+  const uint32_t TIME_INTERVAL = 30 * 1000UL;  // interval at which to change chiller state
+  uint32_t previousMillis = 0;                 // will store last time chiller state was checked
 
 public:
-  void updateControl(double currentTemperature);
+  Chiller() : TemperatureControl(){};
+  bool isHeater() {
+    return false;
+  }
+  void updateControl(float currentTemperature);
 };

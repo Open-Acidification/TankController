@@ -3,30 +3,33 @@
  */
 
 #pragma once
-#include "../Devices/LiquidCrystal_TC.h"
 #include "UIState.h"
 
 class NumCollectorState : public UIState {
 public:
   NumCollectorState(TankControllerLib* tc) : UIState(tc) {
-    printValue();
   }
   void handleKey(char key);
-  virtual void setValue(double value) = 0;
+  virtual void setValue(float value) = 0;
+  virtual void start();
 
 protected:
   // Helper Functions
   void backSpace();
   void clear();
-  void handleDigit(int digit);
-  void printValue();
+  void handleDigit(uint16_t digit);
   virtual bool isInteger() {
     return false;
   }
+  void printValue();
+  virtual float getCurrentValue() = 0;
+  virtual uint16_t getCurrentValuePrecision() {
+    return 0;
+  };
 
-  double value = 0.0;
-  int numDigits = 0;
-  int factor = 10;
+  float value = 0.0;
+  uint16_t numDigits = 0;
+  uint16_t factor = 10;
   bool hasDecimal = false;
 };
 
@@ -36,26 +39,40 @@ public:
   TestNumCollectorState(TankControllerLib* tc) : NumCollectorState(tc) {
   }
   // Implementation
-  void setValue(double value) {
+  void setValue(float value) {
     storedValue = value;
   }
   const char* name() {
     return "TestNumCollectorState";
+  }
+  float getCurrentValue() {
+    return priorValue;
+  }
+  uint16_t getCurrentValuePrecision() {
+    return priorValuePrecision;
   }
   const char* prompt() {
     return "Test:";
   }
 
   // Testing
-  double getValue() {
+  float getValue() {
     return value;
   }
-  double getStoredValue() {
+  float getStoredValue() {
     return storedValue;
   };
+  void setPriorValue(float aValue) {
+    priorValue = aValue;
+  }
+  void setPriorValuePrecision(uint16_t aValue) {
+    priorValuePrecision = aValue;
+  }
 
 private:
-  double storedValue = 0.0;
+  float storedValue = 0.0;
+  float priorValue = 0.0;
+  uint16_t priorValuePrecision = 0;
 };
 
 class TestIntNumCollectorState : public TestNumCollectorState {

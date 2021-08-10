@@ -15,6 +15,6 @@ public:
     return "ResetLCDScreen";
   }
   const char* prompt() {
-    return "Clearing Screen ";
+    return "Clearing Screen";
   };
 };

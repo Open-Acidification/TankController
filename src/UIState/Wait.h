@@ -8,9 +8,7 @@
 
 class Wait : public UIState {
 public:
-  Wait(TankControllerLib* tc, int msDelay = 1000) : UIState(tc) {
-    endTime = millis() + msDelay;
-  }
+  Wait(TankControllerLib* tc, uint16_t msDelay = 1000, UIState* nextState = nullptr);
   // watch to see if enough time has passed
   void loop();
   const char* name() {
@@ -22,4 +20,5 @@ public:
 
 private:
   uint32_t endTime = 0;
+  UIState* nextState = nullptr;
 };

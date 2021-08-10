@@ -1,9 +1,10 @@
 #!python3
 
-import datetime
-import threading
+import errno
 import time
 import libTC
+import os
+import shutil
 import wx
 
 
@@ -39,6 +40,7 @@ class TankController(wx.Frame):
         self.timer.Start(100)
 
     def layoutMain(self):
+        self.layoutMenu()
         self.panel = wx.Panel(self)
         self.panel.Bind(wx.EVT_CHAR, self.Keyboard)
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -48,9 +50,17 @@ class TankController(wx.Frame):
                   wx.LEFT | wx.RIGHT, border=self.border)
         self.panel.SetSizer(sizer)
 
+    def layoutMenu(self):
+        menuBar = wx.MenuBar()
+        fileMenu = wx.Menu()
+        item = fileMenu.Append(101, 'Write SD')
+        self.Bind(wx.EVT_MENU, self.writeSD, id=101)
+        menuBar.Append(fileMenu, '&File')
+        self.SetMenuBar(menuBar)
+
     def layoutBottom(self):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.Add(self.layoutSerial(), flag=wx.EXPAND |
+        sizer.Add(self.layoutSerial0(), flag=wx.EXPAND |
                   wx.LEFT | wx.RIGHT, border=self.border)
         return sizer
 
@@ -68,6 +78,8 @@ class TankController(wx.Frame):
                   wx.LEFT | wx.RIGHT, border=self.border)
         sizer.Add(self.layoutTank(), flag=wx.EXPAND |
                   wx.LEFT | wx.RIGHT, border=self.border)
+        sizer.Add(self.layoutSerial1(), flag=wx.EXPAND |
+                  wx.LEFT | wx.RIGHT, border=self.border)
         return sizer
 
     def layoutTank(self):
@@ -75,6 +87,10 @@ class TankController(wx.Frame):
         sizer.Add(self.layoutTemp(), flag=wx.EXPAND |
                   wx.LEFT | wx.RIGHT, border=self.border)
         sizer.Add(self.layoutPH(), flag=wx.EXPAND |
+                  wx.LEFT | wx.RIGHT, border=self.border)
+        button = wx.Button(self.panel, -1, "Send")
+        button.Bind(wx.EVT_BUTTON, self.sendFromPH)
+        sizer.Add(button, flag=wx.EXPAND |
                   wx.LEFT | wx.RIGHT, border=self.border)
         return sizer
 
@@ -94,15 +110,15 @@ class TankController(wx.Frame):
 
     def layoutPH(self):
         sizer = wx.StaticBoxSizer(
-            wx.VERTICAL, self.panel, label="pH Probe")
-        ph = wx.TextCtrl(
+            wx.VERTICAL, self.panel, label="From pH Probe")
+        self.phProbe = wx.TextCtrl(
             self.panel, value='8.1234', style=wx.TE_RIGHT,
             size=self.FromDIP(wx.Size(120, 24)))
-        ph.Bind(wx.EVT_TEXT, self.onPHChanged)
         font = wx.Font(18, wx.FONTFAMILY_TELETYPE,
                        wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL)
-        ph.SetFont(font)
-        sizer.Add(ph, flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=self.border)
+        self.phProbe.SetFont(font)
+        sizer.Add(self.phProbe, flag=wx.EXPAND |
+                  wx.LEFT | wx.RIGHT, border=self.border)
         return sizer
 
     def layoutDevice(self):
@@ -195,12 +211,21 @@ class TankController(wx.Frame):
                   wx.RIGHT, border=self.border)
         return sizer
 
-    def layoutSerial(self):
+    def layoutSerial0(self):
         sizer = wx.StaticBoxSizer(
-            wx.VERTICAL, self.panel, label="Serial Log")
-        self.console = wx.TextCtrl(self.panel, size=self.FromDIP(wx.Size(800, 200)),
+            wx.VERTICAL, self.panel, label="Output from TankController on serial port 0")
+        self.serial0 = wx.TextCtrl(self.panel, size=self.FromDIP(wx.Size(800, 200)),
                                    style=wx.TE_READONLY | wx.TE_MULTILINE | wx.HSCROLL)
-        sizer.Add(self.console, flag=wx.EXPAND |
+        sizer.Add(self.serial0, flag=wx.EXPAND | wx.LEFT | wx.RIGHT,
+                  border=self.border)
+        return sizer
+
+    def layoutSerial1(self):
+        sizer = wx.StaticBoxSizer(
+            wx.VERTICAL, self.panel, label="Commands from TankController to pH probe on serial port 1")
+        self.serial1 = wx.TextCtrl(self.panel, size=self.FromDIP(wx.Size(300, 100)),
+                                   style=wx.TE_READONLY | wx.TE_MULTILINE | wx.HSCROLL)
+        sizer.Add(self.serial1, flag=wx.EXPAND |
                   wx.LEFT | wx.RIGHT, border=self.border)
         return sizer
 
@@ -211,10 +236,17 @@ class TankController(wx.Frame):
         for i, each in enumerate(self.eeprom):
             each.SetLabelText('{:.4f}'.format(libTC.eeprom(i)))
         # update Serial output
-        self.console.AppendText(libTC.serial().replace('\r\n', '\n'))
+        string = libTC.readSerial0().replace('\r\n', '\n')
+        if (string):
+            self.serial0.AppendText(string)
+        string = libTC.readSerial1().replace('\r\n', '\n')
+        if (string):
+            self.serial1.AppendText(string)
         # update pins
-        self.pins.SetLabelText('LED:  {}\nHEAT: OFF\nCO2:  OFF'.format(
-            'ON' if libTC.led() else 'OFF'))
+        self.pins.SetLabelText('LED: {}\nTmp: {}\nCO2: {}'.format(
+            'high' if libTC.readPin(13) else 'low',
+            'high' if libTC.readPin(47) else 'low',
+            'high' if libTC.readPin(49) else 'low'))
 
     def handleKey(self, key):
         libTC.key(key)
@@ -234,11 +266,28 @@ class TankController(wx.Frame):
             key = '*'
         self.handleKey(key)
 
-    def onPHChanged(self, event):
-        print("onPHChanged", event.GetString())
+    def sendFromPH(self, event):
+        libTC.writeSerial1(self.phProbe.GetLineText(0) + '\r')
 
     def onTempChanged(self, event):
         libTC.setTemperature(float(event.GetString()))
+
+    def writeSD(self, e):
+        sd = os.path.join(os.getcwd(), 'SD')
+        if os.path.exists(sd):
+            shutil.rmtree(sd)
+        libTC.sdInit()
+        while sdPath := libTC.sdNextKey():
+            filePath = os.path.join(sd, sdPath[1:])
+            if not os.path.exists(os.path.dirname(filePath)):
+                try:
+                    dirPath = os.path.dirname(filePath)
+                    os.makedirs(dirPath)
+                except OSError as exc:  # Guard against race condition
+                    if exc.errno != errno.EEXIST:
+                        raise
+            with open(filePath, "w") as f:
+                f.write(libTC.sdNextValue())
 
 
 if __name__ == "__main__":

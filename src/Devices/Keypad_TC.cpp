@@ -1,5 +1,7 @@
 #include "Devices/Keypad_TC.h"
 
+#include "Devices/Serial_TC.h"
+
 const byte ROWS = 4;
 const byte COLS = 4;
 char STD_KEYS[ROWS][COLS] = {{'1', '2', '3', 'A'}, {'4', '5', '6', 'B'}, {'7', '8', '9', 'C'}, {'*', '0', '#', 'D'}};
@@ -11,6 +13,7 @@ Keypad_TC* Keypad_TC::_instance = nullptr;
 Keypad Keypad_TC::puppetPad = Keypad(makeKeymap(STD_KEYS), ROW_PINS, COL_PINS, 4, 4);
 
 Keypad_TC::Keypad_TC() {
+  Serial.println("Keypad_TC");  // Serial_TC might not be ready yet
 }
 
 //  class methods

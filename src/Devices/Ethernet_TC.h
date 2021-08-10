@@ -5,21 +5,23 @@
 
 #pragma once
 
-#include "Ethernet.h"
+#include <Arduino.h>
+#include <Ethernet_CI.h>
 
 class Ethernet_TC {
 public:
-  static Ethernet_TC *getInstance();
+  static Ethernet_TC *instance();
   IPAddress getIP() {
     return IP;
   };
-  int getNumAttemptedDHCPReleases() {
+  byte *getMac() {
+    return mac;
+  }
+  void readMac(bool forceReset = false);
+  uint16_t getNumAttemptedDHCPReleases() {
     return numAttemptedDHCPReleases;
   };
-  void renewDHCPLease();
-  bool gotDHCPLease() {
-    return IP != defaultIP;
-  };
+  void loop();
 
 protected:
   Ethernet_TC();
@@ -27,12 +29,11 @@ protected:
 private:
   static Ethernet_TC *_instance;
   byte mac[6] = {0x90, 0xA2, 0xDA, 0x00, 0x00, 0x00};
-  IPAddress defaultIP = IPAddress(192, 168, 1, 2);
+  IPAddress defaultIP = IPAddress(192, 168, 1, 10);
   IPAddress time_serverIP;
+  const int SD_SELECT_PIN = 4;
   IPAddress IP;
-  unsigned long previous_lease = 0;
-  const unsigned long LEASE_INTERVAL = 345600000;  // 4 days in milliseconds
 
   // testing
-  int numAttemptedDHCPReleases = 0;
+  uint16_t numAttemptedDHCPReleases = 0;
 };

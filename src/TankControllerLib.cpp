@@ -1,13 +1,25 @@
 #include "TankControllerLib.h"
 
+#include <avr/wdt.h>
+
+#include "Devices/DateTime_TC.h"
+#include "Devices/EEPROM_TC.h"
+#include "Devices/Ethernet_TC.h"
 #include "Devices/Keypad_TC.h"
 #include "Devices/LiquidCrystal_TC.h"
+#include "Devices/PHControl.h"
 #include "Devices/PHProbe.h"
+#include "Devices/PID_TC.h"
+#include "Devices/PushingBox.h"
 #include "Devices/SD_TC.h"
 #include "Devices/Serial_TC.h"
+#include "Devices/TempProbe_TC.h"
+#include "Devices/TemperatureControl.h"
 #include "TC_util.h"
 #include "UIState/MainMenu.h"
 #include "UIState/UIState.h"
+
+const char TANK_CONTROLLER_VERSION[] = "21.07.4";
 
 // ------------ Class Methods ------------
 /**
@@ -18,9 +30,10 @@ TankControllerLib *TankControllerLib::_instance = nullptr;
 /**
  * static function to return singleton
  */
-TankControllerLib *TankControllerLib::instance() {
+TankControllerLib *TankControllerLib::instance(const char *pushingBoxID) {
   if (!_instance) {
     _instance = new TankControllerLib;
+    PushingBox::instance(pushingBoxID);
   }
   return _instance;
 }
@@ -30,21 +43,35 @@ TankControllerLib *TankControllerLib::instance() {
  * Constructor
  */
 TankControllerLib::TankControllerLib() {
+  serial("TankControllerLib::TankControllerLib() - version %s", TANK_CONTROLLER_VERSION);
   assert(!_instance);
+  // ensure we have instances
+  SD_TC::instance();
+  EEPROM_TC::instance();
+  Keypad_TC::instance();
+  LiquidCrystal_TC::instance(TANK_CONTROLLER_VERSION);
+  DateTime_TC::rtc();
+  Ethernet_TC::instance();
+  TempProbe_TC::instance();
+  TemperatureControl::instance();
+  PHProbe::instance();
+  PHControl::instance();
   state = new MainMenu(this);
-  lcd = LiquidCrystal_TC::instance();
-  log = Serial_TC::instance();
-  log->print((const char *)F("TankControllerLib::TankControllerLib() - version "),
-             (const char *)TANK_CONTROLLER_VERSION);
-  SDClass_TC::instance()->printRootDirectory();
+  pinMode(LED_BUILTIN, OUTPUT);
 }
 
 /**
  * Destructor
  */
 TankControllerLib::~TankControllerLib() {
-  delete state;
-  delete nextState;
+  if (state) {
+    delete state;
+    state = nullptr;
+  }
+  if (nextState) {
+    delete nextState;
+    nextState = nullptr;
+  }
 }
 
 /**
@@ -59,6 +86,31 @@ void TankControllerLib::blink() {
   }
 }
 
+// https://github.com/maniacbug/MemoryFree/blob/master/MemoryFree.cpp
+size_t TankControllerLib::freeMemory() {
+#ifdef MOCK_PINS_COUNT
+  int *__brkval = 0;
+  int __bss_end = 0;
+#else
+  extern int *__brkval;
+  extern int __bss_end;
+#endif
+  int topOfStack;
+
+  if ((size_t)__brkval == 0) {
+    return ((size_t)&topOfStack) - ((size_t)&__bss_end);
+  }
+  return ((size_t)&topOfStack) - ((size_t)__brkval);
+}
+
+/**
+ * Is the current UIState one that should disable controls?
+ * We don't want to turn on the heat/chill if the temperature probe is out of the tank!
+ */
+bool TankControllerLib::isInCalibration() {
+  return state->isInCalibration();
+}
+
 /**
  * Private member function called by loop
  * Handles keypresses
@@ -66,10 +118,23 @@ void TankControllerLib::blink() {
 void TankControllerLib::handleUI() {
   COUT("TankControllerLib::handleUI() - " << state->name());
   char key = Keypad_TC::instance()->getKey();
-  if (key != NO_KEY) {
-    log->print(F("Keypad input: "), key);
+  if (key == NO_KEY) {
+    if (!lastKeypadTime) {
+      // we have already reached an idle state, so don't do other checks
+    } else if (isInCalibration()) {
+      // we are in calibration, so don't return to main menu
+    } else if (nextState) {
+      // we already have a next state teed-up, do don't try to return to main menu
+    } else if (millis() - lastKeypadTime > IDLE_TIMEOUT) {
+      // time since last keypress exceeds the idle timeout, so return to main menu
+      setNextState((UIState *)new MainMenu(this));
+      lastKeypadTime = 0;  // so we don't do this until another keypress!
+    }
+  } else {
+    serial("Keypad input: %c", key);
     COUT("TankControllerLib::handleUI() - " << state->name() << "::handleKey(" << key << ")");
     state->handleKey(key);
+    lastKeypadTime = millis();
   }
   updateState();
   COUT("TankControllerLib::handleUI() - " << state->name() << "::loop()");
@@ -79,11 +144,17 @@ void TankControllerLib::handleUI() {
 /**
  * This is one of two public instance functions.
  * It is called repeatedly while the board is on.
+ * (It appears to be called about once every 15 ms.)
  */
 void TankControllerLib::loop() {
-  COUT("TankControllerLib::loop() for " << state->name());
-  blink();  //  blink the on-board LED to show that we are running
-  handleUI();
+  wdt_reset();
+  blink();                          // blink the on-board LED to show that we are running
+  handleUI();                       // look at keypad, update LCD
+  updateControls();                 // turn CO2 and temperature controls on or off
+  writeDataToSD();                  // record current state to data log
+  writeDataToSerial();              // record current pH and temperature to serial
+  PushingBox::instance()->loop();   // write data to Google Sheets
+  Ethernet_TC::instance()->loop();  // renew DHCP lease
 }
 
 /**
@@ -104,7 +175,8 @@ void TankControllerLib::serialEvent1() {
  * Set the next state
  */
 void TankControllerLib::setNextState(UIState *newState, bool update) {
-  COUT("TankControllerLib::setNextState() to " << newState->name());
+  COUT("TankControllerLib::setNextState() from " << (nextState ? nextState->name() : "nullptr") << " to "
+                                                 << newState->name());
   assert(nextState == nullptr);
   nextState = newState;
   if (update) {
@@ -117,10 +189,10 @@ void TankControllerLib::setNextState(UIState *newState, bool update) {
  * Here we do any one-time startup initialization.
  */
 void TankControllerLib::setup() {
-  log->print(F("TankControllerLib::setup()"));
-  setNextState(((UIState *)new MainMenu(this)));
-  updateState();
-  pinMode(LED_BUILTIN, OUTPUT);
+  wdt_enable(WDTO_8S);
+  serial("TankControllerLib::setup()");
+  SD_TC::instance()->printRootDirectory();
+  serial("Free memory = %i", freeMemory());
 }
 
 /**
@@ -129,6 +201,16 @@ void TankControllerLib::setup() {
  */
 const char *TankControllerLib::stateName() {
   return state->name();
+}
+
+/**
+ * Private member function called by loop to update solonoids
+ */
+void TankControllerLib::updateControls() {
+  // update TemperatureControl
+  TemperatureControl::instance()->updateControl(TempProbe_TC::instance()->getRunningAverage());
+  // update PHControl
+  PHControl::instance()->updateControl(PHProbe::instance()->getPh());
 }
 
 /**
@@ -150,6 +232,56 @@ void TankControllerLib::updateState() {
  * What is the current version?
  */
 const char *TankControllerLib::version() {
-  log->print((const char *)F("TankControllerLib::version() = "), (const char *)TANK_CONTROLLER_VERSION);
+  serial("TankControllerLib::version() = %s", TANK_CONTROLLER_VERSION);
   return TANK_CONTROLLER_VERSION;
+}
+
+/**
+ * once per second write the current data to the SD card
+ */
+void TankControllerLib::writeDataToSD() {
+  static uint32_t nextWriteTime = 0;
+  uint32_t msNow = millis();
+  COUT("nextWriteTime: " << nextWriteTime << "; now = " << msNow);
+  if (nextWriteTime > msNow) {
+    return;
+  }
+  char currentTemp[10];
+  char currentPh[10];
+  if (isInCalibration()) {
+    snprintf(currentTemp, sizeof(currentTemp), "C");
+    snprintf(currentPh, sizeof(currentPh), "C");
+  } else {
+    snprintf(currentTemp, sizeof(currentTemp), "%4.2f", (float)TempProbe_TC::instance()->getRunningAverage());
+    snprintf(currentPh, sizeof(currentPh), "%5.3f", (float)PHProbe::instance()->getPh());
+  }
+  static const char header[] = "time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd";
+  static const char format[] = "%02i/%02i/%4i %02i:%02i:%02i, %3i, %s, %4.2f, %s, %5.3f, %4i, %8.1f, %8.1f, %8.1f";
+  char buffer[128];
+  DateTime_TC dtNow = DateTime_TC::now();
+  PID_TC *pPID = PID_TC::instance();
+  uint16_t tankId = EEPROM_TC::instance()->getTankID();
+  snprintf(buffer, sizeof(buffer), format, (uint16_t)dtNow.month(), (uint16_t)dtNow.day(), (uint16_t)dtNow.year(),
+           (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(), (uint16_t)dtNow.second(), (uint16_t)tankId, currentTemp,
+           (float)TemperatureControl::instance()->getTargetTemperature(), currentPh,
+           (float)PHControl::instance()->getTargetPh(), (uint16_t)(millis() / 1000), (float)pPID->getKp(),
+           (float)pPID->getKi(), (float)pPID->getKd());
+  SD_TC::instance()->appendData(header, buffer);
+  nextWriteTime = msNow / 1000 * 1000 + 1000;  // round up to next second
+  COUT(buffer);
+}
+
+/**
+ * once per minute write the current data to the serial port
+ */
+void TankControllerLib::writeDataToSerial() {
+  static uint32_t nextWriteTime = 0;
+  uint32_t msNow = millis();
+  if (nextWriteTime <= msNow) {
+    DateTime_TC dtNow = DateTime_TC::now();
+    serial("%02d:%02d pH=%5.3f temp=%5.2f", (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(),
+           (float)PHProbe::instance()->getPh(), (float)TempProbe_TC::instance()->getRunningAverage());
+    nextWriteTime = msNow / 60000 * 60000 + 60000;  // round up to next minute
+    COUT(buffer);
+  }
 }

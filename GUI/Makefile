@@ -12,7 +12,7 @@ all : $(PY_LIB)
 
 $(PY_LIB) : TankControllerLib.o ../pybind11/setup.py ../libTC.cpp
 	echo "===== Compiling PY_LIB ($(PY_LIB)) =====" > /dev/null
-	$(CC) -shared -fPIC												\
+	$(CC) -shared -fPIC						  					\
 	$(DEFINES)                            	  \
 	$(WARNINGS)                            	  \
 	-Wl,-undefined,dynamic_lookup							\
@@ -29,7 +29,7 @@ $(PY_LIB) : TankControllerLib.o ../pybind11/setup.py ../libTC.cpp
 	-I$(LIBRARIES)/Keypad/src       					\
 	-I$(LIBRARIES)/LiquidCrystal/src  				\
 	-I$(LIBRARIES)/RTClib/src									\
-	-I$(LIBRARIES)/SD/src											\
+	-I$(LIBRARIES)/SdFat/src									\
 	-I../pybind11/include											\
 	-I../../src																\
 	../libTC.cpp *.o -o $(PY_LIB)
@@ -52,7 +52,7 @@ TankControllerLib.o : Godmode.o
 	-I$(LIBRARIES)/Keypad/src       						\
 	-I$(LIBRARIES)/LiquidCrystal/src  					\
 	-I$(LIBRARIES)/RTClib/src										\
-	-I$(LIBRARIES)/SD/src												\
+	-I$(LIBRARIES)/SdFat/src										\
 	$(TC_PATH)/*.cpp                      			\
 	$(TC_PATH)/Devices/*.cpp              			\
 	$(TC_PATH)/UIState/*.cpp              			\
@@ -64,8 +64,6 @@ TankControllerLib.o : Godmode.o
 	$(LIBRARIES)/Keypad/src/*.cpp								\
 	$(LIBRARIES)/LiquidCrystal/src/*.cpp  			\
 	$(LIBRARIES)/RTClib/src/*.cpp 							\
-	$(LIBRARIES)/SD/src/*.cpp										\
-	$(LIBRARIES)/SD/src/utility/*.cpp						\
 
 	echo
 
@@ -86,12 +84,12 @@ Godmode.o :
 	# install wx
 	python -m pip install -U wxPython
 	# build pybind11
-	mkdir -p ../pybind11/build
-	cd ../pybind11/build; cmake ..
+	mkdir -p ../pybind11/.build
+	cd ../pybind11/.build; cmake ..
 	# compile and run tests
 	# make check -j 4
 	echo
 
 .PHONY: clean
 clean :
-	rm -rf build *.o *.so *.dylib $(PY_LIB) 2> /dev/null || echo
+	rm -rf .build *.o *.so *.dylib $(PY_LIB) 2> /dev/null || echo

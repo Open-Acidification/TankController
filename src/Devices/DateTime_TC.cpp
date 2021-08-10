@@ -13,16 +13,16 @@ RTC_PCF8523 *DateTime_TC::rtc() {
     _rtc = new RTC_PCF8523;
     // look for Real Time Clock
     if (!_rtc->begin()) {
-      Serial.println(F("Couldn't find RTC!"));
+      serial("Couldn't find RTC!");
       while (true)
         ;  // infinite loop; hang forever
     }
 
     // has the time been set?
     if (!_rtc->initialized()) {
-      Serial.println(F("RTC has not been initialized! Date and time is wrong!"));
+      serial("RTC has not been initialized! Date and time is wrong!");
       // set the RTC to the date & time this file was compiled
-      _rtc->adjust(DateTime(F(__DATE__), F(__TIME__)));
+      _rtc->adjust(DateTime(__DATE__, __TIME__));
     }
   }
   return _rtc;
@@ -52,15 +52,11 @@ char *DateTime_TC::as16CharacterString() {
   return buffer;
 }
 
-/**
- * output dateTime to serialPort(DigitalClockDisplay.ino)
- * "2020-11-26 18:55:15"
- */
 void DateTime_TC::printToSerial() {
-  char buffer[20];
-  strcpy(buffer, "YYYY-MM-DD hh:mm:ss");
-  toString(buffer);
-  Serial_TC::instance()->print(buffer);
+  char buffer[] = "YYYY-MM-DD hh:mm:ss";
+  DateTime_TC now = DateTime_TC::now();
+  now.toString(buffer);
+  serial(buffer);
 }
 
 /**
@@ -74,7 +70,7 @@ void DateTime_TC::yearMonthAsPath(char *buffer, size_t sizeOfBuffer) {
   buffer[0] = '/';
   itoa(year(), buffer + 1, 10);
   buffer[5] = '/';
-  int i = 6;
+  uint16_t i = 6;
   if (month() < 10) {
     buffer[i++] = '0';
   }

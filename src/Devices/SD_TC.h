@@ -1,24 +1,36 @@
 #pragma once
 
 #include <Arduino.h>
-#ifdef MOCK_PINS_COUNT
-#include <SD_CI.h>
-#else
 #include <SD.h>
-#endif
 
-class SDClass_TC : public SDClass {
+typedef void (*visitor)(File* pEntry, String parentPath);
+
+class SD_TC {
 public:
   // class methods
-  static SDClass_TC* instance();
+  static SD_TC* instance();
 
   // instance methods
+  void appendData(String header, String line);
+  void appendToLog(String line);
+  bool exists(const char* path);
+  bool format();
+  bool mkdir(const char* path);
+  File open(const char* path, oflag_t oflag = 0x00);
+  String todaysDataFileName();
   void printRootDirectory();
+  void visit(visitor pFunction);
 
 private:
   // class variables
-  static SDClass_TC* _instance;
+  static SD_TC* _instance;
+
+  // instance variables
+  const uint8_t SD_SELECT_PIN = 4;
+  bool hasHadError = false;
+  SD sd;
 
   // instance methods
-  void printDirectory(File dir, int numTabs);
+  SD_TC();
+  void appendDataToPath(String data, String path);
 };

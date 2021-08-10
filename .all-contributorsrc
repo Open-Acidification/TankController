@@ -61,7 +61,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/71796520?v=4",
       "profile": "https://github.com/eucalvo",
       "contributions": [
-        "code"
+        "code",
+        "bug"
       ]
     },
     {
@@ -108,9 +109,72 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "EvanKropf",
+      "name": "EvanKropf",
+      "avatar_url": "https://avatars.githubusercontent.com/u/59894430?v=4",
+      "profile": "https://github.com/EvanKropf",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "genevea",
+      "name": "genevea",
+      "avatar_url": "https://avatars.githubusercontent.com/u/83893683?v=4",
+      "profile": "https://github.com/genevea",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "thomca",
+      "name": "Catherine",
+      "avatar_url": "https://avatars.githubusercontent.com/u/56854904?v=4",
+      "profile": "https://github.com/thomca",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "IDzyre",
+      "name": "Dzyre",
+      "avatar_url": "https://avatars.githubusercontent.com/u/46759635?v=4",
+      "profile": "https://github.com/IDzyre",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Paydenb",
+      "name": "Paydenb",
+      "avatar_url": "https://avatars.githubusercontent.com/u/83844058?v=4",
+      "profile": "https://github.com/Paydenb",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "TaylorSmith28",
+      "name": "TaylorSmith28",
+      "avatar_url": "https://avatars.githubusercontent.com/u/83837157?v=4",
+      "profile": "https://github.com/TaylorSmith28",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "BenjaminWachter",
+      "name": "benwach",
+      "avatar_url": "https://avatars.githubusercontent.com/u/81596850?v=4",
+      "profile": "https://github.com/BenjaminWachter",
+      "contributions": [
+        "code"
+      ]
     }
   ],
-  "projectName": "TankControllerLib",
+  "projectName": "TankController",
   "projectOwner": "Open-Acidification",
   "repoType": "github",
   "repoHost": "https://github.com",

@@ -1,20 +1,21 @@
-/**
- * PHCalibration.h
- *
- * pH One-Point Calibration
- */
 #pragma once
-#include "UIState.h"
+#include "Devices/PHProbe.h"
+#include "NumberCollectorState.h"
 
-class PHCalibration : public UIState {
+class PHCalibration : public NumCollectorState {
 public:
-  PHCalibration(TankControllerLib* tc) : UIState(tc) {
+  PHCalibration(TankControllerLib* tc) : NumCollectorState(tc) {
   }
-  void handleKey(char key);
-  const char* name() {
-    return "PHCalibration";
+  virtual bool isInCalibration() {
+    return true;  // disable controls during calibration
   }
-  const char* prompt() {
-    return "pH-Calibration  ";
-  };
+  float getCurrentValue() {
+    return PHProbe::instance()->getPh();
+  }
+  uint16_t getCurrentValuePrecision() {
+    return 3;
+  }
+  void loop() {
+    printValue();
+  }
 };

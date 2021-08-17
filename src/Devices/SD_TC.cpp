@@ -12,7 +12,6 @@ SD_TC* SD_TC::_instance = nullptr;
  * accessor for singleton
  */
 SD_TC* SD_TC::instance() {
-  std::cout << "SD_TC::instance()" << std::endl;
   if (!_instance) {
     _instance = new SD_TC();
   }
@@ -26,13 +25,9 @@ SD_TC* SD_TC::instance() {
  */
 SD_TC::SD_TC() {
   Serial.println("SD_TC()");  // Serial_TC might not be ready yet
-  std::cout << "SD_TC::SD_TC()" << std::endl;
   assert(_instance == nullptr);
   if (!sd.begin(SD_SELECT_PIN)) {
     Serial.println("SD_TC failed to initialize!");
-    std::cout << "sd.begin() returned false" << std::endl;
-  } else {
-    std::cout << "sd.begin() returned true" << std::endl;
   }
 }
 
@@ -85,7 +80,6 @@ bool SD_TC::exists(const char* path) {
 }
 
 bool SD_TC::format() {
-  std::cout << "SD_TC::format()" << std::endl;
   return sd.format();
 }
 

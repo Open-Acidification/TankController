@@ -28,6 +28,8 @@ SD_TC::SD_TC() {
   assert(_instance == nullptr);
   if (!sd.begin(SD_SELECT_PIN)) {
     Serial.println("SD_TC failed to initialize!");
+  } else {
+    std::cout << "sd.begin() returned true" << std::endl;
   }
 }
 

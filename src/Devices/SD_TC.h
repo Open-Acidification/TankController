@@ -30,7 +30,7 @@ private:
   // instance variables
   const uint8_t SD_SELECT_PIN = SS;
   bool hasHadError = false;
-  SD sd;
+  SdFat sd;
 
   // instance methods
   SD_TC();

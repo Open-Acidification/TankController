@@ -233,7 +233,6 @@ void MainMenu::idle() {
   char status = tempControl->isHeater() ? 'h' : 'c';
   if (tempControl->isOn()) {
     status = toupper(status);
-    // status -= 'a' - 'A';  // convert to uppercase
   }
 
   snprintf(output, sizeof(output), "T%c%5.2f %c %5.2f", equals, temp, status, tempControl->getTargetTemperature());

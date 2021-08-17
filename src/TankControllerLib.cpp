@@ -19,7 +19,7 @@
 #include "UIState/MainMenu.h"
 #include "UIState/UIState.h"
 
-const char TANK_CONTROLLER_VERSION[] = "21.07.4";
+const char TANK_CONTROLLER_VERSION[] = "21.08.1";
 
 // ------------ Class Methods ------------
 /**
@@ -79,6 +79,7 @@ TankControllerLib::~TankControllerLib() {
  *
  */
 void TankControllerLib::blink() {
+  // serial("blink() at %li", millis());
   if (millis() / 1000 % 2) {
     digitalWrite(LED_BUILTIN, LOW);  // turn the LED off by making the voltage LOW
   } else {

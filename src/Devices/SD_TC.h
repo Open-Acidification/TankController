@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
-#include <SD.h>
+#include <SdFat.h>
 
 typedef void (*visitor)(File* pEntry, String parentPath);
 

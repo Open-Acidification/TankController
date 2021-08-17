@@ -3,6 +3,7 @@
 #include <avr/wdt.h>
 
 #include "Devices/EEPROM_TC.h"
+#include "Devices/Keypad_TC.h"
 #include "Serial_TC.h"
 
 Ethernet_TC *Ethernet_TC::_instance = nullptr;
@@ -14,9 +15,12 @@ Ethernet_TC::Ethernet_TC() {
   readMac();
   serial("Attempting to connect to Ethernet");
   wdt_disable();
-  if (Ethernet.begin(mac)) {
+  int key = Keypad_TC::instance()->getKey();
+  long timeout = key == NO_KEY ? 60000 : 1;
+  if (Ethernet.begin(mac, timeout)) {
     IP = Ethernet.localIP();
     serial("DHCP address is %i.%i.%i.%i", IP[0], IP[1], IP[2], IP[3]);
+    isUsingDHCP = true;
   } else {
     // update IP by adding tank ID to last octet
     defaultIP[3] += EEPROM_TC::instance()->getTankID();

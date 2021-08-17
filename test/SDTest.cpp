@@ -8,22 +8,13 @@
 #include "UIState/PHCalibrationMid.h"
 
 unittest_setup() {
-  // SD_TC::instance()->format();
+  SD_TC::instance()->format();
 }
 
 unittest_teardown() {
-  // SD_TC::instance()->format();
-}
-
-unittest(foo) {
-  SD_TC* thing1 = SD_TC::instance();
-  std::cout << "unittest(foo) - 1 " << std::endl;
   SD_TC::instance()->format();
-  std::cout << "unittest(foo) - 2" << std::endl;
-  assertTrue(true);
 }
 
-/*
 unittest(singleton) {
   SD_TC* thing1 = SD_TC::instance();
   SD_TC* thing2 = SD_TC::instance();
@@ -179,5 +170,5 @@ unittest(printRootDirectory) {
   index = output.indexOf("           e (     0)\r\n");
   assertNotEqual(-1, index);
 }
-*/
+
 unittest_main()

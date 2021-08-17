@@ -17,7 +17,7 @@ unittest_teardown() {
 
 unittest(foo) {
   SD_TC* thing1 = SD_TC::instance();
-  std::cout << "unittest(foo) - 1" << std::endl;
+  std::cout << "unittest(foo) - 1 " << std::endl;
   SD_TC::instance()->format();
   std::cout << "unittest(foo) - 2" << std::endl;
   assertTrue(true);

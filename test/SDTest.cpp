@@ -22,7 +22,6 @@ unittest(foo) {
 }
 
 /*
-
 unittest(singleton) {
   SD_TC* thing1 = SD_TC::instance();
   SD_TC* thing2 = SD_TC::instance();

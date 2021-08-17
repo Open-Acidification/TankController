@@ -96,5 +96,5 @@ if [ -d "./SdFat" ]; then
   )
 else
   # git clone $SHALLOW_MAIN "$GITHUB/SdFat.git"
-  git clone $SHALLOW_MAIN "git@github.com:jgfoster/SdFat.git"
+  git clone $SHALLOW_MAIN "https://github.com/jgfoster/SdFat.git"
 fi

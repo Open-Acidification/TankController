@@ -80,6 +80,7 @@ bool SD_TC::exists(const char* path) {
 }
 
 bool SD_TC::format() {
+  std::cout << "SD_TC::format()" << std::endl;
   return sd.format();
 }
 

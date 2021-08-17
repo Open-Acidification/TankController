@@ -17,6 +17,7 @@ unittest_teardown() {
 
 unittest(foo) {
   SD_TC* thing1 = SD_TC::instance();
+  SD_TC::instance()->format();
   assertTrue(true);
 }
 

@@ -1,7 +1,9 @@
 #pragma once
 
 #include <Arduino.h>
-#include <SD.h>
+
+#define SS 4
+#include <SdFat.h>
 
 typedef void (*visitor)(File* pEntry, String parentPath);
 
@@ -26,9 +28,9 @@ private:
   static SD_TC* _instance;
 
   // instance variables
-  const uint8_t SD_SELECT_PIN = 4;
+  const uint8_t SD_SELECT_PIN = SS;
   bool hasHadError = false;
-  SD sd;
+  SdFat sd;
 
   // instance methods
   SD_TC();

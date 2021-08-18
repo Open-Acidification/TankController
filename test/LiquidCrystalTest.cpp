@@ -21,7 +21,7 @@ unittest(loop) {
   assertEqual("Tank Controller ", lines.at(0));
   assertEqual(
       "v"
-      "21.07.4 loading",  // this allows a word-search to find the number
+      "21.08.1 loading",  // this allows a word-search to find the number
       lines.at(1));
 }
 

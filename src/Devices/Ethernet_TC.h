@@ -6,14 +6,17 @@
 #pragma once
 
 #include <Arduino.h>
-#include <Ethernet_CI.h>
+#include <Ethernet.h>
 
 class Ethernet_TC {
 public:
-  static Ethernet_TC *instance();
+  static Ethernet_TC *instance(bool reset = false);
   IPAddress getIP() {
     return IP;
   };
+  bool getIsUsingDHCP() {
+    return isUsingDHCP;
+  }
   byte *getMac() {
     return mac;
   }
@@ -33,6 +36,7 @@ private:
   IPAddress time_serverIP;
   const int SD_SELECT_PIN = 4;
   IPAddress IP;
+  bool isUsingDHCP = false;
 
   // testing
   uint16_t numAttemptedDHCPReleases = 0;

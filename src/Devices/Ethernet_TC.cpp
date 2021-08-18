@@ -32,7 +32,11 @@ Ethernet_TC::Ethernet_TC() {
   wdt_enable(WDTO_8S);
 }
 
-Ethernet_TC *Ethernet_TC::instance() {
+Ethernet_TC *Ethernet_TC::instance(bool reset) {
+  if (reset && _instance) {
+    delete _instance;
+    _instance = nullptr;
+  }
   if (_instance == nullptr) {
     _instance = new Ethernet_TC;
   }

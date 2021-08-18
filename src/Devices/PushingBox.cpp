@@ -28,7 +28,7 @@ PushingBox::PushingBox(const char* pushingBoxID) {
 
 void PushingBox::loop() {
   if (!(Ethernet_TC::instance()->getIsUsingDHCP())) {
-    // return;
+    return;
   }
   // is it time to send ?
   unsigned long now = millis();

@@ -2,7 +2,7 @@
 
 #include <Arduino.h>
 #ifdef MOCK_PINS_COUNT
-#include <Ethernet_CI.h>
+#include <Ethernet.h>
 #else
 #include <Ethernet.h>
 #endif

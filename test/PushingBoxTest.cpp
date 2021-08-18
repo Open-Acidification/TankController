@@ -19,6 +19,8 @@ PHControl *controlSolenoid;
 
 unittest_setup() {
   tc = TankControllerLib::instance("PushingBoxIdentifier");
+  Ethernet.mockDHCP(IPAddress(192, 168, 1, 42));
+  Ethernet_TC::instance(true);
   pPushingBox = PushingBox::instance();
   tempProbe = TempProbe_TC::instance();
   controlSolenoid = PHControl::instance();
@@ -30,6 +32,10 @@ unittest_setup() {
   tc->serialEvent1();                      // fake interrupt to update the current pH reading
   tc->loop();                              // update the controls based on the current readings
   state->serialPort[0].dataOut = "";       // clear serial output
+}
+
+unittest_teardown() {
+  pPushingBox->getClient()->stop();  // clears the writeBuffer and readBuffer
 }
 
 unittest(NoTankID) {
@@ -102,8 +108,6 @@ unittest(SendData) {
 }
 
 unittest(inCalibration) {
-  pPushingBox->getClient()->stop();  // clears the writeBuffer and readBuffer
-
   // set tank id
   EEPROM_TC::instance()->setTankID(99);
   PHCalibrationMid *test = new PHCalibrationMid(tc);
@@ -125,4 +129,18 @@ unittest(inCalibration) {
       "\r\n";
   assertEqual(expected1, bufferResult.c_str());
 }
+
+unittest(without_DHCP) {
+  Ethernet.mockDHCP(IPAddress((uint32_t)0));
+  assertFalse(Ethernet_TC::instance(true)->getIsUsingDHCP());
+  // set tank id
+  EEPROM_TC::instance()->setTankID(99);
+  EthernetClient::startMockServer(pPushingBox->getServer(), 80);
+  assertEqual(0, pPushingBox->getClient()->writeBuffer().size());
+  delay(60 * 20 * 1000);  // wait for 20 minutes to ensure we send again
+  tc->loop();
+  deque<uint8_t> buffer = pPushingBox->getClient()->writeBuffer();
+  assertEqual(0, pPushingBox->getClient()->writeBuffer().size());
+}
+
 unittest_main()

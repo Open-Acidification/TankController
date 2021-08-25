@@ -138,6 +138,7 @@ sudo
 sys
 tankid
 testfile
+Thu
 timeinfo
 Tmp
 TODO
@@ -150,6 +151,7 @@ unittest
 unixtime
 unshallow
 url
+UTF
 vfprintf
 vprintf
 vscode

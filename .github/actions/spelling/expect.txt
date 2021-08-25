@@ -8,11 +8,13 @@ avr
 Calib
 cassert
 cfg
+charset
 chr
 chrono
 ci
 Clib
 cmake
+concat
 config
 cout
 cpp
@@ -71,6 +73,7 @@ len
 LGPL
 libgtk
 libtc
+localhost
 localtime
 lowpoint
 LOWTHRESH
@@ -79,6 +82,7 @@ makedirs
 mday
 markdownlint
 mega
+memcmp
 memset
 microcontroler
 milli
@@ -126,6 +130,7 @@ solonoids
 src
 strcpy
 strlen
+strncmp
 strnlen
 strncpy
 substr

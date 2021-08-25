@@ -43,7 +43,7 @@ TankControllerLib *TankControllerLib::instance(const char *pushingBoxID) {
  * Constructor
  */
 TankControllerLib::TankControllerLib() {
-  serial("TankControllerLib::TankControllerLib() - version %s", TANK_CONTROLLER_VERSION);
+  serial("\r\n#################\r\nTankControllerLib::TankControllerLib() - version %s", TANK_CONTROLLER_VERSION);
   assert(!_instance);
   // ensure we have instances
   SD_TC::instance();

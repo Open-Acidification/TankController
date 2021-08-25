@@ -91,11 +91,8 @@ File SD_TC::open(const char* path, oflag_t oflag) {
   return sd.open(path, oflag);
 }
 
-/**
- * print the root directory and all subdirectories
- */
 void SD_TC::printRootDirectory() {
-  // serial("SD_TC::printRootDirectory()");
+  sd.ls(LS_DATE | LS_SIZE | LS_R);
 }
 
 String SD_TC::todaysDataFileName() {

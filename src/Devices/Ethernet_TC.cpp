@@ -44,8 +44,10 @@ Ethernet_TC *Ethernet_TC::instance(bool reset) {
 }
 
 void Ethernet_TC::loop() {
-  // "just call it on every loop() invocation" https://www.arduino.cc/en/Reference/EthernetMaintain
-  Ethernet.maintain();
+  if (isUsingDHCP) {
+    // "just call it on every loop() invocation" https://www.arduino.cc/en/Reference/EthernetMaintain
+    Ethernet.maintain();
+  }
   numAttemptedDHCPReleases++;
 }
 

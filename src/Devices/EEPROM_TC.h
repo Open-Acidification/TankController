@@ -19,7 +19,7 @@ public:
   float getFrequency();               // not used
   uint16_t getGoogleSheetInterval();  // how often to send data using PushingBox
   float getGranularity();             // not used
-  bool getHeat();                     // boolean for heaterm (true) or chiller (false)
+  bool getHeat();                     // boolean for heater (true) or chiller (false)
   float getKD();                      // constants used for PID to calculate bubbler timer
   float getKI();                      // constants used for PID to calculate bubbler timer
   float getKP();                      // constants used for PID to calculate bubbler timer

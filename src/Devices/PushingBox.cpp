@@ -33,7 +33,13 @@ void PushingBox::loop() {
   // is it time to send ?
   unsigned long now = millis();
   if (now >= nextSendTime) {
-    sendData();
+    if (false && strncmp(DevID, "PushingBoxIdentifier", 20) == 0) {
+      serial("PushingBox identifier not defined in TankController.ino!");
+      nextSendTime = 0xffffffff;
+      return;
+    } else {
+      sendData();
+    }
     unsigned long minutes = EEPROM_TC::instance()->getGoogleSheetInterval();
     if (minutes == 0xffff) {
       minutes = 20;

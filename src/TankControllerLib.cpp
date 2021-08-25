@@ -4,6 +4,7 @@
 
 #include "Devices/DateTime_TC.h"
 #include "Devices/EEPROM_TC.h"
+#include "Devices/EthernetServer_TC.h"
 #include "Devices/Ethernet_TC.h"
 #include "Devices/Keypad_TC.h"
 #include "Devices/LiquidCrystal_TC.h"
@@ -148,13 +149,14 @@ void TankControllerLib::handleUI() {
  */
 void TankControllerLib::loop() {
   wdt_reset();
-  blink();                          // blink the on-board LED to show that we are running
-  handleUI();                       // look at keypad, update LCD
-  updateControls();                 // turn CO2 and temperature controls on or off
-  writeDataToSD();                  // record current state to data log
-  writeDataToSerial();              // record current pH and temperature to serial
-  PushingBox::instance()->loop();   // write data to Google Sheets
-  Ethernet_TC::instance()->loop();  // renew DHCP lease
+  blink();                                // blink the on-board LED to show that we are running
+  handleUI();                             // look at keypad, update LCD
+  updateControls();                       // turn CO2 and temperature controls on or off
+  writeDataToSD();                        // record current state to data log
+  writeDataToSerial();                    // record current pH and temperature to serial
+  PushingBox::instance()->loop();         // write data to Google Sheets
+  Ethernet_TC::instance()->loop();        // renew DHCP lease
+  EthernetServer_TC::instance()->loop();  // handle any HTTP requests
 }
 
 /**

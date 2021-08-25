@@ -67,9 +67,10 @@ void PHProbe::serialEvent1() {
         // convert the string to a floating point number so it can be evaluated by the Arduino
         value = string.toFloat();
         // we have seen situations where the CO2 bubbler stays on and drives the pH down
-        if (value < 7.0) {  // hang so as to trigger the watchdog timer reset
+        if (value && value < 7.0) {  // hang so as to trigger the watchdog timer reset
+                                     // treat 0 as valid since probe might not be connected
           wdt_disable();
-          wdt_enable(WDTO_15MS);
+          wdt_enable(WDTO_120MS);  // allow enough time to print message
           serial("pH value dropped to %5.3f so trigger a reset!", value);
           while (true) {
           }

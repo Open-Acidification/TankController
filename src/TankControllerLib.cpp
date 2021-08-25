@@ -92,8 +92,8 @@ size_t TankControllerLib::freeMemory() {
   int *__brkval = 0;
   int __bss_end = 0;
 #else
-  extern int *__brkval;
-  extern int __bss_end;
+  extern char *__brkval;
+  extern char __bss_end;
 #endif
   int topOfStack;
 

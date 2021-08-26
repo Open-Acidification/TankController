@@ -90,15 +90,16 @@ unittest(getSlope) {
   PHProbe *pPHProbe = PHProbe::instance();
   GODMODE()->serialPort[1].dataIn = "?SLOPE,99.7,100.3,-0.89\r";  // the queue of data waiting to be read
   tc->serialEvent1();                                             // fake interrupt
-  String slope = pPHProbe->getSlope();
-  assertEqual("99.7,100.3,-0.89", slope);
+  char buffer[20];
+  pPHProbe->getSlope(buffer, sizeof(buffer));
+  assertEqual("99.7,100.3,-0.89", buffer);
   COUT(state->serialPort[0].dataOut.length());
   GODMODE()->serialPort[1].dataIn = "?SLOPE,98.7,101.3,-0.89\r";  // the answer to getSlop() waiting to be read
   tc->serialEvent1();                                             // fake interrupt
   COUT(state->serialPort[0].dataOut.length());
   state->serialPort[0].dataOut = "";
-  slope = pPHProbe->getSlope();
-  assertEqual("98.7,101.3,-0.89", slope);
+  pPHProbe->getSlope(buffer, sizeof(buffer));
+  assertEqual("98.7,101.3,-0.89", buffer);
 }
 
 unittest(getPh) {

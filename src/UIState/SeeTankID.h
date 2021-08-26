@@ -4,6 +4,7 @@
  * Display the tank ID
  */
 #pragma once
+#include "TC_util.h"
 #include "UIState.h"
 
 class SeeTankID : public UIState {
@@ -12,9 +13,9 @@ public:
   }
   void start();
   const char* name() {
-    return (const char*)F("SeeTankID");
+    return CSTR("SeeTankID");
   }
   const char* prompt() {
-    return (const char*)F("Tank ID:");
+    return CSTR("Tank ID:");
   };
 };

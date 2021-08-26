@@ -1,4 +1,5 @@
 #pragma once
+#include "TC_util.h"
 #include "UIState.h"
 
 class SeeFreeMemory : public UIState {
@@ -7,9 +8,9 @@ public:
   }
   void start();
   const char* name() {
-    return (const char*)F("SeeFreeMemory");
+    return CSTR("SeeFreeMemory");
   }
   const char* prompt() {
-    return (const char*)F("Free Memory:");
+    return CSTR("Free Memory:");
   };
 };

@@ -5,6 +5,7 @@
  */
 #pragma once
 #include "NumberCollectorState.h"
+#include "TC_util.h"
 
 class EnablePID : public NumCollectorState {
 public:
@@ -14,11 +15,11 @@ public:
     return true;
   }
   const char* name() {
-    return (const char*)F("EnablePID");
+    return CSTR("EnablePID");
   }
   float getCurrentValue();
   const char* prompt() {
-    return (const char*)F("PID 1:on; 9:off");
+    return CSTR("PID 1:on; 9:off");
   };
   void setValue(float value);
 };

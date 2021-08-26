@@ -4,6 +4,7 @@
  * Display the Google Sheet Interval
  */
 #pragma once
+#include "TC_util.h"
 #include "UIState.h"
 
 class SeeGoogleMins : public UIState {
@@ -12,9 +13,9 @@ public:
   }
   void start();
   const char* name() {
-    return (const char*)F("SeeGoogleMins");
+    return CSTR("SeeGoogleMins");
   }
   const char* prompt() {
-    return (const char*)F("Google Mins:");
+    return CSTR("Google Mins:");
   };
 };

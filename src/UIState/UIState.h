@@ -7,6 +7,8 @@
 
 #include <Arduino.h>
 
+#include "TC_util.h"
+
 class TankControllerLib;  // Forward reference
 class UIState {
 public:
@@ -30,7 +32,7 @@ public:
   }
   virtual const char* name() = 0;
   virtual const char* prompt() {
-    return (const char*)F("");
+    return CSTR("");
   }
   virtual void start();
 

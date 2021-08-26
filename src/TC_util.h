@@ -1,6 +1,8 @@
 #pragma once
 #include <Arduino.h>
 
+#define CSTR(x) ((const char*)F(x))
+
 #ifdef MOCK_PINS_COUNT
 #include <cassert>  // to support testing
 #else

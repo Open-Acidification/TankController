@@ -2,6 +2,7 @@
 
 #include "../TankControllerLib.h"
 #include "Devices/LiquidCrystal_TC.h"
+#include "TC_util.h"
 #include "UIState/MainMenu.h"
 #include "UIState/Wait.h"
 
@@ -31,5 +32,5 @@ void UIState::start() {
   // default is to print the current prompt on the first line of the display
   const char* prompt = this->prompt();
   LiquidCrystal_TC::instance()->writeLine(prompt, 0);
-  LiquidCrystal_TC::instance()->writeLine((const char*)F(""), 1);
+  LiquidCrystal_TC::instance()->writeLine(CSTR(""), 1);
 }

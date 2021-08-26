@@ -5,12 +5,13 @@
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHProbe.h"
+#include "TC_util.h"
 
 void SetCalibrationClear::handleKey(char key) {
   switch (key) {
     case 'A':  // Save (clear calibration)
       PHProbe::instance()->clearCalibration();
-      LiquidCrystal_TC::instance()->writeLine((const char*)F("Cleared pH Calib"), 1);
+      LiquidCrystal_TC::instance()->writeLine(CSTR("Cleared pH Calib"), 1);
       returnToMainMenu(3000);
       break;
     case 'D':  // Don't save (cancel)

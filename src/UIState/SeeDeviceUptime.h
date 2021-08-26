@@ -4,6 +4,7 @@
  * Display the device uptime & Current time
  */
 #pragma once
+#include "TC_util.h"
 #include "UIState.h"
 
 class SeeDeviceUptime : public UIState {
@@ -12,6 +13,6 @@ public:
   }
   void loop();
   const char* name() {
-    return (const char*)F("SeeDeviceUptime");
+    return CSTR("SeeDeviceUptime");
   }
 };

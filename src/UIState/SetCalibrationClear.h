@@ -4,6 +4,7 @@
  * Clear pH Calibration
  */
 #pragma once
+#include "TC_util.h"
 #include "UIState.h"
 
 class SetCalibrationClear : public UIState {
@@ -12,9 +13,9 @@ public:
   }
   void handleKey(char key);
   const char* name() {
-    return (const char*)F("SetCalibrationClear");
+    return CSTR("SetCalibrationClear");
   }
   const char* prompt() {
-    return (const char*)F("A: Clear pH Cali");
+    return CSTR("A: Clear pH Cali");
   };
 };

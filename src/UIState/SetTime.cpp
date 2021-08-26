@@ -8,13 +8,14 @@
 #include "Devices/EEPROM_TC.h"
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/Serial_TC.h"
+#include "TC_util.h"
 
 SetTime::SetTime(TankControllerLib *tc) : NumCollectorState(tc) {
-  prompts[0] = (const char *)F("Set Year (YYYY):");
-  prompts[1] = (const char *)F("Month (1-12):");
-  prompts[2] = (const char *)F("Day (1-31):");
-  prompts[3] = (const char *)F("Hour (0-23):");
-  prompts[4] = (const char *)F("Minute (0-59):");
+  prompts[0] = CSTR("Set Year (YYYY):");
+  prompts[1] = CSTR("Month (1-12):");
+  prompts[2] = CSTR("Day (1-31):");
+  prompts[3] = CSTR("Hour (0-23):");
+  prompts[4] = CSTR("Minute (0-59):");
 }
 
 float SetTime::getCurrentValue() {
@@ -36,12 +37,12 @@ void SetTime::setValue(float value) {
     clear();
     start();
   } else {
-    LiquidCrystal_TC::instance()->writeLine((const char *)F("New Date/Time:"), 0);
+    LiquidCrystal_TC::instance()->writeLine(CSTR("New Date/Time:"), 0);
 
     DateTime_TC dt(values[0], values[1], values[2], values[3], values[4]);
     dt.setAsCurrent();
     char *buffer = DateTime_TC::now().as16CharacterString();
-    serial((const char *)F("Set time to %s"), buffer);
+    serial(CSTR("Set time to %s"), buffer);
     LiquidCrystal_TC::instance()->writeLine(buffer, 1);
     returnToMainMenu(3000);  // after 3-second delay
   }

@@ -5,16 +5,17 @@
  */
 #pragma once
 #include "PHCalibration.h"
+#include "TC_util.h"
 
 class PHCalibrationMid : public PHCalibration {
 public:
   PHCalibrationMid(TankControllerLib* tc) : PHCalibration(tc) {
   }
   const char* name() {
-    return (const char*)F("PHCalibrationMid");
+    return CSTR("PHCalibrationMid");
   }
   const char* prompt() {
-    return (const char*)F("pH-Midpoint");
+    return CSTR("pH-Midpoint");
   };
   void setValue(float value);
 };

@@ -6,6 +6,7 @@
 #pragma once
 #include "Devices/EEPROM_TC.h"
 #include "NumberCollectorState.h"
+#include "TC_util.h"
 
 class SetGoogleSheetInterval : public NumCollectorState {
 public:
@@ -15,13 +16,13 @@ public:
     return true;
   }
   const char* name() {
-    return (const char*)F("SetGoogleSheetInterval");
+    return CSTR("SetGoogleSheetInterval");
   }
   float getCurrentValue() {
     return EEPROM_TC::instance()->getGoogleSheetInterval();
   }
   const char* prompt() {
-    return (const char*)F("G Sheet Minutes");
+    return CSTR("G Sheet Minutes");
   };
   void setValue(float value);
 };

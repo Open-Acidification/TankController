@@ -6,13 +6,14 @@
 #pragma once
 #include "Devices/EEPROM_TC.h"
 #include "NumberCollectorState.h"
+#include "TC_util.h"
 
 class SetKI : public NumCollectorState {
 public:
   SetKI(TankControllerLib* tc) : NumCollectorState(tc) {
   }
   const char* name() {
-    return (const char*)F("SetKI");
+    return CSTR("SetKI");
   }
   float getCurrentValue() {
     return EEPROM_TC::instance()->getKI();
@@ -21,7 +22,7 @@ public:
     return 1;
   }
   const char* prompt() {
-    return (const char*)F("Set KI");
+    return CSTR("Set KI");
   };
   void setValue(float value);
 };

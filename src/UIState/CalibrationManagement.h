@@ -4,6 +4,8 @@
  * Calibration Management
  */
 #pragma once
+
+#include "TC_util.h"
 #include "UIState.h"
 
 class CalibrationManagement : public UIState {
@@ -12,9 +14,9 @@ public:
   }
   void handleKey(char key);
   const char* name() {
-    return (const char*)F("CalibrationManagement");
+    return CSTR("CalibrationManagement");
   }
   const char* prompt() {
-    return (const char*)F("Cal Management");
+    return CSTR("Cal Management");
   };
 };

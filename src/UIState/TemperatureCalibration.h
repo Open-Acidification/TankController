@@ -5,6 +5,7 @@
  */
 #pragma once
 #include "NumberCollectorState.h"
+#include "TC_util.h"
 
 class TemperatureCalibration : public NumCollectorState {
 public:
@@ -14,7 +15,7 @@ public:
     return true;
   }
   const char* name() {
-    return (const char*)F("TemperatureCalibration");
+    return CSTR("TemperatureCalibration");
   }
   float getCurrentValue() {
     return 0;
@@ -23,7 +24,7 @@ public:
     return 2;
   }
   const char* prompt() {
-    return (const char*)F("Real Temperature");
+    return CSTR("Real Temperature");
   };
   void setValue(float value);
 };

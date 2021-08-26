@@ -5,6 +5,7 @@
  */
 #pragma once
 #include "NumberCollectorState.h"
+#include "TC_util.h"
 
 class SetTime : public NumCollectorState {
 public:
@@ -13,7 +14,7 @@ public:
     return true;
   }
   const char* name() {
-    return (const char*)F("SetTime");
+    return CSTR("SetTime");
   }
   float getCurrentValue();
 

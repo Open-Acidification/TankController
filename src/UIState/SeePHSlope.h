@@ -4,6 +4,7 @@
  * Display the tank ID
  */
 #pragma once
+#include "TC_util.h"
 #include "UIState.h"
 
 class SeePHSlope : public UIState {
@@ -13,9 +14,9 @@ public:
   void start();
   void loop();
   const char* name() {
-    return (const char*)F("SeePHSlope");
+    return CSTR("SeePHSlope");
   }
   const char* prompt() {
-    return (const char*)F("PH Slope:");
+    return CSTR("PH Slope:");
   };
 };

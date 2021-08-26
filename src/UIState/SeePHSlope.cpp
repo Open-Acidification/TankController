@@ -6,6 +6,7 @@
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHProbe.h"
+#include "TC_util.h"
 
 void SeePHSlope::loop() {
   LiquidCrystal_TC::instance()->writeLine(PHProbe::instance()->getSlope().c_str(), 1);
@@ -13,6 +14,6 @@ void SeePHSlope::loop() {
 
 void SeePHSlope::start() {
   LiquidCrystal_TC::instance()->writeLine(prompt(), 0);
-  LiquidCrystal_TC::instance()->writeLine((const char*)F("requesting slope"), 1);
+  LiquidCrystal_TC::instance()->writeLine(CSTR("requesting slope"), 1);
   PHProbe::instance()->sendSlopeRequest();
 }

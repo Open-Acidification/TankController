@@ -4,6 +4,7 @@
  * Display the tank ID
  */
 #pragma once
+#include "TC_util.h"
 #include "UIState.h"
 
 class SeeLogFile : public UIState {
@@ -12,9 +13,9 @@ public:
   }
   void start();
   const char* name() {
-    return (const char*)F("SeeLogFile");
+    return CSTR("SeeLogFile");
   }
   const char* prompt() {
-    return (const char*)F("Current Log File");
+    return CSTR("Current Log File");
   };
 };

@@ -6,6 +6,7 @@
 #pragma once
 #include "Devices/EEPROM_TC.h"
 #include "NumberCollectorState.h"
+#include "TC_util.h"
 
 class SetTankID : public NumCollectorState {
 public:
@@ -15,13 +16,13 @@ public:
     return true;
   }
   const char* name() {
-    return (const char*)F("SetTankID");
+    return CSTR("SetTankID");
   }
   float getCurrentValue() {
     return EEPROM_TC::instance()->getTankID();
   }
   const char* prompt() {
-    return (const char*)F("Set Tank ID#");
+    return CSTR("Set Tank ID#");
   };
   void setValue(float value);
 };

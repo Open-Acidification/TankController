@@ -5,6 +5,7 @@
  */
 #pragma once
 #include "NumberCollectorState.h"
+#include "TC_util.h"
 
 class SetChillOrHeat : public NumCollectorState {
 public:
@@ -14,11 +15,11 @@ public:
     return true;
   }
   const char* name() {
-    return (const char*)F("SetChillOrHeat");
+    return CSTR("SetChillOrHeat");
   }
   float getCurrentValue();
   const char* prompt() {
-    return (const char*)F("1:Chill; 9:Heat");
+    return CSTR("1:Chill; 9:Heat");
   };
   void setValue(float value);
 };

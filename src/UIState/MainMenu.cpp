@@ -27,32 +27,33 @@
 #include "SetTankID.h"
 #include "SetTempSetPoint.h"
 #include "SetTime.h"
+#include "TC_util.h"
 #include "TemperatureCalibration.h"
 
 MainMenu::MainMenu(TankControllerLib *tc) : UIState(tc) {
-  viewMenus[VIEW_GOOGLE_MINS] = (const char *)F("View Google mins");
-  viewMenus[VIEW_ADDRESS] = (const char *)F("View IP and MAC");
-  viewMenus[VIEW_FREE_MEMORY] = (const char *)F("View free memory");
-  viewMenus[VIEW_LOG_FILE] = (const char *)F("View log file");
-  viewMenus[VIEW_PID] = (const char *)F("View PID");
-  viewMenus[VIEW_PH_SLOPE] = (const char *)F("View pH slope");
-  viewMenus[VIEW_TANK_ID] = (const char *)F("View tank ID");
-  viewMenus[VIEW_TIME] = (const char *)F("View time");
-  viewMenus[VIEW_VERSION] = (const char *)F("View version");
+  viewMenus[VIEW_GOOGLE_MINS] = CSTR("View Google mins");
+  viewMenus[VIEW_ADDRESS] = CSTR("View IP and MAC");
+  viewMenus[VIEW_FREE_MEMORY] = CSTR("View free memory");
+  viewMenus[VIEW_LOG_FILE] = CSTR("View log file");
+  viewMenus[VIEW_PID] = CSTR("View PID");
+  viewMenus[VIEW_PH_SLOPE] = CSTR("View pH slope");
+  viewMenus[VIEW_TANK_ID] = CSTR("View tank ID");
+  viewMenus[VIEW_TIME] = CSTR("View time");
+  viewMenus[VIEW_VERSION] = CSTR("View version");
 
-  setMenus[SET_CALIBRATION] = (const char *)F("pH calibration");
-  setMenus[SET_CALIBRATION_CLEAR] = (const char *)F("Clear pH calibra");
-  setMenus[SET_CHILL_OR_HEAT] = (const char *)F("Set chill/heat");
-  setMenus[SET_GOOGLE_MINS] = (const char *)F("Set Google mins");
-  setMenus[SET_PH] = (const char *)F("Set pH target");
-  setMenus[SET_KD] = (const char *)F("Set KD");
-  setMenus[SET_KI] = (const char *)F("Set KI");
-  setMenus[SET_KP] = (const char *)F("Set KP");
-  setMenus[SET_PID_ON_OFF] = (const char *)F("PID on/off");
-  setMenus[SET_TANK_ID] = (const char *)F("Set Tank ID");
-  setMenus[SET_TEMP_CALIBRATION] = (const char *)F("Temp calibration");
-  setMenus[SET_TEMPERATURE] = (const char *)F("Set temperature");
-  setMenus[SET_TIME] = (const char *)F("Set date/time");
+  setMenus[SET_CALIBRATION] = CSTR("pH calibration");
+  setMenus[SET_CALIBRATION_CLEAR] = CSTR("Clear pH calibra");
+  setMenus[SET_CHILL_OR_HEAT] = CSTR("Set chill/heat");
+  setMenus[SET_GOOGLE_MINS] = CSTR("Set Google mins");
+  setMenus[SET_PH] = CSTR("Set pH target");
+  setMenus[SET_KD] = CSTR("Set KD");
+  setMenus[SET_KI] = CSTR("Set KI");
+  setMenus[SET_KP] = CSTR("Set KP");
+  setMenus[SET_PID_ON_OFF] = CSTR("PID on/off");
+  setMenus[SET_TANK_ID] = CSTR("Set Tank ID");
+  setMenus[SET_TEMP_CALIBRATION] = CSTR("Temp calibration");
+  setMenus[SET_TEMPERATURE] = CSTR("Set temperature");
+  setMenus[SET_TIME] = CSTR("Set date/time");
 }
 
 /**
@@ -234,7 +235,7 @@ void MainMenu::idle() {
     status = toupper(status);
   }
 
-  snprintf(output, sizeof(output), (const char *)F("T%c%5.2f %c %5.2f"), equals, temp, status,
+  snprintf(output, sizeof(output), CSTR("T%c%5.2f %c %5.2f"), equals, temp, status,
            tempControl->getTargetTemperature());
   LiquidCrystal_TC::instance()->writeLine(output, 1);
 }
@@ -245,17 +246,17 @@ void MainMenu::loop() {
   } else {
     if (level1 == 1) {
       if (level2 == -1) {
-        LiquidCrystal_TC::instance()->writeLine((const char *)F("View settings"), 0);
+        LiquidCrystal_TC::instance()->writeLine(CSTR("View settings"), 0);
       } else {
         LiquidCrystal_TC::instance()->writeLine(viewMenus[level2], 0);
       }
     } else {
       if (level2 == -1) {
-        LiquidCrystal_TC::instance()->writeLine((const char *)F("Change settings"), 0);
+        LiquidCrystal_TC::instance()->writeLine(CSTR("Change settings"), 0);
       } else {
         LiquidCrystal_TC::instance()->writeLine(setMenus[level2], 0);
       }
     }
-    LiquidCrystal_TC::instance()->writeLine((const char *)F("<4   ^2  8v   6>"), 1);
+    LiquidCrystal_TC::instance()->writeLine(CSTR("<4   ^2  8v   6>"), 1);
   }
 }

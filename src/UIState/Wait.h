@@ -4,6 +4,7 @@
  * Wait and then return to MainMenu
  */
 #pragma once
+#include "TC_util.h"
 #include "UIState.h"
 
 class Wait : public UIState {
@@ -12,7 +13,7 @@ public:
   // watch to see if enough time has passed
   void loop();
   const char* name() {
-    return (const char*)F("Wait");
+    return CSTR("Wait");
   }
   // override to do nothing
   void start() {

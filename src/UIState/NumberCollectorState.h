@@ -3,6 +3,7 @@
  */
 
 #pragma once
+#include "TC_util.h"
 #include "UIState.h"
 
 class NumCollectorState : public UIState {
@@ -43,7 +44,7 @@ public:
     storedValue = value;
   }
   const char* name() {
-    return (const char*)F("TestNumCollectorState");
+    return CSTR("TestNumCollectorState");
   }
   float getCurrentValue() {
     return priorValue;
@@ -52,7 +53,7 @@ public:
     return priorValuePrecision;
   }
   const char* prompt() {
-    return (const char*)F("Test:");
+    return CSTR("Test:");
   }
 
   // Testing

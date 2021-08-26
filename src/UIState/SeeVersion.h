@@ -4,6 +4,7 @@
  * Display the tankController Version
  */
 #pragma once
+#include "TC_util.h"
 #include "UIState.h"
 
 class SeeVersion : public UIState {
@@ -12,9 +13,9 @@ public:
   }
   void start();
   const char* name() {
-    return (const char*)F("SeeVersion");
+    return CSTR("SeeVersion");
   }
   const char* prompt() {
-    return (const char*)F("Software Version");
+    return CSTR("Software Version");
   };
 };

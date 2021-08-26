@@ -12,9 +12,9 @@ public:
   }
   void handleKey(char key);
   const char* name() {
-    return "CalibrationManagement";
+    return (const char*)F("CalibrationManagement");
   }
   const char* prompt() {
-    return "Cal Management";
+    return (const char*)F("Cal Management");
   };
 };

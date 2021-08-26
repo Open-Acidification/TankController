@@ -14,7 +14,7 @@ public:
     return true;
   }
   const char* name() {
-    return "TemperatureCalibration";
+    return (const char*)F("TemperatureCalibration");
   }
   float getCurrentValue() {
     return 0;
@@ -23,7 +23,7 @@ public:
     return 2;
   }
   const char* prompt() {
-    return "Real Temperature";
+    return (const char*)F("Real Temperature");
   };
   void setValue(float value);
 };

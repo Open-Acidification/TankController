@@ -12,9 +12,9 @@ public:
   }
   void handleKey(char key);
   const char* name() {
-    return "SetCalibrationClear";
+    return (const char*)F("SetCalibrationClear");
   }
   const char* prompt() {
-    return "A: Clear pH Cali";
+    return (const char*)F("A: Clear pH Cali");
   };
 };

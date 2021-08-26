@@ -13,9 +13,9 @@ public:
   void start();
   void handleKey(char key);
   const char* name() {
-    return "SeeDeviceAddress";
+    return (const char*)F("SeeDeviceAddress");
   }
   const char* prompt() {
-    return "Device address";
+    return (const char*)F("Device address");
   };
 };

@@ -13,9 +13,9 @@ public:
   void start();
   void loop();
   const char* name() {
-    return "SeePHSlope";
+    return (const char*)F("SeePHSlope");
   }
   const char* prompt() {
-    return "PH Slope:";
+    return (const char*)F("PH Slope:");
   };
 };

@@ -15,13 +15,13 @@ public:
     return true;
   }
   const char* name() {
-    return "SetTankID";
+    return (const char*)F("SetTankID");
   }
   float getCurrentValue() {
     return EEPROM_TC::instance()->getTankID();
   }
   const char* prompt() {
-    return "Set Tank ID#";
+    return (const char*)F("Set Tank ID#");
   };
   void setValue(float value);
 };

@@ -12,9 +12,9 @@ public:
   }
   void start();
   const char* name() {
-    return "SeeGoogleMins";
+    return (const char*)F("SeeGoogleMins");
   }
   const char* prompt() {
-    return "Google Mins:";
+    return (const char*)F("Google Mins:");
   };
 };

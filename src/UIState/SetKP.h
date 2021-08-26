@@ -12,7 +12,7 @@ public:
   SetKP(TankControllerLib* tc) : NumCollectorState(tc) {
   }
   const char* name() {
-    return "SetKP";
+    return (const char*)F("SetKP");
   }
   float getCurrentValue() {
     return EEPROM_TC::instance()->getKP();
@@ -21,7 +21,7 @@ public:
     return 1;
   }
   const char* prompt() {
-    return "Set KP";
+    return (const char*)F("Set KP");
   };
   void setValue(float value);
 };

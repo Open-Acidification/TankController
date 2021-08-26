@@ -12,7 +12,7 @@ public:
   SetKI(TankControllerLib* tc) : NumCollectorState(tc) {
   }
   const char* name() {
-    return "SetKI";
+    return (const char*)F("SetKI");
   }
   float getCurrentValue() {
     return EEPROM_TC::instance()->getKI();
@@ -21,7 +21,7 @@ public:
     return 1;
   }
   const char* prompt() {
-    return "Set KI";
+    return (const char*)F("Set KI");
   };
   void setValue(float value);
 };

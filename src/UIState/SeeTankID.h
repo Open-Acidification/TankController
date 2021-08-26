@@ -12,9 +12,9 @@ public:
   }
   void start();
   const char* name() {
-    return "SeeTankID";
+    return (const char*)F("SeeTankID");
   }
   const char* prompt() {
-    return "Tank ID:";
+    return (const char*)F("Tank ID:");
   };
 };

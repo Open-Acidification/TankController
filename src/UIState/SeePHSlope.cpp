@@ -13,6 +13,6 @@ void SeePHSlope::loop() {
 
 void SeePHSlope::start() {
   LiquidCrystal_TC::instance()->writeLine(prompt(), 0);
-  LiquidCrystal_TC::instance()->writeLine("requesting slope", 1);
+  LiquidCrystal_TC::instance()->writeLine((const char*)F("requesting slope"), 1);
   PHProbe::instance()->sendSlopeRequest();
 }

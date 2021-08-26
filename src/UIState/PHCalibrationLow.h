@@ -11,10 +11,10 @@ public:
   PHCalibrationLow(TankControllerLib* tc) : PHCalibration(tc) {
   }
   const char* name() {
-    return "PHCalibrationLow";
+    return (const char*)F("PHCalibrationLow");
   }
   const char* prompt() {
-    return "pH-Lowpoint";
+    return (const char*)F("pH-Lowpoint");
   };
   void setValue(float value);
 };

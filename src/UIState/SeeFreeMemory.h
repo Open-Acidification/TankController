@@ -7,9 +7,9 @@ public:
   }
   void start();
   const char* name() {
-    return "SeeFreeMemory";
+    return (const char*)F("SeeFreeMemory");
   }
   const char* prompt() {
-    return "Free Memory:";
+    return (const char*)F("Free Memory:");
   };
 };

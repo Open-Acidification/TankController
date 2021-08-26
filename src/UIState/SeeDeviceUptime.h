@@ -12,6 +12,6 @@ public:
   }
   void loop();
   const char* name() {
-    return "SeeDeviceUptime";
+    return (const char*)F("SeeDeviceUptime");
   }
 };

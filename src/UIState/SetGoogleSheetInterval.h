@@ -15,13 +15,13 @@ public:
     return true;
   }
   const char* name() {
-    return "SetGoogleSheetInterval";
+    return (const char*)F("SetGoogleSheetInterval");
   }
   float getCurrentValue() {
     return EEPROM_TC::instance()->getGoogleSheetInterval();
   }
   const char* prompt() {
-    return "G Sheet Minutes";
+    return (const char*)F("G Sheet Minutes");
   };
   void setValue(float value);
 };

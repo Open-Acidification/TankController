@@ -13,7 +13,7 @@ public:
   }
   void loop();
   const char* name() {
-    return "SeePIDConstants";
+    return (const char*)F("SeePIDConstants");
   }
   void start() {
     startTime = millis();

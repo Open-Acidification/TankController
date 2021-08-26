@@ -12,9 +12,9 @@ public:
   }
   void start();
   const char* name() {
-    return "SeeLogFile";
+    return (const char*)F("SeeLogFile");
   }
   const char* prompt() {
-    return "Current Log File";
+    return (const char*)F("Current Log File");
   };
 };

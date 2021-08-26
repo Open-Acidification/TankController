@@ -12,7 +12,7 @@ public:
   SetTempSetPoint(TankControllerLib* tc) : NumCollectorState(tc) {
   }
   const char* name() {
-    return "SetTempSetPoint";
+    return (const char*)F("SetTempSetPoint");
   }
   float getCurrentValue() {
     return EEPROM_TC::instance()->getTemp();
@@ -21,7 +21,7 @@ public:
     return 2;
   }
   const char* prompt() {
-    return "Set Temperature";
+    return (const char*)F("Set Temperature");
   };
   void setValue(float value);
 };

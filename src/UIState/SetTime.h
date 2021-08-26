@@ -8,13 +8,12 @@
 
 class SetTime : public NumCollectorState {
 public:
-  SetTime(TankControllerLib* tc) : NumCollectorState(tc) {
-  }
+  SetTime(TankControllerLib* tc);
   virtual bool isInteger() {
     return true;
   }
   const char* name() {
-    return "SetTime";
+    return (const char*)F("SetTime");
   }
   float getCurrentValue();
 
@@ -28,6 +27,5 @@ private:
   uint16_t subState = 0;
   uint16_t values[NUM_VALUES] = {0, 0, 0, 0, 0};
   float current[NUM_VALUES] = {0.0, 0.0, 0.0, 0.0, 0.0};
-  const char* prompts[NUM_VALUES] = {
-      "Set Year (YYYY):", "Month (1-12):   ", "Day (1-31):     ", "Hour (0-23):    ", "Minute (0-59):  "};
+  const char* prompts[NUM_VALUES];
 };

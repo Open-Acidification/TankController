@@ -43,10 +43,10 @@ public:
   MainMenu(TankControllerLib* tc);
   void handleKey(char key);
   const char* name() {
-    return "MainMenu";
+    return (const char*)F("MainMenu");
   }
   const char* prompt() {
-    return "Main Menu";
+    return (const char*)F("Main Menu");
   };
   bool isMainMenu() {
     return true;

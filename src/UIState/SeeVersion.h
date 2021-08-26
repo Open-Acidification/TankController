@@ -12,9 +12,9 @@ public:
   }
   void start();
   const char* name() {
-    return "SeeVersion";
+    return (const char*)F("SeeVersion");
   }
   const char* prompt() {
-    return "Software Version";
+    return (const char*)F("Software Version");
   };
 };

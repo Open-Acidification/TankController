@@ -43,7 +43,7 @@ public:
     storedValue = value;
   }
   const char* name() {
-    return "TestNumCollectorState";
+    return (const char*)F("TestNumCollectorState");
   }
   float getCurrentValue() {
     return priorValue;
@@ -52,7 +52,7 @@ public:
     return priorValuePrecision;
   }
   const char* prompt() {
-    return "Test:";
+    return (const char*)F("Test:");
   }
 
   // Testing

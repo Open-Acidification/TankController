@@ -14,11 +14,11 @@ public:
     return true;
   }
   const char* name() {
-    return "EnablePID";
+    return (const char*)F("EnablePID");
   }
   float getCurrentValue();
   const char* prompt() {
-    return "PID 1:on; 9:off";
+    return (const char*)F("PID 1:on; 9:off");
   };
   void setValue(float value);
 };

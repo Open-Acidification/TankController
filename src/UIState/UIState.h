@@ -30,7 +30,7 @@ public:
   }
   virtual const char* name() = 0;
   virtual const char* prompt() {
-    return "";
+    return (const char*)F("");
   }
   virtual void start();
 

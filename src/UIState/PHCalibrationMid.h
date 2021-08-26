@@ -11,10 +11,10 @@ public:
   PHCalibrationMid(TankControllerLib* tc) : PHCalibration(tc) {
   }
   const char* name() {
-    return "PHCalibrationMid";
+    return (const char*)F("PHCalibrationMid");
   }
   const char* prompt() {
-    return "pH-Midpoint";
+    return (const char*)F("pH-Midpoint");
   };
   void setValue(float value);
 };

@@ -14,11 +14,11 @@ public:
     return true;
   }
   const char* name() {
-    return "SetChillOrHeat";
+    return (const char*)F("SetChillOrHeat");
   }
   float getCurrentValue();
   const char* prompt() {
-    return "1:Chill; 9:Heat";
+    return (const char*)F("1:Chill; 9:Heat");
   };
   void setValue(float value);
 };

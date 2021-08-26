@@ -5,23 +5,20 @@
 #define SS 4
 #include <SdFat.h>
 
-typedef void (*visitor)(File* pEntry, String parentPath);
-
 class SD_TC {
 public:
   // class methods
   static SD_TC* instance();
 
   // instance methods
-  void appendData(String header, String line);
-  void appendToLog(String line);
+  void appendData(const char* header, const char* line);
+  void appendToLog(const char* line);
   bool exists(const char* path);
   bool format();
   bool mkdir(const char* path);
   File open(const char* path, oflag_t oflag = 0x00);
-  String todaysDataFileName();
+  void todaysDataFileName(char* path, int size);
   void printRootDirectory();
-  void visit(visitor pFunction);
 
 private:
   // class variables
@@ -34,5 +31,5 @@ private:
 
   // instance methods
   SD_TC();
-  void appendDataToPath(String data, String path);
+  void appendDataToPath(const char* data, const char* path);
 };

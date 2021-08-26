@@ -16,6 +16,7 @@ cmake
 config
 cout
 cpp
+CSTR
 csv
 ctime
 datetime

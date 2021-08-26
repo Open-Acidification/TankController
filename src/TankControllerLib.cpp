@@ -88,7 +88,7 @@ void TankControllerLib::blink() {
 }
 
 // https://github.com/maniacbug/MemoryFree/blob/master/MemoryFree.cpp
-size_t TankControllerLib::freeMemory() {
+int TankControllerLib::freeMemory() {
 #ifdef MOCK_PINS_COUNT
   int *__brkval = 0;
   int __bss_end = 0;
@@ -101,7 +101,7 @@ size_t TankControllerLib::freeMemory() {
   if ((size_t)__brkval == 0) {
     return ((size_t)&topOfStack) - ((size_t)&__bss_end);
   }
-  return ((size_t)&topOfStack) - ((size_t)__brkval);
+  return (int)((size_t)&topOfStack) - ((size_t)__brkval);
 }
 
 /**

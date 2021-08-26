@@ -33,12 +33,13 @@ void PushingBox::loop() {
   // is it time to send ?
   unsigned long now = millis();
   if (now >= nextSendTime) {
+    // serial("PushingBox::loop() - 1");
     if (false && strncmp(DevID, "PushingBoxIdentifier", 20) == 0) {
       serial("PushingBox identifier not defined in TankController.ino!");
-      nextSendTime = 0xffffffff;
-      return;
     } else {
+      // serial("PushingBox::loop() - 2; free memory = %i", TankControllerLib::instance()->freeMemory());
       sendData();
+      // serial("PushingBox::loop() - 3");
     }
     unsigned long minutes = EEPROM_TC::instance()->getGoogleSheetInterval();
     if (minutes == 0xffff) {
@@ -66,12 +67,14 @@ void PushingBox::loop() {
 }
 
 void PushingBox::sendData() {
+  // serial("PushingBox::sendData() - 1; free memory = %i", TankControllerLib::instance()->freeMemory());
   int tankID = EEPROM_TC::instance()->getTankID();
   if (!tankID) {
     serial("Set Tank ID in order to send data to PushingBox");
     return;
   }
   char buffer[200];
+  // serial("PushingBox::sendData() - 2; free memory = %i", TankControllerLib::instance()->freeMemory());
   if (TankControllerLib::instance()->isInCalibration()) {
     char format[] =
         "GET /pushingbox?devid=%s&tankid=%i&tempData=C&pHdata=C HTTP/1.1\r\n"
@@ -80,6 +83,7 @@ void PushingBox::sendData() {
         "\r\n";
     snprintf(buffer, sizeof(buffer), format, DevID, tankID);
   } else {
+    // serial("PushingBox::sendData() - 3; free memory = %i", TankControllerLib::instance()->freeMemory());
     char format[] =
         "GET /pushingbox?devid=%s&tankid=%i&tempData=%.2f&pHdata=%.3f HTTP/1.1\r\n"
         "Host: api.pushingbox.com\r\n"
@@ -97,6 +101,7 @@ void PushingBox::sendData() {
       break;
     }
   }
+  // serial("PushingBox::sendData() - 4; free memory = %i", TankControllerLib::instance()->freeMemory());
   serial(buffer);
   buffer[i] = '\r';
   serial("attempting to connect to PushingBox...");

@@ -90,7 +90,7 @@ bool EthernetServer_TC::file() {
   file.close();
   client.stop();
   state = NOT_CONNECTED;
-  serial("write = %lu; freeMemory = %lu", total, (unsigned long int)TankControllerLib::instance()->freeMemory());
+  serial("write = %lu; freeMemory = %i", total, TankControllerLib::instance()->freeMemory());
   serial("time = %lu; average flush time = %lu", end - start, (uint32_t)flushTime / flushCount);
   wdt_enable(WDTO_8S);
   return true;

@@ -39,14 +39,15 @@ void PHProbe::clearCalibration() {
 }
 
 void PHProbe::sendSlopeRequest() {
-  Serial1.print("SLOPE,?\r");  // Sending request for Calibration Slope
-  strncpy(slopeResponse, "       Slope requested!", sizeof(slopeResponse));
+  // Sending request for Calibration Slope
+  Serial1.print("SLOPE,?\r");
+  strncpy(slopeResponse, "       Slope requested!", sizeof(slopeResponse));  // Flawfinder: ignore
 }
 
 void PHProbe::getSlope(char *buffer, int size) {
   // for example "?SLOPE,99.7,100.3, -0.89"
-  if (strlen(slopeResponse) > 10) {
-    strncpy(buffer, slopeResponse + 7, size);
+  if (strlen(slopeResponse) > 10) {            // Flawfinder: ignore
+    strncpy(buffer, slopeResponse + 7, size);  // Flawfinder: ignore
   } else {
     buffer[0] = '\0';
   }
@@ -56,7 +57,8 @@ void PHProbe::getSlope(char *buffer, int size) {
  * interrupt handler for data arriving from probe
  */
 void PHProbe::serialEvent1() {
-  while (Serial1.available() > 0) {                 // if we see that the Atlas Scientific product has sent a character
+  // if we see that the Atlas Scientific product has sent a character
+  while (Serial1.available() > 0) {
     String string = Serial1.readStringUntil('\r');  // read the string until we see a <CR>
     if (string.length() > 0 && string[string.length() - 1] == '\r') {
       // We should not see the CR (https://github.com/Arduino-CI/arduino_ci/pull/302)
@@ -79,7 +81,7 @@ void PHProbe::serialEvent1() {
         serial("PHProbe serialEvent1: \"%s\"", string.c_str());
         if (string.length() > 7 && string.substring(0, 7) == "?SLOPE,") {
           // for example "?SLOPE,16.1,100.0"
-          strncpy(slopeResponse, string.c_str(), sizeof(slopeResponse));
+          strncpy(slopeResponse, string.c_str(), sizeof(slopeResponse));  // Flawfinder: ignore
         }
       }
     }

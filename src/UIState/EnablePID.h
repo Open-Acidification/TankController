@@ -17,8 +17,8 @@ public:
     return F("EnablePID");
   }
   float getCurrentValue();
-  const char* prompt() {
-    return "PID 1:on; 9:off";
+  const __FlashStringHelper* prompt() {
+    return F("PID 1:on; 9:off");
   };
   void setValue(float value);
 };

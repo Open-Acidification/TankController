@@ -29,8 +29,8 @@ public:
   virtual void loop() {
   }
   virtual const __FlashStringHelper* name() = 0;
-  virtual const char* prompt() {
-    return "";
+  virtual const __FlashStringHelper* prompt() {
+    return F("");
   }
   virtual void start();
 

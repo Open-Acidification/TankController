@@ -14,7 +14,7 @@ public:
   const __FlashStringHelper* name() {
     return F("SeeVersion");
   }
-  const char* prompt() {
-    return "Software Version";
+  const __FlashStringHelper* prompt() {
+    return F("Software Version");
   };
 };

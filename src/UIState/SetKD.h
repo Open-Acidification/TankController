@@ -20,8 +20,8 @@ public:
   uint16_t getCurrentValuePrecision() {
     return 1;
   }
-  const char* prompt() {
-    return "Set KD";
+  const __FlashStringHelper* prompt() {
+    return F("Set KD");
   };
   void setValue(float value);
 };

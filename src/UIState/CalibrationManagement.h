@@ -14,7 +14,7 @@ public:
   const __FlashStringHelper* name() {
     return F("CalibrationManagement");
   }
-  const char* prompt() {
-    return "Cal Management";
+  const __FlashStringHelper* prompt() {
+    return F("Cal Management");
   };
 };

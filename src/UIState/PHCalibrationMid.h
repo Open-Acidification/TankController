@@ -13,8 +13,8 @@ public:
   const __FlashStringHelper* name() {
     return F("PHCalibrationMid");
   }
-  const char* prompt() {
-    return "pH-Midpoint";
+  const __FlashStringHelper* prompt() {
+    return F("pH-Midpoint");
   };
   void setValue(float value);
 };

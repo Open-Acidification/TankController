@@ -14,7 +14,7 @@ public:
   const __FlashStringHelper* name() {
     return F("ResetLCDScreen");
   }
-  const char* prompt() {
-    return "Clearing Screen";
+  const __FlashStringHelper* prompt() {
+    return F("Clearing Screen");
   };
 };

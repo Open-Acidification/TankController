@@ -51,8 +51,8 @@ public:
   uint16_t getCurrentValuePrecision() {
     return priorValuePrecision;
   }
-  const char* prompt() {
-    return "Test:";
+  const __FlashStringHelper* prompt() {
+    return F("Test:");
   }
 
   // Testing

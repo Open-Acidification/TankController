@@ -9,7 +9,7 @@ public:
   const __FlashStringHelper* name() {
     return F("SeeFreeMemory");
   }
-  const char* prompt() {
-    return "Free Memory:";
+  const __FlashStringHelper* prompt() {
+    return F("Free Memory:");
   };
 };

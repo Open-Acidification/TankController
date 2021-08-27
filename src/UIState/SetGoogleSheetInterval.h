@@ -20,8 +20,8 @@ public:
   float getCurrentValue() {
     return EEPROM_TC::instance()->getGoogleSheetInterval();
   }
-  const char* prompt() {
-    return "G Sheet Minutes";
+  const __FlashStringHelper* prompt() {
+    return F("G Sheet Minutes");
   };
   void setValue(float value);
 };

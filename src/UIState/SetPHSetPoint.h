@@ -17,8 +17,8 @@ public:
   uint16_t getCurrentValuePrecision() {
     return 3;
   }
-  const char* prompt() {
-    return "Set pH Set Point";
+  const __FlashStringHelper* prompt() {
+    return F("Set pH Set Point");
   };
   void setValue(float value);
 };

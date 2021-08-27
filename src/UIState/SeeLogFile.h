@@ -14,7 +14,7 @@ public:
   const __FlashStringHelper* name() {
     return F("SeeLogFile");
   }
-  const char* prompt() {
-    return "Current Log File";
+  const __FlashStringHelper* prompt() {
+    return F("Current Log File");
   };
 };

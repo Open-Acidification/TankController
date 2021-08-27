@@ -45,8 +45,8 @@ public:
   const __FlashStringHelper* name() {
     return F("MainMenu");
   }
-  const char* prompt() {
-    return "Main Menu";
+  const __FlashStringHelper* prompt() {
+    return F("Main Menu");
   };
   bool isMainMenu() {
     return true;

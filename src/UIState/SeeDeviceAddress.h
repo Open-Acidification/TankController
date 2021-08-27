@@ -15,7 +15,7 @@ public:
   const __FlashStringHelper* name() {
     return F("SeeDeviceAddress");
   }
-  const char* prompt() {
-    return "Device address";
+  const __FlashStringHelper* prompt() {
+    return F("Device address");
   };
 };

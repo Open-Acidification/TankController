@@ -14,7 +14,7 @@ public:
   const __FlashStringHelper* name() {
     return F("SeeGoogleMins");
   }
-  const char* prompt() {
-    return "Google Mins:";
+  const __FlashStringHelper* prompt() {
+    return F("Google Mins:");
   };
 };

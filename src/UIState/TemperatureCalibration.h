@@ -22,8 +22,8 @@ public:
   uint16_t getCurrentValuePrecision() {
     return 2;
   }
-  const char* prompt() {
-    return "Real Temperature";
+  const __FlashStringHelper* prompt() {
+    return F("Real Temperature");
   };
   void setValue(float value);
 };

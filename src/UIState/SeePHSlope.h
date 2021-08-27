@@ -15,7 +15,7 @@ public:
   const __FlashStringHelper* name() {
     return F("SeePHSlope");
   }
-  const char* prompt() {
-    return "PH Slope:";
+  const __FlashStringHelper* prompt() {
+    return F("PH Slope:");
   };
 };

@@ -13,8 +13,8 @@ public:
   bool isInCalibration() {
     return true;
   }
-  const char* name() {
-    return "TemperatureCalibration";
+  const __FlashStringHelper* name() {
+    return F("TemperatureCalibration");
   }
   float getCurrentValue() {
     return 0;

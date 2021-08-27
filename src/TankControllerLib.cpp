@@ -199,7 +199,7 @@ void TankControllerLib::setup() {
  * Public member function used to get the current state name.
  * This is primarily used by testing.
  */
-const char *TankControllerLib::stateName() {
+const __FlashStringHelper *TankControllerLib::stateName() {
   return state->name();
 }
 

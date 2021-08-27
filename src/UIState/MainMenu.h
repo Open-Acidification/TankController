@@ -42,8 +42,8 @@ public:
   };
   MainMenu(TankControllerLib* tc);
   void handleKey(char key);
-  const char* name() {
-    return "MainMenu";
+  const __FlashStringHelper* name() {
+    return F("MainMenu");
   }
   const char* prompt() {
     return "Main Menu";

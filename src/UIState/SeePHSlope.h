@@ -12,8 +12,8 @@ public:
   }
   void start();
   void loop();
-  const char* name() {
-    return "SeePHSlope";
+  const __FlashStringHelper* name() {
+    return F("SeePHSlope");
   }
   const char* prompt() {
     return "PH Slope:";

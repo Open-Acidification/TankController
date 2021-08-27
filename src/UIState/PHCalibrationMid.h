@@ -10,8 +10,8 @@ class PHCalibrationMid : public PHCalibration {
 public:
   PHCalibrationMid(TankControllerLib* tc) : PHCalibration(tc) {
   }
-  const char* name() {
-    return "PHCalibrationMid";
+  const __FlashStringHelper* name() {
+    return F("PHCalibrationMid");
   }
   const char* prompt() {
     return "pH-Midpoint";

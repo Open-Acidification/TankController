@@ -11,8 +11,8 @@ public:
   ResetLCDScreen(TankControllerLib* tc) : UIState(tc) {
   }
   void handleKey(char key);
-  const char* name() {
-    return "ResetLCDScreen";
+  const __FlashStringHelper* name() {
+    return F("ResetLCDScreen");
   }
   const char* prompt() {
     return "Clearing Screen";

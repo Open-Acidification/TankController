@@ -13,8 +13,8 @@ public:
   virtual bool isInteger() {
     return true;
   }
-  const char* name() {
-    return "SetChillOrHeat";
+  const __FlashStringHelper* name() {
+    return F("SetChillOrHeat");
   }
   float getCurrentValue();
   const char* prompt() {

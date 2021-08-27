@@ -11,8 +11,8 @@ public:
   SeeLogFile(TankControllerLib* tc) : UIState(tc) {
   }
   void start();
-  const char* name() {
-    return "SeeLogFile";
+  const __FlashStringHelper* name() {
+    return F("SeeLogFile");
   }
   const char* prompt() {
     return "Current Log File";

@@ -14,8 +14,8 @@ public:
   virtual bool isInteger() {
     return true;
   }
-  const char* name() {
-    return "SetGoogleSheetInterval";
+  const __FlashStringHelper* name() {
+    return F("SetGoogleSheetInterval");
   }
   float getCurrentValue() {
     return EEPROM_TC::instance()->getGoogleSheetInterval();

@@ -14,8 +14,8 @@ public:
   virtual bool isInteger() {
     return true;
   }
-  const char* name() {
-    return "SetTankID";
+  const __FlashStringHelper* name() {
+    return F("SetTankID");
   }
   float getCurrentValue() {
     return EEPROM_TC::instance()->getTankID();

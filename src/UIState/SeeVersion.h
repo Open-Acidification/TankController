@@ -11,8 +11,8 @@ public:
   SeeVersion(TankControllerLib* tc) : UIState(tc) {
   }
   void start();
-  const char* name() {
-    return "SeeVersion";
+  const __FlashStringHelper* name() {
+    return F("SeeVersion");
   }
   const char* prompt() {
     return "Software Version";

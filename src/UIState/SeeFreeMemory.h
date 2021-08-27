@@ -6,8 +6,8 @@ public:
   SeeFreeMemory(TankControllerLib* tc) : UIState(tc) {
   }
   void start();
-  const char* name() {
-    return "SeeFreeMemory";
+  const __FlashStringHelper* name() {
+    return F("SeeFreeMemory");
   }
   const char* prompt() {
     return "Free Memory:";

@@ -10,8 +10,8 @@ class SetPHSetPoint : public NumCollectorState {
 public:
   SetPHSetPoint(TankControllerLib* tc) : NumCollectorState(tc) {
   }
-  const char* name() {
-    return "SetPHSetPoint";
+  const __FlashStringHelper* name() {
+    return F("SetPHSetPoint");
   }
   float getCurrentValue();
   uint16_t getCurrentValuePrecision() {

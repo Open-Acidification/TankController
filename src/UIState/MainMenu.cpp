@@ -219,8 +219,8 @@ void MainMenu::idle() {
   char output[17];
   PHControl *phControl = PHControl::instance();
   char equals = millis() / 1000 % 2 ? '=' : ' ';
-  snprintf(output, sizeof(output), "pH%c%5.3f %c %5.3f", equals, PHProbe::instance()->getPh(),
-           (phControl->isOn() ? 'B' : ' '), PHControl::instance()->getTargetPh());
+  snprintf_P(output, sizeof(output), (PGM_P)F("pH%c%5.3f %c %5.3f"), equals, PHProbe::instance()->getPh(),
+             (phControl->isOn() ? 'B' : ' '), PHControl::instance()->getTargetPh());
   LiquidCrystal_TC::instance()->writeLine(output, 0);
   TemperatureControl *tempControl = TemperatureControl::instance();
   TempProbe_TC *tempProbe = TempProbe_TC::instance();
@@ -235,7 +235,8 @@ void MainMenu::idle() {
     status = toupper(status);
   }
 
-  snprintf(output, sizeof(output), "T%c%5.2f %c %5.2f", equals, temp, status, tempControl->getTargetTemperature());
+  snprintf_P(output, sizeof(output), (PGM_P)F("T%c%5.2f %c %5.2f"), equals, temp, status,
+             tempControl->getTargetTemperature());
   LiquidCrystal_TC::instance()->writeLine(output, 1);
 }
 

@@ -72,7 +72,7 @@ void SD_TC::appendDataToPath(const char* line, const char* path) {
 void SD_TC::appendToLog(const char* line) {
   DateTime_TC now = DateTime_TC::now();
   char path[30];
-  snprintf(path, sizeof(path), "%4i%02i%02i.log", now.year(), now.month(), now.day());
+  snprintf_P(path, sizeof(path), (PGM_P)F("%4i%02i%02i.log"), now.year(), now.month(), now.day());
   appendDataToPath(line, path);
 }
 
@@ -101,6 +101,6 @@ void SD_TC::printRootDirectory() {
 
 void SD_TC::todaysDataFileName(char* path, int size) {
   DateTime_TC now = DateTime_TC::now();
-  snprintf(path, size, "%4i%02i%02i.csv", now.year(), now.month(), now.day());
+  snprintf_P(path, size, (PGM_P)F("%4i%02i%02i.csv"), now.year(), now.month(), now.day());
   COUT(path);
 }

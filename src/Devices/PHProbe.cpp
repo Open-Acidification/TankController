@@ -94,9 +94,9 @@ void PHProbe::serialEvent1() {
 void PHProbe::setTemperatureCompensation(float temperature) {
   char buffer[10];
   if (temperature > 0 && temperature < 100) {
-    snprintf(buffer, sizeof(buffer), "T,%.2f\r", temperature);
+    snprintf_P(buffer, sizeof(buffer), (PGM_P)F("T,%.2f\r"), temperature);
   } else {
-    snprintf(buffer, sizeof(buffer), "T,20\r");
+    snprintf_P(buffer, sizeof(buffer), (PGM_P)F("T,20\r"));
   }
   serial("PHProbe::setTemperatureCompensation) - %s", buffer);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
@@ -104,18 +104,18 @@ void PHProbe::setTemperatureCompensation(float temperature) {
 
 void PHProbe::setHighpointCalibration(float highpoint) {
   char buffer[17];
-  snprintf(buffer, sizeof(buffer), "Cal,High,%.3f\r", highpoint);
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,High,%.3f\r"), highpoint);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
 }
 
 void PHProbe::setLowpointCalibration(float lowpoint) {
   char buffer[16];
-  snprintf(buffer, sizeof(buffer), "Cal,low,%.3f\r", lowpoint);
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,low,%.3f\r"), lowpoint);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
 }
 
 void PHProbe::setMidpointCalibration(float midpoint) {
   char buffer[16];
-  snprintf(buffer, sizeof(buffer), "Cal,mid,%.3f\r", midpoint);
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,mid,%.3f\r"), midpoint);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
 }

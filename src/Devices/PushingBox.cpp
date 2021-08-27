@@ -67,14 +67,14 @@ void PushingBox::sendData() {
   }
   char buffer[200];
   if (TankControllerLib::instance()->isInCalibration()) {
-    char format[] =
+    char format[] PROGMEM =
         "GET /pushingbox?devid=%s&tankid=%i&tempData=C&pHdata=C HTTP/1.1\r\n"
         "Host: api.pushingbox.com\r\n"
         "Connection: close\r\n"
         "\r\n";
-    snprintf(buffer, sizeof(buffer), format, DevID, tankID);
+    snprintf_P(buffer, sizeof(buffer), (PGM_P)format, DevID, tankID);
   } else {
-    char format[] =
+    char format[] PROGMEM =
         "GET /pushingbox?devid=%s&tankid=%i&tempData=%.2f&pHdata=%.3f HTTP/1.1\r\n"
         "Host: api.pushingbox.com\r\n"
         "Connection: close\r\n"
@@ -82,7 +82,7 @@ void PushingBox::sendData() {
     // look up tankid, temperature, ph
     float temperature = TempProbe_TC::instance()->getRunningAverage();
     float pH = PHProbe::instance()->getPh();
-    snprintf(buffer, sizeof(buffer), format, DevID, tankID, temperature, pH);
+    snprintf_P(buffer, sizeof(buffer), (PGM_P)format, DevID, tankID, temperature, pH);
   }
   size_t i = 0;
   for (; i < sizeof(buffer); ++i) {

@@ -12,8 +12,8 @@ public:
   SeePIDConstants(TankControllerLib* tc) : UIState(tc) {
   }
   void loop();
-  const char* name() {
-    return "SeePIDConstants";
+  const __FlashStringHelper* name() {
+    return F("SeePIDConstants");
   }
   void start() {
     startTime = millis();

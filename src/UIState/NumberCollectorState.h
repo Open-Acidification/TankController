@@ -42,8 +42,8 @@ public:
   void setValue(float value) {
     storedValue = value;
   }
-  const char* name() {
-    return "TestNumCollectorState";
+  const __FlashStringHelper* name() {
+    return F("TestNumCollectorState");
   }
   float getCurrentValue() {
     return priorValue;
@@ -51,8 +51,8 @@ public:
   uint16_t getCurrentValuePrecision() {
     return priorValuePrecision;
   }
-  const char* prompt() {
-    return "Test:";
+  const __FlashStringHelper* prompt() {
+    return F("Test:");
   }
 
   // Testing

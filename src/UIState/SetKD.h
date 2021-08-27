@@ -11,8 +11,8 @@ class SetKD : public NumCollectorState {
 public:
   SetKD(TankControllerLib* tc) : NumCollectorState(tc) {
   }
-  const char* name() {
-    return "SetKD";
+  const __FlashStringHelper* name() {
+    return F("SetKD");
   }
   float getCurrentValue() {
     return EEPROM_TC::instance()->getKD();
@@ -20,8 +20,8 @@ public:
   uint16_t getCurrentValuePrecision() {
     return 1;
   }
-  const char* prompt() {
-    return "Set KD";
+  const __FlashStringHelper* prompt() {
+    return F("Set KD");
   };
   void setValue(float value);
 };

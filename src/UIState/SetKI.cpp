@@ -10,7 +10,7 @@ void SetKI::setValue(float value) {
   PID_TC::instance()->setKi(value);
 
   char output[17];
-  snprintf(output, sizeof(output), "New KI=%.1f", value);  // "New KI=12345.5"
+  snprintf_P(output, sizeof(output), (PGM_P)F("New KI=%.1f"), value);  // "New KI=12345.5"
   LiquidCrystal_TC::instance()->writeLine(output, 1);
   returnToMainMenu(3000);
 }

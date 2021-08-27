@@ -27,7 +27,7 @@ EthernetServer_TC* EthernetServer_TC::instance() {
  */
 EthernetServer_TC::EthernetServer_TC(uint16_t port) : EthernetServer(port) {
   begin();
-  serial("Ethernet Server is listening on port %d", port);
+  serial(F("Ethernet Server is listening on port 80"));
 }
 
 void EthernetServer_TC::echo() {

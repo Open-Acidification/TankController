@@ -11,10 +11,10 @@ public:
   SeeGoogleMins(TankControllerLib* tc) : UIState(tc) {
   }
   void start();
-  const char* name() {
-    return "SeeGoogleMins";
+  const __FlashStringHelper* name() {
+    return F("SeeGoogleMins");
   }
-  const char* prompt() {
-    return "Google Mins:";
+  const __FlashStringHelper* prompt() {
+    return F("Google Mins:");
   };
 };

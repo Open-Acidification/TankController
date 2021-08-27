@@ -27,14 +27,14 @@ unittest(loop) {
 
 unittest(writeLine) {
   LiquidCrystal_TC* testLcd = LiquidCrystal_TC::instance();
-  testLcd->writeLine("Hello", 0);
-  testLcd->writeLine("World", 1);
+  testLcd->writeLine(F("Hello"), 0);
+  testLcd->writeLine(F("World"), 1);
   std::vector<String> lines = testLcd->getLines();
   assertEqual("Hello           ", lines.at(0));
   assertEqual("World           ", lines.at(1));
 
-  testLcd->writeLine("Wrong line num", 6);
-  testLcd->writeLine("this won't break", 3);
+  testLcd->writeLine(F("Wrong line num"), 6);
+  testLcd->writeLine(F("this won't break"), 3);
   lines = testLcd->getLines();
   assertEqual("Wrong line num  ", lines.at(0));
   assertEqual("this won't break", lines.at(1));

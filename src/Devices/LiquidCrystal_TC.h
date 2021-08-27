@@ -9,8 +9,9 @@
 
 class LiquidCrystal_TC : public LiquidCrystal {
 public:
-  static LiquidCrystal_TC* instance(const char* version = "21.01.1");
+  static LiquidCrystal_TC* instance(const char* version = "?");
   void writeLine(const char* text, uint16_t line);
+  void writeLine(const __FlashStringHelper* text, uint16_t line);
 
 private:
   // class variables

@@ -14,14 +14,14 @@ public:
   virtual bool isInteger() {
     return true;
   }
-  const char* name() {
-    return "SetTankID";
+  const __FlashStringHelper* name() {
+    return F("SetTankID");
   }
   float getCurrentValue() {
     return EEPROM_TC::instance()->getTankID();
   }
-  const char* prompt() {
-    return "Set Tank ID#";
+  const __FlashStringHelper* prompt() {
+    return F("Set Tank ID#");
   };
   void setValue(float value);
 };

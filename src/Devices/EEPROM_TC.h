@@ -14,28 +14,28 @@ public:
   void eepromWriteInt(uint16_t address, int32_t value);
 
   // accessor methods
-  float getAmplitude();
-  float getCorrectedTemp();
-  float getFrequency();
-  uint16_t getGoogleSheetInterval();
-  float getGranularity();
-  bool getHeat();
-  float getKD();
-  float getKI();
-  float getKP();
-  void getMac(uint8_t* bytes);
-  float getMaxDataAge();
-  float getPH();
-  float getPHDelay();
-  float getPHInterval();
-  float getPHSeriesPointer();
-  float getPHSeriesSize();
-  uint16_t getTankID();
-  float getTemp();
-  float getTempDelay();
-  float getTempInterval();
-  float getTempSeriesPointer();
-  float getTempSeriesSize();
+  float getAmplitude();               // not used
+  float getCorrectedTemp();           // adjustment to temperature probe
+  float getFrequency();               // not used
+  uint16_t getGoogleSheetInterval();  // how often to send data using PushingBox
+  float getGranularity();             // not used
+  bool getHeat();                     // boolean for heater (true) or chiller (false)
+  float getKD();                      // constants used for PID to calculate bubbler timer
+  float getKI();                      // constants used for PID to calculate bubbler timer
+  float getKP();                      // constants used for PID to calculate bubbler timer
+  void getMac(uint8_t* bytes);        // used for DHCP request for IP address
+  float getMaxDataAge();              // not used
+  float getPH();                      // target pH
+  float getPHDelay();                 // not used
+  float getPHInterval();              // not used
+  float getPHSeriesPointer();         // not used
+  float getPHSeriesSize();            // not used
+  uint16_t getTankID();               // unique tank identifier for reporting
+  float getTemp();                    // target temperature
+  float getTempDelay();               // not used
+  float getTempInterval();            // not used
+  float getTempSeriesPointer();       // not used
+  float getTempSeriesSize();          // not used
 
   // setter methods
   void setAmplitude(float value);

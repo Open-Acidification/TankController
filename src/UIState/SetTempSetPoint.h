@@ -11,8 +11,8 @@ class SetTempSetPoint : public NumCollectorState {
 public:
   SetTempSetPoint(TankControllerLib* tc) : NumCollectorState(tc) {
   }
-  const char* name() {
-    return "SetTempSetPoint";
+  const __FlashStringHelper* name() {
+    return F("SetTempSetPoint");
   }
   float getCurrentValue() {
     return EEPROM_TC::instance()->getTemp();
@@ -20,8 +20,8 @@ public:
   uint16_t getCurrentValuePrecision() {
     return 2;
   }
-  const char* prompt() {
-    return "Set Temperature";
+  const __FlashStringHelper* prompt() {
+    return F("Set Temperature");
   };
   void setValue(float value);
 };

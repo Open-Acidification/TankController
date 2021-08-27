@@ -34,12 +34,12 @@ PHControl::PHControl() {
     targetPh = DEFAULT_PH;
     EEPROM_TC::instance()->setPH(targetPh);
   }
-  serial("PHControl with target pH = %5.3f", targetPh);
+  serial(F("PHControl with target pH = %5.3f"), targetPh);
 }
 
 void PHControl::setTargetPh(float newPh) {
   if (targetPh != newPh) {
-    serial("change target pH from %6.4f to %6.4f", targetPh, newPh);
+    serial(F("change target pH from %6.4f to %6.4f"), targetPh, newPh);
     targetPh = newPh;
     EEPROM_TC::instance()->setPH(newPh);
   }
@@ -48,7 +48,7 @@ void PHControl::setTargetPh(float newPh) {
 void PHControl::enablePID(bool flag) {
   usePID = flag;
   // save to EEPROM?
-  serial((flag ? "enable PID" : "disable PID"));
+  serial(flag ? F("enable PID") : F("disable PID"));
 }
 
 bool PHControl::isOn() {
@@ -63,7 +63,7 @@ void PHControl::updateControl(float pH) {
     msToBeOn = PID_TC::instance()->computeOutput(targetPh, pH);
     if (msToBeOn > 9000) {
       if (msToBeOn > 10000 && lastWarnMS + 60000 < millis()) {
-        serial("WARNING: PID asked for an on time of %i which has been capped at 9000", msToBeOn);
+        serial(F("WARNING: PID asked for an on time of %i which has been capped at 9000"), msToBeOn);
         lastWarnMS = millis();
       }
       msToBeOn = 9000;
@@ -87,7 +87,7 @@ void PHControl::updateControl(float pH) {
   if (newValue != digitalRead(PH_CONTROL_PIN)) {
     digitalWrite(PH_CONTROL_PIN, newValue);
     uint32_t currentMS = millis();
-    serial("CO2 bubbler turned %s after %lu ms", newValue ? "off" : "on", currentMS - lastSwitchMS);
+    serial(F("CO2 bubbler turned %s after %lu ms"), newValue ? "off" : "on", currentMS - lastSwitchMS);
     lastSwitchMS = currentMS;
   }
 }

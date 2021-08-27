@@ -30,18 +30,18 @@ PHProbe::PHProbe() {
   // wait for Serial Monitor to connect. Needed for native USB port boards only:
   while (!Serial1)
     ;
-  Serial1.print("*OK,0\r");  // Turn off the returning of OK after command to EZO pH
-  Serial1.print("C,1\r");    // Reset pH stamp to continuous measurement: once per second
+  Serial1.print(F("*OK,0\r"));  // Turn off the returning of OK after command to EZO pH
+  Serial1.print(F("C,1\r"));    // Reset pH stamp to continuous measurement: once per second
 }
 
 void PHProbe::clearCalibration() {
-  Serial1.print("Cal,clear\r");  // send that string to the Atlas Scientific product
+  Serial1.print(F("Cal,clear\r"));  // send that string to the Atlas Scientific product
 }
 
 void PHProbe::sendSlopeRequest() {
   // Sending request for Calibration Slope
-  Serial1.print("SLOPE,?\r");
-  strncpy(slopeResponse, "       Slope requested!", sizeof(slopeResponse));  // Flawfinder: ignore
+  Serial1.print(F("SLOPE,?\r"));
+  strncpy_P(slopeResponse, (PGM_P)F("       Slope requested!"), sizeof(slopeResponse));  // Flawfinder: ignore
 }
 
 void PHProbe::getSlope(char *buffer, int size) {
@@ -73,12 +73,12 @@ void PHProbe::serialEvent1() {
                                      // treat 0 as valid since probe might not be connected
           wdt_disable();
           wdt_enable(WDTO_120MS);  // allow enough time to print message
-          serial("pH value dropped to %5.3f so trigger a reset!", value);
+          serial(F("pH value dropped to %5.3f so trigger a reset!"), value);
           while (true) {
           }
         }
       } else if (string[0] == '?') {  // answer to a previous query
-        serial("PHProbe serialEvent1: \"%s\"", string.c_str());
+        serial(F("PHProbe serialEvent1: \"%s\""), string.c_str());
         if (string.length() > 7 && string.substring(0, 7) == "?SLOPE,") {
           // for example "?SLOPE,16.1,100.0"
           strncpy(slopeResponse, string.c_str(), sizeof(slopeResponse));  // Flawfinder: ignore
@@ -94,28 +94,28 @@ void PHProbe::serialEvent1() {
 void PHProbe::setTemperatureCompensation(float temperature) {
   char buffer[10];
   if (temperature > 0 && temperature < 100) {
-    snprintf(buffer, sizeof(buffer), "T,%.2f\r", temperature);
+    snprintf_P(buffer, sizeof(buffer), (PGM_P)F("T,%.2f\r"), temperature);
   } else {
-    snprintf(buffer, sizeof(buffer), "T,20\r");
+    snprintf_P(buffer, sizeof(buffer), (PGM_P)F("T,20\r"));
   }
-  serial("PHProbe::setTemperatureCompensation) - %s", buffer);
+  serial(F("PHProbe::setTemperatureCompensation() - %s"), buffer);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
 }
 
 void PHProbe::setHighpointCalibration(float highpoint) {
   char buffer[17];
-  snprintf(buffer, sizeof(buffer), "Cal,High,%.3f\r", highpoint);
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,High,%.3f\r"), highpoint);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
 }
 
 void PHProbe::setLowpointCalibration(float lowpoint) {
   char buffer[16];
-  snprintf(buffer, sizeof(buffer), "Cal,low,%.3f\r", lowpoint);
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,low,%.3f\r"), lowpoint);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
 }
 
 void PHProbe::setMidpointCalibration(float midpoint) {
   char buffer[16];
-  snprintf(buffer, sizeof(buffer), "Cal,mid,%.3f\r", midpoint);
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,mid,%.3f\r"), midpoint);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
 }

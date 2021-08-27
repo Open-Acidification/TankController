@@ -30,8 +30,8 @@ PHProbe::PHProbe() {
   // wait for Serial Monitor to connect. Needed for native USB port boards only:
   while (!Serial1)
     ;
-  Serial1.print("*OK,0\r");  // Turn off the returning of OK after command to EZO pH
-  Serial1.print("C,1\r");    // Reset pH stamp to continuous measurement: once per second
+  Serial1.print(F("*OK,0\r"));  // Turn off the returning of OK after command to EZO pH
+  Serial1.print(F("C,1\r"));    // Reset pH stamp to continuous measurement: once per second
 }
 
 void PHProbe::clearCalibration() {
@@ -69,8 +69,8 @@ void PHProbe::serialEvent1() {
         // convert the string to a floating point number so it can be evaluated by the Arduino
         value = string.toFloat();
         // we have seen situations where the CO2 bubbler stays on and drives the pH down
-        if (value && value < 7.0) {  // hang so as to trigger the watchdog timer reset
-                                     // treat 0 as valid since probe might not be connected
+        if (false && value && value < 7.0) {  // hang so as to trigger the watchdog timer reset
+                                              // treat 0 as valid since probe might not be connected
           wdt_disable();
           wdt_enable(WDTO_120MS);  // allow enough time to print message
           serial(F("pH value dropped to %5.3f so trigger a reset!"), value);

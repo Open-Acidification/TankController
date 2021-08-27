@@ -34,32 +34,33 @@ SD_TC::SD_TC() {
 /**
  * append data to a data log file
  */
-void SD_TC::appendData(String header, String line) {
-  String path = todaysDataFileName();
-  if (!sd.exists(path.c_str())) {
-    appendDataToPath(header, path.c_str());
+void SD_TC::appendData(const char* header, const char* line) {
+  char path[30];
+  todaysDataFileName(path, sizeof(path));
+  if (!sd.exists(path)) {
+    appendDataToPath(header, path);
     COUT(header);
   }
-  appendDataToPath(line, path.c_str());
+  appendDataToPath(line, path);
   COUT(line);
 }
 
 /**
  * append data to a path
  */
-void SD_TC::appendDataToPath(String line, String path) {
+void SD_TC::appendDataToPath(const char* line, const char* path) {
   COUT(path);
   File file = sd.open(path, O_CREAT | O_WRONLY | O_APPEND);
   if (file) {
-    file.write(line.c_str(), line.length());
+    file.write(line);
     file.write("\n", 1);
     file.close();
     COUT(file);
   } else {
     if (!hasHadError) {
       hasHadError = true;
-      serial("Unable to open file: \"%s\"", path.c_str());
-      COUT("Unable to open file: \"" << path.c_str() << "\"");
+      serial("Unable to open file: \"%s\"", path);
+      COUT("Unable to open file: \"" << path << "\"");
       return;
     }
   }
@@ -68,7 +69,7 @@ void SD_TC::appendDataToPath(String line, String path) {
 /**
  * append data to a serial log file
  */
-void SD_TC::appendToLog(String line) {
+void SD_TC::appendToLog(const char* line) {
   DateTime_TC now = DateTime_TC::now();
   char path[30];
   snprintf(path, sizeof(path), "%4i%02i%02i.log", now.year(), now.month(), now.day());
@@ -98,10 +99,8 @@ void SD_TC::printRootDirectory() {
   // serial("SD_TC::printRootDirectory()");
 }
 
-String SD_TC::todaysDataFileName() {
+void SD_TC::todaysDataFileName(char* path, int size) {
   DateTime_TC now = DateTime_TC::now();
-  char path[30];
-  snprintf(path, sizeof(path), "%4i%02i%02i.csv", now.year(), now.month(), now.day());
+  snprintf(path, size, "%4i%02i%02i.csv", now.year(), now.month(), now.day());
   COUT(path);
-  return String(path);
 }

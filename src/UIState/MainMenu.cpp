@@ -31,29 +31,29 @@
 #include "TemperatureCalibration.h"
 
 MainMenu::MainMenu(TankControllerLib *tc) : UIState(tc) {
-  viewMenus[VIEW_GOOGLE_MINS] = "View Google mins";
-  viewMenus[VIEW_ADDRESS] = "View IP and MAC";
-  viewMenus[VIEW_FREE_MEMORY] = "View free memory";
-  viewMenus[VIEW_LOG_FILE] = "View log file";
-  viewMenus[VIEW_PID] = "View PID";
-  viewMenus[VIEW_PH_SLOPE] = "View pH slope";
-  viewMenus[VIEW_TANK_ID] = "View tank ID";
-  viewMenus[VIEW_TIME] = "View time";
-  viewMenus[VIEW_VERSION] = "View version";
+  viewMenus[VIEW_GOOGLE_MINS] = F("View Google mins");
+  viewMenus[VIEW_ADDRESS] = F("View IP and MAC");
+  viewMenus[VIEW_FREE_MEMORY] = F("View free memory");
+  viewMenus[VIEW_LOG_FILE] = F("View log file");
+  viewMenus[VIEW_PID] = F("View PID");
+  viewMenus[VIEW_PH_SLOPE] = F("View pH slope");
+  viewMenus[VIEW_TANK_ID] = F("View tank ID");
+  viewMenus[VIEW_TIME] = F("View time");
+  viewMenus[VIEW_VERSION] = F("View version");
 
-  setMenus[SET_CALIBRATION] = "pH calibration";
-  setMenus[SET_CALIBRATION_CLEAR] = "Clear pH calibra";
-  setMenus[SET_CHILL_OR_HEAT] = "Set chill/heat";
-  setMenus[SET_GOOGLE_MINS] = "Set Google mins";
-  setMenus[SET_PH] = "Set pH target";
-  setMenus[SET_KD] = "Set KD";
-  setMenus[SET_KI] = "Set KI";
-  setMenus[SET_KP] = "Set KP";
-  setMenus[SET_PID_ON_OFF] = "PID on/off";
-  setMenus[SET_TANK_ID] = "Set Tank ID";
-  setMenus[SET_TEMP_CALIBRATION] = "Temp calibration";
-  setMenus[SET_TEMPERATURE] = "Set temperature";
-  setMenus[SET_TIME] = "Set date/time";
+  setMenus[SET_CALIBRATION] = F("pH calibration");
+  setMenus[SET_CALIBRATION_CLEAR] = F("Clear pH calibra");
+  setMenus[SET_CHILL_OR_HEAT] = F("Set chill/heat");
+  setMenus[SET_GOOGLE_MINS] = F("Set Google mins");
+  setMenus[SET_PH] = F("Set pH target");
+  setMenus[SET_KD] = F("Set KD");
+  setMenus[SET_KI] = F("Set KI");
+  setMenus[SET_KP] = F("Set KP");
+  setMenus[SET_PID_ON_OFF] = F("PID on/off");
+  setMenus[SET_TANK_ID] = F("Set Tank ID");
+  setMenus[SET_TEMP_CALIBRATION] = F("Temp calibration");
+  setMenus[SET_TEMPERATURE] = F("Set temperature");
+  setMenus[SET_TIME] = F("Set date/time");
 }
 
 /**

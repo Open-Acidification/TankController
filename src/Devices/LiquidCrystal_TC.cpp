@@ -35,11 +35,11 @@ LiquidCrystal_TC::LiquidCrystal_TC(const char* version) : LiquidCrystal(RS, EN, 
 
 void LiquidCrystal_TC::splashScreen(const char* version) {
   clear();
-  print("Tank Controller ");
+  print(F("Tank Controller "));
   setCursor(0, 1);
   print('v');
   print(version);
-  print(" loading");
+  print(F(" loading"));
 }
 
 /**

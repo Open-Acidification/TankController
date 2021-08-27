@@ -53,7 +53,8 @@ char *DateTime_TC::as16CharacterString() {
 }
 
 void DateTime_TC::printToSerial() {
-  char buffer[] = "YYYY-MM-DD hh:mm:ss";
+  char buffer[20];
+  strncpy_P(buffer, (PGM_P)F("YYYY-MM-DD hh:mm:ss"), sizeof(buffer));
   DateTime_TC now = DateTime_TC::now();
   now.toString(buffer);
   serial(F("%s"), buffer);

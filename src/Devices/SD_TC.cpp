@@ -24,10 +24,10 @@ SD_TC* SD_TC::instance() {
  * constructor
  */
 SD_TC::SD_TC() {
-  Serial.println("SD_TC()");  // Serial_TC might not be ready yet
+  Serial.println(F("SD_TC()"));  // Serial_TC might not be ready yet
   assert(_instance == nullptr);
   if (!sd.begin(SD_SELECT_PIN)) {
-    Serial.println("SD_TC failed to initialize!");
+    Serial.println(F("SD_TC failed to initialize!"));
   }
 }
 

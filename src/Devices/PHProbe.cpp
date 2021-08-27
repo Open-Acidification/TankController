@@ -35,12 +35,12 @@ PHProbe::PHProbe() {
 }
 
 void PHProbe::clearCalibration() {
-  Serial1.print("Cal,clear\r");  // send that string to the Atlas Scientific product
+  Serial1.print(F("Cal,clear\r"));  // send that string to the Atlas Scientific product
 }
 
 void PHProbe::sendSlopeRequest() {
   // Sending request for Calibration Slope
-  Serial1.print("SLOPE,?\r");
+  Serial1.print(F("SLOPE,?\r"));
   strncpy_P(slopeResponse, (PGM_P)F("       Slope requested!"), sizeof(slopeResponse));  // Flawfinder: ignore
 }
 
@@ -69,8 +69,8 @@ void PHProbe::serialEvent1() {
         // convert the string to a floating point number so it can be evaluated by the Arduino
         value = string.toFloat();
         // we have seen situations where the CO2 bubbler stays on and drives the pH down
-        if (false && value && value < 7.0) {  // hang so as to trigger the watchdog timer reset
-                                              // treat 0 as valid since probe might not be connected
+        if (value && value < 7.0) {  // hang so as to trigger the watchdog timer reset
+                                     // treat 0 as valid since probe might not be connected
           wdt_disable();
           wdt_enable(WDTO_120MS);  // allow enough time to print message
           serial(F("pH value dropped to %5.3f so trigger a reset!"), value);

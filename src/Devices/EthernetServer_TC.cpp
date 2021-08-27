@@ -37,7 +37,7 @@ void EthernetServer_TC::echo() {
     ++i;
   }
   serial(F("echo() found space or null at %d"), i);
-  if (memcmp(buffer + i - 3, "%22", 3)) {
+  if (memcmp_P(buffer + i - 3, F("%22"), 3)) {
     serial(F("bad"));
   } else {
     buffer[i - 3] = '\0';
@@ -97,7 +97,7 @@ bool EthernetServer_TC::file() {
 }
 
 void EthernetServer_TC::get() {
-  if (memcmp(buffer + 4, "/echo?value=%22", 15) == 0) {
+  if (memcmp_P(buffer + 4, F("/echo?value=%22"), 15) == 0) {
     echo();
   } else if (!file()) {
     // TODO: send an error response
@@ -121,7 +121,7 @@ void EthernetServer_TC::loop() {
       if (bufferContentsSize > 1 && buffer[bufferContentsSize - 2] == '\r' && buffer[bufferContentsSize - 1] == '\n') {
         buffer[bufferContentsSize - 2] = '\0';
         state = HAS_REQUEST;
-        if (memcmp(buffer, "GET ", 4) == 0) {
+        if (memcmp_P(buffer, F("GET "), 4) == 0) {
           state = GET_REQUEST;
           break;
         }
@@ -146,25 +146,27 @@ void EthernetServer_TC::loop() {
 }
 
 void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
-  const char response[] =
+  const char response[] PROGMEM =
       "HTTP/1.1 200 OK\r\n"
       "Content-Type: text/plain;charset=UTF-8\r\n"
       "Content-Encoding: identity\r\n"
       "Content-Language: en-US\r\n";
-  client.write(response);
+  client.write((PGM_P)response);
   char buffer[40];
-  snprintf(buffer, sizeof(buffer), "Content-Length: %lu\r\n", (unsigned long)size);
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Content-Length: %lu\r\n"), (unsigned long)size);
   client.write(buffer);
 
   // TODO: add "Date:"" header
-  const char* weekdays[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
-  const char* months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+  const __FlashStringHelper* weekdays[] = {F("Sun"), F("Mon"), F("Tue"), F("Wed"), F("Thu"), F("Fri"), F("Sat")};
+  const __FlashStringHelper* months[] = {F("Jan"), F("Feb"), F("Mar"), F("Apr"), F("May"), F("Jun"),
+                                         F("Jul"), F("Aug"), F("Sep"), F("Oct"), F("Nov"), F("Dec")};
   DateTime_TC now = DateTime_TC::now();
   // int weekday = weekday(now.getYear(), now.getMonth(), now.getDay());
   // snprintf(buffer, sizeof(buffer), "Date: %s, %02d %s %04d %02d:%02d:%02d GMT\r\n", );
 
   // blank line indicates end of headers
-  client.write("\r\n");
+  client.write('\r');
+  client.write('\n');
 }
 
 int EthernetServer_TC::weekday(int year, int month, int day) {

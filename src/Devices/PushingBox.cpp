@@ -34,7 +34,7 @@ void PushingBox::loop() {
   unsigned long now = millis();
   if (now >= nextSendTime) {
     // serial(F("PushingBox::loop() - 1"));
-    if (false && strncmp(DevID, "PushingBoxIdentifier", 20) == 0) {
+    if (false && strncmp_P(DevID, (PGM_P)F("PushingBoxIdentifier"), 20) == 0) {
       serial(F("PushingBox identifier not defined in TankController.ino!"));
     } else {
       // serial(F("PushingBox::loop() - 2; free memory = %i", TankControllerLib::instance()->freeMemory());

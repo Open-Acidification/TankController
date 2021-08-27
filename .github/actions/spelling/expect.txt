@@ -126,6 +126,7 @@ sizeof
 snprintf
 solonoids
 src
+strcpy
 strlen
 strnlen
 strncpy

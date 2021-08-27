@@ -8,7 +8,9 @@
 #include "Devices/PHProbe.h"
 
 void SeePHSlope::loop() {
-  LiquidCrystal_TC::instance()->writeLine(PHProbe::instance()->getSlope().c_str(), 1);
+  char buffer[20];
+  PHProbe::instance()->getSlope(buffer, sizeof(buffer));
+  LiquidCrystal_TC::instance()->writeLine(buffer, 1);
 }
 
 void SeePHSlope::start() {

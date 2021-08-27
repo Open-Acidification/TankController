@@ -19,11 +19,11 @@ public:
   float getPh() {
     return value;
   }
-  String getSlopeResponse() {
+  const char* getSlopeResponse() const {
     return slopeResponse;
   }
   void clearCalibration();
-  String getSlope();
+  void getSlope(char* buffer, int size);
   void sendSlopeRequest();
   void serialEvent1();
   void setHighpointCalibration(float highpoint);
@@ -36,7 +36,7 @@ private:
   static PHProbe* _instance;
   // instance variable
   float value = 0;
-  String slopeResponse = "";
+  char slopeResponse[32] = "";
   // Methods
   PHProbe();
 };

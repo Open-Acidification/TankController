@@ -94,6 +94,7 @@ oflag
 ONTHANK
 OVUV
 pdf
+PGM
 PIDOn
 plugin
 png

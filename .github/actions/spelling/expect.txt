@@ -101,6 +101,7 @@ png
 pragma
 printf
 println
+PROGMEM
 Ptr
 pushingbox
 pwd

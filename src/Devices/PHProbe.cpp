@@ -39,24 +39,26 @@ void PHProbe::clearCalibration() {
 }
 
 void PHProbe::sendSlopeRequest() {
-  Serial1.print("SLOPE,?\r");  // Sending request for Calibration Slope
-  slopeResponse = "       Slope requested!";
+  // Sending request for Calibration Slope
+  Serial1.print("SLOPE,?\r");
+  strncpy(slopeResponse, "       Slope requested!", sizeof(slopeResponse));  // Flawfinder: ignore
 }
 
-String PHProbe::getSlope() {
+void PHProbe::getSlope(char *buffer, int size) {
   // for example "?SLOPE,99.7,100.3, -0.89"
-  if (slopeResponse.length() < 10) {
-    return String("");
+  if (strlen(slopeResponse) > 10) {            // Flawfinder: ignore
+    strncpy(buffer, slopeResponse + 7, size);  // Flawfinder: ignore
+  } else {
+    buffer[0] = '\0';
   }
-  String slope = slopeResponse.substring(7);
-  return slope;
 }
 
 /**
  * interrupt handler for data arriving from probe
  */
 void PHProbe::serialEvent1() {
-  while (Serial1.available() > 0) {                 // if we see that the Atlas Scientific product has sent a character
+  // if we see that the Atlas Scientific product has sent a character
+  while (Serial1.available() > 0) {
     String string = Serial1.readStringUntil('\r');  // read the string until we see a <CR>
     if (string.length() > 0 && string[string.length() - 1] == '\r') {
       // We should not see the CR (https://github.com/Arduino-CI/arduino_ci/pull/302)
@@ -79,7 +81,7 @@ void PHProbe::serialEvent1() {
         serial("PHProbe serialEvent1: \"%s\"", string.c_str());
         if (string.length() > 7 && string.substring(0, 7) == "?SLOPE,") {
           // for example "?SLOPE,16.1,100.0"
-          slopeResponse = string;
+          strncpy(slopeResponse, string.c_str(), sizeof(slopeResponse));  // Flawfinder: ignore
         }
       }
     }
@@ -90,31 +92,30 @@ void PHProbe::serialEvent1() {
 //  water becomes more acidic at higher temperatures."
 // https://www.westlab.com/blog/2017/11/15/how-does-temperature-affect-ph
 void PHProbe::setTemperatureCompensation(float temperature) {
-  const String PARTIAL_COMMAND = "T,";
-  String fullCommand;
+  char buffer[10];
   if (temperature > 0 && temperature < 100) {
-    fullCommand = PARTIAL_COMMAND + String(temperature, 2) + "\r";
+    snprintf(buffer, sizeof(buffer), "T,%.2f\r", temperature);
   } else {
-    fullCommand = PARTIAL_COMMAND + "20\r";
+    snprintf(buffer, sizeof(buffer), "T,20\r");
   }
-  serial("PHProbe::setTemperatureCompensation) - %s", fullCommand.c_str());
-  Serial1.print(fullCommand);  // send that string to the Atlas Scientific product
+  serial("PHProbe::setTemperatureCompensation) - %s", buffer);
+  Serial1.print(buffer);  // send that string to the Atlas Scientific product
 }
 
 void PHProbe::setHighpointCalibration(float highpoint) {
-  String fullCommand;
-  fullCommand = "Cal,High," + String(highpoint, 3) + "\r";
-  Serial1.print(fullCommand);  // send that string to the Atlas Scientific product
+  char buffer[17];
+  snprintf(buffer, sizeof(buffer), "Cal,High,%.3f\r", highpoint);
+  Serial1.print(buffer);  // send that string to the Atlas Scientific product
 }
 
 void PHProbe::setLowpointCalibration(float lowpoint) {
-  String fullCommand;
-  fullCommand = "Cal,low," + String(lowpoint, 3) + "\r";
-  Serial1.print(fullCommand);  // send that string to the Atlas Scientific product
+  char buffer[16];
+  snprintf(buffer, sizeof(buffer), "Cal,low,%.3f\r", lowpoint);
+  Serial1.print(buffer);  // send that string to the Atlas Scientific product
 }
 
 void PHProbe::setMidpointCalibration(float midpoint) {
-  String fullCommand;
-  fullCommand = "Cal,mid," + String(midpoint, 3) + "\r";
-  Serial1.print(fullCommand);  // send that string to the Atlas Scientific product
+  char buffer[16];
+  snprintf(buffer, sizeof(buffer), "Cal,mid,%.3f\r", midpoint);
+  Serial1.print(buffer);  // send that string to the Atlas Scientific product
 }

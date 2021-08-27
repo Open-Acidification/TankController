@@ -31,17 +31,17 @@ EthernetServer_TC::EthernetServer_TC(uint16_t port) : EthernetServer(port) {
 }
 
 void EthernetServer_TC::echo() {
-  serial("echo() - \"%s\"", buffer + 19);
+  serial(F("echo() - \"%s\""), buffer + 19);
   int i = 19;
   while (buffer[i] != ' ' && buffer[i] != '\0') {
     ++i;
   }
-  serial("echo() found space or null at %d", i);
+  serial(F("echo() found space or null at %d"), i);
   if (memcmp(buffer + i - 3, "%22", 3)) {
-    serial("bad");
+    serial(F("bad"));
   } else {
     buffer[i - 3] = '\0';
-    serial("echo \"%s\"", buffer + 19);
+    serial(F("echo \"%s\""), buffer + 19);
     sendHeadersWithSize(strlen(buffer + 19));
     client.write(buffer + 19);
     client.stop();
@@ -56,12 +56,12 @@ bool EthernetServer_TC::file() {
   }
   buffer[i] = '\0';
   if (!SD_TC::instance()->exists(buffer + 4)) {
-    serial("file - \"%s\" not found!", buffer + 4);
+    serial(F("file - \"%s\" not found!"), buffer + 4);
     return false;
   }
   File file = SD_TC::instance()->open(buffer + 4);
   uint32_t size = file.size();
-  serial("file \"%s\" has a size of %lu", buffer + 4, size);
+  serial(F("file \"%s\" has a size of %lu"), buffer + 4, size);
   sendHeadersWithSize(size);
   uint32_t total = 0;
   wdt_disable();
@@ -72,7 +72,7 @@ bool EthernetServer_TC::file() {
     int readSize = file.read(buffer, sizeof(buffer));
     int writeSize = client.write(buffer, readSize);
     if (writeSize != readSize) {
-      serial("total = %lu; read = %d; write = %d", total, readSize, writeSize);
+      serial(F("total = %lu; read = %d; write = %d"), total, readSize, writeSize);
       break;
     }
     total += writeSize;
@@ -82,7 +82,7 @@ bool EthernetServer_TC::file() {
       uint32_t after = millis();
       ++flushCount;
       flushTime += after - before;
-      // serial("total = %lu; flush took %lu millis", total, after - before);
+      // serial(F("total = %lu; flush took %lu millis"), total, after - before);
       // delay(10);
     }
   }
@@ -90,8 +90,8 @@ bool EthernetServer_TC::file() {
   file.close();
   client.stop();
   state = NOT_CONNECTED;
-  serial("write = %lu; freeMemory = %i", total, TankControllerLib::instance()->freeMemory());
-  serial("time = %lu; average flush time = %lu", end - start, (uint32_t)flushTime / flushCount);
+  serial(F("write = %lu; freeMemory = %i"), total, TankControllerLib::instance()->freeMemory());
+  serial(F("time = %lu; average flush time = %lu"), end - start, (uint32_t)flushTime / flushCount);
   wdt_enable(WDTO_8S);
   return true;
 }
@@ -101,7 +101,7 @@ void EthernetServer_TC::get() {
     echo();
   } else if (!file()) {
     // TODO: send an error response
-    serial("get \"%s\" not recognized!", buffer + 4);
+    serial(F("get \"%s\" not recognized!"), buffer + 4);
     client.stop();
     state = NOT_CONNECTED;
   }

@@ -33,13 +33,13 @@ void PushingBox::loop() {
   // is it time to send ?
   unsigned long now = millis();
   if (now >= nextSendTime) {
-    // serial("PushingBox::loop() - 1");
+    // serial(F("PushingBox::loop() - 1"));
     if (false && strncmp(DevID, "PushingBoxIdentifier", 20) == 0) {
-      serial("PushingBox identifier not defined in TankController.ino!");
+      serial(F("PushingBox identifier not defined in TankController.ino!"));
     } else {
-      // serial("PushingBox::loop() - 2; free memory = %i", TankControllerLib::instance()->freeMemory());
+      // serial(F("PushingBox::loop() - 2; free memory = %i", TankControllerLib::instance()->freeMemory());
       sendData();
-      // serial("PushingBox::loop() - 3");
+      // serial(F("PushingBox::loop() - 3")));
     }
     unsigned long minutes = EEPROM_TC::instance()->getGoogleSheetInterval();
     if (minutes == 0xffff) {
@@ -67,14 +67,14 @@ void PushingBox::loop() {
 }
 
 void PushingBox::sendData() {
-  // serial("PushingBox::sendData() - 1; free memory = %i", TankControllerLib::instance()->freeMemory());
+  // serial(F("PushingBox::sendData() - 1; free memory = %i"), TankControllerLib::instance()->freeMemory());
   int tankID = EEPROM_TC::instance()->getTankID();
   if (!tankID) {
     serial(F("Set Tank ID in order to send data to PushingBox"));
     return;
   }
   char buffer[200];
-  // serial("PushingBox::sendData() - 2; free memory = %i", TankControllerLib::instance()->freeMemory());
+  // serial(F("PushingBox::sendData() - 2; free memory = %i"), TankControllerLib::instance()->freeMemory());
   if (TankControllerLib::instance()->isInCalibration()) {
     char format[] PROGMEM =
         "GET /pushingbox?devid=%s&tankid=%i&tempData=C&pHdata=C HTTP/1.1\r\n"

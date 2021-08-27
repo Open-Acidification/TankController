@@ -245,17 +245,17 @@ void MainMenu::loop() {
   } else {
     if (level1 == 1) {
       if (level2 == -1) {
-        LiquidCrystal_TC::instance()->writeLine("View settings", 0);
+        LiquidCrystal_TC::instance()->writeLine(F("View settings"), 0);
       } else {
         LiquidCrystal_TC::instance()->writeLine(viewMenus[level2], 0);
       }
     } else {
       if (level2 == -1) {
-        LiquidCrystal_TC::instance()->writeLine("Change settings ", 0);
+        LiquidCrystal_TC::instance()->writeLine(F("Change settings"), 0);
       } else {
         LiquidCrystal_TC::instance()->writeLine(setMenus[level2], 0);
       }
     }
-    LiquidCrystal_TC::instance()->writeLine("<4   ^2  8v   6>", 1);
+    LiquidCrystal_TC::instance()->writeLine(F("<4   ^2  8v   6>"), 1);
   }
 }

@@ -43,10 +43,9 @@ void SeePIDConstants::loadKd(uint16_t line) {
 }
 
 void SeePIDConstants::loadPID(uint16_t line) {
-  bool flag = PHControl::instance()->getUsePID();
-  if (flag) {
-    LiquidCrystal_TC::instance()->writeLine("PID: ON         ", line);
+  if (PHControl::instance()->getUsePID()) {
+    LiquidCrystal_TC::instance()->writeLine(F("PID: ON"), line);
   } else {
-    LiquidCrystal_TC::instance()->writeLine("PID: OFF        ", line);
+    LiquidCrystal_TC::instance()->writeLine(F("PID: OFF"), line);
   }
 }

@@ -31,5 +31,5 @@ void UIState::start() {
   // default is to print the current prompt on the first line of the display
   const char* prompt = this->prompt();
   LiquidCrystal_TC::instance()->writeLine(prompt, 0);
-  LiquidCrystal_TC::instance()->writeLine("                ", 1);
+  LiquidCrystal_TC::instance()->writeLine(F(""), 1);
 }

@@ -64,3 +64,10 @@ void LiquidCrystal_TC::writeLine(const char* text, uint16_t line) {
   result[16] = '\0';
   print(result);
 }
+
+void LiquidCrystal_TC::writeLine(const __FlashStringHelper* text, uint16_t line) {
+  // copy from program memory to SRAM and then call other function
+  char buffer[17];
+  strcpy_P(buffer, (PGM_P)text);
+  writeLine(buffer, line);
+}

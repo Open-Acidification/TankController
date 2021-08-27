@@ -19,7 +19,7 @@ void NumCollectorState::handleKey(char key) {
     numDigits++;
     handleDigit(key - '0');
   } else if (key == '*') {  // Decimal place (if we already have a decimal nothing happens)
-    hasDecimal = isInteger() ? false : true;
+    hasDecimal = !isInteger();
   } else if (key == 'A') {  // Accept
     setValue(value);
     return;                 // don't print the value again

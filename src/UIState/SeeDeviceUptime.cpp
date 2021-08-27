@@ -9,6 +9,7 @@
 #include "TC_util.h"
 
 void SeeDeviceUptime::loop() {
+  LiquidCrystal_TC::instance()->writeLine(DateTime_TC::now().as16CharacterString(), 0);
   uint32_t ms = millis();
   COUT("SeeDeviceUptime::loop() at " << ms);
   uint16_t days = ms / 86400000;
@@ -18,7 +19,6 @@ void SeeDeviceUptime::loop() {
   char buffer[17];
   COUT("days: " << days << "; hours: " << hours << "; mins: " << minutes << "; secs: " << seconds);
   snprintf(buffer, sizeof(buffer), "Up d:%02i %02i:%02i:%02i", days, hours, minutes, seconds);
-  LiquidCrystal_TC::instance()->writeLine(DateTime_TC::now().as16CharacterString(), 0);
   LiquidCrystal_TC::instance()->writeLine(buffer, 1);
   COUT(buffer);
 }

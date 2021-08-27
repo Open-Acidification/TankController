@@ -73,12 +73,12 @@ void PHProbe::serialEvent1() {
                                      // treat 0 as valid since probe might not be connected
           wdt_disable();
           wdt_enable(WDTO_120MS);  // allow enough time to print message
-          serial("pH value dropped to %5.3f so trigger a reset!", value);
+          serial(F("pH value dropped to %5.3f so trigger a reset!"), value);
           while (true) {
           }
         }
       } else if (string[0] == '?') {  // answer to a previous query
-        serial("PHProbe serialEvent1: \"%s\"", string.c_str());
+        serial(F("PHProbe serialEvent1: \"%s\""), string.c_str());
         if (string.length() > 7 && string.substring(0, 7) == "?SLOPE,") {
           // for example "?SLOPE,16.1,100.0"
           strncpy(slopeResponse, string.c_str(), sizeof(slopeResponse));  // Flawfinder: ignore
@@ -98,7 +98,7 @@ void PHProbe::setTemperatureCompensation(float temperature) {
   } else {
     snprintf_P(buffer, sizeof(buffer), (PGM_P)F("T,20\r"));
   }
-  serial("PHProbe::setTemperatureCompensation) - %s", buffer);
+  serial(F("PHProbe::setTemperatureCompensation() - %s"), buffer);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
 }
 

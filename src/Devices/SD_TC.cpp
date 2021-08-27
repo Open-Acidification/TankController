@@ -59,7 +59,7 @@ void SD_TC::appendDataToPath(const char* line, const char* path) {
   } else {
     if (!hasHadError) {
       hasHadError = true;
-      serial("Unable to open file: \"%s\"", path);
+      serial(F("Unable to open file: \"%s\""), path);
       COUT("Unable to open file: \"" << path << "\"");
       return;
     }
@@ -96,7 +96,7 @@ File SD_TC::open(const char* path, oflag_t oflag) {
  * print the root directory and all subdirectories
  */
 void SD_TC::printRootDirectory() {
-  // serial("SD_TC::printRootDirectory()");
+  // serial(F("SD_TC::printRootDirectory()"));
 }
 
 void SD_TC::todaysDataFileName(char* path, int size) {

@@ -33,7 +33,7 @@ void TemperatureControl::enableHeater(bool flag) {
   if (_instance && (_instance->isHeater() != flag)) {
     delete _instance;
     _instance = nullptr;
-    serial("TemperatureControl::enableHeater(%s)", flag ? "true" : "false");
+    serial(F("TemperatureControl::enableHeater(%s)"), flag ? "true" : "false");
     instance();
   }
 }
@@ -50,7 +50,7 @@ TemperatureControl::TemperatureControl() {
   }
   pinMode(TEMP_CONTROL_PIN, OUTPUT);
   digitalWrite(TEMP_CONTROL_PIN, TURN_SOLENOID_OFF);
-  serial("%s starts with solenoid off with target temperature of %5.2f C", this->isHeater() ? "Heater" : "Chiller",
+  serial(F("%s starts with solenoid off with target temperature of %5.2f C"), this->isHeater() ? "Heater" : "Chiller",
          targetTemperature);
 }
 
@@ -70,7 +70,7 @@ bool TemperatureControl::isOn() {
  */
 void TemperatureControl::setTargetTemperature(float newTemperature) {
   if (targetTemperature != newTemperature) {
-    serial("Change target temperature from %5.2f to %5.2f", targetTemperature, newTemperature);
+    serial(F("Change target temperature from %5.2f to %5.2f"), targetTemperature, newTemperature);
     EEPROM_TC::instance()->setTemp(newTemperature);
     targetTemperature = newTemperature;
   }
@@ -109,7 +109,7 @@ void Chiller::updateControl(float currentTemperature) {
     }
     if (newValue != oldValue) {
       uint32_t currentMS = millis();
-      serial("chiller turned %s at %lu after %lu ms", newValue ? "off" : "on", currentMS, currentMS - lastSwitchMS);
+      serial(F("chiller turned %s at %lu after %lu ms"), newValue ? "off" : "on", currentMS, currentMS - lastSwitchMS);
       lastSwitchMS = currentMS;
       digitalWrite(TEMP_CONTROL_PIN, newValue);
     }
@@ -137,7 +137,7 @@ void Heater::updateControl(float currentTemperature) {
   }
   if (newValue != oldValue) {
     uint32_t currentMS = millis();
-    serial("heater turned %s at %lu after %lu ms", newValue ? "off" : "on", currentMS, currentMS - lastSwitchMS);
+    serial(F("heater turned %s at %lu after %lu ms"), newValue ? "off" : "on", currentMS, currentMS - lastSwitchMS);
     lastSwitchMS = currentMS;
     digitalWrite(TEMP_CONTROL_PIN, newValue);
   }

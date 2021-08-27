@@ -43,7 +43,7 @@ TankControllerLib *TankControllerLib::instance(const char *pushingBoxID) {
  * Constructor
  */
 TankControllerLib::TankControllerLib() {
-  serial("TankControllerLib::TankControllerLib() - version %s", TANK_CONTROLLER_VERSION);
+  serial(F("TankControllerLib::TankControllerLib() - version %s"), TANK_CONTROLLER_VERSION);
   assert(!_instance);
   // ensure we have instances
   SD_TC::instance();
@@ -131,7 +131,7 @@ void TankControllerLib::handleUI() {
       lastKeypadTime = 0;  // so we don't do this until another keypress!
     }
   } else {
-    serial("Keypad input: %c", key);
+    serial(F("Keypad input: %c"), key);
     COUT("TankControllerLib::handleUI() - " << state->name() << "::handleKey(" << key << ")");
     state->handleKey(key);
     lastKeypadTime = millis();
@@ -190,9 +190,9 @@ void TankControllerLib::setNextState(UIState *newState, bool update) {
  */
 void TankControllerLib::setup() {
   wdt_enable(WDTO_8S);
-  serial("TankControllerLib::setup()");
+  serial(F("TankControllerLib::setup()"));
   SD_TC::instance()->printRootDirectory();
-  serial("Free memory = %i", freeMemory());
+  serial(F("Free memory = %i"), freeMemory());
 }
 
 /**
@@ -232,7 +232,7 @@ void TankControllerLib::updateState() {
  * What is the current version?
  */
 const char *TankControllerLib::version() {
-  serial("TankControllerLib::version() = %s", TANK_CONTROLLER_VERSION);
+  serial(F("TankControllerLib::version() = %s"), TANK_CONTROLLER_VERSION);
   return TANK_CONTROLLER_VERSION;
 }
 
@@ -281,7 +281,7 @@ void TankControllerLib::writeDataToSerial() {
   uint32_t msNow = millis();
   if (nextWriteTime <= msNow) {
     DateTime_TC dtNow = DateTime_TC::now();
-    serial("%02d:%02d pH=%5.3f temp=%5.2f", (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(),
+    serial(F("%02d:%02d pH=%5.3f temp=%5.2f"), (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(),
            (float)PHProbe::instance()->getPh(), (float)TempProbe_TC::instance()->getRunningAverage());
     nextWriteTime = msNow / 60000 * 60000 + 60000;  // round up to next minute
     COUT(buffer);

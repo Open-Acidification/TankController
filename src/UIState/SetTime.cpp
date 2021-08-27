@@ -33,7 +33,7 @@ void SetTime::setValue(float value) {
 
     char *buffer = DateTime_TC::now().as16CharacterString();
     serial("Set time to %s", buffer);
-    LiquidCrystal_TC::instance()->writeLine("New Date/Time:  ", 0);
+    LiquidCrystal_TC::instance()->writeLine("New Date/Time:", 0);
     LiquidCrystal_TC::instance()->writeLine(buffer, 1);
     returnToMainMenu(3000);  // after 3-second delay
   }

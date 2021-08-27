@@ -251,7 +251,7 @@ void MainMenu::loop() {
       }
     } else {
       if (level2 == -1) {
-        LiquidCrystal_TC::instance()->writeLine("Change settings ", 0);
+        LiquidCrystal_TC::instance()->writeLine("Change settings", 0);
       } else {
         LiquidCrystal_TC::instance()->writeLine(setMenus[level2], 0);
       }

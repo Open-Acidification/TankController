@@ -16,7 +16,7 @@ EEPROM_TC* EEPROM_TC::instance() {
     return _instance;
   }
   _instance = new EEPROM_TC();
-  Serial.println("EEPROM_TC");  // Serial_TC might not be ready yet
+  Serial.println(F("EEPROM_TC"));  // Serial_TC might not be ready yet
   return _instance;
 }
 

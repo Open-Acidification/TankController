@@ -13,8 +13,8 @@ public:
   bool isInCalibration() {
     return true;
   }
-  const char* name() {
-    return "TemperatureCalibration";
+  const __FlashStringHelper* name() {
+    return F("TemperatureCalibration");
   }
   float getCurrentValue() {
     return 0;
@@ -22,8 +22,8 @@ public:
   uint16_t getCurrentValuePrecision() {
     return 2;
   }
-  const char* prompt() {
-    return "Real Temperature";
+  const __FlashStringHelper* prompt() {
+    return F("Real Temperature");
   };
   void setValue(float value);
 };

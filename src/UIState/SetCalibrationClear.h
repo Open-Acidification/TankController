@@ -11,10 +11,10 @@ public:
   SetCalibrationClear(TankControllerLib* tc) : UIState(tc) {
   }
   void handleKey(char key);
-  const char* name() {
-    return "SetCalibrationClear";
+  const __FlashStringHelper* name() {
+    return F("SetCalibrationClear");
   }
-  const char* prompt() {
-    return "A: Clear pH Cali";
+  const __FlashStringHelper* prompt() {
+    return F("A: Clear pH Cali");
   };
 };

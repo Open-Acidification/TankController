@@ -9,7 +9,7 @@
 void SetKP::setValue(float value) {
   PID_TC::instance()->setKp(value);
   char output[17];
-  snprintf(output, sizeof(output), "New KP=%.1f", value);
+  snprintf_P(output, sizeof(output), (PGM_P)F("New KP=%.1f"), value);
   LiquidCrystal_TC::instance()->writeLine(output, 1);
   returnToMainMenu(3000);
 }

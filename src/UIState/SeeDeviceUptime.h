@@ -11,7 +11,7 @@ public:
   SeeDeviceUptime(TankControllerLib* tc) : UIState(tc) {
   }
   void loop();
-  const char* name() {
-    return "SeeDeviceUptime";
+  const __FlashStringHelper* name() {
+    return F("SeeDeviceUptime");
   }
 };

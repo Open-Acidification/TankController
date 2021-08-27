@@ -9,6 +9,14 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/Serial_TC.h"
 
+SetTime::SetTime(TankControllerLib* tc) : NumCollectorState(tc) {
+  prompts[0] = F("Set Year (YYYY):");
+  prompts[1] = F("Month (1-12):");
+  prompts[2] = F("Day (1-31):");
+  prompts[3] = F("Hour (0-23):    ");
+  prompts[4] = F("Minute (0-59):  ");
+}
+
 float SetTime::getCurrentValue() {
   if (subState == 0) {
     // initialize current values with current date time
@@ -31,9 +39,9 @@ void SetTime::setValue(float value) {
     DateTime_TC dt(values[0], values[1], values[2], values[3], values[4]);
     dt.setAsCurrent();
 
-    char *buffer = DateTime_TC::now().as16CharacterString();
-    serial("Set time to %s", buffer);
-    LiquidCrystal_TC::instance()->writeLine("New Date/Time:", 0);
+    char* buffer = DateTime_TC::now().as16CharacterString();
+    serial(F("Set time to %s"), buffer);
+    LiquidCrystal_TC::instance()->writeLine(F("New Date/Time:"), 0);
     LiquidCrystal_TC::instance()->writeLine(buffer, 1);
     returnToMainMenu(3000);  // after 3-second delay
   }

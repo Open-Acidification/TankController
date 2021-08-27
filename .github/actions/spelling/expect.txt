@@ -94,12 +94,14 @@ oflag
 ONTHANK
 OVUV
 pdf
+PGM
 PIDOn
 plugin
 png
 pragma
 printf
 println
+PROGMEM
 Ptr
 pushingbox
 pwd

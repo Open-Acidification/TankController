@@ -11,8 +11,8 @@ class SetKP : public NumCollectorState {
 public:
   SetKP(TankControllerLib* tc) : NumCollectorState(tc) {
   }
-  const char* name() {
-    return "SetKP";
+  const __FlashStringHelper* name() {
+    return F("SetKP");
   }
   float getCurrentValue() {
     return EEPROM_TC::instance()->getKP();
@@ -20,8 +20,8 @@ public:
   uint16_t getCurrentValuePrecision() {
     return 1;
   }
-  const char* prompt() {
-    return "Set KP";
+  const __FlashStringHelper* prompt() {
+    return F("Set KP");
   };
   void setValue(float value);
 };

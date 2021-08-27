@@ -42,11 +42,11 @@ public:
   };
   MainMenu(TankControllerLib* tc);
   void handleKey(char key);
-  const char* name() {
-    return "MainMenu";
+  const __FlashStringHelper* name() {
+    return F("MainMenu");
   }
-  const char* prompt() {
-    return "Main Menu";
+  const __FlashStringHelper* prompt() {
+    return F("Main Menu");
   };
   bool isMainMenu() {
     return true;
@@ -56,8 +56,8 @@ public:
 private:
   int16_t level1 = 0;
   int16_t level2 = -1;
-  const char* viewMenus[VIEW_COMMAND_COUNT];
-  const char* setMenus[SET_COMMAND_COUNT];
+  const __FlashStringHelper* viewMenus[VIEW_COMMAND_COUNT];
+  const __FlashStringHelper* setMenus[SET_COMMAND_COUNT];
   void left();
   void right();
   void up();

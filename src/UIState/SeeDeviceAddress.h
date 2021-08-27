@@ -12,10 +12,10 @@ public:
   }
   void start();
   void handleKey(char key);
-  const char* name() {
-    return "SeeDeviceAddress";
+  const __FlashStringHelper* name() {
+    return F("SeeDeviceAddress");
   }
-  const char* prompt() {
-    return "Device address";
+  const __FlashStringHelper* prompt() {
+    return F("Device address");
   };
 };

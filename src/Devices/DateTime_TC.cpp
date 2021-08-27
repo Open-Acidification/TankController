@@ -47,7 +47,7 @@ DateTime_TC::DateTime_TC(uint16_t year, uint8_t month, uint8_t day, uint8_t hour
  */
 char buffer[20];
 char *DateTime_TC::as16CharacterString() {
-  strcpy(buffer, "YYYY-MM-DD hh:mm");
+  strncpy_P(buffer, (PGM_P)F("YYYY-MM-DD hh:mm"), sizeof(buffer));
   this->toString(buffer);
   return buffer;
 }

@@ -76,14 +76,14 @@ void PushingBox::sendData() {
   char buffer[200];
   // serial(F("PushingBox::sendData() - 2; free memory = %i"), TankControllerLib::instance()->freeMemory());
   if (TankControllerLib::instance()->isInCalibration()) {
-    char format[] PROGMEM =
+    static const char format[] PROGMEM =
         "GET /pushingbox?devid=%s&tankid=%i&tempData=C&pHdata=C HTTP/1.1\r\n"
         "Host: api.pushingbox.com\r\n"
         "Connection: close\r\n"
         "\r\n";
     snprintf_P(buffer, sizeof(buffer), (PGM_P)format, DevID, tankID);
   } else {
-    char format[] PROGMEM =
+    static const char format[] PROGMEM =
         "GET /pushingbox?devid=%s&tankid=%i&tempData=%.2f&pHdata=%.3f HTTP/1.1\r\n"
         "Host: api.pushingbox.com\r\n"
         "Connection: close\r\n"

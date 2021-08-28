@@ -50,48 +50,58 @@ void EthernetServer_TC::echo() {
 }
 
 bool EthernetServer_TC::file() {
+  // Buffer has something like "GET /path HTTP/1.1"
+  // and we want to put a null at the end of the path.
   int i = 4;
   while (buffer[i] != ' ') {
     ++i;
   }
   buffer[i] = '\0';
+  // Look for file in SD card.
   if (!SD_TC::instance()->exists(buffer + 4)) {
     serial(F("file - \"%s\" not found!"), buffer + 4);
     return false;
   }
+  // Open file and send headers with file size.
   File file = SD_TC::instance()->open(buffer + 4);
   uint32_t size = file.size();
   serial(F("file \"%s\" has a size of %lu"), buffer + 4, size);
   sendHeadersWithSize(size);
-  uint32_t total = 0;
+  // Send file contents
+  uint32_t totalBytes = 0;
+  uint32_t timeInRead = 0;
+  uint32_t timeInWrite = 0;
+  uint32_t timeInFlush = 0;
+  uint32_t startTime = 0;
+
   wdt_disable();
-  uint32_t start = millis();
   uint32_t flushCount = 0;
-  uint32_t flushTime = 0;
   while (file.available32()) {
+    startTime = millis();
     int readSize = file.read(buffer, sizeof(buffer));
+    timeInRead += millis() - startTime;
+    startTime = millis();
     int writeSize = client.write(buffer, readSize);
+    timeInWrite += millis() - startTime;
     if (writeSize != readSize) {
-      serial(F("total = %lu; read = %d; write = %d"), total, readSize, writeSize);
+      serial(F("totalBytes = %lu; read = %d; write = %d"), totalBytes, readSize, writeSize);
       break;
     }
-    total += writeSize;
-    if (total % 8196 == 0) {
-      uint32_t before = millis();
+    totalBytes += writeSize;
+    if (totalBytes % 8196 == 0) {
+      startTime = millis();
       client.flush();
-      uint32_t after = millis();
+      timeInFlush += millis() - startTime;
       ++flushCount;
-      flushTime += after - before;
-      // serial(F("total = %lu; flush took %lu millis"), total, after - before);
+      // serial(F("totalBytes = %lu; flush took %lu millis"), totalBytes, after - before);
       // delay(10);
     }
   }
-  uint32_t end = millis();
   file.close();
   client.stop();
   state = NOT_CONNECTED;
-  serial(F("write = %lu; freeMemory = %i"), total, TankControllerLib::instance()->freeMemory());
-  serial(F("time = %lu; average flush time = %lu"), end - start, (uint32_t)flushTime / flushCount);
+  serial(F("write = %lu; freeMemory = %i"), totalBytes, TankControllerLib::instance()->freeMemory());
+  serial(F("timeInRead = %lu; timeInWrite = %lu; timeInFlush = %lu"), timeInRead, timeInWrite, timeInFlush);
   wdt_enable(WDTO_8S);
   return true;
 }
@@ -146,23 +156,24 @@ void EthernetServer_TC::loop() {
 }
 
 void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
-  const char response[] PROGMEM =
+  char buffer[128];
+  static const char response[] PROGMEM =
       "HTTP/1.1 200 OK\r\n"
       "Content-Type: text/plain;charset=UTF-8\r\n"
       "Content-Encoding: identity\r\n"
       "Content-Language: en-US\r\n";
-  client.write((PGM_P)response);
-  char buffer[40];
+  strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
+  client.write(buffer);
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Content-Length: %lu\r\n"), (unsigned long)size);
   client.write(buffer);
 
-  // TODO: add "Date:"" header
+  // TODO: add "Date: " header
   const __FlashStringHelper* weekdays[] = {F("Sun"), F("Mon"), F("Tue"), F("Wed"), F("Thu"), F("Fri"), F("Sat")};
   const __FlashStringHelper* months[] = {F("Jan"), F("Feb"), F("Mar"), F("Apr"), F("May"), F("Jun"),
                                          F("Jul"), F("Aug"), F("Sep"), F("Oct"), F("Nov"), F("Dec")};
   DateTime_TC now = DateTime_TC::now();
   // int weekday = weekday(now.getYear(), now.getMonth(), now.getDay());
-  // snprintf(buffer, sizeof(buffer), "Date: %s, %02d %s %04d %02d:%02d:%02d GMT\r\n", );
+  // snprintf_P(buffer, sizeof(buffer), F("Date: %s, %02d %s %04d %02d:%02d:%02d GMT\r\n"), );
 
   // blank line indicates end of headers
   client.write('\r');

@@ -260,7 +260,7 @@ void TankControllerLib::writeDataToSD() {
   }
   static const char header[] = "time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd";
   static const char format[] PROGMEM =
-      "%02i/%02i/%4i %02i:%02i:%02i, %3i, %s, %4.2f, %s, %5.3f, %4i, %8.1f, %8.1f, %8.1f";
+      "%02i/%02i/%4i %02i:%02i:%02i, %3i, %s, %4.2f, %s, %5.3f, %4lu, %8.1f, %8.1f, %8.1f";
   char buffer[128];
   DateTime_TC dtNow = DateTime_TC::now();
   PID_TC *pPID = PID_TC::instance();
@@ -268,7 +268,7 @@ void TankControllerLib::writeDataToSD() {
   snprintf_P(buffer, sizeof(buffer), (PGM_P)format, (uint16_t)dtNow.month(), (uint16_t)dtNow.day(),
              (uint16_t)dtNow.year(), (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(), (uint16_t)dtNow.second(),
              (uint16_t)tankId, currentTemp, (float)TemperatureControl::instance()->getTargetTemperature(), currentPh,
-             (float)PHControl::instance()->getTargetPh(), (uint16_t)(millis() / 1000), (float)pPID->getKp(),
+             (float)PHControl::instance()->getTargetPh(), (unsigned long)(millis() / 1000), (float)pPID->getKp(),
              (float)pPID->getKi(), (float)pPID->getKd());
   SD_TC::instance()->appendData(header, buffer);
   nextWriteTime = msNow / 1000 * 1000 + 1000;  // round up to next second

@@ -93,8 +93,6 @@ bool EthernetServer_TC::file() {
       client.flush();
       timeInFlush += millis() - startTime;
       ++flushCount;
-      // serial(F("totalBytes = %lu; flush took %lu millis"), totalBytes, after - before);
-      // delay(10);
     }
   }
   file.close();

@@ -4,6 +4,7 @@
 
 #include "Devices/DateTime_TC.h"
 #include "Devices/EEPROM_TC.h"
+#include "Devices/EthernetServer_TC.h"
 #include "Devices/Ethernet_TC.h"
 #include "Devices/Keypad_TC.h"
 #include "Devices/LiquidCrystal_TC.h"
@@ -43,7 +44,7 @@ TankControllerLib *TankControllerLib::instance(const char *pushingBoxID) {
  * Constructor
  */
 TankControllerLib::TankControllerLib() {
-  serial(F("TankControllerLib::TankControllerLib() - version %s"), TANK_CONTROLLER_VERSION);
+  serial(F("\r\n#################\r\nTankControllerLib::TankControllerLib() - version %s"), TANK_CONTROLLER_VERSION);
   assert(!_instance);
   // ensure we have instances
   SD_TC::instance();
@@ -87,7 +88,7 @@ void TankControllerLib::blink() {
 }
 
 // https://github.com/maniacbug/MemoryFree/blob/master/MemoryFree.cpp
-size_t TankControllerLib::freeMemory() {
+int TankControllerLib::freeMemory() {
 #ifdef MOCK_PINS_COUNT
   int *__brkval = 0;
   int __bss_end = 0;
@@ -100,7 +101,7 @@ size_t TankControllerLib::freeMemory() {
   if ((size_t)__brkval == 0) {
     return ((size_t)&topOfStack) - ((size_t)&__bss_end);
   }
-  return ((size_t)&topOfStack) - ((size_t)__brkval);
+  return (int)((size_t)&topOfStack) - ((size_t)__brkval);
 }
 
 /**
@@ -148,13 +149,14 @@ void TankControllerLib::handleUI() {
  */
 void TankControllerLib::loop() {
   wdt_reset();
-  blink();                          // blink the on-board LED to show that we are running
-  handleUI();                       // look at keypad, update LCD
-  updateControls();                 // turn CO2 and temperature controls on or off
-  writeDataToSD();                  // record current state to data log
-  writeDataToSerial();              // record current pH and temperature to serial
-  PushingBox::instance()->loop();   // write data to Google Sheets
-  Ethernet_TC::instance()->loop();  // renew DHCP lease
+  blink();                                // blink the on-board LED to show that we are running
+  handleUI();                             // look at keypad, update LCD
+  updateControls();                       // turn CO2 and temperature controls on or off
+  writeDataToSD();                        // record current state to data log
+  writeDataToSerial();                    // record current pH and temperature to serial
+  PushingBox::instance()->loop();         // write data to Google Sheets
+  Ethernet_TC::instance()->loop();        // renew DHCP lease
+  EthernetServer_TC::instance()->loop();  // handle any HTTP requests
 }
 
 /**
@@ -258,7 +260,7 @@ void TankControllerLib::writeDataToSD() {
   }
   static const char header[] = "time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd";
   static const char format[] PROGMEM =
-      "%02i/%02i/%4i %02i:%02i:%02i, %3i, %s, %4.2f, %s, %5.3f, %4i, %8.1f, %8.1f, %8.1f";
+      "%02i/%02i/%4i %02i:%02i:%02i, %3i, %s, %4.2f, %s, %5.3f, %4lu, %8.1f, %8.1f, %8.1f";
   char buffer[128];
   DateTime_TC dtNow = DateTime_TC::now();
   PID_TC *pPID = PID_TC::instance();
@@ -266,7 +268,7 @@ void TankControllerLib::writeDataToSD() {
   snprintf_P(buffer, sizeof(buffer), (PGM_P)format, (uint16_t)dtNow.month(), (uint16_t)dtNow.day(),
              (uint16_t)dtNow.year(), (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(), (uint16_t)dtNow.second(),
              (uint16_t)tankId, currentTemp, (float)TemperatureControl::instance()->getTargetTemperature(), currentPh,
-             (float)PHControl::instance()->getTargetPh(), (uint16_t)(millis() / 1000), (float)pPID->getKp(),
+             (float)PHControl::instance()->getTargetPh(), (unsigned long)(millis() / 1000), (float)pPID->getKp(),
              (float)pPID->getKi(), (float)pPID->getKd());
   SD_TC::instance()->appendData(header, buffer);
   nextWriteTime = msNow / 1000 * 1000 + 1000;  // round up to next second

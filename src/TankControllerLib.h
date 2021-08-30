@@ -16,7 +16,7 @@ public:
 
   // instance methods
   bool isInCalibration();
-  size_t freeMemory();
+  int freeMemory();
   void loop();
   void serialEvent();
   void serialEvent1();

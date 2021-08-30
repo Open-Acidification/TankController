@@ -42,7 +42,7 @@ void EthernetServer_TC::echo() {
   } else {
     buffer[i - 3] = '\0';
     serial(F("echo \"%s\""), buffer + 19);
-    sendHeadersWithSize(strlen(buffer + 19));
+    sendHeadersWithSize(strnlen(buffer + 19, sizeof(buffer) - 20));
     client.write(buffer + 19);
     client.stop();
     state = NOT_CONNECTED;
@@ -72,13 +72,12 @@ bool EthernetServer_TC::file() {
   uint32_t timeInRead = 0;
   uint32_t timeInWrite = 0;
   uint32_t timeInFlush = 0;
-  uint32_t startTime = 0;
 
   wdt_disable();
   uint32_t flushCount = 0;
   while (file.available32()) {
-    startTime = millis();
-    int readSize = file.read(buffer, sizeof(buffer));
+    uint32_t startTime = millis();
+    int readSize = file.read(buffer, sizeof(buffer));  // Flawfinder: ignore
     timeInRead += millis() - startTime;
     startTime = millis();
     int writeSize = client.write(buffer, readSize);
@@ -124,7 +123,8 @@ void EthernetServer_TC::loop() {
     }
     // read request
     int next;
-    while (state == READ_REQUEST && bufferContentsSize < sizeof(buffer) && (next = client.read()) != -1) {
+    while (state == READ_REQUEST && bufferContentsSize < sizeof(buffer) &&
+           (next = client.read()) != -1) {  // Flawfinder: ignore
       buffer[bufferContentsSize++] = (char)(next & 0xFF);
       if (bufferContentsSize > 1 && buffer[bufferContentsSize - 2] == '\r' && buffer[bufferContentsSize - 1] == '\n') {
         buffer[bufferContentsSize - 2] = '\0';
@@ -166,10 +166,10 @@ void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
   client.write(buffer);
 
   // TODO: add "Date: " header
-  const __FlashStringHelper* weekdays[] = {F("Sun"), F("Mon"), F("Tue"), F("Wed"), F("Thu"), F("Fri"), F("Sat")};
-  const __FlashStringHelper* months[] = {F("Jan"), F("Feb"), F("Mar"), F("Apr"), F("May"), F("Jun"),
-                                         F("Jul"), F("Aug"), F("Sep"), F("Oct"), F("Nov"), F("Dec")};
-  DateTime_TC now = DateTime_TC::now();
+  // const __FlashStringHelper* weekdays[] = {F("Sun"), F("Mon"), F("Tue"), F("Wed"), F("Thu"), F("Fri"), F("Sat")};
+  // const __FlashStringHelper* months[] = {F("Jan"), F("Feb"), F("Mar"), F("Apr"), F("May"), F("Jun"),
+  //                                        F("Jul"), F("Aug"), F("Sep"), F("Oct"), F("Nov"), F("Dec")};
+  // DateTime_TC now = DateTime_TC::now();
   // int weekday = weekday(now.getYear(), now.getMonth(), now.getDay());
   // snprintf_P(buffer, sizeof(buffer), F("Date: %s, %02d %s %04d %02d:%02d:%02d GMT\r\n"), );
 

@@ -9,8 +9,8 @@
 void PHCalibrationHigh::setValue(float value) {
   PHProbe::instance()->setHighpointCalibration(value);
 
-  char output[17];
-  snprintf_P(output, sizeof(output), (PGM_P)F("New High=%5.3f"), value);  // "New High=12.345"
+  char output[17] = "New High=";
+  dtostrf(value, 5, 3, output + 9);  // "New High=12.345"
   LiquidCrystal_TC::instance()->writeLine(output, 1);
   returnToMainMenu(3000);
 }

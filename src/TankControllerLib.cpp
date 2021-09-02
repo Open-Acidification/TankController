@@ -1,6 +1,7 @@
 #include "TankControllerLib.h"
 
 #include <avr/wdt.h>
+#include <stdlib.h>
 
 #include "Devices/DateTime_TC.h"
 #include "Devices/EEPROM_TC.h"
@@ -254,9 +255,8 @@ void TankControllerLib::writeDataToSD() {
     snprintf_P(currentTemp, sizeof(currentTemp), (PGM_P)F("C"));
     snprintf_P(currentPh, sizeof(currentPh), (PGM_P)F("C"));
   } else {
-    snprintf_P(currentTemp, sizeof(currentTemp), (PGM_P)F("%4.2f"),
-               (float)TempProbe_TC::instance()->getRunningAverage());
-    snprintf_P(currentPh, sizeof(currentPh), (PGM_P)F("%5.3f"), (float)PHProbe::instance()->getPh());
+    dtostrf((float)TempProbe_TC::instance()->getRunningAverage(), 4, 2, currentTemp);
+    dtostrf((float)PHProbe::instance()->getPh(), 5, 3, currentPh);
   }
   static const char header[] = "time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd";
   static const char format[] PROGMEM =

@@ -12,8 +12,8 @@
 void PHCalibrationLow::setValue(float value) {
   PHProbe::instance()->setLowpointCalibration(value);
 
-  char output[17];
-  snprintf_P(output, sizeof(output), (PGM_P)F("New Low = %5.3f"), value);  // "New Low = 12.345"
+  char output[17] = "New Low = ";
+  dtostrf(value, 5, 3, output + 10);  // "New Low = 12.345"
   LiquidCrystal_TC::instance()->writeLine(output, 1);
   this->setNextState((UIState*)new Wait(tc, 3000, new PHCalibrationHigh(tc)));
 }

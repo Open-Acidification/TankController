@@ -28,18 +28,18 @@ LiquidCrystal_TC* LiquidCrystal_TC::instance(const char* version) {
  * Constructor sets pins, dimensions, and shows splash screen
  */
 LiquidCrystal_TC::LiquidCrystal_TC(const char* version) : LiquidCrystal(RS, EN, D4, D5, D6, D7) {
-  Serial.println("LiquidCrystal_TC");  // Serial_TC might not be ready yet
+  Serial.println(F("LiquidCrystal_TC"));  // Serial_TC might not be ready yet
   begin(16, 2);
   splashScreen(version);
 }
 
 void LiquidCrystal_TC::splashScreen(const char* version) {
   clear();
-  print("Tank Controller ");
+  print(F("Tank Controller "));
   setCursor(0, 1);
   print('v');
   print(version);
-  print(" loading");
+  print(F(" loading"));
 }
 
 /**
@@ -63,4 +63,11 @@ void LiquidCrystal_TC::writeLine(const char* text, uint16_t line) {
   }
   result[16] = '\0';
   print(result);
+}
+
+void LiquidCrystal_TC::writeLine(const __FlashStringHelper* text, uint16_t line) {
+  // copy from program memory to SRAM and then call other function
+  char buffer[17];
+  strcpy_P(buffer, (PGM_P)text);
+  writeLine(buffer, line);
 }

@@ -18,7 +18,7 @@ unittest(testOutput) {
 
   // Test the output
   char reference[17];
-  snprintf(reference, sizeof(reference), "%4i%02i%02i.csv       ", now.year(), now.month(), now.day());
+  snprintf_P(reference, sizeof(reference), (PGM_P)F("%4i%02i%02i.csv       "), now.year(), now.month(), now.day());
   tc->loop();
   assertEqual("Current Log File", display->getLines().at(0));
   assertEqual(reference, display->getLines().at(1).c_str());

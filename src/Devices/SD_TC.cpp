@@ -24,42 +24,43 @@ SD_TC* SD_TC::instance() {
  * constructor
  */
 SD_TC::SD_TC() {
-  Serial.println("SD_TC()");  // Serial_TC might not be ready yet
+  Serial.println(F("SD_TC()"));  // Serial_TC might not be ready yet
   assert(_instance == nullptr);
   if (!sd.begin(SD_SELECT_PIN)) {
-    Serial.println("SD_TC failed to initialize!");
+    Serial.println(F("SD_TC failed to initialize!"));
   }
 }
 
 /**
  * append data to a data log file
  */
-void SD_TC::appendData(String header, String line) {
-  String path = todaysDataFileName();
-  if (!sd.exists(path.c_str())) {
-    appendDataToPath(header, path.c_str());
+void SD_TC::appendData(const char* header, const char* line) {
+  char path[30];
+  todaysDataFileName(path, sizeof(path));
+  if (!sd.exists(path)) {
+    appendDataToPath(header, path);
     COUT(header);
   }
-  appendDataToPath(line, path.c_str());
+  appendDataToPath(line, path);
   COUT(line);
 }
 
 /**
  * append data to a path
  */
-void SD_TC::appendDataToPath(String line, String path) {
+void SD_TC::appendDataToPath(const char* line, const char* path) {
   COUT(path);
   File file = sd.open(path, O_CREAT | O_WRONLY | O_APPEND);
   if (file) {
-    file.write(line.c_str(), line.length());
+    file.write(line);
     file.write("\n", 1);
     file.close();
     COUT(file);
   } else {
     if (!hasHadError) {
       hasHadError = true;
-      serial("Unable to open file: \"%s\"", path.c_str());
-      COUT("Unable to open file: \"" << path.c_str() << "\"");
+      serial(F("Unable to open file: \"%s\""), path);
+      COUT("Unable to open file: \"" << path << "\"");
       return;
     }
   }
@@ -68,10 +69,10 @@ void SD_TC::appendDataToPath(String line, String path) {
 /**
  * append data to a serial log file
  */
-void SD_TC::appendToLog(String line) {
+void SD_TC::appendToLog(const char* line) {
   DateTime_TC now = DateTime_TC::now();
   char path[30];
-  snprintf(path, sizeof(path), "%4i%02i%02i.log", now.year(), now.month(), now.day());
+  snprintf_P(path, sizeof(path), (PGM_P)F("%4i%02i%02i.log"), now.year(), now.month(), now.day());
   appendDataToPath(line, path);
 }
 
@@ -91,17 +92,12 @@ File SD_TC::open(const char* path, oflag_t oflag) {
   return sd.open(path, oflag);
 }
 
-/**
- * print the root directory and all subdirectories
- */
 void SD_TC::printRootDirectory() {
-  // serial("SD_TC::printRootDirectory()");
+  sd.ls(LS_DATE | LS_SIZE | LS_R);
 }
 
-String SD_TC::todaysDataFileName() {
+void SD_TC::todaysDataFileName(char* path, int size) {
   DateTime_TC now = DateTime_TC::now();
-  char path[30];
-  snprintf(path, sizeof(path), "%4i%02i%02i.csv", now.year(), now.month(), now.day());
+  snprintf_P(path, size, (PGM_P)F("%4i%02i%02i.csv"), now.year(), now.month(), now.day());
   COUT(path);
-  return String(path);
 }

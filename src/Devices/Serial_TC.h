@@ -7,14 +7,14 @@
 
 #include <Arduino.h>
 
-void serial(const char *format...);
+void serial(const __FlashStringHelper *format...);
 
 class Serial_TC {
 public:
   //  class methods
   static Serial_TC *instance();
 
-  void vprintf(const char *format, va_list args);
+  void vprintf(const __FlashStringHelper *format, va_list args);
 
 private:
   //  class variable

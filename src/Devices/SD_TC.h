@@ -1,9 +1,9 @@
 #pragma once
 
 #include <Arduino.h>
-#include <SD.h>
 
-typedef void (*visitor)(File* pEntry, String parentPath);
+#define SS 4
+#include <SdFat.h>
 
 class SD_TC {
 public:
@@ -11,26 +11,25 @@ public:
   static SD_TC* instance();
 
   // instance methods
-  void appendData(String header, String line);
-  void appendToLog(String line);
+  void appendData(const char* header, const char* line);
+  void appendToLog(const char* line);
   bool exists(const char* path);
   bool format();
   bool mkdir(const char* path);
   File open(const char* path, oflag_t oflag = 0x00);
-  String todaysDataFileName();
+  void todaysDataFileName(char* path, int size);
   void printRootDirectory();
-  void visit(visitor pFunction);
 
 private:
   // class variables
   static SD_TC* _instance;
 
   // instance variables
-  const uint8_t SD_SELECT_PIN = 4;
+  const uint8_t SD_SELECT_PIN = SS;
   bool hasHadError = false;
-  SD sd;
+  SdFat sd;
 
   // instance methods
   SD_TC();
-  void appendDataToPath(String data, String path);
+  void appendDataToPath(const char* data, const char* path);
 };

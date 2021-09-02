@@ -11,10 +11,10 @@ public:
   SeeTankID(TankControllerLib* tc) : UIState(tc) {
   }
   void start();
-  const char* name() {
-    return "SeeTankID";
+  const __FlashStringHelper* name() {
+    return F("SeeTankID");
   }
-  const char* prompt() {
-    return "Tank ID:";
+  const __FlashStringHelper* prompt() {
+    return F("Tank ID:");
   };
 };

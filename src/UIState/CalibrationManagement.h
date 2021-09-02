@@ -11,10 +11,10 @@ public:
   CalibrationManagement(TankControllerLib* tc) : UIState(tc) {
   }
   void handleKey(char key);
-  const char* name() {
-    return "CalibrationManagement";
+  const __FlashStringHelper* name() {
+    return F("CalibrationManagement");
   }
-  const char* prompt() {
-    return "Cal Management";
+  const __FlashStringHelper* prompt() {
+    return F("Cal Management");
   };
 };

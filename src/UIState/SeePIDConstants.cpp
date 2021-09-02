@@ -26,27 +26,26 @@ void SeePIDConstants::loop() {
 
 void SeePIDConstants::loadKp(uint16_t line) {
   char buffer[17];
-  snprintf(buffer, sizeof(buffer), "Kp: %.1f", PID_TC::instance()->getKp());
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Kp: %.1f"), PID_TC::instance()->getKp());
   LiquidCrystal_TC::instance()->writeLine(buffer, line);
 }
 
 void SeePIDConstants::loadKi(uint16_t line) {
   char buffer[17];
-  snprintf(buffer, sizeof(buffer), "Ki: %.1f", PID_TC::instance()->getKi());
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Ki: %.1f"), PID_TC::instance()->getKi());
   LiquidCrystal_TC::instance()->writeLine(buffer, line);
 }
 
 void SeePIDConstants::loadKd(uint16_t line) {
   char buffer[17];
-  snprintf(buffer, sizeof(buffer), "Kd: %.1f", PID_TC::instance()->getKd());
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Kd: %.1f"), PID_TC::instance()->getKd());
   LiquidCrystal_TC::instance()->writeLine(buffer, line);
 }
 
 void SeePIDConstants::loadPID(uint16_t line) {
-  bool flag = PHControl::instance()->getUsePID();
-  if (flag) {
-    LiquidCrystal_TC::instance()->writeLine("PID: ON         ", line);
+  if (PHControl::instance()->getUsePID()) {
+    LiquidCrystal_TC::instance()->writeLine(F("PID: ON"), line);
   } else {
-    LiquidCrystal_TC::instance()->writeLine("PID: OFF        ", line);
+    LiquidCrystal_TC::instance()->writeLine(F("PID: OFF"), line);
   }
 }

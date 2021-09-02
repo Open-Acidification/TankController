@@ -11,8 +11,8 @@ public:
   Wait(TankControllerLib* tc, uint16_t msDelay = 1000, UIState* nextState = nullptr);
   // watch to see if enough time has passed
   void loop();
-  const char* name() {
-    return "Wait";
+  const __FlashStringHelper* name() {
+    return F("Wait");
   }
   // override to do nothing
   void start() {

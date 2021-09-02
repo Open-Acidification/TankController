@@ -11,8 +11,8 @@ class SetKI : public NumCollectorState {
 public:
   SetKI(TankControllerLib* tc) : NumCollectorState(tc) {
   }
-  const char* name() {
-    return "SetKI";
+  const __FlashStringHelper* name() {
+    return F("SetKI");
   }
   float getCurrentValue() {
     return EEPROM_TC::instance()->getKI();
@@ -20,8 +20,8 @@ public:
   uint16_t getCurrentValuePrecision() {
     return 1;
   }
-  const char* prompt() {
-    return "Set KI";
+  const __FlashStringHelper* prompt() {
+    return F("Set KI");
   };
   void setValue(float value);
 };

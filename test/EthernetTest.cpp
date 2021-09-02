@@ -6,7 +6,7 @@
 
 const int PIN = 4;
 
-unittest(Main) {
+unittest(main) {
   GodmodeState* state = GODMODE();
   EEPROM_TC::instance()->setTankID(99);
   // Test singleton
@@ -49,6 +49,16 @@ unittest(Main) {
   singleton1->loop();
   singleton1->loop();
   assertEqual(singleton1->getNumAttemptedDHCPReleases(), 3);
+}
+
+unittest(begin_with_DHCP) {
+  Ethernet.mockDHCP(IPAddress(192, 168, 1, 42));
+  assertTrue(Ethernet_TC::instance(true)->getIsUsingDHCP());
+}
+
+unittest(begin_without_DHCP) {
+  Ethernet.mockDHCP(IPAddress((uint32_t)0));
+  assertFalse(Ethernet_TC::instance(true)->getIsUsingDHCP());
 }
 
 unittest_main()

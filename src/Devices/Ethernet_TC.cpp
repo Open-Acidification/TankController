@@ -3,6 +3,7 @@
 #include <avr/wdt.h>
 
 #include "Devices/EEPROM_TC.h"
+#include "Devices/Keypad_TC.h"
 #include "Serial_TC.h"
 
 Ethernet_TC *Ethernet_TC::_instance = nullptr;
@@ -12,23 +13,30 @@ Ethernet_TC::Ethernet_TC() {
   pinMode(SD_SELECT_PIN, OUTPUT);
   digitalWrite(SD_SELECT_PIN, HIGH);
   readMac();
-  serial("Attempting to connect to Ethernet");
+  serial(F("Attempting to connect to Ethernet"));
   wdt_disable();
-  if (Ethernet.begin(mac)) {
+  int key = Keypad_TC::instance()->getKey();
+  long timeout = key == NO_KEY ? 60000 : 1;
+  if (Ethernet.begin(mac, timeout)) {
     IP = Ethernet.localIP();
-    serial("DHCP address is %i.%i.%i.%i", IP[0], IP[1], IP[2], IP[3]);
+    serial(F("DHCP address is %i.%i.%i.%i"), IP[0], IP[1], IP[2], IP[3]);
+    isUsingDHCP = true;
   } else {
     // update IP by adding tank ID to last octet
     defaultIP[3] += EEPROM_TC::instance()->getTankID();
-    serial("DHCP failed, trying %i.%i.%i.%i", defaultIP[0], defaultIP[1], defaultIP[2], defaultIP[3]);
+    serial(F("DHCP failed, trying %i.%i.%i.%i"), defaultIP[0], defaultIP[1], defaultIP[2], defaultIP[3]);
     Ethernet.begin(mac, defaultIP);
-    serial("Done with Ethernet setup");
+    serial(F("Done with Ethernet setup"));
     IP = defaultIP;
   }
   wdt_enable(WDTO_8S);
 }
 
-Ethernet_TC *Ethernet_TC::instance() {
+Ethernet_TC *Ethernet_TC::instance(bool reset) {
+  if (reset && _instance) {
+    delete _instance;
+    _instance = nullptr;
+  }
   if (_instance == nullptr) {
     _instance = new Ethernet_TC;
   }
@@ -36,8 +44,10 @@ Ethernet_TC *Ethernet_TC::instance() {
 }
 
 void Ethernet_TC::loop() {
-  // "just call it on every loop() invocation" https://www.arduino.cc/en/Reference/EthernetMaintain
-  Ethernet.maintain();
+  if (isUsingDHCP) {
+    // "just call it on every loop() invocation" https://www.arduino.cc/en/Reference/EthernetMaintain
+    Ethernet.maintain();
+  }
   numAttemptedDHCPReleases++;
 }
 
@@ -55,5 +65,5 @@ void Ethernet_TC::readMac(bool forceReset) {
   mac[3] = bytes[3];
   mac[4] = bytes[4];
   mac[5] = bytes[5];
-  serial("MAC address is %02x:%02x:%02x:%02x:%02x:%02x", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+  serial(F("MAC address is %02x:%02x:%02x:%02x:%02x:%02x"), mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
 }

@@ -19,6 +19,8 @@ PHControl *controlSolenoid;
 
 unittest_setup() {
   tc = TankControllerLib::instance("PushingBoxIdentifier");
+  Ethernet.mockDHCP(IPAddress(192, 168, 1, 42));
+  Ethernet_TC::instance(true);
   pPushingBox = PushingBox::instance();
   tempProbe = TempProbe_TC::instance();
   controlSolenoid = PHControl::instance();
@@ -30,6 +32,10 @@ unittest_setup() {
   tc->serialEvent1();                      // fake interrupt to update the current pH reading
   tc->loop();                              // update the controls based on the current readings
   state->serialPort[0].dataOut = "";       // clear serial output
+}
+
+unittest_teardown() {
+  pPushingBox->getClient()->stop();  // clears the writeBuffer and readBuffer
 }
 
 unittest(NoTankID) {
@@ -65,16 +71,16 @@ unittest(SendData) {
   // set pH
   state->serialPort[1].dataIn = "7.125\r";  // the queue of data waiting to be read
   tc->serialEvent1();                       // fake interrupt
-  EthernetClient::startMockServer(pPushingBox->getServer(), 80);
-  assertEqual(0, pPushingBox->getClient()->writeBuffer().size());
-  const uint8_t response[] = "[PushingBox response]\r\n";
-  for (int i = 0; i < sizeof(response); ++i) {
-    pPushingBox->getClient()->pushToReadBuffer(response[i]);
-  }
+  EthernetClient::startMockServer(pPushingBox->getServer(), (uint32_t)0, 80,
+                                  (const uint8_t *)"[PushingBox response]\r\n");
+  EthernetClient *pClient = pPushingBox->getClient();
+  assertFalse(pClient->connected());  // not yet connected!
   state->serialPort[0].dataOut = "";
-  delay(60 * 1000);  // wait for one minute to ensure we send again
+  delay(60 * 1000);  // wait for one minute to ensure we send
   tc->loop();
-  deque<uint8_t> buffer = pPushingBox->getClient()->writeBuffer();
+  assertTrue(pClient->connected());
+  assertNotNull(pClient->writeBuffer());
+  deque<uint8_t> buffer = *(pClient->writeBuffer());
   String bufferResult;
   bool flag = false;
   for (int i = 0; i < buffer.size(); i++) {
@@ -95,25 +101,27 @@ unittest(SendData) {
       "attempting to connect to PushingBox...\r\n"
       "connected\r\n"
       "===== PushingBox response:\r\n"
-      "[PushingBox response]\r\n?"
+      "[PushingBox response]\r\n"
       "===== end of PushingBox response\r\n";
   assertEqual(expected2, state->serialPort[0].dataOut);
-  EthernetClient::stopMockServer(pPushingBox->getServer(), 80);
+  EthernetClient::stopMockServer(pPushingBox->getServer(), (uint32_t)0, 80);
+  pClient->writeBuffer()->clear();
+  pClient->stop();
 }
 
 unittest(inCalibration) {
-  pPushingBox->getClient()->stop();  // clears the writeBuffer and readBuffer
-
   // set tank id
   EEPROM_TC::instance()->setTankID(99);
   PHCalibrationMid *test = new PHCalibrationMid(tc);
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
-  EthernetClient::startMockServer(pPushingBox->getServer(), 80);
-  assertEqual(0, pPushingBox->getClient()->writeBuffer().size());
+  EthernetClient::startMockServer(pPushingBox->getServer(), (uint32_t)0, 80);
+  EthernetClient *pClient = pPushingBox->getClient();
+  assertNull(pClient->writeBuffer());
   delay(60 * 20 * 1000);  // wait for 20 minutes to ensure we send again
   tc->loop();
-  deque<uint8_t> buffer = pPushingBox->getClient()->writeBuffer();
+  assertNotNull(pClient->writeBuffer());
+  deque<uint8_t> buffer = *(pPushingBox->getClient()->writeBuffer());
   String bufferResult;
   for (int i = 0; i < buffer.size(); i++) {
     bufferResult += buffer[i];
@@ -124,5 +132,21 @@ unittest(inCalibration) {
       "Connection: close\r\n"
       "\r\n";
   assertEqual(expected1, bufferResult.c_str());
+  pClient->writeBuffer()->clear();
+  pClient->stop();
 }
+
+unittest(without_DHCP) {
+  Ethernet.mockDHCP(IPAddress((uint32_t)0));
+  assertFalse(Ethernet_TC::instance(true)->getIsUsingDHCP());
+  // set tank id
+  EEPROM_TC::instance()->setTankID(99);
+  EthernetClient::startMockServer(pPushingBox->getServer(), (uint32_t)0, 80);
+  EthernetClient *pClient = pPushingBox->getClient();
+  assertNull(pClient->writeBuffer());
+  delay(60 * 20 * 1000);  // wait for 20 minutes to ensure we still do not send
+  tc->loop();
+  assertNull(pClient->writeBuffer());
+}
+
 unittest_main()

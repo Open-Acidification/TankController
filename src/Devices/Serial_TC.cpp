@@ -7,7 +7,7 @@
 /**
  * global serial() functions
  */
-void serial(const char *format...) {
+void serial(const __FlashStringHelper *format...) {
   va_list args;
   va_start(args, format);
   Serial_TC::instance()->vprintf(format, args);
@@ -42,16 +42,16 @@ Serial_TC::Serial_TC() {
 /**
  * printf() uses a variant of snprintf() so supports the expected formats
  */
-void Serial_TC::vprintf(const char *format, va_list args) {
-  char buffer[256];
-  vsnprintf(buffer, sizeof(buffer), format, args);
+// void Serial_TC::vprintf(const char *format, va_list args) {
+void Serial_TC::vprintf(const __FlashStringHelper *format, va_list args) {
+  char buffer[128];
+  vsnprintf_P(buffer, sizeof(buffer), (PGM_P)format, args);
   Serial.println(buffer);
   Serial.flush();
   // need to avoid recursion since SD_TC could call serial()
   if (!printIsActive) {
     printIsActive = true;
-    // this seems to cause problems on the actual hardware
-    // SD_TC::instance()->appendToLog(buffer);
+    SD_TC::instance()->appendToLog(buffer);
     printIsActive = false;
   }
 #ifdef MOCK_PINS_COUNT

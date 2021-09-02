@@ -16,13 +16,13 @@ public:
 
   // instance methods
   bool isInCalibration();
-  size_t freeMemory();
+  int freeMemory();
   void loop();
   void serialEvent();
   void serialEvent1();
   void setNextState(UIState* newState, bool update = false);
   void setup();
-  const char* stateName();
+  const __FlashStringHelper* stateName();
   const char* version();
 
 private:

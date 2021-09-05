@@ -8,7 +8,6 @@
 #include "Devices/TemperatureControl.h"
 #include "EnablePID.h"
 #include "PHCalibrationMid.h"
-#include "ResetLCDScreen.h"
 #include "SeeDeviceAddress.h"
 #include "SeeDeviceUptime.h"
 #include "SeeFreeMemory.h"

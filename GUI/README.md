@@ -1,5 +1,5 @@
 # TankControllerGUI
-A Python GUI for TankController running on the mocks provided by `Arduino CI`
+A Python GUI for TankController running on the mocks provided by `Arduino CI`.
 
 ## Build Process
 Follow these steps

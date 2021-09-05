@@ -1,6 +1,7 @@
 #include "Devices/PHProbe.h"
 
 #include <avr/wdt.h>
+#include <stdlib.h>
 
 #include "Devices/Serial_TC.h"
 
@@ -73,7 +74,10 @@ void PHProbe::serialEvent1() {
                                      // treat 0 as valid since probe might not be connected
           wdt_disable();
           wdt_enable(WDTO_120MS);  // allow enough time to print message
-          serial(F("pH value dropped to %5.3f so trigger a reset!"), value);
+          char buffer[50];
+          strncpy_P(buffer, (PGM_P)F("Triggering a reset because pH dropped to "), sizeof(buffer));
+          dtostrf(value, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
+          serial(buffer);
           while (true) {
           }
         }

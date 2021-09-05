@@ -1,4 +1,4 @@
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 #include <avr/wdt.h>
 
@@ -20,20 +20,20 @@
 #include "UIState/MainMenu.h"
 #include "UIState/UIState.h"
 
-const char TANK_CONTROLLER_VERSION[] = "21.08.1";
+const char TANK_CONTROLLER_VERSION[] = "21.09.1";
 
 // ------------ Class Methods ------------
 /**
  * static variable to hold singleton
  */
-TankControllerLib *TankControllerLib::_instance = nullptr;
+TankController *TankController::_instance = nullptr;
 
 /**
  * static function to return singleton
  */
-TankControllerLib *TankControllerLib::instance(const char *pushingBoxID) {
+TankController *TankController::instance(const char *pushingBoxID) {
   if (!_instance) {
-    _instance = new TankControllerLib;
+    _instance = new TankController;
     PushingBox::instance(pushingBoxID);
   }
   return _instance;
@@ -43,8 +43,8 @@ TankControllerLib *TankControllerLib::instance(const char *pushingBoxID) {
 /**
  * Constructor
  */
-TankControllerLib::TankControllerLib() {
-  serial(F("\r\n#################\r\nTankControllerLib::TankControllerLib() - version %s"), TANK_CONTROLLER_VERSION);
+TankController::TankController() {
+  serial(F("\r\n#################\r\nTankController::TankController() - version %s"), TANK_CONTROLLER_VERSION);
   assert(!_instance);
   // ensure we have instances
   SD_TC::instance();
@@ -64,7 +64,7 @@ TankControllerLib::TankControllerLib() {
 /**
  * Destructor
  */
-TankControllerLib::~TankControllerLib() {
+TankController::~TankController() {
   if (state) {
     delete state;
     state = nullptr;
@@ -79,7 +79,7 @@ TankControllerLib::~TankControllerLib() {
  * Blink the on-board LED to let us know that loop() is being called
  *
  */
-void TankControllerLib::blink() {
+void TankController::blink() {
   if (millis() / 1000 % 2) {
     digitalWrite(LED_BUILTIN, LOW);  // turn the LED off by making the voltage LOW
   } else {
@@ -88,7 +88,7 @@ void TankControllerLib::blink() {
 }
 
 // https://github.com/maniacbug/MemoryFree/blob/master/MemoryFree.cpp
-int TankControllerLib::freeMemory() {
+int TankController::freeMemory() {
 #ifdef MOCK_PINS_COUNT
   int *__brkval = 0;
   int __bss_end = 0;
@@ -108,7 +108,7 @@ int TankControllerLib::freeMemory() {
  * Is the current UIState one that should disable controls?
  * We don't want to turn on the heat/chill if the temperature probe is out of the tank!
  */
-bool TankControllerLib::isInCalibration() {
+bool TankController::isInCalibration() {
   return state->isInCalibration();
 }
 
@@ -116,8 +116,8 @@ bool TankControllerLib::isInCalibration() {
  * Private member function called by loop
  * Handles keypresses
  */
-void TankControllerLib::handleUI() {
-  COUT("TankControllerLib::handleUI() - " << state->name());
+void TankController::handleUI() {
+  COUT("TankController::handleUI() - " << state->name());
   char key = Keypad_TC::instance()->getKey();
   if (key == NO_KEY) {
     if (!lastKeypadTime) {
@@ -133,12 +133,12 @@ void TankControllerLib::handleUI() {
     }
   } else {
     serial(F("Keypad input: %c"), key);
-    COUT("TankControllerLib::handleUI() - " << state->name() << "::handleKey(" << key << ")");
+    COUT("TankController::handleUI() - " << state->name() << "::handleKey(" << key << ")");
     state->handleKey(key);
     lastKeypadTime = millis();
   }
   updateState();
-  COUT("TankControllerLib::handleUI() - " << state->name() << "::loop()");
+  COUT("TankController::handleUI() - " << state->name() << "::loop()");
   state->loop();
 }
 
@@ -147,7 +147,7 @@ void TankControllerLib::handleUI() {
  * It is called repeatedly while the board is on.
  * (It appears to be called about once every 15 ms.)
  */
-void TankControllerLib::loop() {
+void TankController::loop() {
   wdt_reset();
   blink();                                // blink the on-board LED to show that we are running
   handleUI();                             // look at keypad, update LCD
@@ -162,23 +162,23 @@ void TankControllerLib::loop() {
 /**
  * This public instance function is called when there is data on the serial port(0).
  */
-void TankControllerLib::serialEvent() {
+void TankController::serialEvent() {
 }
 
 /**
  * This public instance function is called when there is data on the serial port(1).
  * This the Atlas EZO pH circuit probe.
  */
-void TankControllerLib::serialEvent1() {
+void TankController::serialEvent1() {
   PHProbe::instance()->serialEvent1();
 }
 
 /**
  * Set the next state
  */
-void TankControllerLib::setNextState(UIState *newState, bool update) {
-  COUT("TankControllerLib::setNextState() from " << (nextState ? nextState->name() : "nullptr") << " to "
-                                                 << newState->name());
+void TankController::setNextState(UIState *newState, bool update) {
+  COUT("TankController::setNextState() from " << (nextState ? nextState->name() : "nullptr") << " to "
+                                              << newState->name());
   assert(nextState == nullptr);
   nextState = newState;
   if (update) {
@@ -190,9 +190,9 @@ void TankControllerLib::setNextState(UIState *newState, bool update) {
  * This is one of two public instance functions.
  * Here we do any one-time startup initialization.
  */
-void TankControllerLib::setup() {
+void TankController::setup() {
   wdt_enable(WDTO_8S);
-  serial(F("TankControllerLib::setup()"));
+  serial(F("TankController::setup()"));
   SD_TC::instance()->printRootDirectory();
   serial(F("Free memory = %i"), freeMemory());
 }
@@ -201,14 +201,14 @@ void TankControllerLib::setup() {
  * Public member function used to get the current state name.
  * This is primarily used by testing.
  */
-const __FlashStringHelper *TankControllerLib::stateName() {
+const __FlashStringHelper *TankController::stateName() {
   return state->name();
 }
 
 /**
  * Private member function called by loop to update solonoids
  */
-void TankControllerLib::updateControls() {
+void TankController::updateControls() {
   // update TemperatureControl
   TemperatureControl::instance()->updateControl(TempProbe_TC::instance()->getRunningAverage());
   // update PHControl
@@ -219,9 +219,9 @@ void TankControllerLib::updateControls() {
  * Private member function called by UIState subclasses
  * Only updates if a new state is available to switch to
  */
-void TankControllerLib::updateState() {
+void TankController::updateState() {
   if (nextState) {
-    COUT("TankControllerLib::updateState() to " << nextState->name());
+    COUT("TankController::updateState() to " << nextState->name());
     assert(state != nextState);
     delete state;
     state = nextState;
@@ -233,15 +233,15 @@ void TankControllerLib::updateState() {
 /**
  * What is the current version?
  */
-const char *TankControllerLib::version() {
-  serial(F("TankControllerLib::version() = %s"), TANK_CONTROLLER_VERSION);
+const char *TankController::version() {
+  serial(F("TankController::version() = %s"), TANK_CONTROLLER_VERSION);
   return TANK_CONTROLLER_VERSION;
 }
 
 /**
  * once per second write the current data to the SD card
  */
-void TankControllerLib::writeDataToSD() {
+void TankController::writeDataToSD() {
   static uint32_t nextWriteTime = 0;
   uint32_t msNow = millis();
   COUT("nextWriteTime: " << nextWriteTime << "; now = " << msNow);
@@ -278,7 +278,7 @@ void TankControllerLib::writeDataToSD() {
 /**
  * once per minute write the current data to the serial port
  */
-void TankControllerLib::writeDataToSerial() {
+void TankController::writeDataToSerial() {
   static uint32_t nextWriteTime = 0;
   uint32_t msNow = millis();
   if (nextWriteTime <= msNow) {

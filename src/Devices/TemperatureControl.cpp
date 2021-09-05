@@ -3,7 +3,7 @@
 #include "Devices/DateTime_TC.h"
 #include "Devices/EEPROM_TC.h"
 #include "Serial_TC.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 const float DEFAULT_TEMPERATURE = 20.0;
 
@@ -91,7 +91,7 @@ void Chiller::updateControl(float currentTemperature) {
     bool newValue;
     previousMillis = currentMillis;
     // if in calibration, turn unit off
-    if (TankControllerLib::instance()->isInCalibration()) {
+    if (TankController::instance()->isInCalibration()) {
       newValue = TURN_SOLENOID_OFF;
       COUT("Chiller should be off");
     }
@@ -121,7 +121,7 @@ void Heater::updateControl(float currentTemperature) {
   bool oldValue = digitalRead(TEMP_CONTROL_PIN);
   bool newValue;
   // if in calibration, turn unit off
-  if (TankControllerLib::instance()->isInCalibration()) {
+  if (TankController::instance()->isInCalibration()) {
     newValue = TURN_SOLENOID_OFF;
   }
   // if the observed temperature is below the temperature set-point range turn on the heater

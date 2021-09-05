@@ -3,7 +3,7 @@
 #include "MainMenu.h"
 #include "TC_util.h"
 
-Wait::Wait(TankControllerLib *tc, uint16_t msDelay, UIState *nextState) : UIState(tc) {
+Wait::Wait(TankController *tc, uint16_t msDelay, UIState *nextState) : UIState(tc) {
   endTime = millis() + msDelay;
   if (nextState) {
     COUT(nextState->name());

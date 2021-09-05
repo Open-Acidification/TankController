@@ -3,7 +3,7 @@
 #include "Devices/EEPROM_TC.h"
 #include "Devices/Serial_TC.h"
 #include "TC_util.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 // class variable
 PID_TC *PID_TC::_instance = nullptr;
@@ -60,7 +60,7 @@ PID_TC::~PID_TC() {
 
 // instance functions
 float PID_TC::computeOutput(float target, float current) {
-  if (TankControllerLib::instance()->isInCalibration()) {
+  if (TankController::instance()->isInCalibration()) {
     // current value will likely be wrong during calibration, so don't make any changes
     return static_cast<float>(output);
   }

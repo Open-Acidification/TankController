@@ -9,7 +9,7 @@
 
 class SeePIDConstants : public UIState {
 public:
-  SeePIDConstants(TankControllerLib* tc) : UIState(tc) {
+  SeePIDConstants(TankController* tc) : UIState(tc) {
   }
   void loop();
   const __FlashStringHelper* name() {

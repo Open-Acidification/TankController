@@ -5,7 +5,7 @@
 #include "Devices/Serial_TC.h"
 #include "PID_TC.h"
 #include "TC_util.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 const float DEFAULT_PH = 8.1;
 
@@ -74,7 +74,7 @@ void PHControl::updateControl(float pH) {
   COUT("target: " << targetPh << "; current: " << pH << "; nowModWindow = " << nowModWindow
                   << "; msToBeOn = " << msToBeOn);
   bool newValue;
-  if (TankControllerLib::instance()->isInCalibration()) {
+  if (TankController::instance()->isInCalibration()) {
     COUT("pH control should be off since in calibration");
     newValue = TURN_SOLENOID_OFF;  // turn off CO2 while in calibration
   } else if (SOLENOID_OPENING_TIME < msToBeOn && nowModWindow < msToBeOn) {

@@ -3,10 +3,10 @@
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "PHCalibrationLow.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 unittest(test) {
-  TankControllerLib* tc = TankControllerLib::instance();
+  TankController* tc = TankController::instance();
   PHCalibrationLow* test = new PHCalibrationLow(tc);
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());

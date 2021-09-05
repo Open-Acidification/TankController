@@ -9,7 +9,7 @@
 
 class SetGoogleSheetInterval : public NumCollectorState {
 public:
-  SetGoogleSheetInterval(TankControllerLib* tc) : NumCollectorState(tc) {
+  SetGoogleSheetInterval(TankController* tc) : NumCollectorState(tc) {
   }
   virtual bool isInteger() {
     return true;

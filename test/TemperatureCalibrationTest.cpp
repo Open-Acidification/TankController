@@ -4,7 +4,7 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "EEPROM_TC.h"
 #include "TC_util.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 #include "TempProbe_TC.h"
 #include "TemperatureCalibration.h"
 
@@ -23,7 +23,7 @@ unittest(test) {
   assertTrue(9.9 <= temp && temp <= 10.1);
 
   // set UI to TemperatureCalibration state
-  TankControllerLib* tc = TankControllerLib::instance();
+  TankController* tc = TankController::instance();
   assertFalse(tc->isInCalibration());
   TemperatureCalibration* test = new TemperatureCalibration(tc);
   tc->setNextState(test, true);

@@ -7,7 +7,7 @@
 #include "Devices/Serial_TC.h"
 #include "PHCalibrationHigh.h"
 #include "TC_util.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 unittest_setup() {
   PID_TC::reset();
@@ -59,7 +59,7 @@ unittest(compute) {
 
 unittest(computeDuringCalibration) {
   // set UI to one of the calibration states
-  TankControllerLib *tc = TankControllerLib::instance();
+  TankController *tc = TankController::instance();
   tc->setNextState(new PHCalibrationHigh(tc), true);
 
   PID_TC *pPID = PID_TC::instance();

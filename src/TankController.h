@@ -9,10 +9,10 @@
 class LiquidCrystal_TC;
 class Serial_TC;
 class UIState;
-class TankControllerLib {
+class TankController {
 public:
   // class methods
-  static TankControllerLib* instance(const char* pushingBoxID = nullptr);
+  static TankController* instance(const char* pushingBoxID = nullptr);
 
   // instance methods
   bool isInCalibration();
@@ -27,7 +27,7 @@ public:
 
 private:
   // class variables
-  static TankControllerLib* _instance;
+  static TankController* _instance;
   static const uint32_t IDLE_TIMEOUT = 60L * 1000L;  // revert to the main menu after 60 seconds of inactivity
 
   // instance variables
@@ -36,8 +36,8 @@ private:
   uint32_t lastKeypadTime = 0;
 
   // instance methods
-  TankControllerLib();
-  ~TankControllerLib();
+  TankController();
+  ~TankController();
   void blink();
   void handleUI();
   void updateControls();

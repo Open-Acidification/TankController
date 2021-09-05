@@ -4,11 +4,11 @@
 #include "Devices/DateTime_TC.h"
 #include "LiquidCrystal_TC.h"
 #include "SeeDeviceUptime.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 #include "UIState/UIState.h"
 
 unittest(testWaitState) {
-  TankControllerLib* tc = TankControllerLib::instance();
+  TankController* tc = TankController::instance();
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
   assertEqual("MainMenu", tc->stateName());
   GODMODE()->resetClock();

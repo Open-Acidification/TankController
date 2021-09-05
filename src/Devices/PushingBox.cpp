@@ -6,7 +6,7 @@
 #include "Devices/Serial_TC.h"
 #include "Devices/TempProbe_TC.h"
 #include "TC_util.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 //  class variables
 PushingBox* PushingBox::_instance = nullptr;
@@ -66,7 +66,7 @@ void PushingBox::sendData() {
     return;
   }
   char buffer[200];
-  if (TankControllerLib::instance()->isInCalibration()) {
+  if (TankController::instance()->isInCalibration()) {
     static const char format[] PROGMEM =
         "GET /pushingbox?devid=%s&tankid=%i&tempData=C&pHdata=C HTTP/1.1\r\n"
         "Host: api.pushingbox.com\r\n"

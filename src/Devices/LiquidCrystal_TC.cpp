@@ -1,7 +1,7 @@
 #include "Devices/LiquidCrystal_TC.h"
 
 #include "Devices/Serial_TC.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 // useful for future debugging
 #include "TC_util.h"

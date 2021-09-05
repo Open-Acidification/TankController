@@ -45,6 +45,7 @@ Flawfinder
 FONTFAMILY
 FONTSTYLE
 FONTWEIGHT
+gcc
 Gemfile
 getcwd
 github

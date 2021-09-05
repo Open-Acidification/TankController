@@ -20,4 +20,6 @@ jobs:
           scripts/install_libraries.sh
           scripts/testAndBuild.sh
       - name: Ensure no Git changes
-        run: (exit `git status -s -uno | wc -l`)
+        run: |
+          git status -s -uno
+          (exit `git status -s -uno | wc -l`)

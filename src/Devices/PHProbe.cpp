@@ -106,16 +106,19 @@ void PHProbe::setHighpointCalibration(float highpoint) {
   char buffer[17];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,High,%.3f\r"), highpoint);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
+  serial(F("PHProbe::setHighpointCalibration(%i.%i)"), (int)highpoint, (int)(highpoint * 1000) % 1000);
 }
 
 void PHProbe::setLowpointCalibration(float lowpoint) {
   char buffer[16];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,low,%.3f\r"), lowpoint);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
+  serial(F("PHProbe::setLowpointCalibration(%i.%i)"), (int)lowpoint, (int)(lowpoint * 1000) % 1000);
 }
 
 void PHProbe::setMidpointCalibration(float midpoint) {
   char buffer[16];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,mid,%.3f\r"), midpoint);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
+  serial(F("PHProbe::setMidpointCalibration(%i.%i)"), (int)midpoint, (int)(midpoint * 1000) % 1000);
 }

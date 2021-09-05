@@ -9,6 +9,7 @@
 #include "TemperatureCalibration.h"
 
 unittest(test) {
+  GodmodeState* state = GODMODE();
   // with no correction, we have a temperature of 10.0
   TempProbe_TC* tempProbe = TempProbe_TC::instance();
   tempProbe->setTemperature(10.0);
@@ -30,7 +31,9 @@ unittest(test) {
   assertTrue(tc->isInCalibration());
 
   // UI sets actual temperature to 10.5
+  state->serialPort[0].dataOut = "";  // the history of data written
   test->setValue(10.5);
+  assertEqual("Set temperature correction to 0.50\r\n", state->serialPort[0].dataOut);
 
   // The new temperature should be 10.5
   temp = tempProbe->getRawTemperature();

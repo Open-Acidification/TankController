@@ -15,7 +15,7 @@ void SetPHSetPoint::setValue(float value) {
   PHControl::instance()->setTargetPh(value);
 
   char output[17];
-  snprintf_P(output, sizeof(output), (PGM_P)F("New pH=%.3f"), value);
+  snprintf_P(output, sizeof(output), (PGM_P)F("New pH=%i.%i"), (int)value, (int)(value * 1000 + 0.5) % 1000);
   LiquidCrystal_TC::instance()->writeLine(output, 1);
   returnToMainMenu(3000);  // after 3-second delay
 }

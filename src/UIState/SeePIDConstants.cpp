@@ -26,19 +26,22 @@ void SeePIDConstants::loop() {
 
 void SeePIDConstants::loadKp(uint16_t line) {
   char buffer[17];
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Kp: %.1f"), PID_TC::instance()->getKp());
+  float value = PID_TC::instance()->getKp();
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Kp: %i.%i"), (int)value, (int)(value * 10 + 0.5) % 10);
   LiquidCrystal_TC::instance()->writeLine(buffer, line);
 }
 
 void SeePIDConstants::loadKi(uint16_t line) {
   char buffer[17];
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Ki: %.1f"), PID_TC::instance()->getKi());
+  float value = PID_TC::instance()->getKi();
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Ki: %i.%i"), (int)value, (int)(value * 10 + 0.5) % 10);
   LiquidCrystal_TC::instance()->writeLine(buffer, line);
 }
 
 void SeePIDConstants::loadKd(uint16_t line) {
   char buffer[17];
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Kd: %.1f"), PID_TC::instance()->getKd());
+  float value = PID_TC::instance()->getKd();
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Kd: %i.%i"), (int)value, (int)(value * 10 + 0.5) % 10);
   LiquidCrystal_TC::instance()->writeLine(buffer, line);
 }
 

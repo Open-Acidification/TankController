@@ -64,6 +64,8 @@ TankControllerLib.o : Godmode.o
 	$(LIBRARIES)/Keypad/src/*.cpp								\
 	$(LIBRARIES)/LiquidCrystal/src/*.cpp  			\
 	$(LIBRARIES)/RTClib/src/*.cpp 							\
+	$(LIBRARIES)/SdFat/src/*.cpp 						  	\
+	$(LIBRARIES)/SdFat/src/*/*.cpp 							\
 
 	echo
 

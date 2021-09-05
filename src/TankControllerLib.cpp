@@ -258,18 +258,25 @@ void TankControllerLib::writeDataToSD() {
     dtostrf((float)TempProbe_TC::instance()->getRunningAverage(), 4, 2, currentTemp);
     dtostrf((float)PHProbe::instance()->getPh(), 5, 3, currentPh);
   }
+  char targetTemp[10];
+  char targetPh[10];
+  dtostrf(TemperatureControl::instance()->getTargetTemperature(), 4, 2, targetTemp);
+  dtostrf(PHControl::instance()->getTargetPh(), 5, 3, targetPh);
   static const char header[] = "time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd";
-  static const char format[] PROGMEM =
-      "%02i/%02i/%4i %02i:%02i:%02i, %3i, %s, %4.2f, %s, %5.3f, %4lu, %8.1f, %8.1f, %8.1f";
+  static const char format[] PROGMEM = "%02i/%02i/%4i %02i:%02i:%02i, %3i, %s, %s, %s, %s, %4lu";
   char buffer[128];
   DateTime_TC dtNow = DateTime_TC::now();
   PID_TC *pPID = PID_TC::instance();
   uint16_t tankId = EEPROM_TC::instance()->getTankID();
   snprintf_P(buffer, sizeof(buffer), (PGM_P)format, (uint16_t)dtNow.month(), (uint16_t)dtNow.day(),
              (uint16_t)dtNow.year(), (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(), (uint16_t)dtNow.second(),
-             (uint16_t)tankId, currentTemp, (float)TemperatureControl::instance()->getTargetTemperature(), currentPh,
-             (float)PHControl::instance()->getTargetPh(), (unsigned long)(millis() / 1000), (float)pPID->getKp(),
-             (float)pPID->getKi(), (float)pPID->getKd());
+             (uint16_t)tankId, currentTemp, targetTemp, currentPh, targetPh, (unsigned long)(millis() / 1000));
+  strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(", "));
+  dtostrf(pPID->getKp(), 8, 1, buffer + strnlen(buffer, sizeof(buffer)));
+  strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(", "));
+  dtostrf(pPID->getKi(), 8, 1, buffer + strnlen(buffer, sizeof(buffer)));
+  strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(", "));
+  dtostrf(pPID->getKd(), 8, 1, buffer + strnlen(buffer, sizeof(buffer)));
   SD_TC::instance()->appendData(header, buffer);
   nextWriteTime = msNow / 1000 * 1000 + 1000;  // round up to next second
   COUT(buffer);
@@ -283,8 +290,12 @@ void TankControllerLib::writeDataToSerial() {
   uint32_t msNow = millis();
   if (nextWriteTime <= msNow) {
     DateTime_TC dtNow = DateTime_TC::now();
-    serial(F("%02d:%02d pH=%5.3f temp=%5.2f"), (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(),
-           (float)PHProbe::instance()->getPh(), (float)TempProbe_TC::instance()->getRunningAverage());
+    char buffer[30];
+    snprintf_P(buffer, sizeof(buffer), (PGM_P)F("%02d:%02d pH="), (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute());
+    dtostrf((float)PHProbe::instance()->getPh(), 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
+    strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(" temp="));
+    dtostrf((float)TempProbe_TC::instance()->getRunningAverage(), 5, 2, buffer + strnlen(buffer, sizeof(buffer)));
+    serial(buffer);
     nextWriteTime = msNow / 60000 * 60000 + 60000;  // round up to next minute
     COUT(buffer);
   }

@@ -5,6 +5,7 @@ arduino
 args
 ASingle
 avr
+biodiversity
 Calib
 cassert
 cfg
@@ -29,7 +30,9 @@ Dnominal
 docstring
 Doxyfile
 Doxygen
+dtostrf
 dylib
+edu
 eep
 eeprom
 EEXIST
@@ -104,6 +107,7 @@ PIDOn
 plugin
 png
 pragma
+prestonc
 printf
 println
 PROGMEM
@@ -131,6 +135,7 @@ sizeof
 snprintf
 solonoids
 src
+stdlib
 strcpy
 strlen
 strncmp
@@ -159,6 +164,7 @@ vfprintf
 vprintf
 vscode
 vsnprintf
+wallawalla
 wdt
 WDTO
 wiki

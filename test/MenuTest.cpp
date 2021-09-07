@@ -9,11 +9,11 @@
 #include "LiquidCrystal_TC.h"
 #include "MainMenu.h"
 #include "PHCalibrationHigh.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 #include "TempProbe_TC.h"
 
 // globals for the singletons used in every test
-TankControllerLib* tc = TankControllerLib::instance();
+TankController* tc = TankController::instance();
 LiquidCrystal_TC* lc = LiquidCrystal_TC::instance();
 Keypad* keypad = Keypad_TC::instance()->_getPuppet();
 

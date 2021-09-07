@@ -5,14 +5,14 @@
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
 #include "SeeGoogleMins.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 unittest(testOutput) {
   // Set up
   float prevInterval = EEPROM_TC::instance()->getGoogleSheetInterval();
   EEPROM_TC::instance()->setGoogleSheetInterval(60);
 
-  TankControllerLib* tc = TankControllerLib::instance();
+  TankController* tc = TankController::instance();
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
   assertEqual("MainMenu", tc->stateName());
   SeeGoogleMins* test = new SeeGoogleMins(tc);

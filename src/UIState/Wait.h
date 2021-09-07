@@ -8,7 +8,7 @@
 
 class Wait : public UIState {
 public:
-  Wait(TankControllerLib* tc, uint16_t msDelay = 1000, UIState* nextState = nullptr);
+  Wait(TankController* tc, uint16_t msDelay = 1000, UIState* nextState = nullptr);
   // watch to see if enough time has passed
   void loop();
   const __FlashStringHelper* name() {

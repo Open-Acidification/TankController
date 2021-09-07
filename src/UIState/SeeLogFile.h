@@ -8,7 +8,7 @@
 
 class SeeLogFile : public UIState {
 public:
-  SeeLogFile(TankControllerLib* tc) : UIState(tc) {
+  SeeLogFile(TankController* tc) : UIState(tc) {
   }
   void start();
   const __FlashStringHelper* name() {

@@ -4,11 +4,11 @@
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
 #include "SeePHSlope.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 unittest(testOutput) {
   // Set up
-  TankControllerLib* tc = TankControllerLib::instance();
+  TankController* tc = TankController::instance();
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
   GODMODE()->serialPort[1].dataIn = "?SLOPE,99.7,100.3,-0.89\r";  // the queue of data waiting to be read
   tc->serialEvent1();                                             // fake interrupt

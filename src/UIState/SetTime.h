@@ -8,7 +8,7 @@
 
 class SetTime : public NumCollectorState {
 public:
-  SetTime(TankControllerLib* tc);
+  SetTime(TankController* tc);
   virtual bool isInteger() {
     return true;
   }

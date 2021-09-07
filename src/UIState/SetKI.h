@@ -9,7 +9,7 @@
 
 class SetKI : public NumCollectorState {
 public:
-  SetKI(TankControllerLib* tc) : NumCollectorState(tc) {
+  SetKI(TankController* tc) : NumCollectorState(tc) {
   }
   const __FlashStringHelper* name() {
     return F("SetKI");

@@ -8,7 +8,7 @@
 
 class SeePHSlope : public UIState {
 public:
-  SeePHSlope(TankControllerLib* tc) : UIState(tc) {
+  SeePHSlope(TankController* tc) : UIState(tc) {
   }
   void start();
   void loop();

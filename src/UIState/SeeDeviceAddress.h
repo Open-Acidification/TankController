@@ -8,7 +8,7 @@
 
 class SeeDeviceAddress : public UIState {
 public:
-  SeeDeviceAddress(TankControllerLib* tc) : UIState(tc) {
+  SeeDeviceAddress(TankController* tc) : UIState(tc) {
   }
   void start();
   void handleKey(char key);

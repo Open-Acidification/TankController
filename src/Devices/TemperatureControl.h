@@ -1,7 +1,7 @@
 #pragma once
 #include <Arduino.h>
 
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 /**
  * Temperature Control

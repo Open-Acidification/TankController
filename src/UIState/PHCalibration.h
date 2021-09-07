@@ -4,7 +4,7 @@
 
 class PHCalibration : public NumCollectorState {
 public:
-  PHCalibration(TankControllerLib* tc) : NumCollectorState(tc) {
+  PHCalibration(TankController* tc) : NumCollectorState(tc) {
   }
   virtual bool isInCalibration() {
     return true;  // disable controls during calibration

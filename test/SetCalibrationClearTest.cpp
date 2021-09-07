@@ -4,10 +4,10 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Keypad_TC.h"
 #include "SetCalibrationClear.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 // globals for the singletons used in every test
-TankControllerLib* tc = TankControllerLib::instance();
+TankController* tc = TankController::instance();
 LiquidCrystal_TC* lc = LiquidCrystal_TC::instance();
 Keypad* keypad = Keypad_TC::instance()->_getPuppet();
 

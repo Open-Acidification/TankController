@@ -4,10 +4,10 @@
 #include <vector>
 
 #include "Devices/LiquidCrystal_TC.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 unittest(loop) {
-  TankControllerLib* tank = TankControllerLib::instance();
+  TankController* tank = TankController::instance();
   LiquidCrystal_TC* lcd = LiquidCrystal_TC::instance();
   assertTrue(tank != nullptr);
   assertTrue(lcd != nullptr);
@@ -21,7 +21,7 @@ unittest(loop) {
   assertEqual("Tank Controller ", lines.at(0));
   assertEqual(
       "v"
-      "21.08.1 loading",  // this allows a word-search to find the number
+      "21.09.1 loading",  // this allows a word-search to find the number
       lines.at(1));
 }
 

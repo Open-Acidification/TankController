@@ -4,7 +4,7 @@
 #include "DateTime_TC.h"
 #include "SD_TC.h"
 #include "TC_util.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 #include "UIState/PHCalibrationMid.h"
 
 unittest_setup() {
@@ -24,7 +24,7 @@ unittest(singleton) {
 
 unittest(tankControllerLoop) {
   char data[250];
-  TankControllerLib* tc = TankControllerLib::instance();
+  TankController* tc = TankController::instance();
   DateTime_TC d1(2021, 4, 15);
   d1.setAsCurrent();
   assertFalse(SD_TC::instance()->exists("20210415.csv"));
@@ -47,7 +47,7 @@ unittest(tankControllerLoop) {
 }
 
 unittest(loopInCalibration) {
-  TankControllerLib* tc = TankControllerLib::instance();
+  TankController* tc = TankController::instance();
   PHCalibrationMid* test = new PHCalibrationMid(tc);
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());

@@ -1,6 +1,6 @@
 #include "UIState.h"
 
-#include "../TankControllerLib.h"
+#include "../TankController.h"
 #include "Devices/LiquidCrystal_TC.h"
 #include "UIState/MainMenu.h"
 #include "UIState/Wait.h"

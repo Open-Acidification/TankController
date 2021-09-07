@@ -26,7 +26,7 @@
 #include "SD_TC.h"
 #include "Serial_TC.h"
 #include "TC_util.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 #include "TempProbe_TC.h"
 #include "UIState.h"
 #include "pybind11/pybind11.h"
@@ -126,7 +126,7 @@ void loop() {
   if (msBehind) {
     delay(msBehind);
   }
-  TankControllerLib::instance()->loop();
+  TankController::instance()->loop();
 }
 
 uint32_t millisecondsSinceEpoch() {
@@ -207,16 +207,16 @@ void setTime() {
 
 void setup() {
   setTime();
-  TankControllerLib::instance()->setup();
+  TankController::instance()->setup();
 }
 
 const char *version() {
-  return TankControllerLib::instance()->version();
+  return TankController::instance()->version();
 }
 
 void writeSerial1(const char *data) {
-  GODMODE()->serialPort[1].dataIn = data;         // the queue of data waiting to be read
-  TankControllerLib::instance()->serialEvent1();  // fake interrupt
+  GODMODE()->serialPort[1].dataIn = data;      // the queue of data waiting to be read
+  TankController::instance()->serialEvent1();  // fake interrupt
 }
 
 PYBIND11_MODULE(libTC, m) {

@@ -3,7 +3,7 @@
 
 class SeeFreeMemory : public UIState {
 public:
-  SeeFreeMemory(TankControllerLib* tc) : UIState(tc) {
+  SeeFreeMemory(TankController* tc) : UIState(tc) {
   }
   void start();
   const __FlashStringHelper* name() {

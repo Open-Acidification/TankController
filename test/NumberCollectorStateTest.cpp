@@ -3,10 +3,10 @@
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "NumberCollectorState.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 unittest(Edge_Case) {
-  TestNumCollectorState test(TankControllerLib::instance());
+  TestNumCollectorState test(TankController::instance());
   test.handleKey('9');
   test.handleKey('0');
   test.handleKey('*');
@@ -16,7 +16,7 @@ unittest(Edge_Case) {
 }
 
 unittest(A_Digit_NoDecimal) {
-  TestNumCollectorState testNoDecimal(TankControllerLib::instance());
+  TestNumCollectorState testNoDecimal(TankController::instance());
   testNoDecimal.handleKey('1');
   testNoDecimal.handleKey('2');
   testNoDecimal.handleKey('3');
@@ -24,7 +24,7 @@ unittest(A_Digit_NoDecimal) {
 }
 
 unittest(A_Digit_WithDecimal) {
-  TestNumCollectorState testDecimal(TankControllerLib::instance());
+  TestNumCollectorState testDecimal(TankController::instance());
   testDecimal.handleKey('1');
   testDecimal.handleKey('2');
   testDecimal.handleKey('*');
@@ -34,7 +34,7 @@ unittest(A_Digit_WithDecimal) {
 }
 
 unittest(A_Digit_MultipleDecimals) {
-  TestNumCollectorState testDecimal(TankControllerLib::instance());
+  TestNumCollectorState testDecimal(TankController::instance());
   testDecimal.handleKey('1');
   testDecimal.handleKey('2');
   testDecimal.handleKey('*');
@@ -46,13 +46,13 @@ unittest(A_Digit_MultipleDecimals) {
 }
 
 unittest(backSpace) {
-  TestNumCollectorState testNoDecimal(TankControllerLib::instance());
+  TestNumCollectorState testNoDecimal(TankController::instance());
   testNoDecimal.handleKey('1');
   testNoDecimal.handleKey('2');
   testNoDecimal.handleKey('B');
   assertEqual(1, testNoDecimal.getValue());
 
-  TestNumCollectorState testDecimal(TankControllerLib::instance());
+  TestNumCollectorState testDecimal(TankController::instance());
   testDecimal.handleKey('1');
   testDecimal.handleKey('*');
   testDecimal.handleKey('B');
@@ -65,7 +65,7 @@ unittest(backSpace) {
 }
 
 unittest(clear) {
-  TestNumCollectorState testDecimal(TankControllerLib::instance());
+  TestNumCollectorState testDecimal(TankController::instance());
   testDecimal.handleKey('1');
   testDecimal.handleKey('2');
   testDecimal.handleKey('C');
@@ -73,7 +73,7 @@ unittest(clear) {
 }
 
 unittest(accept) {
-  TestNumCollectorState testDecimal(TankControllerLib::instance());
+  TestNumCollectorState testDecimal(TankController::instance());
   testDecimal.handleKey('1');
   testDecimal.handleKey('2');
   testDecimal.handleKey('3');
@@ -85,7 +85,7 @@ unittest(accept) {
 unittest(printing) {
   LiquidCrystal_TC* testLcd = LiquidCrystal_TC::instance();
   std::vector<String> lines;
-  TestNumCollectorState test(TankControllerLib::instance());
+  TestNumCollectorState test(TankController::instance());
   test.start();
   lines = testLcd->getLines();
   assertEqual("      0->     0 ", lines.at(1));
@@ -120,7 +120,7 @@ unittest(printing) {
 }
 
 unittest(integer) {
-  TestIntNumCollectorState testDecimal(TankControllerLib::instance());
+  TestIntNumCollectorState testDecimal(TankController::instance());
   testDecimal.handleKey('1');
   testDecimal.handleKey('2');
   testDecimal.handleKey('*');

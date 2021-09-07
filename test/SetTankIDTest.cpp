@@ -4,10 +4,10 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "EEPROM_TC.h"
 #include "SetTankID.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 unittest(test) {
-  TankControllerLib* tc = TankControllerLib::instance();
+  TankController* tc = TankController::instance();
   SetTankID* test = new SetTankID(tc);
   tc->setNextState(test, true);
 

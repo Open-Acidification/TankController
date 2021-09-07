@@ -9,7 +9,7 @@
 #include "TC_util.h"
 #include "UIState.h"
 
-class TankControllerLib;  // forward reference
+class TankController;  // forward reference
 class MainMenu : public UIState {
 public:
   enum ViewCommands {
@@ -40,7 +40,7 @@ public:
     SET_TANK_ID,
     SET_COMMAND_COUNT  // always last
   };
-  MainMenu(TankControllerLib* tc);
+  MainMenu(TankController* tc);
   void handleKey(char key);
   const __FlashStringHelper* name() {
     return F("MainMenu");

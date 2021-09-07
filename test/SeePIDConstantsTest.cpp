@@ -6,11 +6,11 @@
 #include "PHControl.h"
 #include "PID_TC.h"
 #include "SeePIDConstants.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 #include "UIState/UIState.h"
 
 unittest(TestVerticalScroll) {
-  TankControllerLib* tc = TankControllerLib::instance();
+  TankController* tc = TankController::instance();
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
   PID_TC* pPID = PID_TC::instance();
   SeePIDConstants* test = new SeePIDConstants(tc);

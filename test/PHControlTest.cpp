@@ -7,12 +7,12 @@
 #include "MainMenu.h"
 #include "PHCalibrationMid.h"
 #include "PHControl.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 const uint16_t PH_CONTROL_PIN = 49;
 
 GodmodeState* state = GODMODE();
-TankControllerLib* tc = TankControllerLib::instance();
+TankController* tc = TankController::instance();
 PHControl* controlSolenoid = PHControl::instance();
 LiquidCrystal_TC* lc = LiquidCrystal_TC::instance();
 

@@ -4,10 +4,10 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHControl.h"
 #include "EnablePID.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 unittest(IgnoreInvalidCharacter) {
-  TankControllerLib* tc = TankControllerLib::instance();
+  TankController* tc = TankController::instance();
   EnablePID* test = new EnablePID(tc);
   tc->setNextState(test, true);
   assertEqual("EnablePID", tc->stateName());
@@ -18,7 +18,7 @@ unittest(IgnoreInvalidCharacter) {
 }
 
 unittest(DisablePID) {
-  TankControllerLib* tc = TankControllerLib::instance();
+  TankController* tc = TankController::instance();
   EnablePID* test = new EnablePID(tc);
   tc->setNextState(test, true);
   assertEqual("EnablePID", tc->stateName());
@@ -34,7 +34,7 @@ unittest(DisablePID) {
 }
 
 unittest(EnablePID) {
-  TankControllerLib* tc = TankControllerLib::instance();
+  TankController* tc = TankController::instance();
   EnablePID* test = new EnablePID(tc);
   tc->setNextState(test, true);
   assertEqual("EnablePID", tc->stateName());

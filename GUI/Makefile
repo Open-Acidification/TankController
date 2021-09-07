@@ -10,7 +10,7 @@ OBJDIR = obj
 .PHONY: all
 all : $(PY_LIB)
 
-$(PY_LIB) : TankControllerLib.o ../pybind11/setup.py ../libTC.cpp
+$(PY_LIB) : TankController.o ../pybind11/setup.py ../libTC.cpp
 	echo "===== Compiling PY_LIB ($(PY_LIB)) =====" > /dev/null
 	$(CC) -shared -fPIC						  					\
 	$(DEFINES)                            	  \
@@ -35,8 +35,8 @@ $(PY_LIB) : TankControllerLib.o ../pybind11/setup.py ../libTC.cpp
 	../libTC.cpp *.o -o $(PY_LIB)
 	echo
 
-TankControllerLib.o : Godmode.o
-	echo "===== Compiling TankControllerLib =====" > /dev/null
+TankController.o : Godmode.o
+	echo "===== Compiling TankController =====" > /dev/null
 	$(CC) -c                              			\
 	$(DEFINES)                            			\
 	$(WARNINGS)                            		  \
@@ -64,6 +64,8 @@ TankControllerLib.o : Godmode.o
 	$(LIBRARIES)/Keypad/src/*.cpp								\
 	$(LIBRARIES)/LiquidCrystal/src/*.cpp  			\
 	$(LIBRARIES)/RTClib/src/*.cpp 							\
+	$(LIBRARIES)/SdFat/src/*.cpp 						  	\
+	$(LIBRARIES)/SdFat/src/*/*.cpp 							\
 
 	echo
 

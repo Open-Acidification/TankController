@@ -4,10 +4,10 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "EEPROM_TC.h"
 #include "SetTempSetPoint.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 unittest(test) {
-  TankControllerLib* tc = TankControllerLib::instance();
+  TankController* tc = TankController::instance();
   SetTempSetPoint* test = new SetTempSetPoint(tc);
   assertEqual("MainMenu", tc->stateName());
   tc->setNextState(test, true);

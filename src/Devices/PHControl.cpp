@@ -5,7 +5,7 @@
 #include "Devices/Serial_TC.h"
 #include "PID_TC.h"
 #include "TC_util.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 const float DEFAULT_PH = 8.1;
 
@@ -34,12 +34,20 @@ PHControl::PHControl() {
     targetPh = DEFAULT_PH;
     EEPROM_TC::instance()->setPH(targetPh);
   }
-  serial(F("PHControl with target pH = %5.3f"), targetPh);
+  char buffer[40];
+  strncpy_P(buffer, (PGM_P)F("PHControl with target pH = "), sizeof(buffer));
+  dtostrf(targetPh, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
+  serial(buffer);
 }
 
 void PHControl::setTargetPh(float newPh) {
   if (targetPh != newPh) {
-    serial(F("change target pH from %6.4f to %6.4f"), targetPh, newPh);
+    char buffer[40];
+    strncpy_P(buffer, (PGM_P)F("change target pH from "), sizeof(buffer));
+    dtostrf(targetPh, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
+    strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(" to "));
+    dtostrf(newPh, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
+    serial(buffer);
     targetPh = newPh;
     EEPROM_TC::instance()->setPH(newPh);
   }
@@ -74,7 +82,7 @@ void PHControl::updateControl(float pH) {
   COUT("target: " << targetPh << "; current: " << pH << "; nowModWindow = " << nowModWindow
                   << "; msToBeOn = " << msToBeOn);
   bool newValue;
-  if (TankControllerLib::instance()->isInCalibration()) {
+  if (TankController::instance()->isInCalibration()) {
     COUT("pH control should be off since in calibration");
     newValue = TURN_SOLENOID_OFF;  // turn off CO2 while in calibration
   } else if (SOLENOID_OPENING_TIME < msToBeOn && nowModWindow < msToBeOn) {

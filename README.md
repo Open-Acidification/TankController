@@ -1,5 +1,5 @@
 [![GitHub license](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://github.com/Open-Acidification/TankController/blob/master/LICENSE)
-[![OA Box version](https://img.shields.io/badge/TankController-v21.08.1-informational.svg)](https://github.com/Open-Acidification/TankController/releases)
+[![OA Box version](https://img.shields.io/badge/TankController-v21.09.1-informational.svg)](https://github.com/Open-Acidification/TankController/releases)
 [![testing status](https://github.com/Open-Acidification/TankController/workflows/Arduino%20CI/badge.svg)](https://github.com/Open-Acidification/TankController/actions)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/Open-Acidification/TankController/blob/master/CONTRIBUTING.md)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->

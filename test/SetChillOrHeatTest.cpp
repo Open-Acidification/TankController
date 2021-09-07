@@ -4,10 +4,10 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "EEPROM_TC.h"
 #include "SetChillOrHeat.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 unittest(ignoreInvalidValues) {
-  TankControllerLib* tc = TankControllerLib::instance();
+  TankController* tc = TankController::instance();
   SetChillOrHeat* test = new SetChillOrHeat(tc);
   tc->setNextState(test, true);
   assertTrue(EEPROM_TC::instance()->getHeat());
@@ -22,7 +22,7 @@ unittest(ignoreInvalidValues) {
 }
 
 unittest(switchToHeat) {
-  TankControllerLib* tc = TankControllerLib::instance();
+  TankController* tc = TankController::instance();
   SetChillOrHeat* test = new SetChillOrHeat(tc);
   tc->setNextState(test, true);
   EEPROM_TC::instance()->setHeat(false);
@@ -38,7 +38,7 @@ unittest(switchToHeat) {
 }
 
 unittest(switchToChill) {
-  TankControllerLib* tc = TankControllerLib::instance();
+  TankController* tc = TankController::instance();
   SetChillOrHeat* test = new SetChillOrHeat(tc);
   tc->setNextState(test, true);
   EEPROM_TC::instance()->setHeat(true);

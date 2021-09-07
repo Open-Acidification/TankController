@@ -1,6 +1,7 @@
 #include "Devices/PHProbe.h"
 
 #include <avr/wdt.h>
+#include <stdlib.h>
 
 #include "Devices/Serial_TC.h"
 
@@ -73,7 +74,10 @@ void PHProbe::serialEvent1() {
                                      // treat 0 as valid since probe might not be connected
           wdt_disable();
           wdt_enable(WDTO_120MS);  // allow enough time to print message
-          serial(F("pH value dropped to %5.3f so trigger a reset!"), value);
+          char buffer[50];
+          strncpy_P(buffer, (PGM_P)F("Triggering a reset because pH dropped to "), sizeof(buffer));
+          dtostrf(value, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
+          serial(buffer);
           while (true) {
           }
         }
@@ -94,7 +98,7 @@ void PHProbe::serialEvent1() {
 void PHProbe::setTemperatureCompensation(float temperature) {
   char buffer[10];
   if (temperature > 0 && temperature < 100) {
-    snprintf_P(buffer, sizeof(buffer), (PGM_P)F("T,%.2f\r"), temperature);
+    snprintf_P(buffer, sizeof(buffer), (PGM_P)F("T,%i.%i\r"), (int)temperature, (int)(temperature * 100 + 0.5) % 100);
   } else {
     snprintf_P(buffer, sizeof(buffer), (PGM_P)F("T,20\r"));
   }
@@ -104,21 +108,22 @@ void PHProbe::setTemperatureCompensation(float temperature) {
 
 void PHProbe::setHighpointCalibration(float highpoint) {
   char buffer[17];
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,High,%.3f\r"), highpoint);
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,High,%i.%i\r"), (int)highpoint,
+             (int)(highpoint * 1000 + 0.5) % 1000);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
   serial(F("PHProbe::setHighpointCalibration(%i.%i)"), (int)highpoint, (int)(highpoint * 1000) % 1000);
 }
 
 void PHProbe::setLowpointCalibration(float lowpoint) {
   char buffer[16];
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,low,%.3f\r"), lowpoint);
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,low,%i.%i\r"), (int)lowpoint, (int)(lowpoint * 1000 + 0.5) % 1000);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
   serial(F("PHProbe::setLowpointCalibration(%i.%i)"), (int)lowpoint, (int)(lowpoint * 1000) % 1000);
 }
 
 void PHProbe::setMidpointCalibration(float midpoint) {
   char buffer[16];
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,mid,%.3f\r"), midpoint);
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,mid,%i.%i\r"), (int)midpoint, (int)(midpoint * 1000 + 0.5) % 1000);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
   serial(F("PHProbe::setMidpointCalibration(%i.%i)"), (int)midpoint, (int)(midpoint * 1000) % 1000);
 }

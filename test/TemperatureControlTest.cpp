@@ -7,7 +7,7 @@
 #include "MainMenu.h"
 #include "PHCalibrationMid.h"
 #include "Serial_TC.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 #include "TempProbe_TC.h"
 #include "TemperatureControl.h"
 /**
@@ -19,7 +19,7 @@
 
 const uint16_t TEMP_CONTROL_PIN = 47;
 GodmodeState* state = GODMODE();
-TankControllerLib* tc = TankControllerLib::instance();
+TankController* tc = TankController::instance();
 LiquidCrystal_TC* lc = LiquidCrystal_TC::instance();
 TempProbe_TC* tempProbe = TempProbe_TC::instance();
 TemperatureControl* control;

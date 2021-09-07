@@ -3,7 +3,7 @@
 
 #include "Devices/PHProbe.h"
 #include "TC_util.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 unittest(singleton) {
   PHProbe *singleton1 = PHProbe::instance();
@@ -19,7 +19,7 @@ unittest(constructor) {
 unittest(serialEvent1) {
   GodmodeState *state = GODMODE();
   state->reset();
-  TankControllerLib *tc = TankControllerLib::instance();
+  TankController *tc = TankController::instance();
   state->serialPort[0].dataOut = "";
   PHProbe *pPHProbe = PHProbe::instance();  // the constructor writes data to the serial port
   tc->serialEvent1();                       // fake interrupt
@@ -91,7 +91,7 @@ unittest(sendSlopeRequest) {
 unittest(getSlope) {
   GodmodeState *state = GODMODE();
   state->reset();
-  TankControllerLib *tc = TankControllerLib::instance();
+  TankController *tc = TankController::instance();
   state->serialPort[0].dataOut = "";
   PHProbe *pPHProbe = PHProbe::instance();
   GODMODE()->serialPort[1].dataIn = "?SLOPE,99.7,100.3,-0.89\r";  // the queue of data waiting to be read
@@ -110,7 +110,7 @@ unittest(getSlope) {
 
 unittest(getPh) {
   GodmodeState *state = GODMODE();
-  TankControllerLib *tc = TankControllerLib::instance();
+  TankController *tc = TankController::instance();
   state->serialPort[0].dataOut = "";
   state->reset();
   state->serialPort[1].dataIn = "7.25\r";  // the queue of data waiting to be read

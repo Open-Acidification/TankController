@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 class PHControl {
 private:

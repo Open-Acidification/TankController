@@ -3,11 +3,11 @@
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "PHCalibrationMid.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 unittest(test) {
   GodmodeState *state = GODMODE();
-  TankControllerLib *tc = TankControllerLib::instance();
+  TankController *tc = TankController::instance();
   state->reset();
   GODMODE()->serialPort[1].dataIn = "7.125\r";  // the queue of data waiting to be read
   tc->serialEvent1();                           // fake interrupt

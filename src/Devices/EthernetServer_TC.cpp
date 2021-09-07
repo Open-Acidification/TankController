@@ -5,7 +5,7 @@
 #include "DateTime_TC.h"
 #include "SD_TC.h"
 #include "Serial_TC.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 //  class variables
 EthernetServer_TC* EthernetServer_TC::_instance = nullptr;
@@ -42,7 +42,7 @@ void EthernetServer_TC::echo() {
   } else {
     buffer[i - 3] = '\0';
     serial(F("echo \"%s\""), buffer + 19);
-    sendHeadersWithSize(strnlen(buffer + 19, sizeof(buffer) - 20));
+    sendHeadersWithSize(strnlen(buffer, sizeof(buffer)) - 19);
     client.write(buffer + 19);
     client.stop();
     state = NOT_CONNECTED;
@@ -97,7 +97,7 @@ bool EthernetServer_TC::file() {
   file.close();
   client.stop();
   state = NOT_CONNECTED;
-  serial(F("write = %lu; freeMemory = %i"), totalBytes, TankControllerLib::instance()->freeMemory());
+  serial(F("write = %lu; freeMemory = %i"), totalBytes, TankController::instance()->freeMemory());
   serial(F("timeInRead = %lu; timeInWrite = %lu; timeInFlush = %lu"), timeInRead, timeInWrite, timeInFlush);
   wdt_enable(WDTO_8S);
   return true;

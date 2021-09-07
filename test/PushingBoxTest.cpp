@@ -8,17 +8,17 @@
 #include "Devices/PushingBox.h"
 #include "Devices/TempProbe_TC.h"
 #include "Devices/TemperatureControl.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 #include "UIState/PHCalibrationMid.h"
 
 GodmodeState *state = GODMODE();
 PushingBox *pPushingBox;
-TankControllerLib *tc;
+TankController *tc;
 TempProbe_TC *tempProbe;
 PHControl *controlSolenoid;
 
 unittest_setup() {
-  tc = TankControllerLib::instance("PushingBoxIdentifier");
+  tc = TankController::instance("PushingBoxIdentifier");
   Ethernet.mockDHCP(IPAddress(192, 168, 1, 42));
   Ethernet_TC::instance(true);
   pPushingBox = PushingBox::instance();

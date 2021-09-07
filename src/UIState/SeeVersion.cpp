@@ -5,10 +5,10 @@
 #include "SeeVersion.h"
 
 #include "Devices/LiquidCrystal_TC.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 void SeeVersion::start() {
   LiquidCrystal_TC::instance()->writeLine(prompt(), 0);
-  const char* version = TankControllerLib::instance()->version();
+  const char* version = TankController::instance()->version();
   LiquidCrystal_TC::instance()->writeLine(version, 1);
 }

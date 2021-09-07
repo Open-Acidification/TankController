@@ -6,7 +6,7 @@
 #include "EEPROM_TC.h"
 #include "SetPHSetPoint.h"
 #include "TC_util.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 unittest_setup() {
   GODMODE()->resetEEPROM();
@@ -14,7 +14,7 @@ unittest_setup() {
 
 unittest(test) {
   EEPROM_TC::instance()->setPH(8.125);
-  TankControllerLib* tc = TankControllerLib::instance();
+  TankController* tc = TankController::instance();
   assertEqual(8.125, EEPROM_TC::instance()->getPH());
   assertEqual(0, 8.125 - EEPROM_TC::instance()->getPH());
   SetPHSetPoint* test = new SetPHSetPoint(tc);

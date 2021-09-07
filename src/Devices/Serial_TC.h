@@ -8,6 +8,7 @@
 #include <Arduino.h>
 
 void serial(const __FlashStringHelper *format...);
+void serial(const char *buffer);
 
 class Serial_TC {
 public:

@@ -5,10 +5,10 @@
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
 #include "SeeLogFile.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 unittest(testOutput) {
-  TankControllerLib* tc = TankControllerLib::instance();
+  TankController* tc = TankController::instance();
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
   DateTime_TC now = DateTime_TC::now();
   assertEqual("MainMenu", tc->stateName());

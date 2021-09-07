@@ -3,7 +3,7 @@
 
 #include "Devices/PHProbe.h"
 #include "TC_util.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 unittest(singleton) {
   PHProbe *singleton1 = PHProbe::instance();
@@ -19,7 +19,7 @@ unittest(constructor) {
 unittest(serialEvent1) {
   GodmodeState *state = GODMODE();
   state->reset();
-  TankControllerLib *tc = TankControllerLib::instance();
+  TankController *tc = TankController::instance();
   state->serialPort[0].dataOut = "";
   PHProbe *pPHProbe = PHProbe::instance();  // the constructor writes data to the serial port
   tc->serialEvent1();                       // fake interrupt
@@ -50,8 +50,10 @@ unittest(setLowpointCalibration) {
   GodmodeState *state = GODMODE();
   state->reset();
   PHProbe *pPHProbe = PHProbe::instance();
+  assertEqual("", state->serialPort[0].dataOut);
   assertEqual("", state->serialPort[1].dataOut);
   pPHProbe->setLowpointCalibration(10.875);
+  assertEqual("PHProbe::setLowpointCalibration(10.875)\r\n", state->serialPort[0].dataOut);
   assertEqual("Cal,low,10.875\r", state->serialPort[1].dataOut);
 }
 
@@ -59,8 +61,10 @@ unittest(setMidpointCalibration) {
   GodmodeState *state = GODMODE();
   state->reset();
   PHProbe *pPHProbe = PHProbe::instance();
+  assertEqual("", state->serialPort[0].dataOut);
   assertEqual("", state->serialPort[1].dataOut);
   pPHProbe->setMidpointCalibration(11.875);
+  assertEqual("PHProbe::setMidpointCalibration(11.875)\r\n", state->serialPort[0].dataOut);
   assertEqual("Cal,mid,11.875\r", state->serialPort[1].dataOut);
 }
 
@@ -68,8 +72,10 @@ unittest(setHighpointCalibration) {
   GodmodeState *state = GODMODE();
   state->reset();
   PHProbe *pPHProbe = PHProbe::instance();
+  assertEqual("", state->serialPort[0].dataOut);
   assertEqual("", state->serialPort[1].dataOut);
   pPHProbe->setHighpointCalibration(12.875);
+  assertEqual("PHProbe::setHighpointCalibration(12.875)\r\n", state->serialPort[0].dataOut);
   assertEqual("Cal,High,12.875\r", state->serialPort[1].dataOut);
 }
 
@@ -85,7 +91,7 @@ unittest(sendSlopeRequest) {
 unittest(getSlope) {
   GodmodeState *state = GODMODE();
   state->reset();
-  TankControllerLib *tc = TankControllerLib::instance();
+  TankController *tc = TankController::instance();
   state->serialPort[0].dataOut = "";
   PHProbe *pPHProbe = PHProbe::instance();
   GODMODE()->serialPort[1].dataIn = "?SLOPE,99.7,100.3,-0.89\r";  // the queue of data waiting to be read
@@ -104,7 +110,7 @@ unittest(getSlope) {
 
 unittest(getPh) {
   GodmodeState *state = GODMODE();
-  TankControllerLib *tc = TankControllerLib::instance();
+  TankController *tc = TankController::instance();
   state->serialPort[0].dataOut = "";
   state->reset();
   state->serialPort[1].dataIn = "7.25\r";  // the queue of data waiting to be read

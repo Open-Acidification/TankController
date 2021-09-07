@@ -26,7 +26,7 @@
 #include "SD_TC.h"
 #include "Serial_TC.h"
 #include "TC_util.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 #include "TempProbe_TC.h"
 #include "UIState.h"
 #include "pybind11/pybind11.h"
@@ -36,7 +36,6 @@
 namespace py = pybind11;
 char lcdLine[17];
 uint32_t msOffset = 0;
-std::queue<string> paths;
 
 // function prototypes
 void loop();
@@ -126,7 +125,7 @@ void loop() {
   if (msBehind) {
     delay(msBehind);
   }
-  TankControllerLib::instance()->loop();
+  TankController::instance()->loop();
 }
 
 uint32_t millisecondsSinceEpoch() {
@@ -156,37 +155,15 @@ string readSerial1() {
   return readSerial(1);
 }
 
-void addPath(File *entry, String parentPath) {
-  if (!entry->isDirectory()) {
-    paths.push(parentPath + entry->name());
-  }
-}
-
 void sdInit() {
-  std::queue<string> empty;
-  std::swap(paths, empty);
-  SD_TC::instance()->visit(addPath);
 }
 
 string sdNextKey() {
-  if (paths.empty()) {
-    return string("");
-  }
-  return paths.front();
+  return string("");
 }
 
 string sdNextValue() {
-  char buffer[4096];
-  File entry = SD_TC::instance()->open(String(paths.front().c_str()));
-  size_t size = entry.size();
-  if (sizeof(buffer) - 1 < size) {
-    size = sizeof(buffer) - 1;
-  }
-  entry.read(buffer, size);
-  buffer[size] = '\0';
-  string result = string(buffer);
-  paths.pop();
-  return result;
+  return string("");
 }
 
 void setTemperature(float value) {
@@ -207,16 +184,16 @@ void setTime() {
 
 void setup() {
   setTime();
-  TankControllerLib::instance()->setup();
+  TankController::instance()->setup();
 }
 
 const char *version() {
-  return TankControllerLib::instance()->version();
+  return TankController::instance()->version();
 }
 
 void writeSerial1(const char *data) {
-  GODMODE()->serialPort[1].dataIn = data;         // the queue of data waiting to be read
-  TankControllerLib::instance()->serialEvent1();  // fake interrupt
+  GODMODE()->serialPort[1].dataIn = data;      // the queue of data waiting to be read
+  TankController::instance()->serialEvent1();  // fake interrupt
 }
 
 PYBIND11_MODULE(libTC, m) {

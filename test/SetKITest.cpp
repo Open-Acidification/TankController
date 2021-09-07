@@ -5,10 +5,10 @@
 #include "EEPROM_TC.h"
 #include "Keypad_TC.h"
 #include "SetKI.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 unittest(test) {
-  TankControllerLib* tc = TankControllerLib::instance();
+  TankController* tc = TankController::instance();
   SetKI* test = new SetKI(tc);
   tc->setNextState(test, true);
   EEPROM_TC::instance()->setKI(8);

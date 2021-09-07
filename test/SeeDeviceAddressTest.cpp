@@ -5,10 +5,10 @@
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
 #include "SeeDeviceAddress.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 unittest(testOutput) {
-  TankControllerLib* tc = TankControllerLib::instance();
+  TankController* tc = TankController::instance();
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
   assertEqual("MainMenu", tc->stateName());
   SeeDeviceAddress* test = new SeeDeviceAddress(tc);

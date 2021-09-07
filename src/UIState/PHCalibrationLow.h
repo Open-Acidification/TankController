@@ -8,7 +8,7 @@
 
 class PHCalibrationLow : public PHCalibration {
 public:
-  PHCalibrationLow(TankControllerLib* tc) : PHCalibration(tc) {
+  PHCalibrationLow(TankController* tc) : PHCalibration(tc) {
   }
   const __FlashStringHelper* name() {
     return F("PHCalibrationLow");

@@ -4,11 +4,12 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "EEPROM_TC.h"
 #include "TC_util.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 #include "TempProbe_TC.h"
 #include "TemperatureCalibration.h"
 
 unittest(test) {
+  GodmodeState* state = GODMODE();
   // with no correction, we have a temperature of 10.0
   TempProbe_TC* tempProbe = TempProbe_TC::instance();
   tempProbe->setTemperature(10.0);
@@ -23,14 +24,16 @@ unittest(test) {
   assertTrue(9.9 <= temp && temp <= 10.1);
 
   // set UI to TemperatureCalibration state
-  TankControllerLib* tc = TankControllerLib::instance();
+  TankController* tc = TankController::instance();
   assertFalse(tc->isInCalibration());
   TemperatureCalibration* test = new TemperatureCalibration(tc);
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
 
   // UI sets actual temperature to 10.5
+  state->serialPort[0].dataOut = "";  // the history of data written
   test->setValue(10.5);
+  assertEqual("Set temperature correction to 0.50\r\n", state->serialPort[0].dataOut);
 
   // The new temperature should be 10.5
   temp = tempProbe->getRawTemperature();

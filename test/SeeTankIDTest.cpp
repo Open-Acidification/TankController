@@ -5,11 +5,11 @@
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
 #include "SeeTankID.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 unittest(testOutput) {
   // Set up
-  TankControllerLib* tc = TankControllerLib::instance();
+  TankController* tc = TankController::instance();
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
   EEPROM_TC::instance()->setTankID(12);
   assertEqual("MainMenu", tc->stateName());

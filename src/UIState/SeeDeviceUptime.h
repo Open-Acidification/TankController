@@ -8,7 +8,7 @@
 
 class SeeDeviceUptime : public UIState {
 public:
-  SeeDeviceUptime(TankControllerLib* tc) : UIState(tc) {
+  SeeDeviceUptime(TankController* tc) : UIState(tc) {
   }
   void loop();
   const __FlashStringHelper* name() {

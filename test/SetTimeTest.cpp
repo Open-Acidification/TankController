@@ -4,11 +4,11 @@
 #include "DateTime_TC.h"
 #include "Devices/LiquidCrystal_TC.h"
 #include "SetTime.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 unittest(test) {
   LiquidCrystal_TC* lcd = LiquidCrystal_TC::instance();
-  TankControllerLib* tc = TankControllerLib::instance();
+  TankController* tc = TankController::instance();
   SetTime* test = new SetTime(tc);
   tc->setNextState(test, true);
   DateTime_TC june(2021, 06, 01, 20, 57, 15);

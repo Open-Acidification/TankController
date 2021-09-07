@@ -6,7 +6,7 @@
 
 #include "Devices/PushingBox.h"
 #include "TC_util.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 GodmodeState* state = GODMODE();
 const uint16_t LOG_SIZE = 10;
@@ -41,7 +41,7 @@ public:
 unittest(loop) {
   BitCollector led;
   logIndex = 0;
-  TankControllerLib* tank = TankControllerLib::instance();
+  TankController* tank = TankController::instance();
   PushingBox::instance();
   state->digitalPin[LED_PIN].addObserver("led", &led);
   tank->setup();

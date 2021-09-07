@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # this script has two use cases
-# 1 - CI testing and local development of TankControllerLib only (SHALLOW)
-# 2 - Development of TankControllerLib and the supporting libraries
+# 1 - CI testing and local development of TankController only (SHALLOW)
+# 2 - Development of TankController and the supporting libraries
 # comment this out if you want full depth for the supporting libraries (case 2)
 export SHALLOW_MAIN='--depth 1 --branch main --single-branch '
 export SHALLOW_MASTER='--depth 1 --branch master --single-branch '

@@ -7,7 +7,7 @@
 
 class NumCollectorState : public UIState {
 public:
-  NumCollectorState(TankControllerLib* tc) : UIState(tc) {
+  NumCollectorState(TankController* tc) : UIState(tc) {
   }
   void handleKey(char key);
   virtual void setValue(float value) = 0;
@@ -36,7 +36,7 @@ protected:
 #ifdef MOCK_PINS_COUNT
 class TestNumCollectorState : public NumCollectorState {
 public:
-  TestNumCollectorState(TankControllerLib* tc) : NumCollectorState(tc) {
+  TestNumCollectorState(TankController* tc) : NumCollectorState(tc) {
   }
   // Implementation
   void setValue(float value) {
@@ -77,7 +77,7 @@ private:
 
 class TestIntNumCollectorState : public TestNumCollectorState {
 public:
-  TestIntNumCollectorState(TankControllerLib* tc) : TestNumCollectorState(tc) {
+  TestIntNumCollectorState(TankController* tc) : TestNumCollectorState(tc) {
   }
   virtual bool isInteger() {
     return true;

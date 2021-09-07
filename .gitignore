@@ -22,6 +22,7 @@ arduino-cli.yaml
 *.elf
 *.eep
 libraries
+output.txt
 
 # Arduino-CI Files
 Gemfile.lock

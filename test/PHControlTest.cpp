@@ -7,18 +7,18 @@
 #include "MainMenu.h"
 #include "PHCalibrationMid.h"
 #include "PHControl.h"
-#include "TankControllerLib.h"
+#include "TankController.h"
 
 const uint16_t PH_CONTROL_PIN = 49;
 
 GodmodeState* state = GODMODE();
-TankControllerLib* tc = TankControllerLib::instance();
+TankController* tc = TankController::instance();
 PHControl* controlSolenoid = PHControl::instance();
 LiquidCrystal_TC* lc = LiquidCrystal_TC::instance();
 
 void setPhMeasurementTo(float value) {
   char buffer[10];
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("%f\r"), value);
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("%i.%i\r"), (int)value, (int)(value * 1000 + 0.5) % 1000);
   state->serialPort[1].dataIn = buffer;  // the queue of data waiting to be read
   tc->serialEvent1();                    // fake interrupt to update the current pH reading
   tc->loop();                            // update the controls based on the current readings

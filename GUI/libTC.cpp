@@ -36,7 +36,6 @@
 namespace py = pybind11;
 char lcdLine[17];
 uint32_t msOffset = 0;
-std::queue<string> paths;
 
 // function prototypes
 void loop();
@@ -156,37 +155,15 @@ string readSerial1() {
   return readSerial(1);
 }
 
-void addPath(File *entry, String parentPath) {
-  if (!entry->isDirectory()) {
-    paths.push(parentPath + entry->name());
-  }
-}
-
 void sdInit() {
-  std::queue<string> empty;
-  std::swap(paths, empty);
-  SD_TC::instance()->visit(addPath);
 }
 
 string sdNextKey() {
-  if (paths.empty()) {
-    return string("");
-  }
-  return paths.front();
+  return string("");
 }
 
 string sdNextValue() {
-  char buffer[4096];
-  File entry = SD_TC::instance()->open(String(paths.front().c_str()));
-  size_t size = entry.size();
-  if (sizeof(buffer) - 1 < size) {
-    size = sizeof(buffer) - 1;
-  }
-  entry.read(buffer, size);
-  buffer[size] = '\0';
-  string result = string(buffer);
-  paths.pop();
-  return result;
+  return string("");
 }
 
 void setTemperature(float value) {

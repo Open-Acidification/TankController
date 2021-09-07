@@ -33,8 +33,10 @@ void TemperatureControl::enableHeater(bool flag) {
   if (_instance && (_instance->isHeater() != flag)) {
     delete _instance;
     _instance = nullptr;
-    serial(F("TemperatureControl::enableHeater(%s)"), flag ? "true" : "false");
-    instance();
+    char buffer[50];
+    strncpy_P(buffer, (PGM_P)F("TemperatureControl::enableHeater("), sizeof(buffer));
+    strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), flag ? (PGM_P)F("true)") : (PGM_P)F("false)"));
+    serial(buffer);
   }
 }
 
@@ -50,8 +52,12 @@ TemperatureControl::TemperatureControl() {
   }
   pinMode(TEMP_CONTROL_PIN, OUTPUT);
   digitalWrite(TEMP_CONTROL_PIN, TURN_SOLENOID_OFF);
-  serial(F("%s starts with solenoid off with target temperature of %5.2f C"), this->isHeater() ? "Heater" : "Chiller",
-         targetTemperature);
+  char buffer[70];
+  strcpy_P(buffer, this->isHeater() ? (PGM_P)F("Heater") : (PGM_P)F("Chiller"));
+  strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(" starts with solenoid off with target temperature of "));
+  dtostrf(targetTemperature, 5, 2, buffer + strnlen(buffer, sizeof(buffer)));
+  strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(" C"));
+  serial(buffer);
 }
 
 /**
@@ -70,7 +76,12 @@ bool TemperatureControl::isOn() {
  */
 void TemperatureControl::setTargetTemperature(float newTemperature) {
   if (targetTemperature != newTemperature) {
-    serial(F("Change target temperature from %5.2f to %5.2f"), targetTemperature, newTemperature);
+    char buffer[50];
+    strncpy_P(buffer, (PGM_P)F("change target temperature from "), sizeof(buffer));
+    dtostrf(targetTemperature, 5, 2, buffer + strnlen(buffer, sizeof(buffer)));
+    strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(" to "));
+    dtostrf(newTemperature, 5, 2, buffer + strnlen(buffer, sizeof(buffer)));
+    serial(buffer);
     EEPROM_TC::instance()->setTemp(newTemperature);
     targetTemperature = newTemperature;
   }

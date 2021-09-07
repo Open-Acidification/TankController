@@ -34,7 +34,7 @@ unittest(logToSerial) {
   state->serialPort[0].dataOut = "";  // so here we ignore it!
   PID_TC *singleton = PID_TC::instance();
   singleton->logToSerial();
-  assertEqual("Kp: 100000.0 Ki:    0.0 Kd:    0.0\r\nPID output (s): 0.0\r\n", state->serialPort[0].dataOut);
+  assertEqual("Kp: 100000.0 Ki:    0.0 Kd:    0.0\r\nPID output in seconds: 0.0\r\n", state->serialPort[0].dataOut);
 }
 
 unittest(compute) {

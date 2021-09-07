@@ -30,6 +30,7 @@ Dnominal
 docstring
 Doxyfile
 Doxygen
+dtostrf
 dylib
 edu
 eep
@@ -134,6 +135,7 @@ sizeof
 snprintf
 solonoids
 src
+stdlib
 strcpy
 strlen
 strncmp

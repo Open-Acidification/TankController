@@ -43,7 +43,10 @@ TempProbe_TC::TempProbe_TC() {
     correction = 0;
     EEPROM_TC::instance()->setCorrectedTemp(correction);
   }
-  serial(F("Temperature probe with correction of %6.3f"), correction);
+  char buffer[50];
+  strncpy(buffer, (PGM_P)F("Temperature probe with correction of "), sizeof(buffer));
+  dtostrf(correction, 5, 2, buffer + strnlen(buffer, sizeof(buffer)));
+  serial(buffer);
 }
 
 /**

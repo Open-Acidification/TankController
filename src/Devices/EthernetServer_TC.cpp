@@ -42,7 +42,7 @@ void EthernetServer_TC::echo() {
   } else {
     buffer[i - 3] = '\0';
     serial(F("echo \"%s\""), buffer + 19);
-    sendHeadersWithSize(strnlen(buffer + 19, sizeof(buffer) - 20));
+    sendHeadersWithSize(strnlen(buffer, sizeof(buffer)) - 19);
     client.write(buffer + 19);
     client.stop();
     state = NOT_CONNECTED;

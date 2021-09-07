@@ -14,6 +14,10 @@ void serial(const __FlashStringHelper *format...) {
   va_end(args);
 }
 
+void serial(const char *buffer) {
+  serial(F("%s"), buffer);
+}
+
 /**
  * static variable for singleton
  */

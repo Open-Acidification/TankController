@@ -71,8 +71,16 @@ float PID_TC::computeOutput(float target, float current) {
 }
 
 void PID_TC::logToSerial() {
-  serial(F("Kp: %6.1f Ki: %6.1f Kd: %6.1f\r\nPID output (s):%4.1f"), pPID->GetKp(), pPID->GetKi(), pPID->GetKd(),
-         static_cast<float>(output) / 1000);
+  char buffer[70];
+  strncpy_P(buffer, (PGM_P)F("Kp: "), sizeof(buffer));
+  dtostrf(pPID->GetKp(), 6, 1, buffer + strnlen(buffer, sizeof(buffer)));
+  strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(" Ki: "));
+  dtostrf(pPID->GetKi(), 6, 1, buffer + strnlen(buffer, sizeof(buffer)));
+  strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(" Kd: "));
+  dtostrf(pPID->GetKd(), 6, 1, buffer + strnlen(buffer, sizeof(buffer)));
+  strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F("\r\nPID output in seconds:"));
+  dtostrf(static_cast<float>(output) / 1000, 4, 1, buffer + strnlen(buffer, sizeof(buffer)));
+  serial(buffer);
 }
 
 void PID_TC::setKd(float Kd) {

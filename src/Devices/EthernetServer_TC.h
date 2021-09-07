@@ -31,7 +31,7 @@ private:
   // instance variables
   EthernetClient client;
   serverState_t state = NOT_CONNECTED;
-  char buffer[1024];
+  char buffer[512];
   int bufferContentsSize = 0;
   unsigned long connectedAt = 0;
 

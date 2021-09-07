@@ -214,13 +214,19 @@ void MainMenu::selectSet() {
   }
 }
 
-// show current temp and pH
+// pH=7.325 B 7.125
+// T=12.25 H 12.75
 void MainMenu::idle() {
-  char output[17];
   PHControl *phControl = PHControl::instance();
-  char equals = millis() / 1000 % 2 ? '=' : ' ';
-  snprintf_P(output, sizeof(output), (PGM_P)F("pH%c%5.3f %c %5.3f"), equals, PHProbe::instance()->getPh(),
-             (phControl->isOn() ? 'B' : ' '), PHControl::instance()->getTargetPh());
+  char output[17];
+  output[0] = 'p';
+  output[1] = 'H';
+  output[2] = millis() / 1000 % 2 ? '=' : ' ';
+  dtostrf(PHProbe::instance()->getPh(), 5, 3, output + 3);
+  output[8] = ' ';
+  output[9] = phControl->isOn() ? 'B' : ' ';
+  output[10] = ' ';
+  dtostrf(PHControl::instance()->getTargetPh(), 5, 3, output + 11);
   LiquidCrystal_TC::instance()->writeLine(output, 0);
   TemperatureControl *tempControl = TemperatureControl::instance();
   TempProbe_TC *tempProbe = TempProbe_TC::instance();
@@ -234,9 +240,13 @@ void MainMenu::idle() {
   if (tempControl->isOn()) {
     status = toupper(status);
   }
-
-  snprintf_P(output, sizeof(output), (PGM_P)F("T%c%5.2f %c %5.2f"), equals, temp, status,
-             tempControl->getTargetTemperature());
+  output[0] = 'T';
+  output[1] = millis() / 1000 % 2 ? '=' : ' ';
+  dtostrf(temp, 5, 2, output + 2);
+  output[7] = ' ';
+  output[8] = status;
+  output[9] = ' ';
+  dtostrf(tempControl->getTargetTemperature(), 5, 2, output + 10);
   LiquidCrystal_TC::instance()->writeLine(output, 1);
 }
 

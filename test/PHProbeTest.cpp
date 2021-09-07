@@ -50,8 +50,10 @@ unittest(setLowpointCalibration) {
   GodmodeState *state = GODMODE();
   state->reset();
   PHProbe *pPHProbe = PHProbe::instance();
+  assertEqual("", state->serialPort[0].dataOut);
   assertEqual("", state->serialPort[1].dataOut);
   pPHProbe->setLowpointCalibration(10.875);
+  assertEqual("PHProbe::setLowpointCalibration(10.875)\r\n", state->serialPort[0].dataOut);
   assertEqual("Cal,low,10.875\r", state->serialPort[1].dataOut);
 }
 
@@ -59,8 +61,10 @@ unittest(setMidpointCalibration) {
   GodmodeState *state = GODMODE();
   state->reset();
   PHProbe *pPHProbe = PHProbe::instance();
+  assertEqual("", state->serialPort[0].dataOut);
   assertEqual("", state->serialPort[1].dataOut);
   pPHProbe->setMidpointCalibration(11.875);
+  assertEqual("PHProbe::setMidpointCalibration(11.875)\r\n", state->serialPort[0].dataOut);
   assertEqual("Cal,mid,11.875\r", state->serialPort[1].dataOut);
 }
 
@@ -68,8 +72,10 @@ unittest(setHighpointCalibration) {
   GodmodeState *state = GODMODE();
   state->reset();
   PHProbe *pPHProbe = PHProbe::instance();
+  assertEqual("", state->serialPort[0].dataOut);
   assertEqual("", state->serialPort[1].dataOut);
   pPHProbe->setHighpointCalibration(12.875);
+  assertEqual("PHProbe::setHighpointCalibration(12.875)\r\n", state->serialPort[0].dataOut);
   assertEqual("Cal,High,12.875\r", state->serialPort[1].dataOut);
 }
 

@@ -6,6 +6,6 @@ sudo apt install -y \
 sudo gem install bundler
 git clone https://github.com/Open-Acidification/TankController.git
 cd TankController
-bundle config --local path vendor/bundle
+bundle config set --local path 'vendor/bundle'
 bundle install
 scripts/install_libraries.sh

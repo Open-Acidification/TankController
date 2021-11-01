@@ -10,7 +10,7 @@ export SHALLOW_MASTER='--depth 1 --branch master --single-branch '
 # git fetch --unshallow
 
 if ! [ $(id -u) = 0 ]; then
-  bundle config --local path vendor/bundle
+  bundle config set --local path 'vendor/bundle'
   bundle install
   mkdir -p $(bundle exec arduino_library_location.rb)
   cd $(bundle exec arduino_library_location.rb)

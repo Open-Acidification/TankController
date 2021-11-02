@@ -1,12 +1,29 @@
-name: Arduino Lint
+---
+name: Lint Code Base
 
-on: [push, pull_request]
+on:
+  push:
+    branches-ignore: [master, main]
+    # Remove the line above to run when pushing to master
+  pull_request:
+    branches: [master, main]
 
 jobs:
-  lint:
+  build:
+    name: Lint Code Base
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
-      - uses: arduino/arduino-lint-action@v1
+      - name: Checkout Code
+        uses: actions/checkout@v2
         with:
-          library-manager: update
+          # Full git history is needed to get a proper list of changed files within `super-linter`
+          fetch-depth: 0
+
+      - name: Lint Code Base
+        uses: github/super-linter/slim@v4
+        env:
+          VALIDATE_ALL_CODEBASE: true
+          FILTER_REGEX_EXCLUDE: ./GUI/pybind11/*
+          DEFAULT_BRANCH: master
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

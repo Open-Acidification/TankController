@@ -7,7 +7,6 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHControl.h"
 
-
 SetPHSetPoint::SetPHSetPoint(TankController* tc) : NumCollectorState(tc) {
   prompts[0] = F("Set Ph:");
   prompts[1] = F("Set ramp hours:");

@@ -129,6 +129,7 @@ rtc
 rtd
 RTDIN
 RTDINLOW
+secondstime
 setpoint
 shutil
 sizeof

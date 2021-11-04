@@ -2,9 +2,10 @@
  * SetPHSetPoint.cpp
  */
 
+#include "SetPHSetPoint.h"
+
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHControl.h"
-#include "SetPHSetPoint.h"
 
 
 SetPHSetPoint::SetPHSetPoint(TankController* tc) : NumCollectorState(tc) {

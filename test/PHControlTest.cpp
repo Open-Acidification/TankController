@@ -114,7 +114,7 @@ unittest(afterTenSecondsAndPhIsLower) {
   state->serialPort[0].dataOut = "";  // the history of data written
   delay(1000);
   tc->loop();
-  assertEqual("CO2 bubbler turned off after 9021 ms\r\n", state->serialPort[0].dataOut);
+  assertEqual("CO2 bubbler turned off after 9021 ms\r\n", state->serialPort[0].dataOut);  // after 10 seconds
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
   delay(1000);
@@ -167,6 +167,29 @@ unittest(disableDuringCalibration) {
   setPhMeasurementTo(8.50);
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
+}
+
+unittest(RampGreaterThanZero) {
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
+  assertFalse(controlSolenoid->isOn());
+  setPhMeasurementTo(8.50);
+  controlSolenoid->setTargetPh(7.00);
+  controlSolenoid->setRamp(1.5);
+  // takes 1.5 hours to get to pH of 7
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertTrue(8.0 <= controlSolenoid->getCurrentPHTarget() && controlSolenoid->getCurrentPHTarget() <= 8.01);
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertTrue(7.5 <= controlSolenoid->getCurrentPHTarget() && controlSolenoid->getCurrentPHTarget() <= 7.51);
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(7, controlSolenoid->getCurrentPHTarget());
+  // ramp time no longer used after it ends
+  delay(1800000);  // delay 30 minutes
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(7, controlSolenoid->getCurrentPHTarget());
 }
 
 unittest_main()

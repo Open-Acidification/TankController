@@ -3,9 +3,11 @@
 #include "Devices/DateTime_TC.h"
 #include "Devices/EEPROM_TC.h"
 #include "Devices/Serial_TC.h"
+#include "Devices/PHProbe.h"
 #include "PID_TC.h"
 #include "TC_util.h"
 #include "TankController.h"
+
 
 const float DEFAULT_PH = 8.1;
 
@@ -34,6 +36,13 @@ PHControl::PHControl() {
     targetPh = DEFAULT_PH;
     EEPROM_TC::instance()->setPH(targetPh);
   }
+  rampTimeEnd = EEPROM_TC::instance()->getRampTimeEnd();
+  if (rampTimeEnd == 0xFFFFFFFF || rampTimeEnd == 0) {
+    rampTimeEnd = 0;
+    EEPROM_TC::instance()->setRampTimeEnd(rampTimeEnd);
+    rampTimeStart = 0;
+    EEPROM_TC::instance()->setRampTimeStart(rampTimeStart);
+  }
   char buffer[40];
   strncpy_P(buffer, (PGM_P)F("PHControl with target pH = "), sizeof(buffer));
   dtostrf(targetPh, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
@@ -53,6 +62,24 @@ void PHControl::setTargetPh(float newPh) {
   }
 }
 
+void PHControl::setRamp(float newPhRampTimeHours) {
+  if (newPhRampTimeHours > 0) {
+    char buffer[40];
+    float currentRampTime = rampTimeEnd - rampTimeStart;
+    strncpy_P(buffer, (PGM_P)F("change ramp time from "), sizeof(buffer));
+    dtostrf(currentRampTime, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
+    strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(" to "));
+    dtostrf(newPhRampTimeHours, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
+    serial(buffer);
+    rampTimeStart = DateTime_TC::now().secondstime();
+    rampTimeEnd = rampTimeStart + (newPhRampTimeHours * 3600);
+    rampStartingPh = PHProbe::instance()->getPh();
+    EEPROM_TC::instance()->setRampTimeStart(rampTimeStart);
+    EEPROM_TC::instance()->setRampTimeEnd(rampTimeEnd);
+    EEPROM_TC::instance()->setRampStartingPH(rampTimeEnd);
+  }
+}
+
 void PHControl::enablePID(bool flag) {
   usePID = flag;
   // save to EEPROM?
@@ -66,9 +93,14 @@ bool PHControl::isOn() {
 void PHControl::updateControl(float pH) {
   int msToBeOn;
   int nowModWindow = millis() % WINDOW_SIZE;
+  float currentTime = DateTime_TC::now().secondstime();
+  currentPHTarget = rampStartingPh + ((currentTime - rampTimeStart) * (targetPh - rampStartingPh) / (rampTimeEnd - rampTimeStart));
+  if (currentTime >= rampTimeEnd) {
+    currentPHTarget = targetPh;
+  }
   COUT("PHControl::updateControl(" << pH << ") at " << millis());
   if (usePID) {
-    msToBeOn = PID_TC::instance()->computeOutput(targetPh, pH);
+    msToBeOn = PID_TC::instance()->computeOutput(currentPHTarget, pH);
     if (msToBeOn > 9000) {
       if (msToBeOn > 10000 && lastWarnMS + 60000 < millis()) {
         serial(F("WARNING: PID asked for an on time of %i which has been capped at 9000"), msToBeOn);
@@ -77,9 +109,9 @@ void PHControl::updateControl(float pH) {
       msToBeOn = 9000;
     }
   } else {
-    msToBeOn = pH > targetPh ? 9000 : 0;
+    msToBeOn = pH > currentPHTarget ? 9000 : 0;
   }
-  COUT("target: " << targetPh << "; current: " << pH << "; nowModWindow = " << nowModWindow
+  COUT("target: " << currentPHTarget << "; current: " << pH << "; nowModWindow = " << nowModWindow
                   << "; msToBeOn = " << msToBeOn);
   bool newValue;
   if (TankController::instance()->isInCalibration()) {

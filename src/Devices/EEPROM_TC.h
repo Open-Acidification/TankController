@@ -26,6 +26,9 @@ public:
   void getMac(uint8_t* bytes);        // used for DHCP request for IP address
   float getMaxDataAge();              // not used
   float getPH();                      // target pH
+  uint32_t getRampTimeStart();
+  uint32_t getRampTimeEnd();
+  float getRampStartingPH();
   float getPHDelay();                 // not used
   float getPHInterval();              // not used
   float getPHSeriesPointer();         // not used
@@ -50,6 +53,9 @@ public:
   void setMac(uint8_t* bytes);
   void setMaxDataAge(float value);
   void setPH(float value);
+  void setRampTimeStart(uint32_t value);
+  void setRampTimeEnd(uint32_t value);
+  float setRampStartingPH(float value);
   void setPHDelay(float value);
   void setPHInterval(float value);
   void setPHSeriesPointer(float value);
@@ -89,6 +95,9 @@ private:
   const uint16_t TEMP_DELAY_ADDRESS = 100;
   // new with v0.3
   const uint16_t GOOGLE_INTERVAL_ADDRESS = 108;
+  const uint16_t RAMP_STARTING_PH_ADDRESS = 112;
+  const uint16_t RAMP_TIME_START_ADDRESS = 116;
+  const uint16_t RAMP_TIME_END_ADDRESS = 124;
 
   // class variables
   static EEPROM_TC* _instance;

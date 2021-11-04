@@ -1,13 +1,11 @@
-#include "PHControl.h"
-
 #include "Devices/DateTime_TC.h"
 #include "Devices/EEPROM_TC.h"
-#include "Devices/Serial_TC.h"
 #include "Devices/PHProbe.h"
+#include "Devices/Serial_TC.h"
+#include "PHControl.h"
 #include "PID_TC.h"
 #include "TC_util.h"
 #include "TankController.h"
-
 
 const float DEFAULT_PH = 8.1;
 
@@ -94,7 +92,9 @@ void PHControl::updateControl(float pH) {
   int msToBeOn;
   int nowModWindow = millis() % WINDOW_SIZE;
   float currentTime = DateTime_TC::now().secondstime();
-  currentPHTarget = rampStartingPh + ((currentTime - rampTimeStart) * (targetPh - rampStartingPh) / (rampTimeEnd - rampTimeStart));
+  currentPHTarget =
+      rampStartingPh + ((currentTime - rampTimeStart) * (targetPh - rampStartingPh) / (rampTimeEnd - rampTimeStart));
+  // if ramp is not used
   if (currentTime >= rampTimeEnd) {
     currentPHTarget = targetPh;
   }

@@ -29,16 +29,16 @@ public:
   uint32_t getRampTimeStart();
   uint32_t getRampTimeEnd();
   float getRampStartingPH();
-  float getPHDelay();                 // not used
-  float getPHInterval();              // not used
-  float getPHSeriesPointer();         // not used
-  float getPHSeriesSize();            // not used
-  uint16_t getTankID();               // unique tank identifier for reporting
-  float getTemp();                    // target temperature
-  float getTempDelay();               // not used
-  float getTempInterval();            // not used
-  float getTempSeriesPointer();       // not used
-  float getTempSeriesSize();          // not used
+  float getPHDelay();            // not used
+  float getPHInterval();         // not used
+  float getPHSeriesPointer();    // not used
+  float getPHSeriesSize();       // not used
+  uint16_t getTankID();          // unique tank identifier for reporting
+  float getTemp();               // target temperature
+  float getTempDelay();          // not used
+  float getTempInterval();       // not used
+  float getTempSeriesPointer();  // not used
+  float getTempSeriesSize();     // not used
 
   // setter methods
   void setAmplitude(float value);

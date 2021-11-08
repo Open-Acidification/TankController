@@ -41,6 +41,9 @@ PHControl::PHControl() {
     EEPROM_TC::instance()->setRampTimeEnd(rampTimeEnd);
     rampTimeStart = 0;
     EEPROM_TC::instance()->setRampTimeStart(rampTimeStart);
+  } else {
+    rampTimeStart = EEPROM_TC::instance()->getRampTimeStart;
+    rampStartingPh = EEPROM_TC::instance()->getRampStartingPH;
   }
   char buffer[40];
   strncpy_P(buffer, (PGM_P)F("PHControl with target pH = "), sizeof(buffer));

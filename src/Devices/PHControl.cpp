@@ -96,10 +96,11 @@ void PHControl::updateControl(float pH) {
   int msToBeOn;
   int nowModWindow = millis() % WINDOW_SIZE;
   float currentTime = DateTime_TC::now().secondstime();
-  currentPHTarget =
-      rampStartingPh + ((currentTime - rampTimeStart) * (targetPh - rampStartingPh) / (rampTimeEnd - rampTimeStart));
-  // if ramp is not used
-  if (currentTime >= rampTimeEnd) {
+  // if ramp is being used
+  if (currentTime < rampTimeEnd) {
+    currentPHTarget =
+        rampStartingPh + ((currentTime - rampTimeStart) * (targetPh - rampStartingPh) / (rampTimeEnd - rampTimeStart));
+  } else {
     currentPHTarget = targetPh;
   }
   COUT("PHControl::updateControl(" << pH << ") at " << millis());

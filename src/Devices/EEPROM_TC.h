@@ -97,7 +97,7 @@ private:
   const uint16_t GOOGLE_INTERVAL_ADDRESS = 108;
   const uint16_t RAMP_STARTING_PH_ADDRESS = 112;
   const uint16_t RAMP_TIME_START_ADDRESS = 116;
-  const uint16_t RAMP_TIME_END_ADDRESS = 124;
+  const uint16_t RAMP_TIME_END_ADDRESS = 120;
 
   // class variables
   static EEPROM_TC* _instance;

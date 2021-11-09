@@ -79,6 +79,10 @@ void PHControl::setRamp(float newPhRampTimeHours) {
     EEPROM_TC::instance()->setRampTimeStart(rampTimeStart);
     EEPROM_TC::instance()->setRampTimeEnd(rampTimeEnd);
     EEPROM_TC::instance()->setRampStartingPH(rampTimeEnd);
+  } else {
+    rampTimeEnd = 0;
+    EEPROM_TC::instance()->setRampTimeEnd(rampTimeEnd);
+    serial("set ramp time to 0");
   }
 }
 

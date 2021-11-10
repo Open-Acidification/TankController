@@ -192,4 +192,17 @@ unittest(RampGreaterThanZero) {
   assertEqual(7, controlSolenoid->getCurrentPHTarget());
 }
 
+unittest(ChangeRampToZero) {
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
+  assertFalse(controlSolenoid->isOn());
+  setPhMeasurementTo(8.50);
+  controlSolenoid->setTargetPh(7.00);
+  controlSolenoid->setRamp(1.5);
+  tc->loop();
+  assertEqual(8.5, controlSolenoid->getCurrentPHTarget());
+  controlSolenoid->setRamp(0);
+  tc->loop();
+  assertEqual(7, controlSolenoid->getCurrentPHTarget());
+}
+
 unittest_main()

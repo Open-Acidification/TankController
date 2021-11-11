@@ -27,6 +27,13 @@ PHControl *PHControl::instance() {
   return _instance;
 }
 
+void PHControl::clearInstance() {
+  if (_instance) {
+    delete _instance;
+    _instance = nullptr;
+  }
+}
+
 PHControl::PHControl() {
   pinMode(PH_CONTROL_PIN, OUTPUT);
   digitalWrite(PH_CONTROL_PIN, TURN_SOLENOID_OFF);
@@ -78,7 +85,7 @@ void PHControl::setRamp(float newPhRampTimeHours) {
     rampStartingPh = PHProbe::instance()->getPh();
     EEPROM_TC::instance()->setRampTimeStart(rampTimeStart);
     EEPROM_TC::instance()->setRampTimeEnd(rampTimeEnd);
-    EEPROM_TC::instance()->setRampStartingPH(rampTimeEnd);
+    EEPROM_TC::instance()->setRampStartingPH(rampStartingPh);
   } else {
     rampTimeEnd = 0;
     EEPROM_TC::instance()->setRampTimeEnd(rampTimeEnd);

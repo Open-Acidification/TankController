@@ -22,6 +22,7 @@ private:
 
 public:
   static PHControl* instance();
+  static void clearInstance();
   float getTargetPh() {
     return targetPh;
   }

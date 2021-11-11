@@ -175,6 +175,9 @@ unittest(RampGreaterThanZero) {
   setPhMeasurementTo(8.50);
   controlSolenoid->setTargetPh(7.00);
   controlSolenoid->setRamp(1.5);
+  // mock arduino restarting
+  PHControl::clearInstance();
+  controlSolenoid = PHControl::instance();
   // takes 1.5 hours to get to pH of 7
   delay(1800000);  // delay 30 minutes
   tc->loop();

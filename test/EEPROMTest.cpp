@@ -38,6 +38,27 @@ unittest(PH) {
   assertEqual(3.125, singleton->getPH());
 }
 
+unittest(RampStartingPH) {
+  EEPROM_TC* singleton = EEPROM_TC::instance();
+  assertNAN(singleton->getRampStartingPH());
+  singleton->setRampStartingPH(4.125);
+  assertEqual(4.125, singleton->getRampStartingPH());
+}
+
+unittest(RampTimeStart) {
+  EEPROM_TC* singleton = EEPROM_TC::instance();
+  assertEqual(0xFFFFFFFF, singleton->getRampTimeStart());
+  singleton->setRampTimeStart(123456789);
+  assertEqual(123456789, singleton->getRampTimeStart());
+}
+
+unittest(RampTimeEnd) {
+  EEPROM_TC* singleton = EEPROM_TC::instance();
+  assertEqual(0xFFFFFFFF, singleton->getRampTimeEnd());
+  singleton->setRampTimeEnd(987654321);
+  assertEqual(987654321, singleton->getRampTimeEnd());
+}
+
 unittest(Temp) {
   EEPROM_TC* singleton = EEPROM_TC::instance();
   assertNAN(singleton->getTemp());

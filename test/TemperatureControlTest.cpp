@@ -115,18 +115,18 @@ unittest(RampGreaterThanZero) {
   // takes 1.5 hours to get to pH of 7
   delay(1800000);  // delay 30 minutes
   tc->loop();
-  assertEqual(7, control->getCurrentTemperatureTarget());
+  assertEqual(26.7, control->getCurrentTemperatureTarget());
   delay(1800000);  // delay 30 minutes
   tc->loop();
-  assertEqual(7, control->getCurrentTemperatureTarget());
+  assertEqual(23.3, control->getCurrentTemperatureTarget());
   delay(1800000);  // delay 30 minutes
   tc->loop();
-  assertEqual(7, control->getCurrentTemperatureTarget());
+  assertEqual(20, control->getCurrentTemperatureTarget());
   // ramp time no longer used after it ends
   delay(1800000);  // delay 30 minutes
   delay(1800000);  // delay 30 minutes
   tc->loop();
-  assertEqual(7, control->getCurrentTemperatureTarget());
+  assertEqual(20, control->getCurrentTemperatureTarget());
   // TemperatureControl::enableHeater(true);
   // assertFalse(control->isOn());
   // assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);

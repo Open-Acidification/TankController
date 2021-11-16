@@ -29,6 +29,9 @@ public:
   uint32_t getRampTimeStart();
   uint32_t getRampTimeEnd();
   float getRampStartingPH();
+  uint32_t getRampTimeStartTemp();
+  uint32_t getRampTimeEndTemp();
+  float getRampStartingTemp();
   float getPHDelay();            // not used
   float getPHInterval();         // not used
   float getPHSeriesPointer();    // not used
@@ -56,6 +59,9 @@ public:
   void setRampTimeStart(uint32_t value);
   void setRampTimeEnd(uint32_t value);
   float setRampStartingPH(float value);
+  void setRampTimeStartTemp(uint32_t value);
+  void setRampTimeEndTemp(uint32_t value);
+  float setRampStartingTemp(float value);
   void setPHDelay(float value);
   void setPHInterval(float value);
   void setPHSeriesPointer(float value);
@@ -98,6 +104,9 @@ private:
   const uint16_t RAMP_STARTING_PH_ADDRESS = 112;
   const uint16_t RAMP_TIME_START_ADDRESS = 116;
   const uint16_t RAMP_TIME_END_ADDRESS = 120;
+  const uint16_t RAMP_STARTING_TEMP_ADDRESS = 124;
+  const uint16_t RAMP_TIME_START_TEMP_ADDRESS = 128;
+  const uint16_t RAMP_TIME_END_TEMP_ADDRESS = 132;
 
   // class variables
   static EEPROM_TC* _instance;

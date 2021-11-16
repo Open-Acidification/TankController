@@ -2,6 +2,7 @@
 
 #include "Devices/DateTime_TC.h"
 #include "Devices/EEPROM_TC.h"
+#include "Devices/TempProbe_TC.h"
 #include "Serial_TC.h"
 #include "TankController.h"
 
@@ -28,6 +29,13 @@ TemperatureControl *TemperatureControl::instance() {
   return _instance;
 }
 
+void TemperatureControl::clearInstance() {
+  if (_instance) {
+    delete _instance;
+    _instance = nullptr;
+  }
+}
+
 void TemperatureControl::enableHeater(bool flag) {
   EEPROM_TC::instance()->setHeat(flag);
   if (_instance && (_instance->isHeater() != flag)) {
@@ -50,6 +58,16 @@ TemperatureControl::TemperatureControl() {
     targetTemperature = DEFAULT_TEMPERATURE;
     EEPROM_TC::instance()->setTemp(targetTemperature);
   }
+  rampTimeEnd = EEPROM_TC::instance()->getRampTimeEndTemp();
+  if (rampTimeEnd == 0xFFFFFFFF || rampTimeEnd == 0) {
+    rampTimeEnd = 0;
+    EEPROM_TC::instance()->setRampTimeEndTemp(rampTimeEnd);
+    rampTimeStart = 0;
+    EEPROM_TC::instance()->setRampTimeStartTemp(rampTimeStart);
+  } else {
+    rampTimeStart = EEPROM_TC::instance()->getRampTimeStartTemp();
+    rampStartingTemp = EEPROM_TC::instance()->getRampStartingTemp();
+  }
   pinMode(TEMP_CONTROL_PIN, OUTPUT);
   digitalWrite(TEMP_CONTROL_PIN, TURN_SOLENOID_OFF);
   char buffer[70];
@@ -59,6 +77,29 @@ TemperatureControl::TemperatureControl() {
   strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(" C"));
   serial(buffer);
 }
+
+void TemperatureControl::setRamp(float newTempRampTime) {
+  if (newTempRampTime > 0) {
+    char buffer[40];
+    float currentRampTime = rampTimeEnd - rampTimeStart;
+    strncpy_P(buffer, (PGM_P)F("change ramp time from "), sizeof(buffer));
+    dtostrf(currentRampTime, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
+    strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(" to "));
+    dtostrf(newTempRampTime, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
+    serial(buffer);
+    rampTimeStart = DateTime_TC::now().secondstime();
+    rampTimeEnd = rampTimeStart + (newTempRampTime * 3600);
+    rampStartingTemp = TempProbe_TC::instance()->getRawTemperature();
+    EEPROM_TC::instance()->setRampTimeStartTemp(rampTimeStart);
+    EEPROM_TC::instance()->setRampTimeEndTemp(rampTimeEnd);
+    EEPROM_TC::instance()->setRampStartingTemp(rampStartingTemp);
+  } else {
+    rampTimeEnd = 0;
+    EEPROM_TC::instance()->setRampTimeEndTemp(rampTimeEnd);
+    serial("set ramp time to 0");
+  }
+}
+
 
 /**
  * is heater
@@ -89,6 +130,14 @@ void TemperatureControl::setTargetTemperature(float newTemperature) {
 
 void Chiller::updateControl(float currentTemperature) {
   uint32_t currentMillis = millis();
+  float currentTime = DateTime_TC::now().secondstime();
+  // if ramp is being used
+  if (currentTime < rampTimeEnd) {
+    currentTemperatureTarget =
+        rampStartingTemp + ((currentTime - rampTimeStart) * (targetTemperature - rampStartingTemp) / (rampTimeEnd - rampTimeStart));
+  } else {
+    currentTemperatureTarget = targetTemperature;
+  }
   COUT("Chiller::updateControl(" << currentTemperature << ") at " << currentMillis);
   if (currentMillis < previousMillis) {
     COUT("Reset previousMillis from " << previousMillis << " to 0");
@@ -107,12 +156,12 @@ void Chiller::updateControl(float currentTemperature) {
       COUT("Chiller should be off");
     }
     // if the observed temperature is above the set-point range turn on the chiller
-    else if (currentTemperature >= targetTemperature + DELTA) {
+    else if (currentTemperature >= currentTemperatureTarget + DELTA) {
       newValue = TURN_SOLENOID_ON;
       COUT("Chiller should be on");
     }
     // if the observed temperature is below the set-point range turn off the chiller
-    else if (currentTemperature <= targetTemperature - DELTA) {
+    else if (currentTemperature <= currentTemperatureTarget - DELTA) {
       newValue = TURN_SOLENOID_OFF;
       COUT("Chiller should be off");
     } else {
@@ -128,6 +177,14 @@ void Chiller::updateControl(float currentTemperature) {
 }
 
 void Heater::updateControl(float currentTemperature) {
+  float currentTime = DateTime_TC::now().secondstime();
+  // if ramp is being used
+  if (currentTime < rampTimeEnd) {
+    currentTemperatureTarget =
+        rampStartingTemp + ((currentTime - rampTimeStart) * (targetTemperature - rampStartingTemp) / (rampTimeEnd - rampTimeStart));
+  } else {
+    currentTemperatureTarget = targetTemperature;
+  }
   COUT("Heater::updateControl(" << currentTemperature);
   bool oldValue = digitalRead(TEMP_CONTROL_PIN);
   bool newValue;
@@ -136,11 +193,11 @@ void Heater::updateControl(float currentTemperature) {
     newValue = TURN_SOLENOID_OFF;
   }
   // if the observed temperature is below the temperature set-point range turn on the heater
-  else if (currentTemperature <= targetTemperature - DELTA) {
+  else if (currentTemperature <= currentTemperatureTarget - DELTA) {
     newValue = TURN_SOLENOID_ON;
   }
   // if the observed temperature is above the temperature set-point range turn off the heater
-  else if (currentTemperature >= targetTemperature + DELTA) {
+  else if (currentTemperature >= currentTemperatureTarget + DELTA) {
     newValue = TURN_SOLENOID_OFF;
   } else {
     newValue = oldValue;

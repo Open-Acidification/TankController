@@ -109,6 +109,7 @@ unittest(RampGreaterThanZero) {
   control->setTargetTemperature(20);
   control->setRamp(1.5);
   control->updateControl(30);
+  delay(31000);
   // mock arduino restarting
   // TemperatureControl::clearInstance();
   // control = TemperatureControl::instance();

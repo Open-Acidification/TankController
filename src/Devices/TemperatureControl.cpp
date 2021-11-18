@@ -100,7 +100,6 @@ void TemperatureControl::setRamp(float newTempRampTime) {
   }
 }
 
-
 /**
  * is heater
  */

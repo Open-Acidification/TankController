@@ -102,82 +102,6 @@ unittest(AfterIntervalAndOutsideDelta) {
   assertEqual("T 20.02 c 20.00 ", lc->getLines().at(1));
 }
 
-unittest(RampGreaterThanZero) {
-  TemperatureControl::enableHeater(false);
-  control = TemperatureControl::instance();
-  assertFalse(control->isOn());
-  control->setTargetTemperature(20);
-  control->setRamp(1.5);
-  control->updateControl(30);
-  delay(31000);
-  // mock arduino restarting
-  // TemperatureControl::clearInstance();
-  // control = TemperatureControl::instance();
-  // takes 1.5 hours to get to pH of 7
-  delay(1800000);  // delay 30 minutes
-  tc->loop();
-  assertEqual(26.7, control->getCurrentTemperatureTarget());
-  delay(1800000);  // delay 30 minutes
-  tc->loop();
-  assertEqual(23.3, control->getCurrentTemperatureTarget());
-  delay(1800000);  // delay 30 minutes
-  tc->loop();
-  assertEqual(20, control->getCurrentTemperatureTarget());
-  // ramp time no longer used after it ends
-  delay(1800000);  // delay 30 minutes
-  delay(1800000);  // delay 30 minutes
-  tc->loop();
-  assertEqual(20, control->getCurrentTemperatureTarget());
-  // TemperatureControl::enableHeater(true);
-  // assertFalse(control->isOn());
-  // assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
-  // control->setTargetTemperature(30);
-  // control->setRamp(1.5);
-  // control->updateControl(20);
-  // // mock arduino restarting
-  // TemperatureControl::clearInstance();
-  // control = TemperatureControl::instance();
-  // // takes 1.5 hours to get to pH of 7
-  // delay(1800000);  // delay 30 minutes
-  // tc->loop();
-  // assertEqual(7, control->getCurrentTemperatureTarget());
-  // delay(1800000);  // delay 30 minutes
-  // tc->loop();
-  // assertEqual(7, control->getCurrentTemperatureTarget());
-  // delay(1800000);  // delay 30 minutes
-  // tc->loop();
-  // assertEqual(7, control->getCurrentTemperatureTarget());
-  // // ramp time no longer used after it ends
-  // delay(1800000);  // delay 30 minutes
-  // delay(1800000);  // delay 30 minutes
-  // tc->loop();
-  // assertEqual(7, control->getCurrentTemperatureTarget());
-}
-
-unittest(ChangeRampToZero) {
-  TemperatureControl::enableHeater(false);
-  control = TemperatureControl::instance();
-  assertFalse(control->isOn());
-  control->setTargetTemperature(20);
-  control->setRamp(1.5);
-  control->updateControl(22);
-   tc->loop();
-  assertEqual(22, control->getCurrentTemperatureTarget());
-  control->setRamp(0);
-  tc->loop();
-  assertEqual(20, control->getCurrentTemperatureTarget());
-  // TemperatureControl::enableHeater(true);
-  // assertFalse(control->isOn());
-  // control->setTargetTemperature(30);
-  // control->setRamp(1.5);
-  // control->updateControl(20);
-  //  tc->loop();
-  // assertEqual(8.5, control->getCurrentTemperatureTarget());
-  // control->setRamp(0);
-  // tc->loop();
-  // assertEqual(7, control->getCurrentTemperatureTarget());
-}
-
 /**
  * Test that chiller is not turned on during calibration
  * \see unittest(AfterIntervalAndOutsideDelta)
@@ -254,6 +178,84 @@ unittest(disableHeaterDuringCalibration) {
   control->setTargetTemperature(20);
   control->updateControl(19.95);
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
+}
+
+unittest(RampGreaterThanZero) {
+  TemperatureControl::enableHeater(false);
+  control = TemperatureControl::instance();
+  assertFalse(control->isOn());
+  control->setTargetTemperature(10);
+  control->setRamp(1.5);
+  control->updateControl(tempProbe->getRunningAverage());
+  assertTrue(20 <= control->getCurrentTemperatureTarget() && control->getCurrentTemperatureTarget() <= 20.03);
+  delay(31000);
+  // mock arduino restarting
+  TemperatureControl::clearInstance();
+  control = TemperatureControl::instance();
+  // takes 1.5 hours to get to pH of 7
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertTrue(16.6 <= control->getCurrentTemperatureTarget() && control->getCurrentTemperatureTarget() <= 16.8);
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertTrue(13.2 <= control->getCurrentTemperatureTarget() && control->getCurrentTemperatureTarget() <= 13.4);
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(10, control->getCurrentTemperatureTarget());
+  // ramp time no longer used after it ends
+  delay(1800000);  // delay 30 minutes
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(10, control->getCurrentTemperatureTarget());
+  TemperatureControl::enableHeater(true);
+  control = TemperatureControl::instance();
+  assertFalse(control->isOn());
+  control->setTargetTemperature(30);
+  control->setRamp(1.5);
+  control->updateControl(tempProbe->getRunningAverage());
+  assertTrue(20 <= control->getCurrentTemperatureTarget() && control->getCurrentTemperatureTarget() <= 20.03);
+  delay(31000);
+  // mock arduino restarting
+  TemperatureControl::clearInstance();
+  control = TemperatureControl::instance();
+  // takes 1.5 hours to get to pH of 7
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertTrue(23.3 <= control->getCurrentTemperatureTarget() && control->getCurrentTemperatureTarget() <= 23.4);
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertTrue(26.6 <= control->getCurrentTemperatureTarget() && control->getCurrentTemperatureTarget() <= 26.7);
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(30, control->getCurrentTemperatureTarget());
+  // ramp time no longer used after it ends
+  delay(1800000);  // delay 30 minutes
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(30, control->getCurrentTemperatureTarget());
+}
+
+unittest(ChangeRampToZero) {
+  TemperatureControl::enableHeater(false);
+  control = TemperatureControl::instance();
+  assertFalse(control->isOn());
+  control->setTargetTemperature(10);
+  control->setRamp(1.5);
+  tc->loop();
+  assertTrue(20 <= control->getCurrentTemperatureTarget() && control->getCurrentTemperatureTarget() <= 20.03);
+  control->setRamp(0);
+  tc->loop();
+  assertEqual(10, control->getCurrentTemperatureTarget());
+  TemperatureControl::enableHeater(true);
+  control = TemperatureControl::instance();
+  assertFalse(control->isOn());
+  control->setTargetTemperature(30);
+  control->setRamp(1.5);
+  tc->loop();
+  assertTrue(20 <= control->getCurrentTemperatureTarget() && control->getCurrentTemperatureTarget() <= 20.03);
+  control->setRamp(0);
+  tc->loop();
+  assertEqual(30, control->getCurrentTemperatureTarget());
 }
 
 unittest_main()

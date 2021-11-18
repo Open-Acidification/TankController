@@ -134,7 +134,8 @@ void Chiller::updateControl(float currentTemperature) {
   // if ramp is being used
   if (currentTime < rampTimeEnd) {
     currentTemperatureTarget =
-        rampStartingTemp + ((currentTime - rampTimeStart) * (targetTemperature - rampStartingTemp) / (rampTimeEnd - rampTimeStart));
+        rampStartingTemp +
+        ((currentTime - rampTimeStart) * (targetTemperature - rampStartingTemp) / (rampTimeEnd - rampTimeStart));
   } else {
     currentTemperatureTarget = targetTemperature;
   }
@@ -181,7 +182,8 @@ void Heater::updateControl(float currentTemperature) {
   // if ramp is being used
   if (currentTime < rampTimeEnd) {
     currentTemperatureTarget =
-        rampStartingTemp + ((currentTime - rampTimeStart) * (targetTemperature - rampStartingTemp) / (rampTimeEnd - rampTimeStart));
+        rampStartingTemp +
+        ((currentTime - rampTimeStart) * (targetTemperature - rampStartingTemp) / (rampTimeEnd - rampTimeStart));
   } else {
     currentTemperatureTarget = targetTemperature;
   }

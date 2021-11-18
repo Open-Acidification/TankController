@@ -46,7 +46,7 @@ unittest(test) {
 
   // during the delay we showed the new value
   lines = lcd->getLines();
-  assertEqual(50.25, TemperatureControl::instance()->getTargetTemperature());  
+  assertEqual(50.25, TemperatureControl::instance()->getTargetTemperature());
   assertEqual(50.25, EEPROM_TC::instance()->getTemp());
 
   // during the delay we showed the new value

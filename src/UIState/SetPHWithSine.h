@@ -1,16 +1,16 @@
 /**
- * SetPHWithSlope.h
+ * SetPHWithSine.h
  *
  * Set the target pH
  */
 #pragma once
 #include "NumberCollectorState.h"
 
-class SetPHWithSlope : public NumCollectorState {
+class SetPHWithSine : public NumCollectorState {
 public:
-  SetPHWithSlope(TankController* tc);
+  SetPHWithSine(TankController* tc);
   const __FlashStringHelper* name() {
-    return F("SetPHWithSlope");
+    return F("SetPHWithSine");
   }
   float getCurrentValue();
   uint16_t getCurrentValuePrecision() {

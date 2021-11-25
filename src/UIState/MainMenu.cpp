@@ -53,6 +53,7 @@ MainMenu::MainMenu(TankController *tc) : UIState(tc) {
   setMenus[SET_TEMP_CALIBRATION] = F("Temp calibration");
   setMenus[SET_TEMPERATURE] = F("Set temperature");
   setMenus[SET_TIME] = F("Set date/time");
+  setMenus[SET_PH_WITH_SIN] = F("Set pH w slope");
 }
 
 /**
@@ -204,6 +205,9 @@ void MainMenu::selectSet() {
       break;
     case SET_TEMPERATURE:
       this->setNextState(static_cast<UIState *>(new SetTempSetPoint(tc)));
+      break;
+    case SET_PH_WITH_SIN:
+      this->setNextState(static_cast<UIState *>(new SetPHWithSine(tc)));
       break;
     case SET_TIME:
       this->setNextState(static_cast<UIState *>(new SetTime(tc)));

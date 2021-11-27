@@ -32,10 +32,10 @@ public:
   uint32_t getRampTimeStartTemp();
   uint32_t getRampTimeEndTemp();
   float getRampStartingTemp();
-  float getPHDelay();            // not used
-  float getPHInterval();         // not used
-  float getPHSeriesPointer();    // not used
-  float getPHSeriesSize();       // not used
+  float getPHDelay();          // not used
+  float getPHInterval();       // not used
+  float getPHSeriesPointer();  // not used
+  float getPHSeriesSize();     // not used
   uint16_t getPHSetType();
   uint16_t getTankID();          // unique tank identifier for reporting
   float getTemp();               // target temperature

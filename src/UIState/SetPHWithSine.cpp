@@ -2,10 +2,10 @@
  * SetPHWithSine.cpp
  */
 
-#include "SetPHWithSine.h"
-
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHControl.h"
+#include "SetPHWithSine.h"
+
 
 SetPHWithSine::SetPHWithSine(TankController* tc) : NumCollectorState(tc) {
   prompts[0] = F("Set pH Set Point");
@@ -25,8 +25,7 @@ float SetPHWithSine::getCurrentValue() {
   } else {
     if (PHControl::instance()->getPHSetType() == PHControl::instance()->phSetTypeTypes::SINE_TYPE) {
       return PHControl::instance()->getPeriod() / 3600;
-    }
-    else {
+    } else {
       return 0.0;
     }
   }

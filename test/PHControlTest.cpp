@@ -175,6 +175,9 @@ unittest(RampGreaterThanZero) {
   setPhMeasurementTo(8.50);
   controlSolenoid->setTargetPh(7.00);
   controlSolenoid->setRamp(1.5);
+  assertEqual(controlSolenoid->phSetTypeTypes::RAMP_TYPE, controlSolenoid->getPHSetType());
+  tc->loop();
+  assertEqual(8.5, controlSolenoid->getCurrentPHTarget());
   // mock arduino restarting
   PHControl::clearInstance();
   controlSolenoid = PHControl::instance();
@@ -201,9 +204,47 @@ unittest(ChangeRampToZero) {
   setPhMeasurementTo(8.50);
   controlSolenoid->setTargetPh(7.00);
   controlSolenoid->setRamp(1.5);
+  assertEqual(controlSolenoid->phSetTypeTypes::RAMP_TYPE, controlSolenoid->getPHSetType());
   tc->loop();
   assertEqual(8.5, controlSolenoid->getCurrentPHTarget());
   controlSolenoid->setRamp(0);
+  assertEqual(controlSolenoid->phSetTypeTypes::NO_TYPE, controlSolenoid->getPHSetType());
+  tc->loop();
+  assertEqual(7, controlSolenoid->getCurrentPHTarget());
+}
+
+unittest(sineTest) {
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
+  assertFalse(controlSolenoid->isOn());
+  setPhMeasurementTo(7.00);
+  controlSolenoid->setTargetPh(7.00);
+  controlSolenoid->setSine(1.5, 2);
+  assertEqual(controlSolenoid->phSetTypeTypes::SINE_TYPE, controlSolenoid->getPHSetType());
+  tc->loop();
+  assertEqual(7, controlSolenoid->getCurrentPHTarget());
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(8.5, controlSolenoid->getCurrentPHTarget());
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(7, controlSolenoid->getCurrentPHTarget());
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(5.5, controlSolenoid->getCurrentPHTarget());
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(7, controlSolenoid->getCurrentPHTarget());
+  // make sure sine wave continues
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(8.5, controlSolenoid->getCurrentPHTarget());
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(7, controlSolenoid->getCurrentPHTarget());
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(5.5, controlSolenoid->getCurrentPHTarget());
+  delay(1800000);  // delay 30 minutes
   tc->loop();
   assertEqual(7, controlSolenoid->getCurrentPHTarget());
 }

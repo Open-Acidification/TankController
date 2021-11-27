@@ -9,9 +9,7 @@
 #include "TC_util.h"
 #include "TankController.h"
 
-#define PI 3.14159265
 const float DEFAULT_PH = 8.1;
-const int DEFAULT_SET_TYPE = NO_TYPE;
 
 //  class instance variables
 /**
@@ -47,7 +45,7 @@ PHControl::PHControl() {
   }
   pHSetType = EEPROM_TC::instance()->getPHSetType();
   if (pHSetType == 0xFFFFFFFF) {
-    pHSetType = DEFAULT_SET_TYPE;
+    pHSetType = NO_TYPE;
     EEPROM_TC::instance()->setPHSetType(pHSetType);
   }
   switch (pHSetType) {
@@ -101,11 +99,15 @@ void PHControl::setRamp(float newPhRampTimeHours) {
     rampTimeStart = DateTime_TC::now().secondstime();
     rampTimeEnd = rampTimeStart + (newPhRampTimeHours * 3600);
     rampStartingPh = PHProbe::instance()->getPh();
+    pHSetType = phSetTypeTypes::RAMP_TYPE;
+    EEPROM_TC::instance()->setPHSetType(pHSetType);
     EEPROM_TC::instance()->setRampTimeStart(rampTimeStart);
     EEPROM_TC::instance()->setRampTimeEnd(rampTimeEnd);
     EEPROM_TC::instance()->setRampStartingPH(rampStartingPh);
   } else {
     rampTimeEnd = 0;
+    pHSetType = phSetTypeTypes::NO_TYPE;
+    EEPROM_TC::instance()->setPHSetType(pHSetType);
     EEPROM_TC::instance()->setRampTimeEnd(rampTimeEnd);
     serial("set ramp time to 0");
   }
@@ -138,7 +140,13 @@ void PHControl::updateControl(float pH) {
   int nowModWindow = millis() % WINDOW_SIZE;
   uint32_t currentTime = DateTime_TC::now().secondstime();
   switch (pHSetType) {
+    case NO_TYPE:
+    {
+      currentPHTarget = targetPh;
+      break;
+    }
     case RAMP_TYPE:
+    {
       if (currentTime < rampTimeEnd) {
         currentPHTarget =
             rampStartingPh + ((currentTime - rampTimeStart) * (targetPh - rampStartingPh) / (rampTimeEnd - rampTimeStart));
@@ -146,15 +154,24 @@ void PHControl::updateControl(float pH) {
         currentPHTarget = targetPh;
       }
       break;
+    }
     case SINE_TYPE:
+    {
       uint32_t sineEndTime = sineStartTime + period;
-      uint32_t currentTime = DateTime_TC::now().secondstime();
-      float x = (1 - ((sineEndTime - currentTime) / period)) * (2 * PI);  // the x position for our sine wave
+      if (currentTime >= sineEndTime) {
+        sineStartTime = DateTime_TC::now().secondstime();
+        sineEndTime = sineStartTime + period;
+      }
+      float timeLeftTillPeriodEnd = sineEndTime - currentTime;
+      float percentNOTThroughPeriod = timeLeftTillPeriodEnd / period;
+      float percentThroughPeriod = 1 - percentNOTThroughPeriod;
+      float x = percentThroughPeriod * (2 * PI);  // the x position for our sine wave
       currentPHTarget = amplitude * sin(x) + targetPh;  // y position in our sine wave
       break;
+    }
     default:
-      currentPHTarget = targetPh;
       break;
+  }
   COUT("PHControl::updateControl(" << pH << ") at " << millis());
   if (usePID) {
     msToBeOn = PID_TC::instance()->computeOutput(currentPHTarget, pH);

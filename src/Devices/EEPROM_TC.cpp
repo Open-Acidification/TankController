@@ -126,6 +126,9 @@ uint32_t EEPROM_TC::getRampTimeEndTemp() {
 float EEPROM_TC::getRampStartingTemp() {
   return eepromReadFloat(RAMP_STARTING_TEMP_ADDRESS);
 }
+uint16_t EEPROM_TC::getPHSetType() {
+  return static_cast<uint16_t>(eepromReadFloat(PH_SET_TYPE_ADDRESS));
+}
 uint16_t EEPROM_TC::getTankID() {
   return static_cast<uint16_t>(eepromReadFloat(TANK_ID_ADDRESS));
 }
@@ -212,6 +215,9 @@ void EEPROM_TC::setRampTimeEndTemp(uint32_t value) {
 }
 float EEPROM_TC::setRampStartingTemp(float value) {
   eepromWriteFloat(RAMP_STARTING_TEMP_ADDRESS, value);
+}
+void EEPROM_TC::setPHSetType(uint16_t value) {
+  eepromWriteFloat(PH_SET_TYPE_ADDRESS, (float)value);
 }
 void EEPROM_TC::setTankID(uint16_t value) {
   eepromWriteFloat(TANK_ID_ADDRESS, (float)value);

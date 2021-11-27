@@ -26,10 +26,10 @@ private:
 
 public:
   enum phSetTypeTypes {
-    NO_TYPE;
-    RAMP_TYPE;
-    SINE_TYPE;
-  }
+    NO_TYPE,
+    RAMP_TYPE,
+    SINE_TYPE,
+  };
   static PHControl* instance();
   static void clearInstance();
   float getTargetPh() {
@@ -59,6 +59,7 @@ public:
   bool isOn();
   void setTargetPh(float newPh);
   void setRamp(float newPhRampTime);
+  void setSine(float sineAmplitude, float sinePeriodInHours);
   void enablePID(bool flag);
   void updateControl(float pH);
 };

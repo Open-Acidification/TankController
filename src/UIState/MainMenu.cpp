@@ -24,6 +24,7 @@
 #include "SetKI.h"
 #include "SetKP.h"
 #include "SetPHSetPoint.h"
+#include "SetPHWithSine.h"
 #include "SetTankID.h"
 #include "SetTempSetPoint.h"
 #include "SetTime.h"
@@ -53,7 +54,7 @@ MainMenu::MainMenu(TankController *tc) : UIState(tc) {
   setMenus[SET_TEMP_CALIBRATION] = F("Temp calibration");
   setMenus[SET_TEMPERATURE] = F("Set temperature");
   setMenus[SET_TIME] = F("Set date/time");
-  setMenus[SET_PH_WITH_SIN] = F("Set pH w slope");
+  setMenus[SET_PH_WITH_SINE] = F("Set pH w slope");
 }
 
 /**
@@ -206,7 +207,7 @@ void MainMenu::selectSet() {
     case SET_TEMPERATURE:
       this->setNextState(static_cast<UIState *>(new SetTempSetPoint(tc)));
       break;
-    case SET_PH_WITH_SIN:
+    case SET_PH_WITH_SINE:
       this->setNextState(static_cast<UIState *>(new SetPHWithSine(tc)));
       break;
     case SET_TIME:

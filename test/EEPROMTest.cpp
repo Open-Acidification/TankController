@@ -86,6 +86,12 @@ unittest(RampTimeEndTemp) {
   singleton->setRampTimeEndTemp(987654321);
   assertEqual(987654321, singleton->getRampTimeEndTemp());
 }
+unittest(PHSetType) {
+  EEPROM_TC* singleton = EEPROM_TC::instance();
+  assertEqual(0, singleton->getPHSetType());
+  singleton->setPHSetType(5);
+  assertEqual(5, singleton->getPHSetType());
+}
 
 unittest(TankID) {
   EEPROM_TC* singleton = EEPROM_TC::instance();

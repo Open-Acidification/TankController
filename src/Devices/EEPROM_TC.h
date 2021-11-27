@@ -36,6 +36,7 @@ public:
   float getPHInterval();         // not used
   float getPHSeriesPointer();    // not used
   float getPHSeriesSize();       // not used
+  uint16_t getPHSetType();
   uint16_t getTankID();          // unique tank identifier for reporting
   float getTemp();               // target temperature
   float getTempDelay();          // not used
@@ -66,6 +67,7 @@ public:
   void setPHInterval(float value);
   void setPHSeriesPointer(float value);
   void setPHSeriesSize(float value);
+  void setPHSetType(uint16_t value);
   void setTankID(uint16_t value);
   void setTemp(float value);
   void setTempDelay(float value);
@@ -107,6 +109,7 @@ private:
   const uint16_t RAMP_STARTING_TEMP_ADDRESS = 124;
   const uint16_t RAMP_TIME_START_TEMP_ADDRESS = 128;
   const uint16_t RAMP_TIME_END_TEMP_ADDRESS = 132;
+  const uint16_t PH_SET_TYPE_ADDRESS = 136;
 
   // class variables
   static EEPROM_TC* _instance;

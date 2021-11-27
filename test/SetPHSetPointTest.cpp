@@ -17,14 +17,12 @@ unittest(test) {
   EEPROM_TC::instance()->setPH(8.125);
   EEPROM_TC::instance()->setRampTimeEnd(0);
   EEPROM_TC::instance()->setRampTimeStart(0);
-  TankController* tc = TankController::instance();
+  TankController* tc = TankController::instance();  // instantiate after setting eeprom stuff
   assertEqual(8.125, EEPROM_TC::instance()->getPH());
   assertEqual(0, 8.125 - EEPROM_TC::instance()->getPH());
   assertEqual(8.125, PHControl::instance()->getTargetPh());
   assertEqual(0, EEPROM_TC::instance()->getRampTimeEnd());
-  assertEqual(0, PHControl::instance()->getRampTimeEnd());
   assertEqual(0, EEPROM_TC::instance()->getRampTimeStart());
-  assertEqual(0, PHControl::instance()->getRampTimeStart());
   SetPHSetPoint* test = new SetPHSetPoint(tc);
   tc->setNextState(test, true);
 
@@ -49,6 +47,7 @@ unittest(test) {
   lines = lcd->getLines();
   assertEqual(7.125, PHControl::instance()->getTargetPh());
   assertEqual(7.125, EEPROM_TC::instance()->getPH());
+  assertEqual(PHControl::instance()->phSetTypeTypes::RAMP_TYPE, EEPROM_TC::instance()->getPHSetType());
 
   assertEqual("New pH=7.125    ", lines[0]);
   assertEqual("New ramp=4.125  ", lines[1]);

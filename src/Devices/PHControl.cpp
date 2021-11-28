@@ -65,6 +65,7 @@ PHControl::PHControl() {
     case SINE_TYPE:
       period = EEPROM_TC::instance()->getRampTimeEnd();        // uses same memory location
       amplitude = EEPROM_TC::instance()->getRampStartingPH();  // uses same memory location
+      sineStartTime = EEPROM_TC::instance()->getRampTimeStart();  // uses same memory location
       break;
     default:
       break;
@@ -158,6 +159,7 @@ void PHControl::updateControl(float pH) {
       if (currentTime >= sineEndTime) {
         sineStartTime = DateTime_TC::now().secondstime();
         sineEndTime = sineStartTime + period;
+        EEPROM_TC::instance()->setRampTimeStart(sineStartTime);  // uses same memory location
       }
       float timeLeftTillPeriodEnd = sineEndTime - currentTime;
       float percentNOTThroughPeriod = timeLeftTillPeriodEnd / period;

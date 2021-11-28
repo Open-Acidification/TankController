@@ -222,6 +222,9 @@ unittest(sineTest) {
   assertEqual(controlSolenoid->phSetTypeTypes::SINE_TYPE, controlSolenoid->getPHSetType());
   tc->loop();
   assertEqual(7, controlSolenoid->getCurrentPHTarget());
+  // mock arduino restarting
+  PHControl::clearInstance();
+  controlSolenoid = PHControl::instance();
   delay(1800000);  // delay 30 minutes
   tc->loop();
   assertEqual(8.5, controlSolenoid->getCurrentPHTarget());

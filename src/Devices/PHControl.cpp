@@ -71,17 +71,17 @@ void PHControl::setTargetPh(float newPh) {
   }
 }
 
-void PHControl::setRamp(float newPhRampTimeHours) {
-  if (newPhRampTimeHours > 0) {
+void PHControl::setRampDuration(float newPhRampDuration) {
+  if (newPhRampDuration > 0) {
     char buffer[40];
     float currentRampTime = rampTimeEnd - rampTimeStart;
     strncpy_P(buffer, (PGM_P)F("change ramp time from "), sizeof(buffer));
     dtostrf(currentRampTime, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
     strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(" to "));
-    dtostrf(newPhRampTimeHours, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
+    dtostrf(newPhRampDuration, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
     serial(buffer);
     rampTimeStart = DateTime_TC::now().secondstime();
-    rampTimeEnd = rampTimeStart + (newPhRampTimeHours * 3600);
+    rampTimeEnd = rampTimeStart + (newPhRampDuration * 3600);
     rampStartingPh = PHProbe::instance()->getPh();
     EEPROM_TC::instance()->setRampTimeStart(rampTimeStart);
     EEPROM_TC::instance()->setRampTimeEnd(rampTimeEnd);

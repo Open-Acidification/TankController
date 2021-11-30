@@ -45,7 +45,7 @@ public:
   virtual bool isHeater();
   bool isOn();
   void setTargetTemperature(float newTemperature);
-  void setRamp(float newTempRampTime);
+  void setRampDuration(float newTempRampDuration);
   virtual void updateControl(float currentTemperature) = 0;
 };
 

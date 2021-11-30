@@ -28,7 +28,7 @@ void SetTempSetPoint::setValue(float value) {
     start();
   } else {
     TemperatureControl::instance()->setTargetTemperature(values[0]);
-    TemperatureControl::instance()->setRamp(values[1]);
+    TemperatureControl::instance()->setRampDuration(values[1]);
     char output0[17];
     char output1[17];
     snprintf_P(output0, sizeof(output0), (PGM_P)F("New Temp=%i.%i"), (int)values[0],

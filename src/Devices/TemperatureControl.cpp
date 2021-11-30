@@ -78,17 +78,17 @@ TemperatureControl::TemperatureControl() {
   serial(buffer);
 }
 
-void TemperatureControl::setRamp(float newTempRampTime) {
-  if (newTempRampTime > 0) {
+void TemperatureControl::setRampDuration(float newTempRampDuration) {
+  if (newTempRampDuration > 0) {
     char buffer[40];
     float currentRampTime = rampTimeEnd - rampTimeStart;
     strncpy_P(buffer, (PGM_P)F("change ramp time from "), sizeof(buffer));
     dtostrf(currentRampTime, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
     strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(" to "));
-    dtostrf(newTempRampTime, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
+    dtostrf(newTempRampDuration, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
     serial(buffer);
     rampTimeStart = DateTime_TC::now().secondstime();
-    rampTimeEnd = rampTimeStart + (newTempRampTime * 3600);
+    rampTimeEnd = rampTimeStart + (newTempRampDuration * 3600);
     rampStartingTemp = TempProbe_TC::instance()->getRunningAverage();
     EEPROM_TC::instance()->setRampTimeStartTemp(rampTimeStart);
     EEPROM_TC::instance()->setRampTimeEndTemp(rampTimeEnd);

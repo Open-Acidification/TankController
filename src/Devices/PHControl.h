@@ -40,7 +40,7 @@ public:
   }
   bool isOn();
   void setTargetPh(float newPh);
-  void setRamp(float newPhRampTime);
+  void setRampDuration(float newPhRampDuration);
   void enablePID(bool flag);
   void updateControl(float pH);
 };

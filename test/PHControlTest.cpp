@@ -174,7 +174,7 @@ unittest(RampGreaterThanZero) {
   assertFalse(controlSolenoid->isOn());
   setPhMeasurementTo(8.50);
   controlSolenoid->setTargetPh(7.00);
-  controlSolenoid->setRamp(1.5);
+  controlSolenoid->setRampDuration(1.5);
   // mock arduino restarting
   PHControl::clearInstance();
   controlSolenoid = PHControl::instance();
@@ -200,10 +200,10 @@ unittest(ChangeRampToZero) {
   assertFalse(controlSolenoid->isOn());
   setPhMeasurementTo(8.50);
   controlSolenoid->setTargetPh(7.00);
-  controlSolenoid->setRamp(1.5);
+  controlSolenoid->setRampDuration(1.5);
   tc->loop();
   assertEqual(8.5, controlSolenoid->getCurrentPHTarget());
-  controlSolenoid->setRamp(0);
+  controlSolenoid->setRampDuration(0);
   tc->loop();
   assertEqual(7, controlSolenoid->getCurrentPHTarget());
 }

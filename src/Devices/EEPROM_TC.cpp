@@ -212,7 +212,7 @@ void EEPROM_TC::setRampTimeEndTemp(uint32_t value) {
   eepromWriteInt(RAMP_TIME_END_TEMP_ADDRESS, value);
 }
 float EEPROM_TC::setRampStartingTemp(float value) {
-  eepromWriteFloat(RAMP_STARTING_TEMP_ADDRESS, value);
+  // eepromWriteFloat(RAMP_STARTING_TEMP_ADDRESS, value);
 }
 void EEPROM_TC::setTankID(uint16_t value) {
   eepromWriteFloat(TANK_ID_ADDRESS, (float)value);

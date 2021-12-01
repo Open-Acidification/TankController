@@ -104,7 +104,7 @@ OVUV
 pdf
 PGM
 PIDOn
-pipefail
+PIPESTATUS
 plugin
 png
 pragma

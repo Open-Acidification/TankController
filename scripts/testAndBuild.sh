@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/bash
 bundle config set --local path 'vendor/bundle'
 bundle install
 bundle exec arduino_ci.rb --min-free-space=6000 | tee output.txt

@@ -202,7 +202,7 @@ void EEPROM_TC::setRampTimeEnd(uint32_t value) {
   eepromWriteInt(RAMP_TIME_END_ADDRESS, value);
 }
 float EEPROM_TC::setRampStartingPH(float value) {
-  uint16_t index = RAMP_STARTING_PH_ADDRESS;
+  uint16_t index = 112; // RAMP_STARTING_PH_ADDRESS
   eepromWriteFloat(index, value);
 }
 void EEPROM_TC::setRampTimeStartTemp(uint32_t value) {

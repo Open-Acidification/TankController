@@ -48,14 +48,14 @@ unittest(RampStartingPH) {
 unittest(RampTimeStart) {
   EEPROM_TC* singleton = EEPROM_TC::instance();
   assertEqual(0xFFFFFFFF, singleton->getRampTimeStart());
-  singleton->setRampTimeStart(123456789);
+  singleton->setPhRampTimeStart(123456789);
   assertEqual(123456789, singleton->getRampTimeStart());
 }
 
 unittest(RampTimeEnd) {
   EEPROM_TC* singleton = EEPROM_TC::instance();
   assertEqual(0xFFFFFFFF, singleton->getRampTimeEnd());
-  singleton->setRampTimeEnd(987654321);
+  singleton->setPhRampTimeEnd(987654321);
   assertEqual(987654321, singleton->getRampTimeEnd());
 }
 

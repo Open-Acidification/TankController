@@ -45,9 +45,9 @@ PHControl::PHControl() {
   rampTimeEnd = EEPROM_TC::instance()->getRampTimeEnd();
   if (rampTimeEnd == 0xFFFFFFFF || rampTimeEnd == 0) {
     rampTimeEnd = 0;
-    EEPROM_TC::instance()->setRampTimeEnd(rampTimeEnd);
+    EEPROM_TC::instance()->setPhRampTimeEnd(rampTimeEnd);
     rampTimeStart = 0;
-    EEPROM_TC::instance()->setRampTimeStart(rampTimeStart);
+    EEPROM_TC::instance()->setPhRampTimeStart(rampTimeStart);
   } else {
     rampTimeStart = EEPROM_TC::instance()->getRampTimeStart();
     rampStartingPh = EEPROM_TC::instance()->getRampStartingPH();
@@ -83,12 +83,12 @@ void PHControl::setRampDuration(float newPhRampDuration) {
     rampTimeStart = DateTime_TC::now().secondstime();
     rampTimeEnd = rampTimeStart + (newPhRampDuration * 3600);
     rampStartingPh = PHProbe::instance()->getPh();
-    EEPROM_TC::instance()->setRampTimeStart(rampTimeStart);
-    EEPROM_TC::instance()->setRampTimeEnd(rampTimeEnd);
+    EEPROM_TC::instance()->setPhRampTimeStart(rampTimeStart);
+    EEPROM_TC::instance()->setPhRampTimeEnd(rampTimeEnd);
     EEPROM_TC::instance()->setRampStartingPH(rampStartingPh);
   } else {
     rampTimeEnd = 0;
-    EEPROM_TC::instance()->setRampTimeEnd(rampTimeEnd);
+    EEPROM_TC::instance()->setPhRampTimeEnd(rampTimeEnd);
     serial("set ramp time to 0");
   }
 }

@@ -185,7 +185,7 @@ unittest(RampGreaterThanZero) {
   control = TemperatureControl::instance();
   assertFalse(control->isOn());
   control->setTargetTemperature(10);
-  control->setRamp(1.5);
+  control->setRampDuration(1.5);
   control->updateControl(tempProbe->getRunningAverage());
   assertTrue(20 <= control->getCurrentTemperatureTarget() && control->getCurrentTemperatureTarget() <= 20.03);
   delay(31000);
@@ -211,7 +211,7 @@ unittest(RampGreaterThanZero) {
   control = TemperatureControl::instance();
   assertFalse(control->isOn());
   control->setTargetTemperature(30);
-  control->setRamp(1.5);
+  control->setRampDuration(1.5);
   control->updateControl(tempProbe->getRunningAverage());
   assertTrue(20 <= control->getCurrentTemperatureTarget() && control->getCurrentTemperatureTarget() <= 20.03);
   delay(31000);
@@ -240,20 +240,20 @@ unittest(ChangeRampToZero) {
   control = TemperatureControl::instance();
   assertFalse(control->isOn());
   control->setTargetTemperature(10);
-  control->setRamp(1.5);
+  control->setRampDuration(1.5);
   tc->loop();
   assertTrue(20 <= control->getCurrentTemperatureTarget() && control->getCurrentTemperatureTarget() <= 20.03);
-  control->setRamp(0);
+  control->setRampDuration(0);
   tc->loop();
   assertEqual(10, control->getCurrentTemperatureTarget());
   TemperatureControl::enableHeater(true);
   control = TemperatureControl::instance();
   assertFalse(control->isOn());
   control->setTargetTemperature(30);
-  control->setRamp(1.5);
+  control->setRampDuration(1.5);
   tc->loop();
   assertTrue(20 <= control->getCurrentTemperatureTarget() && control->getCurrentTemperatureTarget() <= 20.03);
-  control->setRamp(0);
+  control->setRampDuration(0);
   tc->loop();
   assertEqual(30, control->getCurrentTemperatureTarget());
 }

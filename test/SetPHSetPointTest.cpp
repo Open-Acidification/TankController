@@ -15,14 +15,14 @@ unittest_setup() {
 unittest(test) {
   LiquidCrystal_TC* lcd = LiquidCrystal_TC::instance();
   EEPROM_TC::instance()->setPH(8.125);
-  EEPROM_TC::instance()->setRampTimeEnd(0);
-  EEPROM_TC::instance()->setRampTimeStart(0);
+  EEPROM_TC::instance()->setPhRampTimeEnd(0);
+  EEPROM_TC::instance()->setPhRampTimeStart(0);
   TankController* tc = TankController::instance();  // instantiate after setting eeprom stuff
   assertEqual(8.125, EEPROM_TC::instance()->getPH());
   assertEqual(0, 8.125 - EEPROM_TC::instance()->getPH());
   assertEqual(8.125, PHControl::instance()->getTargetPh());
-  assertEqual(0, EEPROM_TC::instance()->getRampTimeEnd());
-  assertEqual(0, EEPROM_TC::instance()->getRampTimeStart());
+  assertEqual(0, EEPROM_TC::instance()->getPhRampTimeEnd());
+  assertEqual(0, EEPROM_TC::instance()->getPhRampTimeStart());
   SetPHSetPoint* test = new SetPHSetPoint(tc);
   tc->setNextState(test, true);
 

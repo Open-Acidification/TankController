@@ -44,10 +44,10 @@ public:
   float getAmplitude() {
     return amplitude;
   }
-  uint32_t getRampTimeStart() {
+  uint32_t getPhRampTimeStart() {
     return rampTimeStart;
   }
-  uint32_t getRampTimeEnd() {
+  uint32_t getPhRampTimeEnd() {
     return rampTimeEnd;
   }
   uint32_t getPeriod() {
@@ -58,7 +58,7 @@ public:
   }
   bool isOn();
   void setTargetPh(float newPh);
-  void setRamp(float newPhRampTime);
+  void setRampDuration(float newPhRampDuration);
   void setSine(float sineAmplitude, float sinePeriodInHours);
   void enablePID(bool flag);
   void updateControl(float pH);

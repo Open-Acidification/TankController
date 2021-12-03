@@ -26,8 +26,8 @@ public:
   void getMac(uint8_t* bytes);        // used for DHCP request for IP address
   float getMaxDataAge();              // not used
   float getPH();                      // target pH
-  uint32_t getRampTimeStart();
-  uint32_t getRampTimeEnd();
+  uint32_t getPhRampTimeStart();
+  uint32_t getPhRampTimeEnd();
   float getRampStartingPH();
   uint32_t getRampTimeStartTemp();
   uint32_t getRampTimeEndTemp();
@@ -57,12 +57,12 @@ public:
   void setMac(uint8_t* bytes);
   void setMaxDataAge(float value);
   void setPH(float value);
-  void setRampTimeStart(uint32_t value);
-  void setRampTimeEnd(uint32_t value);
-  float setRampStartingPH(float value);
+  void setPhRampTimeStart(uint32_t value);
+  void setPhRampTimeEnd(uint32_t value);
+  void setRampStartingPH(float value);
   void setRampTimeStartTemp(uint32_t value);
   void setRampTimeEndTemp(uint32_t value);
-  float setRampStartingTemp(float value);
+  void setRampStartingTemp(float value);
   void setPHDelay(float value);
   void setPHInterval(float value);
   void setPHSeriesPointer(float value);
@@ -104,8 +104,8 @@ private:
   // new with v0.3
   const uint16_t GOOGLE_INTERVAL_ADDRESS = 108;
   const uint16_t RAMP_STARTING_PH_ADDRESS = 112;
-  const uint16_t RAMP_TIME_START_ADDRESS = 116;
-  const uint16_t RAMP_TIME_END_ADDRESS = 120;
+  const uint16_t RAMP_TIME_START_PH_ADDRESS = 116;
+  const uint16_t RAMP_TIME_END_PH_ADDRESS = 120;
   const uint16_t RAMP_STARTING_TEMP_ADDRESS = 124;
   const uint16_t RAMP_TIME_START_TEMP_ADDRESS = 128;
   const uint16_t RAMP_TIME_END_TEMP_ADDRESS = 132;

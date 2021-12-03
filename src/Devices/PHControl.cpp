@@ -51,27 +51,27 @@ PHControl::PHControl() {
   }
   switch (pHSetType) {
     case RAMP_TYPE:
-      rampTimeEnd = EEPROM_TC::instance()->getRampTimeEnd();
-      if (rampTimeEnd == 0xFFFFFFFF || rampTimeEnd == 0) {
+      rampTimeEnd = EEPROM_TC::instance()->getPhRampTimeEnd();
+      if (rampTimeEnd == 0xFFFFFFFF || rampgetPhRampTimeEnd{
         rampTimeEnd = 0;
-        EEPROM_TC::instance()->setRampTimeEnd(rampTimeEnd);
+        EEPROM_TC::instance()->setPhRampTimeEnd(rampTimeEnd);
         rampTimeStart = 0;
-        EEPROM_TC::instance()->setRampTimeStart(rampTimeStart);
+        EEPROM_TC::instance()->setPhRampTimeStart(rampTimeStart);
       } else {
-        rampTimeStart = EEPROM_TC::instance()->getRampTimeStart();
+        rampTimeStart = EEPROM_TC::instance()->getPhRampTimeStart();
         rampStartingPh = EEPROM_TC::instance()->getRampStartingPH();
       }
       break;
     case SINE_TYPE:
-      period = EEPROM_TC::instance()->getRampTimeEnd();           // uses same memory location
-      amplitude = EEPROM_TC::instance()->getRampStartingPH();     // uses same memory location
-      sineStartTime = EEPROM_TC::instance()->getRampTimeStart();  // uses same memory location
+      period = EEPROM_TC::instance()->getPhRampTimeEnd();           // uses same memory location
+      amplitude = EEPROM_TC::instance(getPhRampTimeEndtingPH();     // uses same memory location
+      sineStartTime = EEPROM_TC::instance()->getPhRampTimeStart();  // uses same memory location
       break;
     default:
       break;
   }
   char buffer[40];
-  strncpy_P(buffer, (PGM_P)F("PHControl with target pH = "), sizeof(buffer));
+  strncpy_P(buffer, (PGM_P)F("PHControlgetPhRampTimeEndH = "), sizeof(buffer));
   dtostrf(targetPh, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
   serial(buffer);
 }
@@ -89,28 +89,28 @@ void PHControl::setTargetPh(float newPh) {
   }
 }
 
-void PHControl::setRamp(float newPhRampTimeHours) {
-  if (newPhRampTimeHours > 0) {
+void PHControl::setRampDuration(float newPhRampDuration) {
+  if (newPhRampDuration > 0) {
     char buffer[40];
     float currentRampTime = rampTimeEnd - rampTimeStart;
     strncpy_P(buffer, (PGM_P)F("change ramp time from "), sizeof(buffer));
     dtostrf(currentRampTime, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
     strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(" to "));
-    dtostrf(newPhRampTimeHours, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
+    dtostrf(newPhRampDuration, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
     serial(buffer);
     rampTimeStart = DateTime_TC::now().secondstime();
-    rampTimeEnd = rampTimeStart + (newPhRampTimeHours * 3600);
+    rampTimeEnd = rampTimeStart + (newPhRampDuration * 3600);
     rampStartingPh = PHProbe::instance()->getPh();
     pHSetType = phSetTypeTypes::RAMP_TYPE;
     EEPROM_TC::instance()->setPHSetType(pHSetType);
-    EEPROM_TC::instance()->setRampTimeStart(rampTimeStart);
-    EEPROM_TC::instance()->setRampTimeEnd(rampTimeEnd);
+    EEPROM_TC::instance()->setPhRampTimeStart(rampTimeStart);
+    EEPROM_TC::instance()->setPhRampTimeEnd(rampTimeEnd);
     EEPROM_TC::instance()->setRampStartingPH(rampStartingPh);
   } else {
     rampTimeEnd = 0;
     pHSetType = phSetTypeTypes::NO_TYPE;
     EEPROM_TC::instance()->setPHSetType(pHSetType);
-    EEPROM_TC::instance()->setRampTimeEnd(rampTimeEnd);
+    EEPROM_TC::instance()->setPhRampTimeEnd(rampTimeEnd);
     serial("set ramp time to 0");
   }
 }
@@ -121,9 +121,9 @@ void PHControl::setSine(float sineAmplitude, float sinePeriodInHours) {
   pHSetType = phSetTypeTypes::SINE_TYPE;
   sineStartTime = DateTime_TC::now().secondstime();
   EEPROM_TC::instance()->setPHSetType(pHSetType);
-  EEPROM_TC::instance()->setRampTimeEnd(period);           // uses same memory location
+  EEPROM_TC::instance()->setPhRampTimeEnd(period);           // uses same memory location
   EEPROM_TC::instance()->setRampStartingPH(amplitude);     // uses same memory location
-  EEPROM_TC::instance()->setRampTimeStart(sineStartTime);  // uses same memory location
+  EEPROM_TC::instance()->setPhRampTimeStart(sineStartTime);  // uses same memory location
 }
 
 void PHControl::enablePID(bool flag) {
@@ -159,7 +159,7 @@ void PHControl::updateControl(float pH) {
       if (currentTime >= sineEndTime) {
         sineStartTime = DateTime_TC::now().secondstime();
         sineEndTime = sineStartTime + period;
-        EEPROM_TC::instance()->setRampTimeStart(sineStartTime);  // uses same memory location
+        EEPROM_TC::instance()->setPhRampTimeStart(sineStartTime);  // uses same memory location
       }
       float timeLeftTillPeriodEnd = sineEndTime - currentTime;
       float percentNOTThroughPeriod = timeLeftTillPeriodEnd / period;

@@ -174,7 +174,7 @@ unittest(RampGreaterThanZero) {
   assertFalse(controlSolenoid->isOn());
   setPhMeasurementTo(8.50);
   controlSolenoid->setTargetPh(7.00);
-  controlSolenoid->setRamp(1.5);
+  controlSolenoid->setRampDuration(1.5);
   assertEqual(controlSolenoid->phSetTypeTypes::RAMP_TYPE, controlSolenoid->getPHSetType());
   tc->loop();
   assertEqual(8.5, controlSolenoid->getCurrentPHTarget());
@@ -203,11 +203,11 @@ unittest(ChangeRampToZero) {
   assertFalse(controlSolenoid->isOn());
   setPhMeasurementTo(8.50);
   controlSolenoid->setTargetPh(7.00);
-  controlSolenoid->setRamp(1.5);
+  controlSolenoid->setRampDuration(1.5);
   assertEqual(controlSolenoid->phSetTypeTypes::RAMP_TYPE, controlSolenoid->getPHSetType());
   tc->loop();
   assertEqual(8.5, controlSolenoid->getCurrentPHTarget());
-  controlSolenoid->setRamp(0);
+  controlSolenoid->setRampDuration(0);
   assertEqual(controlSolenoid->phSetTypeTypes::NO_TYPE, controlSolenoid->getPHSetType());
   tc->loop();
   assertEqual(7, controlSolenoid->getCurrentPHTarget());

@@ -9,19 +9,23 @@
 
 class SetTempSetPoint : public NumCollectorState {
 public:
-  SetTempSetPoint(TankController* tc) : NumCollectorState(tc) {
-  }
+  SetTempSetPoint(TankController* tc);
   const __FlashStringHelper* name() {
     return F("SetTempSetPoint");
   }
-  float getCurrentValue() {
-    return EEPROM_TC::instance()->getTemp();
-  }
+  float getCurrentValue();
   uint16_t getCurrentValuePrecision() {
-    return 2;
+    return precision[subState];
   }
   const __FlashStringHelper* prompt() {
-    return F("Set Temperature");
+    return prompts[subState];
   };
   void setValue(float value);
+
+private:
+  static const uint16_t NUM_VALUES = 2;
+  uint16_t subState = 0;
+  float values[NUM_VALUES] = {0, 0};
+  const uint16_t precision[NUM_VALUES] = {2, 1};
+  const __FlashStringHelper* prompts[NUM_VALUES];
 };

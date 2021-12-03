@@ -52,7 +52,7 @@ PHControl::PHControl() {
   switch (pHSetType) {
     case RAMP_TYPE:
       rampTimeEnd = EEPROM_TC::instance()->getPhRampTimeEnd();
-      if (rampTimeEnd == 0xFFFFFFFF || rampgetPhRampTimeEnd{
+      if (rampTimeEnd == 0xFFFFFFFF || rampTimeEnd == 0) {
         rampTimeEnd = 0;
         EEPROM_TC::instance()->setPhRampTimeEnd(rampTimeEnd);
         rampTimeStart = 0;
@@ -71,7 +71,7 @@ PHControl::PHControl() {
       break;
   }
   char buffer[40];
-  strncpy_P(buffer, (PGM_P)F("PHControlgetPhRampTimeEndH = "), sizeof(buffer));
+  strncpy_P(buffer, (PGM_P)F("PHControl with target pH = "), sizeof(buffer));
   dtostrf(targetPh, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
   serial(buffer);
 }

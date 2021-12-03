@@ -122,7 +122,7 @@ void PHControl::setSine(float sineAmplitude, float sinePeriodInHours) {
   sineStartTime = DateTime_TC::now().secondstime();
   EEPROM_TC::instance()->setPHSetType(pHSetType);
   EEPROM_TC::instance()->setPhRampTimeEnd(period);           // uses same memory location
-  EEPROM_TC::instance()->setRampStartingPH(amplitude);     // uses same memory location
+  EEPROM_TC::instance()->setRampStartingPH(amplitude);       // uses same memory location
   EEPROM_TC::instance()->setPhRampTimeStart(sineStartTime);  // uses same memory location
 }
 

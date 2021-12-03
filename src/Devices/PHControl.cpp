@@ -64,7 +64,7 @@ PHControl::PHControl() {
       break;
     case SINE_TYPE:
       period = EEPROM_TC::instance()->getPhRampTimeEnd();           // uses same memory location
-      amplitude = EEPROM_TC::instance(getPhRampTimeEndtingPH();     // uses same memory location
+      amplitude = EEPROM_TC::instance()->getRampStartingPH();       // uses same memory location
       sineStartTime = EEPROM_TC::instance()->getPhRampTimeStart();  // uses same memory location
       break;
     default:

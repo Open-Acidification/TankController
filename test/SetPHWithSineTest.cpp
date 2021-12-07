@@ -21,7 +21,7 @@ unittest(test) {
   SetPHWithSine* test = new SetPHWithSine(tc);
   tc->setNextState(test, true);
 
-  assertEqual(EEPROM_TC::instance()->getPHSetType(), 0);
+  assertEqual(EEPROM_TC::instance()->getPHSetType(), PHControl::instance()->phSetTypeTypes::FLAT_TYPE);
   assertEqual(8.125, PHControl::instance()->getTargetPh());
 
   // get currently displayed lines

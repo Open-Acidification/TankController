@@ -46,7 +46,7 @@ PHControl::PHControl() {
   }
   pHSetType = EEPROM_TC::instance()->getPHSetType();
   if (pHSetType == 0xFFFFFFFF) {
-    pHSetType = NO_TYPE;
+    pHSetType = FLAT_TYPE;
     EEPROM_TC::instance()->setPHSetType(pHSetType);
   }
   switch (pHSetType) {
@@ -108,7 +108,7 @@ void PHControl::setRampDuration(float newPhRampDuration) {
     EEPROM_TC::instance()->setRampStartingPH(rampStartingPh);
   } else {
     rampTimeEnd = 0;
-    pHSetType = phSetTypeTypes::NO_TYPE;
+    pHSetType = phSetTypeTypes::FLAT_TYPE;
     EEPROM_TC::instance()->setPHSetType(pHSetType);
     EEPROM_TC::instance()->setPhRampTimeEnd(rampTimeEnd);
     serial("set ramp time to 0");
@@ -141,7 +141,7 @@ void PHControl::updateControl(float pH) {
   int nowModWindow = millis() % WINDOW_SIZE;
   uint32_t currentTime = DateTime_TC::now().secondstime();
   switch (pHSetType) {
-    case NO_TYPE: {
+    case FLAT_TYPE: {
       currentPHTarget = targetPh;
       break;
     }

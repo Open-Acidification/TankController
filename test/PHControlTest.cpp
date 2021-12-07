@@ -208,7 +208,7 @@ unittest(ChangeRampToZero) {
   tc->loop();
   assertEqual(8.5, controlSolenoid->getCurrentPHTarget());
   controlSolenoid->setRampDuration(0);
-  assertEqual(controlSolenoid->phSetTypeTypes::NO_TYPE, controlSolenoid->getPHSetType());
+  assertEqual(controlSolenoid->phSetTypeTypes::FLAT_TYPE, controlSolenoid->getPHSetType());
   tc->loop();
   assertEqual(7, controlSolenoid->getCurrentPHTarget());
 }

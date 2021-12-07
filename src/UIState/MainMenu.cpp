@@ -54,7 +54,7 @@ MainMenu::MainMenu(TankController *tc) : UIState(tc) {
   setMenus[SET_TEMP_CALIBRATION] = F("Temp calibration");
   setMenus[SET_TEMPERATURE] = F("Set temperature");
   setMenus[SET_TIME] = F("Set date/time");
-  setMenus[SET_PH_WITH_SINE] = F("Set pH w slope");
+  setMenus[SET_PH_WITH_SINE] = F("Set pH w sine");
 }
 
 /**

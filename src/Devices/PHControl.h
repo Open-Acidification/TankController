@@ -21,12 +21,12 @@ private:
   uint32_t sineStartTime;
   const uint16_t WINDOW_SIZE = 10000;  // 10 second Proportional output window (for PID)
   bool usePID = true;
-  int pHSetType = NO_TYPE;
+  int pHSetType = FLAT_TYPE;
   PHControl();
 
 public:
   enum phSetTypeTypes {
-    NO_TYPE,
+    FLAT_TYPE,
     RAMP_TYPE,
     SINE_TYPE,
   };

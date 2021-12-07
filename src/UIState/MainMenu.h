@@ -12,7 +12,7 @@
 class TankController;  // forward reference
 class MainMenu : public UIState {
 public:
-  enum ViewCommands {
+  enum ViewCommands {  // this order affects tests
     VIEW_TIME,
     VIEW_PID,
     VIEW_PH_SLOPE,
@@ -24,10 +24,9 @@ public:
     VIEW_FREE_MEMORY,
     VIEW_COMMAND_COUNT  // always last
   };
-  enum SetCommands {
+  enum SetCommands {  // this order affects tests
     SET_PH,
     SET_TEMPERATURE,
-    SET_PH_WITH_SINE,
     SET_CALIBRATION,
     SET_CALIBRATION_CLEAR,
     SET_TEMP_CALIBRATION,
@@ -39,6 +38,7 @@ public:
     SET_GOOGLE_MINS,
     SET_TIME,
     SET_TANK_ID,
+    SET_PH_WITH_SINE,
     SET_COMMAND_COUNT  // always last
   };
   MainMenu(TankController* tc);

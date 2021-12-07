@@ -37,6 +37,11 @@ unittest_teardown() {
   enterKey('D');
 }
 
+// 2 goes up in the menu
+// 8 goes down
+// 6 goes into the current menu option
+// 4 backs out of the current option
+
 unittest(MainMenu) {
   assertEqual("pH=0.000   8.100", lc->getLines().at(0));
   assertEqual("T=12.23 h 15.75 ", lc->getLines().at(1));

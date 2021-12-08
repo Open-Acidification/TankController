@@ -26,9 +26,12 @@ public:
   void getMac(uint8_t* bytes);        // used for DHCP request for IP address
   float getMaxDataAge();              // not used
   float getPH();                      // target pH
-  uint32_t getPhRampTimeStart();      // also used for sine start 
-  uint32_t getPhRampTimeEnd();        // also used for sine period
-  float getRampStartingPH();          // also used for sine amplitude
+  uint32_t getPhRampTimeStart();
+  uint32_t getPhRampTimeEnd();
+  float getRampStartingPH();
+  uint32_t getPhSineStartTime();
+  uint32_t getPhSinePeriod();
+  float getPhSineAmplitude();
   uint32_t getRampTimeStartTemp();
   uint32_t getRampTimeEndTemp();
   float getRampStartingTemp();
@@ -57,9 +60,12 @@ public:
   void setMac(uint8_t* bytes);
   void setMaxDataAge(float value);
   void setPH(float value);
-  void setPhRampTimeStart(uint32_t value);  // also used for sine start
-  void setPhRampTimeEnd(uint32_t value);    // also used for sine period
-  void setRampStartingPH(float value);      // also used for sine amplitude
+  void setPhRampTimeStart(uint32_t value);
+  void setPhRampTimeEnd(uint32_t value);
+  void setRampStartingPH(float value);
+  void setPhSineStartTime(uint32_t value);
+  void setPhSinePeriod(uint32_t value);
+  void setPhSineAmplitude(float value);
   void setRampTimeStartTemp(uint32_t value);
   void setRampTimeEndTemp(uint32_t value);
   void setRampStartingTemp(float value);

@@ -63,9 +63,9 @@ PHControl::PHControl() {
       }
       break;
     case SINE_TYPE:
-      period = EEPROM_TC::instance()->getPhRampTimeEnd();           // uses same memory location
-      amplitude = EEPROM_TC::instance()->getRampStartingPH();       // uses same memory location
-      sineStartTime = EEPROM_TC::instance()->getPhRampTimeStart();  // uses same memory location
+      period = EEPROM_TC::instance()->getPhSinePeriod();
+      amplitude = EEPROM_TC::instance()->getPhSineAmplitude();
+      sineStartTime = EEPROM_TC::instance()->getPhSineStartTime();
       break;
     default:
       break;
@@ -121,9 +121,9 @@ void PHControl::setSine(float sineAmplitude, float sinePeriodInHours) {
   pHSetType = phSetTypeTypes::SINE_TYPE;
   sineStartTime = DateTime_TC::now().secondstime();
   EEPROM_TC::instance()->setPHSetType(pHSetType);
-  EEPROM_TC::instance()->setPhRampTimeEnd(period);           // uses same memory location
-  EEPROM_TC::instance()->setRampStartingPH(amplitude);       // uses same memory location
-  EEPROM_TC::instance()->setPhRampTimeStart(sineStartTime);  // uses same memory location
+  EEPROM_TC::instance()->setPhSinePeriod(period);
+  EEPROM_TC::instance()->setPhSineAmplitude(amplitude);
+  EEPROM_TC::instance()->setPhSineStartTime(sineStartTime);
 }
 
 void PHControl::enablePID(bool flag) {
@@ -159,7 +159,7 @@ void PHControl::updateControl(float pH) {
       if (currentTime >= sineEndTime) {
         sineStartTime = DateTime_TC::now().secondstime();
         sineEndTime = sineStartTime + period;
-        EEPROM_TC::instance()->setPhRampTimeStart(sineStartTime);  // uses same memory location
+        EEPROM_TC::instance()->setPhSineStartTime(sineStartTime);
       }
       float timeLeftTillPeriodEnd = sineEndTime - currentTime;
       float percentNOTThroughPeriod = timeLeftTillPeriodEnd / period;

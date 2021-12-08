@@ -26,9 +26,9 @@ public:
   void getMac(uint8_t* bytes);        // used for DHCP request for IP address
   float getMaxDataAge();              // not used
   float getPH();                      // target pH
-  uint32_t getPhRampTimeStart();
-  uint32_t getPhRampTimeEnd();
-  float getRampStartingPH();
+  uint32_t getPhRampTimeStart();      // also used for sine start 
+  uint32_t getPhRampTimeEnd();        // also used for sine period
+  float getRampStartingPH();          // also used for sine amplitude
   uint32_t getRampTimeStartTemp();
   uint32_t getRampTimeEndTemp();
   float getRampStartingTemp();
@@ -57,9 +57,9 @@ public:
   void setMac(uint8_t* bytes);
   void setMaxDataAge(float value);
   void setPH(float value);
-  void setPhRampTimeStart(uint32_t value);
-  void setPhRampTimeEnd(uint32_t value);
-  void setRampStartingPH(float value);
+  void setPhRampTimeStart(uint32_t value);  // also used for sine start
+  void setPhRampTimeEnd(uint32_t value);    // also used for sine period
+  void setRampStartingPH(float value);      // also used for sine amplitude
   void setRampTimeStartTemp(uint32_t value);
   void setRampTimeEndTemp(uint32_t value);
   void setRampStartingTemp(float value);
@@ -106,6 +106,9 @@ private:
   const uint16_t RAMP_STARTING_PH_ADDRESS = 112;
   const uint16_t RAMP_TIME_START_PH_ADDRESS = 116;
   const uint16_t RAMP_TIME_END_PH_ADDRESS = 120;
+  const uint16_t PH_SINE_AMPLITUDE_ADDRESS = 112;
+  const uint16_t PH_SINE_START_TIME_ADDRESS = 116;
+  const uint16_t PH_SINE_PERIOD_ADDRESS = 120;
   const uint16_t RAMP_STARTING_TEMP_ADDRESS = 124;
   const uint16_t RAMP_TIME_START_TEMP_ADDRESS = 128;
   const uint16_t RAMP_TIME_END_TEMP_ADDRESS = 132;

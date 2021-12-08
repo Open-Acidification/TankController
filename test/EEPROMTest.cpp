@@ -92,7 +92,25 @@ unittest(PHSetType) {
   singleton->setPHSetType(5);
   assertEqual(5, singleton->getPHSetType());
 }
+unittest(PhSineAmplitude) {
+  EEPROM_TC* singleton = EEPROM_TC::instance();
+  assertNAN(singleton->getPhSineAmplitude());
+  singleton->setPhSineAmplitude(4);
+  assertEqual(4, singleton->getPhSineAmplitude());
+}
+unittest(PhSineStartTime) {
+  EEPROM_TC* singleton = EEPROM_TC::instance();
+  assertEqual(0xFFFFFFFF, singleton->getPhSineStartTime());
+  singleton->setPhSineStartTime(123456789);
+  assertEqual(123456789, singleton->getPhSineStartTime());
+}
 
+unittest(PhSinePeriod) {
+  EEPROM_TC* singleton = EEPROM_TC::instance();
+  assertEqual(0xFFFFFFFF, singleton->getPhSinePeriod());
+  singleton->setPhSinePeriod(987654321);
+  assertEqual(987654321, singleton->getPhSinePeriod());
+}
 unittest(TankID) {
   EEPROM_TC* singleton = EEPROM_TC::instance();
   assertEqual(0, singleton->getTankID());

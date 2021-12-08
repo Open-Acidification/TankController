@@ -117,6 +117,15 @@ uint32_t EEPROM_TC::getPhRampTimeEnd() {
 float EEPROM_TC::getRampStartingPH() {
   return eepromReadFloat(RAMP_STARTING_PH_ADDRESS);
 }
+uint32_t EEPROM_TC::getPhSineStartTime() {
+  return eepromReadInt(PH_SINE_START_TIME_ADDRESS);
+}
+uint32_t EEPROM_TC::getPhSinePeriod() {
+  return eepromReadInt(PH_SINE_AMPLITUDE_ADDRESS);
+}
+float EEPROM_TC::getPhSineAmplitude() {
+  return eepromReadFloat(PH_SINE_PERIOD_ADDRESS);
+}
 uint32_t EEPROM_TC::getRampTimeStartTemp() {
   return eepromReadInt(RAMP_TIME_START_TEMP_ADDRESS);
 }
@@ -206,6 +215,15 @@ void EEPROM_TC::setPhRampTimeEnd(uint32_t value) {
 }
 void EEPROM_TC::setRampStartingPH(float value) {
   eepromWriteFloat(RAMP_STARTING_PH_ADDRESS, value);
+}
+void EEPROM_TC::setPhSineStartTime(uint32_t value) {
+  eepromWriteInt(PH_SINE_START_TIME_ADDRESS, value);
+}
+void EEPROM_TC::setPhSinePeriod(uint32_t value) {
+  eepromWriteInt(PH_SINE_AMPLITUDE_ADDRESS, value);
+}
+void EEPROM_TC::setPhSineAmplitude(float value) {
+  eepromWriteFloat(PH_SINE_PERIOD_ADDRESS, value);
 }
 void EEPROM_TC::setRampTimeStartTemp(uint32_t value) {
   eepromWriteInt(RAMP_TIME_START_TEMP_ADDRESS, value);

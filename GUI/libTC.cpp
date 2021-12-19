@@ -22,7 +22,7 @@
 #include "EEPROM_TC.h"
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
-#include "PHProbe.h"
+#include "PhProbe.h"
 #include "SD_TC.h"
 #include "Serial_TC.h"
 #include "TC_util.h"
@@ -48,7 +48,7 @@ char *dateTime() {
 float eeprom(uint8_t index) {
   switch (index) {
     case 0:
-      return EEPROM_TC::instance()->getPH();
+      return EEPROM_TC::instance()->getPh();
     case 1:
       return EEPROM_TC::instance()->getTemp();
     case 2:
@@ -74,17 +74,17 @@ float eeprom(uint8_t index) {
     case 12:
       return EEPROM_TC::instance()->getMaxDataAge();
     case 13:
-      return EEPROM_TC::instance()->getPHSeriesSize();
+      return EEPROM_TC::instance()->getPhSeriesSize();
     case 14:
-      return EEPROM_TC::instance()->getPHSeriesPointer();
+      return EEPROM_TC::instance()->getPhSeriesPointer();
     case 15:
       return EEPROM_TC::instance()->getTempSeriesSize();
     case 16:
       return EEPROM_TC::instance()->getTempSeriesPointer();
     case 17:
-      return EEPROM_TC::instance()->getPHInterval();
+      return EEPROM_TC::instance()->getPhInterval();
     case 18:
-      return EEPROM_TC::instance()->getPHDelay();
+      return EEPROM_TC::instance()->getPhDelay();
     case 19:
       return EEPROM_TC::instance()->getTempInterval();
     case 20:
@@ -132,7 +132,7 @@ uint32_t millisecondsSinceEpoch() {
   return std::chrono::system_clock::now().time_since_epoch() / std::chrono::milliseconds(1);
 }
 
-float readPH() {
+float readPh() {
   return PHProbe::instance()->getPh();
 }
 

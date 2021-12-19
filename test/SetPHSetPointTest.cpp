@@ -14,12 +14,12 @@ unittest_setup() {
 
 unittest(test) {
   LiquidCrystal_TC* lcd = LiquidCrystal_TC::instance();
-  EEPROM_TC::instance()->setPH(8.125);
+  EEPROM_TC::instance()->setPh(8.125);
   EEPROM_TC::instance()->setPhRampTimeEnd(0);
   EEPROM_TC::instance()->setPhRampTimeStart(0);
   TankController* tc = TankController::instance();  // instantiate after setting eeprom stuff
-  assertEqual(8.125, EEPROM_TC::instance()->getPH());
-  assertEqual(0, 8.125 - EEPROM_TC::instance()->getPH());
+  assertEqual(8.125, EEPROM_TC::instance()->getPh());
+  assertEqual(0, 8.125 - EEPROM_TC::instance()->getPh());
   assertEqual(8.125, PHControl::instance()->getTargetPh());
   assertEqual(0, EEPROM_TC::instance()->getPhRampTimeEnd());
   assertEqual(0, EEPROM_TC::instance()->getPhRampTimeStart());
@@ -46,8 +46,8 @@ unittest(test) {
   // during the delay we showed the new value
   lines = lcd->getLines();
   assertEqual(7.125, PHControl::instance()->getTargetPh());
-  assertEqual(7.125, EEPROM_TC::instance()->getPH());
-  assertEqual(PHControl::instance()->phSetTypeTypes::RAMP_TYPE, EEPROM_TC::instance()->getPHSetType());
+  assertEqual(7.125, EEPROM_TC::instance()->getPh());
+  assertEqual(PHControl::instance()->phSetTypeTypes::RAMP_TYPE, EEPROM_TC::instance()->getPhSetType());
 
   assertEqual("New pH=7.125    ", lines[0]);
   assertEqual("New ramp=4.125  ", lines[1]);

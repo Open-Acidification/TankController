@@ -14,14 +14,14 @@ unittest_setup() {
 
 unittest(test) {
   LiquidCrystal_TC* lcd = LiquidCrystal_TC::instance();
-  EEPROM_TC::instance()->setPH(8.125);
+  EEPROM_TC::instance()->setPh(8.125);
   TankController* tc = TankController::instance();  // instantiate after setting eeprom stuff
-  assertEqual(8.125, EEPROM_TC::instance()->getPH());
+  assertEqual(8.125, EEPROM_TC::instance()->getPh());
   assertEqual(8.125, PHControl::instance()->getTargetPh());
   SetPHWithSine* test = new SetPHWithSine(tc);
   tc->setNextState(test, true);
 
-  assertEqual(EEPROM_TC::instance()->getPHSetType(), PHControl::instance()->phSetTypeTypes::FLAT_TYPE);
+  assertEqual(EEPROM_TC::instance()->getPhSetType(), PHControl::instance()->phSetTypeTypes::FLAT_TYPE);
   assertEqual(8.125, PHControl::instance()->getTargetPh());
 
   // get currently displayed lines
@@ -50,8 +50,8 @@ unittest(test) {
   // during the delay we showed the new value
   lines = lcd->getLines();
   assertEqual(7.125, PHControl::instance()->getTargetPh());
-  assertEqual(7.125, EEPROM_TC::instance()->getPH());
-  assertEqual(PHControl::instance()->phSetTypeTypes::SINE_TYPE, EEPROM_TC::instance()->getPHSetType());
+  assertEqual(7.125, EEPROM_TC::instance()->getPh());
+  assertEqual(PHControl::instance()->phSetTypeTypes::SINE_TYPE, EEPROM_TC::instance()->getPhSetType());
 
   assertEqual("New pH=7.125    ", lines[0]);
   assertEqual("A=2.125 P=1.500 ", lines[1]);

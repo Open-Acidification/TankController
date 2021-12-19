@@ -35,10 +35,10 @@ public:
   float getTargetPh() {
     return targetPh;
   }
-  float getCurrentPHTarget() {
+  float getCurrentPhTarget() {
     return currentPHTarget;
   }
-  int getPHSetType() {
+  int getPhSetType() {
     return pHSetType;
   }
   float getAmplitude() {

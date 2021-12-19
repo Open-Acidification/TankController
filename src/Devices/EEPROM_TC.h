@@ -25,21 +25,21 @@ public:
   float getKP();                      // constants used for PID to calculate bubbler timer
   void getMac(uint8_t* bytes);        // used for DHCP request for IP address
   float getMaxDataAge();              // not used
-  float getPH();                      // target pH
+  float getPh();                      // target pH
   uint32_t getPhRampTimeStart();
   uint32_t getPhRampTimeEnd();
-  float getRampStartingPH();
+  float getRampStartingPh();
   uint32_t getPhSineStartTime();
   uint32_t getPhSinePeriod();
   float getPhSineAmplitude();
   uint32_t getRampTimeStartTemp();
   uint32_t getRampTimeEndTemp();
   float getRampStartingTemp();
-  float getPHDelay();          // not used
-  float getPHInterval();       // not used
-  float getPHSeriesPointer();  // not used
-  float getPHSeriesSize();     // not used
-  uint16_t getPHSetType();
+  float getPhDelay();          // not used
+  float getPhInterval();       // not used
+  float getPhSeriesPointer();  // not used
+  float getPhSeriesSize();     // not used
+  uint16_t getPhSetType();
   uint16_t getTankID();          // unique tank identifier for reporting
   float getTemp();               // target temperature
   float getTempDelay();          // not used
@@ -59,21 +59,21 @@ public:
   void setKP(float value);
   void setMac(uint8_t* bytes);
   void setMaxDataAge(float value);
-  void setPH(float value);
+  void setPh(float value);
   void setPhRampTimeStart(uint32_t value);
   void setPhRampTimeEnd(uint32_t value);
-  void setRampStartingPH(float value);
+  void setRampStartingPh(float value);
   void setPhSineStartTime(uint32_t value);
   void setPhSinePeriod(uint32_t value);
   void setPhSineAmplitude(float value);
   void setRampTimeStartTemp(uint32_t value);
   void setRampTimeEndTemp(uint32_t value);
   void setRampStartingTemp(float value);
-  void setPHDelay(float value);
-  void setPHInterval(float value);
-  void setPHSeriesPointer(float value);
-  void setPHSeriesSize(float value);
-  void setPHSetType(uint16_t value);
+  void setPhDelay(float value);
+  void setPhInterval(float value);
+  void setPhSeriesPointer(float value);
+  void setPhSeriesSize(float value);
+  void setPhSetType(uint16_t value);
   void setTankID(uint16_t value);
   void setTemp(float value);
   void setTempDelay(float value);

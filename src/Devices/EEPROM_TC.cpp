@@ -93,19 +93,19 @@ void EEPROM_TC::getMac(uint8_t* bytes) {
 float EEPROM_TC::getMaxDataAge() {
   return eepromReadFloat(MAX_DATA_AGE_ADDRESS);
 }
-float EEPROM_TC::getPH() {
+float EEPROM_TC::getPh() {
   return eepromReadFloat(PH_ADDRESS);
 }
-float EEPROM_TC::getPHDelay() {
+float EEPROM_TC::getPhDelay() {
   return eepromReadFloat(PH_DELAY_ADDRESS);
 }
-float EEPROM_TC::getPHInterval() {
+float EEPROM_TC::getPhInterval() {
   return eepromReadFloat(PH_INTERVAL_ADDRESS);
 }
-float EEPROM_TC::getPHSeriesPointer() {
+float EEPROM_TC::getPhSeriesPointer() {
   return eepromReadFloat(PH_SERIES_POINTER_ADDRESS);
 }
-float EEPROM_TC::getPHSeriesSize() {
+float EEPROM_TC::getPhSeriesSize() {
   return eepromReadFloat(PH_SERIES_SIZE_ADDRESS);
 }
 uint32_t EEPROM_TC::getPhRampTimeStart() {
@@ -114,7 +114,7 @@ uint32_t EEPROM_TC::getPhRampTimeStart() {
 uint32_t EEPROM_TC::getPhRampTimeEnd() {
   return eepromReadInt(RAMP_TIME_END_PH_ADDRESS);
 }
-float EEPROM_TC::getRampStartingPH() {
+float EEPROM_TC::getRampStartingPh() {
   return eepromReadFloat(RAMP_STARTING_PH_ADDRESS);
 }
 uint32_t EEPROM_TC::getPhSineStartTime() {
@@ -135,7 +135,7 @@ uint32_t EEPROM_TC::getRampTimeEndTemp() {
 float EEPROM_TC::getRampStartingTemp() {
   return eepromReadFloat(RAMP_STARTING_TEMP_ADDRESS);
 }
-uint16_t EEPROM_TC::getPHSetType() {
+uint16_t EEPROM_TC::getPhSetType() {
   return static_cast<uint16_t>(eepromReadFloat(PH_SET_TYPE_ADDRESS));
 }
 uint16_t EEPROM_TC::getTankID() {
@@ -192,19 +192,19 @@ void EEPROM_TC::setMac(uint8_t* bytes) {
 void EEPROM_TC::setMaxDataAge(float value) {
   eepromWriteFloat(MAX_DATA_AGE_ADDRESS, value);
 }
-void EEPROM_TC::setPH(float value) {
+void EEPROM_TC::setPh(float value) {
   eepromWriteFloat(PH_ADDRESS, value);
 }
-void EEPROM_TC::setPHDelay(float value) {
+void EEPROM_TC::setPhDelay(float value) {
   eepromWriteFloat(PH_DELAY_ADDRESS, value);
 }
-void EEPROM_TC::setPHInterval(float value) {
+void EEPROM_TC::setPhInterval(float value) {
   eepromWriteFloat(PH_INTERVAL_ADDRESS, value);
 }
-void EEPROM_TC::setPHSeriesPointer(float value) {
+void EEPROM_TC::setPhSeriesPointer(float value) {
   eepromWriteFloat(PH_SERIES_POINTER_ADDRESS, value);
 }
-void EEPROM_TC::setPHSeriesSize(float value) {
+void EEPROM_TC::setPhSeriesSize(float value) {
   eepromWriteFloat(PH_SERIES_SIZE_ADDRESS, value);
 }
 void EEPROM_TC::setPhRampTimeStart(uint32_t value) {
@@ -213,7 +213,7 @@ void EEPROM_TC::setPhRampTimeStart(uint32_t value) {
 void EEPROM_TC::setPhRampTimeEnd(uint32_t value) {
   eepromWriteInt(RAMP_TIME_END_PH_ADDRESS, value);
 }
-void EEPROM_TC::setRampStartingPH(float value) {
+void EEPROM_TC::setRampStartingPh(float value) {
   eepromWriteFloat(RAMP_STARTING_PH_ADDRESS, value);
 }
 void EEPROM_TC::setPhSineStartTime(uint32_t value) {
@@ -234,7 +234,7 @@ void EEPROM_TC::setRampTimeEndTemp(uint32_t value) {
 void EEPROM_TC::setRampStartingTemp(float value) {
   eepromWriteFloat(RAMP_STARTING_TEMP_ADDRESS, value);
 }
-void EEPROM_TC::setPHSetType(uint16_t value) {
+void EEPROM_TC::setPhSetType(uint16_t value) {
   eepromWriteFloat(PH_SET_TYPE_ADDRESS, (float)value);
 }
 void EEPROM_TC::setTankID(uint16_t value) {

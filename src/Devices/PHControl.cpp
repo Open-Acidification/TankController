@@ -39,15 +39,15 @@ void PHControl::clearInstance() {
 PHControl::PHControl() {
   pinMode(PH_CONTROL_PIN, OUTPUT);
   digitalWrite(PH_CONTROL_PIN, TURN_SOLENOID_OFF);
-  targetPh = EEPROM_TC::instance()->getPH();
+  targetPh = EEPROM_TC::instance()->getPh();
   if (isnan(targetPh)) {
     targetPh = DEFAULT_PH;
-    EEPROM_TC::instance()->setPH(targetPh);
+    EEPROM_TC::instance()->setPh(targetPh);
   }
-  pHSetType = EEPROM_TC::instance()->getPHSetType();
+  pHSetType = EEPROM_TC::instance()->getPhSetType();
   if (pHSetType == 0xFFFFFFFF) {
     pHSetType = FLAT_TYPE;
-    EEPROM_TC::instance()->setPHSetType(pHSetType);
+    EEPROM_TC::instance()->setPhSetType(pHSetType);
   }
   switch (pHSetType) {
     case RAMP_TYPE:
@@ -59,7 +59,7 @@ PHControl::PHControl() {
         EEPROM_TC::instance()->setPhRampTimeStart(rampTimeStart);
       } else {
         rampTimeStart = EEPROM_TC::instance()->getPhRampTimeStart();
-        rampStartingPh = EEPROM_TC::instance()->getRampStartingPH();
+        rampStartingPh = EEPROM_TC::instance()->getRampStartingPh();
       }
       break;
     case SINE_TYPE:
@@ -85,7 +85,7 @@ void PHControl::setTargetPh(float newPh) {
     dtostrf(newPh, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
     serial(buffer);
     targetPh = newPh;
-    EEPROM_TC::instance()->setPH(newPh);
+    EEPROM_TC::instance()->setPh(newPh);
   }
 }
 
@@ -102,14 +102,14 @@ void PHControl::setRampDuration(float newPhRampDuration) {
     rampTimeEnd = rampTimeStart + (newPhRampDuration * 3600);
     rampStartingPh = PHProbe::instance()->getPh();
     pHSetType = phSetTypeTypes::RAMP_TYPE;
-    EEPROM_TC::instance()->setPHSetType(pHSetType);
+    EEPROM_TC::instance()->setPhSetType(pHSetType);
     EEPROM_TC::instance()->setPhRampTimeStart(rampTimeStart);
     EEPROM_TC::instance()->setPhRampTimeEnd(rampTimeEnd);
-    EEPROM_TC::instance()->setRampStartingPH(rampStartingPh);
+    EEPROM_TC::instance()->setRampStartingPh(rampStartingPh);
   } else {
     rampTimeEnd = 0;
     pHSetType = phSetTypeTypes::FLAT_TYPE;
-    EEPROM_TC::instance()->setPHSetType(pHSetType);
+    EEPROM_TC::instance()->setPhSetType(pHSetType);
     EEPROM_TC::instance()->setPhRampTimeEnd(rampTimeEnd);
     serial("set ramp time to 0");
   }
@@ -120,7 +120,7 @@ void PHControl::setSine(float sineAmplitude, float sinePeriodInHours) {
   amplitude = sineAmplitude;
   pHSetType = phSetTypeTypes::SINE_TYPE;
   sineStartTime = DateTime_TC::now().secondstime();
-  EEPROM_TC::instance()->setPHSetType(pHSetType);
+  EEPROM_TC::instance()->setPhSetType(pHSetType);
   EEPROM_TC::instance()->setPhSinePeriod(period);
   EEPROM_TC::instance()->setPhSineAmplitude(amplitude);
   EEPROM_TC::instance()->setPhSineStartTime(sineStartTime);

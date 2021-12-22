@@ -17,9 +17,9 @@ unittest(test) {
   assertEqual(0, 20.00 - EEPROM_TC::instance()->getTemp());
   assertEqual(20.00, TemperatureControl::instance()->getTargetTemperature());
   assertEqual(0, EEPROM_TC::instance()->getRampTimeEndTemp());
-  assertEqual(0, TemperatureControl::instance()->getRampTimeEnd());
+  assertEqual(0, TemperatureControl::instance()->getPhRampTimeEnd());
   assertEqual(0, EEPROM_TC::instance()->getRampTimeStartTemp());
-  assertEqual(0, TemperatureControl::instance()->getRampTimeStart());
+  assertEqual(0, TemperatureControl::instance()->getPhRampTimeStart());
   assertEqual("MainMenu", tc->stateName());
   SetTempSetPoint* test = new SetTempSetPoint(tc);
   tc->setNextState(test, true);

@@ -16,8 +16,8 @@ float SetPHSetPoint::getCurrentValue() {
   if (subState == 0) {
     return PHControl::instance()->getTargetPh();
   } else {
-    uint32_t rampTimeStart = PHControl::instance()->getRampTimeStart();
-    uint32_t rampTimeEnd = PHControl::instance()->getRampTimeEnd();
+    uint32_t rampTimeStart = PHControl::instance()->getPhRampTimeStart();
+    uint32_t rampTimeEnd = PHControl::instance()->getPhRampTimeEnd();
     return (rampTimeEnd - rampTimeStart) / 3600;
   }
 }

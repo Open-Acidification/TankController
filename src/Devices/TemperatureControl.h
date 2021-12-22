@@ -36,10 +36,10 @@ public:
   float getCurrentTemperatureTarget() {
     return currentTemperatureTarget;
   }
-  uint32_t getRampTimeStart() {
+  uint32_t getPhRampTimeStart() {
     return rampTimeStart;
   }
-  uint32_t getRampTimeEnd() {
+  uint32_t getPhRampTimeEnd() {
     return rampTimeEnd;
   }
   virtual bool isHeater();

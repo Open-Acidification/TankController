@@ -23,7 +23,6 @@ unittest(testOutput) {
   const char* line2c = line2.c_str();
   int githubFlag = strcmp("16 bytes        ", line2c);
   int theiaFlag = strcmp("64 bytes        ", line2c);
-//   assertEqual("16 bytes        ", display->getLines().at(1));
   assertTrue(githubFlag == 0 || theiaFlag == 0);
   // Return to mainMenu
   Keypad_TC::instance()->_getPuppet()->push_back('D');

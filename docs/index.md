@@ -34,7 +34,7 @@ As more features get added to the library, they should only be added when testin
     * Experiments target 10 to 15
     * Both chillers and heaters
   * Tank ID
-    * Tank id used in logging
+    * Tank ID used in logging
     * Basically a label for tank
     * Key for Google data sheets
     * sort/filter
@@ -46,7 +46,7 @@ As more features get added to the library, they should only be added when testin
     * Mac, IP Address
   * Reset screen
     * Allows for resetting for failed pixels
-  * See Tank ID and Log file name
+  * See Tank ID and Log filename
     * May need to review log process
   * See PID Constants
   * Tuning

@@ -1,0 +1,5 @@
+[tool.black]
+exclude = '^/GUI/pybind11/*|^vendor'
+
+[tool.isort]
+skip_glob = '*/GUI/pybind11/*'

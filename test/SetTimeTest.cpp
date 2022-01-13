@@ -9,11 +9,10 @@
 unittest(test) {
   LiquidCrystal_TC* lcd = LiquidCrystal_TC::instance();
   TankController* tc = TankController::instance();
-  SetTime* test = new SetTime(tc);
-  tc->setNextState(test, true);
   DateTime_TC june(2021, 06, 01, 20, 57, 15);
   june.setAsCurrent();
-
+  SetTime* test = new SetTime(tc);
+  tc->setNextState(test, true);
   DateTime_TC now = DateTime_TC::now();
   // the default time is the code compile time
   assertTrue(now.year() == 2021);

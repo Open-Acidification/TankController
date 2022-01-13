@@ -139,6 +139,7 @@ snprintf
 solonoids
 src
 stdlib
+strcmp
 strcpy
 strlen
 strncmp
@@ -149,6 +150,7 @@ sudo
 sys
 tankid
 testfile
+theia
 Thu
 timeinfo
 Tmp

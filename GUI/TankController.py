@@ -3,7 +3,6 @@
 import errno
 import os
 import shutil
-import time
 
 import libTC
 import wx

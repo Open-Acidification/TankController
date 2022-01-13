@@ -1,3 +1,5 @@
+# Tank Controller Library
+
 [![GitHub license](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://github.com/Open-Acidification/TankController/blob/master/LICENSE)
 [![OA Box version](https://img.shields.io/badge/TankController-v21.09.1-informational.svg)](https://github.com/Open-Acidification/TankController/releases)
 [![testing status](https://github.com/Open-Acidification/TankController/workflows/Arduino%20CI/badge.svg)](https://github.com/Open-Acidification/TankController/actions)
@@ -6,7 +8,6 @@
 [![All Contributors](https://img.shields.io/badge/all_contributors-17-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-# Tank Controller Library
 
 Arduino library for the Open Acidification pH Stat Controller
 
@@ -14,16 +15,20 @@ Arduino library for the Open Acidification pH Stat Controller
 
 ### Development
 
-*   Clone (or fork and clone if you might contribute to the project) this repository to the [Arduino Libraries directory](https://www.arduino.cc/en/Hacking/Libraries).
-*   Use [`scripts/install.sh`](scripts/install.sh) to do the initial install.
-*   After that use [`scripts/testAndBuild.sh`](scripts/testAndBuild.sh) to test.
-*   To build the GUI simulator, see [GUI/build.sh](GUI/build.sh).
+* Clone (or fork and clone if you might contribute to the project) this repository to the [Arduino Libraries directory](https://www.arduino.cc/en/Hacking/Libraries).
+* Use [`scripts/install.sh`](scripts/install.sh) to do the initial install.
+* After that use [`scripts/testAndBuild.sh`](scripts/testAndBuild.sh) to test.
+* To build the GUI simulator, see [GUI/build.sh](GUI/build.sh).
 
 ### Install
 
 To install onto an Arduino Mega2560 use the [Arduino IDE](https://www.arduino.cc/en/software).
 
-By default, the Arduino compiler links to a `printf` library that does not support printing floating point numbers. To get that feature (which we use!), add the following lines to `boards.txt` and use the Tools menu to select "`ARV printf Version: "Full printf"`. On macOS, the `boards.txt` is located at `~/Library/Arduino15/packages/arduino/hardware/avr/1.8.3`. For background see [here](https://forum.arduino.cc/t/no-sprintf-float-formatting-come-back-five-year/331790/6). (The `avr` directory should get created by a successful run of `scripts/testAndBuild.sh`.)
+By default, the Arduino compiler links to a `printf` library that does not support printing floating point numbers.
+To get that feature (which we use!), add the following lines to `boards.txt` and use the Tools menu to select "`ARV printf Version: "Full printf"`.
+On macOS, the `boards.txt` is located at `~/Library/Arduino15/packages/arduino/hardware/avr/1.8.3`.
+For background see [here](https://forum.arduino.cc/t/no-sprintf-float-formatting-come-back-five-year/331790/6).
+(The `avr` directory should get created by a successful run of `scripts/testAndBuild.sh`.)
 
 ```text
 menu.printf=AVR printf Version
@@ -41,10 +46,11 @@ mega.menu.printf.minimal.compiler.c.elf.extra_flags=-Wl,-u,vfprintf -lprintf_min
 To navigate through the menus, press 2, 4, 6, or 8 on the keypad.
 
 The following are "hidden" commands:
-*   From the 'SeeDeviceAddress' command:
-    *   'B' goes into an infinite loop that should trigger a reset by the watchdog timer in 8 seconds
-    *   'C' regenerates a new (random) MAC address that will take effect on the next restart
-*   On startup you can avoid the 60-second DHCP attempt by pressing any key
+
+* From the 'SeeDeviceAddress' command:
+  * 'B' goes into an infinite loop that should trigger a reset by the watchdog timer in 8 seconds
+  * 'C' regenerates a new (random) MAC address that will take effect on the next restart
+* On startup you can avoid the 60-second DHCP attempt by pressing any key
 
 ## Contributors ✨
 

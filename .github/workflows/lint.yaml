@@ -27,3 +27,12 @@ jobs:
           FILTER_REGEX_EXCLUDE: ./GUI/pybind11/*
           DEFAULT_BRANCH: master
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # The code need to be updated so these can be turned back on.
+          # The many require configuration setting updated for these tools.
+          # See #
+          VALIDATE_BASH: false
+          VALIDATE_CPP: false
+          VALIDATE_GITHUB_ACTIONS: false
+          VALIDATE_JSCPD: false
+          VALIDATE_MARKDOWN: false
+          VALIDATE_NATURAL_LANGUAGE: false

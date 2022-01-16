@@ -61,6 +61,7 @@ highpoint
 HIGHTHRESH
 homepage
 HSCROLL
+HSet
 http
 ifdef
 ine
@@ -105,6 +106,7 @@ OVUV
 pdf
 PGM
 PIDOn
+PIPESTATUS
 plugin
 png
 pragma
@@ -131,6 +133,7 @@ rtc
 rtd
 RTDIN
 RTDINLOW
+secondstime
 setpoint
 shutil
 sizeof
@@ -138,6 +141,7 @@ snprintf
 solonoids
 src
 stdlib
+strcmp
 strcpy
 strlen
 strncmp
@@ -148,6 +152,7 @@ sudo
 sys
 tankid
 testfile
+theia
 Thu
 timeinfo
 Tmp

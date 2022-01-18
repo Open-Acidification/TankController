@@ -38,7 +38,7 @@ void SeePh::loadPhSetType(uint16_t line) {
       break;
     }
     case SINE_TYPE: {
-      type = (char *)"Sine";
+      type = (char *)"sine";
       break;
     }
     default:
@@ -70,7 +70,7 @@ void SeePh::loadTypeVariables(uint16_t line) {
       break;
     }
     case SINE_TYPE: {
-      uint32_t period = PHControl::instance()->getPeriod();
+      float period = PHControl::instance()->getPeriod();
       float periodHours = period / 3600;
       float amplitude = PHControl::instance()->getAmplitude();
 

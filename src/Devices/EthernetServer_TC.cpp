@@ -3,6 +3,8 @@
 #include <avr/wdt.h>
 
 #include "DateTime_TC.h"
+#include "Devices/LiquidCrystal_TC.h"
+#include "Devices/Keypad_TC.h"
 #include "SD_TC.h"
 #include "Serial_TC.h"
 #include "TankController.h"
@@ -47,6 +49,46 @@ void EthernetServer_TC::echo() {
     client.stop();
     state = NOT_CONNECTED;
   }
+}
+
+void EthernetServer_TC::display() {
+  // First send headers
+  sendHeadersWithSize(36);
+  // Set the UI state to SetTime and fake june RTC 
+  LiquidCrystal_TC* lcd = LiquidCrystal_TC::instance();
+  // get currently displayed lines
+  std::vector<String> lines = LiquidCrystal_TC::instance()->getLines();
+  for (auto line : lines) {
+	  const char* clientString = line.c_str();
+	  client.write(clientString);
+	  client.write('\r');
+	  client.write('\n');
+  }
+  client.stop();
+  state = NOT_CONNECTED;
+}
+
+void EthernetServer_TC::keypress() {
+  int i = 24; // Where the character of the keypress is supposed to be
+  while (buffer[i] != ' ' && buffer[i] != '\0') {
+    ++i;
+  }
+  serial(F("keypress() found space or null at %d"), i);
+  if (i != 28) {
+	serial(F("value too long or short"));
+	sendBadRequestHeaders();
+  } else if (memcmp_P(buffer + i - 3, F("%22"), 3)) {
+    serial(F("improper termination of character sequence"));
+	sendBadRequestHeaders();
+  } else {
+	// We have a one character keypress
+	// States will handle invalid keypresses appropriately
+    Keypad* keypad = Keypad_TC::instance()->_getPuppet();
+    keypad->push_back(buffer[24]);
+    sendRedirectHeaders();
+  }
+  client.stop();
+  state = NOT_CONNECTED;
 }
 
 bool EthernetServer_TC::file() {
@@ -106,6 +148,19 @@ bool EthernetServer_TC::file() {
 void EthernetServer_TC::get() {
   if (memcmp_P(buffer + 4, F("/echo?value=%22"), 15) == 0) {
     echo();
+  } else if (memcmp_P(buffer + 4, F("/api/1/display"), 14) == 0) {
+	display();
+  } else if (!file()) {
+    // TODO: send an error response
+    serial(F("get \"%s\" not recognized!"), buffer + 4);
+    client.stop();
+    state = NOT_CONNECTED;
+  }
+}
+
+void EthernetServer_TC::put() {
+  if (memcmp_P(buffer + 4, F("/api/1/key?value=%22"), 20) == 0) {
+	keypress();
   } else if (!file()) {
     // TODO: send an error response
     serial(F("get \"%s\" not recognized!"), buffer + 4);
@@ -132,7 +187,10 @@ void EthernetServer_TC::loop() {
         if (memcmp_P(buffer, F("GET "), 4) == 0) {
           state = GET_REQUEST;
           break;
-        }
+        } else if (memcmp_P(buffer, F("PUT "), 4) == 0) {
+          state = PUT_REQUEST;
+          break;
+		}
         break;
       }
     }
@@ -140,6 +198,9 @@ void EthernetServer_TC::loop() {
       case GET_REQUEST:
         get();
         break;
+	  case PUT_REQUEST:
+	    put();
+		break;
       default:
         break;
     }
@@ -176,6 +237,23 @@ void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
   // blank line indicates end of headers
   client.write('\r');
   client.write('\n');
+}
+
+void EthernetServer_TC::sendRedirectHeaders() {
+  char buffer[70];
+  static const char response[] PROGMEM =
+      "HTTP/1.1 303 See Other\r\n"
+      "Location: localhost:80/api/1/display\r\n";
+  strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
+  client.write(buffer);
+}
+
+void EthernetServer_TC::sendBadRequestHeaders() {
+  char buffer[30];
+  static const char response[] PROGMEM =
+      "HTTP/1.1 400 Bad Request\r\n";
+  strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
+  client.write(buffer);
 }
 
 int EthernetServer_TC::weekday(int year, int month, int day) {

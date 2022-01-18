@@ -18,7 +18,12 @@ unittest(testOutput) {
 
   // Test the output
   assertEqual("Free Memory:    ", display->getLines().at(0));
-  assertEqual("16 bytes        ", display->getLines().at(1));
+  // Handle differences in GitHub vs Theia memory layout
+  String line2 = display->getLines().at(1);
+  const char* line2c = line2.c_str();
+  int githubFlag = strcmp("16 bytes        ", line2c);
+  int theiaFlag = strcmp("64 bytes        ", line2c);
+  assertTrue(githubFlag == 0 || theiaFlag == 0);
   // Return to mainMenu
   Keypad_TC::instance()->_getPuppet()->push_back('D');
   tc->loop();

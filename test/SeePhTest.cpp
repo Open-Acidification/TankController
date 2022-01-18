@@ -21,7 +21,7 @@ void setPhMeasurementTo(float value) {
 }
 
 unittest(TestVerticalScrollWithFlatSet) {
-  EEPROM_TC::instance()->setPh(7.00);             // targetPh
+  EEPROM_TC::instance()->setPh(7.00);  // targetPh
   // mock arduino restarting so values get read from eeprom
   PHControl::clearInstance();
   PHControl *controlSolenoid = PHControl::instance();
@@ -109,7 +109,7 @@ unittest(TestVerticalScrollWithRampSet) {
 }
 
 unittest(TestVerticalScrollWithSineSet) {
-  EEPROM_TC::instance()->setPh(7.00);             // targetPh
+  EEPROM_TC::instance()->setPh(7.00);  // targetPh
   PHControl::instance()->setSine(1.5, 0.125);
   // mock arduino restarting so values get read from eeprom
   PHControl::clearInstance();

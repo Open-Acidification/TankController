@@ -2,10 +2,7 @@
 
 #include <avr/wdt.h>
 
-#include <vector>
-
 #include "DateTime_TC.h"
-#include "Devices/Keypad_TC.h"
 #include "Devices/LiquidCrystal_TC.h"
 #include "SD_TC.h"
 #include "Serial_TC.h"
@@ -57,35 +54,33 @@ void EthernetServer_TC::display() {
   // First send headers
   sendHeadersWithSize(36);
   // get currently displayed lines
-  std::vector<String> lines = LiquidCrystal_TC::instance()->getLines();
-  for (auto line : lines) {
-    const char* clientString = line.c_str();
-    client.write(clientString);
-    client.write('\r');
-    client.write('\n');
-  }
+  client.write(LiquidCrystal_TC::instance()->getLine(0), 16);
+  client.write('\r');
+  client.write('\n');
+  client.write(LiquidCrystal_TC::instance()->getLine(1), 16);
+  client.write('\r');
+  client.write('\n');
   client.stop();
   state = NOT_CONNECTED;
 }
 
 void EthernetServer_TC::keypress() {
-  int i = 24;  // Where the character of the keypress is supposed to be
-  while (buffer[i] != ' ' && buffer[i] != '\0') {
-    ++i;
-  }
-  serial(F("keypress() found space or null at %d"), i);
-  if (i != 28) {
-    serial(F("value too long or short"));
-    sendBadRequestHeaders();
-  } else if (memcmp_P(buffer + i - 3, F("%22"), 3)) {
-    serial(F("improper termination of character sequence"));
+  int i = 21;  // Where the character of the keypress is supposed to be
+  if (buffer[22] != ' ') {
+    serial(F("value too long"));
     sendBadRequestHeaders();
   } else {
-    // We have a one character keypress
-    // States will handle invalid keypresses appropriately
-    Keypad* keypad = Keypad_TC::instance()->_getPuppet();
-    keypad->push_back(buffer[24]);
-    sendRedirectHeaders();
+    // We have a one character keypress, check to see if valid character
+    char key = buffer[21];
+    if (key >= '0' && key <= '9' || key >= 'A' && key <= 'D') {
+      // States will handle keypresses appropriately
+      TankController::instance()->setNextKey(buffer[24]);
+      sendRedirectHeaders();
+    } else {
+      serial(F("bad character"));
+      sendBadRequestHeaders();
+	  client.write(key);
+    }
   }
   client.stop();
   state = NOT_CONNECTED;
@@ -159,11 +154,11 @@ void EthernetServer_TC::get() {
 }
 
 void EthernetServer_TC::put() {
-  if (memcmp_P(buffer + 4, F("/api/1/key?value=%22"), 20) == 0) {
+  if (memcmp_P(buffer + 4, F("/api/1/key?value="), 17) == 0) {
     keypress();
   } else if (!file()) {
     // TODO: send an error response
-    serial(F("get \"%s\" not recognized!"), buffer + 4);
+    serial(F("put \"%s\" not recognized!"), buffer + 4);
     client.stop();
     state = NOT_CONNECTED;
   }

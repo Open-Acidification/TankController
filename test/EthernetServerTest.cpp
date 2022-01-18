@@ -1,8 +1,6 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#include <vector>
-
 #include "DateTime_TC.h"
 #include "Devices/EthernetServer_TC.h"
 #include "SetTime.h"

@@ -14,16 +14,15 @@ TankController *tc = TankController::instance();
 
 void setPhMeasurementTo(float value) {
   char buffer[10];
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("%i.%i\r"), (int)value,
-             (int)(value * 1000 + 0.5) % 1000);
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("%i.%i\r"), (int)value, (int)(value * 1000 + 0.5) % 1000);
   state->serialPort[1].dataIn = buffer; // the queue of data waiting to be read
-  tc->serialEvent1(); // fake interrupt to update the current pH reading
-  tc->loop();         // update the controls based on the current readings
+  tc->serialEvent1();                   // fake interrupt to update the current pH reading
+  tc->loop();                           // update the controls based on the current readings
 }
 
 unittest(TestVerticalScrollWithRamp) {
-  EEPROM_TC::instance()->setPh(7.00);            // targetPh
-  PHControl::instance()->setRampDuration(0.125); // 7.5 min.
+  EEPROM_TC::instance()->setPh(7.00);             // targetPh
+  PHControl::instance()->setRampDuration(0.125);  // 7.5 min.
   EEPROM_TC::instance()->setRampStartingPh(8.5);
   // mock arduino restarting so values get read from eeprom
   PHControl::clearInstance();
@@ -33,7 +32,7 @@ unittest(TestVerticalScrollWithRamp) {
 
   // Transition states
   assertEqual("MainMenu", tc->stateName());
-  tc->setNextState(test, true); // MainMenu -> SeePh nextState: Wait
+  tc->setNextState(test, true);  // MainMenu -> SeePh nextState: Wait
   tc->loop();
   assertEqual("SeePh", tc->stateName());
 

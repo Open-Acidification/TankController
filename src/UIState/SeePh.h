@@ -15,10 +15,15 @@ public:
     SINE_TYPE,
   };
 
-  SeePh(TankController *tc) : UIState(tc) {}
+  SeePh(TankController *tc) : UIState(tc) {
+  }
   void loop();
-  const __FlashStringHelper *name() { return F("SeePh"); }
-  void start() { startTime = millis(); }
+  const __FlashStringHelper *name() {
+    return F("SeePh");
+  }
+  void start() {
+    startTime = millis();
+  }
 
 private:
   void loadPhSetType(uint16_t line);

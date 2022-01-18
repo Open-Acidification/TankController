@@ -3,8 +3,8 @@
 
 #include <vector>
 
-#include "Devices/EthernetServer_TC.h"
 #include "DateTime_TC.h"
+#include "Devices/EthernetServer_TC.h"
 #include "SetTime.h"
 #include "TankController.h"
 /**
@@ -92,7 +92,7 @@ unittest(display) {
       "Content-Language: en-US\r\n"
       "Content-Length: 36\r\n"
       "\r\n"
-	  "Set Year (YYYY):\r\n"
+      "Set Year (YYYY):\r\n"
       "   2021->     0 \r\n";
   assertEqual(expectedResponse, response);
   client.stop();
@@ -144,14 +144,14 @@ unittest(keypress) {
       "HTTP/1.1 303 See Other\r\n"
       "Location: localhost:80/api/1/display\r\n";
   assertEqual(expectedResponse, response);
-  tc->loop(); // Loop to handle the UI press
-  server->setHasClientCalling(true); // Get new client since old one stopped
-//   delay(1);
+  tc->loop();                         // Loop to handle the UI press
+  server->setHasClientCalling(true);  // Get new client since old one stopped
+                                      //   delay(1);
   server->loop();
   client = server->getClient();
-  pBuffer = client.writeBuffer(); // Maybe unnecessary?
+  pBuffer = client.writeBuffer();  // Maybe unnecessary?
   const char secondRequest[] =
-	  "GET /api/1/display HTTP/1.1\r\n"
+      "GET /api/1/display HTTP/1.1\r\n"
       "Host: localhost:80\r\n"
       "Accept: text/plain;charset=UTF-8\r\n"
       "Accept-Encoding: identity\r\n"
@@ -173,14 +173,14 @@ unittest(keypress) {
       "Content-Language: en-US\r\n"
       "Content-Length: 36\r\n"
       "\r\n"
-	  "Set pH Set Point\r\n"
+      "Set pH Set Point\r\n"
       "  8.100->     0 \r\n";
   assertEqual(expectedSecondResponse, secondResponse);
   assertEqual("SetPHSetPoint", tc->stateName());
-  client.stop(); // Unnecessary since the response already stopped client?
-  server->loop();  // notify server that client stopped
-  delay(60L * 1000L); // idle timeout to avoid more keypress requests
-  tc->loop(); // changes state to MainMenu
+  client.stop();       // Unnecessary since the response already stopped client?
+  server->loop();      // notify server that client stopped
+  delay(60L * 1000L);  // idle timeout to avoid more keypress requests
+  tc->loop();          // changes state to MainMenu
   // now we should be back to the main menu
   assertEqual("MainMenu", tc->stateName());
 }
@@ -209,10 +209,9 @@ unittest(badRequest) {
     response.concat(pBuffer->front());
     pBuffer->pop_front();
   }
-  const char expectedResponse[] =
-      "HTTP/1.1 400 Bad Request\r\n";
+  const char expectedResponse[] = "HTTP/1.1 400 Bad Request\r\n";
   assertEqual(expectedResponse, response);
-  client.stop(); // Unnecessary since the response already stopped client?
+  client.stop();   // Unnecessary since the response already stopped client?
   server->loop();  // notify server that client stopped
 }
 

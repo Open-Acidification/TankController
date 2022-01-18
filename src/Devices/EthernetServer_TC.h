@@ -23,7 +23,7 @@ public:
     return "EthernetServer_TC";
   }
   serverState_t getState() const {
-	return state;
+    return state;
   }
   void loop();
 
@@ -35,7 +35,7 @@ private:
   EthernetClient client;
   serverState_t state = NOT_CONNECTED;
   char buffer[512];
-  int bufferContentsSize = 0;
+  unsigned int bufferContentsSize = 0;
   unsigned long connectedAt = 0;
 
   // instance methods: constructor

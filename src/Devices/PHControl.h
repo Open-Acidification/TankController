@@ -11,7 +11,7 @@ private:
   uint32_t lastWarnMS = 0;
   const uint16_t PH_CONTROL_PIN = 49;
   const uint16_t SOLENOID_OPENING_TIME = 100;
-  float targetPh;
+  float targetPh;                      // actual target
   float currentPHTarget;
   float rampStartingPh;
   uint32_t rampTimeStart;

@@ -60,8 +60,8 @@ void SeePh::loadTypeVariables(uint16_t line) {
       float timeLeft = endTime - currentTime;
       float timeLeftHours = timeLeft / 3600;
       if (timeLeft > 0) {
-        snprintf_P(buffer, sizeof(buffer), (PGM_P)F("hrs left: %i.%i"),
-                  (int)timeLeftHours, (int)(timeLeftHours * 1000) % 1000);
+        snprintf_P(buffer, sizeof(buffer), (PGM_P)F("hrs left: %i.%i"), (int)timeLeftHours,
+                   (int)(timeLeftHours * 1000) % 1000);
         LiquidCrystal_TC::instance()->writeLine(buffer, line);
       } else {
         snprintf_P(buffer, sizeof(buffer), (PGM_P)F("hrs left: %i.%i"), 0, 0);
@@ -74,9 +74,8 @@ void SeePh::loadTypeVariables(uint16_t line) {
       float periodHours = period / 3600;
       float amplitude = PHControl::instance()->getAmplitude();
 
-      snprintf_P(buffer, sizeof(buffer), (PGM_P)F("p=%i.%i a=%i.%i"),
-                (int)periodHours, (int)(periodHours * 1000) % 1000,
-                (int)amplitude, (int)(amplitude * 1000) % 1000);
+      snprintf_P(buffer, sizeof(buffer), (PGM_P)F("p=%i.%i a=%i.%i"), (int)periodHours,
+                 (int)(periodHours * 1000) % 1000, (int)amplitude, (int)(amplitude * 1000) % 1000);
       LiquidCrystal_TC::instance()->writeLine(buffer, line);
       break;
     }
@@ -88,15 +87,13 @@ void SeePh::loadTypeVariables(uint16_t line) {
 void SeePh::loadTarget(uint16_t line) {
   char buffer[17];
   float TargetPh = PHControl::instance()->getTargetPh();
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Target pH=%i.%i"), (int)TargetPh,
-             (int)(TargetPh * 1000) % 1000);
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Target pH=%i.%i"), (int)TargetPh, (int)(TargetPh * 1000) % 1000);
   LiquidCrystal_TC::instance()->writeLine(buffer, line);
 }
 
 void SeePh::loadCurrent(uint16_t line) {
   char buffer[17];
   float currentPh = PHProbe::instance()->getPh();
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Actual pH=%i.%i"),
-             (int)currentPh, (int)(currentPh * 1000) % 1000);
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Actual pH=%i.%i"), (int)currentPh, (int)(currentPh * 1000) % 1000);
   LiquidCrystal_TC::instance()->writeLine(buffer, line);
 }

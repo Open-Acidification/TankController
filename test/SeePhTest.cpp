@@ -15,9 +15,9 @@ TankController *tc = TankController::instance();
 void setPhMeasurementTo(float value) {
   char buffer[10];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("%i.%i\r"), (int)value, (int)(value * 1000 + 0.5) % 1000);
-  state->serialPort[1].dataIn = buffer; // the queue of data waiting to be read
-  tc->serialEvent1();                   // fake interrupt to update the current pH reading
-  tc->loop();                           // update the controls based on the current readings
+  state->serialPort[1].dataIn = buffer;  // the queue of data waiting to be read
+  tc->serialEvent1();                    // fake interrupt to update the current pH reading
+  tc->loop();                            // update the controls based on the current readings
 }
 
 unittest(TestVerticalScrollWithRamp) {

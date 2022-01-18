@@ -61,7 +61,7 @@ unittest(display) {
   TankController* tc = TankController::instance();
   LiquidCrystal_TC* lcd = LiquidCrystal_TC::instance();
   assertEqual("MainMenu", tc->stateName());
-  tc->loop(); // for mainmenu to idle
+  tc->loop();  // for main menu to idle
   const char request[] =
       "GET /api/1/display HTTP/1.1\r\n"
       "Host: localhost:80\r\n"

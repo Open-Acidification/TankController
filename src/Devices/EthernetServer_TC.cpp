@@ -79,7 +79,7 @@ void EthernetServer_TC::keypress() {
     } else {
       serial(F("bad character"));
       sendBadRequestHeaders();
-	  client.write(key);
+      client.write(key);
     }
   }
   client.stop();

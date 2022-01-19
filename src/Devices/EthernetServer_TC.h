@@ -7,7 +7,7 @@
 #include <Ethernet.h>
 #endif
 
-enum serverState_t { NOT_CONNECTED, READ_REQUEST, GET_REQUEST, PUT_REQUEST, HAS_REQUEST };
+enum serverState_t { NOT_CONNECTED, READ_REQUEST, GET_REQUEST, POST_REQUEST, HAS_REQUEST, BAD_REQUEST };
 
 /**
  * EthernetServer_TC provides wrapper for web server for TankController
@@ -51,5 +51,5 @@ private:
   void keypress();
   bool file();
   void get();
-  void put();
+  void post();
 };

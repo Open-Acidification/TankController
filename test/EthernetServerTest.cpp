@@ -104,7 +104,7 @@ unittest(keypress) {
   server->loop();
   client = server->getClient();
   const char request[] =
-      "PUT /api/1/key?value=2 HTTP/1.1\r\n"
+      "POST /api/1/key?value=2 HTTP/1.1\r\n"
       "Host: localhost:80\r\n"
       "Accept: text/plain;charset=UTF-8\r\n"
       "Accept-Encoding: identity\r\n"
@@ -113,7 +113,7 @@ unittest(keypress) {
   client.pushToReadBuffer(request);
   server->loop();
   deque<uint8_t>* pBuffer = client.writeBuffer();
-  assertTrue(pBuffer->size() == 62);
+  assertEqual(52, pBuffer->size());
   String response;
   while (!pBuffer->empty()) {
     response.concat(pBuffer->front());
@@ -121,10 +121,11 @@ unittest(keypress) {
   }
   const char expectedResponse[] =
       "HTTP/1.1 303 See Other\r\n"
-      "Location: localhost:80/api/1/display\r\n";
+      "Location: /api/1/display\r\n"
+      "\r\n";
   assertEqual(expectedResponse, response);
   tc->loop();  // Loop to handle the UI press
-  assertEqual("pH=0.000   8.100", lcd->getLines().at(0));
+  assertEqual("Change settings ", lcd->getLines().at(0));
   delay(60000);  // IDLE_TIMEOUT
   tc->loop();
   assertEqual("MainMenu", tc->stateName());
@@ -142,7 +143,7 @@ unittest(badRequest) {
   server->loop();
   client = server->getClient();
   const char request[] =
-      "PUT /api/1/key?value=foo HTTP/1.1\r\n"
+      "POST /api/1/key?value=foo HTTP/1.1\r\n"
       "Host: localhost:80\r\n"
       "Accept: text/plain;charset=UTF-8\r\n"
       "Accept-Encoding: identity\r\n"
@@ -151,13 +152,13 @@ unittest(badRequest) {
   client.pushToReadBuffer(request);
   server->loop();
   deque<uint8_t>* pBuffer = client.writeBuffer();
-  assertTrue(pBuffer->size() == 26);
+  assertTrue(pBuffer->size() == 28);
   String response;
   while (!pBuffer->empty()) {
     response.concat(pBuffer->front());
     pBuffer->pop_front();
   }
-  const char expectedResponse[] = "HTTP/1.1 400 Bad Request\r\n";
+  const char expectedResponse[] = "HTTP/1.1 400 Bad Request\r\n\r\n";
   assertEqual(expectedResponse, response);
   assertEqual(NOT_CONNECTED, server->getState());
   client.stop();

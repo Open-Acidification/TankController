@@ -65,21 +65,19 @@ void EthernetServer_TC::display() {
 }
 
 void EthernetServer_TC::keypress() {
-  int i = 21;  // Where the character of the keypress is supposed to be
-  if (buffer[22] != ' ') {
+  if (buffer[23] != ' ') {
     serial(F("value too long"));
     sendBadRequestHeaders();
   } else {
     // We have a one character keypress, check to see if valid character
-    char key = buffer[21];
-    if (key >= '0' && key <= '9' || key >= 'A' && key <= 'D') {
+    char key = buffer[22];
+    if (key == '#' || key == '*' || (key >= '0' && key <= '9') || (key >= 'A' && key <= 'D')) {
       // States will handle keypresses appropriately
-      TankController::instance()->setNextKey(buffer[24]);
+      TankController::instance()->setNextKey(key);
       sendRedirectHeaders();
     } else {
-      serial(F("bad character"));
+      serial(F("bad character: %c"), key);
       sendBadRequestHeaders();
-      client.write(key);
     }
   }
   client.stop();
@@ -148,17 +146,18 @@ void EthernetServer_TC::get() {
   } else if (!file()) {
     // TODO: send an error response
     serial(F("get \"%s\" not recognized!"), buffer + 4);
+    sendBadRequestHeaders();
     client.stop();
     state = NOT_CONNECTED;
   }
 }
 
-void EthernetServer_TC::put() {
-  if (memcmp_P(buffer + 4, F("/api/1/key?value="), 17) == 0) {
+void EthernetServer_TC::post() {
+  if (memcmp_P(buffer + 5, F("/api/1/key?value="), 17) == 0) {
     keypress();
   } else if (!file()) {
     // TODO: send an error response
-    serial(F("put \"%s\" not recognized!"), buffer + 4);
+    serial(F("put \"%s\" not recognized!"), buffer + 5);
     client.stop();
     state = NOT_CONNECTED;
   }
@@ -176,31 +175,36 @@ void EthernetServer_TC::loop() {
     while (state == READ_REQUEST && bufferContentsSize < sizeof(buffer) &&
            (next = client.read()) != -1) {  // Flawfinder: ignore
       buffer[bufferContentsSize++] = (char)(next & 0xFF);
-      if (bufferContentsSize > 1 && buffer[bufferContentsSize - 2] == '\r' && buffer[bufferContentsSize - 1] == '\n') {
-        buffer[bufferContentsSize - 2] = '\0';
+      if (bufferContentsSize > 3 && (memcmp_P(buffer + bufferContentsSize - 4, F("\r\n\r\n"), 4) == 0)) {
+        buffer[bufferContentsSize] = '\0';
         state = HAS_REQUEST;
         if (memcmp_P(buffer, F("GET "), 4) == 0) {
           state = GET_REQUEST;
           break;
-        } else if (memcmp_P(buffer, F("PUT "), 4) == 0) {
-          state = PUT_REQUEST;
+        } else if (memcmp_P(buffer, F("POST "), 5) == 0) {
+          state = POST_REQUEST;
+          break;
+        } else {
+          serial(F("Bad or unsupported request"));
+          sendBadRequestHeaders();
+          state = BAD_REQUEST;
           break;
         }
-        break;
       }
     }
     switch (state) {
       case GET_REQUEST:
         get();
         break;
-      case PUT_REQUEST:
-        put();
+      case POST_REQUEST:
+        post();
         break;
       default:
         break;
     }
   } else if (state != NOT_CONNECTED) {  // existing connection has been closed
     state = NOT_CONNECTED;
+    memset(buffer, 0, sizeof(buffer));
     bufferContentsSize = 0;
     client.stop();
     connectedAt = 0;
@@ -238,14 +242,15 @@ void EthernetServer_TC::sendRedirectHeaders() {
   char buffer[70];
   static const char response[] PROGMEM =
       "HTTP/1.1 303 See Other\r\n"
-      "Location: localhost:80/api/1/display\r\n";
+      "Location: /api/1/display\r\n"
+      "\r\n";
   strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
   client.write(buffer);
 }
 
 void EthernetServer_TC::sendBadRequestHeaders() {
   char buffer[30];
-  static const char response[] PROGMEM = "HTTP/1.1 400 Bad Request\r\n";
+  static const char response[] PROGMEM = "HTTP/1.1 400 Bad Request\r\n\r\n";
   strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
   client.write(buffer);
 }

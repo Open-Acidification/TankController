@@ -172,7 +172,7 @@ void EthernetServer_TC::loop() {
     }
     // read request
     int next;
-    while (state == READ_REQUEST && bufferContentsSize < sizeof(buffer) &&
+    while (state == READ_REQUEST && bufferContentsSize < sizeof(buffer) - 1 &&
            (next = client.read()) != -1) {  // Flawfinder: ignore
       buffer[bufferContentsSize++] = (char)(next & 0xFF);
       if (bufferContentsSize > 3 && (memcmp_P(buffer + bufferContentsSize - 4, F("\r\n\r\n"), 4) == 0)) {

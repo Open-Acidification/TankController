@@ -33,6 +33,7 @@ public:
     return F("");
   }
   virtual void start();
+  virtual int writeToBuffer(char* buffer, int size, int line){};
 
 protected:
   void setNextState(UIState* state);

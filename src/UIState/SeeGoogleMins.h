@@ -10,11 +10,12 @@ class SeeGoogleMins : public UIState {
 public:
   SeeGoogleMins(TankController* tc) : UIState(tc) {
   }
-  void start();
+  void start() override;
   const __FlashStringHelper* name() {
     return F("SeeGoogleMins");
   }
   const __FlashStringHelper* prompt() {
     return F("Google Mins:");
   };
+  int writeToBuffer(char*, int, int) override;
 };

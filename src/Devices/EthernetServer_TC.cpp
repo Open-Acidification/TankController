@@ -3,6 +3,7 @@
 #include <avr/wdt.h>
 
 #include "DateTime_TC.h"
+#include "Devices/JSONBuilder.h"
 #include "Devices/LiquidCrystal_TC.h"
 #include "SD_TC.h"
 #include "Serial_TC.h"
@@ -48,6 +49,19 @@ void EthernetServer_TC::echo() {
     client.stop();
     state = NOT_CONNECTED;
   }
+}
+
+void EthernetServer_TC::current() {
+  // get list of current values
+  JSONBuilder builder;
+  int size = builder.buildCurrentValues();
+  char* text = builder.bufferPtr();
+  // First send headers
+  sendHeadersWithSize(size);
+  // Write JSON file to client (will be null-terminated)
+  client.write(text);
+  client.stop();
+  state = NOT_CONNECTED;
 }
 
 void EthernetServer_TC::display() {
@@ -143,6 +157,8 @@ void EthernetServer_TC::get() {
     echo();
   } else if (memcmp_P(buffer + 4, F("/api/1/display"), 14) == 0) {
     display();
+  } else if (memcmp_P(buffer + 4, F("/api/1/current"), 14) == 0) {
+    current();
   } else if (!file()) {
     // TODO: send an error response
     serial(F("get \"%s\" not recognized!"), buffer + 4);

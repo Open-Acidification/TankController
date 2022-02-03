@@ -47,6 +47,7 @@ private:
   int weekday(int year, int month, int day);
   // instance methods: HTTP
   void echo();
+  void current();
   void display();
   void keypress();
   bool file();

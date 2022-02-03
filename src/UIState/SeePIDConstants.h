@@ -11,13 +11,14 @@ class SeePIDConstants : public UIState {
 public:
   SeePIDConstants(TankController* tc) : UIState(tc) {
   }
-  void loop();
+  void loop() override;
   const __FlashStringHelper* name() {
     return F("SeePIDConstants");
   }
-  void start() {
+  void start() override {
     startTime = millis();
   }
+  int writeToBuffer(char*, int, int) override;
 
 private:
   void loadKp(uint16_t line);

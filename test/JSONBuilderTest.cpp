@@ -18,7 +18,7 @@ unittest(current) {
   const char expected[] =
       "{\"IPAddress\":\"192.168.1.10\","
       "\"MAC\":\"90:A2:DA:80:7B:76\","
-      "\"FreeMemory\":\"64 bytes\","
+      "\"FreeMemory\":\"16 bytes\","
       "\"GoogleSheetInterval\":65535,"
       "\"LogFile\":\"\","
       "\"PHSlope\":\"\","

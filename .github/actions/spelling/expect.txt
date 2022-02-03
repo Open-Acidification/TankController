@@ -71,6 +71,7 @@ isdigit
 isnan
 itoa
 jgfoster
+JSON
 Kd
 Keymap
 Kp

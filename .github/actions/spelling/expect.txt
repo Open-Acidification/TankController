@@ -64,6 +64,7 @@ HSCROLL
 HSet
 http
 ifdef
+ih
 ine
 ino
 iostream

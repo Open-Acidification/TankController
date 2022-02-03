@@ -13,7 +13,7 @@ int SeeVersion::writeToBuffer(char* buffer, int size, int line) {
   if (size > 17) {
     return snprintf_P(buffer, size, (PGM_P)F("\"Version\":\"%s\""), version);
   } else {
-    snprintf_P(buffer, size, (PGM_P)F("%s"), version);
+    return snprintf_P(buffer, size, (PGM_P)F("%s"), version);
   }
 }
 void SeeVersion::start() {

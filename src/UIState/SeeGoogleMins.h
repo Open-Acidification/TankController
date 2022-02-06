@@ -17,5 +17,5 @@ public:
   const __FlashStringHelper* prompt() {
     return F("Google Mins:");
   };
-  int writeToBuffer(char*, int, int) override;
+  int writeToBuffer(char*, int, int);
 };

@@ -18,5 +18,5 @@ public:
   const __FlashStringHelper* prompt() {
     return F("Device address");
   };
-  int writeToBuffer(char*, int, int) override;
+  int writeToBuffer(char*, int, int);
 };

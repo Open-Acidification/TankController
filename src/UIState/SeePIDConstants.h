@@ -18,7 +18,7 @@ public:
   void start() override {
     startTime = millis();
   }
-  int writeToBuffer(char*, int, int) override;
+  int writeToBuffer(char*, int, int);
 
 private:
   void loadKp(uint16_t line);

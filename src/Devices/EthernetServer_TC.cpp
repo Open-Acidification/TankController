@@ -3,8 +3,7 @@
 #include <avr/wdt.h>
 
 #include "DateTime_TC.h"
-#include "Devices/JSONBuilder.h"
-#include "Devices/LiquidCrystal_TC.h"
+#include "Devices/Ethernet_TC.h"
 #include "SD_TC.h"
 #include "Serial_TC.h"
 #include "TankController.h"
@@ -29,7 +28,8 @@ EthernetServer_TC* EthernetServer_TC::instance() {
  */
 EthernetServer_TC::EthernetServer_TC(uint16_t port) : EthernetServer(port) {
   begin();
-  serial(F("Ethernet Server is listening on port 80"));
+  IPAddress IP = Ethernet_TC::instance()->getIP();
+  serial(F("Ethernet Server is listening on %i.%i.%i.%i:80"), IP[0], IP[1], IP[2], IP[3]);
 }
 
 void EthernetServer_TC::echo() {

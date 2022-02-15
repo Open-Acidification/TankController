@@ -2,7 +2,7 @@
 
 #include <Arduino.h>
 #ifdef MOCK_PINS_COUNT
-#include <Keypad_CI.h>
+#include "Keypad_CI.h"
 #else
 #include <Keypad.h>
 #endif

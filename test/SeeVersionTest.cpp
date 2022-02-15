@@ -1,10 +1,10 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#include "Keypad_TC.h"
-#include "LiquidCrystal_TC.h"
-#include "SeeVersion.h"
-#include "TankController.h"
+#include "../src/Devices/Keypad_TC.h"
+#include "../src/Devices/LiquidCrystal_TC.h"
+#include "../src/TankController.h"
+#include "../src/UIState/SeeVersion.h"
 
 unittest(testOutput) {
   TankController* tc = TankController::instance();
@@ -17,7 +17,7 @@ unittest(testOutput) {
   // Test the output
   tc->loop();
   assertEqual("Software Version", display->getLines().at(0));
-  assertEqual("21.09.1         ", display->getLines().at(1));
+  assertEqual("22.02.1         ", display->getLines().at(1));
   // Return to mainMenu
   Keypad_TC::instance()->_getPuppet()->push_back('D');
   tc->loop();

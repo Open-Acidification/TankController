@@ -6,7 +6,7 @@
  *
  * Device I/O:
  * This device has 5 pins: Vin (3V or 5V power supply, the same as the
- * microcontroler), GND (Ground), CLK (Clock), SDO (MOSI: Master Out Slave In),
+ * microcontroller), GND (Ground), CLK (Clock), SDO (MOSI: Master Out Slave In),
  * SDI (MISO: Master In Slave Out), and CS (Slave Select).
  *
  * Connection with the thermocouple:

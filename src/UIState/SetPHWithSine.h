@@ -1,17 +1,16 @@
 /**
- * SetTempSetPoint.h
+ * SetPHWithSine.h
  *
- * Set the target Temperature
+ * Set the target pH
  */
 #pragma once
-#include "Devices/EEPROM_TC.h"
 #include "NumberCollectorState.h"
 
-class SetTempSetPoint : public NumCollectorState {
+class SetPHWithSine : public NumCollectorState {
 public:
-  SetTempSetPoint(TankController* tc);
+  SetPHWithSine(TankController* tc);
   const __FlashStringHelper* name() {
-    return F("SetTempSetPoint");
+    return F("SetPHWithSine");
   }
   float getCurrentValue();
   uint16_t getCurrentValuePrecision() {
@@ -23,9 +22,9 @@ public:
   void setValue(float value);
 
 private:
-  static const uint16_t NUM_VALUES = 2;
+  static const uint16_t NUM_VALUES = 3;
   uint16_t subState = 0;
   float values[NUM_VALUES] = {0, 0};
-  const uint16_t precision[NUM_VALUES] = {2, 1};
+  const uint16_t precision[NUM_VALUES] = {3, 1};
   const __FlashStringHelper* prompts[NUM_VALUES];
 };

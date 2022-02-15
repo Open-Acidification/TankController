@@ -18,19 +18,34 @@ protected:
   const float DELTA = 0.05;
   uint32_t lastSwitchMS = 0;
   float targetTemperature;
+  float currentTemperatureTarget;
+  float rampStartingTemp;
+  uint32_t rampTimeStart;
+  uint32_t rampTimeEnd;
   TemperatureControl();
 
 public:
   virtual ~TemperatureControl() {
   }
   static TemperatureControl* instance();
+  static void clearInstance();
   static void enableHeater(bool flag);
   float getTargetTemperature() {
     return targetTemperature;
   }
+  float getCurrentTemperatureTarget() {
+    return currentTemperatureTarget;
+  }
+  uint32_t getPhRampTimeStart() {
+    return rampTimeStart;
+  }
+  uint32_t getPhRampTimeEnd() {
+    return rampTimeEnd;
+  }
   virtual bool isHeater();
   bool isOn();
   void setTargetTemperature(float newTemperature);
+  void setRampDuration(float newTempRampDuration);
   virtual void updateControl(float currentTemperature) = 0;
 };
 

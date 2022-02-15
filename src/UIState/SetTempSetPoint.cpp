@@ -6,11 +6,36 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/TemperatureControl.h"
 
-void SetTempSetPoint::setValue(float value) {
-  TemperatureControl::instance()->setTargetTemperature(value);
+SetTempSetPoint::SetTempSetPoint(TankController* tc) : NumCollectorState(tc) {
+  prompts[0] = F("Set Temperature");
+  prompts[1] = F("Set ramp hours:");
+}
 
-  char output[17];
-  snprintf_P(output, sizeof(output), (PGM_P)F("New Temp=%i.%i"), (int)value, (int)(value * 100 + 0.5) % 100);
-  LiquidCrystal_TC::instance()->writeLine(output, 1);
-  returnToMainMenu(3000);  // after 3-second delay
+float SetTempSetPoint::getCurrentValue() {
+  if (subState == 0) {
+    return TemperatureControl::instance()->getTargetTemperature();
+  } else {
+    uint32_t rampTimeStart = TemperatureControl::instance()->getPhRampTimeStart();
+    uint32_t rampTimeEnd = TemperatureControl::instance()->getPhRampTimeEnd();
+    return (rampTimeEnd - rampTimeStart) / 3600;
+  }
+}
+
+void SetTempSetPoint::setValue(float value) {
+  values[subState++] = value;
+  if (subState < NUM_VALUES) {
+    clear();
+    start();
+  } else {
+    TemperatureControl::instance()->setTargetTemperature(values[0]);
+    TemperatureControl::instance()->setRampDuration(values[1]);
+    char output0[17];
+    char output1[17];
+    snprintf_P(output0, sizeof(output0), (PGM_P)F("New Temp=%i.%i"), (int)values[0],
+               (int)(values[0] * 1000 + 0.5) % 1000);
+    snprintf_P(output1, sizeof(output1), (PGM_P)F("New ramp=%i.%i"), (int)values[1], (int)(values[1] * 1000) % 1000);
+    LiquidCrystal_TC::instance()->writeLine(output0, 0);
+    LiquidCrystal_TC::instance()->writeLine(output1, 1);
+    returnToMainMenu(3000);  // after 3-second delay
+  }
 }

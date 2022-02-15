@@ -61,6 +61,7 @@ highpoint
 HIGHTHRESH
 homepage
 HSCROLL
+HSet
 http
 ifdef
 ine
@@ -138,6 +139,7 @@ snprintf
 solonoids
 src
 stdlib
+strcmp
 strcpy
 strlen
 strncmp
@@ -148,6 +150,7 @@ sudo
 sys
 tankid
 testfile
+theia
 Thu
 timeinfo
 Tmp

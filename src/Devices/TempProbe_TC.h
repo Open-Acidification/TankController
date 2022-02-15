@@ -81,7 +81,10 @@
 #include "Arduino.h"
 
 #ifdef MOCK_PINS_COUNT
-#include <Adafruit_MAX31865_CI.h>
+#ifndef ARDUINO
+#define ARDUINO 100
+#endif
+#include "Adafruit_MAX31865_CI.h"
 #else
 #include <Adafruit_MAX31865.h>
 #endif

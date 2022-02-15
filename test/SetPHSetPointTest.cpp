@@ -12,7 +12,7 @@ unittest_setup() {
   GODMODE()->resetEEPROM();
 }
 
-unittest(test) {
+unittest(test_target_of_7_125_with_ramp_of_4_125) {
   LiquidCrystal_TC* lcd = LiquidCrystal_TC::instance();
   EEPROM_TC::instance()->setPh(8.125);
   EEPROM_TC::instance()->setPhRampTimeEnd(0);
@@ -59,6 +59,37 @@ unittest(test) {
   tc->loop();  // transition to MainMenu
   // now we should be back to the main menu
   assertEqual("MainMenu", tc->stateName());
+}
+
+unittest(test_target_of_14_with_ramp_of_0) {
+  TankController* tc = TankController::instance();
+  LiquidCrystal_TC* lcd = LiquidCrystal_TC::instance();
+  SetPHSetPoint* test = new SetPHSetPoint(tc);
+  tc->setNextState(test, true);
+
+  // setValue
+  test->setValue(14);
+  test->setValue(0);
+
+  // during the delay we showed the new value
+  assertEqual(14, PHControl::instance()->getTargetPh());
+  assertEqual(14, EEPROM_TC::instance()->getPh());
+  assertEqual(PHControl::instance()->phSetTypeTypes::FLAT_TYPE, EEPROM_TC::instance()->getPhSetType());
+  std::vector<String> lines = lcd->getLines();
+  assertEqual("New pH=14.0     ", lines[0]);
+  assertEqual("New ramp=0.0    ", lines[1]);
+
+  // complete cycle back to main menu
+  assertEqual("SetPHSetPoint", tc->stateName());
+  tc->loop();  // transition to Wait
+  assertEqual("Wait", tc->stateName());
+  delay(3000);
+  tc->loop();  // queue MainMenu to be next
+  tc->loop();  // transition to MainMenu
+  // now we should be back to the main menu
+  assertEqual("MainMenu", tc->stateName());
+  // note that the following shows only two digits after the decimal
+  assertEqual("pH=0.000   14.00", lcd->getLines().at(0));
 }
 
 unittest_main()

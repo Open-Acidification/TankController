@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "TC_util.h"
+#include "../TC_util.h"
 #include "UIState.h"
 
 class TankController;  // forward reference

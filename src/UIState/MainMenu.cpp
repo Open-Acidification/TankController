@@ -222,7 +222,7 @@ void MainMenu::selectSet() {
 // T=12.25 H 12.75
 void MainMenu::idle() {
   PHControl *phControl = PHControl::instance();
-  char output[17];
+  char output[20];
   output[0] = 'p';
   output[1] = 'H';
   output[2] = millis() / 1000 % 2 ? '=' : ' ';

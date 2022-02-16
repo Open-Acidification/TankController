@@ -6,7 +6,7 @@
  *
  * Device I/O:
  * This device has 5 pins: Vin (3V or 5V power supply, the same as the
- * microcontroler), GND (Ground), CLK (Clock), SDO (MOSI: Master Out Slave In),
+ * microcontroller), GND (Ground), CLK (Clock), SDO (MOSI: Master Out Slave In),
  * SDI (MISO: Master In Slave Out), and CS (Slave Select).
  *
  * Connection with the thermocouple:
@@ -81,7 +81,10 @@
 #include "Arduino.h"
 
 #ifdef MOCK_PINS_COUNT
-#include <Adafruit_MAX31865_CI.h>
+#ifndef ARDUINO
+#define ARDUINO 100
+#endif
+#include "Adafruit_MAX31865_CI.h"
 #else
 #include <Adafruit_MAX31865.h>
 #endif

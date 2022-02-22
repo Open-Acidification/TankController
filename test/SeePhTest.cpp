@@ -12,8 +12,8 @@
 
 GodmodeState *state = GODMODE();
 TankController *tc = TankController::instance();
-PHControl* controlSolenoid = PHControl::instance();
-LiquidCrystal_TC* lc = LiquidCrystal_TC::instance();
+PHControl *controlSolenoid = PHControl::instance();
+LiquidCrystal_TC *lc = LiquidCrystal_TC::instance();
 
 unittest_setup() {
   DateTime_TC january(2021, 1, 15, 1, 48, 24);
@@ -24,7 +24,6 @@ unittest_teardown() {
   DateTime_TC january(2021, 1, 15, 1, 48, 24);
   january.setAsCurrent();
 }
-
 
 void setPhMeasurementTo(float value) {
   char buffer[10];
@@ -99,7 +98,7 @@ unittest(TestVerticalScrollWithRampSet) {
   delay(2000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
   assertEqual("type: ramp      ", lc->getLines().at(0));
-  assertEqual("left: 0:7:469   ", lc->getLines().at(1));
+  assertEqual("left: 0:7:49    ", lc->getLines().at(1));
   delay(3000);
   float fakePh = controlSolenoid->getCurrentPhTarget();
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
@@ -108,7 +107,11 @@ unittest(TestVerticalScrollWithRampSet) {
   delay(3000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
   assertEqual("type: ramp      ", lc->getLines().at(0));
-  assertEqual("left: 0:7:463   ", lc->getLines().at(1));
+  assertEqual("left: 0:7:43    ", lc->getLines().at(1));
+  delay(1000);
+  setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
+  assertEqual("type: ramp      ", lc->getLines().at(0));
+  assertEqual("left: 0:7:42    ", lc->getLines().at(1));
 
   Keypad_TC::instance()->_getPuppet()->push_back('D');
   tc->loop();

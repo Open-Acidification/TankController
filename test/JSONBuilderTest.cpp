@@ -12,7 +12,6 @@ unittest(current) {
   // Fake DateTime
   DateTime_TC feb(2022, 2, 22, 20, 50, 00);
   feb.setAsCurrent();
-  TankController* tc = TankController::instance();
   JSONBuilder builder;
   int size = builder.buildCurrentValues();
   assertTrue(size > 200);

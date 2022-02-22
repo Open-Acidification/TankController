@@ -12,16 +12,15 @@
 
 int JSONBuilder::buildCurrentValues() {
   // Grab all necessary pieces
-  TankController* tc = TankController::instance();
   IPAddress IP = Ethernet_TC::instance()->getIP();
   byte* mac = Ethernet_TC::instance()->getMac();
   char logFilePath[30];
   SD_TC::instance()->todaysDataFileName(logFilePath, sizeof(logFilePath));
   char pHSlope[20];
   PHProbe::instance()->getSlope(pHSlope, sizeof(pHSlope));
-  double kp = PID_TC::instance()->getKp();
-  double ki = PID_TC::instance()->getKi();
-  double kd = PID_TC::instance()->getKd();
+  float kp = PID_TC::instance()->getKp();
+  float ki = PID_TC::instance()->getKi();
+  float kd = PID_TC::instance()->getKd();
   char PIDStatus[4];
   if (PHControl::instance()->getUsePID()) {
     snprintf_P(PIDStatus, sizeof(PIDStatus), (PGM_P)F("ON"));

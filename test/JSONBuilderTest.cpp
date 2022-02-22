@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
+#include "Devices/DateTime_TC.h"
 #include "Devices/JSONBuilder.h"
 #include "TankController.h"
 /**
@@ -8,19 +9,21 @@
  */
 
 unittest(current) {
+  // Fake DateTime
+  DateTime_TC feb(2022, 2, 22, 20, 50, 00);
+  feb.setAsCurrent();
   TankController* tc = TankController::instance();
   JSONBuilder builder;
   int size = builder.buildCurrentValues();
   assertTrue(size > 200);
   assertTrue(builder.bytesFull() == size);
   char* text = builder.bufferPtr();
-  // const char response[]
   const char expected[] =
       "{\"IPAddress\":\"192.168.1.10\","
       "\"MAC\":\"90:A2:DA:80:7B:76\","
       "\"FreeMemory\":\"16 bytes\","
       "\"GoogleSheetInterval\":65535,"
-      "\"LogFile\":\"\","
+      "\"LogFile\":\"20220222.csv\","
       "\"PHSlope\":\"\","
       "\"Kp\":100000.0,"
       "\"Ki\":0.0,"

@@ -18,5 +18,4 @@ public:
   const __FlashStringHelper* prompt() {
     return F("PH Slope:");
   };
-  int writeToBuffer(char*, int, int);
 };

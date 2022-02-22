@@ -17,5 +17,4 @@ public:
   const __FlashStringHelper* prompt() {
     return F("Software Version");
   };
-  int writeToBuffer(char*, int, int);
 };

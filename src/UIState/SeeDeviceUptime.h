@@ -14,5 +14,4 @@ public:
   const __FlashStringHelper* name() {
     return F("SeeDeviceUptime");
   }
-  int writeToBuffer(char*, int, int);
 };

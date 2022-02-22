@@ -17,5 +17,4 @@ public:
   const __FlashStringHelper* prompt() {
     return F("Current Log File");
   };
-  int writeToBuffer(char*, int, int);
 };

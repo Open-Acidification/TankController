@@ -17,5 +17,4 @@ public:
   const __FlashStringHelper* prompt() {
     return F("Tank ID:");
   };
-  int writeToBuffer(char*, int, int);
 };

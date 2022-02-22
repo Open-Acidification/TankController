@@ -12,5 +12,4 @@ public:
   const __FlashStringHelper* prompt() {
     return F("Free Memory:");
   };
-  int writeToBuffer(char*, int, int);
 };

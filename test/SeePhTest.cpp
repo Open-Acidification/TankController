@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
+#include "Devices/DateTime_TC.h"
 #include "EEPROM_TC.h"
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
@@ -11,6 +12,19 @@
 
 GodmodeState *state = GODMODE();
 TankController *tc = TankController::instance();
+PHControl* controlSolenoid = PHControl::instance();
+LiquidCrystal_TC* lc = LiquidCrystal_TC::instance();
+
+unittest_setup() {
+  DateTime_TC january(2021, 1, 15, 1, 48, 24);
+  january.setAsCurrent();
+}
+
+unittest_teardown() {
+  DateTime_TC january(2021, 1, 15, 1, 48, 24);
+  january.setAsCurrent();
+}
+
 
 void setPhMeasurementTo(float value) {
   char buffer[10];
@@ -21,11 +35,8 @@ void setPhMeasurementTo(float value) {
 }
 
 unittest(TestVerticalScrollWithFlatSet) {
-  EEPROM_TC::instance()->setPh(7.00);  // targetPh
-  // mock arduino restarting so values get read from eeprom
-  PHControl::clearInstance();
-  PHControl *controlSolenoid = PHControl::instance();
-  LiquidCrystal_TC *display = LiquidCrystal_TC::instance();
+  setPhMeasurementTo(7.00);
+  controlSolenoid->setTargetPh(7.00);
   SeePh *test = new SeePh(tc);
 
   // Transition states
@@ -38,25 +49,25 @@ unittest(TestVerticalScrollWithFlatSet) {
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
 
   // during the delay we cycle through displays
-  assertEqual("Target pH=7.0   ", display->getLines().at(0));
-  assertEqual("Actual pH=7.0   ", display->getLines().at(1));
+  assertEqual("Now Target Goal ", lc->getLines().at(0));
+  assertEqual("7.0 7.0 7.0     ", lc->getLines().at(1));
   delay(1000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
-  assertEqual("Target pH=7.0   ", display->getLines().at(0));
-  assertEqual("Actual pH=7.0   ", display->getLines().at(1));
+  assertEqual("Now Target Goal ", lc->getLines().at(0));
+  assertEqual("7.0 7.0 7.0     ", lc->getLines().at(1));
   delay(2000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
-  assertEqual("type: flat      ", display->getLines().at(0));
-  assertEqual("Actual pH=7.0   ", display->getLines().at(1));
+  assertEqual("type: flat      ", lc->getLines().at(0));
+  assertEqual("7.0 7.0 7.0     ", lc->getLines().at(1));
   delay(3000);
   float fakePh = controlSolenoid->getCurrentPhTarget();
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
-  assertEqual("Target pH=7.0   ", display->getLines().at(0));
-  assertEqual("Actual pH=7.0   ", display->getLines().at(1));
+  assertEqual("Now Target Goal ", lc->getLines().at(0));
+  assertEqual("7.0 7.0 7.0     ", lc->getLines().at(1));
   delay(3000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
-  assertEqual("type: flat      ", display->getLines().at(0));
-  assertEqual("Actual pH=7.0   ", display->getLines().at(1));
+  assertEqual("type: flat      ", lc->getLines().at(0));
+  assertEqual("7.0 7.0 7.0     ", lc->getLines().at(1));
 
   Keypad_TC::instance()->_getPuppet()->push_back('D');
   tc->loop();
@@ -64,13 +75,9 @@ unittest(TestVerticalScrollWithFlatSet) {
 }
 
 unittest(TestVerticalScrollWithRampSet) {
-  EEPROM_TC::instance()->setPh(7.00);             // targetPh
-  PHControl::instance()->setRampDuration(0.125);  // 7.5 min.
-  EEPROM_TC::instance()->setRampStartingPh(8.5);
-  // mock arduino restarting so values get read from eeprom
-  PHControl::clearInstance();
-  PHControl *controlSolenoid = PHControl::instance();
-  LiquidCrystal_TC *display = LiquidCrystal_TC::instance();
+  setPhMeasurementTo(8.50);
+  controlSolenoid->setTargetPh(7.00);
+  controlSolenoid->setRampDuration(0.125);
   SeePh *test = new SeePh(tc);
 
   // Transition states
@@ -83,25 +90,25 @@ unittest(TestVerticalScrollWithRampSet) {
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
 
   // during the delay we cycle through displays
-  assertEqual("Target pH=7.0   ", display->getLines().at(0));
-  assertEqual("Actual pH=8.500 ", display->getLines().at(1));
+  assertEqual("Now Target Goal ", lc->getLines().at(0));
+  assertEqual("8.50 8.500 7.0  ", lc->getLines().at(1));
   delay(1000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
-  assertEqual("Target pH=7.0   ", display->getLines().at(0));
-  assertEqual("Actual pH=8.500 ", display->getLines().at(1));
+  assertEqual("Now Target Goal ", lc->getLines().at(0));
+  assertEqual("8.50 8.500 7.0  ", lc->getLines().at(1));
   delay(2000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
-  assertEqual("type: ramp      ", display->getLines().at(0));
-  assertEqual("hrs left: 0.120 ", display->getLines().at(1));
+  assertEqual("type: ramp      ", lc->getLines().at(0));
+  assertEqual("left: 0:7:469   ", lc->getLines().at(1));
   delay(3000);
   float fakePh = controlSolenoid->getCurrentPhTarget();
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
-  assertEqual("Target pH=7.0   ", display->getLines().at(0));
-  assertEqual("Actual pH=8.490 ", display->getLines().at(1));
+  assertEqual("Now Target Goal ", lc->getLines().at(0));
+  assertEqual("8.49 8.490 7.0  ", lc->getLines().at(1));
   delay(3000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
-  assertEqual("type: ramp      ", display->getLines().at(0));
-  assertEqual("hrs left: 0.118 ", display->getLines().at(1));
+  assertEqual("type: ramp      ", lc->getLines().at(0));
+  assertEqual("left: 0:7:463   ", lc->getLines().at(1));
 
   Keypad_TC::instance()->_getPuppet()->push_back('D');
   tc->loop();
@@ -109,12 +116,9 @@ unittest(TestVerticalScrollWithRampSet) {
 }
 
 unittest(TestVerticalScrollWithSineSet) {
-  EEPROM_TC::instance()->setPh(7.00);  // targetPh
-  PHControl::instance()->setSine(1.5, 0.125);
-  // mock arduino restarting so values get read from eeprom
-  PHControl::clearInstance();
-  PHControl *controlSolenoid = PHControl::instance();
-  LiquidCrystal_TC *display = LiquidCrystal_TC::instance();
+  setPhMeasurementTo(8.50);
+  controlSolenoid->setTargetPh(7.00);
+  controlSolenoid->setSine(1.5, 0.125);
   SeePh *test = new SeePh(tc);
 
   // Transition states
@@ -127,25 +131,25 @@ unittest(TestVerticalScrollWithSineSet) {
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
 
   // during the delay we cycle through displays
-  assertEqual("Target pH=7.0   ", display->getLines().at(0));
-  assertEqual("Actual pH=7.0   ", display->getLines().at(1));
+  assertEqual("Now Target Goal ", lc->getLines().at(0));
+  assertEqual("7.0 7.0 7.0     ", lc->getLines().at(1));
   delay(1000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
-  assertEqual("Target pH=7.0   ", display->getLines().at(0));
-  assertEqual("Actual pH=7.0   ", display->getLines().at(1));
+  assertEqual("Now Target Goal ", lc->getLines().at(0));
+  assertEqual("7.0 7.0 7.0     ", lc->getLines().at(1));
   delay(2000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
-  assertEqual("type: sine      ", display->getLines().at(0));
-  assertEqual("p=0.125 a=1.500 ", display->getLines().at(1));
+  assertEqual("type: sine      ", lc->getLines().at(0));
+  assertEqual("p=0.125 a=1.500 ", lc->getLines().at(1));
   delay(3000);
   float fakePh = controlSolenoid->getCurrentPhTarget();
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
-  assertEqual("Target pH=7.0   ", display->getLines().at(0));
-  assertEqual("Actual pH=7.630 ", display->getLines().at(1));
+  assertEqual("Now Target Goal ", lc->getLines().at(0));
+  assertEqual("7.63 7.62 7.0   ", lc->getLines().at(1));
   delay(3000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
-  assertEqual("type: sine      ", display->getLines().at(0));
-  assertEqual("p=0.125 a=1.500 ", display->getLines().at(1));
+  assertEqual("type: sine      ", lc->getLines().at(0));
+  assertEqual("p=0.125 a=1.500 ", lc->getLines().at(1));
 
   Keypad_TC::instance()->_getPuppet()->push_back('D');
   tc->loop();

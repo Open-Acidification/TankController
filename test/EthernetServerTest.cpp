@@ -59,7 +59,7 @@ unittest(display) {
   server->loop();
   client = server->getClient();
   TankController* tc = TankController::instance();
-	tc->loop();  // for main menu to idle
+  tc->loop();  // for main menu to idle
   const char request[] =
       "GET /api/1/display HTTP/1.1\r\n"
       "Host: localhost:80\r\n"
@@ -133,7 +133,7 @@ unittest(keypress) {
 }
 
 unittest(current) {
-	// Fake DateTime
+  // Fake DateTime
   DateTime_TC feb(2022, 2, 22, 20, 50, 00);
   feb.setAsCurrent();
 

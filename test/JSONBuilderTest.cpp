@@ -19,7 +19,7 @@ unittest(current) {
   char* text = builder.bufferPtr();
   const char expected[] =
       "{\"IPAddress\":\"192.168.1.10\","
-      "\"MAC\":\"90:A2:DA:80:7B:76\","
+      "\"MAC\":\"90:A2:DA:FB:F6:F1\","
       "\"FreeMemory\":\"16 bytes\","
       "\"GoogleSheetInterval\":65535,"
       "\"LogFile\":\"20220222.csv\","

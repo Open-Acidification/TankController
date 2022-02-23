@@ -10,7 +10,7 @@ class SeeGoogleMins : public UIState {
 public:
   SeeGoogleMins(TankController* tc) : UIState(tc) {
   }
-  void start();
+  void start() override;
   const __FlashStringHelper* name() {
     return F("SeeGoogleMins");
   }

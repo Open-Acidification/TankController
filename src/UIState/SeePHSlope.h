@@ -10,8 +10,8 @@ class SeePHSlope : public UIState {
 public:
   SeePHSlope(TankController* tc) : UIState(tc) {
   }
-  void start();
-  void loop();
+  void start() override;
+  void loop() override;
   const __FlashStringHelper* name() {
     return F("SeePHSlope");
   }

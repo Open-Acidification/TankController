@@ -62,6 +62,8 @@ void EthernetServer_TC::current() {
   sendHeadersWithSize(size);
   // Write JSON file to client (will be null-terminated)
   client.write(text);
+	client.write('\r');
+  client.write('\n');
   client.stop();
   state = NOT_CONNECTED;
 }

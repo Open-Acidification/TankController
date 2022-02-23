@@ -59,9 +59,7 @@ unittest(display) {
   server->loop();
   client = server->getClient();
   TankController* tc = TankController::instance();
-  LiquidCrystal_TC* lcd = LiquidCrystal_TC::instance();
-  assertEqual("MainMenu", tc->stateName());
-  tc->loop();  // for main menu to idle
+	tc->loop();  // for main menu to idle
   const char request[] =
       "GET /api/1/display HTTP/1.1\r\n"
       "Host: localhost:80\r\n"
@@ -129,6 +127,59 @@ unittest(keypress) {
   delay(60000);  // IDLE_TIMEOUT
   tc->loop();
   assertEqual("MainMenu", tc->stateName());
+  assertEqual(NOT_CONNECTED, server->getState());
+  client.stop();
+  server->loop();
+}
+
+unittest(current) {
+	// Fake DateTime
+  DateTime_TC feb(2022, 2, 22, 20, 50, 00);
+  feb.setAsCurrent();
+
+  EthernetServer_TC* server = EthernetServer_TC::instance();
+  EthernetClient_CI client;
+  server->setHasClientCalling(true);
+  delay(1);
+  server->loop();
+  client = server->getClient();
+  const char request[] =
+      "GET /api/1/current HTTP/1.1\r\n"
+      "Host: localhost:80\r\n"
+      "Accept: text/plain;charset=UTF-8\r\n"
+      "Accept-Encoding: identity\r\n"
+      "Accept-Language: en-US\r\n"
+      "\r\n";
+  client.pushToReadBuffer(request);
+  server->loop();
+  deque<uint8_t>* pBuffer = client.writeBuffer();
+  assertTrue(pBuffer->size() > 100);
+  String response;
+  while (!pBuffer->empty()) {
+    response.concat(pBuffer->front());
+    pBuffer->pop_front();
+  }
+  const char expectedResponse[] =
+      "HTTP/1.1 200 OK\r\n"
+      "Content-Type: text/plain;charset=UTF-8\r\n"
+      "Content-Encoding: identity\r\n"
+      "Content-Language: en-US\r\n"
+      "Content-Length: 241\r\n"
+      "\r\n"
+      "{\"IPAddress\":\"192.168.1.10\","
+      "\"MAC\":\"90:A2:DA:FB:F6:F1\","
+      "\"FreeMemory\":\"16 bytes\","
+      "\"GoogleSheetInterval\":65535,"
+      "\"LogFile\":\"20220222.csv\","
+      "\"PHSlope\":\"\","
+      "\"Kp\":100000.0,"
+      "\"Ki\":0.0,"
+      "\"Kd\":0.0,"
+      "\"PID\":\"ON\","
+      "\"TankID\":0,"
+      "\"Uptime\":\"0d 0h 1m 1s\","
+      "\"Version\":\"22.02.2\"}\r\n";
+  assertEqual(expectedResponse, response);
   assertEqual(NOT_CONNECTED, server->getState());
   client.stop();
   server->loop();

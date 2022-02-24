@@ -61,8 +61,7 @@ void SeePh::loadTypeVariables(uint16_t line) {
       int timeLeftMinutes = timeLeft / 60;
       int timeLeftHours = timeLeft / 3600;
       int timeLeftSeconds = timeLeft % 60;
-      snprintf_P(buffer, sizeof(buffer), (PGM_P)F("left: %i:%i:%i"), timeLeftHours, timeLeftMinutes,
-timeLeftSeconds);
+      snprintf_P(buffer, sizeof(buffer), (PGM_P)F("left: %i:%i:%i"), timeLeftHours, timeLeftMinutes, timeLeftSeconds);
       LiquidCrystal_TC::instance()->writeLine(buffer, line);
       break;
     }

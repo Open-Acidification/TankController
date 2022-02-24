@@ -92,8 +92,9 @@ void SeePh::loadValues(uint16_t line) {
   float overallTargetPh = PHControl::instance()->getTargetPh();
   float currentTargetPh = PHControl::instance()->getCurrentPhTarget();
   float currentPh = PHProbe::instance()->getPh();
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("%i.%02i %i.%03i %i.%03i"), (int)currentPh, (int)(currentPh * 100  + 0.5) % 100,
-             (int)currentTargetPh, (int)(currentTargetPh * 1000 + 0.5) % 1000, (int)overallTargetPh,
-             (int)(overallTargetPh * 1000) % 1000);
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("%i.%02i %i.%03i %i.%03i"), (int)currentPh,
+             (int)(currentPh * 100  + 0.5) % 100,
+             (int)currentTargetPh, (int)(currentTargetPh * 1000 + 0.5) % 1000,
+             (int)overallTargetPh, (int)(overallTargetPh * 1000) % 1000);
   LiquidCrystal_TC::instance()->writeLine(buffer, line);
 }

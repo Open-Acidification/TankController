@@ -88,7 +88,7 @@ void TemperatureControl::setRampDuration(float newTempRampDuration) {
     dtostrf(newTempRampDuration, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
     serial(buffer);
     rampTimeStart = DateTime_TC::now().secondstime();
-    rampTimeEnd = rampTimeStart + (newTempRampDuration * 3600);
+    rampTimeEnd = rampTimeStart + (uint32_t)(newTempRampDuration * 3600);
     rampStartingTemp = TempProbe_TC::instance()->getRunningAverage();
     EEPROM_TC::instance()->setRampTimeStartTemp(rampTimeStart);
     EEPROM_TC::instance()->setRampTimeEndTemp(rampTimeEnd);

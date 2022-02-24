@@ -20,11 +20,6 @@ unittest_setup() {
   january.setAsCurrent();
 }
 
-unittest_teardown() {
-  DateTime_TC january(2021, 1, 15, 1, 48, 24);
-  january.setAsCurrent();
-}
-
 void setPhMeasurementTo(float value) {
   char buffer[10];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("%i.%03i\r"), (int)value, (int)(value * 1000 + 0.5) % 1000);
@@ -59,7 +54,6 @@ unittest(TestVerticalScrollWithFlatSet) {
   assertEqual("type: flat      ", lc->getLines().at(0));
   assertEqual("7.00 7.000 7.000", lc->getLines().at(1));
   delay(3000);
-  float fakePh = controlSolenoid->getCurrentPhTarget();
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
   assertEqual("Now Target Goal ", lc->getLines().at(0));
   assertEqual("7.00 7.000 7.000", lc->getLines().at(1));
@@ -76,7 +70,7 @@ unittest(TestVerticalScrollWithFlatSet) {
 unittest(TestVerticalScrollWithRampSet) {
   setPhMeasurementTo(8.50);
   controlSolenoid->setTargetPh(7.00);
-  controlSolenoid->setRampDuration(0.125);
+  controlSolenoid->setRampDuration(0.005);  // 18 seconds
   SeePh *test = new SeePh(tc);
 
   // Transition states
@@ -98,20 +92,31 @@ unittest(TestVerticalScrollWithRampSet) {
   delay(2000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
   assertEqual("type: ramp      ", lc->getLines().at(0));
-  assertEqual("left: 0:7:49    ", lc->getLines().at(1));
+  assertEqual("left: 0:0:15    ", lc->getLines().at(1));
   delay(3000);
-  float fakePh = controlSolenoid->getCurrentPhTarget();
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
   assertEqual("Now Target Goal ", lc->getLines().at(0));
-  assertEqual("8.49 8.490 7.000", lc->getLines().at(1));
+  assertEqual("8.25 8.250 7.000", lc->getLines().at(1));
   delay(3000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
   assertEqual("type: ramp      ", lc->getLines().at(0));
-  assertEqual("left: 0:7:43    ", lc->getLines().at(1));
+  assertEqual("left: 0:0:9     ", lc->getLines().at(1));
   delay(1000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
   assertEqual("type: ramp      ", lc->getLines().at(0));
-  assertEqual("left: 0:7:42    ", lc->getLines().at(1));
+  assertEqual("left: 0:0:8     ", lc->getLines().at(1));
+  delay(8000);
+  setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
+  assertEqual("Now Target Goal ", lc->getLines().at(0));
+  assertEqual("7.67 7.667 7.000", lc->getLines().at(1));
+  delay(3000);
+  tc->loop();
+  assertEqual("type: ramp      ", lc->getLines().at(0));
+  assertEqual("left: 0:0:0     ", lc->getLines().at(1));
+  delay(3000);
+  setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
+  assertEqual("Now Target Goal ", lc->getLines().at(0));
+  assertEqual("7.00 7.000 7.000", lc->getLines().at(1));
 
   Keypad_TC::instance()->_getPuppet()->push_back('D');
   tc->loop();

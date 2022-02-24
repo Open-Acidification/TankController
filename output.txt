@@ -1,0 +1,247 @@
+                           .                  __  ___
+                   _, ,_  _| , . * ._   _    /  `  | 
+                  (_| [ `(_] (_| | [ ) (_)   \__. _|_   v1.3.0
+
+Host OS...                                                                 linux
+Located arduino-cli binary...                          /home/project/arduino-cli
+Found libraries directory...                     /home/project/Arduino/libraries
+Environment variable CUSTOM_INIT_SCRIPT...                                    ''
+Environment variable USE_SUBDIR...                                            ''
+Installing library under test...                                               ✓
+Library installed at...           /home/project/Arduino/libraries/TankController
+Using pre-existing dependency of <library.properties>...          Adafruit BusIO
+Using pre-existing dependency of <library.properties>... Adafruit MAX31865 library
+Using pre-existing dependency of Adafruit MAX31865 library...     Adafruit BusIO
+Using pre-existing dependency of <library.properties>...                Ethernet
+Using pre-existing dependency of <library.properties>...           LiquidCrystal
+Using pre-existing dependency of <library.properties>...                  RTClib
+Using pre-existing dependency of RTClib...                             TinyWireM
+Using pre-existing dependency of <library.properties>...                  Keypad
+Using pre-existing dependency of <library.properties>...                     PID
+Using pre-existing dependency of <library.properties>...                   SdFat
+
+================================================================================
+Beginning the next phase of testing...                              Unit testing
+The set of compilers (1) isn't empty...                                        ✓
+Checking g++ version... 
+    Using built-in specs.
+    COLLECT_GCC=g++
+    COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper
+    OFFLOAD_TARGET_NAMES=nvptx-none
+    OFFLOAD_TARGET_DEFAULT=1
+    Target: x86_64-linux-gnu
+    Configured with: ../src/configure -v --with-pkgversion='Ubuntu 7.5.0-3ubuntu1~18.04' --with-bugurl=file:///usr/share/doc/gcc-7/README.Bugs --enable-languages=c,ada,c++,go,brig,d,fortran,objc,obj-c++ --prefix=/usr --with-gcc-major-version-only --program-suffix=-7 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-libmpx --enable-plugin --enable-default-pie --with-system-zlib --with-target-system-zlib --enable-objc-gc=auto --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu
+    Thread model: posix
+    gcc version 7.5.0 (Ubuntu 7.5.0-3ubuntu1~18.04) 
+...Checking g++ version                                                        ✓
+libasan availability for g++...                                             true
+Library conforms to Arduino library specification...                         1.5
+Requested unittest platform 'mega2560' is defined in 'platforms' YML...        ✓
+Configured platforms that match architectures in library.properties... 
+    mega2560
+...Configured platforms that match architectures in library.properties          
+Using pre-existing dependency of <unittest/libraries>...          Adafruit BusIO
+Using pre-existing dependency of <unittest/libraries>...       Adafruit MAX31865
+Using pre-existing dependency of Adafruit MAX31865...             Adafruit BusIO
+Using pre-existing dependency of <unittest/libraries>...     Arduino-PID-Library
+Using pre-existing dependency of <unittest/libraries>...                Ethernet
+Using pre-existing dependency of <unittest/libraries>...           LiquidCrystal
+Using pre-existing dependency of <unittest/libraries>...                  RTClib
+Using pre-existing dependency of RTClib...                             TinyWireM
+Using pre-existing dependency of <unittest/libraries>...                  Keypad
+Using pre-existing dependency of <unittest/libraries>...                   SdFat
+
+Build shared library with g++ for mega2560... 
+
+--------------------------------------------------------------------------------
+Unit testing BlinkTest.cpp with g++ for mega2560... 
+
+...Unit testing BlinkTest.cpp with g++ for mega2560                            ✓
+--------------------------------------------------------------------------------
+Unit testing DateTimeTest.cpp with g++ for mega2560... 
+
+...Unit testing DateTimeTest.cpp with g++ for mega2560                         ✓
+--------------------------------------------------------------------------------
+Unit testing EEPROMTest.cpp with g++ for mega2560... 
+
+...Unit testing EEPROMTest.cpp with g++ for mega2560                           ✓
+--------------------------------------------------------------------------------
+Unit testing EnablePIDTest.cpp with g++ for mega2560... 
+
+...Unit testing EnablePIDTest.cpp with g++ for mega2560                        ✓
+--------------------------------------------------------------------------------
+Unit testing EthernetServerTest.cpp with g++ for mega2560... 
+
+...Unit testing EthernetServerTest.cpp with g++ for mega2560                   ✓
+--------------------------------------------------------------------------------
+Unit testing EthernetTest.cpp with g++ for mega2560... 
+
+...Unit testing EthernetTest.cpp with g++ for mega2560                         ✓
+--------------------------------------------------------------------------------
+Unit testing KeypadTest.cpp with g++ for mega2560... 
+
+...Unit testing KeypadTest.cpp with g++ for mega2560                           ✓
+--------------------------------------------------------------------------------
+Unit testing LiquidCrystalTest.cpp with g++ for mega2560... 
+
+...Unit testing LiquidCrystalTest.cpp with g++ for mega2560                    ✓
+--------------------------------------------------------------------------------
+Unit testing MenuTest.cpp with g++ for mega2560... 
+
+...Unit testing MenuTest.cpp with g++ for mega2560                             ✗
+--------------------------------------------------------------------------------
+Unit testing NumberCollectorStateTest.cpp with g++ for mega2560... 
+
+...Unit testing NumberCollectorStateTest.cpp with g++ for mega2560             ✓
+--------------------------------------------------------------------------------
+Unit testing PHCalibrationHighTest.cpp with g++ for mega2560... 
+
+...Unit testing PHCalibrationHighTest.cpp with g++ for mega2560                ✓
+--------------------------------------------------------------------------------
+Unit testing PHCalibrationLowTest.cpp with g++ for mega2560... 
+
+...Unit testing PHCalibrationLowTest.cpp with g++ for mega2560                 ✓
+--------------------------------------------------------------------------------
+Unit testing PHCalibrationMidTest.cpp with g++ for mega2560... 
+
+...Unit testing PHCalibrationMidTest.cpp with g++ for mega2560                 ✓
+--------------------------------------------------------------------------------
+Unit testing PHControlTest.cpp with g++ for mega2560... 
+
+...Unit testing PHControlTest.cpp with g++ for mega2560                        ✓
+--------------------------------------------------------------------------------
+Unit testing PHProbeTest.cpp with g++ for mega2560... 
+
+...Unit testing PHProbeTest.cpp with g++ for mega2560                          ✓
+--------------------------------------------------------------------------------
+Unit testing PIDTest.cpp with g++ for mega2560... 
+
+...Unit testing PIDTest.cpp with g++ for mega2560                              ✓
+--------------------------------------------------------------------------------
+Unit testing PushingBoxTest.cpp with g++ for mega2560... 
+
+...Unit testing PushingBoxTest.cpp with g++ for mega2560                       ✓
+--------------------------------------------------------------------------------
+Unit testing SDTest.cpp with g++ for mega2560... 
+
+...Unit testing SDTest.cpp with g++ for mega2560                               ✓
+--------------------------------------------------------------------------------
+Unit testing SeeDeviceAddressTest.cpp with g++ for mega2560... 
+
+...Unit testing SeeDeviceAddressTest.cpp with g++ for mega2560                 ✓
+--------------------------------------------------------------------------------
+Unit testing SeeDeviceUptimeTest.cpp with g++ for mega2560... 
+
+...Unit testing SeeDeviceUptimeTest.cpp with g++ for mega2560                  ✓
+--------------------------------------------------------------------------------
+Unit testing SeeFreeMemoryTest.cpp with g++ for mega2560... 
+
+...Unit testing SeeFreeMemoryTest.cpp with g++ for mega2560                    ✗
+--------------------------------------------------------------------------------
+Unit testing SeeGoogleMinsTest.cpp with g++ for mega2560... 
+
+...Unit testing SeeGoogleMinsTest.cpp with g++ for mega2560                    ✓
+--------------------------------------------------------------------------------
+Unit testing SeeLogFileTest.cpp with g++ for mega2560... 
+
+...Unit testing SeeLogFileTest.cpp with g++ for mega2560                       ✓
+--------------------------------------------------------------------------------
+Unit testing SeePHSlopeTest.cpp with g++ for mega2560... 
+
+...Unit testing SeePHSlopeTest.cpp with g++ for mega2560                       ✓
+--------------------------------------------------------------------------------
+Unit testing SeePIDConstantsTest.cpp with g++ for mega2560... 
+
+...Unit testing SeePIDConstantsTest.cpp with g++ for mega2560                  ✓
+--------------------------------------------------------------------------------
+Unit testing SeeTankIDTest.cpp with g++ for mega2560... 
+
+...Unit testing SeeTankIDTest.cpp with g++ for mega2560                        ✓
+--------------------------------------------------------------------------------
+Unit testing SeeVersionTest.cpp with g++ for mega2560... 
+
+...Unit testing SeeVersionTest.cpp with g++ for mega2560                       ✓
+--------------------------------------------------------------------------------
+Unit testing SerialTest.cpp with g++ for mega2560... 
+
+...Unit testing SerialTest.cpp with g++ for mega2560                           ✓
+--------------------------------------------------------------------------------
+Unit testing SetCalibrationClearTest.cpp with g++ for mega2560... 
+
+...Unit testing SetCalibrationClearTest.cpp with g++ for mega2560              ✓
+--------------------------------------------------------------------------------
+Unit testing SetChillOrHeatTest.cpp with g++ for mega2560... 
+
+...Unit testing SetChillOrHeatTest.cpp with g++ for mega2560                   ✓
+--------------------------------------------------------------------------------
+Unit testing SetGoogleSheetIntervalTest.cpp with g++ for mega2560... 
+
+...Unit testing SetGoogleSheetIntervalTest.cpp with g++ for mega2560           ✓
+--------------------------------------------------------------------------------
+Unit testing SetKDTest.cpp with g++ for mega2560... 
+
+...Unit testing SetKDTest.cpp with g++ for mega2560                            ✓
+--------------------------------------------------------------------------------
+Unit testing SetKITest.cpp with g++ for mega2560... 
+
+...Unit testing SetKITest.cpp with g++ for mega2560                            ✓
+--------------------------------------------------------------------------------
+Unit testing SetKPTest.cpp with g++ for mega2560... 
+
+...Unit testing SetKPTest.cpp with g++ for mega2560                            ✓
+--------------------------------------------------------------------------------
+Unit testing SetPHSetPointTest.cpp with g++ for mega2560... 
+
+...Unit testing SetPHSetPointTest.cpp with g++ for mega2560                    ✓
+--------------------------------------------------------------------------------
+Unit testing SetTankIDTest.cpp with g++ for mega2560... 
+
+...Unit testing SetTankIDTest.cpp with g++ for mega2560                        ✓
+--------------------------------------------------------------------------------
+Unit testing SetTempSetPointTest.cpp with g++ for mega2560... 
+
+...Unit testing SetTempSetPointTest.cpp with g++ for mega2560                  ✓
+--------------------------------------------------------------------------------
+Unit testing SetTimeTest.cpp with g++ for mega2560... 
+
+...Unit testing SetTimeTest.cpp with g++ for mega2560                          ✓
+--------------------------------------------------------------------------------
+Unit testing TCLibTest.cpp with g++ for mega2560... 
+
+...Unit testing TCLibTest.cpp with g++ for mega2560                            ✓
+--------------------------------------------------------------------------------
+Unit testing TempProbe_TCTest.cpp with g++ for mega2560... 
+
+...Unit testing TempProbe_TCTest.cpp with g++ for mega2560                     ✓
+--------------------------------------------------------------------------------
+Unit testing TemperatureCalibrationTest.cpp with g++ for mega2560... 
+
+...Unit testing TemperatureCalibrationTest.cpp with g++ for mega2560           ✓
+--------------------------------------------------------------------------------
+Unit testing TemperatureControlTest.cpp with g++ for mega2560... 
+
+...Unit testing TemperatureControlTest.cpp with g++ for mega2560               ✓
+
+================================================================================
+Beginning the next phase of testing...           Compilation of example sketches
+
+Discovered example sketch...                                  TankController.ino
+Requested library example platform 'mega2560' is defined in 'platforms' YML... ✓
+Configured platforms that match architectures in library.properties... 
+    mega2560
+...Configured platforms that match architectures in library.properties          
+Using pre-existing dependency of <compile/libraries>...           Adafruit BusIO
+Using pre-existing dependency of <compile/libraries>...        Adafruit MAX31865
+Using pre-existing dependency of Adafruit MAX31865...             Adafruit BusIO
+Using pre-existing dependency of <compile/libraries>...      Arduino-PID-Library
+Using pre-existing dependency of <compile/libraries>...                 Ethernet
+Using pre-existing dependency of <compile/libraries>...            LiquidCrystal
+Using pre-existing dependency of <compile/libraries>...                   RTClib
+Using pre-existing dependency of RTClib...                             TinyWireM
+Using pre-existing dependency of <compile/libraries>...                   Keypad
+Using pre-existing dependency of <compile/libraries>...                    SdFat
+Compiling TankController.ino for arduino:avr:mega:cpu=atmega2560... 
+Sketch uses 74382 bytes (29%) of program storage space. Maximum is 253952 bytes.
+Global variables use 2190 bytes (26%) of dynamic memory, leaving 6002 bytes for local variables. Maximum is 8192 bytes.
+           ✓
+Failures: 2

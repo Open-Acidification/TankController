@@ -27,7 +27,7 @@ unittest_teardown() {
 
 void setPhMeasurementTo(float value) {
   char buffer[10];
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("%i.%i\r"), (int)value, (int)(value * 1000 + 0.5) % 1000);
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("%i.%03i\r"), (int)value, (int)(value * 1000 + 0.5) % 1000);
   state->serialPort[1].dataIn = buffer;  // the queue of data waiting to be read
   tc->serialEvent1();                    // fake interrupt to update the current pH reading
   tc->loop();                            // update the controls based on the current readings
@@ -49,24 +49,24 @@ unittest(TestVerticalScrollWithFlatSet) {
 
   // during the delay we cycle through displays
   assertEqual("Now Target Goal ", lc->getLines().at(0));
-  assertEqual("7.0 7.0 7.0     ", lc->getLines().at(1));
+  assertEqual("7.00 7.000 7.000", lc->getLines().at(1));
   delay(1000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
   assertEqual("Now Target Goal ", lc->getLines().at(0));
-  assertEqual("7.0 7.0 7.0     ", lc->getLines().at(1));
+  assertEqual("7.00 7.000 7.000", lc->getLines().at(1));
   delay(2000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
   assertEqual("type: flat      ", lc->getLines().at(0));
-  assertEqual("7.0 7.0 7.0     ", lc->getLines().at(1));
+  assertEqual("7.00 7.000 7.000", lc->getLines().at(1));
   delay(3000);
   float fakePh = controlSolenoid->getCurrentPhTarget();
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
   assertEqual("Now Target Goal ", lc->getLines().at(0));
-  assertEqual("7.0 7.0 7.0     ", lc->getLines().at(1));
+  assertEqual("7.00 7.000 7.000", lc->getLines().at(1));
   delay(3000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
   assertEqual("type: flat      ", lc->getLines().at(0));
-  assertEqual("7.0 7.0 7.0     ", lc->getLines().at(1));
+  assertEqual("7.00 7.000 7.000", lc->getLines().at(1));
 
   Keypad_TC::instance()->_getPuppet()->push_back('D');
   tc->loop();
@@ -90,11 +90,11 @@ unittest(TestVerticalScrollWithRampSet) {
 
   // during the delay we cycle through displays
   assertEqual("Now Target Goal ", lc->getLines().at(0));
-  assertEqual("8.50 8.500 7.0  ", lc->getLines().at(1));
+  assertEqual("8.50 8.500 7.000", lc->getLines().at(1));
   delay(1000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
   assertEqual("Now Target Goal ", lc->getLines().at(0));
-  assertEqual("8.50 8.500 7.0  ", lc->getLines().at(1));
+  assertEqual("8.50 8.500 7.000", lc->getLines().at(1));
   delay(2000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
   assertEqual("type: ramp      ", lc->getLines().at(0));
@@ -103,7 +103,7 @@ unittest(TestVerticalScrollWithRampSet) {
   float fakePh = controlSolenoid->getCurrentPhTarget();
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
   assertEqual("Now Target Goal ", lc->getLines().at(0));
-  assertEqual("8.49 8.490 7.0  ", lc->getLines().at(1));
+  assertEqual("8.49 8.490 7.000", lc->getLines().at(1));
   delay(3000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
   assertEqual("type: ramp      ", lc->getLines().at(0));
@@ -135,20 +135,19 @@ unittest(TestVerticalScrollWithSineSet) {
 
   // during the delay we cycle through displays
   assertEqual("Now Target Goal ", lc->getLines().at(0));
-  assertEqual("7.0 7.0 7.0     ", lc->getLines().at(1));
+  assertEqual("7.00 7.000 7.000", lc->getLines().at(1));
   delay(1000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
   assertEqual("Now Target Goal ", lc->getLines().at(0));
-  assertEqual("7.0 7.0 7.0     ", lc->getLines().at(1));
+  assertEqual("7.00 7.000 7.000", lc->getLines().at(1));
   delay(2000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
   assertEqual("type: sine      ", lc->getLines().at(0));
   assertEqual("p=0.125 a=1.500 ", lc->getLines().at(1));
   delay(3000);
-  float fakePh = controlSolenoid->getCurrentPhTarget();
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
   assertEqual("Now Target Goal ", lc->getLines().at(0));
-  assertEqual("7.63 7.62 7.0   ", lc->getLines().at(1));
+  assertEqual("7.06 7.063 7.000", lc->getLines().at(1));
   delay(3000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
   assertEqual("type: sine      ", lc->getLines().at(0));

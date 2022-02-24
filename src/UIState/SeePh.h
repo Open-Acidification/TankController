@@ -26,10 +26,10 @@ public:
   }
 
 private:
+  void loadHeader(uint16_t line);
   void loadPhSetType(uint16_t line);
   void loadTypeVariables(uint16_t line);
-  void loadCurrent(uint16_t line);
-  void loadTarget(uint16_t line);
+  void loadValues(uint16_t line);
 
   uint32_t startTime;
 };

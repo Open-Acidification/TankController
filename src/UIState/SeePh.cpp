@@ -61,9 +61,9 @@ void SeePh::loadTypeVariables(uint16_t line) {
       int timeLeftMinutes = timeLeft / 60;
       int timeLeftHours = timeLeft / 3600;
       int timeLeftSeconds = timeLeft % 60;
-        snprintf_P(buffer, sizeof(buffer), (PGM_P)F("left: %i:%i:%i"), timeLeftHours, timeLeftMinutes,
-                   timeLeftSeconds);
-        LiquidCrystal_TC::instance()->writeLine(buffer, line);
+      snprintf_P(buffer, sizeof(buffer), (PGM_P)F("left: %i:%i:%i"), timeLeftHours, timeLeftMinutes,
+                  timeLeftSeconds);
+      LiquidCrystal_TC::instance()->writeLine(buffer, line);
       break;
     }
     case SINE_TYPE: {
@@ -93,8 +93,7 @@ void SeePh::loadValues(uint16_t line) {
   float currentTargetPh = PHControl::instance()->getCurrentPhTarget();
   float currentPh = PHProbe::instance()->getPh();
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("%i.%02i %i.%03i %i.%03i"), (int)currentPh,
-             (int)(currentPh * 100  + 0.5) % 100,
-             (int)currentTargetPh, (int)(currentTargetPh * 1000 + 0.5) % 1000,
+             (int)(currentPh * 100  + 0.5) % 100, (int)currentTargetPh, (int)(currentTargetPh * 1000 + 0.5) % 1000,
              (int)overallTargetPh, (int)(overallTargetPh * 1000) % 1000);
   LiquidCrystal_TC::instance()->writeLine(buffer, line);
 }

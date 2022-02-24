@@ -67,7 +67,7 @@ float PID_TC::computeOutput(float target, float current) {
   set_point = static_cast<float>(target);
   input = static_cast<double>(current);
   pPID->Compute();
-  return static_cast<float>(static_cast<float>(output));
+  return static_cast<float>(output);
 }
 
 void PID_TC::logToSerial() {

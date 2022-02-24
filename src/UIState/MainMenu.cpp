@@ -31,12 +31,12 @@
 #include "TemperatureCalibration.h"
 
 MainMenu::MainMenu(TankController *tc) : UIState(tc) {
-  viewMenus[VIEW_GOOGLE_MINS] = F("View Google mins");
   viewMenus[VIEW_ADDRESS] = F("View IP and MAC");
   viewMenus[VIEW_FREE_MEMORY] = F("View free memory");
+  viewMenus[VIEW_GOOGLE_MINS] = F("View Google mins");
   viewMenus[VIEW_LOG_FILE] = F("View log file");
-  viewMenus[VIEW_PID] = F("View PID");
   viewMenus[VIEW_PH_SLOPE] = F("View pH slope");
+  viewMenus[VIEW_PID] = F("View PID");
   viewMenus[VIEW_TANK_ID] = F("View tank ID");
   viewMenus[VIEW_TIME] = F("View time");
   viewMenus[VIEW_VERSION] = F("View version");
@@ -45,16 +45,16 @@ MainMenu::MainMenu(TankController *tc) : UIState(tc) {
   setMenus[SET_CALIBRATION_CLEAR] = F("Clear pH calibra");
   setMenus[SET_CHILL_OR_HEAT] = F("Set chill/heat");
   setMenus[SET_GOOGLE_MINS] = F("Set Google mins");
-  setMenus[SET_PH] = F("Set pH target");
   setMenus[SET_KD] = F("Set KD");
   setMenus[SET_KI] = F("Set KI");
   setMenus[SET_KP] = F("Set KP");
+  setMenus[SET_PH] = F("Set pH target");
+  setMenus[SET_PH_WITH_SINE] = F("Set pH w sine");
   setMenus[SET_PID_ON_OFF] = F("PID on/off");
   setMenus[SET_TANK_ID] = F("Set Tank ID");
   setMenus[SET_TEMP_CALIBRATION] = F("Temp calibration");
   setMenus[SET_TEMPERATURE] = F("Set temperature");
   setMenus[SET_TIME] = F("Set date/time");
-  setMenus[SET_PH_WITH_SINE] = F("Set pH w sine");
 }
 
 /**
@@ -137,23 +137,23 @@ void MainMenu::down() {
 
 void MainMenu::selectView() {
   switch (level2) {
-    case VIEW_GOOGLE_MINS:
-      this->setNextState(static_cast<UIState *>(new SeeGoogleMins(tc)));
-      break;
     case VIEW_ADDRESS:
       this->setNextState(static_cast<UIState *>(new SeeDeviceAddress(tc)));
       break;
     case VIEW_FREE_MEMORY:
       this->setNextState(static_cast<UIState *>(new SeeFreeMemory(tc)));
       break;
+    case VIEW_GOOGLE_MINS:
+      this->setNextState(static_cast<UIState *>(new SeeGoogleMins(tc)));
+      break;
     case VIEW_LOG_FILE:
       this->setNextState(static_cast<UIState *>(new SeeLogFile(tc)));
       break;
-    case VIEW_PID:
-      this->setNextState(static_cast<UIState *>(new SeePIDConstants(tc)));
-      break;
     case VIEW_PH_SLOPE:
       this->setNextState(static_cast<UIState *>(new SeePHSlope(tc)));
+      break;
+    case VIEW_PID:
+      this->setNextState(static_cast<UIState *>(new SeePIDConstants(tc)));
       break;
     case VIEW_TANK_ID:
       this->setNextState(static_cast<UIState *>(new SeeTankID(tc)));
@@ -183,9 +183,6 @@ void MainMenu::selectSet() {
     case SET_GOOGLE_MINS:
       this->setNextState(static_cast<UIState *>(new SetGoogleSheetInterval(tc)));
       break;
-    case SET_PH:
-      this->setNextState(static_cast<UIState *>(new SetPHSetPoint(tc)));
-      break;
     case SET_KD:
       this->setNextState(static_cast<UIState *>(new SetKD(tc)));
       break;
@@ -194,6 +191,12 @@ void MainMenu::selectSet() {
       break;
     case SET_KP:
       this->setNextState(static_cast<UIState *>(new SetKP(tc)));
+      break;
+    case SET_PH:
+      this->setNextState(static_cast<UIState *>(new SetPHSetPoint(tc)));
+      break;
+    case SET_PH_WITH_SINE:
+      this->setNextState(static_cast<UIState *>(new SetPHWithSine(tc)));
       break;
     case SET_PID_ON_OFF:
       this->setNextState(static_cast<UIState *>(new EnablePID(tc)));
@@ -206,9 +209,6 @@ void MainMenu::selectSet() {
       break;
     case SET_TEMPERATURE:
       this->setNextState(static_cast<UIState *>(new SetTempSetPoint(tc)));
-      break;
-    case SET_PH_WITH_SINE:
-      this->setNextState(static_cast<UIState *>(new SetPHWithSine(tc)));
       break;
     case SET_TIME:
       this->setNextState(static_cast<UIState *>(new SetTime(tc)));

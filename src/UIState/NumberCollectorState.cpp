@@ -62,8 +62,6 @@ void NumCollectorState::printValue() {
   // The Arduino does not support variable widths, so we construct the format string at runtime!
   dtostrf(getCurrentValue(), 7, getCurrentValuePrecision(), strValue);
   snprintf_P(strValue + 7, 3, (PGM_P)F("->"));
-  // snprintf_P(format, sizeof(format), (PGM_P)F("%%7.%if->"), getCurrentValuePrecision());
-  // snprintf(strValue, sizeof(strValue), format, getCurrentValue());
 
   if (!hasDecimal) {
     // show user entry as an integer (no decimal yet)
@@ -77,8 +75,6 @@ void NumCollectorState::printValue() {
     // show user entry with appropriate precision (based on digits user has entered)
     uint16_t precision = log10(factor / 10);
     dtostrf(value, 7, precision, strValue + 9);
-    // snprintf_P(format, sizeof(format), (PGM_P)F("%s%%7.%if"), strValue, precision);
-    // snprintf(strValue, sizeof(strValue), format, value);
   }
   LiquidCrystal_TC::instance()->writeLine(strValue, 1);
 }

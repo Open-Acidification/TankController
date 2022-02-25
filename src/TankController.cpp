@@ -119,7 +119,9 @@ bool TankController::isInCalibration() {
  */
 void TankController::handleUI() {
   COUT("TankController::handleUI() - " << state->name());
-  char key = Keypad_TC::instance()->getKey();
+  // Get server key, otherwise check for Keypad key
+  char key = nextKey ? nextKey : Keypad_TC::instance()->getKey();
+  nextKey = 0;
   if (key == NO_KEY) {
     if (!lastKeypadTime) {
       // we have already reached an idle state, so don't do other checks

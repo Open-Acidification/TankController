@@ -31,7 +31,6 @@ unittest(Clear) {
   test.handleKey('5');
   assertEqual(90.5, test.getValue());
 }
-}
 
 unittest(A_Digit_NoDecimal) {
   TestNumCollectorState testNoDecimal(TankController::instance());

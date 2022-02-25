@@ -60,8 +60,8 @@ void NumCollectorState::backSpace() {
 void NumCollectorState::printValue() {
   char format[20], strValue[20];
   // The Arduino does not support variable widths, so we construct the format string at runtime!
-	dtostrf(getCurrentValue(), 7, getCurrentValuePrecision(), strValue);
-	snprintf_P(strValue + 7, 3, (PGM_P)F("->"));
+  dtostrf(getCurrentValue(), 7, getCurrentValuePrecision(), strValue);
+  snprintf_P(strValue + 7, 3, (PGM_P)F("->"));
   // snprintf_P(format, sizeof(format), (PGM_P)F("%%7.%if->"), getCurrentValuePrecision());
   // snprintf(strValue, sizeof(strValue), format, getCurrentValue());
 

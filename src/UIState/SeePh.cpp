@@ -11,8 +11,8 @@
 #include "TC_util.h"
 
 void SeePh::loop() {
-  int32_t elapsedSeconds = ((millis() - startTime) / 3000) % 2;
-  switch (elapsedSeconds) {
+  int32_t oddEven = ((millis() - startTime) / 3000) % 2;
+  switch (oddEven) {
     case 0:
       loadHeader(0);
       loadValues(1);
@@ -41,6 +41,9 @@ void SeePh::loadPhSetType(uint16_t line) {
       break;
     }
     default:
+    {
+      type = (char *)"????";
+    }
       break;
   }
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("type: %s"), type);
@@ -66,8 +69,8 @@ void SeePh::loadTypeVariables(uint16_t line) {
       break;
     }
     case SINE_TYPE: {
-      float period = PHControl::instance()->getPeriod();
-      float periodHours = period / 3600;
+      uint32_t period = PHControl::instance()->getPeriod();
+      float periodHours = period / 3600.0;
       float amplitude = PHControl::instance()->getAmplitude();
 
       snprintf_P(buffer, sizeof(buffer), (PGM_P)F("p=%i.%03i a=%i.%03i"), (int)periodHours,

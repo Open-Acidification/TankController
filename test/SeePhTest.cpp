@@ -29,8 +29,8 @@ void setPhMeasurementTo(float value) {
 }
 
 unittest(TestVerticalScrollWithFlatSet) {
-  setPhMeasurementTo(7.00);
-  controlSolenoid->setTargetPh(7.00);
+  setPhMeasurementTo(7.062);
+  controlSolenoid->setTargetPh(7.062);
   SeePh *test = new SeePh(tc);
 
   // Transition states
@@ -44,23 +44,23 @@ unittest(TestVerticalScrollWithFlatSet) {
 
   // during the delay we cycle through displays
   assertEqual("Now Target Goal ", lc->getLines().at(0));
-  assertEqual("7.00 7.000 7.000", lc->getLines().at(1));
+  assertEqual("7.06 7.062 7.062", lc->getLines().at(1));
   delay(1000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
   assertEqual("Now Target Goal ", lc->getLines().at(0));
-  assertEqual("7.00 7.000 7.000", lc->getLines().at(1));
+  assertEqual("7.06 7.062 7.062", lc->getLines().at(1));
   delay(2000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
   assertEqual("type: flat      ", lc->getLines().at(0));
-  assertEqual("7.00 7.000 7.000", lc->getLines().at(1));
+  assertEqual("7.06 7.062 7.062", lc->getLines().at(1));
   delay(3000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
   assertEqual("Now Target Goal ", lc->getLines().at(0));
-  assertEqual("7.00 7.000 7.000", lc->getLines().at(1));
+  assertEqual("7.06 7.062 7.062", lc->getLines().at(1));
   delay(3000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
   assertEqual("type: flat      ", lc->getLines().at(0));
-  assertEqual("7.00 7.000 7.000", lc->getLines().at(1));
+  assertEqual("7.06 7.062 7.062", lc->getLines().at(1));
 
   Keypad_TC::instance()->_getPuppet()->push_back('D');
   tc->loop();

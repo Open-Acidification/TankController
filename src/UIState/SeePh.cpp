@@ -40,11 +40,10 @@ void SeePh::loadPhSetType(uint16_t line) {
       type = (char *)"sine";
       break;
     }
-    default:
-    {
+    default: {
       type = (char *)"????";
-    }
       break;
+    }
   }
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("type: %s"), type);
   LiquidCrystal_TC::instance()->writeLine(buffer, line);

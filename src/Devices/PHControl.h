@@ -5,13 +5,13 @@
 class PHControl {
 private:
   // Class variable
-  static PHControl* _instance;
+  static PHControl *_instance;
   // instance variables
   uint32_t lastSwitchMS = 0;
   uint32_t lastWarnMS = 0;
   const uint16_t PH_CONTROL_PIN = 49;
   const uint16_t SOLENOID_OPENING_TIME = 100;
-  float targetPh;
+  float targetPh;  // actual target
   float currentPHTarget;
   float rampStartingPh;
   uint32_t rampTimeStart;
@@ -30,7 +30,7 @@ public:
     RAMP_TYPE,
     SINE_TYPE,
   };
-  static PHControl* instance();
+  static PHControl *instance();
   static void clearInstance();
   float getTargetPh() {
     return targetPh;

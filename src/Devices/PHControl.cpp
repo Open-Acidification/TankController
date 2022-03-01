@@ -99,7 +99,7 @@ void PHControl::setRampDuration(float newPhRampDuration) {
     dtostrf(newPhRampDuration, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
     serial(buffer);
     rampTimeStart = DateTime_TC::now().secondstime();
-    rampTimeEnd = rampTimeStart + (newPhRampDuration * 3600);
+    rampTimeEnd = rampTimeStart + (uint32_t)(newPhRampDuration * 3600);
     rampStartingPh = PHProbe::instance()->getPh();
     pHSetType = phSetTypeTypes::RAMP_TYPE;
     EEPROM_TC::instance()->setPhSetType(pHSetType);

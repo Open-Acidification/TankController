@@ -86,7 +86,7 @@ void PHProbe::serialEvent1() {
 void PHProbe::setTemperatureCompensation(float temperature) {
   char buffer[10];
   if (temperature > 0 && temperature < 100) {
-    snprintf_P(buffer, sizeof(buffer), (PGM_P)F("T,%i.%i\r"), (int)temperature, (int)(temperature * 100 + 0.5) % 100);
+    snprintf_P(buffer, sizeof(buffer), (PGM_P)F("T,%i.%02i\r"), (int)temperature, (int)(temperature * 100 + 0.5) % 100);
   } else {
     snprintf_P(buffer, sizeof(buffer), (PGM_P)F("T,20\r"));
   }
@@ -96,22 +96,22 @@ void PHProbe::setTemperatureCompensation(float temperature) {
 
 void PHProbe::setHighpointCalibration(float highpoint) {
   char buffer[17];
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,High,%i.%i\r"), (int)highpoint,
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,High,%i.%03i\r"), (int)highpoint,
              (int)(highpoint * 1000 + 0.5) % 1000);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
-  serial(F("PHProbe::setHighpointCalibration(%i.%i)"), (int)highpoint, (int)(highpoint * 1000) % 1000);
+  serial(F("PHProbe::setHighpointCalibration(%i.%03i)"), (int)highpoint, (int)(highpoint * 1000) % 1000);
 }
 
 void PHProbe::setLowpointCalibration(float lowpoint) {
   char buffer[16];
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,low,%i.%i\r"), (int)lowpoint, (int)(lowpoint * 1000 + 0.5) % 1000);
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,low,%i.%03i\r"), (int)lowpoint, (int)(lowpoint * 1000 + 0.5) % 1000);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
-  serial(F("PHProbe::setLowpointCalibration(%i.%i)"), (int)lowpoint, (int)(lowpoint * 1000) % 1000);
+  serial(F("PHProbe::setLowpointCalibration(%i.%03i)"), (int)lowpoint, (int)(lowpoint * 1000) % 1000);
 }
 
 void PHProbe::setMidpointCalibration(float midpoint) {
   char buffer[16];
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,mid,%i.%i\r"), (int)midpoint, (int)(midpoint * 1000 + 0.5) % 1000);
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,mid,%i.%03i\r"), (int)midpoint, (int)(midpoint * 1000 + 0.5) % 1000);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
-  serial(F("PHProbe::setMidpointCalibration(%i.%i)"), (int)midpoint, (int)(midpoint * 1000) % 1000);
+  serial(F("PHProbe::setMidpointCalibration(%i.%03i)"), (int)midpoint, (int)(midpoint * 1000) % 1000);
 }

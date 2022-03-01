@@ -75,7 +75,7 @@ void PushingBox::sendData() {
     snprintf_P(buffer, sizeof(buffer), (PGM_P)format, DevID, tankID);
   } else {
     static const char format[] PROGMEM =
-        "GET /pushingbox?devid=%s&tankid=%i&tempData=%i.%i&pHdata=%i.%i HTTP/1.1\r\n"
+        "GET /pushingbox?devid=%s&tankid=%i&tempData=%i.%02i&pHdata=%i.%03i HTTP/1.1\r\n"
         "Host: api.pushingbox.com\r\n"
         "Connection: close\r\n"
         "\r\n";

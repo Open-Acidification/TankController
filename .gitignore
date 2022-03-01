@@ -22,7 +22,6 @@ arduino-cli.yaml
 *.elf
 *.eep
 libraries
-output.txt
 stdout.txt
 stderr.txt
 

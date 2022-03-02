@@ -15,6 +15,23 @@ unittest(Edge_Case) {
   assertEqual(90.25, test.getValue());
 }
 
+unittest(Clear) {
+  TestNumCollectorState test(TankController::instance());
+  test.handleKey('9');
+  test.handleKey('0');
+  test.handleKey('*');
+  test.handleKey('2');
+  test.handleKey('C');
+  assertEqual(0, test.getValue());
+  test.handleKey('9');
+  test.handleKey('0');
+  test.handleKey('*');
+  test.handleKey('2');
+  test.handleKey('B');
+  test.handleKey('5');
+  assertEqual(90.5, test.getValue());
+}
+
 unittest(A_Digit_NoDecimal) {
   TestNumCollectorState testNoDecimal(TankController::instance());
   testNoDecimal.handleKey('1');

@@ -3,7 +3,7 @@
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "Keypad_TC.h"
-#include "SetCalibrationClear.h"
+#include "SetPHCalibClear.h"
 #include "TankController.h"
 
 // globals for the singletons used in every test
@@ -18,7 +18,7 @@ void enterKey(char key) {
 }
 
 unittest(test) {
-  SetCalibrationClear* test = new SetCalibrationClear(tc);
+  SetPHCalibClear* test = new SetPHCalibClear(tc);
   tc->setNextState(test, true);
   enterKey('A');
   std::vector<String> lines2 = lc->getLines();

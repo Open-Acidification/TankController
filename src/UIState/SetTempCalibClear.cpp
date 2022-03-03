@@ -1,16 +1,16 @@
 /**
  * SetCalibrationClear.cpp
  */
-#include "SetCalibrationClear.h"
+#include "SetTempCalibClear.h"
 
 #include "Devices/LiquidCrystal_TC.h"
-#include "Devices/PHProbe.h"
+#include "Devices/TempProbe_TC.h"
 
-void SetCalibrationClear::handleKey(char key) {
+void SetTempCalibClear::handleKey(char key) {
   switch (key) {
     case 'A':  // Save (clear calibration)
-      PHProbe::instance()->clearCalibration();
-      LiquidCrystal_TC::instance()->writeLine(F("Cleared pH Calib"), 1);
+      TempProbe_TC::instance()->clearCorrection();
+      LiquidCrystal_TC::instance()->writeLine(F("Cleared TempCali"), 1);
       returnToMainMenu(3000);
       break;
     case 'D':  // Don't save (cancel)

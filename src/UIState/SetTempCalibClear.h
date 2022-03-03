@@ -1,20 +1,20 @@
 /**
- * SetCalibrationClear.h
+ * SetTempCalibClear.h
  *
- * Clear pH Calibration
+ * Clear Temperature Calibration
  */
 #pragma once
 #include "UIState.h"
 
 class SetCalibrationClear : public UIState {
 public:
-  SetCalibrationClear(TankController* tc) : UIState(tc) {
+  SetTempCalibClear(TankController* tc) : UIState(tc) {
   }
   void handleKey(char key);
   const __FlashStringHelper* name() {
-    return F("SetCalibrationClear");
+    return F("SetTempCalibClear");
   }
   const __FlashStringHelper* prompt() {
-    return F("A: Clear pH Cali");
+    return F("A: Clear TempCal");
   };
 };

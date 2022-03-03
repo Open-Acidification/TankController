@@ -17,12 +17,12 @@
 #include "SeePIDConstants.h"
 #include "SeeTankID.h"
 #include "SeeVersion.h"
-#include "SetCalibrationClear.h"
 #include "SetChillOrHeat.h"
 #include "SetGoogleSheetInterval.h"
 #include "SetKD.h"
 #include "SetKI.h"
 #include "SetKP.h"
+#include "SetPHCalibClear.h"
 #include "SetPHSetPoint.h"
 #include "SetPHWithSine.h"
 #include "SetTankID.h"
@@ -42,7 +42,8 @@ MainMenu::MainMenu(TankController *tc) : UIState(tc) {
   viewMenus[VIEW_VERSION] = F("View version");
 
   setMenus[SET_CALIBRATION] = F("pH calibration");
-  setMenus[SET_CALIBRATION_CLEAR] = F("Clear pH calibra");
+  setMenus[SET_PH_CALIBRATION_CLEAR] = F("Clear pH calibra");
+  setMenus[SET_TEMP_CALIBRATION_CLEAR] = F("Clear Temp calib");
   setMenus[SET_CHILL_OR_HEAT] = F("Set chill/heat");
   setMenus[SET_GOOGLE_MINS] = F("Set Google mins");
   setMenus[SET_KD] = F("Set KD");
@@ -174,8 +175,11 @@ void MainMenu::selectSet() {
     case SET_CALIBRATION:
       this->setNextState(static_cast<UIState *>(new PHCalibrationMid(tc)));
       break;
-    case SET_CALIBRATION_CLEAR:
-      this->setNextState(static_cast<UIState *>(new SetCalibrationClear(tc)));
+    case SET_PH_CALIBRATION_CLEAR:
+      this->setNextState(static_cast<UIState *>(new SetPHCalibClear(tc)));
+      break;
+    case SET_TEMP_CALIBRATION_CLEAR:
+      this->setNextState(static_cast<UIState *>(new SetPHCalibClear(tc)));
       break;
     case SET_CHILL_OR_HEAT:
       this->setNextState(static_cast<UIState *>(new SetChillOrHeat(tc)));

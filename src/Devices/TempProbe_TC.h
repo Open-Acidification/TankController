@@ -117,6 +117,7 @@ public:
   }
 
   void setCorrection(float value);
+  void clearCorrection();
 
 #ifdef MOCK_PINS_COUNT
   // set a temperature in the mock

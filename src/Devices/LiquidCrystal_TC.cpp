@@ -49,7 +49,7 @@ void LiquidCrystal_TC::splashScreen(const char* version) {
 void LiquidCrystal_TC::writeLine(const char* text, uint16_t line) {
   line = line % 2;
   setCursor(0, line);
-  char result[17];
+  char* result = _lines[line];
   bool moreText = true;
   for (size_t i = 0; i < 16; i++) {
     if (moreText && text[i] == '\0') {

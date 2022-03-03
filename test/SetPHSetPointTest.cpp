@@ -76,8 +76,8 @@ unittest(test_target_of_14_with_ramp_of_0) {
   assertEqual(14, EEPROM_TC::instance()->getPh());
   assertEqual(PHControl::instance()->phSetTypeTypes::FLAT_TYPE, EEPROM_TC::instance()->getPhSetType());
   std::vector<String> lines = lcd->getLines();
-  assertEqual("New pH=14.0     ", lines[0]);
-  assertEqual("New ramp=0.0    ", lines[1]);
+  assertEqual("New pH=14.000   ", lines[0]);
+  assertEqual("New ramp=0.000  ", lines[1]);
 
   // complete cycle back to main menu
   assertEqual("SetPHSetPoint", tc->stateName());

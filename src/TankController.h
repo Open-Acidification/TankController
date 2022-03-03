@@ -26,6 +26,9 @@ public:
   void setup();
   const __FlashStringHelper* stateName();
   const char* version();
+  void setNextKey(char value) {
+    nextKey = value;
+  }
 
 private:
   // class variables
@@ -36,6 +39,7 @@ private:
   UIState* state = nullptr;
   UIState* nextState = nullptr;
   uint32_t lastKeypadTime = 0;
+  char nextKey = 0;
 
   // instance methods
   TankController();

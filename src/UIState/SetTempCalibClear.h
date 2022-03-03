@@ -6,7 +6,7 @@
 #pragma once
 #include "UIState.h"
 
-class SetCalibrationClear : public UIState {
+class SetTempCalibClear : public UIState {
 public:
   SetTempCalibClear(TankController* tc) : UIState(tc) {
   }

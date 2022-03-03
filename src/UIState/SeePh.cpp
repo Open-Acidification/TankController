@@ -84,7 +84,7 @@ void SeePh::loadTypeVariables(uint16_t line) {
 
 void SeePh::loadHeader(uint16_t line) {
   char buffer[17];
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Now Target Goal"));
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Now  Next  Goal"));
   LiquidCrystal_TC::instance()->writeLine(buffer, line);
 }
 

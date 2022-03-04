@@ -26,6 +26,7 @@
 #include "SetPHSetPoint.h"
 #include "SetPHWithSine.h"
 #include "SetTankID.h"
+#include "SetTempCalibClear.h"
 #include "SetTempSetPoint.h"
 #include "SetTime.h"
 #include "TemperatureCalibration.h"
@@ -179,7 +180,7 @@ void MainMenu::selectSet() {
       this->setNextState(static_cast<UIState *>(new SetPHCalibClear(tc)));
       break;
     case SET_TEMP_CALIBRATION_CLEAR:
-      this->setNextState(static_cast<UIState *>(new SetPHCalibClear(tc)));
+      this->setNextState(static_cast<UIState *>(new SetTempCalibClear(tc)));
       break;
     case SET_CHILL_OR_HEAT:
       this->setNextState(static_cast<UIState *>(new SetChillOrHeat(tc)));

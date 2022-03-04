@@ -22,7 +22,7 @@ unittest(test) {
   tc->setNextState(test, true);
   enterKey('A');
   std::vector<String> lines2 = lc->getLines();
-  assertEqual("Cleared TempCal", lines2[1]);
+  assertEqual("Cleared TempCali", lines2[1]);
   assertEqual("Wait", tc->stateName());
   delay(3000);
   tc->loop();  // queue MainMenu to be next

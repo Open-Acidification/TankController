@@ -43,11 +43,11 @@ unittest(TestVerticalScrollWithFlatSet) {
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
 
   // during the delay we cycle through displays
-  assertEqual("Now Target Goal ", lc->getLines().at(0));
+  assertEqual("Now  Next  Goal ", lc->getLines().at(0));
   assertEqual("7.06 7.062 7.062", lc->getLines().at(1));
   delay(1000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
-  assertEqual("Now Target Goal ", lc->getLines().at(0));
+  assertEqual("Now  Next  Goal ", lc->getLines().at(0));
   assertEqual("7.06 7.062 7.062", lc->getLines().at(1));
   delay(2000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
@@ -55,7 +55,7 @@ unittest(TestVerticalScrollWithFlatSet) {
   assertEqual("7.06 7.062 7.062", lc->getLines().at(1));
   delay(3000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
-  assertEqual("Now Target Goal ", lc->getLines().at(0));
+  assertEqual("Now  Next  Goal ", lc->getLines().at(0));
   assertEqual("7.06 7.062 7.062", lc->getLines().at(1));
   delay(3000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
@@ -83,11 +83,11 @@ unittest(TestVerticalScrollWithRampSet) {
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
 
   // during the delay we cycle through displays
-  assertEqual("Now Target Goal ", lc->getLines().at(0));
+  assertEqual("Now  Next  Goal ", lc->getLines().at(0));
   assertEqual("8.50 8.500 7.000", lc->getLines().at(1));
   delay(1000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
-  assertEqual("Now Target Goal ", lc->getLines().at(0));
+  assertEqual("Now  Next  Goal ", lc->getLines().at(0));
   assertEqual("8.50 8.500 7.000", lc->getLines().at(1));
   delay(2000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
@@ -95,7 +95,7 @@ unittest(TestVerticalScrollWithRampSet) {
   assertEqual("left: 0:0:15    ", lc->getLines().at(1));
   delay(3000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
-  assertEqual("Now Target Goal ", lc->getLines().at(0));
+  assertEqual("Now  Next  Goal ", lc->getLines().at(0));
   assertEqual("8.25 8.250 7.000", lc->getLines().at(1));
   delay(3000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
@@ -107,7 +107,7 @@ unittest(TestVerticalScrollWithRampSet) {
   assertEqual("left: 0:0:8     ", lc->getLines().at(1));
   delay(8000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
-  assertEqual("Now Target Goal ", lc->getLines().at(0));
+  assertEqual("Now  Next  Goal ", lc->getLines().at(0));
   assertEqual("7.67 7.667 7.000", lc->getLines().at(1));
   delay(3000);
   tc->loop();
@@ -115,7 +115,7 @@ unittest(TestVerticalScrollWithRampSet) {
   assertEqual("left: 0:0:0     ", lc->getLines().at(1));
   delay(3000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
-  assertEqual("Now Target Goal ", lc->getLines().at(0));
+  assertEqual("Now  Next  Goal ", lc->getLines().at(0));
   assertEqual("7.00 7.000 7.000", lc->getLines().at(1));
 
   Keypad_TC::instance()->_getPuppet()->push_back('D');
@@ -139,11 +139,11 @@ unittest(TestVerticalScrollWithSineSet) {
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
 
   // during the delay we cycle through displays
-  assertEqual("Now Target Goal ", lc->getLines().at(0));
+  assertEqual("Now  Next  Goal ", lc->getLines().at(0));
   assertEqual("7.00 7.000 7.000", lc->getLines().at(1));
   delay(1000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
-  assertEqual("Now Target Goal ", lc->getLines().at(0));
+  assertEqual("Now  Next  Goal ", lc->getLines().at(0));
   assertEqual("7.00 7.000 7.000", lc->getLines().at(1));
   delay(2000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
@@ -151,7 +151,7 @@ unittest(TestVerticalScrollWithSineSet) {
   assertEqual("p=0.125 a=1.500 ", lc->getLines().at(1));
   delay(3000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());
-  assertEqual("Now Target Goal ", lc->getLines().at(0));
+  assertEqual("Now  Next  Goal ", lc->getLines().at(0));
   assertEqual("7.06 7.063 7.000", lc->getLines().at(1));
   delay(3000);
   setPhMeasurementTo(controlSolenoid->getCurrentPhTarget());

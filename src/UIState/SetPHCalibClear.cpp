@@ -1,12 +1,12 @@
 /**
  * SetCalibrationClear.cpp
  */
-#include "SetCalibrationClear.h"
+#include "SetPHCalibClear.h"
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHProbe.h"
 
-void SetCalibrationClear::handleKey(char key) {
+void SetPHCalibClear::handleKey(char key) {
   switch (key) {
     case 'A':  // Save (clear calibration)
       PHProbe::instance()->clearCalibration();

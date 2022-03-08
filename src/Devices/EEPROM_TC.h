@@ -40,7 +40,7 @@ public:
   float getPhSeriesSize();     // not used
   uint16_t getPhSetType();
   uint16_t getTempSetType();
-  uint16_t getTankID();          // unique tank identifier for reporting
+  uint16_t getTankID();  // unique tank identifier for reporting
   uint32_t getTempSineStartTime();
   uint32_t getTempSinePeriod();
   float getTempSineAmplitude();

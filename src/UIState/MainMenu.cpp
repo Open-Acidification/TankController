@@ -25,10 +25,10 @@
 #include "SetPHCalibClear.h"
 #include "SetPHSetPoint.h"
 #include "SetPHWithSine.h"
-#include "SetTempWithSine.h"
 #include "SetTankID.h"
 #include "SetTempCalibClear.h"
 #include "SetTempSetPoint.h"
+#include "SetTempWithSine.h"
 #include "SetTime.h"
 #include "TemperatureCalibration.h"
 
@@ -53,7 +53,7 @@ MainMenu::MainMenu(TankController *tc) : UIState(tc) {
   setMenus[SET_KP] = F("Set KP");
   setMenus[SET_PH] = F("Set pH target");
   setMenus[SET_PH_WITH_SINE] = F("Set pH w sine");
-    setMenus[SET_TEMP_WITH_SINE] = F("Set Temp w sine");
+  setMenus[SET_TEMP_WITH_SINE] = F("Set Temp w sine");
   setMenus[SET_PID_ON_OFF] = F("PID on/off");
   setMenus[SET_TANK_ID] = F("Set Tank ID");
   setMenus[SET_TEMP_CALIBRATION] = F("Temp calibration");

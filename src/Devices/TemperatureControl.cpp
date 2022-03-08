@@ -168,8 +168,9 @@ void Chiller::updateControl(float currentTemperature) {
     }
     case RAMP_TYPE: {
       if (currentTime < rampTimeEnd) {
-        currentTemperatureTarget = rampStartingTemp +
-                          ((currentTime - rampTimeStart) * (targetTemperature - rampStartingTemp) / (rampTimeEnd - rampTimeStart));
+        currentTemperatureTarget =
+            rampStartingTemp +
+            ((currentTime - rampTimeStart) * (targetTemperature - rampStartingTemp) / (rampTimeEnd - rampTimeStart));
       } else {
         currentTemperatureTarget = targetTemperature;
       }
@@ -185,7 +186,7 @@ void Chiller::updateControl(float currentTemperature) {
       float timeLeftTillPeriodEnd = sineEndTime - currentTime;
       float percentNOTThroughPeriod = timeLeftTillPeriodEnd / period;
       float percentThroughPeriod = 1 - percentNOTThroughPeriod;
-      float x = percentThroughPeriod * (2 * PI);        // the x position for our sine wave
+      float x = percentThroughPeriod * (2 * PI);                          // the x position for our sine wave
       currentTemperatureTarget = amplitude * sin(x) + targetTemperature;  // y position in our sine wave
       break;
     }
@@ -239,8 +240,9 @@ void Heater::updateControl(float currentTemperature) {
     }
     case RAMP_TYPE: {
       if (currentTime < rampTimeEnd) {
-        currentTemperatureTarget = rampStartingTemp +
-                          ((currentTime - rampTimeStart) * (targetTemperature - rampStartingTemp) / (rampTimeEnd - rampTimeStart));
+        currentTemperatureTarget =
+            rampStartingTemp +
+            ((currentTime - rampTimeStart) * (targetTemperature - rampStartingTemp) / (rampTimeEnd - rampTimeStart));
       } else {
         currentTemperatureTarget = targetTemperature;
       }
@@ -256,7 +258,7 @@ void Heater::updateControl(float currentTemperature) {
       float timeLeftTillPeriodEnd = sineEndTime - currentTime;
       float percentNOTThroughPeriod = timeLeftTillPeriodEnd / period;
       float percentThroughPeriod = 1 - percentNOTThroughPeriod;
-      float x = percentThroughPeriod * (2 * PI);        // the x position for our sine wave
+      float x = percentThroughPeriod * (2 * PI);                          // the x position for our sine wave
       currentTemperatureTarget = amplitude * sin(x) + targetTemperature;  // y position in our sine wave
       break;
     }

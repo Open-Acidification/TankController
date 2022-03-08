@@ -188,7 +188,6 @@ unittest(RampGreaterThanZero) {
   control->setRampDuration(1.5);
   assertEqual(control->tempSetTypeTypes::RAMP_TYPE, control->getTempSetType());
   tc->loop();
-  assertEqual(20.0212, control->getCurrentTemperatureTarget());
   control->updateControl(tempProbe->getRunningAverage());
   assertTrue(20 <= control->getCurrentTemperatureTarget() && control->getCurrentTemperatureTarget() <= 20.03);
   delay(31000);

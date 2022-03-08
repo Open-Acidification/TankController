@@ -117,19 +117,19 @@ private:
   // new with v0.3
   const uint16_t GOOGLE_INTERVAL_ADDRESS = 108;
   const uint16_t RAMP_STARTING_PH_ADDRESS = 112;
-  const uint16_t RAMP_TIME_START_PH_ADDRESS = 116;
-  const uint16_t RAMP_TIME_END_PH_ADDRESS = 120;
   const uint16_t PH_SINE_AMPLITUDE_ADDRESS = 112;
+  const uint16_t RAMP_TIME_START_PH_ADDRESS = 116;
   const uint16_t PH_SINE_START_TIME_ADDRESS = 116;
+  const uint16_t RAMP_TIME_END_PH_ADDRESS = 120;
   const uint16_t PH_SINE_PERIOD_ADDRESS = 120;
   const uint16_t RAMP_STARTING_TEMP_ADDRESS = 124;
+  const uint16_t TEMP_SINE_AMPLITUDE_ADDRESS = 124;
   const uint16_t RAMP_TIME_START_TEMP_ADDRESS = 128;
+  const uint16_t TEMP_SINE_START_TIME_ADDRESS = 128;
   const uint16_t RAMP_TIME_END_TEMP_ADDRESS = 132;
+  const uint16_t TEMP_SINE_PERIOD_ADDRESS = 132;
   const uint16_t PH_SET_TYPE_ADDRESS = 136;
   const uint16_t TEMP_SET_TYPE_ADDRESS = 140;
-  const uint16_t TEMP_SINE_AMPLITUDE_ADDRESS = 124;
-  const uint16_t TEMP_SINE_START_TIME_ADDRESS = 128;
-  const uint16_t TEMP_SINE_PERIOD_ADDRESS = 132;
 
   // class variables
   static EEPROM_TC* _instance;

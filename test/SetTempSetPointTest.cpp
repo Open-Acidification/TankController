@@ -10,16 +10,16 @@
 unittest(test) {
   LiquidCrystal_TC* lcd = LiquidCrystal_TC::instance();
   EEPROM_TC::instance()->setTemp(20.00);
-  EEPROM_TC::instance()->setRampTimeEndTemp(0);
-  EEPROM_TC::instance()->setRampTimeStartTemp(0);
+  EEPROM_TC::instance()->setTempRampTimeEnd(0);
+  EEPROM_TC::instance()->setTempRampTimeStart(0);
   TankController* tc = TankController::instance();
   assertEqual(20.00, EEPROM_TC::instance()->getTemp());
   assertEqual(0, 20.00 - EEPROM_TC::instance()->getTemp());
   assertEqual(20.00, TemperatureControl::instance()->getTargetTemperature());
-  assertEqual(0, EEPROM_TC::instance()->getRampTimeEndTemp());
-  assertEqual(0, TemperatureControl::instance()->getPhRampTimeEnd());
-  assertEqual(0, EEPROM_TC::instance()->getRampTimeStartTemp());
-  assertEqual(0, TemperatureControl::instance()->getPhRampTimeStart());
+  assertEqual(0, EEPROM_TC::instance()->getTempRampTimeEnd());
+  assertEqual(0, TemperatureControl::instance()->getTempRampTimeEnd());
+  assertEqual(0, EEPROM_TC::instance()->getTempRampTimeStart());
+  assertEqual(0, TemperatureControl::instance()->getTempRampTimeStart());
   assertEqual("MainMenu", tc->stateName());
   SetTempSetPoint* test = new SetTempSetPoint(tc);
   tc->setNextState(test, true);

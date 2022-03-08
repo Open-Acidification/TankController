@@ -15,8 +15,8 @@ float SetTempSetPoint::getCurrentValue() {
   if (subState == 0) {
     return TemperatureControl::instance()->getTargetTemperature();
   } else {
-    uint32_t rampTimeStart = TemperatureControl::instance()->getPhRampTimeStart();
-    uint32_t rampTimeEnd = TemperatureControl::instance()->getPhRampTimeEnd();
+    uint32_t rampTimeStart = TemperatureControl::instance()->getTempRampTimeStart();
+    uint32_t rampTimeEnd = TemperatureControl::instance()->getTempRampTimeEnd();
     return (rampTimeEnd - rampTimeStart) / 3600;
   }
 }

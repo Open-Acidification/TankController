@@ -58,15 +58,31 @@ TemperatureControl::TemperatureControl() {
     targetTemperature = DEFAULT_TEMPERATURE;
     EEPROM_TC::instance()->setTemp(targetTemperature);
   }
-  rampTimeEnd = EEPROM_TC::instance()->getRampTimeEndTemp();
-  if (rampTimeEnd == 0xFFFFFFFF || rampTimeEnd == 0) {
-    rampTimeEnd = 0;
-    EEPROM_TC::instance()->setRampTimeEndTemp(rampTimeEnd);
-    rampTimeStart = 0;
-    EEPROM_TC::instance()->setRampTimeStartTemp(rampTimeStart);
-  } else {
-    rampTimeStart = EEPROM_TC::instance()->getRampTimeStartTemp();
-    rampStartingTemp = EEPROM_TC::instance()->getRampStartingTemp();
+  tempSetType = EEPROM_TC::instance()->getTempSetType();
+  if (tempSetType == 0xFFFFFFFF) {
+    tempSetType = FLAT_TYPE;
+    EEPROM_TC::instance()->setTempSetType(tempSetType);
+  }
+  switch (tempSetType) {
+    case RAMP_TYPE:
+      rampTimeEnd = EEPROM_TC::instance()->getTempRampTimeEnd();
+      if (rampTimeEnd == 0xFFFFFFFF || rampTimeEnd == 0) {
+        rampTimeEnd = 0;
+        EEPROM_TC::instance()->setTempRampTimeEnd(rampTimeEnd);
+        rampTimeStart = 0;
+        EEPROM_TC::instance()->setTempRampTimeStart(rampTimeStart);
+      } else {
+        rampTimeStart = EEPROM_TC::instance()->getTempRampTimeStart();
+        rampStartingTemp = EEPROM_TC::instance()->getRampStartingTemp();
+      }
+      break;
+    case SINE_TYPE:
+      period = EEPROM_TC::instance()->getTempSinePeriod();
+      amplitude = EEPROM_TC::instance()->getTempSineAmplitude();
+      sineStartTime = EEPROM_TC::instance()->getTempSineStartTime();
+      break;
+    default:
+      break;
   }
   pinMode(TEMP_CONTROL_PIN, OUTPUT);
   digitalWrite(TEMP_CONTROL_PIN, TURN_SOLENOID_OFF);
@@ -90,14 +106,29 @@ void TemperatureControl::setRampDuration(float newTempRampDuration) {
     rampTimeStart = DateTime_TC::now().secondstime();
     rampTimeEnd = rampTimeStart + (uint32_t)(newTempRampDuration * 3600);
     rampStartingTemp = TempProbe_TC::instance()->getRunningAverage();
-    EEPROM_TC::instance()->setRampTimeStartTemp(rampTimeStart);
-    EEPROM_TC::instance()->setRampTimeEndTemp(rampTimeEnd);
+    tempSetType = tempSetTypeTypes::RAMP_TYPE;
+    EEPROM_TC::instance()->setTempSetType(tempSetType);
+    EEPROM_TC::instance()->setTempRampTimeStart(rampTimeStart);
+    EEPROM_TC::instance()->setTempRampTimeEnd(rampTimeEnd);
     EEPROM_TC::instance()->setRampStartingTemp(rampStartingTemp);
   } else {
     rampTimeEnd = 0;
-    EEPROM_TC::instance()->setRampTimeEndTemp(rampTimeEnd);
+    tempSetType = tempSetTypeTypes::FLAT_TYPE;
+    EEPROM_TC::instance()->setTempSetType(tempSetType);
+    EEPROM_TC::instance()->setTempRampTimeEnd(rampTimeEnd);
     serial("set ramp time to 0");
   }
+}
+
+void TemperatureControl::setSine(float sineAmplitude, float sinePeriodInHours) {
+  period = (sinePeriodInHours * 3600);
+  amplitude = sineAmplitude;
+  tempSetType = tempSetTypeTypes::SINE_TYPE;
+  sineStartTime = DateTime_TC::now().secondstime();
+  EEPROM_TC::instance()->setTempSetType(tempSetType);
+  EEPROM_TC::instance()->setTempSinePeriod(period);
+  EEPROM_TC::instance()->setTempSineAmplitude(amplitude);
+  EEPROM_TC::instance()->setTempSineStartTime(sineStartTime);
 }
 
 /**
@@ -129,14 +160,37 @@ void TemperatureControl::setTargetTemperature(float newTemperature) {
 
 void Chiller::updateControl(float currentTemperature) {
   uint32_t currentMillis = millis();
-  float currentTime = DateTime_TC::now().secondstime();
-  // if ramp is being used
-  if (currentTime < rampTimeEnd) {
-    currentTemperatureTarget =
-        rampStartingTemp +
-        ((currentTime - rampTimeStart) * (targetTemperature - rampStartingTemp) / (rampTimeEnd - rampTimeStart));
-  } else {
-    currentTemperatureTarget = targetTemperature;
+  uint32_t currentTime = DateTime_TC::now().secondstime();
+  switch (tempSetType) {
+    case FLAT_TYPE: {
+      currentTemperatureTarget = targetTemperature;
+      break;
+    }
+    case RAMP_TYPE: {
+      if (currentTime < rampTimeEnd) {
+        currentTemperatureTarget = rampStartingTemp +
+                          ((currentTime - rampTimeStart) * (targetTemperature - rampStartingTemp) / (rampTimeEnd - rampTimeStart));
+      } else {
+        currentTemperatureTarget = targetTemperature;
+      }
+      break;
+    }
+    case SINE_TYPE: {
+      uint32_t sineEndTime = sineStartTime + period;
+      if (currentTime >= sineEndTime) {
+        sineStartTime = DateTime_TC::now().secondstime();
+        sineEndTime = sineStartTime + period;
+        EEPROM_TC::instance()->setTempSineStartTime(sineStartTime);
+      }
+      float timeLeftTillPeriodEnd = sineEndTime - currentTime;
+      float percentNOTThroughPeriod = timeLeftTillPeriodEnd / period;
+      float percentThroughPeriod = 1 - percentNOTThroughPeriod;
+      float x = percentThroughPeriod * (2 * PI);        // the x position for our sine wave
+      currentTemperatureTarget = amplitude * sin(x) + targetTemperature;  // y position in our sine wave
+      break;
+    }
+    default:
+      break;
   }
   COUT("Chiller::updateControl(" << currentTemperature << ") at " << currentMillis);
   if (currentMillis < previousMillis) {
@@ -177,14 +231,37 @@ void Chiller::updateControl(float currentTemperature) {
 }
 
 void Heater::updateControl(float currentTemperature) {
-  float currentTime = DateTime_TC::now().secondstime();
-  // if ramp is being used
-  if (currentTime < rampTimeEnd) {
-    currentTemperatureTarget =
-        rampStartingTemp +
-        ((currentTime - rampTimeStart) * (targetTemperature - rampStartingTemp) / (rampTimeEnd - rampTimeStart));
-  } else {
-    currentTemperatureTarget = targetTemperature;
+  uint32_t currentTime = DateTime_TC::now().secondstime();
+  switch (tempSetType) {
+    case FLAT_TYPE: {
+      currentTemperatureTarget = targetTemperature;
+      break;
+    }
+    case RAMP_TYPE: {
+      if (currentTime < rampTimeEnd) {
+        currentTemperatureTarget = rampStartingTemp +
+                          ((currentTime - rampTimeStart) * (targetTemperature - rampStartingTemp) / (rampTimeEnd - rampTimeStart));
+      } else {
+        currentTemperatureTarget = targetTemperature;
+      }
+      break;
+    }
+    case SINE_TYPE: {
+      uint32_t sineEndTime = sineStartTime + period;
+      if (currentTime >= sineEndTime) {
+        sineStartTime = DateTime_TC::now().secondstime();
+        sineEndTime = sineStartTime + period;
+        EEPROM_TC::instance()->setTempSineStartTime(sineStartTime);
+      }
+      float timeLeftTillPeriodEnd = sineEndTime - currentTime;
+      float percentNOTThroughPeriod = timeLeftTillPeriodEnd / period;
+      float percentThroughPeriod = 1 - percentNOTThroughPeriod;
+      float x = percentThroughPeriod * (2 * PI);        // the x position for our sine wave
+      currentTemperatureTarget = amplitude * sin(x) + targetTemperature;  // y position in our sine wave
+      break;
+    }
+    default:
+      break;
   }
   COUT("Heater::updateControl(" << currentTemperature);
   bool oldValue = digitalRead(TEMP_CONTROL_PIN);

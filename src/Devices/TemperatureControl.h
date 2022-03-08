@@ -22,9 +22,18 @@ protected:
   float rampStartingTemp;
   uint32_t rampTimeStart;
   uint32_t rampTimeEnd;
+  float amplitude;
+  uint32_t period;
+  uint32_t sineStartTime;
+  int tempSetType = FLAT_TYPE;
   TemperatureControl();
 
 public:
+  enum tempSetTypeTypes {
+    FLAT_TYPE,
+    RAMP_TYPE,
+    SINE_TYPE,
+  };
   virtual ~TemperatureControl() {
   }
   static TemperatureControl* instance();
@@ -36,16 +45,26 @@ public:
   float getCurrentTemperatureTarget() {
     return currentTemperatureTarget;
   }
-  uint32_t getPhRampTimeStart() {
+  int getTempSetType() {
+    return tempSetType;
+  }
+  float getAmplitude() {
+    return amplitude;
+  }
+  uint32_t getTempRampTimeStart() {
     return rampTimeStart;
   }
-  uint32_t getPhRampTimeEnd() {
+  uint32_t getTempRampTimeEnd() {
     return rampTimeEnd;
+  }
+  uint32_t getPeriod() {
+    return period;
   }
   virtual bool isHeater();
   bool isOn();
   void setTargetTemperature(float newTemperature);
   void setRampDuration(float newTempRampDuration);
+  void setSine(float sineAmplitude, float sinePeriodInHours);
   virtual void updateControl(float currentTemperature) = 0;
 };
 

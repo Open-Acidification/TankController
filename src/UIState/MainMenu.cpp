@@ -25,6 +25,7 @@
 #include "SetPHCalibClear.h"
 #include "SetPHSetPoint.h"
 #include "SetPHWithSine.h"
+#include "SetTempWithSine.h"
 #include "SetTankID.h"
 #include "SetTempCalibClear.h"
 #include "SetTempSetPoint.h"
@@ -52,6 +53,7 @@ MainMenu::MainMenu(TankController *tc) : UIState(tc) {
   setMenus[SET_KP] = F("Set KP");
   setMenus[SET_PH] = F("Set pH target");
   setMenus[SET_PH_WITH_SINE] = F("Set pH w sine");
+    setMenus[SET_TEMP_WITH_SINE] = F("Set Temp w sine");
   setMenus[SET_PID_ON_OFF] = F("PID on/off");
   setMenus[SET_TANK_ID] = F("Set Tank ID");
   setMenus[SET_TEMP_CALIBRATION] = F("Temp calibration");
@@ -202,6 +204,9 @@ void MainMenu::selectSet() {
       break;
     case SET_PH_WITH_SINE:
       this->setNextState(static_cast<UIState *>(new SetPHWithSine(tc)));
+      break;
+    case SET_TEMP_WITH_SINE:
+      this->setNextState(static_cast<UIState *>(new SetTempWithSine(tc)));
       break;
     case SET_PID_ON_OFF:
       this->setNextState(static_cast<UIState *>(new EnablePID(tc)));

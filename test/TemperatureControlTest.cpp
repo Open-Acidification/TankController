@@ -186,13 +186,16 @@ unittest(RampGreaterThanZero) {
   assertFalse(control->isOn());
   control->setTargetTemperature(10);
   control->setRampDuration(1.5);
+  assertEqual(control->tempSetTypeTypes::RAMP_TYPE, control->getTempSetType());
+  tc->loop();
+  assertEqual(20.0212, control->getCurrentTemperatureTarget());
   control->updateControl(tempProbe->getRunningAverage());
   assertTrue(20 <= control->getCurrentTemperatureTarget() && control->getCurrentTemperatureTarget() <= 20.03);
   delay(31000);
   // mock arduino restarting
   TemperatureControl::clearInstance();
   control = TemperatureControl::instance();
-  // takes 1.5 hours to get to pH of 7
+  // takes 1.5 hours to get to Temp of 7
   delay(1800000);  // delay 30 minutes
   tc->loop();
   assertTrue(16.6 <= control->getCurrentTemperatureTarget() && control->getCurrentTemperatureTarget() <= 16.8);
@@ -218,13 +221,13 @@ unittest(RampGreaterThanZero) {
   // mock arduino restarting
   TemperatureControl::clearInstance();
   control = TemperatureControl::instance();
-  // takes 1.5 hours to get to pH of 7
+  // takes 1.5 hours to get to Temp of 7
   delay(1800000);  // delay 30 minutes
   tc->loop();
-  assertTrue(23.3 <= control->getCurrentTemperatureTarget() && control->getCurrentTemperatureTarget() <= 23.4);
+  assertTrue(23.4 <= control->getCurrentTemperatureTarget() && control->getCurrentTemperatureTarget() <= 23.5);
   delay(1800000);  // delay 30 minutes
   tc->loop();
-  assertTrue(26.6 <= control->getCurrentTemperatureTarget() && control->getCurrentTemperatureTarget() <= 26.7);
+  assertTrue(26.7 <= control->getCurrentTemperatureTarget() && control->getCurrentTemperatureTarget() <= 26.8);
   delay(1800000);  // delay 30 minutes
   tc->loop();
   assertEqual(30, control->getCurrentTemperatureTarget());
@@ -254,6 +257,84 @@ unittest(ChangeRampToZero) {
   tc->loop();
   assertTrue(20 <= control->getCurrentTemperatureTarget() && control->getCurrentTemperatureTarget() <= 20.03);
   control->setRampDuration(0);
+  assertEqual(control->tempSetTypeTypes::FLAT_TYPE, control->getTempSetType());
+  tc->loop();
+  assertEqual(30, control->getCurrentTemperatureTarget());
+  tc->loop();
+  assertEqual(30, control->getCurrentTemperatureTarget());
+}
+
+unittest(sineTest) {
+  TemperatureControl::enableHeater(false);
+  control = TemperatureControl::instance();
+  assertFalse(control->isOn());
+  control->setTargetTemperature(10);
+  control->setSine(1.5, 2);
+  assertEqual(control->tempSetTypeTypes::SINE_TYPE, control->getTempSetType());
+  tc->loop();
+  assertEqual(10, control->getCurrentTemperatureTarget());
+  // mock arduino restarting
+  TemperatureControl::clearInstance();
+  control = TemperatureControl::instance();
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(11.5, control->getCurrentTemperatureTarget());
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(10, control->getCurrentTemperatureTarget());
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(8.5, control->getCurrentTemperatureTarget());
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(10, control->getCurrentTemperatureTarget());
+  // make sure sine wave continues
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(11.5, control->getCurrentTemperatureTarget());
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(10, control->getCurrentTemperatureTarget());
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(8.5, control->getCurrentTemperatureTarget());
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(10, control->getCurrentTemperatureTarget());
+  TemperatureControl::enableHeater(true);
+  control = TemperatureControl::instance();
+  assertFalse(control->isOn());
+  control->setTargetTemperature(30);
+  control->setSine(1.5, 2);
+  assertEqual(control->tempSetTypeTypes::SINE_TYPE, control->getTempSetType());
+  tc->loop();
+  assertEqual(30, control->getCurrentTemperatureTarget());
+  // mock arduino restarting
+  TemperatureControl::clearInstance();
+  control = TemperatureControl::instance();
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(31.5, control->getCurrentTemperatureTarget());
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(30, control->getCurrentTemperatureTarget());
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(28.5, control->getCurrentTemperatureTarget());
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(30, control->getCurrentTemperatureTarget());
+  // make sure sine wave continues
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(31.5, control->getCurrentTemperatureTarget());
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(30, control->getCurrentTemperatureTarget());
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(28.5, control->getCurrentTemperatureTarget());
+  delay(1800000);  // delay 30 minutes
   tc->loop();
   assertEqual(30, control->getCurrentTemperatureTarget());
 }

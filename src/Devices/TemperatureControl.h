@@ -51,10 +51,10 @@ public:
   float getAmplitude() {
     return amplitude;
   }
-  uint32_t getTempRampTimeStart() {
+  uint32_t getRampTimeStart() {
     return rampTimeStart;
   }
-  uint32_t getTempRampTimeEnd() {
+  uint32_t getRampTimeEnd() {
     return rampTimeEnd;
   }
   uint32_t getPeriod() {

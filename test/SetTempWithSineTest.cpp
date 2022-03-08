@@ -39,7 +39,7 @@ unittest(test) {
   assertEqual("Set Amplitude:  ", lines.at(0));
   assertEqual("    0.0->     0 ", lines.at(1));
   assertEqual(0, test->getCurrentValue());
-  test->setValue(2.125);
+  test->setValue(2.12);
 
   lines = lcd->getLines();
   assertEqual("Set Period hrs: ", lines.at(0));
@@ -53,8 +53,8 @@ unittest(test) {
   assertEqual(25, EEPROM_TC::instance()->getTemp());
   assertEqual(TemperatureControl::instance()->tempSetTypeTypes::SINE_TYPE, EEPROM_TC::instance()->getTempSetType());
 
-  assertEqual("New Temp=25.0   ", lines[0]);
-  assertEqual("A=2.125 P=1.500 ", lines[1]);
+  assertEqual("New Temp=25.00  ", lines[0]);
+  assertEqual("A=2.12 P=1.500  ", lines[1]);
   assertEqual("SetTempWithSine", tc->stateName());
   tc->loop();  // transition to Wait
   assertEqual("Wait", tc->stateName());

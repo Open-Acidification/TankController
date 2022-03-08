@@ -12,18 +12,15 @@ unittest(test) {
   EEPROM_TC::instance()->setTemp(20.00);
   EEPROM_TC::instance()->setTempRampTimeEnd(0);
   EEPROM_TC::instance()->setTempRampTimeStart(0);
-  TankController* tc = TankController::instance();
+  TankController* tc = TankController::instance();  // instantiate after setting eeprom stuff
   assertEqual(20.00, EEPROM_TC::instance()->getTemp());
   assertEqual(0, 20.00 - EEPROM_TC::instance()->getTemp());
   assertEqual(20.00, TemperatureControl::instance()->getTargetTemperature());
   assertEqual(0, EEPROM_TC::instance()->getTempRampTimeEnd());
-  assertEqual(0, TemperatureControl::instance()->getTempRampTimeEnd());
   assertEqual(0, EEPROM_TC::instance()->getTempRampTimeStart());
-  assertEqual(0, TemperatureControl::instance()->getTempRampTimeStart());
   assertEqual("MainMenu", tc->stateName());
   SetTempSetPoint* test = new SetTempSetPoint(tc);
   tc->setNextState(test, true);
-  // EEPROM_TC::instance()->setTemp(4);
 
   // get currently displayed lines
   std::vector<String> lines = lcd->getLines();
@@ -50,7 +47,7 @@ unittest(test) {
   assertEqual(50.25, EEPROM_TC::instance()->getTemp());
 
   // during the delay we showed the new value
-  assertEqual("New Temp=50.250 ", lines[0]);
+  assertEqual("New Temp=50.25  ", lines[0]);
   assertEqual("New ramp=4.125  ", lines[1]);
   assertEqual("SetTempSetPoint", tc->stateName());
   tc->loop();  // transition to Wait

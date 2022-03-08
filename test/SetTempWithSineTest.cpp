@@ -29,7 +29,7 @@ unittest(test) {
   assertEqual(16, lines.at(0).length());
   assertEqual(16, lines.at(1).length());
   assertEqual("Set T Set Point ", lines.at(0));
-  assertEqual(" 20.00->     0  ", lines.at(1));
+  assertEqual("  20.00->     0 ", lines.at(1));
   assertEqual(20, test->getCurrentValue());
 
   // setValues

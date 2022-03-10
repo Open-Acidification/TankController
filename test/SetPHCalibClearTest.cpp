@@ -22,6 +22,7 @@ unittest(test) {
   tc->setNextState(test, true);
   enterKey('A');
   std::vector<String> lines2 = lc->getLines();
+  assertEqual("A: Clear pH Cali", lines2[0]);
   assertEqual("Cleared pH Calib", lines2[1]);
   assertEqual("Wait", tc->stateName());
   delay(3000);

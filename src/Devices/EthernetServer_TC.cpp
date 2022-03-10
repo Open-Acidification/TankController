@@ -128,7 +128,7 @@ bool EthernetServer_TC::file() {
 
   wdt_disable();
   uint32_t flushCount = 0;
-  while (file.available()) {
+  while (file.available32()) {
     uint32_t startTime = millis();
     int readSize = file.read(buffer, sizeof(buffer));  // Flawfinder: ignore
     timeInRead += millis() - startTime;

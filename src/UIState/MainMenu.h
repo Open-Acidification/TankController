@@ -22,6 +22,7 @@ public:
     VIEW_ADDRESS,
     VIEW_VERSION,
     VIEW_FREE_MEMORY,
+    VIEW_TEMP_CAL_OFFSET,
     VIEW_COMMAND_COUNT  // always last
   };
   enum SetCommands {  // this order affects tests

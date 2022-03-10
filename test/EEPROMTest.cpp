@@ -43,6 +43,9 @@ unittest(RampStartingPh) {
   assertNAN(singleton->getRampStartingPh());
   singleton->setRampStartingPh(4.125);
   assertEqual(4.125, singleton->getRampStartingPh());
+  assertNAN(singleton->getRampStartingTemp());
+  singleton->setRampStartingTemp(4.125);
+  assertEqual(4.125, singleton->getRampStartingTemp());
 }
 
 unittest(RampTimeStart) {
@@ -50,6 +53,9 @@ unittest(RampTimeStart) {
   assertEqual(0xFFFFFFFF, singleton->getPhRampTimeStart());
   singleton->setPhRampTimeStart(123456789);
   assertEqual(123456789, singleton->getPhRampTimeStart());
+  assertEqual(0xFFFFFFFF, singleton->getTempRampTimeStart());
+  singleton->setTempRampTimeStart(123456789);
+  assertEqual(123456789, singleton->getTempRampTimeStart());
 }
 
 unittest(RampTimeEnd) {
@@ -57,6 +63,9 @@ unittest(RampTimeEnd) {
   assertEqual(0xFFFFFFFF, singleton->getPhRampTimeEnd());
   singleton->setPhRampTimeEnd(987654321);
   assertEqual(987654321, singleton->getPhRampTimeEnd());
+  assertEqual(0xFFFFFFFF, singleton->getTempRampTimeEnd());
+  singleton->setTempRampTimeEnd(987654321);
+  assertEqual(987654321, singleton->getTempRampTimeEnd());
 }
 
 unittest(Temp) {
@@ -66,50 +75,45 @@ unittest(Temp) {
   assertEqual(4, singleton->getTemp());
 }
 
-unittest(RampStartingTemp) {
-  EEPROM_TC* singleton = EEPROM_TC::instance();
-  assertNAN(singleton->getRampStartingTemp());
-  singleton->setRampStartingTemp(4.125);
-  assertEqual(4.125, singleton->getRampStartingTemp());
-}
-
-unittest(RampTimeStartTemp) {
-  EEPROM_TC* singleton = EEPROM_TC::instance();
-  assertEqual(0xFFFFFFFF, singleton->getRampTimeStartTemp());
-  singleton->setRampTimeStartTemp(123456789);
-  assertEqual(123456789, singleton->getRampTimeStartTemp());
-}
-
-unittest(RampTimeEndTemp) {
-  EEPROM_TC* singleton = EEPROM_TC::instance();
-  assertEqual(0xFFFFFFFF, singleton->getRampTimeEndTemp());
-  singleton->setRampTimeEndTemp(987654321);
-  assertEqual(987654321, singleton->getRampTimeEndTemp());
-}
 unittest(PhSetType) {
   EEPROM_TC* singleton = EEPROM_TC::instance();
   assertEqual(0, singleton->getPhSetType());
   singleton->setPhSetType(5);
   assertEqual(5, singleton->getPhSetType());
 }
-unittest(PhSineAmplitude) {
+unittest(TempSetType) {
+  EEPROM_TC* singleton = EEPROM_TC::instance();
+  assertEqual(0, singleton->getTempSetType());
+  singleton->setTempSetType(5);
+  assertEqual(5, singleton->getTempSetType());
+}
+unittest(SineAmplitude) {
   EEPROM_TC* singleton = EEPROM_TC::instance();
   assertNAN(singleton->getPhSineAmplitude());
   singleton->setPhSineAmplitude(4);
   assertEqual(4, singleton->getPhSineAmplitude());
+  assertNAN(singleton->getTempSineAmplitude());
+  singleton->setTempSineAmplitude(4);
+  assertEqual(4, singleton->getTempSineAmplitude());
 }
-unittest(PhSineStartTime) {
+unittest(SineStartTime) {
   EEPROM_TC* singleton = EEPROM_TC::instance();
   assertEqual(0xFFFFFFFF, singleton->getPhSineStartTime());
   singleton->setPhSineStartTime(123456789);
   assertEqual(123456789, singleton->getPhSineStartTime());
+  assertEqual(0xFFFFFFFF, singleton->getTempSineStartTime());
+  singleton->setTempSineStartTime(123456789);
+  assertEqual(123456789, singleton->getTempSineStartTime());
 }
 
-unittest(PhSinePeriod) {
+unittest(SinePeriod) {
   EEPROM_TC* singleton = EEPROM_TC::instance();
   assertEqual(0xFFFFFFFF, singleton->getPhSinePeriod());
   singleton->setPhSinePeriod(987654321);
   assertEqual(987654321, singleton->getPhSinePeriod());
+  assertEqual(0xFFFFFFFF, singleton->getTempSinePeriod());
+  singleton->setTempSinePeriod(987654321);
+  assertEqual(987654321, singleton->getTempSinePeriod());
 }
 unittest(TankID) {
   EEPROM_TC* singleton = EEPROM_TC::instance();

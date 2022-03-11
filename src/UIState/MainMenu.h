@@ -41,6 +41,7 @@ public:
     SET_TIME,
     SET_TANK_ID,
     SET_PH_WITH_SINE,
+    SET_TEMP_WITH_SINE,
     SET_COMMAND_COUNT  // always last
   };
   MainMenu(TankController* tc);

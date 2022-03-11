@@ -194,10 +194,9 @@ void TankController::setNextState(UIState *newState, bool update) {
  * Here we do any one-time startup initialization.
  */
 void TankController::setup() {
-  wdt_enable(WDTO_8S);
   serial(F("TankController::setup()"));
-  SD_TC::instance()->printRootDirectory();
   serial(F("Free memory = %i"), freeMemory());
+  wdt_enable(WDTO_8S);
 }
 
 /**

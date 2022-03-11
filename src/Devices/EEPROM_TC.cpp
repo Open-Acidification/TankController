@@ -126,17 +126,29 @@ uint32_t EEPROM_TC::getPhSinePeriod() {
 float EEPROM_TC::getPhSineAmplitude() {
   return eepromReadFloat(PH_SINE_PERIOD_ADDRESS);
 }
-uint32_t EEPROM_TC::getRampTimeStartTemp() {
+uint32_t EEPROM_TC::getTempRampTimeStart() {
   return eepromReadInt(RAMP_TIME_START_TEMP_ADDRESS);
 }
-uint32_t EEPROM_TC::getRampTimeEndTemp() {
+uint32_t EEPROM_TC::getTempRampTimeEnd() {
   return eepromReadInt(RAMP_TIME_END_TEMP_ADDRESS);
 }
 float EEPROM_TC::getRampStartingTemp() {
   return eepromReadFloat(RAMP_STARTING_TEMP_ADDRESS);
 }
+uint32_t EEPROM_TC::getTempSineStartTime() {
+  return eepromReadInt(TEMP_SINE_START_TIME_ADDRESS);
+}
+uint32_t EEPROM_TC::getTempSinePeriod() {
+  return eepromReadInt(TEMP_SINE_AMPLITUDE_ADDRESS);
+}
+float EEPROM_TC::getTempSineAmplitude() {
+  return eepromReadFloat(TEMP_SINE_PERIOD_ADDRESS);
+}
 uint16_t EEPROM_TC::getPhSetType() {
   return static_cast<uint16_t>(eepromReadFloat(PH_SET_TYPE_ADDRESS));
+}
+uint16_t EEPROM_TC::getTempSetType() {
+  return static_cast<uint16_t>(eepromReadFloat(TEMP_SET_TYPE_ADDRESS));
 }
 uint16_t EEPROM_TC::getTankID() {
   return static_cast<uint16_t>(eepromReadFloat(TANK_ID_ADDRESS));
@@ -225,17 +237,29 @@ void EEPROM_TC::setPhSinePeriod(uint32_t value) {
 void EEPROM_TC::setPhSineAmplitude(float value) {
   eepromWriteFloat(PH_SINE_PERIOD_ADDRESS, value);
 }
-void EEPROM_TC::setRampTimeStartTemp(uint32_t value) {
+void EEPROM_TC::setTempRampTimeStart(uint32_t value) {
   eepromWriteInt(RAMP_TIME_START_TEMP_ADDRESS, value);
 }
-void EEPROM_TC::setRampTimeEndTemp(uint32_t value) {
+void EEPROM_TC::setTempRampTimeEnd(uint32_t value) {
   eepromWriteInt(RAMP_TIME_END_TEMP_ADDRESS, value);
 }
 void EEPROM_TC::setRampStartingTemp(float value) {
   eepromWriteFloat(RAMP_STARTING_TEMP_ADDRESS, value);
 }
+void EEPROM_TC::setTempSineStartTime(uint32_t value) {
+  eepromWriteInt(TEMP_SINE_START_TIME_ADDRESS, value);
+}
+void EEPROM_TC::setTempSinePeriod(uint32_t value) {
+  eepromWriteInt(TEMP_SINE_AMPLITUDE_ADDRESS, value);
+}
+void EEPROM_TC::setTempSineAmplitude(float value) {
+  eepromWriteFloat(TEMP_SINE_PERIOD_ADDRESS, value);
+}
 void EEPROM_TC::setPhSetType(uint16_t value) {
   eepromWriteFloat(PH_SET_TYPE_ADDRESS, (float)value);
+}
+void EEPROM_TC::setTempSetType(uint16_t value) {
+  eepromWriteFloat(TEMP_SET_TYPE_ADDRESS, (float)value);
 }
 void EEPROM_TC::setTankID(uint16_t value) {
   eepromWriteFloat(TANK_ID_ADDRESS, (float)value);

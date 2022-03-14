@@ -13,7 +13,7 @@
 #include "SeeFreeMemory.h"
 #include "SeeGoogleMins.h"
 #include "SeeLogFile.h"
-#include "SeePH.h"
+#include "SeePh.h"
 #include "SeePHSlope.h"
 #include "SeePIDConstants.h"
 #include "SeeTankID.h"

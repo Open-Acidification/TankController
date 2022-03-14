@@ -6,8 +6,8 @@
 
 #include "Devices/DateTime_TC.h"
 #include "Devices/LiquidCrystal_TC.h"
-#include "Devices/TemperatureControl.h"
 #include "Devices/TempProbe_TC.h"
+#include "Devices/TemperatureControl.h"
 #include "TC_util.h"
 
 void SeeTemperature::loop() {

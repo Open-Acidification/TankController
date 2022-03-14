@@ -56,7 +56,7 @@ void SeeTemperature::loadTypeVariables(uint16_t line) {
       break;
     }
     case RAMP_TYPE: {
-      uint32_t endTime = TemperatureControl::instance()->getTempRampTimeEnd();
+      uint32_t endTime = TemperatureControl::instance()->getRampTimeEnd();
       uint32_t currentTime = DateTime_TC::now().secondstime();
       int timeLeft = endTime - currentTime;
       timeLeft = timeLeft > 0 ? timeLeft : 0;

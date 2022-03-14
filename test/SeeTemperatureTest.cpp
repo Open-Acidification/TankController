@@ -5,10 +5,10 @@
 #include "EEPROM_TC.h"
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
-#include "TemperatureControl.h"
 #include "SeeTemperature.h"
 #include "TankController.h"
 #include "TempProbe_TC.h"
+#include "TemperatureControl.h"
 #include "UIState/UIState.h"
 
 GodmodeState *state = GODMODE();

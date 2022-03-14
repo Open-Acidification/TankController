@@ -1,16 +1,16 @@
 /**
- * SeePh.cpp
+ * SeeTemperature.cpp
  */
 
-#include "SeePh.h"
+#include "SeeTemperature.h"
 
 #include "Devices/DateTime_TC.h"
 #include "Devices/LiquidCrystal_TC.h"
-#include "Devices/PHControl.h"
-#include "Devices/PHProbe.h"
+#include "Devices/TemperatureControl.h"
+#include "Devices/TempProbe_TC.h"
 #include "TC_util.h"
 
-void SeePh::loop() {
+void SeeTemperature::loop() {
   int32_t oddEven = ((millis() - startTime) / 3000) % 2;
   switch (oddEven) {
     case 0:
@@ -18,16 +18,16 @@ void SeePh::loop() {
       loadValues(1);
       break;
     case 1:
-      loadPhSetType(0);
+      loadTempSetType(0);
       loadTypeVariables(1);
       break;
   }
 }
 
-void SeePh::loadPhSetType(uint16_t line) {
+void SeeTemperature::loadTempSetType(uint16_t line) {
   char buffer[17];
   char *type;
-  switch (PHControl::instance()->getPhSetType()) {
+  switch (TemperatureControl::instance()->getTempSetType()) {
     case FLAT_TYPE: {
       type = (char *)"flat";
       break;
@@ -49,14 +49,14 @@ void SeePh::loadPhSetType(uint16_t line) {
   LiquidCrystal_TC::instance()->writeLine(buffer, line);
 }
 
-void SeePh::loadTypeVariables(uint16_t line) {
+void SeeTemperature::loadTypeVariables(uint16_t line) {
   char buffer[17];
-  switch (PHControl::instance()->getPhSetType()) {
+  switch (TemperatureControl::instance()->getTempSetType()) {
     case FLAT_TYPE: {
       break;
     }
     case RAMP_TYPE: {
-      uint32_t endTime = PHControl::instance()->getPhRampTimeEnd();
+      uint32_t endTime = TemperatureControl::instance()->getTempRampTimeEnd();
       uint32_t currentTime = DateTime_TC::now().secondstime();
       int timeLeft = endTime - currentTime;
       timeLeft = timeLeft > 0 ? timeLeft : 0;
@@ -68,9 +68,9 @@ void SeePh::loadTypeVariables(uint16_t line) {
       break;
     }
     case SINE_TYPE: {
-      uint32_t period = PHControl::instance()->getPeriod();
+      uint32_t period = TemperatureControl::instance()->getPeriod();
       float periodHours = period / 3600.0;
-      float amplitude = PHControl::instance()->getAmplitude();
+      float amplitude = TemperatureControl::instance()->getAmplitude();
 
       snprintf_P(buffer, sizeof(buffer), (PGM_P)F("p=%i.%03i a=%i.%03i"), (int)periodHours,
                  (int)(periodHours * 1000) % 1000, (int)amplitude, (int)(amplitude * 1000) % 1000);
@@ -82,19 +82,19 @@ void SeePh::loadTypeVariables(uint16_t line) {
   }
 }
 
-void SeePh::loadHeader(uint16_t line) {
+void SeeTemperature::loadHeader(uint16_t line) {
   char buffer[17];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Now  Next  Goal"));
   LiquidCrystal_TC::instance()->writeLine(buffer, line);
 }
 
-void SeePh::loadValues(uint16_t line) {
+void SeeTemperature::loadValues(uint16_t line) {
   char buffer[17];
-  float overallTargetPh = PHControl::instance()->getTargetPh();
-  float currentTargetPh = PHControl::instance()->getCurrentPhTarget();
-  float currentPh = PHProbe::instance()->getPh();
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("%i.%02i %i.%03i %i.%03i"), (int)currentPh,
-             (int)(currentPh * 100 + 0.5) % 100, (int)currentTargetPh, (int)(currentTargetPh * 1000 + 0.5) % 1000,
-             (int)overallTargetPh, (int)(overallTargetPh * 1000) % 1000);
+  float overallTargetTemp = TemperatureControl::instance()->getTargetTemperature();
+  float currentTargetTemp = TemperatureControl::instance()->getCurrentTemperatureTarget();
+  float currentTemp = TempProbe_TC::instance()->getRunningAverage();
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("%i.%01i %i.%02i %i.%02i"), (int)currentTemp,
+             (int)(currentTemp * 10 + 0.5) % 10, (int)currentTargetTemp, (int)(currentTargetTemp * 100 + 0.5) % 100,
+             (int)overallTargetTemp, (int)(overallTargetTemp * 100) % 100);
   LiquidCrystal_TC::instance()->writeLine(buffer, line);
 }

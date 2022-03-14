@@ -69,7 +69,7 @@ unittest(TestVerticalScrollWithRampSet) {
   setTempMeasurementTo(10.00);
   control->setTargetTemperature(7.00);
   control->setRampDuration(0.005);  // 18 seconds
-  SeeTeperature *test = new SeeTemperature(tc);
+  SeeTemperature *test = new SeeTemperature(tc);
 
   // Transition states
   assertEqual("MainMenu", tc->stateName());

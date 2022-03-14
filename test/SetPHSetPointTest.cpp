@@ -15,9 +15,11 @@ unittest_setup() {
 unittest(test_target_of_7_125_with_ramp_of_4_125) {
   LiquidCrystal_TC* lcd = LiquidCrystal_TC::instance();
   EEPROM_TC::instance()->setPh(8.125);
+  // EEPROM_TC::instance()->setPhSetType(RAMP_TYPE);
   EEPROM_TC::instance()->setPhRampTimeEnd(0);
   EEPROM_TC::instance()->setPhRampTimeStart(0);
   TankController* tc = TankController::instance();  // instantiate after setting eeprom stuff
+  assertEqual(PHControl::instance()->phSetTypeTypes::FLAT_TYPE, PHControl::instance()->getPhSetType());
   assertEqual(8.125, EEPROM_TC::instance()->getPh());
   assertEqual(0, 8.125 - EEPROM_TC::instance()->getPh());
   assertEqual(8.125, PHControl::instance()->getTargetPh());

@@ -67,7 +67,13 @@ PHControl::PHControl() {
       amplitude = EEPROM_TC::instance()->getPhSineAmplitude();
       sineStartTime = EEPROM_TC::instance()->getPhSineStartTime();
       break;
+    case FLAT_TYPE:
+      rampTimeStart = 3600;
+      rampTimeEnd = 10800;
+      break;
     default:
+      rampTimeStart = 3600;
+      rampTimeEnd = 7200;
       break;
   }
   char buffer[40];

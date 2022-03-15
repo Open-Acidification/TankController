@@ -3,7 +3,7 @@
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "Keypad_TC.h"
-#include "SetCalibrationClear.h"
+#include "SetTempCalibClear.h"
 #include "TankController.h"
 
 // globals for the singletons used in every test
@@ -18,11 +18,12 @@ void enterKey(char key) {
 }
 
 unittest(test) {
-  SetCalibrationClear* test = new SetCalibrationClear(tc);
+  SetTempCalibClear* test = new SetTempCalibClear(tc);
   tc->setNextState(test, true);
   enterKey('A');
   std::vector<String> lines2 = lc->getLines();
-  assertEqual("Cleared pH Calib", lines2[1]);
+  assertEqual("A: Clear TempCal", lines2[0]);
+  assertEqual("Cleared TempCali", lines2[1]);
   assertEqual("Wait", tc->stateName());
   delay(3000);
   tc->loop();  // queue MainMenu to be next

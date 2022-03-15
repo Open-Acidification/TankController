@@ -86,6 +86,20 @@ void TempProbe_TC::setCorrection(float value) {
   if (value != correction) {
     correction = value;
     EEPROM_TC::instance()->setCorrectedTemp(correction);
-    serial(F("Set temperature correction to %i.%i"), (int)correction, (int)(correction * 100 + 0.5) % 100);
+    serial(F("Set temperature correction to %i.%02i"), (int)correction, (int)(correction * 100 + 0.5) % 100);
+  }
+}
+
+/**
+ * clearCorrection(f)
+ *
+ * Sets the correction offset back to 0
+ */
+void TempProbe_TC::clearCorrection() {
+  COUT("old = " << correction);
+  if (correction != 0) {
+    correction = 0.0;
+    EEPROM_TC::instance()->setCorrectedTemp(correction);
+    serial(F("Set temperature correction to %i.%02i"), (int)correction, (int)(correction * 100 + 0.5) % 100);
   }
 }

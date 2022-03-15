@@ -4,6 +4,8 @@
 
 #include "DateTime_TC.h"
 #include "Devices/Ethernet_TC.h"
+#include "Devices/JSONBuilder.h"
+#include "Devices/LiquidCrystal_TC.h"
 #include "SD_TC.h"
 #include "Serial_TC.h"
 #include "TankController.h"
@@ -49,6 +51,55 @@ void EthernetServer_TC::echo() {
     client.stop();
     state = NOT_CONNECTED;
   }
+}
+
+void EthernetServer_TC::current() {
+  // get list of current values
+  JSONBuilder builder;
+  int size = builder.buildCurrentValues();
+  char* text = builder.bufferPtr();
+  // First send headers
+  sendHeadersWithSize(size);
+  // Write JSON file to client (will be null-terminated)
+  client.write(text);
+  client.write('\r');
+  client.write('\n');
+  client.stop();
+  state = NOT_CONNECTED;
+}
+
+void EthernetServer_TC::display() {
+  // First send headers
+  sendHeadersWithSize(36);
+  // get currently displayed lines
+  client.write(LiquidCrystal_TC::instance()->getLine(0), 16);
+  client.write('\r');
+  client.write('\n');
+  client.write(LiquidCrystal_TC::instance()->getLine(1), 16);
+  client.write('\r');
+  client.write('\n');
+  client.stop();
+  state = NOT_CONNECTED;
+}
+
+void EthernetServer_TC::keypress() {
+  if (buffer[23] != ' ') {
+    serial(F("value too long"));
+    sendBadRequestHeaders();
+  } else {
+    // We have a one character keypress, check to see if valid character
+    char key = buffer[22];
+    if (key == '#' || key == '*' || (key >= '0' && key <= '9') || (key >= 'A' && key <= 'D')) {
+      // States will handle keypresses appropriately
+      TankController::instance()->setNextKey(key);
+      sendRedirectHeaders();
+    } else {
+      serial(F("bad character: %c"), key);
+      sendBadRequestHeaders();
+    }
+  }
+  client.stop();
+  state = NOT_CONNECTED;
 }
 
 bool EthernetServer_TC::file() {
@@ -108,9 +159,25 @@ bool EthernetServer_TC::file() {
 void EthernetServer_TC::get() {
   if (memcmp_P(buffer + 4, F("/echo?value=%22"), 15) == 0) {
     echo();
+  } else if (memcmp_P(buffer + 4, F("/api/1/display"), 14) == 0) {
+    display();
+  } else if (memcmp_P(buffer + 4, F("/api/1/current"), 14) == 0) {
+    current();
   } else if (!file()) {
     // TODO: send an error response
     serial(F("get \"%s\" not recognized!"), buffer + 4);
+    sendBadRequestHeaders();
+    client.stop();
+    state = NOT_CONNECTED;
+  }
+}
+
+void EthernetServer_TC::post() {
+  if (memcmp_P(buffer + 5, F("/api/1/key?value="), 17) == 0) {
+    keypress();
+  } else if (!file()) {
+    // TODO: send an error response
+    serial(F("put \"%s\" not recognized!"), buffer + 5);
     client.stop();
     state = NOT_CONNECTED;
   }
@@ -125,28 +192,39 @@ void EthernetServer_TC::loop() {
     }
     // read request
     int next;
-    while (state == READ_REQUEST && bufferContentsSize < sizeof(buffer) &&
+    while (state == READ_REQUEST && bufferContentsSize < sizeof(buffer) - 1 &&
            (next = client.read()) != -1) {  // Flawfinder: ignore
       buffer[bufferContentsSize++] = (char)(next & 0xFF);
-      if (bufferContentsSize > 1 && buffer[bufferContentsSize - 2] == '\r' && buffer[bufferContentsSize - 1] == '\n') {
-        buffer[bufferContentsSize - 2] = '\0';
+      if (bufferContentsSize > 3 && (memcmp_P(buffer + bufferContentsSize - 4, F("\r\n\r\n"), 4) == 0)) {
+        buffer[bufferContentsSize] = '\0';
         state = HAS_REQUEST;
         if (memcmp_P(buffer, F("GET "), 4) == 0) {
           state = GET_REQUEST;
           break;
+        } else if (memcmp_P(buffer, F("POST "), 5) == 0) {
+          state = POST_REQUEST;
+          break;
+        } else {
+          serial(F("Bad or unsupported request"));
+          sendBadRequestHeaders();
+          state = BAD_REQUEST;
+          break;
         }
-        break;
       }
     }
     switch (state) {
       case GET_REQUEST:
         get();
         break;
+      case POST_REQUEST:
+        post();
+        break;
       default:
         break;
     }
   } else if (state != NOT_CONNECTED) {  // existing connection has been closed
     state = NOT_CONNECTED;
+    memset(buffer, 0, sizeof(buffer));
     bufferContentsSize = 0;
     client.stop();
     connectedAt = 0;
@@ -178,6 +256,23 @@ void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
   // blank line indicates end of headers
   client.write('\r');
   client.write('\n');
+}
+
+void EthernetServer_TC::sendRedirectHeaders() {
+  char buffer[70];
+  static const char response[] PROGMEM =
+      "HTTP/1.1 303 See Other\r\n"
+      "Location: /api/1/display\r\n"
+      "\r\n";
+  strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
+  client.write(buffer);
+}
+
+void EthernetServer_TC::sendBadRequestHeaders() {
+  char buffer[30];
+  static const char response[] PROGMEM = "HTTP/1.1 400 Bad Request\r\n\r\n";
+  strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
+  client.write(buffer);
 }
 
 int EthernetServer_TC::weekday(int year, int month, int day) {

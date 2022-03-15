@@ -32,7 +32,7 @@ void SeeDeviceAddress::start() {
   char line[17];
   // first line
   IPAddress IP = Ethernet_TC::instance()->getIP();
-  snprintf_P(line, sizeof(line), (PGM_P)F("%03d.%03d.%03d.%03d"), IP[0], IP[1], IP[2], IP[3]);
+  snprintf_P(line, sizeof(line), (PGM_P)F("%d.%d.%d.%d"), IP[0], IP[1], IP[2], IP[3]);
   LiquidCrystal_TC::instance()->writeLine(line, 0);
   // second line
   byte* mac = Ethernet_TC::instance()->getMac();

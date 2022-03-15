@@ -5,7 +5,7 @@ class SeeFreeMemory : public UIState {
 public:
   SeeFreeMemory(TankController* tc) : UIState(tc) {
   }
-  void start();
+  void start() override;
   const __FlashStringHelper* name() {
     return F("SeeFreeMemory");
   }

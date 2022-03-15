@@ -1,18 +1,18 @@
 /**
- * SetCalibrationClear.h
+ * SetPHCalibClear.h
  *
  * Clear pH Calibration
  */
 #pragma once
 #include "UIState.h"
 
-class SetCalibrationClear : public UIState {
+class SetPHCalibClear : public UIState {
 public:
-  SetCalibrationClear(TankController* tc) : UIState(tc) {
+  SetPHCalibClear(TankController* tc) : UIState(tc) {
   }
   void handleKey(char key);
   const __FlashStringHelper* name() {
-    return F("SetCalibrationClear");
+    return F("SetPHCalibClear");
   }
   const __FlashStringHelper* prompt() {
     return F("A: Clear pH Cali");

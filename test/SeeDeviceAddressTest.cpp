@@ -17,7 +17,7 @@ unittest(testOutput) {
 
   // Test the output
   tc->loop();
-  assertEqual("192.168.001.010 ", display->getLines().at(0));
+  assertEqual("192.168.1.10    ", display->getLines().at(0));
   char buffer[8];
   strncpy(buffer, display->getLines().at(1).c_str(), 7);  // Flawfinder: ignore
   assertEqual("90A2:DA", buffer);

@@ -13,6 +13,8 @@ unittest(test) {
   EEPROM_TC::instance()->setTempRampTimeEnd(0);
   EEPROM_TC::instance()->setTempRampTimeStart(0);
   TankController* tc = TankController::instance();  // instantiate after setting eeprom stuff
+  assertEqual(TemperatureControl::instance()->tempSetTypeTypes::FLAT_TYPE,
+              TemperatureControl::instance()->getTempSetType());
   assertEqual(20.00, EEPROM_TC::instance()->getTemp());
   assertEqual(0, 20.00 - EEPROM_TC::instance()->getTemp());
   assertEqual(20.00, TemperatureControl::instance()->getTargetTemperature());
@@ -44,6 +46,8 @@ unittest(test) {
   // during the delay we showed the new value
   lines = lcd->getLines();
   assertEqual(50.25, TemperatureControl::instance()->getTargetTemperature());
+  assertEqual(TemperatureControl::instance()->tempSetTypeTypes::RAMP_TYPE,
+              TemperatureControl::instance()->getTempSetType());
   assertEqual(50.25, EEPROM_TC::instance()->getTemp());
 
   // during the delay we showed the new value

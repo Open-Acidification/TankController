@@ -91,18 +91,13 @@ void TankController::blink() {
 // https://github.com/maniacbug/MemoryFree/blob/master/MemoryFree.cpp
 int TankController::freeMemory() {
 #ifdef MOCK_PINS_COUNT
-  int *__brkval = 0;
-  int __bss_end = 0;
+  return 1024;
 #else
   extern char *__brkval;
-  extern char __bss_end;
-#endif
   int topOfStack;
 
-  if ((size_t)__brkval == 0) {
-    return ((size_t)&topOfStack) - ((size_t)&__bss_end);
-  }
   return (int)((size_t)&topOfStack) - ((size_t)__brkval);
+#endif
 }
 
 /**
@@ -301,3 +296,9 @@ void TankController::writeDataToSerial() {
     COUT(buffer);
   }
 }
+#if defined(__CYGWIN__)
+size_t strnlen(const char *s, size_t n) {
+  void *found = memchr(s, '\0', n);
+  return found ? (size_t)((char *)found - s) : n;
+}
+#endif

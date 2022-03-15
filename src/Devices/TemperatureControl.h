@@ -52,10 +52,10 @@ public:
     return amplitude;
   }
   uint32_t getRampTimeStart() {
-    return rampTimeStart;
+    return tempSetType == FLAT_TYPE ? 0 : rampTimeStart;
   }
   uint32_t getRampTimeEnd() {
-    return rampTimeEnd;
+    return tempSetType == FLAT_TYPE ? 0 : rampTimeEnd;
   }
   uint32_t getPeriod() {
     return period;

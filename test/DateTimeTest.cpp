@@ -88,8 +88,7 @@ unittest(myDelay) {
   auto end = std::chrono::high_resolution_clock::now();
   std::chrono::duration<float, std::milli> elapsed = end - start;
   // actual delay should a few milliseconds
-  assertTrue(1 <= elapsed.count() && elapsed.count() <= 5);
-
+  assertTrue(1 <= elapsed.count() && elapsed.count() <= 30);
   uint32_t t2 = DateTime_TC::now().unixtime();
   // simulated delay should be 10 seconds
   assertTrue(t1 + 10 <= t2 && t2 <= t1 + 11);

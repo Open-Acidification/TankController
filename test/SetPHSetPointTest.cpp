@@ -18,6 +18,7 @@ unittest(test_target_of_7_125_with_ramp_of_4_125) {
   EEPROM_TC::instance()->setPhRampTimeEnd(0);
   EEPROM_TC::instance()->setPhRampTimeStart(0);
   TankController* tc = TankController::instance();  // instantiate after setting eeprom stuff
+  assertEqual(PHControl::instance()->phSetTypeTypes::FLAT_TYPE, PHControl::instance()->getPhSetType());
   assertEqual(8.125, EEPROM_TC::instance()->getPh());
   assertEqual(0, 8.125 - EEPROM_TC::instance()->getPh());
   assertEqual(8.125, PHControl::instance()->getTargetPh());

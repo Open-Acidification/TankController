@@ -1,6 +1,10 @@
 #pragma once
 #include <Arduino.h>
 
+#if defined(__CYGWIN__)
+extern size_t strnlen(const char* s, size_t n);
+#endif
+
 #ifdef MOCK_PINS_COUNT
 #include <cassert>  // to support testing
 #else

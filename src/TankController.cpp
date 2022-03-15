@@ -299,6 +299,6 @@ void TankController::writeDataToSerial() {
 #if defined(__CYGWIN__)
 size_t strnlen(const char *s, size_t n) {
   void *found = memchr(s, '\0', n);
-  return found ? (size_t)((char*)found - s) : n;
+  return found ? (size_t)((char *)found - s) : n;
 }
 #endif

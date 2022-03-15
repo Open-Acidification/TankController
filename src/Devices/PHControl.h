@@ -45,10 +45,10 @@ public:
     return amplitude;
   }
   uint32_t getPhRampTimeStart() {
-    return rampTimeStart;
+    return pHSetType == FLAT_TYPE ? 0 : rampTimeStart;
   }
   uint32_t getPhRampTimeEnd() {
-    return rampTimeEnd;
+    return pHSetType == FLAT_TYPE ? 0 : rampTimeEnd;
   }
   uint32_t getPeriod() {
     return period;

@@ -16,6 +16,7 @@
 #include "SeePHSlope.h"
 #include "SeePIDConstants.h"
 #include "SeeTankID.h"
+#include "SeeTempCalOffset.h"
 #include "SeeVersion.h"
 #include "SetChillOrHeat.h"
 #include "SetGoogleSheetInterval.h"
@@ -40,6 +41,7 @@ MainMenu::MainMenu(TankController *tc) : UIState(tc) {
   viewMenus[VIEW_PH_SLOPE] = F("View pH slope");
   viewMenus[VIEW_PID] = F("View PID");
   viewMenus[VIEW_TANK_ID] = F("View tank ID");
+  viewMenus[VIEW_TEMP_CAL_OFFSET] = F("View temp cal");
   viewMenus[VIEW_TIME] = F("View time");
   viewMenus[VIEW_VERSION] = F("View version");
 
@@ -161,6 +163,9 @@ void MainMenu::selectView() {
       break;
     case VIEW_TANK_ID:
       this->setNextState(static_cast<UIState *>(new SeeTankID(tc)));
+      break;
+    case VIEW_TEMP_CAL_OFFSET:
+      this->setNextState(static_cast<UIState *>(new SeeTempCalOffset(tc)));
       break;
     case VIEW_TIME:
       this->setNextState(static_cast<UIState *>(new SeeDeviceUptime(tc)));

@@ -116,6 +116,9 @@ public:
     thermo.clearFault();
   }
 
+  float getCorrection() {
+    return correction;
+  }
   void setCorrection(float value);
   void clearCorrection();
 

@@ -178,7 +178,7 @@ unittest(current) {
       "\"PID\":\"ON\","
       "\"TankID\":0,"
       "\"Uptime\":\"0d 0h 1m 1s\","
-      "\"Version\":\"22.02.2\"}\r\n";
+      "\"Version\":\"22.03.1\"}\r\n";
   assertEqual(expectedResponse, response);
   assertEqual(NOT_CONNECTED, server->getState());
   client.stop();

@@ -30,7 +30,7 @@ unittest(current) {
       "\"PID\":\"ON\","
       "\"TankID\":0,"
       "\"Uptime\":\"0d 0h 0m 1s\","
-      "\"Version\":\"22.03.1\"}";
+      "\"Version\":\"22.03.2\"}";
   assertEqual(expected, text);
 }
 

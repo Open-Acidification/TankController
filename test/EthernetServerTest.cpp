@@ -113,7 +113,7 @@ unittest(keypress) {
   client.pushToReadBuffer(request);
   server->loop();
   deque<uint8_t>* pBuffer = client.writeBuffer();
-  assertEqual(52, pBuffer->size());
+  assertEqual(84, pBuffer->size());
   String response;
   while (!pBuffer->empty()) {
     response.concat(pBuffer->front());
@@ -122,6 +122,7 @@ unittest(keypress) {
   const char expectedResponse[] =
       "HTTP/1.1 303 See Other\r\n"
       "Location: /api/1/display\r\n"
+      "Access-Control-Allow-Origin: *\r\n"
       "\r\n";
   assertEqual(expectedResponse, response);
   tc->loop();  // Loop to handle the UI press

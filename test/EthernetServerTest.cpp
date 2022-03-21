@@ -42,6 +42,7 @@ unittest(echo) {
       "Content-Type: text/plain;charset=UTF-8\r\n"
       "Content-Encoding: identity\r\n"
       "Content-Language: en-US\r\n"
+      "Access-Control-Allow-Origin: *\r\n"
       "Content-Length: 3\r\n"
       "\r\n"
       "foo";
@@ -81,6 +82,7 @@ unittest(display) {
       "Content-Type: text/plain;charset=UTF-8\r\n"
       "Content-Encoding: identity\r\n"
       "Content-Language: en-US\r\n"
+      "Access-Control-Allow-Origin: *\r\n"
       "Content-Length: 36\r\n"
       "\r\n"
       "pH=0.000   8.100\r\n"
@@ -164,6 +166,7 @@ unittest(current) {
       "Content-Type: text/plain;charset=UTF-8\r\n"
       "Content-Encoding: identity\r\n"
       "Content-Language: en-US\r\n"
+      "Access-Control-Allow-Origin: *\r\n"
       "Content-Length: 243\r\n"
       "\r\n"
       "{\"IPAddress\":\"192.168.1.10\","
@@ -178,7 +181,7 @@ unittest(current) {
       "\"PID\":\"ON\","
       "\"TankID\":0,"
       "\"Uptime\":\"0d 0h 1m 1s\","
-      "\"Version\":\"22.03.1\"}\r\n";
+      "\"Version\":\"22.03.2\"}\r\n";
   assertEqual(expectedResponse, response);
   assertEqual(NOT_CONNECTED, server->getState());
   client.stop();

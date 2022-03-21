@@ -234,12 +234,13 @@ void EthernetServer_TC::loop() {
 }
 
 void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
-  char buffer[128];
+  char buffer[256];
   static const char response[] PROGMEM =
       "HTTP/1.1 200 OK\r\n"
       "Content-Type: text/plain;charset=UTF-8\r\n"
       "Content-Encoding: identity\r\n"
-      "Content-Language: en-US\r\n";
+      "Content-Language: en-US\r\n"
+      "Access-Control-Allow-Origin: *\r\n";
   strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
   client.write(buffer);
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Content-Length: %lu\r\n"), (unsigned long)size);

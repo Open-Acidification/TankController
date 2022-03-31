@@ -102,6 +102,40 @@ void EthernetServer_TC::keypress() {
   state = NOT_CONNECTED;
 }
 
+void EthernetServer_TC::rootdir() {
+  // Log beginning time
+  unsigned long start = millis();
+  File dir;
+  byte tabulation;
+  if (!dir.open("/")) {
+    sd.errorHalt(&Serial, F("dir.open failed"));
+  }
+  File file;
+  char fileName[20];
+  dir.rewind();
+
+  while (file.openNext(&dir, O_READ)) {
+    if (!file.isHidden()) {
+      file.getName(fileName, sizeof(fileName));
+      for (uint8_t i = 0; i < tabulation; i++) Serial.write('\t');
+      Serial.print(fileName);
+
+      if (file.isDir()) {
+        Serial.println(F("/"));
+        displayDirectoryContent(file, tabulation + 1);
+      } else {
+        Serial.write('\t'); Serial.print(file.fileSize()); Serial.println(F(" bytes"));
+      }
+    }
+    file.close();
+  }
+  unsigned long end = millis();
+  Serial(F('Time elapsed = %i seconds'), (int)(end - start));
+
+  client.stop();
+  state = NOT_CONNECTED;
+}
+
 bool EthernetServer_TC::file() {
   // Buffer has something like "GET /path HTTP/1.1"
   // and we want to put a null at the end of the path.
@@ -163,6 +197,8 @@ void EthernetServer_TC::get() {
     display();
   } else if (memcmp_P(buffer + 4, F("/api/1/current"), 14) == 0) {
     current();
+  } else if (memcmp_P(buffer + 4, F("/api/1/rootdir"), 14) == 0) {
+    rootdir();
   } else if (!file()) {
     // TODO: send an error response
     serial(F("get \"%s\" not recognized!"), buffer + 4);

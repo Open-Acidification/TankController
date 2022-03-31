@@ -50,6 +50,7 @@ private:
   void current();
   void display();
   void keypress();
+  void rootdir();
   bool file();
   void get();
   void post();

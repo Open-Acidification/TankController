@@ -111,9 +111,9 @@ void SD_TC::listRootToBuffer(void (*callWhenFull)(char* buffer)) {
 void SD_TC::recursiveDir(File& dir, void (*callWhenFull)(char* buffer), byte tabulation) {
   File currFile;
   char fileName[13];  // Is it only 8 characters max, plus null term? 13 minimum per documentation
-  char line[300];      // Each line shouldn't be more than 30 characters long
+  char line[300];     // Each line shouldn't be more than 30 characters long
 
-  #ifndef MOCK_PINS_COUNT
+#ifndef MOCK_PINS_COUNT
   while (currFile.openNext(&dir, O_READ)) {
     if (!currFile.isHidden()) {
       memset(line, ' ', sizeof(line));
@@ -124,7 +124,7 @@ void SD_TC::recursiveDir(File& dir, void (*callWhenFull)(char* buffer), byte tab
       }
       if (currFile.isDir()) {
         snprintf_P(line + tabulation, sizeof(line), (PGM_P)F("%s/\n"), fileName);
-        //callWhenFull(line);
+        // callWhenFull(line);
         recursiveDir(currFile, callWhenFull, tabulation + 1);
       } else {
         snprintf_P(line + tabulation, sizeof(line), (PGM_P)F("%s\t%6u bytes\n"), fileName, currFile.fileSize());
@@ -133,10 +133,10 @@ void SD_TC::recursiveDir(File& dir, void (*callWhenFull)(char* buffer), byte tab
     }
     currFile.close();
   }
-  #else
+#else
   char notImplemented[] PROGMEM = "Root directory not supported by CI framework.";
   callWhenFull(notImplemented);
-  #endif
+#endif
 }
 
 void SD_TC::todaysDataFileName(char* path, int size) {

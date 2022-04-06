@@ -6,7 +6,6 @@
 #include "Devices/Ethernet_TC.h"
 #include "Devices/JSONBuilder.h"
 #include "Devices/LiquidCrystal_TC.h"
-#include "SD_TC.h"
 #include "Serial_TC.h"
 #include "TankController.h"
 
@@ -102,38 +101,30 @@ void EthernetServer_TC::keypress() {
   state = NOT_CONNECTED;
 }
 
+// Non-member wrapper for singleton instance
+void writeBuffer(char* buffer) {
+  // Write to client and return (ASSUME NULL-TERMINATED)
+  EthernetServer_TC::instance()->writeBufferToClient(buffer);
+}
+
 void EthernetServer_TC::rootdir() {
+  // NOTE: We use buffer and replace it because it's big and we don't need extra space
   // Log beginning time
   unsigned long start = millis();
-  File dir;
-  byte tabulation;
-  if (!dir.open("/")) {
-    sd.errorHalt(&Serial, F("dir.open failed"));
-  }
-  File file;
-  char fileName[20];
-  dir.rewind();
-
-  while (file.openNext(&dir, O_READ)) {
-    if (!file.isHidden()) {
-      file.getName(fileName, sizeof(fileName));
-      for (uint8_t i = 0; i < tabulation; i++) Serial.write('\t');
-      Serial.print(fileName);
-
-      if (file.isDir()) {
-        Serial.println(F("/"));
-        displayDirectoryContent(file, tabulation + 1);
-      } else {
-        Serial.write('\t'); Serial.print(file.fileSize()); Serial.println(F(" bytes"));
-      }
-    }
-    file.close();
-  }
+  // Call function on SD Card using bufferFull() callback
+  SD_TC::instance()->listRootToBuffer(writeBuffer);
+  // Log end time
   unsigned long end = millis();
-  Serial(F('Time elapsed = %i seconds'), (int)(end - start));
-
+  serial(F("rootdir() called, time = %i ms"), (int)(end - start));
+  // Once that function returns, stop client
   client.stop();
   state = NOT_CONNECTED;
+}
+
+// Helper function for root directory
+void EthernetServer_TC::writeBufferToClient(char* buffer) {
+  // Write to client and return (ASSUME NULL-TERMINATED)
+  client.write(buffer);
 }
 
 bool EthernetServer_TC::file() {

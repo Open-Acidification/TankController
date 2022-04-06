@@ -1,1 +1,1 @@
-Error during build: exit status 1
+Global variables use 2304 bytes (28%) of dynamic memory, leaving 5888 bytes for local variables. Maximum is 8192 bytes.

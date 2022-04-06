@@ -19,6 +19,8 @@ public:
   File open(const char* path, oflag_t oflag = 0x00);
   void todaysDataFileName(char* path, int size);
   void printRootDirectory();
+  void listRootToBuffer(void (*callWhenFull)(char* buffer));
+  void recursiveDir(File& dir, void (*callWhenFull)(char* buffer), byte tabulation = 0);
 
 private:
   // class variables

@@ -96,6 +96,49 @@ void SD_TC::printRootDirectory() {
   sd.ls(LS_DATE | LS_SIZE | LS_R);
 }
 
+void SD_TC::listRootToBuffer(void (*callWhenFull)(char* buffer)) {
+  const char path[] PROGMEM = "/";
+  File root = SD_TC::instance()->open(path);
+  if (!root) {
+    serial(F("SD_TC open() failed"));
+    return;
+  }
+  root.rewind();
+  recursiveDir(root, callWhenFull);
+  root.close();
+}
+
+void SD_TC::recursiveDir(File& dir, void (*callWhenFull)(char* buffer), byte tabulation) {
+  File currFile;
+  char fileName[13];  // Is it only 8 characters max, plus null term? 13 minimum per documentation
+  char line[300];      // Each line shouldn't be more than 30 characters long
+
+  #ifndef MOCK_PINS_COUNT
+  while (currFile.openNext(&dir, O_READ)) {
+    if (!currFile.isHidden()) {
+      memset(line, ' ', sizeof(line));
+      currFile.getName(fileName, sizeof(fileName));
+      // Write line (either if directory or not) if size - bytes > 30
+      for (int i = 0; i < tabulation; i++) {
+        line[i] = '\t';
+      }
+      if (currFile.isDir()) {
+        snprintf_P(line + tabulation, sizeof(line), (PGM_P)F("%s/\n"), fileName);
+        //callWhenFull(line);
+        recursiveDir(currFile, callWhenFull, tabulation + 1);
+      } else {
+        snprintf_P(line + tabulation, sizeof(line), (PGM_P)F("%s\t%6u bytes\n"), fileName, currFile.fileSize());
+        callWhenFull(line);
+      }
+    }
+    currFile.close();
+  }
+  #else
+  char notImplemented[] PROGMEM = "Root directory not supported by CI framework.";
+  callWhenFull(notImplemented);
+  #endif
+}
+
 void SD_TC::todaysDataFileName(char* path, int size) {
   DateTime_TC now = DateTime_TC::now();
   snprintf_P(path, size, (PGM_P)F("%4i%02i%02i.csv"), now.year(), now.month(), now.day());

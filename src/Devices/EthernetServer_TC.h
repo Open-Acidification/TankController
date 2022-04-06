@@ -1,6 +1,8 @@
 #pragma once
 
 #include <Arduino.h>
+
+#include "SD_TC.h"
 #ifdef MOCK_PINS_COUNT
 #include "Ethernet.h"
 #else
@@ -26,6 +28,7 @@ public:
     return state;
   }
   void loop();
+  void writeBufferToClient(char*);
 
 private:
   // class variables

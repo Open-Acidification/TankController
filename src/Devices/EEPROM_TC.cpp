@@ -61,6 +61,18 @@ void EEPROM_TC::eepromWriteInt(uint16_t address, int32_t value) {
 float EEPROM_TC::getAmplitude() {
   return eepromReadFloat(AMPLITUDE_ADDRESS);
 }
+float EEPROM_TC::getArbitraryPhLeftPoint() {
+  return eepromReadFloat(ARBITRARY_PH_LEFT_POINT_ADDRESS);
+}
+float EEPROM_TC::getArbitraryPhRightPoint() {
+  return eepromReadFloat(ARBITRARY_PH_RIGHT_POINT_ADDRESS);
+}
+uint32_t EEPROM_TC::getArbitraryPhRampTimeStart() {
+  return eepromReadInt(ARBITRARY_PH_RAMP_TIME_START_ADDRESS);
+}
+uint32_t EEPROM_TC::getArbitraryPhRampTimeEnd() {
+  return eepromReadInt(ARBITRARY_PH_RAMP_TIME_END_ADDRESS);
+}
 float EEPROM_TC::getCorrectedTemp() {
   return eepromReadFloat(TEMP_CORR_ADDRESS);
 }
@@ -171,6 +183,18 @@ float EEPROM_TC::getTempSeriesSize() {
 // setter methods
 void EEPROM_TC::setAmplitude(float value) {
   eepromWriteFloat(AMPLITUDE_ADDRESS, value);
+}
+void EEPROM_TC::setArbitraryPhLeftPoint(float value) {
+  eepromWriteFloat(ARBITRARY_PH_LEFT_POINT_ADDRESS, value);
+}
+void EEPROM_TC::setArbitraryPhRightPoint(float value) {
+  eepromWriteFloat(ARBITRARY_PH_RIGHT_POINT_ADDRESS, value);
+}
+void EEPROM_TC::setArbitraryPhRampTimeStart(uint32_t value) {
+  eepromWriteInt(ARBITRARY_PH_RAMP_TIME_START_ADDRESS, value);
+}
+void EEPROM_TC::setArbitraryPhRampTimeEnd(uint32_t value) {
+  eepromWriteInt(ARBITRARY_PH_RAMP_TIME_END_ADDRESS, value);
 }
 void EEPROM_TC::setCorrectedTemp(float value) {
   eepromWriteFloat(TEMP_CORR_ADDRESS, value);

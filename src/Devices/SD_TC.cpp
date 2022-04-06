@@ -57,11 +57,10 @@ void SD_TC::appendDataToPath(const char* line, const char* path) {
     file.close();
     COUT(file);
   } else {
-    if (!hasHadError) {
+    if (!hasHadError) {  // output to serial once if file fails to open
       hasHadError = true;
       serial(F("Unable to open file: \"%s\""), path);
       COUT("Unable to open file: \"" << path << "\"");
-      return;
     }
   }
 }

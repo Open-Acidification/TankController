@@ -67,6 +67,12 @@ PHControl::PHControl() {
       amplitude = EEPROM_TC::instance()->getPhSineAmplitude();
       sineStartTime = EEPROM_TC::instance()->getPhSineStartTime();
       break;
+    case ARBITRARY_TYPE:
+      arbLeftPoint = EEPROM_TC::instance()->getArbitraryPhLeftPoint();
+      arbRightPoint = EEPROM_TC::instance()->getArbitraryPhRightPoint();
+      arbRampTimeStart = EEPROM_TC::instance()->getArbitraryPhRampTimeStart();
+      arbRampTimeEnd = EEPROM_TC::instance()->getArbitraryPhRampTimeEnd();
+      // get rampDuration?
     default:
       break;
   }
@@ -126,6 +132,15 @@ void PHControl::setSine(float sineAmplitude, float sinePeriodInHours) {
   EEPROM_TC::instance()->setPhSineStartTime(sineStartTime);
 }
 
+void PHControl::setArbitrary(float left, float right, uint32_t duration, uint32_t startTime) {
+  arbLeftPoint = left;
+  arbRightPoint = right;
+  arbRampDuration = duration;
+  arbRampTimeStart = startTime;
+  phSetType = phSetTypeTypes::ARBITRARY_TYPE;
+}
+
+}
 void PHControl::enablePID(bool flag) {
   usePID = flag;
   // save to EEPROM?
@@ -166,6 +181,29 @@ void PHControl::updateControl(float pH) {
       float percentThroughPeriod = 1 - percentNOTThroughPeriod;
       float x = percentThroughPeriod * (2 * PI);        // the x position for our sine wave
       currentPHTarget = amplitude * sin(x) + targetPh;  // y position in our sine wave
+      break;
+    }
+    case ARBITRARY_TYPE: {
+      if (currentTime < arbRampTimeEnd) {
+        // what if arbLeftPoint > than arbRightPoint?
+        currentPHTarget = rampStartingPh +
+                          ((currentTime - arbRampTimeStart) * (arbRightPoint - arbLeftPoint) / (arbRampTimeEnd - arbRampTimeStart));
+      } else {
+        float temporaryArbLeftPoint = EEPROM_TC::instance()->getArbitraryPhLeftPoint();
+        float temporaryArbRightPoint = EEPROM_TC::instance()->getArbitraryPhRightPoint();
+        // or save timestamp of when eeprom was written to again
+        if(temporaryArbLeftPoint == arbLeftPoint && temporaryArbRightPoint == temporaryArbRightPoint) {
+          return;
+        } else{
+          arbLeftPoint = temporaryArbLeftPoint;
+          arbRightPoint = temporaryArbRightPoint;
+          arbRampTimeStart = arbRampTimeEnd;
+          arbRampTimeEnd = arbRampTimeEnd + arbRampDuration;
+          EEPROM_TC::instance()->setArbitraryPhRampTimeStart(arbRampTimeStart);
+          EEPROM_TC::instance()->setArbitraryPhRampTimeEnd(arbRampTimeEnd);
+        }
+        
+      }
       break;
     }
     default:

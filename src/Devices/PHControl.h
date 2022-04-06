@@ -11,6 +11,11 @@ private:
   uint32_t lastWarnMS = 0;
   const uint16_t PH_CONTROL_PIN = 49;
   const uint16_t SOLENOID_OPENING_TIME = 100;
+  float arbLeftPoint;
+  float arbRightPoint;
+  float arbRampTimeStart;
+  float arbRampTimeEnd;
+  uint32_t arbRampDuration = 6000;  // 6 seconds
   float targetPh;  // actual target
   float currentPHTarget;
   float rampStartingPh;
@@ -29,6 +34,7 @@ public:
     FLAT_TYPE,
     RAMP_TYPE,
     SINE_TYPE,
+    ARBITRARY_TYPE,
   };
   static PHControl *instance();
   static void clearInstance();
@@ -58,6 +64,7 @@ public:
   }
   bool isOn();
   void setTargetPh(float newPh);
+  void setArbitrary(float left, float right, uint32_t duration = 6000, uint32_t startTime);
   void setRampDuration(float newPhRampDuration);
   void setSine(float sineAmplitude, float sinePeriodInHours);
   void enablePID(bool flag);

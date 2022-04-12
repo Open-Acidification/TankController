@@ -220,4 +220,40 @@ unittest(badRequest) {
   server->loop();
 }
 
+unittest(rootDir) {
+  TankController* tc = TankController::instance();
+  EthernetServer_TC* server = EthernetServer_TC::instance();
+  EthernetClient_CI client;
+  server->setHasClientCalling(true);
+  delay(1);
+  server->loop();
+  std::cout << __FILE__ << ":" << __LINE__ << std::endl;
+  client = server->getClient();
+  std::cout << __FILE__ << ":" << __LINE__ << std::endl;
+  const char request[] =
+      "GET /api/1/rootdir HTTP/1.1\r\n"
+      "Host: localhost:80\r\n"
+      "Accept: text/plain;charset=UTF-8\r\n"
+      "Accept-Encoding: identity\r\n"
+      "Accept-Language: en-US\r\n"
+      "\r\n";
+  std::cout << __FILE__ << ":" << __LINE__ << std::endl;
+  client.pushToReadBuffer(request);
+  server->loop();
+  std::cout << __FILE__ << ":" << __LINE__ << std::endl;
+  deque<uint8_t>* pBuffer = client.writeBuffer();
+  std::cout << __FILE__ << ":" << __LINE__ << std::endl;
+  assertTrue(pBuffer->size() == 28);
+  String response;
+  while (!pBuffer->empty()) {
+    response.concat(pBuffer->front());
+    pBuffer->pop_front();
+  }
+  const char expectedResponse[] = "Root directory not supported by CI framework.\r\n\r\n";
+  assertEqual(expectedResponse, response);
+  assertEqual(NOT_CONNECTED, server->getState());
+  client.stop();
+  server->loop();
+}
+
 unittest_main()

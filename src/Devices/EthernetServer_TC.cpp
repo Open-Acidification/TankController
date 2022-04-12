@@ -113,6 +113,8 @@ void EthernetServer_TC::rootdir() {
   unsigned long start = millis();
   // Call function on SD Card using bufferFull() callback
   SD_TC::instance()->listRootToBuffer(writeBuffer);
+  client.write('\r');
+  client.write('\n');
   // Log end time
   unsigned long end = millis();
   serial(F("rootdir() called, time = %i ms"), (int)(end - start));

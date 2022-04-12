@@ -135,6 +135,7 @@ void SD_TC::recursiveDir(File& dir, void (*callWhenFull)(char* buffer), byte tab
   }
 #else
   char notImplemented[] PROGMEM = "Root directory not supported by CI framework.";
+  strncpy_P(line, (PGM_P)notImplemented, sizeof(line));
   callWhenFull(notImplemented);
 #endif
 }

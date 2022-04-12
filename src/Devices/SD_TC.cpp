@@ -97,6 +97,7 @@ void SD_TC::printRootDirectory() {
 }
 
 void SD_TC::listRootToBuffer(void (*callWhenFull)(char* buffer)) {
+#ifndef MOCK_PINS_COUNT
   const char path[] PROGMEM = "/";
   File root = SD_TC::instance()->open(path);
   if (!root) {
@@ -106,14 +107,21 @@ void SD_TC::listRootToBuffer(void (*callWhenFull)(char* buffer)) {
   root.rewind();
   recursiveDir(root, callWhenFull);
   root.close();
+#else
+  char notImplemented[] PROGMEM = "Root directory not supported by CI framework.\r\n";
+  char buffer[sizeof(notImplemented)];
+  memcpy(buffer, (PGM_P)notImplemented, sizeof(notImplemented));
+  callWhenFull(buffer);
+#endif
 }
 
 void SD_TC::recursiveDir(File& dir, void (*callWhenFull)(char* buffer), byte tabulation) {
+// Only called on real device
+#ifndef MOCK_PINS_COUNT
   File currFile;
   char fileName[13];  // Is it only 8 characters max, plus null term? 13 minimum per documentation
   char line[300];     // Each line shouldn't be more than 30 characters long
 
-#ifndef MOCK_PINS_COUNT
   while (currFile.openNext(&dir, O_READ)) {
     if (!currFile.isHidden()) {
       memset(line, ' ', sizeof(line));
@@ -133,10 +141,6 @@ void SD_TC::recursiveDir(File& dir, void (*callWhenFull)(char* buffer), byte tab
     }
     currFile.close();
   }
-#else
-  char notImplemented[] PROGMEM = "Root directory not supported by CI framework.";
-  strncpy_P(line, (PGM_P)notImplemented, sizeof(line));
-  callWhenFull(notImplemented);
 #endif
 }
 

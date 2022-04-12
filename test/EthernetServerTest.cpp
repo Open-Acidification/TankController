@@ -239,11 +239,12 @@ unittest(rootDir) {
       "\r\n";
   std::cout << __FILE__ << ":" << __LINE__ << std::endl;
   client.pushToReadBuffer(request);
+  std::cout << __FILE__ << ":" << __LINE__ << std::endl;
   server->loop();
   std::cout << __FILE__ << ":" << __LINE__ << std::endl;
   deque<uint8_t>* pBuffer = client.writeBuffer();
   std::cout << __FILE__ << ":" << __LINE__ << std::endl;
-  assertTrue(pBuffer->size() == 28);
+  assertTrue(pBuffer->size() == 49);
   String response;
   while (!pBuffer->empty()) {
     response.concat(pBuffer->front());

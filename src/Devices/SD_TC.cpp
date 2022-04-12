@@ -108,7 +108,7 @@ void SD_TC::listRootToBuffer(void (*callWhenFull)(char* buffer)) {
   recursiveDir(root, callWhenFull);
   root.close();
 #else
-  char notImplemented[] PROGMEM = "Root directory not supported by CI framework.\r\n";
+  static const char notImplemented[] PROGMEM = "Root directory not supported by CI framework.\r\n";
   char buffer[sizeof(notImplemented)];
   memcpy(buffer, (PGM_P)notImplemented, sizeof(notImplemented));
   callWhenFull(buffer);

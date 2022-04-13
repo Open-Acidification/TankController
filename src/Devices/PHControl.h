@@ -64,9 +64,10 @@ public:
   }
   bool isOn();
   void setTargetPh(float newPh);
-  void setArbitrary(float left, float right, uint32_t duration = 6000, uint32_t startTime);
+  void setArbitrary(float left, float right, uint32_t startTime, uint32_t duration = 6000);
   void setRampDuration(float newPhRampDuration);
   void setSine(float sineAmplitude, float sinePeriodInHours);
   void enablePID(bool flag);
   void updateControl(float pH);
+  void updateArbitraryPoints();
 };

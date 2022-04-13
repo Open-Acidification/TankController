@@ -45,6 +45,29 @@ void SD_TC::appendData(const char* header, const char* line) {
   COUT(line);
 }
 
+void SD_TC::writePhPoints(const char* line) {
+  float pHPoint = std::stof(line);
+  File file = sd.open("arb_pH_points", O_CREAT | O_WRONLY);
+  file.write(line);
+  file.close();
+}
+
+const char * SD_TC::readTextFileLine(const char * path, char* bytes, uint32_t seekTo) {
+  float nextArbRightPoint;
+  File file = open(path, O_RDONLY);
+  file.seek(seekTo);
+  char c = file.read();
+
+  int i = 0;
+  while(c != '\n') {
+    bytes[i++] = c;
+    c = file.read();
+  }
+  uint32_t position = file.position();
+  float pHPoint = std::stof((const char *) bytes);
+  return ( char *) bytes;
+}
+
 /**
  * append data to a path
  */
@@ -86,6 +109,10 @@ bool SD_TC::format() {
 bool SD_TC::mkdir(const char* path) {
   return sd.mkdir(path);
 }
+
+// uint32_t SD_TC::position() {
+//   return file.position();
+// }
 
 File SD_TC::open(const char* path, oflag_t oflag) {
   return sd.open(path, oflag);

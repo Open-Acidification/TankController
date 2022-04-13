@@ -196,6 +196,34 @@ unittest(RampGreaterThanZero) {
   delay(1800000);  // delay 30 minutes
   tc->loop();
   assertEqual(7, controlSolenoid->getCurrentPhTarget());
+
+  // ramp up
+  setPhMeasurementTo(5.500);
+  controlSolenoid->setTargetPh(7.000);
+  controlSolenoid->setRampDuration(1.5);
+  assertEqual(controlSolenoid->phSetTypeTypes::RAMP_TYPE, controlSolenoid->getPhSetType());
+  tc->loop();
+  assertEqual(5.5, controlSolenoid->getCurrentPhTarget());
+  // mock arduino restarting
+  PHControl::clearInstance();
+  controlSolenoid = PHControl::instance();
+  // takes 1.5 hours to get to pH of 7
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  std::cout << "-------------------" << controlSolenoid->getCurrentPhTarget() << std::endl;
+  assertEqual(6, controlSolenoid->getCurrentPhTarget());
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  std::cout << "-------------------" << controlSolenoid->getCurrentPhTarget() << std::endl;
+  assertEqual(6.5, controlSolenoid->getCurrentPhTarget());
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(7, controlSolenoid->getCurrentPhTarget());
+  // ramp time no longer used after it ends
+  delay(1800000);  // delay 30 minutes
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(7, controlSolenoid->getCurrentPhTarget());
 }
 
 unittest(ChangeRampToZero) {

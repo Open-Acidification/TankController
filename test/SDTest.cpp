@@ -171,4 +171,14 @@ unittest(printRootDirectory) {
   assertNotEqual(-1, index);
 }
 
+unittest(thisIsATest) {
+  SD_TC::instance()->writePhPoints("7.125\n");
+  // File file = SD_TC::instance()->open("arb_pH_points", O_RDONLY);
+  char buffer[7];
+  const char * value = SD_TC::instance()->readTextFileLine("arb_pH_points", buffer);
+  std::cout << "----------------" << value << "-------------" << std::endl;
+  assertEqual("7.125", value);
+  // file.close();
+}
+
 unittest_main()

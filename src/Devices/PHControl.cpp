@@ -5,6 +5,7 @@
 #include "Devices/DateTime_TC.h"
 #include "Devices/EEPROM_TC.h"
 #include "Devices/PHProbe.h"
+#include "Devices/SD_TC.h"
 #include "Devices/Serial_TC.h"
 #include "PID_TC.h"
 #include "TC_util.h"
@@ -132,15 +133,24 @@ void PHControl::setSine(float sineAmplitude, float sinePeriodInHours) {
   EEPROM_TC::instance()->setPhSineStartTime(sineStartTime);
 }
 
-void PHControl::setArbitrary(float left, float right, uint32_t duration, uint32_t startTime) {
+void PHControl::setArbitrary(float left, float right, uint32_t startTime, uint32_t duration) {
   arbLeftPoint = left;
   arbRightPoint = right;
   arbRampDuration = duration;
   arbRampTimeStart = startTime;
-  phSetType = phSetTypeTypes::ARBITRARY_TYPE;
+  pHSetType = phSetTypeTypes::ARBITRARY_TYPE;
 }
 
+void PHControl::updateArbitraryPoints() {
+  // File file = SD_TC::instance()->open("arb_pH_points", O_RDONLY);
+  char buffer[7];
+  const char * nextArbRightPoint = SD_TC::instance()->readTextFileLine("arb_pH_points", buffer);
+  arbLeftPoint = arbRightPoint;
+  arbRightPoint = std::stof(nextArbRightPoint);
+  // uint32_t position = file.position();
+  // file.close();
 }
+
 void PHControl::enablePID(bool flag) {
   usePID = flag;
   // save to EEPROM?
@@ -185,8 +195,7 @@ void PHControl::updateControl(float pH) {
     }
     case ARBITRARY_TYPE: {
       if (currentTime < arbRampTimeEnd) {
-        // what if arbLeftPoint > than arbRightPoint?
-        currentPHTarget = rampStartingPh +
+        currentPHTarget = arbLeftPoint +
                           ((currentTime - arbRampTimeStart) * (arbRightPoint - arbLeftPoint) / (arbRampTimeEnd - arbRampTimeStart));
       } else {
         float temporaryArbLeftPoint = EEPROM_TC::instance()->getArbitraryPhLeftPoint();

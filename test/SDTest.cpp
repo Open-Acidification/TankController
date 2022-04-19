@@ -172,12 +172,11 @@ unittest(printRootDirectory) {
 }
 
 unittest(thisIsATest) {
-  SD_TC::instance()->writePhPoints("7.125\n");
+  SD_TC::instance()->writePhPoint(7.125);
   // File file = SD_TC::instance()->open("arb_pH_points", O_RDONLY);
-  char buffer[7];
-  const char * value = SD_TC::instance()->readTextFileLine("arb_pH_points", buffer);
+  float value = SD_TC::instance()->readPhPoint();
   std::cout << "----------------" << value << "-------------" << std::endl;
-  assertEqual("7.125", value);
+  assertEqual(7.125, value);
   // file.close();
 }
 

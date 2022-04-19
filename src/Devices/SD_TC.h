@@ -19,8 +19,8 @@ public:
   File open(const char* path, oflag_t oflag = 0x00);
   void todaysDataFileName(char* path, int size);
   void printRootDirectory();
-  void writePhPoints(const char* line);
-  const char * readTextFileLine(const char * path, char* bytes, uint32_t seekTo = 0);
+  void writePhPoint(float value);
+  float readPhPoint(const uint32_t seekTo = 0);
   // uint32_t SD_TC::position();
 private:
   // class variables

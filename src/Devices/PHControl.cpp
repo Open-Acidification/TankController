@@ -141,15 +141,15 @@ void PHControl::setArbitrary(float left, float right, uint32_t startTime, uint32
   pHSetType = phSetTypeTypes::ARBITRARY_TYPE;
 }
 
-void PHControl::updateArbitraryPoints() {
-  // File file = SD_TC::instance()->open("arb_pH_points", O_RDONLY);
-  char buffer[7];
-  const char * nextArbRightPoint = SD_TC::instance()->readTextFileLine("arb_pH_points", buffer);
-  arbLeftPoint = arbRightPoint;
-  arbRightPoint = std::stof(nextArbRightPoint);
-  // uint32_t position = file.position();
-  // file.close();
-}
+// void PHControl::updateArbitraryPoints() {
+//   // File file = SD_TC::instance()->open("arb_pH_points", O_RDONLY);
+//   char buffer[7];
+//   const char * nextArbRightPoint = SD_TC::instance()->readTextFileLine("arb_pH_points", buffer);
+//   arbLeftPoint = arbRightPoint;
+//   arbRightPoint = std::stof(nextArbRightPoint);
+//   // uint32_t position = file.position();
+//   // file.close();
+// }
 
 void PHControl::enablePID(bool flag) {
   usePID = flag;

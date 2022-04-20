@@ -102,7 +102,7 @@ void EthernetServer_TC::keypress() {
 }
 
 // Non-member wrapper for singleton instance
-void writeBuffer(char* buffer) {
+void writeToClientBuffer(char* buffer) {
   // Write to client and return (ASSUME NULL-TERMINATED)
   EthernetServer_TC::instance()->writeBufferToClient(buffer);
 }
@@ -112,7 +112,7 @@ void EthernetServer_TC::rootdir() {
   // Log beginning time
   unsigned long start = millis();
   // Call function on SD Card using bufferFull() callback
-  SD_TC::instance()->listRootToBuffer(writeBuffer);
+  SD_TC::instance()->listRootToBuffer(writeToClientBuffer);
   client.write('\r');
   client.write('\n');
   // Log end time

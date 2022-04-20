@@ -3,6 +3,7 @@
 #include <ci/ObservableDataStream.h>
 
 #include "Devices/DateTime_TC.h"
+#include "Devices/SD_TC.h"
 #include "LiquidCrystal_TC.h"
 #include "MainMenu.h"
 #include "PHCalibrationMid.h"
@@ -210,11 +211,9 @@ unittest(RampGreaterThanZero) {
   // takes 1.5 hours to get to pH of 7
   delay(1800000);  // delay 30 minutes
   tc->loop();
-  std::cout << "-------------------" << controlSolenoid->getCurrentPhTarget() << std::endl;
   assertEqual(6, controlSolenoid->getCurrentPhTarget());
   delay(1800000);  // delay 30 minutes
   tc->loop();
-  std::cout << "-------------------" << controlSolenoid->getCurrentPhTarget() << std::endl;
   assertEqual(6.5, controlSolenoid->getCurrentPhTarget());
   delay(1800000);  // delay 30 minutes
   tc->loop();
@@ -278,6 +277,35 @@ unittest(sineTest) {
   delay(1800000);  // delay 30 minutes
   tc->loop();
   assertEqual(7, controlSolenoid->getCurrentPhTarget());
+}
+
+unittest(updateArbitraryPoints) {
+  SD_TC::instance()->writePhPoint(8.125);
+  SD_TC::instance()->writePhPoint(7.125);
+  SD_TC::instance()->writePhPoint(8.125);
+  controlSolenoid->setArbitrary();
+  assertEqual(controlSolenoid->phSetTypeTypes::ARBITRARY_TYPE, controlSolenoid->getPhSetType());
+  tc->loop();
+  assertEqual(8.125, controlSolenoid->getCurrentPhTarget());
+  assertEqual(8.125, controlSolenoid->getArbLeftPoint());
+  // mock arduino restarting
+  PHControl::clearInstance();
+  controlSolenoid = PHControl::instance();
+  tc->loop();
+  assertEqual(8.125, controlSolenoid->getCurrentPhTarget());
+  assertEqual(8.125, controlSolenoid->getArbLeftPoint());
+  // takes 6 minutes for next ramp
+  delay(359000);  // 5 minutes 59 seconds
+  tc->loop();
+  assertTrue(7.125 <= controlSolenoid->getCurrentPhTarget() && controlSolenoid->getCurrentPhTarget() <= 7.128);
+  assertEqual(7.125, controlSolenoid->getArbRightPoint());
+  delay(1000);
+  tc->loop();
+  assertTrue(7.125 <= controlSolenoid->getCurrentPhTarget() && controlSolenoid->getCurrentPhTarget() <= 7.128);
+  delay(359000);  // 5 minutes 59 seconds
+  tc->loop();
+  assertTrue(8.122 <= controlSolenoid->getCurrentPhTarget() && controlSolenoid->getCurrentPhTarget() <= 8.125);
+  assertEqual(8.125, controlSolenoid->getArbRightPoint());
 }
 
 unittest_main()

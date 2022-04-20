@@ -13,9 +13,9 @@ private:
   const uint16_t SOLENOID_OPENING_TIME = 100;
   float arbLeftPoint;
   float arbRightPoint;
-  float arbRampTimeStart;
-  float arbRampTimeEnd;
-  uint32_t arbRampDuration = 6000;  // 6 seconds
+  uint32_t arbRampTimeStart;
+  uint32_t arbRampTimeEnd;
+  uint32_t arbRampDuration = 360;  // 360 seconds or 6 minutes
   float targetPh;  // actual target
   float currentPHTarget;
   float rampStartingPh;
@@ -38,6 +38,12 @@ public:
   };
   static PHControl *instance();
   static void clearInstance();
+  float getArbLeftPoint() {
+    return arbLeftPoint;
+  }
+  float getArbRightPoint() {
+    return arbRightPoint;
+  }
   float getTargetPh() {
     return targetPh;
   }
@@ -64,7 +70,7 @@ public:
   }
   bool isOn();
   void setTargetPh(float newPh);
-  void setArbitrary(float left, float right, uint32_t startTime, uint32_t duration = 6000);
+  void setArbitrary(uint32_t duration = 360);  // 360 seconds or 6 minutes
   void setRampDuration(float newPhRampDuration);
   void setSine(float sineAmplitude, float sinePeriodInHours);
   void enablePID(bool flag);

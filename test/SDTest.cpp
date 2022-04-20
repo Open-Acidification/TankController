@@ -175,7 +175,6 @@ unittest(thisIsATest) {
   SD_TC::instance()->writePhPoint(7.125);
   // File file = SD_TC::instance()->open("arb_pH_points", O_RDONLY);
   float value = SD_TC::instance()->readPhPoint();
-  std::cout << "----------------" << value << "-------------" << std::endl;
   assertEqual(7.125, value);
   // file.close();
 }

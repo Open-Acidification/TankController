@@ -133,23 +133,34 @@ void PHControl::setSine(float sineAmplitude, float sinePeriodInHours) {
   EEPROM_TC::instance()->setPhSineStartTime(sineStartTime);
 }
 
-void PHControl::setArbitrary(float left, float right, uint32_t startTime, uint32_t duration) {
-  arbLeftPoint = left;
-  arbRightPoint = right;
+void PHControl::setArbitrary(uint32_t duration) {
+  arbLeftPoint = SD_TC::instance()->readPhPoint();
+  arbRightPoint = SD_TC::instance()->readPhPoint(4);
   arbRampDuration = duration;
-  arbRampTimeStart = startTime;
+  arbRampTimeStart = DateTime_TC::now().secondstime();
+  arbRampTimeEnd = arbRampTimeStart + arbRampDuration;
   pHSetType = phSetTypeTypes::ARBITRARY_TYPE;
+  EEPROM_TC::instance()->setPhSetType(pHSetType);
+  EEPROM_TC::instance()->setArbitraryPhRampTimeStart(arbRampTimeStart);
+  EEPROM_TC::instance()->setArbitraryPhRampTimeEnd(arbRampTimeEnd);
+  EEPROM_TC::instance()->setArbitraryPhLeftPoint(arbLeftPoint);
+  EEPROM_TC::instance()->setArbitraryPhRightPoint(arbRightPoint);
 }
 
-// void PHControl::updateArbitraryPoints() {
-//   // File file = SD_TC::instance()->open("arb_pH_points", O_RDONLY);
-//   char buffer[7];
-//   const char * nextArbRightPoint = SD_TC::instance()->readTextFileLine("arb_pH_points", buffer);
-//   arbLeftPoint = arbRightPoint;
-//   arbRightPoint = std::stof(nextArbRightPoint);
-//   // uint32_t position = file.position();
-//   // file.close();
-// }
+void PHControl::updateArbitraryPoints() {
+  arbLeftPoint = arbRightPoint;
+  arbRightPoint = SD_TC::instance()->readPhPoint(8);
+  if(arbRightPoint == 0) {
+    pHSetType = phSetTypeTypes::FLAT_TYPE;
+    return;
+  }
+  arbRampTimeStart = arbRampTimeEnd;
+  arbRampTimeEnd = arbRampTimeEnd + arbRampDuration;
+  EEPROM_TC::instance()->setArbitraryPhRampTimeStart(arbRampTimeStart);
+  EEPROM_TC::instance()->setArbitraryPhRampTimeEnd(arbRampTimeEnd);
+  EEPROM_TC::instance()->setArbitraryPhLeftPoint(arbLeftPoint);
+  EEPROM_TC::instance()->setArbitraryPhRightPoint(arbRightPoint);
+}
 
 void PHControl::enablePID(bool flag) {
   usePID = flag;
@@ -198,20 +209,7 @@ void PHControl::updateControl(float pH) {
         currentPHTarget = arbLeftPoint +
                           ((currentTime - arbRampTimeStart) * (arbRightPoint - arbLeftPoint) / (arbRampTimeEnd - arbRampTimeStart));
       } else {
-        float temporaryArbLeftPoint = EEPROM_TC::instance()->getArbitraryPhLeftPoint();
-        float temporaryArbRightPoint = EEPROM_TC::instance()->getArbitraryPhRightPoint();
-        // or save timestamp of when eeprom was written to again
-        if(temporaryArbLeftPoint == arbLeftPoint && temporaryArbRightPoint == temporaryArbRightPoint) {
-          return;
-        } else{
-          arbLeftPoint = temporaryArbLeftPoint;
-          arbRightPoint = temporaryArbRightPoint;
-          arbRampTimeStart = arbRampTimeEnd;
-          arbRampTimeEnd = arbRampTimeEnd + arbRampDuration;
-          EEPROM_TC::instance()->setArbitraryPhRampTimeStart(arbRampTimeStart);
-          EEPROM_TC::instance()->setArbitraryPhRampTimeEnd(arbRampTimeEnd);
-        }
-        
+        updateArbitraryPoints();
       }
       break;
     }

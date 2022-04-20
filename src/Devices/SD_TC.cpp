@@ -131,11 +131,11 @@ void SD_TC::recursiveDir(File& dir, void (*callWhenFull)(char* buffer), byte tab
         line[i] = '\t';
       }
       if (currFile.isDir()) {
-        snprintf_P(line + tabulation, sizeof(line), (PGM_P)F("%s/\n"), fileName);
-        // callWhenFull(line);
+        snprintf_P(line + tabulation, sizeof(line) - tabulation, (PGM_P)F("%s/\n"), fileName);
+        callWhenFull(line);
         recursiveDir(currFile, callWhenFull, tabulation + 1);
       } else {
-        snprintf_P(line + tabulation, sizeof(line), (PGM_P)F("%s\t%6u bytes\n"), fileName, currFile.fileSize());
+        snprintf_P(line + tabulation, sizeof(line) - tabulation, (PGM_P)F("%s\t%6u bytes\n"), fileName, currFile.fileSize());
         callWhenFull(line);
       }
     }

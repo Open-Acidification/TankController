@@ -47,6 +47,8 @@ unittest(echo) {
       "\r\n"
       "foo";
   assertEqual(expectedResponse, response);
+  assertEqual(FINISHED, server->getState());
+  server->loop();  // Process finished state
   assertEqual(NOT_CONNECTED, server->getState());
   client.stop();
   server->loop();  // notify server that client stopped
@@ -88,6 +90,8 @@ unittest(display) {
       "pH=0.000   8.100\r\n"
       "T= 0.00 h 20.00 \r\n";
   assertEqual(expectedResponse, response);
+  assertEqual(FINISHED, server->getState());
+  server->loop();  // Process finished state
   assertEqual(NOT_CONNECTED, server->getState());
   client.stop();
   server->loop();
@@ -125,6 +129,7 @@ unittest(keypress) {
       "Access-Control-Allow-Origin: *\r\n"
       "\r\n";
   assertEqual(expectedResponse, response);
+  assertEqual(FINISHED, server->getState());
   tc->loop();  // Loop to handle the UI press
   assertEqual("Change settings ", lcd->getLines().at(0));
   delay(60000);  // IDLE_TIMEOUT
@@ -184,6 +189,8 @@ unittest(current) {
       "\"Uptime\":\"0d 0h 1m 1s\","
       "\"Version\":\"22.03.2\"}\r\n";
   assertEqual(expectedResponse, response);
+  assertEqual(FINISHED, server->getState());
+  server->loop();  // Process finished state
   assertEqual(NOT_CONNECTED, server->getState());
   client.stop();
   server->loop();
@@ -215,6 +222,8 @@ unittest(badRequest) {
   }
   const char expectedResponse[] = "HTTP/1.1 400 Bad Request\r\n\r\n";
   assertEqual(expectedResponse, response);
+  assertEqual(FINISHED, server->getState());
+  server->loop();  // Process finished state
   assertEqual(NOT_CONNECTED, server->getState());
   client.stop();
   server->loop();
@@ -246,6 +255,8 @@ unittest(rootDir) {
   }
   const char expectedResponse[] = "Root directory not supported by CI framework.\r\n\r\n";
   assertEqual(expectedResponse, response);
+  assertEqual(FINISHED, server->getState());
+  server->loop();  // Process finished state
   assertEqual(NOT_CONNECTED, server->getState());
   client.stop();
   server->loop();

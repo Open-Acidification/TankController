@@ -42,13 +42,13 @@ void EthernetServer_TC::echo() {
   serial(F("echo() found space or null at %d"), i);
   if (memcmp_P(buffer + i - 3, F("%22"), 3)) {
     serial(F("bad"));
+    state = FINISHED;
   } else {
     buffer[i - 3] = '\0';
     serial(F("echo \"%s\""), buffer + 19);
     sendHeadersWithSize(strnlen(buffer, sizeof(buffer)) - 19);
     client.write(buffer + 19);
-    client.stop();
-    state = NOT_CONNECTED;
+    state = FINISHED;
   }
 }
 
@@ -63,8 +63,7 @@ void EthernetServer_TC::current() {
   client.write(text);
   client.write('\r');
   client.write('\n');
-  client.stop();
-  state = NOT_CONNECTED;
+  state = FINISHED;
 }
 
 void EthernetServer_TC::display() {
@@ -77,8 +76,7 @@ void EthernetServer_TC::display() {
   client.write(LiquidCrystal_TC::instance()->getLine(1), 16);
   client.write('\r');
   client.write('\n');
-  client.stop();
-  state = NOT_CONNECTED;
+  state = FINISHED;
 }
 
 void EthernetServer_TC::keypress() {
@@ -97,36 +95,35 @@ void EthernetServer_TC::keypress() {
       sendBadRequestHeaders();
     }
   }
-  client.stop();
-  state = NOT_CONNECTED;
+  state = FINISHED;
 }
 
 // Non-member wrapper for singleton instance
-void writeToClientBuffer(char* buffer) {
+void writeToClientBuffer(char* buffer, bool isTerminated) {
   // Write to client and return (ASSUME NULL-TERMINATED)
-  EthernetServer_TC::instance()->writeBufferToClient(buffer);
+  EthernetServer_TC::instance()->writeBufferToClient(buffer, isTerminated);
 }
 
 void EthernetServer_TC::rootdir() {
-  // NOTE: We use buffer and replace it because it's big and we don't need extra space
   // Log beginning time
   unsigned long start = millis();
   // Call function on SD Card using bufferFull() callback
+  // The call back will set the state when SD is finished
   SD_TC::instance()->listRootToBuffer(writeToClientBuffer);
-  client.write('\r');
-  client.write('\n');
   // Log end time
   unsigned long end = millis();
-  serial(F("rootdir() called, time = %i ms"), (int)(end - start));
-  // Once that function returns, stop client
-  client.stop();
-  state = NOT_CONNECTED;
+  // serial(F("rootdir() called, time = %i ms"), (int)(end - start));
 }
 
 // Helper function for root directory
-void EthernetServer_TC::writeBufferToClient(char* buffer) {
+void EthernetServer_TC::writeBufferToClient(char* buffer, bool isTerminated) {
   // Write to client and return (ASSUME NULL-TERMINATED)
   client.write(buffer);
+  if (isTerminated) {
+    client.write('\r');
+    client.write('\n');
+    state = FINISHED;
+  }
 }
 
 bool EthernetServer_TC::file() {
@@ -191,13 +188,13 @@ void EthernetServer_TC::get() {
   } else if (memcmp_P(buffer + 4, F("/api/1/current"), 14) == 0) {
     current();
   } else if (memcmp_P(buffer + 4, F("/api/1/rootdir"), 14) == 0) {
+    state = IN_PROGRESS;
     rootdir();
   } else if (!file()) {
     // TODO: send an error response
     serial(F("get \"%s\" not recognized!"), buffer + 4);
     sendBadRequestHeaders();
-    client.stop();
-    state = NOT_CONNECTED;
+    state = FINISHED;
   }
 }
 
@@ -207,56 +204,57 @@ void EthernetServer_TC::post() {
   } else if (!file()) {
     // TODO: send an error response
     serial(F("put \"%s\" not recognized!"), buffer + 5);
-    client.stop();
-    state = NOT_CONNECTED;
+    state = FINISHED;
   }
 }
 
 void EthernetServer_TC::loop() {
+  if (state == FINISHED) {  // Tear down
+    state = NOT_CONNECTED;
+    memset(buffer, 0, sizeof(buffer));
+    bufferContentsSize = 0;
+    connectedAt = 0;
+    client.stop();
+    return;
+  }
   if (client || (client = accept())) {  // if we have a connection
-    if (state == NOT_CONNECTED) {
-      state = READ_REQUEST;
-      bufferContentsSize = 0;
-      connectedAt = millis();  // record start time (so we can do timeout)
-    }
-    // read request
-    int next;
-    while (state == READ_REQUEST && bufferContentsSize < sizeof(buffer) - 1 &&
-           (next = client.read()) != -1) {  // Flawfinder: ignore
-      buffer[bufferContentsSize++] = (char)(next & 0xFF);
-      if (bufferContentsSize > 3 && (memcmp_P(buffer + bufferContentsSize - 4, F("\r\n\r\n"), 4) == 0)) {
-        buffer[bufferContentsSize] = '\0';
-        state = HAS_REQUEST;
+    switch (state) {
+      case IN_PROGRESS:
+        // In progress (so far only for SD Card)
+        rootdir();
+        break;
+      case NOT_CONNECTED:
+        state = READ_REQUEST;
+        connectedAt = millis();  // record start time (so we can do timeout)
+      // Mwahahaha, use switch statement fall-through in a good way!
+      case READ_REQUEST:
+        int next;
+        while (bufferContentsSize < sizeof(buffer) - 1 && (next = client.read()) != -1) {  // Flawfinder: ignore
+          buffer[bufferContentsSize++] = (char)(next & 0xFF);
+          if (bufferContentsSize > 3 && (memcmp_P(buffer + bufferContentsSize - 4, F("\r\n\r\n"), 4) == 0)) {
+            buffer[bufferContentsSize] = '\0';
+            break;
+          }
+        }
         if (memcmp_P(buffer, F("GET "), 4) == 0) {
           state = GET_REQUEST;
+          get();
           break;
         } else if (memcmp_P(buffer, F("POST "), 5) == 0) {
           state = POST_REQUEST;
+          post();
           break;
         } else {
           serial(F("Bad or unsupported request"));
           sendBadRequestHeaders();
-          state = BAD_REQUEST;
+          state = FINISHED;
           break;
         }
-      }
-    }
-    switch (state) {
-      case GET_REQUEST:
-        get();
-        break;
-      case POST_REQUEST:
-        post();
-        break;
       default:
         break;
     }
-  } else if (state != NOT_CONNECTED) {  // existing connection has been closed
-    state = NOT_CONNECTED;
-    memset(buffer, 0, sizeof(buffer));
-    bufferContentsSize = 0;
-    client.stop();
-    connectedAt = 0;
+  } else if (state != NOT_CONNECTED) {  // In case client disconnects early
+    state = FINISHED;
   } else {
     // no client and not recently connected
   }
@@ -286,6 +284,7 @@ void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
   // blank line indicates end of headers
   client.write('\r');
   client.write('\n');
+  state = FINISHED;
 }
 
 void EthernetServer_TC::sendRedirectHeaders() {
@@ -297,6 +296,7 @@ void EthernetServer_TC::sendRedirectHeaders() {
   char buffer[sizeof(response)];
   strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
   client.write(buffer);
+  state = FINISHED;
 }
 
 void EthernetServer_TC::sendBadRequestHeaders() {
@@ -304,6 +304,7 @@ void EthernetServer_TC::sendBadRequestHeaders() {
   static const char response[] PROGMEM = "HTTP/1.1 400 Bad Request\r\n\r\n";
   strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
   client.write(buffer);
+  state = FINISHED;
 }
 
 int EthernetServer_TC::weekday(int year, int month, int day) {

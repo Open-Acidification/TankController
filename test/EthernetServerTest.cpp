@@ -20,7 +20,6 @@ unittest(echo) {
   server->loop();  // accept connection
   client = server->getClient();
   assertTrue(client);
-  std::cerr << client.writeBuffer() << std::endl;
   assertEqual(0, client.writeBuffer()->size());
   const char request[] =
       "GET /echo?value=%22foo%22 HTTP/1.1\r\n"

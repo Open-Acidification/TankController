@@ -99,27 +99,22 @@ void EthernetServer_TC::keypress() {
 }
 
 // Non-member wrapper for singleton instance
-void writeToClientBuffer(char* buffer, bool isTerminated) {
+void writeToClientBuffer(char* buffer, bool isFinished) {
   // Write to client and return (ASSUME NULL-TERMINATED)
-  EthernetServer_TC::instance()->writeBufferToClient(buffer, isTerminated);
+  EthernetServer_TC::instance()->writeBufferToClient(buffer, isFinished);
 }
 
 void EthernetServer_TC::rootdir() {
-  // Log beginning time
-  unsigned long start = millis();
   // Call function on SD Card using bufferFull() callback
   // The call back will set the state when SD is finished
   SD_TC::instance()->listRootToBuffer(writeToClientBuffer);
-  // Log end time
-  unsigned long end = millis();
-  // serial(F("rootdir() called, time = %i ms"), (int)(end - start));
 }
 
 // Helper function for root directory
-void EthernetServer_TC::writeBufferToClient(char* buffer, bool isTerminated) {
+void EthernetServer_TC::writeBufferToClient(char* buffer, bool isFinished) {
   // Write to client and return (ASSUME NULL-TERMINATED)
   client.write(buffer);
-  if (isTerminated) {
+  if (isFinished) {
     client.write('\r');
     client.write('\n');
     state = FINISHED;
@@ -236,19 +231,21 @@ void EthernetServer_TC::loop() {
             break;
           }
         }
-        if (memcmp_P(buffer, F("GET "), 4) == 0) {
-          state = GET_REQUEST;
-          get();
-          break;
-        } else if (memcmp_P(buffer, F("POST "), 5) == 0) {
-          state = POST_REQUEST;
-          post();
-          break;
-        } else {
-          serial(F("Bad or unsupported request"));
-          sendBadRequestHeaders();
-          state = FINISHED;
-          break;
+        if (bufferContentsSize > 0) {
+          if (memcmp_P(buffer, F("GET "), 4) == 0) {
+            state = GET_REQUEST;
+            get();
+            break;
+          } else if (memcmp_P(buffer, F("POST "), 5) == 0) {
+            state = POST_REQUEST;
+            post();
+            break;
+          } else {
+            serial(F("Bad or unsupported request"));
+            sendBadRequestHeaders();
+            state = FINISHED;
+            break;
+          }
         }
       default:
         break;

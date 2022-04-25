@@ -133,7 +133,7 @@ void SD_TC::listFiles(void (*callWhenFull)(char*, bool), byte tabulation) {
   int filesWritten = 0;  // When we hit 10 here we will call buffer and suspend
 
   while (filesWritten < 10) {
-    if (current.openNext(&(*parent), O_READ)) {
+    if (current.openNext(parent, O_READ)) {
       if (!current.isHidden()) {
         current.getName(fileName, sizeof(fileName));
         for (int i = 0; i < tabulation; i++) {

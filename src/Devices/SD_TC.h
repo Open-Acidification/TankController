@@ -19,6 +19,7 @@ public:
   File open(const char* path, oflag_t oflag = 0x00);
   void todaysDataFileName(char* path, int size);
   void printRootDirectory();
+  void listRootToBuffer(void (*callWhenFull)(char*, bool));
 
 private:
   // class variables
@@ -28,8 +29,12 @@ private:
   const uint8_t SD_SELECT_PIN = SS;
   bool hasHadError = false;
   SdFat sd;
+  File* hierarchy = nullptr;
+  int hierarchySize = 0;
+  bool inProgress = false;
 
   // instance methods
   SD_TC();
   void appendDataToPath(const char* data, const char* path);
+  void listFiles(void (*callWhenFull)(char*, bool), byte tabulation = 0);
 };

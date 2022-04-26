@@ -47,6 +47,8 @@ unittest(echo) {
       "\r\n"
       "foo";
   assertEqual(expectedResponse, response);
+  assertEqual(FINISHED, server->getState());
+  server->loop();  // Process finished state
   assertEqual(NOT_CONNECTED, server->getState());
   client.stop();
   server->loop();  // notify server that client stopped
@@ -88,6 +90,8 @@ unittest(display) {
       "pH=0.000   8.100\r\n"
       "T= 0.00 h 20.00 \r\n";
   assertEqual(expectedResponse, response);
+  assertEqual(FINISHED, server->getState());
+  server->loop();  // Process finished state
   assertEqual(NOT_CONNECTED, server->getState());
   client.stop();
   server->loop();
@@ -125,6 +129,7 @@ unittest(keypress) {
       "Access-Control-Allow-Origin: *\r\n"
       "\r\n";
   assertEqual(expectedResponse, response);
+  assertEqual(FINISHED, server->getState());
   tc->loop();  // Loop to handle the UI press
   assertEqual("Change settings ", lcd->getLines().at(0));
   delay(60000);  // IDLE_TIMEOUT
@@ -184,6 +189,8 @@ unittest(current) {
       "\"Uptime\":\"0d 0h 1m 1s\","
       "\"Version\":\"22.04.1\"}\r\n";
   assertEqual(expectedResponse, response);
+  assertEqual(FINISHED, server->getState());
+  server->loop();  // Process finished state
   assertEqual(NOT_CONNECTED, server->getState());
   client.stop();
   server->loop();
@@ -215,6 +222,41 @@ unittest(badRequest) {
   }
   const char expectedResponse[] = "HTTP/1.1 400 Bad Request\r\n\r\n";
   assertEqual(expectedResponse, response);
+  assertEqual(FINISHED, server->getState());
+  server->loop();  // Process finished state
+  assertEqual(NOT_CONNECTED, server->getState());
+  client.stop();
+  server->loop();
+}
+
+unittest(rootDir) {
+  TankController* tc = TankController::instance();
+  EthernetServer_TC* server = EthernetServer_TC::instance();
+  EthernetClient_CI client;
+  server->setHasClientCalling(true);
+  delay(1);
+  server->loop();
+  client = server->getClient();
+  const char request[] =
+      "GET /api/1/rootdir HTTP/1.1\r\n"
+      "Host: localhost:80\r\n"
+      "Accept: text/plain;charset=UTF-8\r\n"
+      "Accept-Encoding: identity\r\n"
+      "Accept-Language: en-US\r\n"
+      "\r\n";
+  client.pushToReadBuffer(request);
+  server->loop();
+  deque<uint8_t>* pBuffer = client.writeBuffer();
+  assertTrue(pBuffer->size() == 49);
+  String response;
+  while (!pBuffer->empty()) {
+    response.concat(pBuffer->front());
+    pBuffer->pop_front();
+  }
+  const char expectedResponse[] = "Root directory not supported by CI framework.\r\n\r\n";
+  assertEqual(expectedResponse, response);
+  assertEqual(FINISHED, server->getState());
+  server->loop();  // Process finished state
   assertEqual(NOT_CONNECTED, server->getState());
   client.stop();
   server->loop();

@@ -8,7 +8,7 @@
 #include "Devices/PHControl.h"
 
 SetPHWithSine::SetPHWithSine(TankController* tc) : NumCollectorState(tc) {
-  prompts[0] = F("Set pH Set Point");
+  prompts[0] = F("Set pH Mean:");
   prompts[1] = F("Set Amplitude:");
   prompts[2] = F("Set Period hrs:");
 }

@@ -16,6 +16,7 @@
 #include "SeePh.h"
 #include "SeePHSlope.h"
 #include "SeePIDConstants.h"
+#include "SeePh.h"
 #include "SeeTankID.h"
 #include "SeeTemperature.h"
 #include "SeeVersion.h"

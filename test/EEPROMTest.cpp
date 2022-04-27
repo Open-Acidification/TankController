@@ -270,4 +270,11 @@ unittest(GoogleSheetIntervalMinutes) {
   assertEqual(20, singleton->getGoogleSheetInterval());
 }
 
+unittest(ArbitraryPhOriginTime) {
+  EEPROM_TC* singleton = EEPROM_TC::instance();
+  assertEqual(0xFFFFFFFF, singleton->getArbitraryPhOriginTime());
+  singleton->setArbitraryPhOriginTime(123456789);
+  assertEqual(123456789, singleton->getArbitraryPhOriginTime());
+}
+
 unittest_main()

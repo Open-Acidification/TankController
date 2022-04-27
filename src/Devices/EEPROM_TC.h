@@ -14,10 +14,7 @@ public:
 
   // accessor methods
   float getAmplitude();               // not used
-  float getArbitraryPhLeftPoint();
-  float getArbitraryPhRightPoint();
-  uint32_t getArbitraryPhRampTimeStart();
-  uint32_t getArbitraryPhRampTimeEnd();
+  uint32_t getArbitraryPhOriginTime();
   float getCorrectedTemp();           // adjustment to temperature probe
   float getFrequency();               // not used
   uint16_t getGoogleSheetInterval();  // how often to send data using PushingBox
@@ -56,10 +53,7 @@ public:
 
   // setter methods
   void setAmplitude(float value);
-  void setArbitraryPhLeftPoint(float value);
-  void setArbitraryPhRightPoint(float value);
-  void setArbitraryPhRampTimeStart(uint32_t value);
-  void setArbitraryPhRampTimeEnd(uint32_t value);
+  void setArbitraryPhOriginTime(uint32_t value);
   void setCorrectedTemp(float value);
   void setFrequency(float value);
   void setGoogleSheetInterval(uint16_t value);
@@ -125,13 +119,11 @@ private:
   // new with v0.3
   const uint16_t GOOGLE_INTERVAL_ADDRESS = 108;
   const uint16_t RAMP_STARTING_PH_ADDRESS = 112;
-  const uint16_t ARBITRARY_PH_LEFT_POINT_ADDRESS = 112;
   const uint16_t PH_SINE_AMPLITUDE_ADDRESS = 112;
   const uint16_t RAMP_TIME_START_PH_ADDRESS = 116;
-  const uint16_t ARBITRARY_PH_RAMP_TIME_START_ADDRESS = 116;
+  const uint16_t ARBITRARY_PH_ORIGIN_TIME_ADDRESS = 116;
   const uint16_t PH_SINE_START_TIME_ADDRESS = 116;
   const uint16_t RAMP_TIME_END_PH_ADDRESS = 120;
-  const uint16_t ARBITRARY_PH_RAMP_TIME_END_ADDRESS = 120;
   const uint16_t PH_SINE_PERIOD_ADDRESS = 120;
   const uint16_t RAMP_STARTING_TEMP_ADDRESS = 124;
   const uint16_t TEMP_SINE_AMPLITUDE_ADDRESS = 124;
@@ -141,7 +133,6 @@ private:
   const uint16_t TEMP_SINE_PERIOD_ADDRESS = 132;
   const uint16_t PH_SET_TYPE_ADDRESS = 136;
   const uint16_t TEMP_SET_TYPE_ADDRESS = 140;
-  const uint16_t ARBITRARY_PH_RIGHT_POINT_ADDRESS = 144;
 
   // class variables
   static EEPROM_TC* _instance;

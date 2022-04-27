@@ -287,25 +287,25 @@ unittest(updateArbitraryPoints) {
   assertEqual(controlSolenoid->phSetTypeTypes::ARBITRARY_TYPE, controlSolenoid->getPhSetType());
   tc->loop();
   assertEqual(8.125, controlSolenoid->getCurrentPhTarget());
-  assertEqual(8.125, controlSolenoid->getArbLeftPoint());
+  assertEqual(8.125, controlSolenoid->getRampStartingPh());
   // mock arduino restarting
   PHControl::clearInstance();
   controlSolenoid = PHControl::instance();
   tc->loop();
   assertEqual(8.125, controlSolenoid->getCurrentPhTarget());
-  assertEqual(8.125, controlSolenoid->getArbLeftPoint());
+  assertEqual(8.125, controlSolenoid->getRampStartingPh());
   // takes 6 minutes for next ramp
   delay(359000);  // 5 minutes 59 seconds
   tc->loop();
   assertTrue(7.125 <= controlSolenoid->getCurrentPhTarget() && controlSolenoid->getCurrentPhTarget() <= 7.128);
-  assertEqual(7.125, controlSolenoid->getArbRightPoint());
+  assertEqual(7.125, controlSolenoid->getTargetPh());
   delay(1000);
   tc->loop();
   assertTrue(7.125 <= controlSolenoid->getCurrentPhTarget() && controlSolenoid->getCurrentPhTarget() <= 7.128);
   delay(359000);  // 5 minutes 59 seconds
   tc->loop();
   assertTrue(8.122 <= controlSolenoid->getCurrentPhTarget() && controlSolenoid->getCurrentPhTarget() <= 8.125);
-  assertEqual(8.125, controlSolenoid->getArbRightPoint());
+  assertEqual(8.125, controlSolenoid->getTargetPh());
 }
 
 unittest_main()

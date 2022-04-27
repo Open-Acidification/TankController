@@ -11,13 +11,10 @@ private:
   uint32_t lastWarnMS = 0;
   const uint16_t PH_CONTROL_PIN = 49;
   const uint16_t SOLENOID_OPENING_TIME = 100;
-  float arbLeftPoint;
-  float arbRightPoint;
-  uint32_t arbRampTimeStart;
-  uint32_t arbRampTimeEnd;
   uint32_t arbRampDuration = 360;  // 360 seconds or 6 minutes
   float targetPh;  // actual target
   float currentPHTarget;
+  uint32_t arbOriginTime;
   float rampStartingPh;
   uint32_t rampTimeStart;
   uint32_t rampTimeEnd;
@@ -38,11 +35,8 @@ public:
   };
   static PHControl *instance();
   static void clearInstance();
-  float getArbLeftPoint() {
-    return arbLeftPoint;
-  }
-  float getArbRightPoint() {
-    return arbRightPoint;
+  float getRampStartingPh() {
+    return rampStartingPh;
   }
   float getTargetPh() {
     return targetPh;

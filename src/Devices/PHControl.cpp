@@ -69,11 +69,8 @@ PHControl::PHControl() {
       sineStartTime = EEPROM_TC::instance()->getPhSineStartTime();
       break;
     case ARBITRARY_TYPE:
-      arbLeftPoint = EEPROM_TC::instance()->getArbitraryPhLeftPoint();
-      arbRightPoint = EEPROM_TC::instance()->getArbitraryPhRightPoint();
-      arbRampTimeStart = EEPROM_TC::instance()->getArbitraryPhRampTimeStart();
-      arbRampTimeEnd = EEPROM_TC::instance()->getArbitraryPhRampTimeEnd();
-      // get rampDuration?
+      updateArbitraryPoints();
+      // get arbRampDuration?
     default:
       break;
   }
@@ -134,32 +131,28 @@ void PHControl::setSine(float sineAmplitude, float sinePeriodInHours) {
 }
 
 void PHControl::setArbitrary(uint32_t duration) {
-  arbLeftPoint = SD_TC::instance()->readPhPoint();
-  arbRightPoint = SD_TC::instance()->readPhPoint(4);
+  rampStartingPh = SD_TC::instance()->readPhPoint();
+  targetPh = SD_TC::instance()->readPhPoint(4);
   arbRampDuration = duration;
-  arbRampTimeStart = DateTime_TC::now().secondstime();
-  arbRampTimeEnd = arbRampTimeStart + arbRampDuration;
+  arbOriginTime = DateTime_TC::now().secondstime();
+  rampTimeStart = arbOriginTime;
+  rampTimeEnd = rampTimeStart + arbRampDuration;
   pHSetType = phSetTypeTypes::ARBITRARY_TYPE;
   EEPROM_TC::instance()->setPhSetType(pHSetType);
-  EEPROM_TC::instance()->setArbitraryPhRampTimeStart(arbRampTimeStart);
-  EEPROM_TC::instance()->setArbitraryPhRampTimeEnd(arbRampTimeEnd);
-  EEPROM_TC::instance()->setArbitraryPhLeftPoint(arbLeftPoint);
-  EEPROM_TC::instance()->setArbitraryPhRightPoint(arbRightPoint);
+  EEPROM_TC::instance()->setArbitraryPhOriginTime(arbOriginTime);
 }
 
 void PHControl::updateArbitraryPoints() {
-  arbLeftPoint = arbRightPoint;
-  arbRightPoint = SD_TC::instance()->readPhPoint(8);
-  if(arbRightPoint == 0) {
+  arbOriginTime = EEPROM_TC::instance()->getArbitraryPhOriginTime();
+  int numOfIntervals = (DateTime_TC::now().secondstime() - arbOriginTime) / arbRampDuration;
+  rampStartingPh = SD_TC::instance()->readPhPoint(numOfIntervals * 4);  // 4 is the size of a float
+  targetPh = SD_TC::instance()->readPhPoint((numOfIntervals * 4) + 4);
+  if(targetPh == 0) {
     pHSetType = phSetTypeTypes::FLAT_TYPE;
     return;
   }
-  arbRampTimeStart = arbRampTimeEnd;
-  arbRampTimeEnd = arbRampTimeEnd + arbRampDuration;
-  EEPROM_TC::instance()->setArbitraryPhRampTimeStart(arbRampTimeStart);
-  EEPROM_TC::instance()->setArbitraryPhRampTimeEnd(arbRampTimeEnd);
-  EEPROM_TC::instance()->setArbitraryPhLeftPoint(arbLeftPoint);
-  EEPROM_TC::instance()->setArbitraryPhRightPoint(arbRightPoint);
+  rampTimeStart = arbOriginTime + (numOfIntervals * arbRampDuration);
+  rampTimeEnd = rampTimeStart + arbRampDuration;
 }
 
 void PHControl::enablePID(bool flag) {
@@ -205,9 +198,9 @@ void PHControl::updateControl(float pH) {
       break;
     }
     case ARBITRARY_TYPE: {
-      if (currentTime < arbRampTimeEnd) {
-        currentPHTarget = arbLeftPoint +
-                          ((currentTime - arbRampTimeStart) * (arbRightPoint - arbLeftPoint) / (arbRampTimeEnd - arbRampTimeStart));
+      if (currentTime < rampTimeEnd) {
+        currentPHTarget = rampStartingPh +
+                          ((currentTime - rampTimeStart) * (targetPh - rampStartingPh) / (rampTimeEnd - rampTimeStart));
       } else {
         updateArbitraryPoints();
       }

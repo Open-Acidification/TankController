@@ -236,37 +236,40 @@ void MainMenu::selectSet() {
 // pH=7.325 B 7.125
 // T=12.25 H 12.75
 void MainMenu::idle() {
-  PHControl *phControl = PHControl::instance();
-  char output[20];
-  output[0] = 'p';
-  output[1] = 'H';
-  output[2] = millis() / 1000 % 2 ? '=' : ' ';
-  dtostrf(PHProbe::instance()->getPh(), 5, 3, output + 3);
-  output[8] = ' ';
-  output[9] = phControl->isOn() ? 'B' : ' ';
-  output[10] = ' ';
-  dtostrf(PHControl::instance()->getTargetPh(), 5, 3, output + 11);
-  LiquidCrystal_TC::instance()->writeLine(output, 0);
-  TemperatureControl *tempControl = TemperatureControl::instance();
-  TempProbe_TC *tempProbe = TempProbe_TC::instance();
-  float temp = tempProbe->getRunningAverage();
-  if (temp < 0.0) {
-    temp = 0.0;
-  } else if (99.99 < temp) {
-    temp = 99.99;
+  if (millis() - lastDisplayTime > 1000) {
+    PHControl *phControl = PHControl::instance();
+    char output[20];
+    output[0] = 'p';
+    output[1] = 'H';
+    output[2] = millis() / 1000 % 2 ? '=' : ' ';
+    dtostrf(PHProbe::instance()->getPh(), 5, 3, output + 3);
+    output[8] = ' ';
+    output[9] = phControl->isOn() ? 'B' : ' ';
+    output[10] = ' ';
+    dtostrf(PHControl::instance()->getTargetPh(), 5, 3, output + 11);
+    LiquidCrystal_TC::instance()->writeLine(output, 0);
+    TemperatureControl *tempControl = TemperatureControl::instance();
+    TempProbe_TC *tempProbe = TempProbe_TC::instance();
+    float temp = tempProbe->getRunningAverage();
+    if (temp < 0.0) {
+      temp = 0.0;
+    } else if (99.99 < temp) {
+      temp = 99.99;
+    }
+    char status = tempControl->isHeater() ? 'h' : 'c';
+    if (tempControl->isOn()) {
+      status = toupper(status);
+    }
+    output[0] = 'T';
+    output[1] = millis() / 1000 % 2 ? '=' : ' ';
+    dtostrf(temp, 5, 2, output + 2);
+    output[7] = ' ';
+    output[8] = status;
+    output[9] = ' ';
+    dtostrf(tempControl->getTargetTemperature(), 5, 2, output + 10);
+    LiquidCrystal_TC::instance()->writeLine(output, 1);
+    lastDisplayTime = millis();
   }
-  char status = tempControl->isHeater() ? 'h' : 'c';
-  if (tempControl->isOn()) {
-    status = toupper(status);
-  }
-  output[0] = 'T';
-  output[1] = millis() / 1000 % 2 ? '=' : ' ';
-  dtostrf(temp, 5, 2, output + 2);
-  output[7] = ' ';
-  output[8] = status;
-  output[9] = ' ';
-  dtostrf(tempControl->getTargetTemperature(), 5, 2, output + 10);
-  LiquidCrystal_TC::instance()->writeLine(output, 1);
 }
 
 void MainMenu::loop() {

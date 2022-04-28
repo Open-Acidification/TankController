@@ -156,8 +156,9 @@ void SD_TC::listFiles(void (*callWhenFull)(char*, bool), byte tabulation) {
           // Now we change parent directory
           parent = &hierarchy[hierarchySize - 1];
         } else {
-          int bytesWritten = snprintf_P(buffer + linePos, sizeof(buffer) - linePos, (PGM_P)F("%s\t%6u bytes\n"),
-                                        fileName, current.fileSize());
+          // We'll say nothing is bigger than 10 MB
+          int bytesWritten = snprintf_P(buffer + linePos, sizeof(buffer) - linePos, (PGM_P)F("%s\t%10lu B\n"), fileName,
+                                        (unsigned long)current.size());
           // "Overwrite" null terminator
           linePos += bytesWritten;
           ++filesWritten;

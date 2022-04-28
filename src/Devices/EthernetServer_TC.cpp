@@ -192,7 +192,7 @@ void EthernetServer_TC::writeToClientBuffer(char* buffer, bool isFinished) {
 }
 
 // Tests speed for reading a file from the SD Card
-// Empirical results show about 12 us per 512 B
+// Empirical results show about 1 ms per 512 B
 void EthernetServer_TC::testReadSpeed() {
   wdt_disable();
   static const char path[] PROGMEM = "tstRdSpd.txt";
@@ -205,7 +205,7 @@ void EthernetServer_TC::testReadSpeed() {
   file.println(buffer);
   file.close();
   // Read 1 MB
-  file = SD_TC::instance()->open(temp, O_READ | O_WRITE);
+  file = SD_TC::instance()->open(temp, O_READ);
   int startTime = micros();
   file.read(buffer, 512);
   int endTime = micros();

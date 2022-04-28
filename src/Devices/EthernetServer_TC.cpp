@@ -207,7 +207,7 @@ void EthernetServer_TC::testReadSpeed() {
   // Read 1 MB
   file = SD_TC::instance()->open(temp, O_READ);
   int startTime = micros();
-  file.read(buffer, 512) == -1); // Flawfinder: ignore
+  file.read(buffer, 512);  // Flawfinder: ignore
   int endTime = micros();
   file.remove();
   serial(F("Time reading 512B: %i us"), (endTime - startTime));
@@ -265,7 +265,7 @@ void EthernetServer_TC::fileSetup() {
 bool EthernetServer_TC::fileContinue() {
   client.write(boundary);
   if (file.available32()) {
-    int readSize = file.read(buffer, sizeof(buffer)); // Flawfinder: ignore
+    int readSize = file.read(buffer, sizeof(buffer));  // Flawfinder: ignore
     int writeSize = client.write(buffer, readSize);
     if (writeSize != readSize) {
       serial(F("read = %d; write = %d"), readSize, writeSize);

@@ -374,10 +374,12 @@ void EthernetServer_TC::sendFileHeadersWithSize(uint32_t size) {
   // char buffer[sizeof(response)];
   // strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
   // client.write(buffer);
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("HTTP/1.1 200 OK\r\n"
-      "Content-Type: multipart/form-data; boundary=%s\r\n"
-      "Access-Control-Allow-Origin: *\r\n"
-      "Content-Length: %lu\r\n"), boundary, (unsigned long)size);
+  snprintf_P(buffer, sizeof(buffer),
+             (PGM_P)F("HTTP/1.1 200 OK\r\n"
+                      "Content-Type: multipart/form-data; boundary=%s\r\n"
+                      "Access-Control-Allow-Origin: *\r\n"
+                      "Content-Length: %lu\r\n"),
+             boundary, (unsigned long)size);
   client.write(buffer);
 
   // blank line indicates end of headers

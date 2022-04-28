@@ -31,7 +31,7 @@ EthernetServer_TC::EthernetServer_TC(uint16_t port) : EthernetServer(port) {
   begin();
   IPAddress IP = Ethernet_TC::instance()->getIP();
   static const char boundary_P[] PROGMEM = "boundary";
-  memcpy(boundary, (PGM_P)boundary_P, sizeof(boundary_P));
+  strncpy_P(boundary, (PGM_P)boundary_P, sizeof(boundary_P));
   serial(F("Ethernet Server is listening on %i.%i.%i.%i:80"), IP[0], IP[1], IP[2], IP[3]);
 }
 

@@ -31,7 +31,7 @@ EthernetServer_TC::EthernetServer_TC(uint16_t port) : EthernetServer(port) {
   begin();
   IPAddress IP = Ethernet_TC::instance()->getIP();
   static const char boundary_P[] PROGMEM = "boundary";
-  memcpy(boundary, (PGM_P)boundary_P, sizeof(boundary));
+  memcpy(boundary, (PGM_P)boundary_P, sizeof(boundary_P));
   serial(F("Ethernet Server is listening on %i.%i.%i.%i:80"), IP[0], IP[1], IP[2], IP[3]);
 }
 
@@ -192,17 +192,24 @@ void EthernetServer_TC::writeToClientBuffer(char* buffer, bool isFinished) {
 }
 
 // Tests speed for reading a file from the SD Card
-// Empirical results show about 1.2 ms per 512 B
+// Empirical results show about 12 us per 512 B
 void EthernetServer_TC::testReadSpeed() {
   wdt_disable();
-  static const char path[] PROGMEM = "20-8-12.TXT";
+  static const char path[] PROGMEM = "tstRdSpd.txt";
   char temp[sizeof(path)];
   strncpy_P(temp, (PGM_P)path, sizeof(temp));
-  file = SD_TC::instance()->open(temp);
+  // Create the file and write garbage
+  file = SD_TC::instance()->open(temp, FILE_WRITE);
+  memset(buffer, ' ', 512);
+  buffer[511] = '\0';
+  file.println(buffer);
+  file.close();
   // Read 1 MB
+  file = SD_TC::instance()->open(temp, O_READ | O_WRITE);
   int startTime = micros();
   file.read(buffer, 512);
   int endTime = micros();
+  file.remove();
   serial(F("Time reading 512B: %i us"), (endTime - startTime));
   wdt_enable(WDTO_8S);
   state = FINISHED;
@@ -367,13 +374,6 @@ void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
 }
 
 void EthernetServer_TC::sendFileHeadersWithSize(uint32_t size) {
-  // static const char response[] PROGMEM =
-  //     "HTTP/1.1 200 OK\r\n"
-  //     "Content-Type: multipart/form-data; boundary=\"--boundary\"\r\n"
-  //     "Access-Control-Allow-Origin: *\r\n";
-  // char buffer[sizeof(response)];
-  // strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
-  // client.write(buffer);
   snprintf_P(buffer, sizeof(buffer),
              (PGM_P)F("HTTP/1.1 200 OK\r\n"
                       "Content-Type: multipart/form-data; boundary=%s\r\n"

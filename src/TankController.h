@@ -40,7 +40,6 @@ private:
   UIState* nextState = nullptr;
   uint32_t lastKeypadTime = 0;
   char nextKey = 0;
-  int counter = 0;
 
   // instance methods
   TankController();

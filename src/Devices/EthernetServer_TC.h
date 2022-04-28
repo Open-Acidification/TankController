@@ -38,7 +38,7 @@ private:
   EthernetClient client;
   serverState_t state = NOT_CONNECTED;
   char buffer[512];
-  char boundary[13];
+  char boundary[9];
   unsigned int bufferContentsSize = 0;
   unsigned long connectedAt = 0;
   File file;

@@ -236,7 +236,9 @@ void MainMenu::selectSet() {
 // pH=7.325 B 7.125
 // T=12.25 H 12.75
 void MainMenu::idle() {
-  if (millis() - lastDisplayTime > 1000) {
+  // This appears to take 6 ms with all its calculations,
+  // including LCD's ignoring duplicate results
+  if (millis() - lastDisplayTime > 200) {
     PHControl *phControl = PHControl::instance();
     char output[20];
     output[0] = 'p';

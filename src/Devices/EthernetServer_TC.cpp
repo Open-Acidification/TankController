@@ -6,6 +6,7 @@
 #include "Devices/Ethernet_TC.h"
 #include "Devices/JSONBuilder.h"
 #include "Devices/LiquidCrystal_TC.h"
+#include "Devices/PHControl.h"
 #include "SD_TC.h"
 #include "Serial_TC.h"
 #include "TankController.h"
@@ -175,7 +176,12 @@ void EthernetServer_TC::get() {
 void EthernetServer_TC::post() {
   if (memcmp_P(buffer + 5, F("/api/1/key?value="), 17) == 0) {
     keypress();
-  } else if (!file()) {
+  } else if (memcmp_P(buffer + 5, F("/api/1/path"), 11) == 0) {
+    state = ARBITRARY_PATH;
+    // here is where we would look at the headers
+    bufferContentsSize = 0;
+  } 
+  else if (!file()) {
     // TODO: send an error response
     serial(F("put \"%s\" not recognized!"), buffer + 5);
     client.stop();
@@ -186,13 +192,13 @@ void EthernetServer_TC::post() {
 void EthernetServer_TC::loop() {
   if (client || (client = accept())) {  // if we have a connection
     if (state == NOT_CONNECTED) {
-      state = READ_REQUEST;
+      state = READ_HEADERS;
       bufferContentsSize = 0;
       connectedAt = millis();  // record start time (so we can do timeout)
     }
     // read request
     int next;
-    while (state == READ_REQUEST && bufferContentsSize < sizeof(buffer) - 1 &&
+    while (state == READ_HEADERS && bufferContentsSize < sizeof(buffer) - 1 &&
            (next = client.read()) != -1) {  // Flawfinder: ignore
       buffer[bufferContentsSize++] = (char)(next & 0xFF);
       if (bufferContentsSize > 3 && (memcmp_P(buffer + bufferContentsSize - 4, F("\r\n\r\n"), 4) == 0)) {
@@ -218,6 +224,9 @@ void EthernetServer_TC::loop() {
         break;
       case POST_REQUEST:
         post();
+        break;
+      case ARBITRARY_PATH:
+        arbitraryPath();
         break;
       default:
         break;
@@ -277,6 +286,14 @@ void EthernetServer_TC::sendBadRequestHeaders() {
   client.write(buffer);
 }
 
+void EthernetServer_TC::sendBadBody() {
+  char buffer[30];
+  static const char response[] PROGMEM = "HTTP/1.1 406 Not Acceptable\r\n\r\n";
+  strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
+  client.write(buffer);
+}
+
+
 int EthernetServer_TC::weekday(int year, int month, int day) {
   // Calculate day of week in proleptic Gregorian calendar. Sunday == 0.
   int adjustment, mm, yy;
@@ -286,4 +303,48 @@ int EthernetServer_TC::weekday(int year, int month, int day) {
   mm = month + 12 * adjustment - 2;
   yy = year - adjustment;
   return (day + (13 * mm - 1) / 5 + yy + yy / 4 - yy / 100 + yy / 400) % 7;
+}
+
+void EthernetServer_TC::arbitraryPath() {
+  if (bufferContentsSize == 0) {
+    int next;
+    next = client.read();
+    buffer[bufferContentsSize++] = (char)(next & 0xFF);
+    if(buffer[0] != '[') {
+      serial(F("Bad request body"));
+      sendBadBody();
+      state = BAD_BODY;
+    }
+  } else {
+    state = READING_BODY;
+    int next;
+    while (state == READING_BODY && bufferContentsSize < sizeof(buffer) - 1 && (next = client.read()) != -1) {
+      char floatToSdBuffer[7];
+      buffer[bufferContentsSize++] = (char)(next & 0xFF);
+      if((memcmp_P(buffer + bufferContentsSize - 1, F(","), 1) == 0)) {
+        for (int i = 0; i < bufferContentsSize - 2; i ++) {
+          floatToSdBuffer[i] = buffer[i + 1];
+        }
+        SD_TC::instance()->writePhPoint((std::stof((const char*)((char*)floatToSdBuffer))));
+        bufferContentsSize = 1;
+      } else if ((memcmp_P(buffer + bufferContentsSize - 2, F("]"), 1) == 0)) {
+        for (int i = 0; i < bufferContentsSize - 2; i ++) {
+          floatToSdBuffer[i] = buffer[i + 1];
+        }
+        SD_TC::instance()->writePhPoint((std::stof((const char*)((char*)floatToSdBuffer))));
+        PHControl::instance()->setArbitrary();
+        static const char response[] PROGMEM =
+          "HTTP/1.1 201 Created\r\n"
+          "Access-Control-Allow-Origin: *\r\n"
+          "\r\n";
+        char buffer[sizeof(response)];
+        strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
+        client.write(buffer);
+        client.stop();
+        state = NOT_CONNECTED;
+      } else {
+        state = ARBITRARY_PATH;
+      }
+    }
+  }
 }

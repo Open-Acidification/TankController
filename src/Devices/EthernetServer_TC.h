@@ -7,7 +7,8 @@
 #include <Ethernet.h>
 #endif
 
-enum serverState_t { NOT_CONNECTED, READ_REQUEST, GET_REQUEST, POST_REQUEST, HAS_REQUEST, BAD_REQUEST };
+enum serverState_t { NOT_CONNECTED, READ_HEADERS, GET_REQUEST, POST_REQUEST, HAS_REQUEST,
+                    BAD_REQUEST, BAD_BODY, READING_BODY, ARBITRARY_PATH };
 
 /**
  * EthernetServer_TC provides wrapper for web server for TankController
@@ -25,6 +26,7 @@ public:
   serverState_t getState() const {
     return state;
   }
+  void arbitraryPath();
   void loop();
 
 private:
@@ -44,6 +46,7 @@ private:
   void sendHeadersWithSize(uint32_t size);
   void sendRedirectHeaders();
   void sendBadRequestHeaders();
+  void sendBadBody();
   int weekday(int year, int month, int day);
   // instance methods: HTTP
   void echo();

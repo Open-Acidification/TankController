@@ -2,6 +2,7 @@
 #include <ArduinoUnitTests.h>
 
 #include "DateTime_TC.h"
+#include "Devices/EEPROM_TC.h"
 #include "Devices/EthernetServer_TC.h"
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHControl.h"
@@ -242,9 +243,8 @@ unittest(arbitraryPath) {
       "\r\n"
       "[8.125,7.125,8.125]\r\n";
   client.pushToReadBuffer(request);
-  for (int i = 0; i < 20; i++){
-    server->loop();
-  }
+  server->loop();
+  server->loop();
   deque<uint8_t>* pBuffer = client.writeBuffer();
   assertEqual(56, pBuffer->size());
   String response;

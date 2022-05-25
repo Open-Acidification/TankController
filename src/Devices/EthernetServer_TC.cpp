@@ -306,32 +306,24 @@ int EthernetServer_TC::weekday(int year, int month, int day) {
 }
 
 void EthernetServer_TC::arbitraryPath() {
-  if (bufferContentsSize == 0) {
-    int next;
-    next = client.read();
+  int next;
+  int count = 0;
+  while (bufferContentsSize < sizeof(buffer) - 1 &&
+        (next = client.read()) != -1) {  // Flawfinder: ignore
     buffer[bufferContentsSize++] = (char)(next & 0xFF);
     if(buffer[0] != '[') {
       serial(F("Bad request body"));
       sendBadBody();
-      state = BAD_BODY;
+      client.stop();
+      state = NOT_CONNECTED;
+      return;
     }
-  } else {
-    state = READING_BODY;
-    int next;
-    while (state == READING_BODY && bufferContentsSize < sizeof(buffer) - 1 && (next = client.read()) != -1) {
-      char floatToSdBuffer[7];
-      buffer[bufferContentsSize++] = (char)(next & 0xFF);
-      if((memcmp_P(buffer + bufferContentsSize - 1, F(","), 1) == 0)) {
-        for (int i = 0; i < bufferContentsSize - 2; i ++) {
-          floatToSdBuffer[i] = buffer[i + 1];
-        }
-        SD_TC::instance()->writePhPoint((std::stof((const char*)((char*)floatToSdBuffer))));
-        bufferContentsSize = 1;
-      } else if ((memcmp_P(buffer + bufferContentsSize - 2, F("]"), 1) == 0)) {
-        for (int i = 0; i < bufferContentsSize - 2; i ++) {
-          floatToSdBuffer[i] = buffer[i + 1];
-        }
-        SD_TC::instance()->writePhPoint((std::stof((const char*)((char*)floatToSdBuffer))));
+
+    if (next == ',' || next == ']') {
+      buffer[bufferContentsSize - 1] = '\0';
+      SD_TC::instance()->writePhPoint((std::stof((const char*)((char*)buffer + 1))));
+      bufferContentsSize = 1;
+      if (next == ']') {
         PHControl::instance()->setArbitrary();
         static const char response[] PROGMEM =
           "HTTP/1.1 201 Created\r\n"
@@ -342,8 +334,10 @@ void EthernetServer_TC::arbitraryPath() {
         client.write(buffer);
         client.stop();
         state = NOT_CONNECTED;
-      } else {
-        state = ARBITRARY_PATH;
+        return;
+      }
+      if (++count > 100) {
+        return;
       }
     }
   }

@@ -12,6 +12,9 @@
 
 void SeeDeviceAddress::handleKey(char key) {
   switch (key) {
+    case '#':  // Disable Watchdog Timer (is reboot from this?)
+      wdt_disable();
+      break;
     case 'B':  // Infinite loop to test Watchdog Timer
       wdt_disable();
       wdt_enable(WDTO_15MS);

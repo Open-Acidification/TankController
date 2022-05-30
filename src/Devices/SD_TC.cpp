@@ -115,6 +115,100 @@ void SD_TC::printRootDirectory() {
   sd.ls(LS_DATE | LS_SIZE | LS_R);
 }
 
+void SD_TC::listRootToBuffer(void (*callWhenFull)(char*, bool)) {
+#ifndef MOCK_PINS_COUNT
+  if (!inProgress) {
+    // Initialize hierarchy
+    hierarchy = new File;
+    ++hierarchySize;
+    const char path[] PROGMEM = "/";
+    File root = SD_TC::instance()->open(path);
+    if (!root) {
+      serial(F("SD_TC open() failed"));
+      return;
+    }
+    // Add root to hierarchy if successful
+    root.rewind();
+    hierarchy[0] = root;
+    inProgress = true;
+  }
+  listFiles(callWhenFull);
+#else
+  static const char notImplemented[] PROGMEM = "Root directory not supported by CI framework.\r\n";
+  char buffer[sizeof(notImplemented)];
+  memcpy(buffer, (PGM_P)notImplemented, sizeof(notImplemented));
+  callWhenFull(buffer, true);
+#endif
+}
+
+void SD_TC::listFiles(void (*callWhenFull)(char*, bool), byte tabulation) {
+  // Only called on real device
+#ifndef MOCK_PINS_COUNT
+  File* parent = &hierarchy[hierarchySize - 1];
+  File current;
+  char fileName[15];
+  char buffer[300];  // Each line shouldn't be more than 30 characters long
+  int linePos = 0;
+  int filesWritten = 0;  // When we hit 10 here we will call buffer and suspend
+
+  while (filesWritten < 10) {
+    if (current.openNext(parent, O_READ)) {
+      if (!current.isHidden()) {
+        current.getName(fileName, sizeof(fileName));
+        for (int i = 0; i < tabulation; i++) {
+          buffer[i] = '\t';
+          ++linePos;
+        }
+        if (current.isDir()) {
+          int bytesWritten = snprintf_P(buffer + linePos, sizeof(buffer) - linePos, (PGM_P)F("%s/\n"), fileName);
+          // "Overwrite" null terminator
+          linePos += bytesWritten;
+          ++filesWritten;
+          // Create a new array with bigger size
+          File* newHierarchy = new File[hierarchySize + 1];
+          memcpy(newHierarchy, hierarchy, sizeof(File) * hierarchySize);
+          delete[] hierarchy;
+          hierarchy = newHierarchy;
+          ++hierarchySize;
+          // Add the current file to the new array
+          hierarchy[hierarchySize - 1] = current;
+          // Now we change parent directory
+          parent = &hierarchy[hierarchySize - 1];
+        } else {
+          // We'll say nothing is bigger than 10 MB
+          int bytesWritten = snprintf_P(buffer + linePos, sizeof(buffer) - linePos, (PGM_P)F("%s\t%10lu B\n"), fileName,
+                                        (unsigned long)current.size());
+          // "Overwrite" null terminator
+          linePos += bytesWritten;
+          ++filesWritten;
+          // Close current (if it's a file); close current (if it's a directory) as a parent later
+          current.close();
+        }
+      }
+    } else {
+      if (hierarchySize == 1) {
+        // We're done listing root
+        parent->close();
+        --hierarchySize;
+        delete[] hierarchy;
+        hierarchy = nullptr;
+        buffer[linePos] = '\0';
+        inProgress = false;
+        callWhenFull(buffer, true);
+        return;
+      }
+      // All done with parent, remove directory from hierarchy
+      parent->close();
+      --hierarchySize;
+      parent = &hierarchy[hierarchySize - 1];
+    }
+  }
+  // We have 10 lines written, so add null terminator
+  buffer[linePos] = '\0';
+  callWhenFull(buffer, false);
+#endif
+}
+
 void SD_TC::todaysDataFileName(char* path, int size) {
   DateTime_TC now = DateTime_TC::now();
   snprintf_P(path, size, (PGM_P)F("%4i%02i%02i.csv"), now.year(), now.month(), now.day());

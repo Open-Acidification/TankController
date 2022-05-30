@@ -28,7 +28,7 @@ unittest(test) {
   std::vector<String> lines = lcd->getLines();
   assertEqual(16, lines.at(0).length());
   assertEqual(16, lines.at(1).length());
-  assertEqual("Set pH Set Point", lines.at(0));
+  assertEqual("Set pH Mean:    ", lines.at(0));
   assertEqual("  8.125->     0 ", lines.at(1));
   assertEqual(8.125, test->getCurrentValue());
 

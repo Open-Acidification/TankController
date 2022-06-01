@@ -19,14 +19,11 @@ public:
   File open(const char* path, oflag_t oflag = 0x00);
   void todaysDataFileName(char* path, int size);
   void printRootDirectory();
-<<<<<<< HEAD
   void writePhPoint(float value);
   float readPhPoint(const uint32_t seekTo = 0);
   // uint32_t SD_TC::position();
-=======
   void listRootToBuffer(void (*callWhenFull)(char*, bool));
 
->>>>>>> b4d880e0f02c659af4ef2963c1ec11a7885e301e
 private:
   // class variables
   static SD_TC* _instance;

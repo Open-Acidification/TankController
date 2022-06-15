@@ -1,16 +1,15 @@
-#include "Devices/Ethernet_TC.h"
+#include "Devices/EthernetServer_TC.h"
 
 #include <avr/wdt.h>
 
-#include "DateTime_TC.h"
-#include "Devices/EthernetServer_TC.h"
+#include "Devices/DateTime_TC.h"
+#include "Devices/Ethernet_TC.h"
 #include "Devices/JSONBuilder.h"
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHControl.h"
 #include "SD_TC.h"
 #include "Serial_TC.h"
 #include "TankController.h"
-
 
 //  class variables
 EthernetServer_TC* EthernetServer_TC::_instance = nullptr;

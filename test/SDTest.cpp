@@ -171,12 +171,23 @@ unittest(printRootDirectory) {
   assertNotEqual(-1, index);
 }
 
-unittest(thisIsATest) {
+unittest(writePhPoint) {
   SD_TC::instance()->writePhPoint(7.125);
-  // File file = SD_TC::instance()->open("arb_pH_points", O_RDONLY);
   float value = SD_TC::instance()->readPhPoint();
   assertEqual(7.125, value);
-  // file.close();
 }
 
+unittest(createAndDeleteFile) {
+  // Create the file and write garbage
+  char buffer;
+  assertFalse(SD_TC::instance()->exists("newFile.txt"));
+  file = SD_TC::instance()->open("newFile.txt", O_RDWR | O_CREAT | O_AT_END);
+  assertTrue(SD_TC::instance()->exists("newFile.txt"));
+  memset(buffer, ' ', 512);
+  buffer[511] = '\0';
+  file.write(buffer);
+  file.close();
+  SD_TC::instance()->remove("newFile.txt");
+  assertFalse(SD_TC::instance()->exists("newFile.txt"));
+}
 unittest_main()

@@ -30,6 +30,7 @@ public:
   void arbitraryPath();
   void loop();
   void writeToClientBuffer(char*, bool);
+  float charArrToFloat(char* input);
 
 private:
   // class variables

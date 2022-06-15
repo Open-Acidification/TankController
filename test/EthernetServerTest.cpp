@@ -286,7 +286,7 @@ unittest(arbitraryPath) {
       "[8.125,7.125,8.125]\r\n";
   client.pushToReadBuffer(request);
   server->loop();
-  server->loop();
+  server->loop();  // arbitraryPath() happens on second loop
   deque<uint8_t>* pBuffer = client.writeBuffer();
   assertEqual(56, pBuffer->size());
   String response;
@@ -299,6 +299,7 @@ unittest(arbitraryPath) {
       "Access-Control-Allow-Origin: *\r\n"
       "\r\n";
   assertEqual(expectedResponse, response);
+  assertEqual(FINISHED, server->getState());
   tc->loop();  // Loop to handle the UI press
   assertEqual("MainMenu", tc->stateName());
   assertEqual(NOT_CONNECTED, server->getState());
@@ -308,6 +309,43 @@ unittest(arbitraryPath) {
   assertEqual(7.125, SD_TC::instance()->readPhPoint(4));
   assertEqual(8.125, SD_TC::instance()->readPhPoint(8));
   assertEqual(PHControl::instance()->phSetTypeTypes::ARBITRARY_TYPE, EEPROM_TC::instance()->getPhSetType());
+}
+
+unittest(badBodyArbitraryPath) {
+  TankController* tc = TankController::instance();
+  EthernetServer_TC* server = EthernetServer_TC::instance();
+  EthernetClient_CI client;
+  server->setHasClientCalling(true);
+  delay(1);
+  server->loop();
+  client = server->getClient();
+  const char request[] =
+      "POST /api/1/path HTTP/1.1\r\n"
+      "Host: localhost:80\r\n"
+      "Accept: text/plain;charset=UTF-8\r\n"
+      "Accept-Encoding: identity\r\n"
+      "Accept-Language: en-US\r\n"
+      "Content-Type: application/json\r\n"
+      "Content-Length: 19\r\n"
+      "\r\n"
+      "8.125,7.125,8.125]\r\n";  // missing open bracket
+  client.pushToReadBuffer(request);
+  server->loop();
+  server->loop();  // arbitraryPath() happens on second loop
+  deque<uint8_t>* pBuffer = client.writeBuffer();
+  assertEqual(pBuffer->size(), 31);
+  String response;
+  while (!pBuffer->empty()) {
+    response.concat(pBuffer->front());
+    pBuffer->pop_front();
+  }
+  const char expectedResponse[] = "HTTP/1.1 406 Not Acceptable\r\n\r\n";
+  assertEqual(expectedResponse, response);
+  assertEqual(FINISHED, server->getState());
+  server->loop();  // Process finished state
+  assertEqual(NOT_CONNECTED, server->getState());
+  client.stop();
+  server->loop();
 }
 
 unittest_main()

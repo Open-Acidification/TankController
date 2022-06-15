@@ -214,3 +214,7 @@ void SD_TC::todaysDataFileName(char* path, int size) {
   snprintf_P(path, size, (PGM_P)F("%4i%02i%02i.csv"), now.year(), now.month(), now.day());
   COUT(path);
 }
+
+bool SD_TC::remove(const char* myFileName) {
+  return sd.remove(myFileName);
+}

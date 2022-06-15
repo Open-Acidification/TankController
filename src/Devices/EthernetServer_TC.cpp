@@ -78,13 +78,13 @@ void EthernetServer_TC::get() {
 
 // Handles an HTTP POST request
 void EthernetServer_TC::post() {
-  if (memcmp_P(buffer + 6, F("api"), 3) == 0) {
+  if (memcmp_P(buffer + 5, F("/api/1/key?"), 11) == 0) {
     keypress();
   } else if (memcmp_P(buffer + 5, F("/api/1/path"), 11) == 0) {
     state = ARBITRARY_PATH;
     // here is where we would look at the headers
     bufferContentsSize = 0;
-  } 
+  }
   else {
     serial(F("post \"%s\" not recognized!"), buffer + 6);
     state = FINISHED;
@@ -206,17 +206,17 @@ void EthernetServer_TC::testReadSpeed() {
   char temp[sizeof(path)];
   strncpy_P(temp, (PGM_P)path, sizeof(temp));
   // Create the file and write garbage
-  file = SD_TC::instance()->open(temp, FILE_WRITE);
+  file = SD_TC::instance()->open(temp, O_RDWR | O_CREAT | O_AT_END);
   memset(buffer, ' ', 512);
   buffer[511] = '\0';
-  file.println(buffer);
+  file.write(buffer);
   file.close();
   // Read 1 MB
-  file = SD_TC::instance()->open(temp, O_READ);
+  file = SD_TC::instance()->open(temp, O_RDONLY);
   int startTime = micros();
   file.read(buffer, 512);  // Flawfinder: ignore
   int endTime = micros();
-  file.remove();
+  SD_TC::instance()->remove((const char*)((char*)(temp)));
   serial(F("Time reading 512B: %i us"), (endTime - startTime));
   wdt_enable(WDTO_8S);
   state = FINISHED;
@@ -420,6 +420,15 @@ void EthernetServer_TC::sendBadRequestHeaders() {
   state = FINISHED;
 }
 
+// 406 response
+void EthernetServer_TC::sendBadBody() {
+  char buffer[33];
+  static const char response[] PROGMEM = "HTTP/1.1 406 Not Acceptable\r\n\r\n";
+  strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
+  client.write(buffer);
+  state = FINISHED;
+}
+
 // Calculate day of week in proleptic Gregorian calendar. Sunday == 0.
 int EthernetServer_TC::weekday(int year, int month, int day) {
   int adjustment, mm, yy;
@@ -440,14 +449,12 @@ void EthernetServer_TC::arbitraryPath() {
     if(buffer[0] != '[') {
       serial(F("Bad request body"));
       sendBadBody();
-      client.stop();
-      state = NOT_CONNECTED;
       return;
     }
 
     if (next == ',' || next == ']') {
       buffer[bufferContentsSize - 1] = '\0';
-      SD_TC::instance()->writePhPoint((std::stof((const char*)((char*)buffer + 1))));
+      SD_TC::instance()->writePhPoint(charArrToFloat(buffer + 1));
       bufferContentsSize = 1;
       if (next == ']') {
         PHControl::instance()->setArbitrary();
@@ -458,8 +465,7 @@ void EthernetServer_TC::arbitraryPath() {
         char buffer[sizeof(response)];
         strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
         client.write(buffer);
-        client.stop();
-        state = NOT_CONNECTED;
+        state = FINISHED;
         return;
       }
       if (++count > 100) {
@@ -467,4 +473,28 @@ void EthernetServer_TC::arbitraryPath() {
       }
     }
   }
+}
+
+float EthernetServer_TC::charArrToFloat(char* input) {
+  float result = 0.0;
+  float fractionPart = 0.0;
+  float division = 1.0;
+  bool isInIntPart = true;
+  int i = 0;
+  char c;
+  while((c = input[i++]) != '\0') {
+    if (c == '.') {
+      isInIntPart = false;
+    } else {
+      if (isInIntPart) {
+        result = result * 10.0 + c - '0';
+      } else {
+        fractionPart = fractionPart * 10.0 + c - '0';
+        division *= 10.0;
+      }
+    }
+  }
+  fractionPart /= division;
+  result += fractionPart;
+  return result;
 }

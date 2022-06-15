@@ -1,8 +1,8 @@
-#include "Devices/SD_TC.h"
-
 #include "DateTime_TC.h"
+#include "Devices/SD_TC.h"
 #include "Serial_TC.h"
 #include "TC_util.h"
+
 
 //  class variables
 SD_TC* SD_TC::_instance = nullptr;
@@ -47,7 +47,7 @@ void SD_TC::appendData(const char* header, const char* line) {
 
 void SD_TC::writePhPoint(float value) {
   File file = sd.open("arb_pH_points", O_CREAT | O_WRONLY | O_APPEND);
-  file.write((void *) &value, sizeof(value));
+  file.write((void*)&value, sizeof(value));
   file.close();
 }
 
@@ -55,7 +55,7 @@ float SD_TC::readPhPoint(const uint32_t seekTo) {
   float value;
   File file = open("arb_pH_points", O_RDONLY);
   file.seek(seekTo);
-  file.read((void *) &value, sizeof(value));
+  file.read((void*)&value, sizeof(value));
   //   uint32_t position = file.position();
   file.close();
   return value;

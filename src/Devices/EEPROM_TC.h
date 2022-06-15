@@ -13,7 +13,7 @@ public:
   void eepromWriteInt(uint16_t address, int32_t value);
 
   // accessor methods
-  float getAmplitude();               // not used
+  float getAmplitude();  // not used
   uint32_t getArbitraryPhOriginTime();
   float getCorrectedTemp();           // adjustment to temperature probe
   float getFrequency();               // not used

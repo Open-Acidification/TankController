@@ -1,15 +1,16 @@
-#include "Devices/EthernetServer_TC.h"
+#include "Devices/Ethernet_TC.h"
 
 #include <avr/wdt.h>
 
 #include "DateTime_TC.h"
-#include "Devices/Ethernet_TC.h"
+#include "Devices/EthernetServer_TC.h"
 #include "Devices/JSONBuilder.h"
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHControl.h"
 #include "SD_TC.h"
 #include "Serial_TC.h"
 #include "TankController.h"
+
 
 //  class variables
 EthernetServer_TC* EthernetServer_TC::_instance = nullptr;
@@ -84,8 +85,7 @@ void EthernetServer_TC::post() {
     state = ARBITRARY_PATH;
     // here is where we would look at the headers
     bufferContentsSize = 0;
-  }
-  else {
+  } else {
     serial(F("post \"%s\" not recognized!"), buffer + 6);
     state = FINISHED;
   }
@@ -443,10 +443,9 @@ int EthernetServer_TC::weekday(int year, int month, int day) {
 void EthernetServer_TC::arbitraryPath() {
   int next;
   int count = 0;
-  while (bufferContentsSize < sizeof(buffer) - 1 &&
-        (next = client.read()) != -1) {  // Flawfinder: ignore
+  while (bufferContentsSize < sizeof(buffer) - 1 && (next = client.read()) != -1) {  // Flawfinder: ignore
     buffer[bufferContentsSize++] = (char)(next & 0xFF);
-    if(buffer[0] != '[') {
+    if (buffer[0] != '[') {
       serial(F("Bad request body"));
       sendBadBody();
       return;
@@ -459,9 +458,9 @@ void EthernetServer_TC::arbitraryPath() {
       if (next == ']') {
         PHControl::instance()->setArbitrary();
         static const char response[] PROGMEM =
-          "HTTP/1.1 201 Created\r\n"
-          "Access-Control-Allow-Origin: *\r\n"
-          "\r\n";
+            "HTTP/1.1 201 Created\r\n"
+            "Access-Control-Allow-Origin: *\r\n"
+            "\r\n";
         char buffer[sizeof(response)];
         strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
         client.write(buffer);
@@ -482,7 +481,7 @@ float EthernetServer_TC::charArrToFloat(char* input) {
   bool isInIntPart = true;
   int i = 0;
   char c;
-  while((c = input[i++]) != '\0') {
+  while ((c = input[i++]) != '\0') {
     if (c == '.') {
       isInIntPart = false;
     } else {

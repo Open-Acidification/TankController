@@ -147,7 +147,7 @@ void PHControl::updateArbitraryPoints() {
   int numOfIntervals = (DateTime_TC::now().secondstime() - arbOriginTime) / arbRampDuration;
   rampStartingPh = SD_TC::instance()->readPhPoint(numOfIntervals * 4);  // 4 is the size of a float
   targetPh = SD_TC::instance()->readPhPoint((numOfIntervals * 4) + 4);
-  if(targetPh == 0) {
+  if (targetPh == 0) {
     pHSetType = phSetTypeTypes::FLAT_TYPE;
     return;
   }

@@ -12,7 +12,7 @@ private:
   const uint16_t PH_CONTROL_PIN = 49;
   const uint16_t SOLENOID_OPENING_TIME = 100;
   uint32_t arbRampDuration = 360;  // 360 seconds or 6 minutes
-  float targetPh;  // actual target
+  float targetPh;                  // actual target
   float currentPHTarget;
   uint32_t arbOriginTime;
   float rampStartingPh;

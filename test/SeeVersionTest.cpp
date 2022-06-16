@@ -9,7 +9,7 @@
 unittest(testOutput) {
   TankController* tc = TankController::instance();
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
-  display->clear();  // keep assertEqual display->getLines().at(1) from
+  // display->clear();  // keep assertEqual display->getLines().at(1) from
                      // having something like this: 22.04.1           loading
   assertEqual("MainMenu", tc->stateName());
   SeeVersion* test = new SeeVersion(tc);

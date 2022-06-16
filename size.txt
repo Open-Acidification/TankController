@@ -1,1 +1,1 @@
-Free space of 5874 is less than minimum of 5880
+Free space of 5866 is less than minimum of 5880

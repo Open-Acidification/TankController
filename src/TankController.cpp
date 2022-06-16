@@ -58,7 +58,6 @@ TankController::TankController() {
   TemperatureControl::instance();
   PHProbe::instance();
   PHControl::instance();
-  LiquidCrystal_TC::instance()->clear();  // clears end of lcd line 2 from having "loading" at the end
   state = new MainMenu(this);
   pinMode(LED_BUILTIN, OUTPUT);
 }

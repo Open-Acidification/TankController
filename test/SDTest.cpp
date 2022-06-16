@@ -179,12 +179,12 @@ unittest(writePhPoint) {
 
 unittest(createAndDeleteFile) {
   // Create the file and write garbage
-  char buffer;
+  char buffer[128];
   assertFalse(SD_TC::instance()->exists("newFile.txt"));
-  file = SD_TC::instance()->open("newFile.txt", O_RDWR | O_CREAT | O_AT_END);
+  File file = SD_TC::instance()->open("newFile.txt", O_RDWR | O_CREAT | O_AT_END);
   assertTrue(SD_TC::instance()->exists("newFile.txt"));
-  memset(buffer, ' ', 512);
-  buffer[511] = '\0';
+  memset(buffer, ' ', 128);
+  buffer[127] = '\0';
   file.write(buffer);
   file.close();
   SD_TC::instance()->remove("newFile.txt");

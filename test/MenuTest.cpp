@@ -62,6 +62,8 @@ unittest(ChangeSettings) {
   assertEqual("Change settings ", lc->getLines().at(0));
   assertEqual("<4   ^2  8v   6>", lc->getLines().at(1));
   enterKey('D');
+  delay(200);  // going back to idle screen requires this
+  tc->loop();
   assertEqual("pH=0.000   8.100", lc->getLines().at(0));
   assertEqual("T=12.23 H 15.75 ", lc->getLines().at(1));
   enterKey('8');
@@ -69,6 +71,8 @@ unittest(ChangeSettings) {
   assertEqual("Change settings ", lc->getLines().at(0));
   assertEqual("<4   ^2  8v   6>", lc->getLines().at(1));
   enterKey('4');
+  delay(200);  // going back to idle screen requires this
+  tc->loop();
   assertEqual("pH=0.000   8.100", lc->getLines().at(0));
   assertEqual("T=12.23 H 15.75 ", lc->getLines().at(1));
 }
@@ -78,6 +82,8 @@ unittest(ViewSettings) {
   assertEqual("View settings   ", lc->getLines().at(0));
   assertEqual("<4   ^2  8v   6>", lc->getLines().at(1));
   enterKey('D');
+  delay(200);  // going back to idle screen requires this
+  tc->loop();
   assertEqual("pH=0.000   8.100", lc->getLines().at(0));
   assertEqual("T=12.23 H 15.75 ", lc->getLines().at(1));
   enterKey('2');
@@ -85,8 +91,10 @@ unittest(ViewSettings) {
   assertEqual("View settings   ", lc->getLines().at(0));
   assertEqual("<4   ^2  8v   6>", lc->getLines().at(1));
   enterKey('D');
-  assertEqual("pH=0.000   8.100", lc->getLines().at(0));
-  assertEqual("T=12.23 H 15.75 ", lc->getLines().at(1));
+  delay(200);  // going back to idle screen requires this
+  tc->loop();
+  assertEqual("pH 0.000   8.100", lc->getLines().at(0));
+  assertEqual("T 12.23 H 15.75 ", lc->getLines().at(1));
 }
 
 unittest(SetPHSetPoint) {

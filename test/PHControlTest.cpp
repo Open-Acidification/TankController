@@ -55,7 +55,7 @@ unittest(bubblerTurnsOnAndOff) {
   state->serialPort[1].dataIn = "8.00\r";  // the queue of data waiting to be read
   tc->serialEvent1();                      // fake interrupt to update the current pH reading
   delay(7);
-  tc->loop();                              // update the controls based on the current readings
+  tc->loop();  // update the controls based on the current readings
   assertEqual(13, millis());
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());

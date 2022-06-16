@@ -1,25 +1,25 @@
 /**
- * SeePh.h
+ * SeeTemperature.h
  *
- * See pH
+ * See Temperature
  */
 #pragma once
 #include "TC_util.h"
 #include "UIState.h"
 
-class SeePh : public UIState {
+class SeeTemperature : public UIState {
 public:
-  enum phSetTypeTypes {
+  enum tempSetTypeTypes {
     FLAT_TYPE,
     RAMP_TYPE,
     SINE_TYPE,
   };
 
-  SeePh(TankController *tc) : UIState(tc) {
+  SeeTemperature(TankController *tc) : UIState(tc) {
   }
   void loop();
   const __FlashStringHelper *name() {
-    return F("SeePh");
+    return F("SeeTemperature");
   }
   void start() {
     startTime = millis();
@@ -27,7 +27,7 @@ public:
 
 private:
   void loadHeader(uint16_t line);
-  void loadPhSetType(uint16_t line);
+  void loadTempSetType(uint16_t line);
   void loadTypeVariables(uint16_t line);
   void loadValues(uint16_t line);
 

@@ -13,10 +13,13 @@
 #include "SeeFreeMemory.h"
 #include "SeeGoogleMins.h"
 #include "SeeLogFile.h"
+#include "SeePh.h"
 #include "SeePHSlope.h"
 #include "SeePIDConstants.h"
+#include "SeePh.h"
 #include "SeeTankID.h"
 #include "SeeTempCalOffset.h"
+#include "SeeTemperature.h"
 #include "SeeVersion.h"
 #include "SetChillOrHeat.h"
 #include "SetGoogleSheetInterval.h"
@@ -44,6 +47,8 @@ MainMenu::MainMenu(TankController *tc) : UIState(tc) {
   viewMenus[VIEW_TEMP_CAL_OFFSET] = F("View temp cal");
   viewMenus[VIEW_TIME] = F("View time");
   viewMenus[VIEW_VERSION] = F("View version");
+  viewMenus[VIEW_PH] = F("View pH");
+  viewMenus[VIEW_TEMPERATURE] = F("View temperature");
 
   setMenus[SET_CALIBRATION] = F("pH calibration");
   setMenus[SET_PH_CALIBRATION_CLEAR] = F("Clear pH calibra");
@@ -172,6 +177,12 @@ void MainMenu::selectView() {
       break;
     case VIEW_VERSION:
       this->setNextState(static_cast<UIState *>(new SeeVersion(tc)));
+      break;
+    case VIEW_PH:
+      this->setNextState(static_cast<UIState *>(new SeePh(tc)));
+      break;
+    case VIEW_TEMPERATURE:
+      this->setNextState(static_cast<UIState *>(new SeeTemperature(tc)));
       break;
     default:
       break;

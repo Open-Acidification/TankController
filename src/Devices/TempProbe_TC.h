@@ -102,6 +102,7 @@ public:
     return thermo.temperature(RTDnominal, refResistor);
   }
 
+  // current Temperature
   float getRunningAverage() {
     return getUncorrectedRunningAverage() + correction;
   }

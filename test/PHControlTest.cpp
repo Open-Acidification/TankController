@@ -3,6 +3,7 @@
 #include <ci/ObservableDataStream.h>
 
 #include "Devices/DateTime_TC.h"
+#include "Devices/SD_TC.h"
 #include "LiquidCrystal_TC.h"
 #include "MainMenu.h"
 #include "PHCalibrationMid.h"
@@ -53,7 +54,8 @@ unittest(bubblerTurnsOnAndOff) {
   assertFalse(controlSolenoid->isOn());
   state->serialPort[1].dataIn = "8.00\r";  // the queue of data waiting to be read
   tc->serialEvent1();                      // fake interrupt to update the current pH reading
-  tc->loop();                              // update the controls based on the current readings
+  delay(7);
+  tc->loop();  // update the controls based on the current readings
   assertEqual(13, millis());
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
@@ -104,7 +106,8 @@ unittest(afterTenSecondsAndPhIsLower) {
   setPhMeasurementTo(8.50);
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
-  assertEqual("CO2 bubbler turned on after 7 ms\r\n", state->serialPort[0].dataOut);
+  assertEqual("CO2 bubbler turned on after 0 ms\r\n", state->serialPort[0].dataOut);
+  delay(200);  // update display
   tc->loop();
   assertEqual("pH 8.500 B 7.500", lc->getLines().at(0));
   delay(8000);
@@ -114,7 +117,7 @@ unittest(afterTenSecondsAndPhIsLower) {
   state->serialPort[0].dataOut = "";  // the history of data written
   delay(1000);
   tc->loop();
-  assertEqual("CO2 bubbler turned off after 9021 ms\r\n", state->serialPort[0].dataOut);  // after 10 seconds
+  assertEqual("CO2 bubbler turned off after 9218 ms\r\n", state->serialPort[0].dataOut);  // after 10 seconds
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
   delay(1000);
@@ -188,6 +191,32 @@ unittest(RampGreaterThanZero) {
   delay(1800000);  // delay 30 minutes
   tc->loop();
   assertTrue(7.5 <= controlSolenoid->getCurrentPhTarget() && controlSolenoid->getCurrentPhTarget() <= 7.51);
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(7, controlSolenoid->getCurrentPhTarget());
+  // ramp time no longer used after it ends
+  delay(1800000);  // delay 30 minutes
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(7, controlSolenoid->getCurrentPhTarget());
+
+  // ramp up
+  setPhMeasurementTo(5.500);
+  controlSolenoid->setTargetPh(7.000);
+  controlSolenoid->setRampDuration(1.5);
+  assertEqual(controlSolenoid->phSetTypeTypes::RAMP_TYPE, controlSolenoid->getPhSetType());
+  tc->loop();
+  assertEqual(5.5, controlSolenoid->getCurrentPhTarget());
+  // mock arduino restarting
+  PHControl::clearInstance();
+  controlSolenoid = PHControl::instance();
+  // takes 1.5 hours to get to pH of 7
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(6, controlSolenoid->getCurrentPhTarget());
+  delay(1800000);  // delay 30 minutes
+  tc->loop();
+  assertEqual(6.5, controlSolenoid->getCurrentPhTarget());
   delay(1800000);  // delay 30 minutes
   tc->loop();
   assertEqual(7, controlSolenoid->getCurrentPhTarget());

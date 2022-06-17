@@ -19,6 +19,7 @@ public:
   File open(const char* path, oflag_t oflag = 0x00);
   void todaysDataFileName(char* path, int size);
   void printRootDirectory();
+  bool remove(const char* myFileName);
   void listRootToBuffer(void (*callWhenFull)(char*, bool));
 
 private:

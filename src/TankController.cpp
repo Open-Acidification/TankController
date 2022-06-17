@@ -175,7 +175,7 @@ void TankController::serialEvent1() {
  * Set the next state
  */
 void TankController::setNextState(UIState *newState, bool update) {
-  COUT("TankController::setNextState() from " << (nextState ? (const char*)nextState->name() : "nullptr") << " to "
+  COUT("TankController::setNextState() from " << (nextState ? (const char *)nextState->name() : "nullptr") << " to "
                                               << newState->name());
   assert(nextState == nullptr);
   nextState = newState;

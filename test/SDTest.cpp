@@ -171,4 +171,15 @@ unittest(printRootDirectory) {
   assertNotEqual(-1, index);
 }
 
+unittest(removeFile) {
+  DateTime_TC date(2022, 7, 6);
+  SD_TC* sd = SD_TC::instance();
+  assertFalse(SD_TC::instance()->exists("20220706.log"));
+  date.setAsCurrent();
+  sd->appendToLog("contents for file");
+  assertTrue(SD_TC::instance()->exists("20220706.log"));
+  sd->remove("20220706.log");
+  assertFalse(SD_TC::instance()->exists("20220706.log"));
+}
+
 unittest_main()

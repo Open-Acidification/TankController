@@ -12,10 +12,10 @@ public:
   }
   void start() override;
   void handleKey(char key) override;
-  const __FlashStringHelper* name() {
+  const __FlashStringHelper* name() override {
     return F("SeeDeviceAddress");
   }
-  const __FlashStringHelper* prompt() {
+  const __FlashStringHelper* prompt() override {
     return F("Device address");
   };
 };

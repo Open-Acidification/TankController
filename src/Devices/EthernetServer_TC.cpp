@@ -147,7 +147,7 @@ bool EthernetServer_TC::file() {
 
   wdt_disable();
   uint32_t flushCount = 0;
-  while (file.available32()) {
+  while (file.available()) {
     uint32_t startTime = millis();
     int readSize = file.read(buffer, sizeof(buffer));  // Flawfinder: ignore
     timeInRead += millis() - startTime;
@@ -222,6 +222,7 @@ void EthernetServer_TC::loop() {
         state = READ_REQUEST;
         connectedAt = millis();  // record start time (so we can do timeout)
       // Mwahahaha, use switch statement fall-through in a good way!
+      __attribute__ ((fallthrough));
       case READ_REQUEST:
         int next;
         while (bufferContentsSize < sizeof(buffer) - 1 && (next = client.read()) != -1) {  // Flawfinder: ignore

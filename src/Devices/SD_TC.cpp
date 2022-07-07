@@ -84,44 +84,6 @@ bool SD_TC::format() {
   return sd.format();
 }
 
-bool SD_TC::mkdir(const char* path) {
-  return sd.mkdir(path);
-}
-
-File SD_TC::open(const char* path, oflag_t oflag) {
-  return sd.open(path, oflag);
-}
-
-void SD_TC::printRootDirectory() {
-  sd.ls(LS_DATE | LS_SIZE | LS_R);
-}
-
-void SD_TC::listRootToBuffer(void (*callWhenFull)(char*, bool)) {
-#ifndef MOCK_PINS_COUNT
-  if (!inProgress) {
-    // Initialize hierarchy
-    hierarchy = new File;
-    ++hierarchySize;
-    const char path[] PROGMEM = "/";
-    File root = SD_TC::instance()->open(path);
-    if (!root) {
-      serial(F("SD_TC open() failed"));
-      return;
-    }
-    // Add root to hierarchy if successful
-    root.rewind();
-    hierarchy[0] = root;
-    inProgress = true;
-  }
-  listFiles(callWhenFull);
-#else
-  static const char notImplemented[] PROGMEM = "Root directory not supported by CI framework.\r\n";
-  char buffer[sizeof(notImplemented)];
-  memcpy(buffer, (PGM_P)notImplemented, sizeof(notImplemented));
-  callWhenFull(buffer, true);
-#endif
-}
-
 void SD_TC::listFiles(void (*callWhenFull)(char*, bool), byte tabulation) {
   // Only called on real device
 #ifndef MOCK_PINS_COUNT
@@ -187,6 +149,48 @@ void SD_TC::listFiles(void (*callWhenFull)(char*, bool), byte tabulation) {
   buffer[linePos] = '\0';
   callWhenFull(buffer, false);
 #endif
+}
+
+void SD_TC::listRootToBuffer(void (*callWhenFull)(char*, bool)) {
+#ifndef MOCK_PINS_COUNT
+  if (!inProgress) {
+    // Initialize hierarchy
+    hierarchy = new File;
+    ++hierarchySize;
+    const char path[] PROGMEM = "/";
+    File root = SD_TC::instance()->open(path);
+    if (!root) {
+      serial(F("SD_TC open() failed"));
+      return;
+    }
+    // Add root to hierarchy if successful
+    root.rewind();
+    hierarchy[0] = root;
+    inProgress = true;
+  }
+  listFiles(callWhenFull);
+#else
+  static const char notImplemented[] PROGMEM = "Root directory not supported by CI framework.\r\n";
+  char buffer[sizeof(notImplemented)];
+  memcpy(buffer, (PGM_P)notImplemented, sizeof(notImplemented));
+  callWhenFull(buffer, true);
+#endif
+}
+
+bool SD_TC::mkdir(const char* path) {
+  return sd.mkdir(path);
+}
+
+File SD_TC::open(const char* path, oflag_t oflag) {
+  return sd.open(path, oflag);
+}
+
+bool SD_TC::remove(const char* path) {
+  return sd.remove(path);
+}
+
+void SD_TC::printRootDirectory() {
+  sd.ls(LS_DATE | LS_SIZE | LS_R);
 }
 
 void SD_TC::todaysDataFileName(char* path, int size) {

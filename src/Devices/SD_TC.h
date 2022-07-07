@@ -15,11 +15,12 @@ public:
   void appendToLog(const char* line);
   bool exists(const char* path);
   bool format();
+  void listRootToBuffer(void (*callWhenFull)(char*, bool));
   bool mkdir(const char* path);
   File open(const char* path, oflag_t oflag = 0x00);
-  void todaysDataFileName(char* path, int size);
   void printRootDirectory();
-  void listRootToBuffer(void (*callWhenFull)(char*, bool));
+  bool remove(const char* path);
+  void todaysDataFileName(char* path, int size);
 
 private:
   // class variables

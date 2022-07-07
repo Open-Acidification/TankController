@@ -200,14 +200,14 @@ void EthernetServer_TC::testReadSpeed() {
   strncpy_P(temp, (PGM_P)path, sizeof(temp));
   // Create the file and write garbage
   file = SD_TC::instance()->open(temp, O_RDWR | O_CREAT | O_AT_END);
-  memset(buffer, ' ', 512);
-  buffer[511] = '\0';
+  memset(buffer, ' ', sizeof(buffer));
+  buffer[sizeof(buffer) - 1] = '\0';
   file.write(buffer);
   file.close();
   // Read 1 MB
   file = SD_TC::instance()->open(temp, O_RDONLY);
   int startTime = micros();
-  file.read(buffer, sizeof(buffer));
+  file.read(buffer, sizeof(buffer));  // Flawfinder: ignore
   int endTime = micros();
   SD_TC::instance()->remove(temp);
   serial(F("Time reading 512B: %i us"), (endTime - startTime));

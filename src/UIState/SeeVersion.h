@@ -11,10 +11,10 @@ public:
   SeeVersion(TankController* tc) : UIState(tc) {
   }
   void start() override;
-  const __FlashStringHelper* name() {
+  const __FlashStringHelper* name() override {
     return F("SeeVersion");
   }
-  const __FlashStringHelper* prompt() {
+  const __FlashStringHelper* prompt() override {
     return F("Software Version");
   };
 };

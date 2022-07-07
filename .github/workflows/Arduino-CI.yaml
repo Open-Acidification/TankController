@@ -9,16 +9,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Clone the repo using the `checkout` action
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.6
-      - name: Check style, functionality, and usage
+      - name: Run Arduino-CI Tests
         run: |
           g++ -v
           scripts/install_libraries.sh
           scripts/testAndBuild.sh
+
       - name: Ensure no Git changes
         run: |
           git status -s -uno

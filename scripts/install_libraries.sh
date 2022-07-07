@@ -65,7 +65,7 @@ if [ -d "./RTClib" ]; then
     git pull
   )
 else
-  git clone $SHALLOW_MASTER "$GITHUB/RTClib.git"
+  git clone $SHALLOW_MAIN "$GITHUB/RTClib.git"
 fi
 
 if [ -d "./Keypad" ]; then

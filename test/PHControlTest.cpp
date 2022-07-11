@@ -56,7 +56,7 @@ unittest(bubblerTurnsOnAndOff) {
   tc->serialEvent1();                      // fake interrupt to update the current pH reading
   delay(7);
   tc->loop();  // update the controls based on the current readings
-  assertEqual(13, millis());
+  assertEqual(20, millis());
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
   String serialOutput = state->serialPort[0].dataOut;
@@ -73,8 +73,8 @@ unittest(bubblerTurnsOnAndOff) {
     i = j + 2;
   } while (line.charAt(0) != 'C');
   assertEqual((int)'C', line.charAt(0));
-  assertEqual("CO2 bubbler turned on after 13 ms", line);
-  assertEqual(13, millis());
+  assertEqual("CO2 bubbler turned on after 20 ms", line);
+  assertEqual(20, millis());
   delay(9500);
   tc->loop();  // solenoid should turn off briefly at end of window
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
@@ -106,7 +106,7 @@ unittest(afterTenSecondsAndPhIsLower) {
   setPhMeasurementTo(8.50);
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
-  assertEqual("CO2 bubbler turned on after 0 ms\r\n", state->serialPort[0].dataOut);
+  assertEqual("CO2 bubbler turned on after 7 ms\r\n", state->serialPort[0].dataOut);
   delay(200);  // update display
   tc->loop();
   assertEqual("pH 8.500 B 7.500", lc->getLines().at(0));
@@ -117,7 +117,7 @@ unittest(afterTenSecondsAndPhIsLower) {
   state->serialPort[0].dataOut = "";  // the history of data written
   delay(1000);
   tc->loop();
-  assertEqual("CO2 bubbler turned off after 9218 ms\r\n", state->serialPort[0].dataOut);  // after 10 seconds
+  assertEqual("CO2 bubbler turned off after 9221 ms\r\n", state->serialPort[0].dataOut);  // after 10 seconds
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
   delay(1000);

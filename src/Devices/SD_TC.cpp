@@ -185,10 +185,6 @@ File SD_TC::open(const char* path, oflag_t oflag) {
   return sd.open(path, oflag);
 }
 
-bool SD_TC::remove(const char* path) {
-  return sd.remove(path);
-}
-
 void SD_TC::printRootDirectory() {
   sd.ls(LS_DATE | LS_SIZE | LS_R);
 }

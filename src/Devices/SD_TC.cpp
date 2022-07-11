@@ -84,44 +84,6 @@ bool SD_TC::format() {
   return sd.format();
 }
 
-bool SD_TC::mkdir(const char* path) {
-  return sd.mkdir(path);
-}
-
-File SD_TC::open(const char* path, oflag_t oflag) {
-  return sd.open(path, oflag);
-}
-
-void SD_TC::printRootDirectory() {
-  sd.ls(LS_DATE | LS_SIZE | LS_R);
-}
-
-void SD_TC::listRootToBuffer(void (*callWhenFull)(char*, bool)) {
-#ifndef MOCK_PINS_COUNT
-  if (!inProgress) {
-    // Initialize hierarchy
-    hierarchy = new File;
-    ++hierarchySize;
-    const char path[] PROGMEM = "/";
-    File root = SD_TC::instance()->open(path);
-    if (!root) {
-      serial(F("SD_TC open() failed"));
-      return;
-    }
-    // Add root to hierarchy if successful
-    root.rewind();
-    hierarchy[0] = root;
-    inProgress = true;
-  }
-  listFiles(callWhenFull);
-#else
-  static const char notImplemented[] PROGMEM = "Root directory not supported by CI framework.\r\n";
-  char buffer[sizeof(notImplemented)];
-  memcpy(buffer, (PGM_P)notImplemented, sizeof(notImplemented));
-  callWhenFull(buffer, true);
-#endif
-}
-
 void SD_TC::listFiles(void (*callWhenFull)(char*, bool), byte tabulation) {
   // Only called on real device
 #ifndef MOCK_PINS_COUNT
@@ -156,9 +118,8 @@ void SD_TC::listFiles(void (*callWhenFull)(char*, bool), byte tabulation) {
           // Now we change parent directory
           parent = &hierarchy[hierarchySize - 1];
         } else {
-          // We'll say nothing is bigger than 10 MB
-          int bytesWritten = snprintf_P(buffer + linePos, sizeof(buffer) - linePos, (PGM_P)F("%s\t%10lu B\n"), fileName,
-                                        (unsigned long)current.size());
+          int bytesWritten = snprintf_P(buffer + linePos, sizeof(buffer) - linePos, (PGM_P)F("%s\t%6u bytes\n"),
+                                        fileName, current.fileSize());
           // "Overwrite" null terminator
           linePos += bytesWritten;
           ++filesWritten;
@@ -188,6 +149,48 @@ void SD_TC::listFiles(void (*callWhenFull)(char*, bool), byte tabulation) {
   buffer[linePos] = '\0';
   callWhenFull(buffer, false);
 #endif
+}
+
+void SD_TC::listRootToBuffer(void (*callWhenFull)(char*, bool)) {
+#ifndef MOCK_PINS_COUNT
+  if (!inProgress) {
+    // Initialize hierarchy
+    hierarchy = new File;
+    ++hierarchySize;
+    const char path[] PROGMEM = "/";
+    File root = SD_TC::instance()->open(path);
+    if (!root) {
+      serial(F("SD_TC open() failed"));
+      return;
+    }
+    // Add root to hierarchy if successful
+    root.rewind();
+    hierarchy[0] = root;
+    inProgress = true;
+  }
+  listFiles(callWhenFull);
+#else
+  static const char notImplemented[] PROGMEM = "Root directory not supported by CI framework.\r\n";
+  char buffer[sizeof(notImplemented)];
+  memcpy(buffer, (PGM_P)notImplemented, sizeof(notImplemented));
+  callWhenFull(buffer, true);
+#endif
+}
+
+bool SD_TC::mkdir(const char* path) {
+  return sd.mkdir(path);
+}
+
+File SD_TC::open(const char* path, oflag_t oflag) {
+  return sd.open(path, oflag);
+}
+
+bool SD_TC::remove(const char* path) {
+  return sd.remove(path);
+}
+
+void SD_TC::printRootDirectory() {
+  sd.ls(LS_DATE | LS_SIZE | LS_R);
 }
 
 void SD_TC::todaysDataFileName(char* path, int size) {

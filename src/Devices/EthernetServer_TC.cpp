@@ -30,9 +30,9 @@ EthernetServer_TC* EthernetServer_TC::instance() {
 EthernetServer_TC::EthernetServer_TC(uint16_t port) : EthernetServer(port) {
   begin();
   IPAddress IP = Ethernet_TC::instance()->getIP();
+  serial(F("Ethernet Server is listening on %i.%i.%i.%i:80"), IP[0], IP[1], IP[2], IP[3]);
   static const char boundary_P[] PROGMEM = "boundary";
   strncpy_P(boundary, (PGM_P)boundary_P, sizeof(boundary_P));
-  serial(F("Ethernet Server is listening on %i.%i.%i.%i:80"), IP[0], IP[1], IP[2], IP[3]);
 }
 
 // echo() - Proof of concept for the EthernetServer
@@ -65,7 +65,7 @@ void EthernetServer_TC::get() {
     echo();
   } else if (memcmp_P(buffer + 5, F("api"), 3) == 0) {
     apiHandler();
-  } else if (isFileRequest()) {
+  } else if (isRequestForExistingFile()) {
     fileSetup();
   } else {
     serial(F("get \"%s\" not recognized!"), buffer + 4);
@@ -200,16 +200,16 @@ void EthernetServer_TC::testReadSpeed() {
   strncpy_P(temp, (PGM_P)path, sizeof(temp));
   // Create the file and write garbage
   file = SD_TC::instance()->open(temp, O_RDWR | O_CREAT | O_AT_END);
-  memset(buffer, ' ', 512);
-  buffer[511] = '\0';
+  memset(buffer, ' ', sizeof(buffer));
+  buffer[sizeof(buffer) - 1] = '\0';
   file.write(buffer);
   file.close();
   // Read 1 MB
   file = SD_TC::instance()->open(temp, O_RDONLY);
   int startTime = micros();
-  file.read(buffer, 512);  // Flawfinder: ignore
+  file.read(buffer, sizeof(buffer));  // Flawfinder: ignore
   int endTime = micros();
-  SD_TC::instance()->remove((const char*)((char*)(temp)));
+  SD_TC::instance()->remove(temp);
   serial(F("Time reading 512B: %i us"), (endTime - startTime));
   wdt_enable(WDTO_8S);
   state = FINISHED;
@@ -233,7 +233,7 @@ void EthernetServer_TC::testWriteSpeed() {
 }
 
 // Handles a get request with a path
-bool EthernetServer_TC::isFileRequest() {
+bool EthernetServer_TC::isRequestForExistingFile() {
   // Buffer has something like "GET /path HTTP/1.1"
   // and we want to put a null at the end of the path.
   int i = 4;
@@ -264,7 +264,7 @@ void EthernetServer_TC::fileSetup() {
 // Continue file transfer (return value is whether we are finished)
 bool EthernetServer_TC::fileContinue() {
   client.write(boundary);
-  if (file.available32()) {
+  if (file.available()) {
     int readSize = file.read(buffer, sizeof(buffer));  // Flawfinder: ignore
     int writeSize = client.write(buffer, readSize);
     if (writeSize != readSize) {
@@ -303,8 +303,8 @@ void EthernetServer_TC::loop() {
         break;
       case NOT_CONNECTED:
         state = READ_REQUEST;
-        connectedAt = millis();  // record start time (so we can do timeout)
-      // Mwahahaha, use switch statement fall-through in a good way!
+        connectedAt = millis();        // record start time (so we can do timeout)
+        __attribute__((fallthrough));  // Mwahahaha, use switch statement fall-through in a good way!
       case READ_REQUEST:
         int next;
         while (bufferContentsSize < sizeof(buffer) - 1 && (next = client.read()) != -1) {  // Flawfinder: ignore

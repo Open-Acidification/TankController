@@ -48,10 +48,6 @@ void LiquidCrystal_TC::splashScreen(const char* version) {
  */
 void LiquidCrystal_TC::writeLine(const char* text, uint16_t line) {
   line = line % 2;
-  // Avoid printing again if same data
-  if (memcmp(text, _lines[line], 16) == 0) {
-    return;
-  }
   setCursor(0, line);
   char* result = _lines[line];
   bool moreText = true;

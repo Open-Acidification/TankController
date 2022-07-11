@@ -21,7 +21,7 @@
 #include "UIState/MainMenu.h"
 #include "UIState/UIState.h"
 
-const char TANK_CONTROLLER_VERSION[] = "22.04.1";
+const char TANK_CONTROLLER_VERSION[] = "22.07.1";
 
 // ------------ Class Methods ------------
 /**
@@ -143,7 +143,7 @@ void TankController::handleUI() {
 /**
  * This is one of two public instance functions.
  * It is called repeatedly while the board is on.
- * (loop() appears to finish in 2-4 ms idling at main menu.)
+ * (It appears to be called about once every 15 ms.)
  */
 void TankController::loop() {
   wdt_reset();

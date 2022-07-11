@@ -177,17 +177,15 @@ unittest(writePhPoint) {
   assertEqual(7.125, value);
 }
 
-unittest(createAndDeleteFile) {
-  // Create the file and write garbage
-  char buffer[128];
-  assertFalse(SD_TC::instance()->exists("newFile.txt"));
-  File file = SD_TC::instance()->open("newFile.txt", O_RDWR | O_CREAT | O_AT_END);
-  assertTrue(SD_TC::instance()->exists("newFile.txt"));
-  memset(buffer, ' ', 128);
-  buffer[127] = '\0';
-  file.write(buffer);
-  file.close();
-  SD_TC::instance()->remove("newFile.txt");
-  assertFalse(SD_TC::instance()->exists("newFile.txt"));
+unittest(removeFile) {
+  DateTime_TC date(2022, 7, 6);
+  SD_TC* sd = SD_TC::instance();
+  assertFalse(SD_TC::instance()->exists("20220706.log"));
+  date.setAsCurrent();
+  sd->appendToLog("contents for file");
+  assertTrue(SD_TC::instance()->exists("20220706.log"));
+  sd->remove("20220706.log");
+  assertFalse(SD_TC::instance()->exists("20220706.log"));
 }
+
 unittest_main()

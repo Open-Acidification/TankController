@@ -75,7 +75,7 @@ private:
   void rootdir();
   void testReadSpeed();
   void testWriteSpeed();
-  bool isFileRequest();
+  bool isRequestForExistingFile();
   void fileSetup();
   bool fileContinue();
 };

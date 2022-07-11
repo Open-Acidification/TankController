@@ -60,8 +60,6 @@ public:
 private:
   int16_t level1 = 0;
   int16_t level2 = -1;
-  // So we'll immediately update display
-  unsigned long lastDisplayTime = -1000;
   const __FlashStringHelper* viewMenus[VIEW_COMMAND_COUNT];
   const __FlashStringHelper* setMenus[SET_COMMAND_COUNT];
   void left();

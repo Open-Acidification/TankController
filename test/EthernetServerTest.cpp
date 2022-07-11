@@ -190,7 +190,7 @@ unittest(current) {
       "\"PID\":\"ON\","
       "\"TankID\":0,"
       "\"Uptime\":\"0d 0h 1m 1s\","
-      "\"Version\":\"22.04.1\"}\r\n";
+      "\"Version\":\"22.07.1\"}\r\n";
   assertEqual(expectedResponse, response);
   assertEqual(FINISHED, server->getState());
   server->loop();  // Process finished state

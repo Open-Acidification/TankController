@@ -236,12 +236,6 @@ void MainMenu::selectSet() {
 // pH=7.325 B 7.125
 // T=12.25 H 12.75
 void MainMenu::idle() {
-  // guard clause to only update LCD 5 times per second
-  if (millis() - lastDisplayTime < 200) {
-    return;
-  }
-  // This appears to take 6 ms with all its calculations,
-  // including LCD's ignoring duplicate results
   PHControl *phControl = PHControl::instance();
   char output[20];
   output[0] = 'p';
@@ -273,7 +267,6 @@ void MainMenu::idle() {
   output[9] = ' ';
   dtostrf(tempControl->getTargetTemperature(), 5, 2, output + 10);
   LiquidCrystal_TC::instance()->writeLine(output, 1);
-  lastDisplayTime = millis();
 }
 
 void MainMenu::loop() {

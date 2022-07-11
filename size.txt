@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 Free space of 5866 is less than minimum of 5880
+=======
+Global variables use 2356 bytes (28%) of dynamic memory, leaving 5836 bytes for local variables. Maximum is 8192 bytes.
+>>>>>>> bc1b17c3134689a0166bea0147c0dff663dd5341

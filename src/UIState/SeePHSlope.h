@@ -12,10 +12,10 @@ public:
   }
   void start() override;
   void loop() override;
-  const __FlashStringHelper* name() {
+  const __FlashStringHelper* name() override {
     return F("SeePHSlope");
   }
-  const __FlashStringHelper* prompt() {
+  const __FlashStringHelper* prompt() override {
     return F("PH Slope:");
   };
 };

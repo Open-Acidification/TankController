@@ -55,8 +55,7 @@ float SD_TC::readPhPoint(const uint32_t seekTo) {
   float value;
   File file = open("arb_pH_points", O_RDONLY);
   file.seek(seekTo);
-  file.read((void*)&value, sizeof(value));
-  //   uint32_t position = file.position();
+  file.read((void*)&value, sizeof(value));  // Flawfinder: ignore
   file.close();
   return value;
 }

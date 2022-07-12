@@ -428,6 +428,17 @@ void EthernetServer_TC::sendBadBody() {
   state = FINISHED;
 }
 
+void EthernetServer_TC::sendCreated() {
+  static const char response[] PROGMEM =
+      "HTTP/1.1 201 Created\r\n"
+      "Access-Control-Allow-Origin: *\r\n"
+      "\r\n";
+  char buffer[sizeof(response)];
+  strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
+  client.write(buffer);
+  state = FINISHED;
+}
+
 // Calculate day of week in proleptic Gregorian calendar. Sunday == 0.
 int EthernetServer_TC::weekday(int year, int month, int day) {
   int adjustment, mm, yy;
@@ -456,14 +467,7 @@ void EthernetServer_TC::arbitraryPath() {
       bufferContentsSize = 1;
       if (next == ']') {
         PHControl::instance()->setArbitrary();
-        static const char response[] PROGMEM =
-            "HTTP/1.1 201 Created\r\n"
-            "Access-Control-Allow-Origin: *\r\n"
-            "\r\n";
-        char buffer[sizeof(response)];
-        strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
-        client.write(buffer);
-        state = FINISHED;
+        sendCreated();
         return;
       }
       if (++count > 100) {

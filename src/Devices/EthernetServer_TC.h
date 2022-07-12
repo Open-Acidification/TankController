@@ -63,6 +63,7 @@ private:
   void sendRedirectHeaders();
   void sendBadRequestHeaders();
   void sendBadBody();
+  void sendCreated();
   int weekday(int year, int month, int day);
   // instance methods: HTTP
   void get();

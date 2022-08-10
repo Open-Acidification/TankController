@@ -48,7 +48,6 @@ private:
   EthernetServer_TC(uint16_t port);
   // instance methods: utility
   void sendHeadersWithSize(uint32_t size);
-  void sendFileHeadersWithSize(uint32_t size);
   void sendRedirectHeaders();
   void sendBadRequestHeaders();
   int weekday(int year, int month, int day);
@@ -63,6 +62,7 @@ private:
   void rootdir();
   void testReadSpeed();
   void testWriteSpeed();
+  void countTimer();
   bool isRequestForExistingFile();
   void fileSetup();
   bool fileContinue();

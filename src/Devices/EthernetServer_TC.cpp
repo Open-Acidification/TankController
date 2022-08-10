@@ -99,12 +99,13 @@ void EthernetServer_TC::apiHandler() {
     } else if (memcmp_P(buffer + 11, F("display"), 7) == 0) {
       display();
     } else if (memcmp_P(buffer + 11, F("rootdir"), 7) == 0) {
-      state = IN_PROGRESS;
       rootdir();
     } else if (memcmp_P(buffer + 11, F("testRead"), 8) == 0) {
       testReadSpeed();
     } else if (memcmp_P(buffer + 11, F("testWrite"), 9) == 0) {
       testWriteSpeed();
+    } else if (memcmp_P(buffer + 11, F("countTimer"), 10) == 0) {
+      countTimer();
     } else {
       // Unimplemented in API 1
       serial(F("Request unimplemented in API 1"));
@@ -177,6 +178,12 @@ void writeToClientBufferCallback(char* buffer, bool isFinished) {
 void EthernetServer_TC::rootdir() {
   // Call function on SD Card
   // Provide callback to call when writing to the client buffer
+  if(state != IN_PROGRESS) {
+    uint32_t size = 24 * SD_TC::instance()->countFiles();
+    sendHeadersWithSize(size);
+    // sendFileHeadersWithSize(size);
+    state = IN_PROGRESS;
+  }
   SD_TC::instance()->listRootToBuffer(writeToClientBufferCallback);
 }
 
@@ -232,6 +239,15 @@ void EthernetServer_TC::testWriteSpeed() {
   state = FINISHED;
 }
 
+// Tests speed for counting the files on the SD card
+void EthernetServer_TC::countTimer() {
+  int startTime = millis();
+  int count = SD_TC::instance()->countFiles();
+  int endTime = millis();
+  serial(F("Time counting %i files: %i ms"), count, (endTime - startTime));
+  state = FINISHED;
+}
+
 // Handles a get request with a path
 bool EthernetServer_TC::isRequestForExistingFile() {
   // Buffer has something like "GET /path HTTP/1.1"
@@ -255,7 +271,7 @@ void EthernetServer_TC::fileSetup() {
   file = SD_TC::instance()->open(buffer + 4);
   uint32_t size = file.size();
   serial(F("file \"%s\" has a size of %lu"), buffer + 4, size);
-  sendFileHeadersWithSize(size);
+  sendHeadersWithSize(size);
   state = IN_TRANSFER;
   startTime = millis();
   fileContinue();
@@ -263,7 +279,6 @@ void EthernetServer_TC::fileSetup() {
 
 // Continue file transfer (return value is whether we are finished)
 bool EthernetServer_TC::fileContinue() {
-  client.write(boundary);
   if (file.available()) {
     int readSize = file.read(buffer, sizeof(buffer));  // Flawfinder: ignore
     int writeSize = client.write(buffer, readSize);
@@ -366,21 +381,6 @@ void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
   // DateTime_TC now = DateTime_TC::now();
   // int weekday = weekday(now.getYear(), now.getMonth(), now.getDay());
   // snprintf_P(buffer, sizeof(buffer), F("Date: %s, %02d %s %04d %02d:%02d:%02d GMT\r\n"), );
-
-  // blank line indicates end of headers
-  client.write('\r');
-  client.write('\n');
-  state = FINISHED;
-}
-
-void EthernetServer_TC::sendFileHeadersWithSize(uint32_t size) {
-  snprintf_P(buffer, sizeof(buffer),
-             (PGM_P)F("HTTP/1.1 200 OK\r\n"
-                      "Content-Type: multipart/form-data; boundary=%s\r\n"
-                      "Access-Control-Allow-Origin: *\r\n"
-                      "Content-Length: %lu\r\n"),
-             boundary, (unsigned long)size);
-  client.write(buffer);
 
   // blank line indicates end of headers
   client.write('\r');

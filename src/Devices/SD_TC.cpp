@@ -84,65 +84,91 @@ bool SD_TC::format() {
   return sd.format();
 }
 
+int fileCount;
+
+void SD_TC::incrementFileCount(File* myFile) {
+  ++fileCount;
+}
+
+int SD_TC::countFiles() {
+  fileCount = 0;
+  iterateOnFiles(incrementFileCount);
+  return fileCount;
+}
+
+void SD_TC::iterateOnFiles(doOnFile functionName) {
+  // Only called on real device
+#ifndef MOCK_PINS_COUNT
+  const char path[] PROGMEM = "/";
+  fileStack[0] = SD_TC::instance()->open(path);
+  fileStack[0].rewind();
+  fileStackSize = 1;
+  inProgress = true;
+
+  while (true) {
+    if (fileStack[fileStackSize].openNext(&fileStack[fileStackSize - 1], O_READ)) {
+      if (!fileStack[fileStackSize].isHidden()) {
+        functionName(&fileStack[fileStackSize]);
+        if (fileStack[fileStackSize].isDir()) {
+          if(fileStackSize < maxDepth - 1) {fileStackSize++;};
+        } else {
+          // Close current file; directories are closed later
+          fileStack[fileStackSize].close();
+        }
+      }
+    } else {
+      // We're done with a directory
+      if (fileStackSize == 1) {
+        // We're done with root
+        fileStack[0].close();
+        inProgress = false;
+        break;
+      }
+      fileStack[fileStackSize--].close();
+    }
+  }
+#endif
+}
+
 void SD_TC::listFiles(void (*callWhenFull)(char*, bool), byte tabulation) {
   // Only called on real device
 #ifndef MOCK_PINS_COUNT
-  File* parent = &hierarchy[hierarchySize - 1];
-  File current;
   char fileName[15];
-  char buffer[300];  // Each line shouldn't be more than 30 characters long
+  char buffer[250];  // Each line should be 24 characters long
   int linePos = 0;
   int filesWritten = 0;  // When we hit 10 here we will call buffer and suspend
 
   while (filesWritten < 10) {
-    if (current.openNext(parent, O_READ)) {
-      if (!current.isHidden()) {
-        current.getName(fileName, sizeof(fileName));
-        for (int i = 0; i < tabulation; i++) {
-          buffer[i] = '\t';
-          ++linePos;
-        }
-        if (current.isDir()) {
-          int bytesWritten = snprintf_P(buffer + linePos, sizeof(buffer) - linePos, (PGM_P)F("%s/\n"), fileName);
+    if (fileStack[fileStackSize].openNext(&fileStack[fileStackSize - 1], O_READ)) {
+      if (!fileStack[fileStackSize].isHidden()) {
+        fileStack[fileStackSize].getName(fileName, sizeof(fileName));
+        if (fileStack[fileStackSize].isDir()) {
+          int bytesWritten = snprintf_P(buffer + linePos, sizeof(buffer) - linePos, (PGM_P)F("%11.11s/          \r\n"), fileName);
           // "Overwrite" null terminator
           linePos += bytesWritten;
           ++filesWritten;
-          // Create a new array with bigger size
-          File* newHierarchy = new File[hierarchySize + 1];
-          memcpy(newHierarchy, hierarchy, sizeof(File) * hierarchySize);
-          delete[] hierarchy;
-          hierarchy = newHierarchy;
-          ++hierarchySize;
-          // Add the current file to the new array
-          hierarchy[hierarchySize - 1] = current;
-          // Now we change parent directory
-          parent = &hierarchy[hierarchySize - 1];
+          if(fileStackSize < maxDepth - 1) {fileStackSize++;};
         } else {
-          int bytesWritten = snprintf_P(buffer + linePos, sizeof(buffer) - linePos, (PGM_P)F("%s\t%6u bytes\n"),
-                                        fileName, current.fileSize());
+          int bytesWritten = snprintf_P(buffer + linePos, sizeof(buffer) - linePos, (PGM_P)F("%s\t%6u KB\r\n"),
+                                        fileName, fileStack[fileStackSize].fileSize() / 1024 + 1);
           // "Overwrite" null terminator
           linePos += bytesWritten;
           ++filesWritten;
-          // Close current (if it's a file); close current (if it's a directory) as a parent later
-          current.close();
+          // Close current file; directories are closed later
+          fileStack[fileStackSize].close();
         }
       }
     } else {
-      if (hierarchySize == 1) {
-        // We're done listing root
-        parent->close();
-        --hierarchySize;
-        delete[] hierarchy;
-        hierarchy = nullptr;
+      // We're done with a directory
+      if (fileStackSize == 1) {
+        // We're done with root
+        fileStack[0].close();
         buffer[linePos] = '\0';
         inProgress = false;
         callWhenFull(buffer, true);
         return;
       }
-      // All done with parent, remove directory from hierarchy
-      parent->close();
-      --hierarchySize;
-      parent = &hierarchy[hierarchySize - 1];
+      fileStack[fileStackSize--].close();
     }
   }
   // We have 10 lines written, so add null terminator
@@ -154,18 +180,14 @@ void SD_TC::listFiles(void (*callWhenFull)(char*, bool), byte tabulation) {
 void SD_TC::listRootToBuffer(void (*callWhenFull)(char*, bool)) {
 #ifndef MOCK_PINS_COUNT
   if (!inProgress) {
-    // Initialize hierarchy
-    hierarchy = new File;
-    ++hierarchySize;
     const char path[] PROGMEM = "/";
-    File root = SD_TC::instance()->open(path);
-    if (!root) {
+    fileStack[0] = SD_TC::instance()->open(path);
+    if (!fileStack[0]) {
       serial(F("SD_TC open() failed"));
       return;
     }
-    // Add root to hierarchy if successful
-    root.rewind();
-    hierarchy[0] = root;
+    fileStack[0].rewind();
+    fileStackSize = 1;
     inProgress = true;
   }
   listFiles(callWhenFull);

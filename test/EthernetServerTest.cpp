@@ -230,12 +230,15 @@ unittest(badRequest) {
 }
 
 unittest(rootDir) {
+  assertEqual(1, 1);
   TankController* tc = TankController::instance();
   EthernetServer_TC* server = EthernetServer_TC::instance();
   EthernetClient_CI client;
   server->setHasClientCalling(true);
   delay(1);
+  assertEqual(2, 2);
   server->loop();
+  assertEqual(3, 3);
   client = server->getClient();
   const char request[] =
       "GET /api/1/rootdir HTTP/1.1\r\n"
@@ -245,11 +248,14 @@ unittest(rootDir) {
       "Accept-Language: en-US\r\n"
       "\r\n";
   client.pushToReadBuffer(request);
+  assertEqual(4, 4);
   server->loop();
+  assertEqual(5, 5);
+  assertEqual(LISTING_FILES, server->getState());
   server->loop();
-  server->loop();
+  assertEqual(6, 6);
   deque<uint8_t>* pBuffer = client.writeBuffer();
-  assertTrue(pBuffer->size() == 49);
+  assertEqual(pBuffer->size(), 178);
   String response;
   while (!pBuffer->empty()) {
     response.concat(pBuffer->front());
@@ -262,11 +268,22 @@ unittest(rootDir) {
       "Content-Language: en-US\r\n"
       "Access-Control-Allow-Origin: *\r\n"
       "Content-Length: 49\r\n"
-      "\r\n"
-      "Root directory not supported by CI framework.\r\n\r\n";
+      "\r\n";
+  assertEqual(expectedResponse, response);
+  assertEqual(LISTING_FILES, server->getState());
+  server->loop();
+  assertEqual(7, 7);
+  pBuffer = client.writeBuffer();
+  assertEqual(pBuffer->size(), 49);
+  while (!pBuffer->empty()) {
+    response.concat(pBuffer->front());
+    pBuffer->pop_front();
+  }
+  const char expectedResponse[] = "Root directory not supported by CI framework.\r\n\r\n";
   assertEqual(expectedResponse, response);
   assertEqual(FINISHED, server->getState());
   server->loop();  // Process finished state
+  assertEqual(8, 8);
   assertEqual(NOT_CONNECTED, server->getState());
   client.stop();
   server->loop();

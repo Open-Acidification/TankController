@@ -5,7 +5,7 @@
 #define SS 4
 #include <SdFat.h>
 
-typedef void (*doOnFile)(File*);
+typedef bool (*doOnFile)(File*, void*);
 
 class SD_TC {
 public:
@@ -33,15 +33,17 @@ private:
   const uint8_t SD_SELECT_PIN = SS;
   bool hasHadError = false;
   SdFat sd;
-  const int maxDepth = 3; // Max depth of folders to list in rootdir()
-  File fileStack[3]; // Agrees with maxDepth above. Each is 64 bytes
+  #define maxDepth 1 /* Max depth of folders to list in rootdir(). Each is 64 bytes */
+  File fileStack[maxDepth];
   int fileStackSize;
+  // int fileCount;
   bool inProgress = false;
 
   // instance methods
   SD_TC();
   void appendDataToPath(const char* data, const char* path);
-  void listFiles(void (*callWhenFull)(char*, bool), byte tabulation = 0);
-  void iterateOnFiles(doOnFile functionName);
-  static void incrementFileCount(File* myFile);
+  bool iterateOnFiles(doOnFile functionName, void* userData);
+  static bool incrementFileCount(File* myFile, void* pFileCount);
+  static bool listFile(File* myFile, void* userData);
+  // void listFiles(void (*callWhenFull)(char*, bool));
 };

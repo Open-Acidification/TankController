@@ -84,98 +84,89 @@ bool SD_TC::format() {
   return sd.format();
 }
 
-int fileCount;
+bool SD_TC::iterateOnFiles(doOnFile functionName, void* userData) {
+  // Only called on real device
+  bool flag = true;
+  while (flag) {
+    if (fileStack[fileStackSize].openNext(&fileStack[fileStackSize - 1], O_READ)) {
+      if (!fileStack[fileStackSize].isHidden()) {
+        flag = functionName(&fileStack[fileStackSize], userData);
+        if (fileStack[fileStackSize].isDir()) {
+          if(fileStackSize < maxDepth - 1) {fileStackSize++;};
+        } else {
+          // Close current file; directories are closed later
+          fileStack[fileStackSize].close();
+        }
+      }
+    } else {
+      // We're done with a directory
+      if (fileStackSize == 1) {
+        // We're done with root
+        fileStack[0].close();
+        return false; // There are no more files
+      }
+      fileStack[fileStackSize--].close();
+    }
+  }
+  return true; // There are (probably) more files remaining
+}
 
-void SD_TC::incrementFileCount(File* myFile) {
-  ++fileCount;
+bool SD_TC::incrementFileCount(File* myFile, void* pFileCount) {
+  ++(*(int*)pFileCount);
+  return true; // Keep incrementing
 }
 
 int SD_TC::countFiles() {
-  fileCount = 0;
-  iterateOnFiles(incrementFileCount);
+  if (!inProgress) {
+    const char path[] PROGMEM = "/";
+    fileStack[0] = SD_TC::instance()->open(path);
+    if (!fileStack[0]) {
+      serial(F("SD_TC open() failed"));
+      return 0;
+    }
+    fileStack[0].rewind();
+    fileStackSize = 1;
+    inProgress = true;
+  }
+  int fileCount = 0;
+  inProgress = iterateOnFiles(incrementFileCount, (void*)&fileCount);
   return fileCount;
 }
 
-void SD_TC::iterateOnFiles(doOnFile functionName) {
-  // Only called on real device
-#ifndef MOCK_PINS_COUNT
-  const char path[] PROGMEM = "/";
-  fileStack[0] = SD_TC::instance()->open(path);
-  fileStack[0].rewind();
-  fileStackSize = 1;
-  inProgress = true;
+struct listFilesData_t {
+  void (*callWhenFull)(char*, bool);
+  char buffer[250]; // Each line should be 24 characters long
+  int linePos;
+  int filesWritten;
+};
 
-  while (true) {
-    if (fileStack[fileStackSize].openNext(&fileStack[fileStackSize - 1], O_READ)) {
-      if (!fileStack[fileStackSize].isHidden()) {
-        functionName(&fileStack[fileStackSize]);
-        if (fileStack[fileStackSize].isDir()) {
-          if(fileStackSize < maxDepth - 1) {fileStackSize++;};
-        } else {
-          // Close current file; directories are closed later
-          fileStack[fileStackSize].close();
-        }
-      }
-    } else {
-      // We're done with a directory
-      if (fileStackSize == 1) {
-        // We're done with root
-        fileStack[0].close();
-        inProgress = false;
-        break;
-      }
-      fileStack[fileStackSize--].close();
-    }
-  }
-#endif
-}
-
-void SD_TC::listFiles(void (*callWhenFull)(char*, bool), byte tabulation) {
-  // Only called on real device
-#ifndef MOCK_PINS_COUNT
+bool SD_TC::listFile(File* myFile, void* userData) {
+  listFilesData_t* pListFileData = (listFilesData_t*) userData;
   char fileName[15];
-  char buffer[250];  // Each line should be 24 characters long
-  int linePos = 0;
-  int filesWritten = 0;  // When we hit 10 here we will call buffer and suspend
-
-  while (filesWritten < 10) {
-    if (fileStack[fileStackSize].openNext(&fileStack[fileStackSize - 1], O_READ)) {
-      if (!fileStack[fileStackSize].isHidden()) {
-        fileStack[fileStackSize].getName(fileName, sizeof(fileName));
-        if (fileStack[fileStackSize].isDir()) {
-          int bytesWritten = snprintf_P(buffer + linePos, sizeof(buffer) - linePos, (PGM_P)F("%11.11s/          \r\n"), fileName);
-          // "Overwrite" null terminator
-          linePos += bytesWritten;
-          ++filesWritten;
-          if(fileStackSize < maxDepth - 1) {fileStackSize++;};
-        } else {
-          int bytesWritten = snprintf_P(buffer + linePos, sizeof(buffer) - linePos, (PGM_P)F("%s\t%6u KB\r\n"),
-                                        fileName, fileStack[fileStackSize].fileSize() / 1024 + 1);
-          // "Overwrite" null terminator
-          linePos += bytesWritten;
-          ++filesWritten;
-          // Close current file; directories are closed later
-          fileStack[fileStackSize].close();
-        }
-      }
-    } else {
-      // We're done with a directory
-      if (fileStackSize == 1) {
-        // We're done with root
-        fileStack[0].close();
-        buffer[linePos] = '\0';
-        inProgress = false;
-        callWhenFull(buffer, true);
-        return;
-      }
-      fileStack[fileStackSize--].close();
-    }
+  myFile->getName(fileName, sizeof(fileName));
+  int bytesWritten;
+  if (myFile->isDir()) {
+    bytesWritten = snprintf_P(pListFileData->buffer + pListFileData->linePos, sizeof(pListFileData->buffer) - pListFileData->linePos, 
+      (PGM_P)F("%11.11s/          \r\n"), fileName);
+  } else {
+    bytesWritten = snprintf_P(pListFileData->buffer + pListFileData->linePos, sizeof(pListFileData->buffer) - pListFileData->linePos, 
+      (PGM_P)F("%s\t%6u KB\r\n"), fileName, myFile->fileSize() / 1024 + 1);
   }
-  // We have 10 lines written, so add null terminator
-  buffer[linePos] = '\0';
-  callWhenFull(buffer, false);
-#endif
+  // "Overwrite" null terminator
+  pListFileData->linePos += bytesWritten;
+  return (++(pListFileData->filesWritten)) % 10 != 0; // Stop iterating after 10 files
 }
+
+// void SD_TC::listFiles(void (*callWhenFull)(char*, bool)) {
+//   listFilesData_t listFileData;
+//   listFileData.callWhenFull = callWhenFull;
+//   listFileData.linePos = 0;
+//   listFileData.filesWritten = 0;
+//   inProgress = iterateOnFiles(listFile, (void*)&listFileData);
+//   // Terminate the buffer
+//   listFileData.buffer[listFileData.linePos] = '\0';
+//   callWhenFull(listFileData.buffer, !inProgress);
+// }
 
 void SD_TC::listRootToBuffer(void (*callWhenFull)(char*, bool)) {
 #ifndef MOCK_PINS_COUNT
@@ -190,7 +181,14 @@ void SD_TC::listRootToBuffer(void (*callWhenFull)(char*, bool)) {
     fileStackSize = 1;
     inProgress = true;
   }
-  listFiles(callWhenFull);
+  listFilesData_t listFileData;
+  listFileData.callWhenFull = callWhenFull;
+  listFileData.linePos = 0;
+  listFileData.filesWritten = 0;
+  inProgress = iterateOnFiles(listFile, (void*)&listFileData);
+  // Terminate the buffer
+  listFileData.buffer[listFileData.linePos] = '\0';
+  callWhenFull(listFileData.buffer, !inProgress);
 #else
   static const char notImplemented[] PROGMEM = "Root directory not supported by CI framework.\r\n";
   char buffer[sizeof(notImplemented)];

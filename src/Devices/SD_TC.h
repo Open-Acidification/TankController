@@ -18,7 +18,7 @@ public:
   bool exists(const char* path);
   bool format();
   void listRootToBuffer(void (*callWhenFull)(char*, bool));
-  int countFiles();
+  void countFiles(void (*callWhenFinished)(int));
   bool mkdir(const char* path);
   File open(const char* path, oflag_t oflag = 0x00);
   void printRootDirectory();
@@ -33,10 +33,14 @@ private:
   const uint8_t SD_SELECT_PIN = SS;
   bool hasHadError = false;
   SdFat sd;
-  #define maxDepth 1 /* Max depth of folders to list in rootdir(). Each is 64 bytes */
+
+  // Max depth of file system search for rootdir()
+  // Two is minimum: First for root, second for files
+  // Each is 64 bytes
+  #define maxDepth 2 
   File fileStack[maxDepth];
   int fileStackSize;
-  // int fileCount;
+  int fileCount;
   bool inProgress = false;
 
   // instance methods
@@ -45,5 +49,4 @@ private:
   bool iterateOnFiles(doOnFile functionName, void* userData);
   static bool incrementFileCount(File* myFile, void* pFileCount);
   static bool listFile(File* myFile, void* userData);
-  // void listFiles(void (*callWhenFull)(char*, bool));
 };

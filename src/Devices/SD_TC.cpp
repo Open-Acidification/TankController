@@ -85,14 +85,18 @@ bool SD_TC::format() {
 }
 
 bool SD_TC::iterateOnFiles(doOnFile functionName, void* userData) {
+#ifndef MOCK_PINS_COUNT
   // Only called on real device
+  // Returns false only when all files have been iterated on
   bool flag = true;
   while (flag) {
     if (fileStack[fileStackSize].openNext(&fileStack[fileStackSize - 1], O_READ)) {
       if (!fileStack[fileStackSize].isHidden()) {
         flag = functionName(&fileStack[fileStackSize], userData);
         if (fileStack[fileStackSize].isDir()) {
-          if(fileStackSize < maxDepth - 1) {fileStackSize++;};
+          // maxDepth was set to 2 in SD_TC.h
+          // So this code is untested
+          if(fileStackSize < maxDepth - 1) {++fileStackSize;};
         } else {
           // Close current file; directories are closed later
           fileStack[fileStackSize].close();
@@ -100,73 +104,72 @@ bool SD_TC::iterateOnFiles(doOnFile functionName, void* userData) {
       }
     } else {
       // We're done with a directory
-      if (fileStackSize == 1) {
-        // We're done with root
-        fileStack[0].close();
-        return false; // There are no more files
+      fileStack[--fileStackSize].close();
+      if (fileStackSize == 0) {
+        return false; // Done with root---there are no more files
       }
-      fileStack[fileStackSize--].close();
     }
   }
   return true; // There are (probably) more files remaining
+#else
+  return false;
+#endif
 }
 
 bool SD_TC::incrementFileCount(File* myFile, void* pFileCount) {
-  ++(*(int*)pFileCount);
-  return true; // Keep incrementing
+  return ++(*(int*)pFileCount) % 10 != 0; // Pause after counting 10 files
 }
 
-int SD_TC::countFiles() {
+void SD_TC::countFiles(void (*callWhenFinished)(int)) {
   if (!inProgress) {
     const char path[] PROGMEM = "/";
     fileStack[0] = SD_TC::instance()->open(path);
     if (!fileStack[0]) {
       serial(F("SD_TC open() failed"));
-      return 0;
+      return;
     }
     fileStack[0].rewind();
     fileStackSize = 1;
+    fileCount = 0;
     inProgress = true;
   }
-  int fileCount = 0;
   inProgress = iterateOnFiles(incrementFileCount, (void*)&fileCount);
-  return fileCount;
+  if (!inProgress) {
+    callWhenFinished(fileCount);
+  }
 }
 
 struct listFilesData_t {
   void (*callWhenFull)(char*, bool);
-  char buffer[250]; // Each line should be 24 characters long
+  char buffer[250]; // Each line should be 24 characters long; 10 lines
   int linePos;
   int filesWritten;
 };
 
+// Issue: This function does not visually display depth for items in subfolders
+// With maxDepth set to 2, no subfolders are traversed
 bool SD_TC::listFile(File* myFile, void* userData) {
+#ifndef MOCK_PINS_COUNT
   listFilesData_t* pListFileData = (listFilesData_t*) userData;
   char fileName[15];
   myFile->getName(fileName, sizeof(fileName));
   int bytesWritten;
   if (myFile->isDir()) {
-    bytesWritten = snprintf_P(pListFileData->buffer + pListFileData->linePos, sizeof(pListFileData->buffer) - pListFileData->linePos, 
+    bytesWritten = snprintf_P(pListFileData->buffer + pListFileData->linePos, 
+      sizeof(pListFileData->buffer) - pListFileData->linePos, 
       (PGM_P)F("%11.11s/          \r\n"), fileName);
   } else {
-    bytesWritten = snprintf_P(pListFileData->buffer + pListFileData->linePos, sizeof(pListFileData->buffer) - pListFileData->linePos, 
+    bytesWritten = snprintf_P(pListFileData->buffer + pListFileData->linePos, 
+      sizeof(pListFileData->buffer) - pListFileData->linePos, 
       (PGM_P)F("%s\t%6u KB\r\n"), fileName, myFile->fileSize() / 1024 + 1);
   }
   // "Overwrite" null terminator
   pListFileData->linePos += bytesWritten;
   return (++(pListFileData->filesWritten)) % 10 != 0; // Stop iterating after 10 files
+#else
+  return false;
+#endif
 }
-
-// void SD_TC::listFiles(void (*callWhenFull)(char*, bool)) {
-//   listFilesData_t listFileData;
-//   listFileData.callWhenFull = callWhenFull;
-//   listFileData.linePos = 0;
-//   listFileData.filesWritten = 0;
-//   inProgress = iterateOnFiles(listFile, (void*)&listFileData);
-//   // Terminate the buffer
-//   listFileData.buffer[listFileData.linePos] = '\0';
-//   callWhenFull(listFileData.buffer, !inProgress);
-// }
 
 void SD_TC::listRootToBuffer(void (*callWhenFull)(char*, bool)) {
 #ifndef MOCK_PINS_COUNT
@@ -182,7 +185,6 @@ void SD_TC::listRootToBuffer(void (*callWhenFull)(char*, bool)) {
     inProgress = true;
   }
   listFilesData_t listFileData;
-  listFileData.callWhenFull = callWhenFull;
   listFileData.linePos = 0;
   listFileData.filesWritten = 0;
   inProgress = iterateOnFiles(listFile, (void*)&listFileData);

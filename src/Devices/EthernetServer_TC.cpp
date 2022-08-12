@@ -104,8 +104,6 @@ void EthernetServer_TC::apiHandler() {
       testReadSpeed();
     } else if (memcmp_P(buffer + 11, F("testWrite"), 9) == 0) {
       testWriteSpeed();
-    } else if (memcmp_P(buffer + 11, F("countTimer"), 10) == 0) {
-      countTimer();
     } else {
       // Unimplemented in API 1
       serial(F("Request unimplemented in API 1"));
@@ -174,17 +172,26 @@ void writeToClientBufferCallback(char* buffer, bool isFinished) {
   EthernetServer_TC::instance()->writeToClientBuffer(buffer, isFinished);
 }
 
+// Non-member callback wrapper for singleton
+void countFilesCallback(int fileCount) {
+  // Called when the count is complete
+  EthernetServer_TC::instance()->sendHeadersForRootdir(fileCount);
+}
+
 // List the root directory to the client
 void EthernetServer_TC::rootdir() {
   // Call function on SD Card
   // Provide callback to call when writing to the client buffer
-  if(state != IN_PROGRESS) {
-    uint32_t size = 24 * SD_TC::instance()->countFiles();
-    sendHeadersWithSize(size);
-    // sendFileHeadersWithSize(size);
-    state = IN_PROGRESS;
+  if(state != LISTING_FILES) {
+    state = LISTING_FILES;
+    isDoneCountingFiles = false;
+  } else {
+    if (isDoneCountingFiles) {
+      SD_TC::instance()->listRootToBuffer(writeToClientBufferCallback);
+    } else {
+      SD_TC::instance()->countFiles(countFilesCallback);
+    }
   }
-  SD_TC::instance()->listRootToBuffer(writeToClientBufferCallback);
 }
 
 // Write to the client buffer
@@ -196,6 +203,12 @@ void EthernetServer_TC::writeToClientBuffer(char* buffer, bool isFinished) {
     client.write('\n');
     state = FINISHED;
   }
+}
+
+void EthernetServer_TC::sendHeadersForRootdir(int fileCount) {
+  isDoneCountingFiles = true;
+  sendHeadersWithSize((uint32_t) fileCount * 24); // 24 characters per line
+  state = LISTING_FILES; // TODO: This is here only because sendHeadersWithSize() changes the state prematurely.
 }
 
 // Tests speed for reading a file from the SD Card
@@ -236,15 +249,6 @@ void EthernetServer_TC::testWriteSpeed() {
     serial(F("Time writing 512B to client: %i us"), (endTime - startTime));
   }
   wdt_enable(WDTO_8S);
-  state = FINISHED;
-}
-
-// Tests speed for counting the files on the SD card
-void EthernetServer_TC::countTimer() {
-  int startTime = millis();
-  int count = SD_TC::instance()->countFiles();
-  int endTime = millis();
-  serial(F("Time counting %i files: %i ms"), count, (endTime - startTime));
   state = FINISHED;
 }
 
@@ -312,8 +316,8 @@ void EthernetServer_TC::loop() {
           state = FINISHED;
         }
         break;
-      case IN_PROGRESS:
-        // In progress (so far only for SD Card)
+      case LISTING_FILES:
+        // Listing files from SD Card
         rootdir();
         break;
       case NOT_CONNECTED:
@@ -385,7 +389,7 @@ void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
   // blank line indicates end of headers
   client.write('\r');
   client.write('\n');
-  state = FINISHED;
+  state = FINISHED; // TODO: Why?! This is awkward when we want to send a body next.
 }
 
 // 303 response

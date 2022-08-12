@@ -9,7 +9,7 @@
 #include <Ethernet.h>
 #endif
 
-enum serverState_t { NOT_CONNECTED, READ_REQUEST, GET_REQUEST, POST_REQUEST, IN_PROGRESS, IN_TRANSFER, FINISHED };
+enum serverState_t { NOT_CONNECTED, READ_REQUEST, GET_REQUEST, POST_REQUEST, LISTING_FILES, IN_TRANSFER, FINISHED };
 
 /**
  * EthernetServer_TC provides wrapper for web server for TankController
@@ -29,6 +29,7 @@ public:
   }
   void loop();
   void writeToClientBuffer(char*, bool);
+  void sendHeadersForRootdir(int);
 
 private:
   // class variables
@@ -43,6 +44,7 @@ private:
   unsigned long connectedAt = 0;
   File file;
   int startTime;
+  bool isDoneCountingFiles = true;
 
   // instance methods: constructor
   EthernetServer_TC(uint16_t port);
@@ -62,7 +64,6 @@ private:
   void rootdir();
   void testReadSpeed();
   void testWriteSpeed();
-  void countTimer();
   bool isRequestForExistingFile();
   void fileSetup();
   bool fileContinue();

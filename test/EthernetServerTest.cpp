@@ -246,6 +246,9 @@ unittest(rootDir) {
       "\r\n";
   client.pushToReadBuffer(request);
   server->loop();
+  server->loop();
+  server->loop();
+  server->loop();
   deque<uint8_t>* pBuffer = client.writeBuffer();
   assertTrue(pBuffer->size() == 49);
   String response;

@@ -123,6 +123,7 @@ bool SD_TC::incrementFileCount(File* myFile, void* pFileCount) {
 }
 
 void SD_TC::countFiles(void (*callWhenFinished)(int)) {
+#ifndef MOCK_PINS_COUNT
   if (!inProgress) {
     const char path[] PROGMEM = "/";
     fileStack[0] = SD_TC::instance()->open(path);
@@ -139,6 +140,9 @@ void SD_TC::countFiles(void (*callWhenFinished)(int)) {
   if (!inProgress) {
     callWhenFinished(fileCount);
   }
+#else
+  callWhenFinished(49);
+#endif
 }
 
 struct listFilesData_t {

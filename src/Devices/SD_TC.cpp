@@ -96,7 +96,9 @@ bool SD_TC::iterateOnFiles(doOnFile functionName, void* userData) {
         if (fileStack[fileStackSize].isDir()) {
           // maxDepth was set to 2 in SD_TC.h
           // So this code is untested
-          if(fileStackSize < maxDepth - 1) {++fileStackSize;};
+          if (fileStackSize < maxDepth - 1) {
+            ++fileStackSize;
+          };
         } else {
           // Close current file; directories are closed later
           fileStack[fileStackSize].close();
@@ -106,18 +108,18 @@ bool SD_TC::iterateOnFiles(doOnFile functionName, void* userData) {
       // We're done with a directory
       fileStack[--fileStackSize].close();
       if (fileStackSize == 0) {
-        return false; // Done with root---there are no more files
+        return false;  // Done with root---there are no more files
       }
     }
   }
-  return true; // There are (probably) more files remaining
+  return true;  // There are (probably) more files remaining
 #else
   return false;
 #endif
 }
 
 bool SD_TC::incrementFileCount(File* myFile, void* pFileCount) {
-  return ++(*(int*)pFileCount) % 10 != 0; // Pause after counting 10 files
+  return ++(*(int*)pFileCount) % 10 != 0;  // Pause after counting 10 files
 }
 
 void SD_TC::countFiles(void (*callWhenFinished)(int)) {
@@ -141,7 +143,7 @@ void SD_TC::countFiles(void (*callWhenFinished)(int)) {
 
 struct listFilesData_t {
   void (*callWhenFull)(char*, bool);
-  char buffer[250]; // Each line should be 24 characters long; 10 lines
+  char buffer[250];  // Each line should be 24 characters long; 10 lines
   int linePos;
   int filesWritten;
 };
@@ -150,22 +152,22 @@ struct listFilesData_t {
 // With maxDepth set to 2, no subfolders are traversed
 bool SD_TC::listFile(File* myFile, void* userData) {
 #ifndef MOCK_PINS_COUNT
-  listFilesData_t* pListFileData = (listFilesData_t*) userData;
+  listFilesData_t* pListFileData = (listFilesData_t*)userData;
   char fileName[15];
   myFile->getName(fileName, sizeof(fileName));
   int bytesWritten;
   if (myFile->isDir()) {
     bytesWritten = snprintf_P(pListFileData->buffer + pListFileData->linePos, 
-      sizeof(pListFileData->buffer) - pListFileData->linePos, 
-      (PGM_P)F("%11.11s/          \r\n"), fileName);
+                              sizeof(pListFileData->buffer) - pListFileData->linePos, 
+                              (PGM_P)F("%11.11s/          \r\n"), fileName);
   } else {
     bytesWritten = snprintf_P(pListFileData->buffer + pListFileData->linePos, 
-      sizeof(pListFileData->buffer) - pListFileData->linePos, 
-      (PGM_P)F("%s\t%6u KB\r\n"), fileName, myFile->fileSize() / 1024 + 1);
+                              sizeof(pListFileData->buffer) - pListFileData->linePos, 
+                              (PGM_P)F("%s\t%6u KB\r\n"), fileName, myFile->fileSize() / 1024 + 1);
   }
   // "Overwrite" null terminator
   pListFileData->linePos += bytesWritten;
-  return (++(pListFileData->filesWritten)) % 10 != 0; // Stop iterating after 10 files
+  return (++(pListFileData->filesWritten)) % 10 != 0;  // Stop iterating after 10 files
 #else
   return false;
 #endif

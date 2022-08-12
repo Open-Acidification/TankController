@@ -182,7 +182,7 @@ void countFilesCallback(int fileCount) {
 void EthernetServer_TC::rootdir() {
   // Call function on SD Card
   // Provide callback to call when writing to the client buffer
-  if(state != LISTING_FILES) {
+  if (state != LISTING_FILES) {
     state = LISTING_FILES;
     isDoneCountingFiles = false;
     startTime = millis();
@@ -212,8 +212,8 @@ void EthernetServer_TC::writeToClientBuffer(char* buffer, bool isFinished) {
 void EthernetServer_TC::sendHeadersForRootdir(int fileCount) {
   isDoneCountingFiles = true;
   serial(F("...%i files..."), fileCount);
-  sendHeadersWithSize((uint32_t) fileCount * 24); // 24 characters per line
-  state = LISTING_FILES; // TODO: This is here only because sendHeadersWithSize() changes the state prematurely.
+  sendHeadersWithSize((uint32_t)fileCount * 24);  // 24 characters per line
+  state = LISTING_FILES;  // TODO: This is here only because sendHeadersWithSize() changes the state prematurely.
 }
 
 // Tests speed for reading a file from the SD Card
@@ -394,7 +394,7 @@ void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
   // blank line indicates end of headers
   client.write('\r');
   client.write('\n');
-  state = FINISHED; // TODO: Why?! This is awkward when we want to send a body next.
+  state = FINISHED;  // TODO: Why?! This is awkward when we want to send a body next.
 }
 
 // 303 response

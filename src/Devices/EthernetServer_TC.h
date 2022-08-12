@@ -44,7 +44,7 @@ private:
   unsigned long connectedAt = 0;
   File file;
   int startTime;
-  bool isDoneCountingFiles = true;
+  bool isDoneCountingFiles = true;  // TODO: Perhaps replace this with a new COUNTING_FILES state
 
   // instance methods: constructor
   EthernetServer_TC(uint16_t port);

@@ -185,6 +185,8 @@ void EthernetServer_TC::rootdir() {
   if(state != LISTING_FILES) {
     state = LISTING_FILES;
     isDoneCountingFiles = false;
+    startTime = millis();
+    serial(F("Preparing list of files in root directory..."));
   } else {
     if (isDoneCountingFiles) {
       SD_TC::instance()->listRootToBuffer(writeToClientBufferCallback);
@@ -201,12 +203,15 @@ void EthernetServer_TC::writeToClientBuffer(char* buffer, bool isFinished) {
   if (isFinished) {
     client.write('\r');
     client.write('\n');
+    int endTime = millis();
+    serial(F("...Done sending, time = %i ms"), endTime - startTime);
     state = FINISHED;
   }
 }
 
 void EthernetServer_TC::sendHeadersForRootdir(int fileCount) {
   isDoneCountingFiles = true;
+  serial(F("...%i files..."), fileCount);
   sendHeadersWithSize((uint32_t) fileCount * 24); // 24 characters per line
   state = LISTING_FILES; // TODO: This is here only because sendHeadersWithSize() changes the state prematurely.
 }

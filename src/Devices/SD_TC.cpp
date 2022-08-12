@@ -123,7 +123,6 @@ bool SD_TC::incrementFileCount(File* myFile, void* pFileCount) {
 }
 
 void SD_TC::countFiles(void (*callWhenFinished)(int)) {
-#ifndef MOCK_PINS_COUNT
   if (!inProgress) {
     const char path[] PROGMEM = "/";
     fileStack[0] = SD_TC::instance()->open(path);
@@ -140,9 +139,6 @@ void SD_TC::countFiles(void (*callWhenFinished)(int)) {
   if (!inProgress) {
     callWhenFinished(fileCount);
   }
-#else
-  callWhenFinished(49);
-#endif
 }
 
 struct listFilesData_t {
@@ -161,13 +157,13 @@ bool SD_TC::listFile(File* myFile, void* userData) {
   myFile->getName(fileName, sizeof(fileName));
   int bytesWritten;
   if (myFile->isDir()) {
-    bytesWritten = snprintf_P(pListFileData->buffer + pListFileData->linePos, 
-                              sizeof(pListFileData->buffer) - pListFileData->linePos, 
+    bytesWritten = snprintf_P(pListFileData->buffer + pListFileData->linePos,
+                              sizeof(pListFileData->buffer) - pListFileData->linePos,
                               (PGM_P)F("%11.11s/          \r\n"), fileName);
   } else {
-    bytesWritten = snprintf_P(pListFileData->buffer + pListFileData->linePos, 
-                              sizeof(pListFileData->buffer) - pListFileData->linePos, 
-                              (PGM_P)F("%s\t%6u KB\r\n"), fileName, myFile->fileSize() / 1024 + 1);
+    bytesWritten = snprintf_P(pListFileData->buffer + pListFileData->linePos,
+                              sizeof(pListFileData->buffer) - pListFileData->linePos, (PGM_P)F("%s\t%6u KB\r\n"),
+                              fileName, myFile->fileSize() / 1024 + 1);
   }
   // "Overwrite" null terminator
   pListFileData->linePos += bytesWritten;

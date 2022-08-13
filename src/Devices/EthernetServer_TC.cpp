@@ -180,18 +180,24 @@ void countFilesCallback(int fileCount) {
 
 // List the root directory to the client
 void EthernetServer_TC::rootdir() {
+  std::cout << "rootdir-1" << std::endl;
   // Call function on SD Card
   // Provide callback to call when writing to the client buffer
   if (state != LISTING_FILES) {
+    std::cout << "rootdir-2" << std::endl;
     state = LISTING_FILES;
     isDoneCountingFiles = false;
     startTime = millis();
     serial(F("Preparing list of files in root directory..."));
   } else {
     if (isDoneCountingFiles) {
+      std::cout << "rootdir-5" << std::endl;
       SD_TC::instance()->listRootToBuffer(writeToClientBufferCallback);
+      std::cout << "rootdir-6" << std::endl;
     } else {
+      std::cout << "rootdir-3" << std::endl;
       SD_TC::instance()->countFiles(countFilesCallback);
+      std::cout << "rootdir-4" << std::endl;
     }
   }
 }

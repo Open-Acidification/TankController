@@ -255,7 +255,7 @@ unittest(rootDir) {
   server->loop();
   assertEqual(6, 6);
   deque<uint8_t>* pBuffer = client.writeBuffer();
-  assertEqual(pBuffer->size(), 178);
+  assertEqual(164, pBuffer->size());
   String response;
   while (!pBuffer->empty()) {
     response.concat(pBuffer->front());
@@ -274,7 +274,8 @@ unittest(rootDir) {
   server->loop();
   assertEqual(7, 7);
   pBuffer = client.writeBuffer();
-  assertEqual(pBuffer->size(), 49);
+  assertEqual(49, pBuffer->size());
+  response.clear();
   while (!pBuffer->empty()) {
     response.concat(pBuffer->front());
     pBuffer->pop_front();

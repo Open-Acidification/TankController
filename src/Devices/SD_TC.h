@@ -9,10 +9,9 @@
 typedef bool (*doOnFile)(File*, void*);
 
 struct listFilesData_t {
-  // Each line should be 24 characters long; 10 lines
-  char buffer[250];  // cppcheck-suppress "unusedStructMember"
-  int linePos;       // cppcheck-suppress "unusedStructMember"
-  int filesWritten;  // cppcheck-suppress "unusedStructMember"
+  char buffer[250];  // Each line should be 24 characters long; 10 lines
+  int linePos;
+  int filesWritten;
 };
 
 class SD_TC {

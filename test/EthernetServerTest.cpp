@@ -279,8 +279,8 @@ unittest(rootDir) {
     response.concat(pBuffer->front());
     pBuffer->pop_front();
   }
-  const char expectedResponse[] = "Root directory not supported by CI framework.\r\n\r\n";
-  assertEqual(expectedResponse, response);
+  const char nextExpectedResponse[] = "Root directory not supported by CI framework.\r\n\r\n";
+  assertEqual(nextExpectedResponse, response);
   assertEqual(FINISHED, server->getState());
   server->loop();  // Process finished state
   assertEqual(8, 8);

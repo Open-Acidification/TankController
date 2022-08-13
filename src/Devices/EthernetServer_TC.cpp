@@ -99,7 +99,6 @@ void EthernetServer_TC::apiHandler() {
     } else if (memcmp_P(buffer + 11, F("display"), 7) == 0) {
       display();
     } else if (memcmp_P(buffer + 11, F("rootdir"), 7) == 0) {
-      state = IN_PROGRESS;
       rootdir();
     } else if (memcmp_P(buffer + 11, F("testRead"), 8) == 0) {
       testReadSpeed();
@@ -173,11 +172,32 @@ void writeToClientBufferCallback(char* buffer, bool isFinished) {
   EthernetServer_TC::instance()->writeToClientBuffer(buffer, isFinished);
 }
 
+// Non-member callback wrapper for singleton
+void countFilesCallback(int fileCount) {
+  // Called when the count is complete
+  EthernetServer_TC::instance()->sendHeadersForRootdir(fileCount);
+}
+
 // List the root directory to the client
 void EthernetServer_TC::rootdir() {
   // Call function on SD Card
   // Provide callback to call when writing to the client buffer
-  SD_TC::instance()->listRootToBuffer(writeToClientBufferCallback);
+  if (state != LISTING_FILES) {
+    state = LISTING_FILES;
+    isDoneCountingFiles = false;
+    startTime = millis();
+    serial(F("Preparing list of files in root directory..."));
+  } else {
+    if (isDoneCountingFiles) {
+      SD_TC::instance()->listRootToBuffer(writeToClientBufferCallback);
+    } else {
+#ifndef MOCK_PINS_COUNT
+      SD_TC::instance()->countFiles(countFilesCallback);
+#else
+      countFilesCallback(0);
+#endif
+    }
+  }
 }
 
 // Write to the client buffer
@@ -187,8 +207,23 @@ void EthernetServer_TC::writeToClientBuffer(char* buffer, bool isFinished) {
   if (isFinished) {
     client.write('\r');
     client.write('\n');
+    int endTime = millis();
+    serial(F("...Done sending, time = %i ms"), endTime - startTime);
     state = FINISHED;
   }
+}
+
+void EthernetServer_TC::sendHeadersForRootdir(int fileCount) {
+#ifndef MOCK_PINS_COUNT
+  isDoneCountingFiles = true;
+  serial(F("...%i files..."), fileCount);
+  sendHeadersWithSize((uint32_t)fileCount * 24);  // 24 characters per line
+  state = LISTING_FILES;  // TODO: This is here only because sendHeadersWithSize() changes the state prematurely.
+#else
+  isDoneCountingFiles = true;
+  sendHeadersWithSize((uint32_t)49);
+  state = LISTING_FILES;
+#endif
 }
 
 // Tests speed for reading a file from the SD Card
@@ -255,7 +290,7 @@ void EthernetServer_TC::fileSetup() {
   file = SD_TC::instance()->open(buffer + 4);
   uint32_t size = file.size();
   serial(F("file \"%s\" has a size of %lu"), buffer + 4, size);
-  sendFileHeadersWithSize(size);
+  sendHeadersWithSize(size);
   state = IN_TRANSFER;
   startTime = millis();
   fileContinue();
@@ -263,7 +298,6 @@ void EthernetServer_TC::fileSetup() {
 
 // Continue file transfer (return value is whether we are finished)
 bool EthernetServer_TC::fileContinue() {
-  client.write(boundary);
   if (file.available()) {
     int readSize = file.read(buffer, sizeof(buffer));  // Flawfinder: ignore
     int writeSize = client.write(buffer, readSize);
@@ -297,8 +331,8 @@ void EthernetServer_TC::loop() {
           state = FINISHED;
         }
         break;
-      case IN_PROGRESS:
-        // In progress (so far only for SD Card)
+      case LISTING_FILES:
+        // Listing files from SD Card
         rootdir();
         break;
       case NOT_CONNECTED:
@@ -370,22 +404,7 @@ void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
   // blank line indicates end of headers
   client.write('\r');
   client.write('\n');
-  state = FINISHED;
-}
-
-void EthernetServer_TC::sendFileHeadersWithSize(uint32_t size) {
-  snprintf_P(buffer, sizeof(buffer),
-             (PGM_P)F("HTTP/1.1 200 OK\r\n"
-                      "Content-Type: multipart/form-data; boundary=%s\r\n"
-                      "Access-Control-Allow-Origin: *\r\n"
-                      "Content-Length: %lu\r\n"),
-             boundary, (unsigned long)size);
-  client.write(buffer);
-
-  // blank line indicates end of headers
-  client.write('\r');
-  client.write('\n');
-  state = FINISHED;
+  state = FINISHED;  // TODO: Why?! This is awkward when we want to send a body next.
 }
 
 // 303 response

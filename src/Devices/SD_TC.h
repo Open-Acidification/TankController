@@ -2,8 +2,17 @@
 
 #include <Arduino.h>
 
+#define maxDepth 2
 #define SS 4
 #include <SdFat.h>
+
+typedef bool (*doOnFile)(File*, void*);
+
+struct listFilesData_t {
+  char buffer[250];  // Each line should be 24 characters long; 10 lines
+  int linePos;
+  int filesWritten;
+};
 
 class SD_TC {
 public:
@@ -16,6 +25,7 @@ public:
   bool exists(const char* path);
   bool format();
   void listRootToBuffer(void (*callWhenFull)(char*, bool));
+  void countFiles(void (*callWhenFinished)(int));
   bool mkdir(const char* path);
   File open(const char* path, oflag_t oflag = 0x00);
   void printRootDirectory();
@@ -30,12 +40,19 @@ private:
   const uint8_t SD_SELECT_PIN = SS;
   bool hasHadError = false;
   SdFat sd;
-  File* hierarchy = nullptr;
-  int hierarchySize = 0;
+
+  // Max depth of file system search for rootdir()
+  // Two is minimum: First for root, second for files
+  // Each is 64 bytes
+  File fileStack[maxDepth];
+  int fileStackSize;
+  int fileCount;
   bool inProgress = false;
 
   // instance methods
   SD_TC();
   void appendDataToPath(const char* data, const char* path);
-  void listFiles(void (*callWhenFull)(char*, bool), byte tabulation = 0);
+  bool iterateOnFiles(doOnFile functionName, void* userData);
+  static bool incrementFileCount(File* myFile, void* pFileCount);
+  static bool listFile(File* myFile, void* userData);
 };

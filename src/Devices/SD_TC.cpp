@@ -84,91 +84,108 @@ bool SD_TC::format() {
   return sd.format();
 }
 
-void SD_TC::listFiles(void (*callWhenFull)(char*, bool), byte tabulation) {
-  // Only called on real device
+bool SD_TC::iterateOnFiles(doOnFile functionName, void* userData) {
 #ifndef MOCK_PINS_COUNT
-  File* parent = &hierarchy[hierarchySize - 1];
-  File current;
-  char fileName[15];
-  char buffer[300];  // Each line shouldn't be more than 30 characters long
-  int linePos = 0;
-  int filesWritten = 0;  // When we hit 10 here we will call buffer and suspend
-
-  while (filesWritten < 10) {
-    if (current.openNext(parent, O_READ)) {
-      if (!current.isHidden()) {
-        current.getName(fileName, sizeof(fileName));
-        for (int i = 0; i < tabulation; i++) {
-          buffer[i] = '\t';
-          ++linePos;
-        }
-        if (current.isDir()) {
-          int bytesWritten = snprintf_P(buffer + linePos, sizeof(buffer) - linePos, (PGM_P)F("%s/\n"), fileName);
-          // "Overwrite" null terminator
-          linePos += bytesWritten;
-          ++filesWritten;
-          // Create a new array with bigger size
-          File* newHierarchy = new File[hierarchySize + 1];
-          memcpy(newHierarchy, hierarchy, sizeof(File) * hierarchySize);
-          delete[] hierarchy;
-          hierarchy = newHierarchy;
-          ++hierarchySize;
-          // Add the current file to the new array
-          hierarchy[hierarchySize - 1] = current;
-          // Now we change parent directory
-          parent = &hierarchy[hierarchySize - 1];
+  // Only called on real device
+  // Returns false only when all files have been iterated on
+  bool flag = true;
+  while (flag) {
+    if (fileStack[fileStackSize].openNext(&fileStack[fileStackSize - 1], O_READ)) {
+      if (!fileStack[fileStackSize].isHidden()) {
+        flag = functionName(&fileStack[fileStackSize], userData);
+        if (fileStack[fileStackSize].isDir()) {
+          // maxDepth was set to 2 in SD_TC.h
+          // So this code is untested
+          if (fileStackSize < maxDepth - 1) {
+            ++fileStackSize;
+          };
         } else {
-          int bytesWritten = snprintf_P(buffer + linePos, sizeof(buffer) - linePos, (PGM_P)F("%s\t%6u bytes\n"),
-                                        fileName, current.fileSize());
-          // "Overwrite" null terminator
-          linePos += bytesWritten;
-          ++filesWritten;
-          // Close current (if it's a file); close current (if it's a directory) as a parent later
-          current.close();
+          // Close current file; directories are closed later
+          fileStack[fileStackSize].close();
         }
       }
     } else {
-      if (hierarchySize == 1) {
-        // We're done listing root
-        parent->close();
-        --hierarchySize;
-        delete[] hierarchy;
-        hierarchy = nullptr;
-        buffer[linePos] = '\0';
-        inProgress = false;
-        callWhenFull(buffer, true);
-        return;
+      // We're done with a directory
+      fileStack[--fileStackSize].close();
+      if (fileStackSize == 0) {
+        return false;  // Done with root---there are no more files
       }
-      // All done with parent, remove directory from hierarchy
-      parent->close();
-      --hierarchySize;
-      parent = &hierarchy[hierarchySize - 1];
     }
   }
-  // We have 10 lines written, so add null terminator
-  buffer[linePos] = '\0';
-  callWhenFull(buffer, false);
+  return true;  // There are (probably) more files remaining
+#else
+  return false;
+#endif
+}
+
+bool SD_TC::incrementFileCount(File* myFile, void* pFileCount) {
+  return ++(*(int*)pFileCount) % 10 != 0;  // Pause after counting 10 files
+}
+
+void SD_TC::countFiles(void (*callWhenFinished)(int)) {
+  if (!inProgress) {
+    const char path[] PROGMEM = "/";
+    fileStack[0] = SD_TC::instance()->open(path);
+    if (!fileStack[0]) {
+      serial(F("SD_TC open() failed"));
+      return;
+    }
+    fileStack[0].rewind();
+    fileStackSize = 1;
+    fileCount = 0;
+    inProgress = true;
+  }
+  inProgress = iterateOnFiles(incrementFileCount, (void*)&fileCount);
+  if (!inProgress) {
+    callWhenFinished(fileCount);
+  }
+}
+
+// Issue: This function does not visually display depth for items in subfolders
+// With maxDepth set to 2, no subfolders are traversed
+bool SD_TC::listFile(File* myFile, void* userData) {
+#ifndef MOCK_PINS_COUNT
+  listFilesData_t* pListFileData = static_cast<listFilesData_t*>(userData);
+  char fileName[15];
+  myFile->getName(fileName, sizeof(fileName));
+  int bytesWritten;
+  if (myFile->isDir()) {
+    bytesWritten = snprintf_P(pListFileData->buffer + pListFileData->linePos,
+                              sizeof(pListFileData->buffer) - pListFileData->linePos,
+                              (PGM_P)F("%11.11s/          \r\n"), fileName);
+  } else {
+    bytesWritten = snprintf_P(pListFileData->buffer + pListFileData->linePos,
+                              sizeof(pListFileData->buffer) - pListFileData->linePos, (PGM_P)F("%s\t%6u KB\r\n"),
+                              fileName, myFile->fileSize() / 1024 + 1);
+  }
+  // "Overwrite" null terminator
+  pListFileData->linePos += bytesWritten;
+  return (++(pListFileData->filesWritten)) % 10 != 0;  // Stop iterating after 10 files
+#else
+  return false;
 #endif
 }
 
 void SD_TC::listRootToBuffer(void (*callWhenFull)(char*, bool)) {
 #ifndef MOCK_PINS_COUNT
   if (!inProgress) {
-    // Initialize hierarchy
-    hierarchy = new File;
-    ++hierarchySize;
     const char path[] PROGMEM = "/";
-    File root = SD_TC::instance()->open(path);
-    if (!root) {
+    fileStack[0] = SD_TC::instance()->open(path);
+    if (!fileStack[0]) {
       serial(F("SD_TC open() failed"));
       return;
     }
-    // Add root to hierarchy if successful
-    root.rewind();
-    hierarchy[0] = root;
+    fileStack[0].rewind();
+    fileStackSize = 1;
     inProgress = true;
   }
-  listFiles(callWhenFull);
+  listFilesData_t listFileData;
+  listFileData.linePos = 0;
+  listFileData.filesWritten = 0;
+  inProgress = iterateOnFiles(listFile, (void*)&listFileData);
+  // Terminate the buffer
+  listFileData.buffer[listFileData.linePos] = '\0';
+  callWhenFull(listFileData.buffer, !inProgress);
 #else
   static const char notImplemented[] PROGMEM = "Root directory not supported by CI framework.\r\n";
   char buffer[sizeof(notImplemented)];

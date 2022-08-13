@@ -187,7 +187,7 @@ unittest(current) {
       "\"PID\":\"ON\","
       "\"TankID\":0,"
       "\"Uptime\":\"0d 0h 1m 1s\","
-      "\"Version\":\"22.07.2\"}\r\n";
+      "\"Version\":\"22.08.1\"}\r\n";
   assertEqual(expectedResponse, response);
   assertEqual(FINISHED, server->getState());
   server->loop();  // Process finished state
@@ -246,15 +246,35 @@ unittest(rootDir) {
       "\r\n";
   client.pushToReadBuffer(request);
   server->loop();
+  assertEqual(LISTING_FILES, server->getState());
+  server->loop();
   deque<uint8_t>* pBuffer = client.writeBuffer();
-  assertTrue(pBuffer->size() == 49);
+  assertEqual(164, pBuffer->size());
   String response;
   while (!pBuffer->empty()) {
     response.concat(pBuffer->front());
     pBuffer->pop_front();
   }
-  const char expectedResponse[] = "Root directory not supported by CI framework.\r\n\r\n";
+  const char expectedResponse[] =
+      "HTTP/1.1 200 OK\r\n"
+      "Content-Type: text/plain;charset=UTF-8\r\n"
+      "Content-Encoding: identity\r\n"
+      "Content-Language: en-US\r\n"
+      "Access-Control-Allow-Origin: *\r\n"
+      "Content-Length: 49\r\n"
+      "\r\n";
   assertEqual(expectedResponse, response);
+  assertEqual(LISTING_FILES, server->getState());
+  server->loop();
+  pBuffer = client.writeBuffer();
+  assertEqual(49, pBuffer->size());
+  response.clear();
+  while (!pBuffer->empty()) {
+    response.concat(pBuffer->front());
+    pBuffer->pop_front();
+  }
+  const char nextExpectedResponse[] = "Root directory not supported by CI framework.\r\n\r\n";
+  assertEqual(nextExpectedResponse, response);
   assertEqual(FINISHED, server->getState());
   server->loop();  // Process finished state
   assertEqual(NOT_CONNECTED, server->getState());

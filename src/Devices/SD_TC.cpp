@@ -143,16 +143,16 @@ void SD_TC::countFiles(void (*callWhenFinished)(int)) {
 
 struct listFilesData_t {
   // Each line should be 24 characters long; 10 lines
-  char buffer[250];  // Flawfinder: ignore
-  int linePos;       // Flawfinder: ignore
-  int filesWritten;  // Flawfinder: ignore
+  char buffer[250];  // cppcheck-suppress "unusedStructMember"
+  int linePos;       // cppcheck-suppress "unusedStructMember"
+  int filesWritten;  // cppcheck-suppress "unusedStructMember"
 };
 
 // Issue: This function does not visually display depth for items in subfolders
 // With maxDepth set to 2, no subfolders are traversed
 bool SD_TC::listFile(File* myFile, void* userData) {
 #ifndef MOCK_PINS_COUNT
-  listFilesData_t* pListFileData = (listFilesData_t*)userData;  // Flawfinder: ignore
+  listFilesData_t* pListFileData = static_cast<listFilesData_t*>(userData);
   char fileName[15];
   myFile->getName(fileName, sizeof(fileName));
   int bytesWritten;

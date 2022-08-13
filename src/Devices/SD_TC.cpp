@@ -187,10 +187,6 @@ void SD_TC::listRootToBuffer(void (*callWhenFull)(char*, bool)) {
   listFileData.buffer[listFileData.linePos] = '\0';
   callWhenFull(listFileData.buffer, !inProgress);
 #else
-  listFilesData_t listFileData;
-  listFileData.linePos = 0;
-  listFileData.filesWritten = 0;
-  listFileData.buffer[0] = '\0';
   static const char notImplemented[] PROGMEM = "Root directory not supported by CI framework.\r\n";
   char buffer[sizeof(notImplemented)];
   memcpy(buffer, (PGM_P)notImplemented, sizeof(notImplemented));

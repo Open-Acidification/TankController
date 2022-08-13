@@ -216,6 +216,7 @@ void EthernetServer_TC::sendHeadersForRootdir(int fileCount) {
   sendHeadersWithSize((uint32_t)fileCount * 24);  // 24 characters per line
   state = LISTING_FILES;  // TODO: This is here only because sendHeadersWithSize() changes the state prematurely.
 #else
+  isDoneCountingFiles = true;
   sendHeadersWithSize((uint32_t)49);
   state = LISTING_FILES;
 #endif

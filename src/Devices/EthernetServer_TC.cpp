@@ -196,7 +196,11 @@ void EthernetServer_TC::rootdir() {
       std::cout << "rootdir-6" << std::endl;
     } else {
       std::cout << "rootdir-3" << std::endl;
+#ifndef MOCK_PINS_COUNT
       SD_TC::instance()->countFiles(countFilesCallback);
+#else
+      countFilesCallback(0);
+#endif
       std::cout << "rootdir-4" << std::endl;
     }
   }

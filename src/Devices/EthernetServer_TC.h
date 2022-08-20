@@ -9,7 +9,10 @@
 #include <Ethernet.h>
 #endif
 
-enum serverState_t { NOT_CONNECTED, READ_REQUEST, GET_REQUEST, POST_REQUEST, LISTING_FILES, IN_TRANSFER, FINISHED };
+enum serverState_t { 
+  NOT_CONNECTED, READ_REQUEST, 
+  GET_REQUEST, POST_REQUEST, OPTIONS_REQUEST, 
+  LISTING_FILES, IN_TRANSFER, FINISHED };
 
 /**
  * EthernetServer_TC provides wrapper for web server for TankController
@@ -56,6 +59,7 @@ private:
   // instance methods: HTTP
   void get();
   void post();
+  void options();
   void echo();
   void apiHandler();
   void current();

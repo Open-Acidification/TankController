@@ -74,6 +74,17 @@ void EthernetServer_TC::get() {
   }
 }
 
+// Handles an HTTP OPTIONS request
+void EthernetServer_TC::options() {
+  if (memcmp_P(buffer + 9, F("api"), 3) == 0) {
+    serial(F("OPTIONS \n\"%s\""), buffer);
+    state = FINISHED;
+  } else {
+    serial(F("OPTIONS \"%s\" not recognized!"), buffer + 6);
+    state = FINISHED;
+  }
+}
+
 // Handles an HTTP POST request
 void EthernetServer_TC::post() {
   if (memcmp_P(buffer + 6, F("api"), 3) == 0) {
@@ -348,24 +359,28 @@ void EthernetServer_TC::loop() {
             break;
           }
         }
-        if (bufferContentsSize > 0) {
+        if (bufferContentsSize == 0) {
+          state = FINISHED;
+        } else {
           if (memcmp_P(buffer, F("GET "), 4) == 0) {
             state = GET_REQUEST;
             get();
-            break;
           } else if (memcmp_P(buffer, F("POST "), 5) == 0) {
             state = POST_REQUEST;
             post();
-            break;
+          } else if (memcmp_P(buffer, F("OPTIONS "), 8) == 0) {
+            state = OPTIONS_REQUEST;
+            options();
           } else {
             serial(buffer);
             serial(F("Bad or unsupported request"));
             sendBadRequestHeaders();
             state = FINISHED;
-            break;
           }
         }
+        break;
       default:
+        serial(F("loop() - unknown state: %i"), (int) state);
         break;
     }
   } else if (state != NOT_CONNECTED) {  // In case client disconnects early

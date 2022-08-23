@@ -69,7 +69,7 @@ void EthernetServer_TC::get() {
     fileSetup();
   } else {
     serial(F("get \"%s\" not recognized!"), buffer + 4);
-    sendBadRequestHeaders();
+    sendNotFoundHeaders();
     state = FINISHED;
   }
 }
@@ -229,11 +229,9 @@ void EthernetServer_TC::sendHeadersForRootdir(int fileCount) {
   isDoneCountingFiles = true;
   serial(F("...%i files..."), fileCount);
   sendHeadersWithSize((uint32_t)fileCount * 24);  // 24 characters per line
-  state = LISTING_FILES;  // TODO: This is here only because sendHeadersWithSize() changes the state prematurely.
 #else
   isDoneCountingFiles = true;
   sendHeadersWithSize((uint32_t)49);
-  state = LISTING_FILES;
 #endif
 }
 
@@ -419,7 +417,6 @@ void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
   // blank line indicates end of headers
   client.write('\r');
   client.write('\n');
-  state = FINISHED;  // TODO: Why?! This is awkward when we want to send a body next.
 }
 
 // 303 response
@@ -439,6 +436,15 @@ void EthernetServer_TC::sendRedirectHeaders() {
 void EthernetServer_TC::sendBadRequestHeaders() {
   char buffer[30];
   static const char response[] PROGMEM = "HTTP/1.1 400 Bad Request\r\n\r\n";
+  strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
+  client.write(buffer);
+  state = FINISHED;
+}
+
+// 404 response
+void EthernetServer_TC::sendNotFoundHeaders() {
+  char buffer[30];
+  static const char response[] PROGMEM = "HTTP/1.1 404 Not Found\r\n\r\n";
   strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
   client.write(buffer);
   state = FINISHED;

@@ -33,6 +33,7 @@ public:
   void loop();
   void writeToClientBuffer(char*, bool);
   void sendHeadersForRootdir(int);
+  void sdError();
 
 private:
   // class variables
@@ -57,6 +58,7 @@ private:
   void sendBadRequestHeaders();
   void sendNotFoundHeaders();
   void sendTimeoutHeaders();
+  void sendErrorHeaders();
   int weekday(int year, int month, int day);
   // instance methods: HTTP
   void get();

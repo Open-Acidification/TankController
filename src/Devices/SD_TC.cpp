@@ -128,6 +128,7 @@ void SD_TC::countFiles(void (*callWhenFinished)(int)) {
     fileStack[0] = SD_TC::instance()->open(path);
     if (!fileStack[0]) {
       serial(F("SD_TC open() failed"));
+      EthernetServer_TC::instance()->sdError();
       return;
     }
     fileStack[0].rewind();
@@ -173,6 +174,7 @@ void SD_TC::listRootToBuffer(void (*callWhenFull)(char*, bool)) {
     fileStack[0] = SD_TC::instance()->open(path);
     if (!fileStack[0]) {
       serial(F("SD_TC open() failed"));
+      EthernetServer_TC::instance()->sdError();
       return;
     }
     fileStack[0].rewind();

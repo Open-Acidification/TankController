@@ -235,6 +235,11 @@ void EthernetServer_TC::sendHeadersForRootdir(int fileCount) {
 #endif
 }
 
+void EthernetServer_TC::sdError() {
+  sendErrorHeaders();
+  state = FINISHED;
+}
+
 // Tests speed for reading a file from the SD Card
 // Empirical results show about 1 ms per 512 B
 void EthernetServer_TC::testReadSpeed() {
@@ -456,6 +461,14 @@ void EthernetServer_TC::sendTimeoutHeaders() {
       "HTTP/1.1 408 Request Timeout\r\n"
       "Connection: close\r\n"
       "\r\n";
+  char buffer[sizeof(response)];
+  strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
+  client.write(buffer);
+}
+
+void EthernetServer_TC::sendErrorHeaders() {
+  static const char response[] PROGMEM =
+      "HTTP/1.1 500 Internal Server Error\r\n\r\n"
   char buffer[sizeof(response)];
   strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
   client.write(buffer);

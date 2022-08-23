@@ -56,6 +56,7 @@ private:
   void sendRedirectHeaders();
   void sendBadRequestHeaders();
   void sendNotFoundHeaders();
+  void sendTimeoutHeaders();
   int weekday(int year, int month, int day);
   // instance methods: HTTP
   void get();

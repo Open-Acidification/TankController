@@ -358,7 +358,10 @@ void EthernetServer_TC::loop() {
           }
         }
         if (bufferContentsSize == 0) {
-          state = FINISHED;
+          if (millis() - connectedAt > 5000) {
+            sendTimeoutHeaders();
+            state = FINISHED;
+          }
         } else {
           if (memcmp_P(buffer, F("GET "), 4) == 0) {
             state = GET_REQUEST;
@@ -429,7 +432,6 @@ void EthernetServer_TC::sendRedirectHeaders() {
   char buffer[sizeof(response)];
   strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
   client.write(buffer);
-  state = FINISHED;
 }
 
 // 400 response
@@ -438,7 +440,6 @@ void EthernetServer_TC::sendBadRequestHeaders() {
   static const char response[] PROGMEM = "HTTP/1.1 400 Bad Request\r\n\r\n";
   strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
   client.write(buffer);
-  state = FINISHED;
 }
 
 // 404 response
@@ -447,7 +448,17 @@ void EthernetServer_TC::sendNotFoundHeaders() {
   static const char response[] PROGMEM = "HTTP/1.1 404 Not Found\r\n\r\n";
   strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
   client.write(buffer);
-  state = FINISHED;
+}
+
+// 408 response
+void EthernetServer_TC::sendTimeoutHeaders() {
+  static const char response[] PROGMEM =
+      "HTTP/1.1 408 Request Timeout\r\n"
+      "Connection: close\r\n"
+      "\r\n";
+  char buffer[sizeof(response)];
+  strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
+  client.write(buffer);
 }
 
 // Calculate day of week in proleptic Gregorian calendar. Sunday == 0.

@@ -282,4 +282,35 @@ unittest(rootDir) {
   server->loop();
 }
 
+unittest(timeout) {
+  TankController* tc = TankController::instance();
+  EthernetServer_TC* server = EthernetServer_TC::instance();
+  EthernetClient_CI client;
+  server->setHasClientCalling(true);
+  delay(1);
+  server->loop();
+  client = server->getClient();
+  server->loop();
+  assertEqual(READ_REQUEST, server->getState());
+  delay(1000);
+  server->loop();
+  assertEqual(READ_REQUEST, server->getState());
+  delay(5000);  // Wait for timeout
+  server->loop();
+  deque<uint8_t>* pBuffer = client.writeBuffer();
+  assertEqual(51, pBuffer->size());
+  String response;
+  while (!pBuffer->empty()) {
+    response.concat(pBuffer->front());
+    pBuffer->pop_front();
+  }
+  const char expectedResponse[] = "HTTP/1.1 408 Request Timeout\r\nConnection: close\r\n\r\n";
+  assertEqual(expectedResponse, response);
+  assertEqual(FINISHED, server->getState());
+  server->loop();  // Process finished state
+  assertEqual(NOT_CONNECTED, server->getState());
+  client.stop();
+  server->loop();
+}
+
 unittest_main()

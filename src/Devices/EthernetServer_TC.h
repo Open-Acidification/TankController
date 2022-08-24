@@ -18,10 +18,17 @@
 #include <Ethernet.h>
 #endif
 
-enum serverState_t { 
-  NOT_CONNECTED, READ_REQUEST, 
-  GET_REQUEST, POST_REQUEST, OPTIONS_REQUEST, 
-  LISTING_FILES, IN_TRANSFER, FINISHED };
+enum serverState_t {
+  NOT_CONNECTED,
+  READ_REQUEST,
+  GET_REQUEST,
+  POST_REQUEST,
+  OPTIONS_REQUEST,
+  COUNTING_FILES,
+  LISTING_FILES,
+  IN_TRANSFER,
+  FINISHED
+};
 
 /**
  * EthernetServer_TC provides wrapper for web server for TankController
@@ -57,7 +64,6 @@ private:
   unsigned long connectedAt = 0;
   File file;
   int startTime;
-  bool isDoneCountingFiles = true;  // TODO: Perhaps replace this with a new COUNTING_FILES state
 
   // instance methods: constructor
   EthernetServer_TC(uint16_t port);

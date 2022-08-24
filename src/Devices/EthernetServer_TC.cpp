@@ -457,9 +457,9 @@ void EthernetServer_TC::sendResponse(int code) {
   static const char response_501[] PROGMEM =
       "HTTP/1.1 501 Not Implemented\r\n"
       "\r\n";
-  static const char *const response_table[] PROGMEM = {response_303, response_400, response_404, response_405,
+  static const char *const response_table[] = {response_303, response_400, response_404, response_405,
                                                        response_408, response_501, response_500};
-  char buffer[sizeof(response_303)];
+  char buffer[sizeof(response_303) + 1];
   switch (code) {
     case HTTP_REDIRECT:
       strncpy_P(buffer, (char *)pgm_read_word(&(response_table[0])), sizeof(buffer));

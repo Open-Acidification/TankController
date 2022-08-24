@@ -1,6 +1,7 @@
 #include "Devices/SD_TC.h"
 
 #include "DateTime_TC.h"
+#include "EthernetServer_TC.h"
 #include "Serial_TC.h"
 #include "TC_util.h"
 

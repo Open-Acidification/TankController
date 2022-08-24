@@ -69,20 +69,16 @@ void EthernetServer_TC::get() {
     fileSetup();
   } else {
     serial(F("get \"%s\" not recognized!"), buffer + 4);
-    sendNotFoundHeaders();
+    sendResponse(HTTP_NOT_FOUND);
     state = FINISHED;
   }
 }
 
 // Handles an HTTP OPTIONS request
 void EthernetServer_TC::options() {
-  if (memcmp_P(buffer + 9, F("api"), 3) == 0) {
-    serial(F("OPTIONS \n\"%s\""), buffer);
-    state = FINISHED;
-  } else {
-    serial(F("OPTIONS \"%s\" not recognized!"), buffer + 6);
-    state = FINISHED;
-  }
+  // Method not allowed
+  sendResponse(HTTP_NOT_PERMITTED);
+  state = FINISHED;
 }
 
 // Handles an HTTP POST request
@@ -91,6 +87,7 @@ void EthernetServer_TC::post() {
     keypress();
   } else {
     serial(F("post \"%s\" not recognized!"), buffer + 6);
+    sendResponse(HTTP_BAD_REQUEST);;
     state = FINISHED;
   }
 }
@@ -118,13 +115,13 @@ void EthernetServer_TC::apiHandler() {
     } else {
       // Unimplemented in API 1
       serial(F("Request unimplemented in API 1"));
-      sendBadRequestHeaders();
+      sendResponse(HTTP_BAD_REQUEST);;
       state = FINISHED;
     }
   } else {
     // Later API versions may be implemented here
     serial(F("unhandled API version"));
-    sendBadRequestHeaders();
+    sendResponse(HTTP_BAD_REQUEST);;
     state = FINISHED;
   }
 }
@@ -161,17 +158,17 @@ void EthernetServer_TC::display() {
 void EthernetServer_TC::keypress() {
   if (buffer[23] != ' ') {
     serial(F("value too long"));
-    sendBadRequestHeaders();
+    sendResponse(HTTP_BAD_REQUEST);
   } else {
     // We have a one character keypress, check to see if valid character
     char key = buffer[22];
     if (key == '#' || key == '*' || (key >= '0' && key <= '9') || (key >= 'A' && key <= 'D')) {
       // States will handle keypresses appropriately
       TankController::instance()->setNextKey(key);
-      sendRedirectHeaders();
+      sendResponse(HTTP_REDIRECT);
     } else {
       serial(F("bad character: %c"), key);
-      sendBadRequestHeaders();
+      sendResponse(HTTP_BAD_REQUEST);
     }
   }
   state = FINISHED;
@@ -236,7 +233,7 @@ void EthernetServer_TC::sendHeadersForRootdir(int fileCount) {
 }
 
 void EthernetServer_TC::sdError() {
-  sendErrorHeaders();
+  sendResponse(HTTP_ERROR);
   state = FINISHED;
 }
 
@@ -363,8 +360,8 @@ void EthernetServer_TC::loop() {
           }
         }
         if (bufferContentsSize == 0) {
-          if (millis() - connectedAt > 5000) {
-            sendTimeoutHeaders();
+          if (millis() - connectedAt > TIMEOUT) {
+            sendResponse(HTTP_TIMEOUT);
             state = FINISHED;
           }
         } else {
@@ -379,8 +376,8 @@ void EthernetServer_TC::loop() {
             options();
           } else {
             serial(buffer);
-            serial(F("Bad or unsupported request"));
-            sendBadRequestHeaders();
+            serial(F("Unsupported request"));
+            sendResponse(HTTP_NOT_IMPLEMENTED);
             state = FINISHED;
           }
         }
@@ -427,50 +424,56 @@ void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
   client.write('\n');
 }
 
-// 303 response
-void EthernetServer_TC::sendRedirectHeaders() {
-  static const char response[] PROGMEM =
+void EthernetServer_TC::sendResponse(int code) {
+  const char response_303[] PROGMEM =
       "HTTP/1.1 303 See Other\r\n"
       "Location: /api/1/display\r\n"
       "Access-Control-Allow-Origin: *\r\n"
       "\r\n";
-  char buffer[sizeof(response)];
-  strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
-  client.write(buffer);
-}
-
-// 400 response
-void EthernetServer_TC::sendBadRequestHeaders() {
-  char buffer[30];
-  static const char response[] PROGMEM = "HTTP/1.1 400 Bad Request\r\n\r\n";
-  strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
-  client.write(buffer);
-}
-
-// 404 response
-void EthernetServer_TC::sendNotFoundHeaders() {
-  char buffer[30];
-  static const char response[] PROGMEM = "HTTP/1.1 404 Not Found\r\n\r\n";
-  strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
-  client.write(buffer);
-}
-
-// 408 response
-void EthernetServer_TC::sendTimeoutHeaders() {
-  static const char response[] PROGMEM =
+  const char response_400[] PROGMEM =
+      "HTTP/1.1 400 Bad Request\r\n"
+      "\r\n";
+  const char response_404[] PROGMEM =
+      "HTTP/1.1 404 Not Found\r\n"
+      "\r\n";
+  const char response_405[] PROGMEM =
+      "HTTP/1.1 405 Method Not Allowed\r\n"
+      "Allow: GET, POST, HEAD\r\n"
+      "\r\n";
+  const char response_408[] PROGMEM =
       "HTTP/1.1 408 Request Timeout\r\n"
       "Connection: close\r\n"
       "\r\n";
-  char buffer[sizeof(response)];
-  strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
-  client.write(buffer);
-}
-
-void EthernetServer_TC::sendErrorHeaders() {
-  static const char response[] PROGMEM =
-      "HTTP/1.1 500 Internal Server Error\r\n\r\n"
-  char buffer[sizeof(response)];
-  strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
+  const char response_500[] PROGMEM =
+      "HTTP/1.1 500 Internal Server Error\r\n"
+      "\r\n";
+  const char response_501[] PROGMEM =
+      "HTTP/1.1 501 Not Implemented\r\n"
+      "\r\n";
+  const char *const response_table[] PROGMEM = {response_303, response_400, response_404, response_405, response_408, response_501, response_500};
+  char buffer[sizeof(response_303)];
+  switch (code) {
+    case HTTP_REDIRECT:
+      strncpy_P(buffer, (char *)pgm_read_word(&(response_table[0])), sizeof(buffer));
+      break;
+    case HTTP_BAD_REQUEST:
+      strncpy_P(buffer, (char *)pgm_read_word(&(response_table[1])), sizeof(buffer));
+      break;
+    case HTTP_NOT_FOUND:
+      strncpy_P(buffer, (char *)pgm_read_word(&(response_table[2])), sizeof(buffer));
+      break;
+    case HTTP_NOT_PERMITTED:
+      strncpy_P(buffer, (char *)pgm_read_word(&(response_table[3])), sizeof(buffer));
+      break;
+    case HTTP_TIMEOUT:
+      strncpy_P(buffer, (char *)pgm_read_word(&(response_table[4])), sizeof(buffer));
+      break;
+    case HTTP_NOT_IMPLEMENTED:
+      strncpy_P(buffer, (char *)pgm_read_word(&(response_table[5])), sizeof(buffer));
+      break;
+    default:
+      strncpy_P(buffer, (char *)pgm_read_word(&(response_table[6])), sizeof(buffer));
+  };
   client.write(buffer);
 }
 

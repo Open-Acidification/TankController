@@ -1,5 +1,14 @@
 #pragma once
 
+#define TIMEOUT 5000
+#define HTTP_REDIRECT 303
+#define HTTP_BAD_REQUEST 400
+#define HTTP_NOT_FOUND 404
+#define HTTP_NOT_PERMITTED 405
+#define HTTP_TIMEOUT 408
+#define HTTP_ERROR 500
+#define HTTP_NOT_IMPLEMENTED 501
+
 #include <Arduino.h>
 
 #include "SD_TC.h"
@@ -54,11 +63,7 @@ private:
   EthernetServer_TC(uint16_t port);
   // instance methods: utility
   void sendHeadersWithSize(uint32_t size);
-  void sendRedirectHeaders();
-  void sendBadRequestHeaders();
-  void sendNotFoundHeaders();
-  void sendTimeoutHeaders();
-  void sendErrorHeaders();
+  void sendResponse(int);
   int weekday(int year, int month, int day);
   // instance methods: HTTP
   void get();

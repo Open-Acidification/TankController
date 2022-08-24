@@ -292,7 +292,11 @@ unittest(timeout) {
   client = server->getClient();
   server->loop();
   assertEqual(READ_REQUEST, server->getState());
-  delay(1000);
+  delay(50);
+  server->loop();
+  delay(50);
+  server->loop();
+  delay(50);
   server->loop();
   assertEqual(READ_REQUEST, server->getState());
   delay(5000);  // Wait for timeout

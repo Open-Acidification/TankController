@@ -108,7 +108,7 @@ void EthernetServer_TC::apiHandler() {
     } else if (memcmp_P(buffer + 11, F("display"), 7) == 0) {
       display();
     } else if (memcmp_P(buffer + 11, F("rootdir"), 7) == 0) {
-      rootdir();
+      rootdirSetup();
     } else if (memcmp_P(buffer + 11, F("testRead"), 8) == 0) {
       testReadSpeed();
     } else if (memcmp_P(buffer + 11, F("testWrite"), 9) == 0) {
@@ -117,7 +117,6 @@ void EthernetServer_TC::apiHandler() {
       // Unimplemented in API 1
       serial(F("Request unimplemented in API 1"));
       sendResponse(HTTP_BAD_REQUEST);
-      ;
       state = FINISHED;
     }
   } else {
@@ -189,13 +188,10 @@ void countFilesCallback(int fileCount) {
   EthernetServer_TC::instance()->sendHeadersForRootdir(fileCount);
 }
 
-// List the root directory to the client
-void EthernetServer_TC::rootdir() {
-  // Call function on SD Card
-  // Provide callback to call when writing to the client buffer
-  if (state == LISTING_FILES) {
-    SD_TC::instance()->listRootToBuffer(writeToClientBufferCallback);
-  } else if (state == COUNTING_FILES) {
+// Count files in root directory so that the Content-Length
+// for the header may be calculated
+void EthernetServer_TC::rootdirSetup() {
+  if (state == COUNTING_FILES) {
 #ifndef MOCK_PINS_COUNT
     SD_TC::instance()->countFiles(countFilesCallback);
 #else
@@ -206,6 +202,13 @@ void EthernetServer_TC::rootdir() {
     startTime = millis();
     serial(F("Preparing list of files in root directory..."));
   }
+}
+
+// List the root directory to the client
+void EthernetServer_TC::rootdir() {
+  // Call function on SD Card
+  // Provide callback to call when writing to the client buffer
+  SD_TC::instance()->listRootToBuffer(writeToClientBufferCallback);
 }
 
 // Write to the client buffer
@@ -343,7 +346,7 @@ void EthernetServer_TC::loop() {
         }
         break;
       case COUNTING_FILES:
-        rootdir();
+        rootdirSetup();
         break;
       case LISTING_FILES:
         rootdir();

@@ -101,12 +101,18 @@ unittest(keypress) {
   TankController* tc = TankController::instance();
   LiquidCrystal_TC* lcd = LiquidCrystal_TC::instance();
   assertEqual("MainMenu", tc->stateName());
+  cout << "keypress-1";
   EthernetServer_TC* server = EthernetServer_TC::instance();
+  cout << "keypress-2";
   EthernetClient_CI client;
+  cout << "keypress-3";
   server->setHasClientCalling(true);
+  cout << "keypress-4";
   delay(1);
   server->loop();
+  cout << "keypress-5";
   client = server->getClient();
+  cout << "keypress-6";
   const char request[] =
       "POST /api/1/key?value=2 HTTP/1.1\r\n"
       "Host: localhost:80\r\n"
@@ -114,9 +120,13 @@ unittest(keypress) {
       "Accept-Encoding: identity\r\n"
       "Accept-Language: en-US\r\n"
       "\r\n";
+  cout << "keypress-7";
   client.pushToReadBuffer(request);
+  cout << "keypress-8";
   server->loop();
+  cout << "keypress-9";
   deque<uint8_t>* pBuffer = client.writeBuffer();
+  cout << "keypress-10";
   assertEqual(84, pBuffer->size());
   String response;
   while (!pBuffer->empty()) {

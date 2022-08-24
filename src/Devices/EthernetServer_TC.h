@@ -80,6 +80,7 @@ private:
   void current();
   void display();
   void keypress();
+  void rootdirSetup();
   void rootdir();
   void testReadSpeed();
   void testWriteSpeed();

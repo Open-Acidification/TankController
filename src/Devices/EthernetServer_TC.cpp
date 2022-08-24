@@ -445,7 +445,7 @@ void EthernetServer_TC::sendResponse(int code) {
       "\r\n";
   static const char response_405[] PROGMEM =
       "HTTP/1.1 405 Method Not Allowed\r\n"
-      "Allow: GET, POST, HEAD\r\n"
+      "Allow: GET, POST\r\n"
       "\r\n";
   static const char response_408[] PROGMEM =
       "HTTP/1.1 408 Request Timeout\r\n"

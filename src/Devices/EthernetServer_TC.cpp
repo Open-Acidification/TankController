@@ -10,13 +10,13 @@
 #include "TankController.h"
 
 //  class variables
-EthernetServer_TC* EthernetServer_TC::_instance = nullptr;
+EthernetServer_TC *EthernetServer_TC::_instance = nullptr;
 
 //  class methods
 /**
  * accessor for singleton
  */
-EthernetServer_TC* EthernetServer_TC::instance() {
+EthernetServer_TC *EthernetServer_TC::instance() {
   if (!_instance) {
     _instance = new EthernetServer_TC(80);
   }
@@ -69,20 +69,16 @@ void EthernetServer_TC::get() {
     fileSetup();
   } else {
     serial(F("get \"%s\" not recognized!"), buffer + 4);
-    sendBadRequestHeaders();
+    sendResponse(HTTP_NOT_FOUND);
     state = FINISHED;
   }
 }
 
 // Handles an HTTP OPTIONS request
 void EthernetServer_TC::options() {
-  if (memcmp_P(buffer + 9, F("api"), 3) == 0) {
-    serial(F("OPTIONS \n\"%s\""), buffer);
-    state = FINISHED;
-  } else {
-    serial(F("OPTIONS \"%s\" not recognized!"), buffer + 6);
-    state = FINISHED;
-  }
+  // Method not allowed
+  sendResponse(HTTP_NOT_PERMITTED);
+  state = FINISHED;
 }
 
 // Handles an HTTP POST request
@@ -91,6 +87,7 @@ void EthernetServer_TC::post() {
     keypress();
   } else {
     serial(F("post \"%s\" not recognized!"), buffer + 6);
+    sendResponse(HTTP_BAD_REQUEST);
     state = FINISHED;
   }
 }
@@ -110,7 +107,7 @@ void EthernetServer_TC::apiHandler() {
     } else if (memcmp_P(buffer + 11, F("display"), 7) == 0) {
       display();
     } else if (memcmp_P(buffer + 11, F("rootdir"), 7) == 0) {
-      rootdir();
+      rootdirSetup();
     } else if (memcmp_P(buffer + 11, F("testRead"), 8) == 0) {
       testReadSpeed();
     } else if (memcmp_P(buffer + 11, F("testWrite"), 9) == 0) {
@@ -118,13 +115,14 @@ void EthernetServer_TC::apiHandler() {
     } else {
       // Unimplemented in API 1
       serial(F("Request unimplemented in API 1"));
-      sendBadRequestHeaders();
+      sendResponse(HTTP_BAD_REQUEST);
       state = FINISHED;
     }
   } else {
     // Later API versions may be implemented here
     serial(F("unhandled API version"));
-    sendBadRequestHeaders();
+    sendResponse(HTTP_BAD_REQUEST);
+    ;
     state = FINISHED;
   }
 }
@@ -133,7 +131,7 @@ void EthernetServer_TC::apiHandler() {
 void EthernetServer_TC::current() {
   JSONBuilder builder;
   int size = builder.buildCurrentValues();
-  char* text = builder.bufferPtr();
+  char *text = builder.bufferPtr();
   // First send headers
   sendHeadersWithSize(size);
   // Write JSON file to client (will be null-terminated)
@@ -161,24 +159,24 @@ void EthernetServer_TC::display() {
 void EthernetServer_TC::keypress() {
   if (buffer[23] != ' ') {
     serial(F("value too long"));
-    sendBadRequestHeaders();
+    sendResponse(HTTP_BAD_REQUEST);
   } else {
     // We have a one character keypress, check to see if valid character
     char key = buffer[22];
     if (key == '#' || key == '*' || (key >= '0' && key <= '9') || (key >= 'A' && key <= 'D')) {
       // States will handle keypresses appropriately
       TankController::instance()->setNextKey(key);
-      sendRedirectHeaders();
+      sendResponse(HTTP_REDIRECT);
     } else {
       serial(F("bad character: %c"), key);
-      sendBadRequestHeaders();
+      sendResponse(HTTP_BAD_REQUEST);
     }
   }
   state = FINISHED;
 }
 
 // Non-member callback wrapper for singleton
-void writeToClientBufferCallback(char* buffer, bool isFinished) {
+void writeToClientBufferCallback(char *buffer, bool isFinished) {
   // The boolean value in the callback is true when the process is complete
   EthernetServer_TC::instance()->writeToClientBuffer(buffer, isFinished);
 }
@@ -189,30 +187,37 @@ void countFilesCallback(int fileCount) {
   EthernetServer_TC::instance()->sendHeadersForRootdir(fileCount);
 }
 
+// Count files in root directory so that the Content-Length
+// for the header may be calculated
+void EthernetServer_TC::rootdirSetup() {
+  if (state == COUNTING_FILES) {
+#ifndef MOCK_PINS_COUNT
+    if (!SD_TC::instance()->countFiles(countFilesCallback)) {
+      sendResponse(HTTP_ERROR);
+      state = FINISHED;
+    };
+#else
+    countFilesCallback(0);
+#endif
+  } else {
+    state = COUNTING_FILES;
+    startTime = millis();
+    serial(F("Preparing list of files in root directory..."));
+  }
+}
+
 // List the root directory to the client
 void EthernetServer_TC::rootdir() {
   // Call function on SD Card
   // Provide callback to call when writing to the client buffer
-  if (state != LISTING_FILES) {
-    state = LISTING_FILES;
-    isDoneCountingFiles = false;
-    startTime = millis();
-    serial(F("Preparing list of files in root directory..."));
-  } else {
-    if (isDoneCountingFiles) {
-      SD_TC::instance()->listRootToBuffer(writeToClientBufferCallback);
-    } else {
-#ifndef MOCK_PINS_COUNT
-      SD_TC::instance()->countFiles(countFilesCallback);
-#else
-      countFilesCallback(0);
-#endif
-    }
-  }
+  if (!SD_TC::instance()->listRootToBuffer(writeToClientBufferCallback)) {
+    sendResponse(HTTP_ERROR);
+    state = FINISHED;
+  };
 }
 
 // Write to the client buffer
-void EthernetServer_TC::writeToClientBuffer(char* buffer, bool isFinished) {
+void EthernetServer_TC::writeToClientBuffer(char *buffer, bool isFinished) {
   // Write to client and return (ASSUME NULL-TERMINATED)
   client.write(buffer);
   if (isFinished) {
@@ -226,12 +231,10 @@ void EthernetServer_TC::writeToClientBuffer(char* buffer, bool isFinished) {
 
 void EthernetServer_TC::sendHeadersForRootdir(int fileCount) {
 #ifndef MOCK_PINS_COUNT
-  isDoneCountingFiles = true;
   serial(F("...%i files..."), fileCount);
   sendHeadersWithSize((uint32_t)fileCount * 24);  // 24 characters per line
-  state = LISTING_FILES;  // TODO: This is here only because sendHeadersWithSize() changes the state prematurely.
+  state = LISTING_FILES;
 #else
-  isDoneCountingFiles = true;
   sendHeadersWithSize((uint32_t)49);
   state = LISTING_FILES;
 #endif
@@ -342,8 +345,10 @@ void EthernetServer_TC::loop() {
           state = FINISHED;
         }
         break;
+      case COUNTING_FILES:
+        rootdirSetup();
+        break;
       case LISTING_FILES:
-        // Listing files from SD Card
         rootdir();
         break;
       case NOT_CONNECTED:
@@ -360,7 +365,10 @@ void EthernetServer_TC::loop() {
           }
         }
         if (bufferContentsSize == 0) {
-          state = FINISHED;
+          if (millis() - connectedAt > TIMEOUT) {
+            sendResponse(HTTP_TIMEOUT);
+            state = FINISHED;
+          }
         } else {
           if (memcmp_P(buffer, F("GET "), 4) == 0) {
             state = GET_REQUEST;
@@ -373,14 +381,16 @@ void EthernetServer_TC::loop() {
             options();
           } else {
             serial(buffer);
-            serial(F("Bad or unsupported request"));
-            sendBadRequestHeaders();
+            serial(F("Unsupported request"));
+            sendResponse(HTTP_NOT_IMPLEMENTED);
             state = FINISHED;
           }
         }
         break;
       default:
-        serial(F("loop() - unknown state: %i"), (int) state);
+        serial(F("loop() - unknown state: %i\nReseting state"), (int)state);
+        sendResponse(HTTP_ERROR);
+        state = FINISHED;
         break;
     }
   } else if (state != NOT_CONNECTED) {  // In case client disconnects early
@@ -419,29 +429,58 @@ void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
   // blank line indicates end of headers
   client.write('\r');
   client.write('\n');
-  state = FINISHED;  // TODO: Why?! This is awkward when we want to send a body next.
 }
 
-// 303 response
-void EthernetServer_TC::sendRedirectHeaders() {
-  static const char response[] PROGMEM =
+void EthernetServer_TC::sendResponse(int code) {
+  static const char response_303[] PROGMEM =
       "HTTP/1.1 303 See Other\r\n"
       "Location: /api/1/display\r\n"
       "Access-Control-Allow-Origin: *\r\n"
       "\r\n";
-  char buffer[sizeof(response)];
-  strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
+  static const char response_400[] PROGMEM =
+      "HTTP/1.1 400 Bad Request\r\n"
+      "\r\n";
+  static const char response_404[] PROGMEM =
+      "HTTP/1.1 404 Not Found\r\n"
+      "\r\n";
+  static const char response_405[] PROGMEM =
+      "HTTP/1.1 405 Method Not Allowed\r\n"
+      "Allow: GET, POST\r\n"
+      "\r\n";
+  static const char response_408[] PROGMEM =
+      "HTTP/1.1 408 Request Timeout\r\n"
+      "Connection: close\r\n"
+      "\r\n";
+  static const char response_500[] PROGMEM =
+      "HTTP/1.1 500 Internal Server Error\r\n"
+      "\r\n";
+  static const char response_501[] PROGMEM =
+      "HTTP/1.1 501 Not Implemented\r\n"
+      "\r\n";
+  char buffer[sizeof(response_303)];
+  switch (code) {
+    case HTTP_REDIRECT:
+      strncpy_P(buffer, (PGM_P)response_303, sizeof(buffer));
+      break;
+    case HTTP_BAD_REQUEST:
+      strncpy_P(buffer, (PGM_P)response_400, sizeof(buffer));
+      break;
+    case HTTP_NOT_FOUND:
+      strncpy_P(buffer, (PGM_P)response_404, sizeof(buffer));
+      break;
+    case HTTP_NOT_PERMITTED:
+      strncpy_P(buffer, (PGM_P)response_405, sizeof(buffer));
+      break;
+    case HTTP_TIMEOUT:
+      strncpy_P(buffer, (PGM_P)response_408, sizeof(buffer));
+      break;
+    case HTTP_NOT_IMPLEMENTED:
+      strncpy_P(buffer, (PGM_P)response_501, sizeof(buffer));
+      break;
+    default:
+      strncpy_P(buffer, (PGM_P)response_500, sizeof(buffer));
+  };
   client.write(buffer);
-  state = FINISHED;
-}
-
-// 400 response
-void EthernetServer_TC::sendBadRequestHeaders() {
-  char buffer[30];
-  static const char response[] PROGMEM = "HTTP/1.1 400 Bad Request\r\n\r\n";
-  strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
-  client.write(buffer);
-  state = FINISHED;
 }
 
 // Calculate day of week in proleptic Gregorian calendar. Sunday == 0.

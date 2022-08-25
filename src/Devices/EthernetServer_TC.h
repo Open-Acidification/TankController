@@ -9,10 +9,26 @@
 #include <Ethernet.h>
 #endif
 
-enum serverState_t { 
-  NOT_CONNECTED, READ_REQUEST, 
-  GET_REQUEST, POST_REQUEST, OPTIONS_REQUEST, 
-  LISTING_FILES, IN_TRANSFER, FINISHED };
+#define TIMEOUT 5000
+#define HTTP_REDIRECT 303
+#define HTTP_BAD_REQUEST 400
+#define HTTP_NOT_FOUND 404
+#define HTTP_NOT_PERMITTED 405
+#define HTTP_TIMEOUT 408
+#define HTTP_ERROR 500
+#define HTTP_NOT_IMPLEMENTED 501
+
+enum serverState_t {
+  NOT_CONNECTED,
+  READ_REQUEST,
+  GET_REQUEST,
+  POST_REQUEST,
+  OPTIONS_REQUEST,
+  COUNTING_FILES,
+  LISTING_FILES,
+  IN_TRANSFER,
+  FINISHED
+};
 
 /**
  * EthernetServer_TC provides wrapper for web server for TankController
@@ -47,14 +63,12 @@ private:
   unsigned long connectedAt = 0;
   File file;
   int startTime;
-  bool isDoneCountingFiles = true;  // TODO: Perhaps replace this with a new COUNTING_FILES state
 
   // instance methods: constructor
   EthernetServer_TC(uint16_t port);
   // instance methods: utility
   void sendHeadersWithSize(uint32_t size);
-  void sendRedirectHeaders();
-  void sendBadRequestHeaders();
+  void sendResponse(int);
   int weekday(int year, int month, int day);
   // instance methods: HTTP
   void get();
@@ -65,6 +79,7 @@ private:
   void current();
   void display();
   void keypress();
+  void rootdirSetup();
   void rootdir();
   void testReadSpeed();
   void testWriteSpeed();

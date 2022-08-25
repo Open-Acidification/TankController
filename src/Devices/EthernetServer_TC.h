@@ -49,7 +49,6 @@ public:
   void loop();
   void writeToClientBuffer(char*, bool);
   void sendHeadersForRootdir(int);
-  void sdError();
 
 private:
   // class variables

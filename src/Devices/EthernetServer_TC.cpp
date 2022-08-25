@@ -192,7 +192,10 @@ void countFilesCallback(int fileCount) {
 void EthernetServer_TC::rootdirSetup() {
   if (state == COUNTING_FILES) {
 #ifndef MOCK_PINS_COUNT
-    SD_TC::instance()->countFiles(countFilesCallback);
+    if (!SD_TC::instance()->countFiles(countFilesCallback)) {
+      sendResponse(HTTP_ERROR);
+      state = FINISHED;
+    };
 #else
     countFilesCallback(0);
 #endif
@@ -207,7 +210,10 @@ void EthernetServer_TC::rootdirSetup() {
 void EthernetServer_TC::rootdir() {
   // Call function on SD Card
   // Provide callback to call when writing to the client buffer
-  SD_TC::instance()->listRootToBuffer(writeToClientBufferCallback);
+  if (!SD_TC::instance()->listRootToBuffer(writeToClientBufferCallback)) {
+    sendResponse(HTTP_ERROR);
+    state = FINISHED;
+  };
 }
 
 // Write to the client buffer
@@ -232,11 +238,6 @@ void EthernetServer_TC::sendHeadersForRootdir(int fileCount) {
   sendHeadersWithSize((uint32_t)49);
   state = LISTING_FILES;
 #endif
-}
-
-void EthernetServer_TC::sdError() {
-  sendResponse(HTTP_ERROR);
-  state = FINISHED;
 }
 
 // Tests speed for reading a file from the SD Card

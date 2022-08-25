@@ -88,7 +88,6 @@ void EthernetServer_TC::post() {
   } else {
     serial(F("post \"%s\" not recognized!"), buffer + 6);
     sendResponse(HTTP_BAD_REQUEST);
-    ;
     state = FINISHED;
   }
 }

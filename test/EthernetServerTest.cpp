@@ -282,6 +282,39 @@ unittest(rootDir) {
   server->loop();
 }
 
+unittest(fileNotFound) {
+  TankController* tc = TankController::instance();
+  EthernetServer_TC* server = EthernetServer_TC::instance();
+  EthernetClient_CI client;
+  server->setHasClientCalling(true);
+  delay(1);
+  server->loop();
+  client = server->getClient();
+  const char request[] =
+      "GET /17760704.log HTTP/1.1\r\n"
+      "Host: localhost:80\r\n"
+      "Accept: text/plain;charset=UTF-8\r\n"
+      "Accept-Encoding: identity\r\n"
+      "Accept-Language: en-US\r\n"
+      "\r\n";
+  client.pushToReadBuffer(request);
+  server->loop();
+  deque<uint8_t>* pBuffer = client.writeBuffer();
+  assertEqual(26, pBuffer->size());
+  String response;
+  while (!pBuffer->empty()) {
+    response.concat(pBuffer->front());
+    pBuffer->pop_front();
+  }
+  const char expectedResponse[] = "HTTP/1.1 404 Not Found\r\n\r\n";
+  assertEqual(expectedResponse, response);
+  assertEqual(FINISHED, server->getState());
+  server->loop();  // Process finished state
+  assertEqual(NOT_CONNECTED, server->getState());
+  client.stop();
+  server->loop();
+}
+
 unittest(timeout) {
   TankController* tc = TankController::instance();
   EthernetServer_TC* server = EthernetServer_TC::instance();

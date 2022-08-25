@@ -172,6 +172,27 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "je-foster",
+      "name": "John Foster",
+      "avatar_url": "https://avatars.githubusercontent.com/u/109112235?v=4",
+      "profile": "https://github.com/je-foster",
+      "contributions": [
+        "test",
+        "code"
+      ]
+    },
+    {
+      "login": "pianistrevor",
+      "name": "Trevor Natiuk",
+      "avatar_url": "https://avatars.githubusercontent.com/u/31118933?v=4",
+      "profile": "https://github.com/pianistrevor",
+      "contributions": [
+        "bug",
+        "test",
+        "code"
+      ]
     }
   ],
   "projectName": "TankController",

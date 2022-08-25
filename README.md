@@ -3,7 +3,7 @@
 [![testing status](https://github.com/Open-Acidification/TankController/workflows/Arduino%20CI/badge.svg)](https://github.com/Open-Acidification/TankController/actions)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/Open-Acidification/TankController/blob/master/CONTRIBUTING.md)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-17-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-19-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 # Tank Controller Library
@@ -63,6 +63,10 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/Paydenb"><img src="https://avatars.githubusercontent.com/u/83844058?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Paydenb</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankController/commits?author=Paydenb" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/TaylorSmith28"><img src="https://avatars.githubusercontent.com/u/83837157?v=4?s=100" width="100px;" alt=""/><br /><sub><b>TaylorSmith28</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankController/commits?author=TaylorSmith28" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/BenjaminWachter"><img src="https://avatars.githubusercontent.com/u/81596850?v=4?s=100" width="100px;" alt=""/><br /><sub><b>benwach</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankController/commits?author=BenjaminWachter" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/je-foster"><img src="https://avatars.githubusercontent.com/u/109112235?v=4?s=100" width="100px;" alt=""/><br /><sub><b>John Foster</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankController/commits?author=je-foster" title="Tests">⚠️</a> <a href="https://github.com/Open-Acidification/TankController/commits?author=je-foster" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/pianistrevor"><img src="https://avatars.githubusercontent.com/u/31118933?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Trevor Natiuk</b></sub></a><br /><a href="https://github.com/Open-Acidification/TankController/issues?q=author%3Apianistrevor" title="Bug reports">🐛</a> <a href="https://github.com/Open-Acidification/TankController/commits?author=pianistrevor" title="Tests">⚠️</a> <a href="https://github.com/Open-Acidification/TankController/commits?author=pianistrevor" title="Code">💻</a></td>
   </tr>
 </table>
 

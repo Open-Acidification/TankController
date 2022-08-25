@@ -77,7 +77,11 @@ void SD_TC::appendToLog(const char* line) {
 }
 
 bool SD_TC::exists(const char* path) {
+#ifndef MOCK_PINS_COUNT
   return sd.exists(path);
+#else
+  return false;
+#endif
 }
 
 bool SD_TC::format() {

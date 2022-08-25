@@ -457,30 +457,28 @@ void EthernetServer_TC::sendResponse(int code) {
   static const char response_501[] PROGMEM =
       "HTTP/1.1 501 Not Implemented\r\n"
       "\r\n";
-  static const char *const response_table[] PROGMEM = {response_303, response_400, response_404, response_405,
-                                                       response_408, response_501, response_500};
   char buffer[sizeof(response_303)];
   switch (code) {
     case HTTP_REDIRECT:
-      strncpy_P(buffer, (char *)pgm_read_word(&(response_table[0])), sizeof(buffer));
+      strncpy_P(buffer, (PGM_P)response_303, sizeof(buffer));
       break;
     case HTTP_BAD_REQUEST:
-      strncpy_P(buffer, (char *)pgm_read_word(&(response_table[1])), sizeof(buffer));
+      strncpy_P(buffer, (PGM_P)response_400, sizeof(buffer));
       break;
     case HTTP_NOT_FOUND:
-      strncpy_P(buffer, (char *)pgm_read_word(&(response_table[2])), sizeof(buffer));
+      strncpy_P(buffer, (PGM_P)response_404, sizeof(buffer));
       break;
     case HTTP_NOT_PERMITTED:
-      strncpy_P(buffer, (char *)pgm_read_word(&(response_table[3])), sizeof(buffer));
+      strncpy_P(buffer, (PGM_P)response_405, sizeof(buffer));
       break;
     case HTTP_TIMEOUT:
-      strncpy_P(buffer, (char *)pgm_read_word(&(response_table[4])), sizeof(buffer));
+      strncpy_P(buffer, (PGM_P)response_408, sizeof(buffer));
       break;
     case HTTP_NOT_IMPLEMENTED:
-      strncpy_P(buffer, (char *)pgm_read_word(&(response_table[5])), sizeof(buffer));
+      strncpy_P(buffer, (PGM_P)response_501, sizeof(buffer));
       break;
     default:
-      strncpy_P(buffer, (char *)pgm_read_word(&(response_table[6])), sizeof(buffer));
+      strncpy_P(buffer, (PGM_P)response_500, sizeof(buffer));
   };
   client.write(buffer);
 }

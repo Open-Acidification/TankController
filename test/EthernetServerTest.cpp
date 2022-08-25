@@ -257,7 +257,7 @@ unittest(rootDir) {
       "\r\n";
   client.pushToReadBuffer(request);
   server->loop();
-  assertEqual(LISTING_FILES, server->getState());
+  assertEqual(COUNTING_FILES, server->getState());
   server->loop();
   deque<uint8_t>* pBuffer = client.writeBuffer();
   assertEqual(164, pBuffer->size());

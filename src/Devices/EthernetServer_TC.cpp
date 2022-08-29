@@ -317,6 +317,8 @@ bool EthernetServer_TC::fileContinue() {
     int writeSize = client.write(buffer, readSize);
     if (writeSize != readSize) {
       serial(F("read = %d; write = %d"), readSize, writeSize);
+      // TODO: This is an infinite loop (though non-blocking)
+      // Consider: Close file, change state, return true?
     }
     return false;
   } else {

@@ -349,8 +349,11 @@ bool EthernetServer_TC::sampleContinue() {
     char delim[1];
     delim[0] = '\n';
     int readSize;
-    char temperature[6];
-    temperature[6] = '\0';
+    char temperatureString[6];
+    temperatureString[6] = '\0';
+    double temperature;
+    double minTemperature;
+    double maxTemperature;
     double sum = 0;
     double summands = 0;
     char aCharacter[1];
@@ -370,18 +373,30 @@ bool EthernetServer_TC::sampleContinue() {
       buffer[i] = '\0';
       // serial(buffer);
       if (memcmp_P(buffer + 0, F("02/18/2022 00:00"), 16) == 0) {
-        strncpy(temperature, buffer + 25, 6);
-        sum += atof(temperature);
+        strncpy(temperatureString, buffer + 25, 6);
+        temperature = atof(temperatureString);
         summands = summands + 1;
+        sum += temperature;
+        if (summands == 1) {
+          minTemperature = temperature;
+          maxTemperature = temperature;
+        } else if (temperature < minTemperature) {
+          minTemperature = temperature;
+        } else if (temperature > maxTemperature) {
+          maxTemperature = temperature;
+        }
         // serial(F("here"));
       } else {
         file.seekSet(position);
-        char average[9];
-        char count[9];
+        char tempString[9];
         serial(F("last-read line: %s"), buffer);
-        dtostrf(sum / summands, 5, 3, average);
+        dtostrf(sum / summands, 5, 3, tempString);
         // dtostrf(summands, 5, 3, count);
-        serial(F("Average temperature: %s"), average);
+        serial(F("Average temperature: %s"), tempString);
+        dtostrf(minTemperature, 5, 3, tempString);
+        serial(F("Minimum temperature: %s"), tempString);
+        dtostrf(maxTemperature, 5, 3, tempString);
+        serial(F("Maximum temperature: %s"), tempString);
         file.close();
         state = FINISHED;
         sendResponse(HTTP_ERROR);

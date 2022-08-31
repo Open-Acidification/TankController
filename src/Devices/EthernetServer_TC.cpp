@@ -108,6 +108,8 @@ void EthernetServer_TC::apiHandler() {
       display();
     } else if (memcmp_P(buffer + 11, F("rootdir"), 7) == 0) {
       rootdirSetup();
+    } else if (memcmp_P(buffer + 11, F("sample"), 6) == 0) {
+      sampleSetup();
     } else if (memcmp_P(buffer + 11, F("testRead"), 8) == 0) {
       testReadSpeed();
     } else if (memcmp_P(buffer + 11, F("testWrite"), 9) == 0) {
@@ -122,7 +124,6 @@ void EthernetServer_TC::apiHandler() {
     // Later API versions may be implemented here
     serial(F("unhandled API version"));
     sendResponse(HTTP_BAD_REQUEST);
-    ;
     state = FINISHED;
   }
 }
@@ -330,6 +331,73 @@ bool EthernetServer_TC::fileContinue() {
   }
 }
 
+void EthernetServer_TC::sampleSetup() {
+  file = SD_TC::instance()->open("/20220218.csv");
+  state = SAMPLING;
+  startTime = millis();
+  char delim[1];
+  delim[0] = '\n';
+  if (file.available()) {
+    // Skip header row.
+    int readSize = file.fgets(buffer, sizeof(buffer), delim);
+  }
+}
+
+bool EthernetServer_TC::sampleContinue() {
+  if (file.available()) {
+    uint32_t position;
+    char delim[1];
+    delim[0] = '\n';
+    int readSize;
+    char temperature[6];
+    temperature[6] = '\0';
+    double sum = 0;
+    double summands = 0;
+    char aCharacter[1];
+    int i;
+    while (1) {
+      position = file.curPosition();
+      // readSize = file.fgets(buffer, sizeof(buffer), delim);  // This doesn't get all the way to \n
+      // buffer = file.readStringUntil('\n');  // This returns a String
+      i = 0;
+      aCharacter[0] = 'a';
+      while ((aCharacter[0] != '\n') && (file.read(aCharacter, 1)) > 0) {
+        buffer[i++] = aCharacter[0];
+      }
+      if (buffer[i - 1] == '\n') {
+        buffer[i - 1] = '\0';
+      }
+      buffer[i] = '\0';
+      // serial(buffer);
+      if (memcmp_P(buffer + 0, F("02/18/2022 00:00"), 16) == 0) {
+        strncpy(temperature, buffer + 25, 6);
+        sum += atof(temperature);
+        summands = summands + 1;
+        // serial(F("here"));
+      } else {
+        file.seekSet(position);
+        char average[9];
+        char count[9];
+        serial(F("last-read line: %s"), buffer);
+        dtostrf(sum / summands, 5, 3, average);
+        // dtostrf(summands, 5, 3, count);
+        serial(F("Average temperature: %s"), average);
+        file.close();
+        state = FINISHED;
+        sendResponse(HTTP_ERROR);
+        return true;
+      }
+    }
+  } else {
+    int endTime = millis();
+    serial(F("Done sampling, time = %i ms"), endTime - startTime);
+    file.close();
+    state = FINISHED;
+    sendResponse(HTTP_ERROR);
+    return true;
+  }
+}
+
 // Main loop called by TankController::loop()
 void EthernetServer_TC::loop() {
   if (state == FINISHED) {  // Tear down
@@ -344,6 +412,11 @@ void EthernetServer_TC::loop() {
     switch (state) {
       case IN_TRANSFER:
         if (fileContinue()) {
+          state = FINISHED;
+        }
+        break;
+      case SAMPLING:
+        if (sampleContinue()) {
           state = FINISHED;
         }
         break;

@@ -27,6 +27,7 @@ enum serverState_t {
   COUNTING_FILES,
   LISTING_FILES,
   IN_TRANSFER,
+  SAMPLING,
   FINISHED
 };
 
@@ -86,4 +87,6 @@ private:
   bool isRequestForExistingFile();
   void fileSetup();
   bool fileContinue();
+  void sampleSetup();
+  bool sampleContinue();
 };

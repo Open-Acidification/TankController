@@ -187,7 +187,7 @@ unittest(current) {
       "\"PID\":\"ON\","
       "\"TankID\":0,"
       "\"Uptime\":\"0d 0h 1m 1s\","
-      "\"Version\":\"22.08.1\"}\r\n";
+      "\"Version\":\"22.08.2\"}\r\n";
   assertEqual(expectedResponse, response);
   assertEqual(FINISHED, server->getState());
   server->loop();  // Process finished state
@@ -246,7 +246,7 @@ unittest(rootDir) {
       "\r\n";
   client.pushToReadBuffer(request);
   server->loop();
-  assertEqual(LISTING_FILES, server->getState());
+  assertEqual(COUNTING_FILES, server->getState());
   server->loop();
   deque<uint8_t>* pBuffer = client.writeBuffer();
   assertEqual(164, pBuffer->size());
@@ -275,6 +275,140 @@ unittest(rootDir) {
   }
   const char nextExpectedResponse[] = "Root directory not supported by CI framework.\r\n\r\n";
   assertEqual(nextExpectedResponse, response);
+  assertEqual(FINISHED, server->getState());
+  server->loop();  // Process finished state
+  assertEqual(NOT_CONNECTED, server->getState());
+  client.stop();
+  server->loop();
+}
+
+unittest(fileNotFound) {
+  TankController* tc = TankController::instance();
+  EthernetServer_TC* server = EthernetServer_TC::instance();
+  EthernetClient_CI client;
+  server->setHasClientCalling(true);
+  delay(1);
+  server->loop();
+  client = server->getClient();
+  const char request[] =
+      "GET /17760704.log HTTP/1.1\r\n"
+      "Host: localhost:80\r\n"
+      "Accept: text/plain;charset=UTF-8\r\n"
+      "Accept-Encoding: identity\r\n"
+      "Accept-Language: en-US\r\n"
+      "\r\n";
+  client.pushToReadBuffer(request);
+  server->loop();
+  deque<uint8_t>* pBuffer = client.writeBuffer();
+  assertEqual(26, pBuffer->size());
+  String response;
+  while (!pBuffer->empty()) {
+    response.concat(pBuffer->front());
+    pBuffer->pop_front();
+  }
+  const char expectedResponse[] = "HTTP/1.1 404 Not Found\r\n\r\n";
+  assertEqual(expectedResponse, response);
+  assertEqual(FINISHED, server->getState());
+  server->loop();  // Process finished state
+  assertEqual(NOT_CONNECTED, server->getState());
+  client.stop();
+  server->loop();
+}
+
+unittest(options) {
+  TankController* tc = TankController::instance();
+  EthernetServer_TC* server = EthernetServer_TC::instance();
+  EthernetClient_CI client;
+  server->setHasClientCalling(true);
+  delay(1);
+  server->loop();
+  client = server->getClient();
+  const char request[] =
+      "OPTIONS /index.html HTTP/1.1\r\n"
+      "Host: localhost:80\r\n"
+      "Accept: text/plain;charset=UTF-8\r\n"
+      "Accept-Encoding: identity\r\n"
+      "Accept-Language: en-US\r\n"
+      "\r\n";
+  client.pushToReadBuffer(request);
+  server->loop();
+  deque<uint8_t>* pBuffer = client.writeBuffer();
+  assertEqual(53, pBuffer->size());
+  String response;
+  while (!pBuffer->empty()) {
+    response.concat(pBuffer->front());
+    pBuffer->pop_front();
+  }
+  const char expectedResponse[] = "HTTP/1.1 405 Method Not Allowed\r\nAllow: GET, POST\r\n\r\n";
+  assertEqual(expectedResponse, response);
+  assertEqual(FINISHED, server->getState());
+  server->loop();  // Process finished state
+  assertEqual(NOT_CONNECTED, server->getState());
+  client.stop();
+  server->loop();
+}
+
+unittest(timeout) {
+  TankController* tc = TankController::instance();
+  EthernetServer_TC* server = EthernetServer_TC::instance();
+  EthernetClient_CI client;
+  server->setHasClientCalling(true);
+  delay(1);
+  server->loop();
+  client = server->getClient();
+  server->loop();
+  assertEqual(READ_REQUEST, server->getState());
+  delay(50);
+  server->loop();
+  delay(50);
+  server->loop();
+  delay(50);
+  server->loop();
+  assertEqual(READ_REQUEST, server->getState());
+  delay(5000);  // Wait for timeout
+  server->loop();
+  deque<uint8_t>* pBuffer = client.writeBuffer();
+  assertEqual(51, pBuffer->size());
+  String response;
+  while (!pBuffer->empty()) {
+    response.concat(pBuffer->front());
+    pBuffer->pop_front();
+  }
+  const char expectedResponse[] = "HTTP/1.1 408 Request Timeout\r\nConnection: close\r\n\r\n";
+  assertEqual(expectedResponse, response);
+  assertEqual(FINISHED, server->getState());
+  server->loop();  // Process finished state
+  assertEqual(NOT_CONNECTED, server->getState());
+  client.stop();
+  server->loop();
+}
+
+unittest(notImplemented) {
+  TankController* tc = TankController::instance();
+  EthernetServer_TC* server = EthernetServer_TC::instance();
+  EthernetClient_CI client;
+  server->setHasClientCalling(true);
+  delay(1);
+  server->loop();
+  client = server->getClient();
+  const char request[] =
+      "FOO /index.html HTTP/1.1\r\n"
+      "Host: localhost:80\r\n"
+      "Accept: text/plain;charset=UTF-8\r\n"
+      "Accept-Encoding: identity\r\n"
+      "Accept-Language: en-US\r\n"
+      "\r\n";
+  client.pushToReadBuffer(request);
+  server->loop();
+  deque<uint8_t>* pBuffer = client.writeBuffer();
+  assertEqual(32, pBuffer->size());
+  String response;
+  while (!pBuffer->empty()) {
+    response.concat(pBuffer->front());
+    pBuffer->pop_front();
+  }
+  const char expectedResponse[] = "HTTP/1.1 501 Not Implemented\r\n\r\n";
+  assertEqual(expectedResponse, response);
   assertEqual(FINISHED, server->getState());
   server->loop();  // Process finished state
   assertEqual(NOT_CONNECTED, server->getState());

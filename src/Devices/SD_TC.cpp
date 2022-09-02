@@ -122,13 +122,13 @@ bool SD_TC::incrementFileCount(File* myFile, void* pFileCount) {
   return ++(*(int*)pFileCount) % 10 != 0;  // Pause after counting 10 files
 }
 
-void SD_TC::countFiles(void (*callWhenFinished)(int)) {
+bool SD_TC::countFiles(void (*callWhenFinished)(int)) {
   if (!inProgress) {
     const char path[] PROGMEM = "/";
     fileStack[0] = SD_TC::instance()->open(path);
     if (!fileStack[0]) {
       serial(F("SD_TC open() failed"));
-      return;
+      return false;  // Function is unsuccessful
     }
     fileStack[0].rewind();
     fileStackSize = 1;
@@ -139,6 +139,7 @@ void SD_TC::countFiles(void (*callWhenFinished)(int)) {
   if (!inProgress) {
     callWhenFinished(fileCount);
   }
+  return true;
 }
 
 // Issue: This function does not visually display depth for items in subfolders
@@ -166,14 +167,14 @@ bool SD_TC::listFile(File* myFile, void* userData) {
 #endif
 }
 
-void SD_TC::listRootToBuffer(void (*callWhenFull)(char*, bool)) {
+bool SD_TC::listRootToBuffer(void (*callWhenFull)(char*, bool)) {
 #ifndef MOCK_PINS_COUNT
   if (!inProgress) {
     const char path[] PROGMEM = "/";
     fileStack[0] = SD_TC::instance()->open(path);
     if (!fileStack[0]) {
       serial(F("SD_TC open() failed"));
-      return;
+      return false;  // Function is unsuccessful
     }
     fileStack[0].rewind();
     fileStackSize = 1;
@@ -186,11 +187,13 @@ void SD_TC::listRootToBuffer(void (*callWhenFull)(char*, bool)) {
   // Terminate the buffer
   listFileData.buffer[listFileData.linePos] = '\0';
   callWhenFull(listFileData.buffer, !inProgress);
+  return true;
 #else
   static const char notImplemented[] PROGMEM = "Root directory not supported by CI framework.\r\n";
   char buffer[sizeof(notImplemented)];
   memcpy(buffer, (PGM_P)notImplemented, sizeof(notImplemented));
   callWhenFull(buffer, true);
+  return true;
 #endif
 }
 

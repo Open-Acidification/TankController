@@ -64,6 +64,7 @@ private:
   unsigned long connectedAt = 0;
   File file;
   int startTime;
+  int sampleMinute;
 
   // instance methods: constructor
   EthernetServer_TC(uint16_t port);

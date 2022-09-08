@@ -343,6 +343,7 @@ void EthernetServer_TC::sampleSetup() {
     int readSize = file.fgets(buffer, sizeof(buffer), delim);
   }
   sendHeadersWithSize(1260);  // 60 lines, 21 characters per line
+  serial(F("Header has been sent"));
 }
 
 bool EthernetServer_TC::sampleContinue() {
@@ -430,14 +431,10 @@ void EthernetServer_TC::loop() {
   if (client || (client = accept())) {  // if we have a connection
     switch (state) {
       case IN_TRANSFER:
-        if (fileContinue()) {
-          state = FINISHED;
-        }
+        fileContinue();
         break;
       case SAMPLING:
-        if (sampleContinue()) {
-          state = FINISHED;
-        }
+        sampleContinue();
         break;
       case COUNTING_FILES:
         rootdirSetup();

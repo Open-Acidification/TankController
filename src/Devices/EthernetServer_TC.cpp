@@ -342,7 +342,12 @@ void EthernetServer_TC::sampleSetup() {
   //   // Skip header row.
   //   int readSize = file.fgets(buffer, sizeof(buffer), delim);
   // }
-  file.seekSet(63);           // Skip header row
+  char aCharacter[1];
+  aCharacter[0] = 'a';
+  while ((aCharacter[0] != '\n') {
+    file.read(aCharacter, 1)) > 0;
+  }
+  // file.seekSet(63);           // Skip header row
   sendHeadersWithSize(1320);  // 60 lines, 22 characters per line
   serial(F("Header has been sent"));
 }

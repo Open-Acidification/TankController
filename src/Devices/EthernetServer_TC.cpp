@@ -372,6 +372,7 @@ bool EthernetServer_TC::sampleContinue() {
         // sendResponse(HTTP_ERROR);
         return true;
       }
+      serial(buffer);
       if (memcmp_P(buffer + 0, F("02/18/2022 00"), 13) == 0) {
         if (memcmp_P(buffer + 14, minute, 2) == 0) {
           strncpy(temperatureString, buffer + 25, 6);

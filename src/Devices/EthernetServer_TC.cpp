@@ -345,7 +345,7 @@ void EthernetServer_TC::sampleSetup() {
   char aCharacter[1];
   aCharacter[0] = 'a';
   while (aCharacter[0] != '\n') {
-    file.read(aCharacter, 1)) > 0;
+    file.read(aCharacter, 1) > 0;
   }
   // file.seekSet(63);           // Skip header row
   sendHeadersWithSize(1320);  // 60 lines, 22 characters per line

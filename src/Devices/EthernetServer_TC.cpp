@@ -336,12 +336,13 @@ void EthernetServer_TC::sampleSetup() {
   state = SAMPLING;
   startTime = millis();
   sampleMinute = 0;
-  char delim[1];
-  delim[0] = '\n';
-  if (file.available()) {
-    // Skip header row.
-    int readSize = file.fgets(buffer, sizeof(buffer), delim);
-  }
+  // char delim[1];
+  // delim[0] = '\n';
+  // if (file.available()) {
+  //   // Skip header row.
+  //   int readSize = file.fgets(buffer, sizeof(buffer), delim);
+  // }
+  file.seekSet(62);           // Skip header row
   sendHeadersWithSize(1320);  // 60 lines, 22 characters per line
   serial(F("Header has been sent"));
 }

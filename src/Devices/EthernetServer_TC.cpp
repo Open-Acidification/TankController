@@ -390,6 +390,7 @@ bool EthernetServer_TC::sampleContinue() {
         file.seekSet(position);
         char tempString[9];
         serial(F("last-read line: %s"), buffer);
+        serial(F("Done sampling, time = %i ms"), millis() - startTime);
         dtostrf(sum / summands, 5, 3, tempString);
         // dtostrf(summands, 5, 3, count);
         serial(F("Average temperature: %s"), tempString);

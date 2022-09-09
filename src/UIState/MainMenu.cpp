@@ -237,6 +237,7 @@ void MainMenu::selectSet() {
 // T=12.25 H 12.75
 void MainMenu::idle() {
   PHControl *phControl = PHControl::instance();
+  // TODO: Reduce length of output array to 17
   char output[20];
   output[0] = 'p';
   output[1] = 'H';

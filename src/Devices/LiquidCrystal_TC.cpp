@@ -68,6 +68,10 @@ void LiquidCrystal_TC::writeLine(const char* text, uint16_t line) {
 void LiquidCrystal_TC::writeLine(const __FlashStringHelper* text, uint16_t line) {
   // copy from program memory to SRAM and then call other function
   char buffer[17];
+  if (sizeof(text) > 16) {
+    serial(F("Error: Copying line of size greater than 16"));
+    // TODO: Replace strcpy_P below with strncpy_P
+  }
   strcpy_P(buffer, (PGM_P)text);
   writeLine(buffer, line);
 }

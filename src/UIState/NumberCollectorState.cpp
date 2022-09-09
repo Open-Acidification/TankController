@@ -58,6 +58,7 @@ void NumCollectorState::backSpace() {
 }
 
 void NumCollectorState::printValue() {
+  // TODO: Reduce length of strValue array to 17
   char format[20], strValue[20];
   // The Arduino does not support variable widths, so we construct the format string at runtime!
   dtostrf(getCurrentValue(), 7, getCurrentValuePrecision(), strValue);

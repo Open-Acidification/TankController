@@ -48,9 +48,12 @@ TankController::TankController() {
   delay(2000);
   serial(F("\r\n#################\r\nTankController::TankController() - version %s"), TANK_CONTROLLER_VERSION);
   assert(!_instance);
+  serial(F("This is message 1"));
   // ensure we have instances
   SD_TC::instance();
+  serial(F("This is message 2"));
   EEPROM_TC::instance();
+  serial(F("This is message 3"));
   Keypad_TC::instance();
   char buffer[50];
   buffer[0] = 'A';
@@ -59,6 +62,7 @@ TankController::TankController() {
   serial(F("%i"), (int)buffer[0]);
   Serial.println(buffer);
   LiquidCrystal_TC::instance(TANK_CONTROLLER_VERSION);
+  serial(F("This is messag"));
   DateTime_TC::rtc();
   Ethernet_TC::instance();
   TempProbe_TC::instance();
@@ -280,6 +284,10 @@ void TankController::writeDataToSD() {
   dtostrf(pPID->getKi(), 8, 1, buffer + strnlen(buffer, sizeof(buffer)));
   strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(", "));
   dtostrf(pPID->getKd(), 8, 1, buffer + strnlen(buffer, sizeof(buffer)));
+  if (strlen(buffer) > 128) {
+    serial(F("WARNING! More than 128 characters: %s"), buffer);
+    // TODO: Replace strcpy_P above with strncpy_P
+  }
   SD_TC::instance()->appendData(header, buffer);
   nextWriteTime = msNow / 1000 * 1000 + 1000;  // round up to next second
   COUT(buffer);
@@ -298,6 +306,10 @@ void TankController::writeDataToSerial() {
     dtostrf((float)PHProbe::instance()->getPh(), 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
     strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(" temp="));
     dtostrf((float)TempProbe_TC::instance()->getRunningAverage(), 5, 2, buffer + strnlen(buffer, sizeof(buffer)));
+    if (strlen(buffer) > 30) {
+      serial(F("WARNING! More than 30 characters: %s"), buffer);
+      // TODO: Replace strcpy_P above with strncpy_P
+    }
     serial(buffer);
     nextWriteTime = msNow / 60000 * 60000 + 60000;  // round up to next minute
     COUT(buffer);

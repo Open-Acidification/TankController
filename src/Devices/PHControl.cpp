@@ -83,6 +83,10 @@ void PHControl::setTargetPh(float newPh) {
     dtostrf(targetPh, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
     strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(" to "));
     dtostrf(newPh, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
+    if (strlen(buffer) > 40) {
+      serial(F("WARNING! More than 40 characters: %s"), buffer);
+      // TODO: Replace strcpy_P above with strncpy_P
+    }
     serial(buffer);
     targetPh = newPh;
     EEPROM_TC::instance()->setPh(newPh);
@@ -97,6 +101,10 @@ void PHControl::setRampDuration(float newPhRampDuration) {
     dtostrf(currentRampTime, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
     strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(" to "));
     dtostrf(newPhRampDuration, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
+    if (strlen(buffer) > 40) {
+      serial(F("WARNING! More than 40 characters: %s"), buffer);
+      // TODO: Replace strcpy_P above with strncpy_P
+    }
     serial(buffer);
     rampTimeStart = DateTime_TC::now().secondstime();
     rampTimeEnd = rampTimeStart + (uint32_t)(newPhRampDuration * 3600);

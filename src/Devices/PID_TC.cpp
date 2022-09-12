@@ -80,6 +80,10 @@ void PID_TC::logToSerial() {
   dtostrf(pPID->GetKd(), 6, 1, buffer + strnlen(buffer, sizeof(buffer)));
   strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F("\r\nPID output in seconds:"));
   dtostrf(static_cast<float>(output) / 1000, 4, 1, buffer + strnlen(buffer, sizeof(buffer)));
+  if (strlen(buffer) > 70) {
+    serial(F("WARNING! More than 70 characters: %s"), buffer);
+    // TODO: Replace strcpy_P above with strncpy_P
+  }
   serial(buffer);
 }
 

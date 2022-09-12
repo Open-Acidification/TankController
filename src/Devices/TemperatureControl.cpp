@@ -44,6 +44,10 @@ void TemperatureControl::enableHeater(bool flag) {
     char buffer[50];
     strncpy_P(buffer, (PGM_P)F("TemperatureControl::enableHeater("), sizeof(buffer));
     strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), flag ? (PGM_P)F("true)") : (PGM_P)F("false)"));
+    if (strlen(buffer) > 50) {
+      serial(F("WARNING! More than 50 characters: %s"), buffer);
+      // TODO: Replace strcpy_P above with strncpy_P
+    }
     serial(buffer);
   }
 }
@@ -91,6 +95,10 @@ TemperatureControl::TemperatureControl() {
   strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(" starts with solenoid off with target temperature of "));
   dtostrf(targetTemperature, 5, 2, buffer + strnlen(buffer, sizeof(buffer)));
   strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(" C"));
+  if (strlen(buffer) > 70) {
+    serial(F("WARNING! More than 70 characters: %s"), buffer);
+    // TODO: Replace strcpy_P above with strncpy_P
+  }
   serial(buffer);
 }
 
@@ -102,6 +110,10 @@ void TemperatureControl::setRampDuration(float newTempRampDuration) {
     dtostrf(currentRampTime, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
     strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(" to "));
     dtostrf(newTempRampDuration, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
+    if (strlen(buffer) > 40) {
+      serial(F("WARNING! More than 40 characters: %s"), buffer);
+      // TODO: Replace strcpy_P above with strncpy_P
+    }
     serial(buffer);
     rampTimeStart = DateTime_TC::now().secondstime();
     rampTimeEnd = rampTimeStart + (uint32_t)(newTempRampDuration * 3600);
@@ -152,6 +164,10 @@ void TemperatureControl::setTargetTemperature(float newTemperature) {
     dtostrf(targetTemperature, 5, 2, buffer + strnlen(buffer, sizeof(buffer)));
     strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(" to "));
     dtostrf(newTemperature, 5, 2, buffer + strnlen(buffer, sizeof(buffer)));
+    if (strlen(buffer) > 50) {
+      serial(F("WARNING! More than 50 characters: %s"), buffer);
+      // TODO: Replace strcpy_P above with strncpy_P
+    }
     serial(buffer);
     EEPROM_TC::instance()->setTemp(newTemperature);
     targetTemperature = newTemperature;

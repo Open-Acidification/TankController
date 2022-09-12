@@ -45,12 +45,19 @@ TankController *TankController::instance(const char *pushingBoxID) {
  * Constructor
  */
 TankController::TankController() {
+  delay(2000);
   serial(F("\r\n#################\r\nTankController::TankController() - version %s"), TANK_CONTROLLER_VERSION);
   assert(!_instance);
   // ensure we have instances
   SD_TC::instance();
   EEPROM_TC::instance();
   Keypad_TC::instance();
+  char buffer[50];
+  buffer[0] = 'A';
+  serial(F("%i"), (int)buffer[0]);
+  strncpy(buffer, (PGM_P)F("We are looking for a big problem."), sizeof(buffer));
+  serial(F("%i"), (int)buffer[0]);
+  Serial.println(buffer);
   LiquidCrystal_TC::instance(TANK_CONTROLLER_VERSION);
   DateTime_TC::rtc();
   Ethernet_TC::instance();

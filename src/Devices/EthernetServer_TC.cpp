@@ -332,97 +332,103 @@ bool EthernetServer_TC::fileContinue() {
 }
 
 void EthernetServer_TC::sampleSetup() {
-  file = SD_TC::instance()->open("/20220218.csv");
-  state = SAMPLING;
-  startTime = millis();
-  sampleMinute = 0;
-  // char delim[1];
+  // file = SD_TC::instance()->open("/20220218.csv");
+  // state = SAMPLING;
+  // startTime = millis();
+  // sampleMinute = 0;
+  // char delim[2];
   // delim[0] = '\n';
+  // delim[1] = '\0';
   // if (file.available()) {
   //   // Skip header row.
   //   int readSize = file.fgets(buffer, sizeof(buffer), delim);
+  //   serial(F("Header row has %i characters"), readSize);
   // }
-  char aCharacter[1];
-  aCharacter[0] = 'a';
-  while (aCharacter[0] != '\n') {
-    file.read(aCharacter, 1) > 0;
-  }
-  // file.seekSet(63);           // Skip header row
-  sendHeadersWithSize(1320);  // 60 lines, 22 characters per line
-  serial(F("Header has been sent"));
+  // // char aCharacter = 'a';
+  // // while (aCharacter != '\n') {
+  // //   file.read(&aCharacter, 1) > 0;
+  // // }
+  // // file.seekSet(62);           // Skip header row
+  // sendHeadersWithSize(1320);  // 60 lines, 22 characters per line
+  // serial(F("Header has been sent"));
 }
 
 bool EthernetServer_TC::sampleContinue() {
-  if (file.available()) {
-    // int readSize;
-    char temperatureString[6];
-    temperatureString[6] = '\0';
-    double temperature;
-    double minTemperature;
-    double maxTemperature;
-    double sum = 0;
-    double summands = 0;
-    char minute[2];
-    snprintf(minute, 2, "%2i", sampleMinute);
-    buffer[90] = '\0';
-    while (sampleMinute < 60) {
-      // TODO: What if a minute is missing from the log file, perhaps because the device was powered off?
-      // readSize = file.fgets(buffer, sizeof(buffer), delim);  // This doesn't get all the way to \n
-      // buffer = file.readStringUntil('\n');  // This returns a String
-      file.read(buffer, 90);
-      if (buffer[89] != '\n') {
-        serial(F("Error: Expected newline character"));
-        file.close();
-        state = FINISHED;
-        // sendResponse(HTTP_ERROR);
-        return true;
-      }
-      serial(buffer);
-      if (memcmp_P(buffer + 0, F("02/18/2022 00"), 13) == 0) {
-        if (memcmp_P(buffer + 14, minute, 2) == 0) {
-          strncpy(temperatureString, buffer + 25, 6);
-          temperature = atof(temperatureString);
-          summands = summands + 1;
-          sum += temperature;
-          if (summands == 1) {
-            minTemperature = temperature;
-            maxTemperature = temperature;
-          } else if (temperature < minTemperature) {
-            minTemperature = temperature;
-          } else if (temperature > maxTemperature) {
-            maxTemperature = temperature;
-          }
-        } else {
-          // Send one minute of data
-          char tempString1[6];
-          dtostrf(minTemperature, 5, 3, tempString1);
-          char tempString2[6];
-          dtostrf(sum / summands, 5, 3, tempString2);
-          char tempString3[6];
-          dtostrf(maxTemperature, 5, 3, tempString3);
-          snprintf(buffer, 22, "%2i,%s,%s,%s\r\n", sampleMinute, tempString1, tempString2, tempString3);
-          client.write(buffer, 22);
-          ++sampleMinute;
-          return false;
-        }
-      } else {
-        serial(F("Unexpected line: %s"), buffer);
-        file.close();
-        state = FINISHED;
-        // sendResponse(HTTP_ERROR);
-        return true;
-      }
-    }
-    serial(F("Done sampling, time = %i ms"), millis() - startTime);
-    file.close();
-    state = FINISHED;
-    return true;
-  } else {
-    serial(F("Done sampling, time = %i ms"), millis() - startTime);
-    file.close();
-    state = FINISHED;
-    return true;
-  }
+  state = FINISHED;
+  return true;
+  // if (file.available()) {
+  //   // int readSize;
+  //   char temperatureString[7];
+  //   temperatureString[6] = '\0';
+  //   double temperature;
+  //   double minTemperature;
+  //   double maxTemperature;
+  //   double sum = 0;
+  //   double summands = 0;
+  //   char minute[3];
+  //   minute[2] = '\0';
+  //   snprintf(minute, 2, "%2i", sampleMinute);
+  //   buffer[90] = '\0';
+  //   while (sampleMinute < 60) {
+  //     // TODO: What if a minute is missing from the log file, perhaps because the device was powered off?
+  //     // readSize = file.fgets(buffer, sizeof(buffer), delim);  // This doesn't get all the way to \n
+  //     // buffer = file.readStringUntil('\n');  // This returns a String
+  //     file.read(buffer, 90);
+  //     if (buffer[89] != '\n') {
+  //       serial(F("Error: Expected newline character"));
+  //       file.close();
+  //       state = FINISHED;
+  //       // sendResponse(HTTP_ERROR);
+  //       return true;
+  //     }
+  //     // serial(buffer);
+  //     if (memcmp_P(buffer + 0, F("02/18/2022 00"), 13) == 0) {
+  //       if (memcmp_P(buffer + 14, minute, 2) == 0) {
+  //         strncpy(temperatureString, buffer + 25, 6);
+  //         temperature = atof(temperatureString);
+  //         summands = summands + 1;
+  //         sum += temperature;
+  //         if (summands == 1) {
+  //           minTemperature = temperature;
+  //           maxTemperature = temperature;
+  //         } else if (temperature < minTemperature) {
+  //           minTemperature = temperature;
+  //         } else if (temperature > maxTemperature) {
+  //           maxTemperature = temperature;
+  //         }
+  //       } else {
+  //         // Send one minute of data
+  //         serial(F("Sending minute %s"), minute);
+  //         char tempString1[6];
+  //         dtostrf(minTemperature, 5, 3, tempString1);
+  //         char tempString2[6];
+  //         dtostrf(sum / summands, 5, 3, tempString2);
+  //         char tempString3[6];
+  //         dtostrf(maxTemperature, 5, 3, tempString3);
+  //         snprintf(buffer, 22, "%2i,%s,%s,%s\r\n", sampleMinute, tempString1, tempString2, tempString3);
+  //         client.write(buffer, 22);
+  //         ++sampleMinute;
+  //         return false;
+  //       }
+  //     } else {
+  //       serial(F("Unexpected line: %s"), buffer);
+  //       file.close();
+  //       state = FINISHED;
+  //       // sendResponse(HTTP_ERROR);
+  //       return true;
+  //     }
+  //   }
+  //   serial(F("Done sampling, time = %i ms"), millis() - startTime);
+  //   file.close();
+  //   state = FINISHED;
+  //   return true;
+  // } else {
+  //   serial(F("File has nothing more available"));
+  //   serial(F("Done sampling, time = %i ms"), millis() - startTime);
+  //   file.close();
+  //   state = FINISHED;
+  //   return true;
+  // }
 }
 
 // Main loop called by TankController::loop()

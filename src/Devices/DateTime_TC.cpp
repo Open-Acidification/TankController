@@ -25,6 +25,9 @@ RTC_PCF8523 *DateTime_TC::rtc() {
       _rtc->adjust(DateTime(__DATE__, __TIME__));
     }
   }
+  // char buffer[50];
+  // strncpy(buffer, (PGM_P)F("Temperature probe with correction of "), sizeof(buffer));
+  // serial(buffer);
   return _rtc;
 }
 

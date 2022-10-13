@@ -71,16 +71,15 @@ float PID_TC::computeOutput(float target, float current) {
 }
 
 void PID_TC::logToSerial() {
-  char buffer[70];
-  strncpy_P(buffer, (PGM_P)F("Kp: "), sizeof(buffer));
-  dtostrf(pPID->GetKp(), 6, 1, buffer + strnlen(buffer, sizeof(buffer)));
-  strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(" Ki: "));
-  dtostrf(pPID->GetKi(), 6, 1, buffer + strnlen(buffer, sizeof(buffer)));
-  strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(" Kd: "));
-  dtostrf(pPID->GetKd(), 6, 1, buffer + strnlen(buffer, sizeof(buffer)));
-  strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F("\r\nPID output in seconds:"));
-  dtostrf(static_cast<float>(output) / 1000, 4, 1, buffer + strnlen(buffer, sizeof(buffer)));
-  serial(buffer);
+  char buffer1[10];
+  char buffer2[10];
+  char buffer3[10];
+  char buffer4[10];
+  dtostrf(pPID->GetKp(), 6, 1, buffer1);
+  dtostrf(pPID->GetKi(), 6, 1, buffer2);
+  dtostrf(pPID->GetKd(), 6, 1, buffer3);
+  dtostrf(static_cast<float>(output) / 1000, 4, 1, buffer4);
+  serial(F("Kp: %s Ki: %s Kd: %s\r\nPID output in seconds: %s"), buffer1, buffer2, buffer3, buffer4);
 }
 
 void PID_TC::setKd(float Kd) {

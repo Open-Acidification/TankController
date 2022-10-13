@@ -70,20 +70,18 @@ PHControl::PHControl() {
     default:
       break;
   }
-  char buffer[40];
-  strncpy_P(buffer, (PGM_P)F("PHControl with target pH = "), sizeof(buffer));
-  dtostrf(targetPh, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
-  serial(buffer);
+  char buffer[10];
+  dtostrf(targetPh, 5, 3, buffer);
+  serial(F("PHControl with target pH = %s"), buffer);
 }
 
 void PHControl::setTargetPh(float newPh) {
   if (targetPh != newPh) {
-    char buffer[40];
-    strncpy_P(buffer, (PGM_P)F("change target pH from "), sizeof(buffer));
-    dtostrf(targetPh, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
-    strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(" to "));
-    dtostrf(newPh, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
-    serial(buffer);
+    char buffer1[10];
+    char buffer2[10];
+    dtostrf(targetPh, 5, 3, buffer1);
+    dtostrf(newPh, 5, 3, buffer2);
+    serial(F("change target pH from %s to %s"), buffer1, buffer2);
     targetPh = newPh;
     EEPROM_TC::instance()->setPh(newPh);
   }
@@ -91,13 +89,12 @@ void PHControl::setTargetPh(float newPh) {
 
 void PHControl::setRampDuration(float newPhRampDuration) {
   if (newPhRampDuration > 0) {
-    char buffer[40];
     float currentRampTime = rampTimeEnd - rampTimeStart;
-    strncpy_P(buffer, (PGM_P)F("change ramp time from "), sizeof(buffer));
-    dtostrf(currentRampTime, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
-    strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(" to "));
-    dtostrf(newPhRampDuration, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
-    serial(buffer);
+    char buffer1[10];
+    char buffer2[10];
+    dtostrf(currentRampTime, 5, 3, buffer1);
+    dtostrf(newPhRampDuration, 5, 3, buffer2);
+    serial(F("change ramp time from %s to %s"), buffer1, buffer2);
     rampTimeStart = DateTime_TC::now().secondstime();
     rampTimeEnd = rampTimeStart + (uint32_t)(newPhRampDuration * 3600);
     rampStartingPh = PHProbe::instance()->getPh();

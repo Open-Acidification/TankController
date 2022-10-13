@@ -68,6 +68,10 @@ void LiquidCrystal_TC::writeLine(const char* text, uint16_t line) {
 void LiquidCrystal_TC::writeLine(const __FlashStringHelper* text, uint16_t line) {
   // copy from program memory to SRAM and then call other function
   char buffer[17];
-  strcpy_P(buffer, (PGM_P)text);
+  size_t line_length;
+  line_length = strlcpy_P(buffer, (PGM_P)text), sizeof(buffer));
+  if (line_length >= sizeof(buffer)) {
+    // TODO: Log a warning that string was truncated
+  }
   writeLine(buffer, line);
 }

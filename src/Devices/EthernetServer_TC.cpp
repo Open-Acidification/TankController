@@ -122,7 +122,6 @@ void EthernetServer_TC::apiHandler() {
     // Later API versions may be implemented here
     serial(F("unhandled API version"));
     sendResponse(HTTP_BAD_REQUEST);
-    ;
     state = FINISHED;
   }
 }
@@ -317,6 +316,8 @@ bool EthernetServer_TC::fileContinue() {
     int writeSize = client.write(buffer, readSize);
     if (writeSize != readSize) {
       serial(F("read = %d; write = %d"), readSize, writeSize);
+      // TODO: This is an infinite loop (though non-blocking)
+      // Consider: Close file, change state, return true?
     }
     return false;
   } else {

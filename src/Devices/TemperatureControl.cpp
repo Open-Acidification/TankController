@@ -41,7 +41,9 @@ void TemperatureControl::enableHeater(bool flag) {
   if (_instance && (_instance->isHeater() != flag)) {
     delete _instance;
     _instance = nullptr;
-    serial(F("TemperatureControl::enableHeater(%s"), (flag ? F("true)") : F("false)")));
+    char buffer[7];
+    strlcpy_P(buffer, (flag ? (PGM_P)F("true)") : (PGM_P)F("false)")), sizeof(buffer));
+    serial(F("TemperatureControl::enableHeater(%s"), buffer);
   }
 }
 
@@ -83,10 +85,11 @@ TemperatureControl::TemperatureControl() {
   }
   pinMode(TEMP_CONTROL_PIN, OUTPUT);
   digitalWrite(TEMP_CONTROL_PIN, TURN_SOLENOID_OFF);
-  char buffer[10];
-  dtostrf(targetTemperature, 5, 2, buffer);
-  serial(F("%s starts with solenoid off with target temperature of %s C"),
-         (this->isHeater() ? F("Heater") : F("Chiller")), buffer);
+  char buffer1[8];
+  char buffer2[10];
+  strlcpy_P(buffer1, (this->isHeater() ? (PGM_P)F("Heater") : (PGM_P)F("Chiller")), sizeof(buffer1));
+  dtostrf(targetTemperature, 5, 2, buffer2);
+  serial(F("%s starts with solenoid off with target temperature of %s C"), buffer1, buffer2);
 }
 
 void TemperatureControl::setRampDuration(float newTempRampDuration) {

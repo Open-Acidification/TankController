@@ -41,9 +41,7 @@ void TemperatureControl::enableHeater(bool flag) {
   if (_instance && (_instance->isHeater() != flag)) {
     delete _instance;
     _instance = nullptr;
-    char buffer[7];
-    buffer = (flag ? (PGM_P)F("true)") : (PGM_P)F("false)"));
-    serial(F("TemperatureControl::enableHeater(%s"), buffer);
+    serial(F("TemperatureControl::enableHeater(%s"), (flag ? F("true)") : F("false)")));
   }
 }
 

@@ -254,26 +254,33 @@ void TankController::writeDataToSD() {
     dtostrf((float)TempProbe_TC::instance()->getRunningAverage(), 4, 2, currentTemp);
     dtostrf((float)PHProbe::instance()->getPh(), 5, 3, currentPh);
   }
-  char targetTemp[10];
-  char targetPh[10];
-  dtostrf(TemperatureControl::instance()->getTargetTemperature(), 4, 2, targetTemp);
-  dtostrf(PHControl::instance()->getTargetPh(), 5, 3, targetPh);
-  static const char header[] = "time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd";
-  static const char format[] PROGMEM = "%02i/%02i/%4i %02i:%02i:%02i, %3i, %s, %s, %s, %s, %4lu";
-  char buffer[128];
   DateTime_TC dtNow = DateTime_TC::now();
   PID_TC *pPID = PID_TC::instance();
   uint16_t tankId = EEPROM_TC::instance()->getTankID();
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)format, (uint16_t)dtNow.month(), (uint16_t)dtNow.day(),
-             (uint16_t)dtNow.year(), (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(), (uint16_t)dtNow.second(),
-             (uint16_t)tankId, currentTemp, targetTemp, currentPh, targetPh, (unsigned long)(millis() / 1000));
-  strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(", "));
-  dtostrf(pPID->getKp(), 8, 1, buffer + strnlen(buffer, sizeof(buffer)));
-  strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(", "));
-  dtostrf(pPID->getKi(), 8, 1, buffer + strnlen(buffer, sizeof(buffer)));
-  strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(", "));
-  dtostrf(pPID->getKd(), 8, 1, buffer + strnlen(buffer, sizeof(buffer)));
-  SD_TC::instance()->appendData(header, buffer);
+  char targetTemp[10];
+  char targetPh[10];
+  char kp[12];
+  char ki[12];
+  char kd[12];
+  dtostrf(TemperatureControl::instance()->getTargetTemperature(), 4, 2, targetTemp);
+  dtostrf(PHControl::instance()->getTargetPh(), 5, 3, targetPh);
+  dtostrf(pPID->getKp(), 8, 1, kp);
+  dtostrf(pPID->getKi(), 8, 1, ki);
+  dtostrf(pPID->getKd(), 8, 1, kd);
+  static const char header[] PROGMEM = "time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd";
+  static const char format[] PROGMEM = "%02i/%02i/%4i %02i:%02i:%02i, %3i, %s, %s, %s, %s, %4lu, %s, %s, %s";
+  char header_buffer[sizeof(header)];
+  strlcpy_P(header_buffer, (PGM_P)header, sizeof(header_buffer));
+  char buffer[128];
+  int length;
+  length = snprintf_P(buffer, sizeof(buffer), (PGM_P)format, (uint16_t)dtNow.month(), (uint16_t)dtNow.day(),
+                      (uint16_t)dtNow.year(), (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(),
+                      (uint16_t)dtNow.second(), (uint16_t)tankId, currentTemp, targetTemp, currentPh, targetPh,
+                      (unsigned long)(millis() / 1000), kp, ki, kd);
+  if ((length > sizeof(buffer)) || (length < 0)) {
+    // TODO: Log a warning that string was truncated
+  }
+  SD_TC::instance()->appendData(header_buffer, buffer);
   nextWriteTime = msNow / 1000 * 1000 + 1000;  // round up to next second
   COUT(buffer);
 }
@@ -286,14 +293,12 @@ void TankController::writeDataToSerial() {
   uint32_t msNow = millis();
   if (nextWriteTime <= msNow) {
     DateTime_TC dtNow = DateTime_TC::now();
-    char buffer[30];
-    snprintf_P(buffer, sizeof(buffer), (PGM_P)F("%02d:%02d pH="), (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute());
-    dtostrf((float)PHProbe::instance()->getPh(), 5, 3, buffer + strnlen(buffer, sizeof(buffer)));
-    strcpy_P(buffer + strnlen(buffer, sizeof(buffer)), (PGM_P)F(" temp="));
-    dtostrf((float)TempProbe_TC::instance()->getRunningAverage(), 5, 2, buffer + strnlen(buffer, sizeof(buffer)));
-    serial(buffer);
+    char buffer1[12];
+    char buffer2[11];
+    dtostrf((float)PHProbe::instance()->getPh(), 5, 3, buffer1);
+    dtostrf((float)TempProbe_TC::instance()->getRunningAverage(), 5, 2, buffer2);
+    serial(F("%02d:%02d pH=%s temp=%s"), (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(), buffer1, buffer2);
     nextWriteTime = msNow / 60000 * 60000 + 60000;  // round up to next minute
-    COUT(buffer);
   }
 }
 #if defined(__CYGWIN__)

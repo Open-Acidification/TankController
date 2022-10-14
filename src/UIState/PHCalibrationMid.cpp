@@ -12,7 +12,7 @@
 void PHCalibrationMid::setValue(float value) {
   PHProbe::instance()->setMidpointCalibration(value);
   char buffer[17];
-  strncpy_P(buffer, (PGM_P)F("New Mid = "), sizeof(buffer));
+  strlcpy_P(buffer, (PGM_P)F("New Mid = "), sizeof(buffer));
   dtostrf(value, 5, 3, buffer + strnlen(buffer, sizeof(buffer)));  // "New Mid = 12.345"
   LiquidCrystal_TC::instance()->writeLine(buffer, 1);
   this->setNextState((UIState*)new Wait(tc, 3000, new PHCalibrationLow(tc)));

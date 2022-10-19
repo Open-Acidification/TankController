@@ -26,4 +26,48 @@ unittest(stringCopy) {
   assertEqual('\0', dest4[13]);
 }
 
+unittest(floatToString) {
+  double num = 1000.5;
+  char buffer[7];
+  int error_code;
+  error_code = floattostrf(num, 6, 1, buffer);
+  assertEqual(0, error_code);
+  assertEqual("1000.5", buffer);
+
+  num = 10.4;
+  error_code = floattostrf(num, 6, 1, buffer);
+  assertEqual(0, error_code);
+  assertEqual("  10.4", buffer);
+
+  num = 10.444;
+  error_code = floattostrf(num, 6, 1, buffer);
+  assertEqual(0, error_code);
+  assertEqual("  10.4", buffer);
+
+  num = -1.444;
+  error_code = floattostrf(num, 6, 2, buffer);
+  assertEqual(0, error_code);
+  assertEqual(" -1.44", buffer);
+
+  num = -10.444;
+  error_code = floattostrf(num, 6, 2, buffer);
+  assertEqual(0, error_code);
+  assertEqual("-10.44", buffer);
+
+  num = -1000.444;
+  error_code = floattostrf(num, 6, 2, buffer);
+  assertEqual(1, error_code);
+  assertEqual("-1000.", buffer);
+
+  num = 1.3;
+  error_code = floattostrf(num, 6, 5, buffer);
+  assertEqual(1, error_code);
+  assertEqual("1.3000", buffer);
+
+  num = 10000000000000000;
+  error_code = floattostrf(num, 6, 0, buffer);
+  assertEqual(2, error_code);
+  assertEqual("100000", buffer);
+}
+
 unittest_main()

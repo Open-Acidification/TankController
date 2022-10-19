@@ -25,3 +25,4 @@ extern size_t strnlen(const char *s, size_t n);
 
 int strscpy(char *destination, const char *source, unsigned long sizeOfDestination);
 int strscpy_P(char *destination, const char *source, unsigned long sizeOfDestination);
+int floattostrf(double float_value, int min_width, int num_digits_after_decimal, char *buffer);

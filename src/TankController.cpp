@@ -270,7 +270,7 @@ void TankController::writeDataToSD() {
   static const char header[] PROGMEM = "time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd";
   static const char format[] PROGMEM = "%02i/%02i/%4i %02i:%02i:%02i, %3i, %s, %s, %s, %s, %4lu, %s, %s, %s";
   char header_buffer[sizeof(header)];
-  strlcpy_P(header_buffer, (PGM_P)header, sizeof(header_buffer));
+  strscpy_P(header_buffer, (PGM_P)header, sizeof(header_buffer));
   char buffer[128];
   int length;
   length = snprintf_P(buffer, sizeof(buffer), (PGM_P)format, (uint16_t)dtNow.month(), (uint16_t)dtNow.day(),

@@ -4,6 +4,7 @@
 #include <stdlib.h>
 
 #include "Devices/Serial_TC.h"
+#include "TC_util.h"
 
 //  class instance variables
 /**
@@ -42,7 +43,7 @@ void PHProbe::clearCalibration() {
 void PHProbe::sendSlopeRequest() {
   // Sending request for Calibration Slope
   Serial1.print(F("SLOPE,?\r"));
-  strlcpy_P(slopeResponse, (PGM_P)F("       Slope requested!"), sizeof(slopeResponse));  // Flawfinder: ignore
+  strscpy_P(slopeResponse, (PGM_P)F("       Slope requested!"), sizeof(slopeResponse));  // Flawfinder: ignore
 }
 
 void PHProbe::getSlope(char *buffer, int size) {

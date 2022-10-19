@@ -34,7 +34,7 @@ EthernetServer_TC::EthernetServer_TC(uint16_t port) : EthernetServer(port) {
   static const char boundary_P[] PROGMEM = "boundary";
   // TODO: A long string of apparently random characters should be used as the boundary instead,
   // because they would be less likely to be part of the message
-  strlcpy_P(boundary, (PGM_P)boundary_P, sizeof(boundary));
+  strscpy_P(boundary, (PGM_P)boundary_P, sizeof(boundary));
 }
 
 // echo() - Proof of concept for the EthernetServer
@@ -247,7 +247,7 @@ void EthernetServer_TC::testReadSpeed() {
   wdt_disable();
   static const char path[] PROGMEM = "tstRdSpd.txt";
   char temp[sizeof(path)];
-  strlcpy_P(temp, (PGM_P)path, sizeof(temp));
+  strscpy_P(temp, (PGM_P)path, sizeof(temp));
   // Create the file and write garbage
   file = SD_TC::instance()->open(temp, O_RDWR | O_CREAT | O_AT_END);
   memset(buffer, ' ', sizeof(buffer));
@@ -416,7 +416,7 @@ void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
       "Content-Language: en-US\r\n"
       "Access-Control-Allow-Origin: *\r\n";
   char buffer[sizeof(response)];
-  strlcpy_P(buffer, (PGM_P)response, sizeof(buffer));
+  strscpy_P(buffer, (PGM_P)response, sizeof(buffer));
   client.write(buffer);
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Content-Length: %lu\r\n"), (unsigned long)size);
   client.write(buffer);
@@ -463,37 +463,37 @@ void EthernetServer_TC::sendResponse(int code) {
   char buffer[sizeof(response_303)];
   switch (code) {
     case HTTP_REDIRECT:
-      if (strlcpy_P(buffer, (PGM_P)response_303, sizeof(buffer)) > sizeof(buffer)) {
+      if (strscpy_P(buffer, (PGM_P)response_303, sizeof(buffer)) > sizeof(buffer)) {
         // TODO: Log a warning that string was truncated
       };
       break;
     case HTTP_BAD_REQUEST:
-      if (strlcpy_P(buffer, (PGM_P)response_400, sizeof(buffer)) > sizeof(buffer)) {
+      if (strscpy_P(buffer, (PGM_P)response_400, sizeof(buffer)) > sizeof(buffer)) {
         // TODO: Log a warning that string was truncated
       };
       break;
     case HTTP_NOT_FOUND:
-      if (strlcpy_P(buffer, (PGM_P)response_404, sizeof(buffer)) > sizeof(buffer)) {
+      if (strscpy_P(buffer, (PGM_P)response_404, sizeof(buffer)) > sizeof(buffer)) {
         // TODO: Log a warning that string was truncated
       };
       break;
     case HTTP_NOT_PERMITTED:
-      if (strlcpy_P(buffer, (PGM_P)response_405, sizeof(buffer)) > sizeof(buffer)) {
+      if (strscpy_P(buffer, (PGM_P)response_405, sizeof(buffer)) > sizeof(buffer)) {
         // TODO: Log a warning that string was truncated
       };
       break;
     case HTTP_TIMEOUT:
-      if (strlcpy_P(buffer, (PGM_P)response_408, sizeof(buffer)) > sizeof(buffer)) {
+      if (strscpy_P(buffer, (PGM_P)response_408, sizeof(buffer)) > sizeof(buffer)) {
         // TODO: Log a warning that string was truncated
       };
       break;
     case HTTP_NOT_IMPLEMENTED:
-      if (strlcpy_P(buffer, (PGM_P)response_501, sizeof(buffer)) > sizeof(buffer)) {
+      if (strscpy_P(buffer, (PGM_P)response_501, sizeof(buffer)) > sizeof(buffer)) {
         // TODO: Log a warning that string was truncated
       };
       break;
     default:
-      if (strlcpy_P(buffer, (PGM_P)response_500, sizeof(buffer)) > sizeof(buffer)) {
+      if (strscpy_P(buffer, (PGM_P)response_500, sizeof(buffer)) > sizeof(buffer)) {
         // TODO: Log a warning that string was truncated
       };
   };

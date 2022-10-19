@@ -24,3 +24,4 @@ extern size_t strnlen(const char *s, size_t n);
 #endif
 
 int strscpy(char *destination, const char *source, unsigned long sizeOfDestination);
+int strscpy_P(char *destination, const char *source, unsigned long sizeOfDestination);

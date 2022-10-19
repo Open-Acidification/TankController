@@ -12,10 +12,10 @@ unittest(stringCopy) {
 
   assertEqual(1, strscpy(dest1, source, sizeof(dest1)));
   assertEqual("stringte", dest1);
-  assertEqual('\0', dest1[9]);
+  assertEqual('\0', dest1[8]);
   assertEqual(1, strscpy(dest2, source, sizeof(dest2)));
   assertEqual("stringtes", dest2);
-  assertEqual('\0', dest2[10]);
+  assertEqual('\0', dest2[9]);
   assertEqual(1, strscpy(dest3, source, 9));
   assertEqual("stringte", dest3);
   assertEqual('\0', dest3[8]);

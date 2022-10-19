@@ -39,13 +39,13 @@ int floattostrf(double float_value, int min_width, int num_digits_after_decimal,
   if (strnlen(large_buffer, sizeof(large_buffer)) < buffer_size) {
     strscpy(buffer, large_buffer, buffer_size);
     return 0;
-  } else if (strnlen(large_buffer, sizeof(large_buffer)) < sizeof(large_buffer)) {
+  } else if (strnlen(large_buffer, sizeof(large_buffer)) < sizeof(large_buffer) - 1) {
     strscpy(buffer, large_buffer, buffer_size);
     // TODO: Log a WARNING that string large_buffer was truncated to buffer
     return 1;
   } else {
     strscpy(buffer, large_buffer, buffer_size);
-    // TODO: Log a WARNING that buffer overflow may have occurred for number large_buffer
+    // TODO: Log a WARNING that buffer overflow might have occurred for number large_buffer
     return 2;
   }
 }

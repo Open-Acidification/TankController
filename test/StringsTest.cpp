@@ -67,7 +67,7 @@ unittest(floatToString) {
   assertEqual(1, error_code);
   assertEqual("1.3000", buffer);
 
-  num = 100000000000000.0;
+  num = 10000000000000.0;
   error_code = floattostrf(num, 6, 1, buffer, sizeof(buffer));
   assertEqual(2, error_code);
   assertEqual("100000", buffer);

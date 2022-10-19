@@ -6,6 +6,7 @@
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/TempProbe_TC.h"
+#include "TC_util.h"
 #include "TemperatureCalibration.h"
 
 void SeeTempCalOffset::start() {

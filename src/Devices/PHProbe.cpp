@@ -49,7 +49,7 @@ void PHProbe::sendSlopeRequest() {
 void PHProbe::getSlope(char *buffer, int size) {
   // for example "?SLOPE,99.7,100.3, -0.89"
   if (strnlen(slopeResponse, sizeof(slopeResponse)) > 10) {  // Flawfinder: ignore
-    strncpy(buffer, slopeResponse + 7, size);                // Flawfinder: ignore
+    strscpy(buffer, slopeResponse + 7, size);                // Flawfinder: ignore
   } else {
     buffer[0] = '\0';
   }
@@ -74,7 +74,7 @@ void PHProbe::serialEvent1() {
         serial(F("PHProbe serialEvent1: \"%s\""), string.c_str());
         if (string.length() > 7 && string.substring(0, 7) == "?SLOPE,") {
           // for example "?SLOPE,16.1,100.0"
-          strncpy(slopeResponse, string.c_str(), sizeof(slopeResponse));  // Flawfinder: ignore
+          strscpy(slopeResponse, string.c_str(), sizeof(slopeResponse));  // Flawfinder: ignore
         }
       }
     }

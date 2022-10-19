@@ -110,7 +110,7 @@ const char *lcd(uint16_t index) {
       line.at(i) = '?';
     }
   }
-  strncpy(lcdLine, line.c_str(), size);
+  strscpy(lcdLine, line.c_str(), size);
   assert(lcdLine[size] == 0);
   return lcdLine;
 }

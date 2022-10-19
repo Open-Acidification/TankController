@@ -30,19 +30,21 @@ int strscpy_P(char *destination, const char *source, unsigned long sizeOfDestina
   }
 }
 
-// Write the float to the string buffer, testing for overflow
-int floattostrf(double float_value, int min_width, int num_digits_after_decimal, char *buffer) {
-  char large_buffer[sizeof(buffer) + 10];
+// Write the float to the string buffer, testing for overflow.
+// Example: floattostrf(number, 6, 2, buffer, sizeof(buffer));
+int floattostrf(double float_value, int min_width, int num_digits_after_decimal, char *buffer,
+                unsigned long buffer_size) {
+  char large_buffer[buffer_size + 10];
   dtostrf(float_value, min_width, num_digits_after_decimal, large_buffer);
-  if (strnlen(large_buffer, sizeof(large_buffer)) < sizeof(buffer)) {
-    strscpy(buffer, large_buffer, sizeof(buffer));
+  if (strnlen(large_buffer, sizeof(large_buffer)) < buffer_size) {
+    strscpy(buffer, large_buffer, buffer_size);
     return 0;
   } else if (strnlen(large_buffer, sizeof(large_buffer)) < sizeof(large_buffer)) {
-    strscpy(buffer, large_buffer, sizeof(buffer));
+    strscpy(buffer, large_buffer, buffer_size);
     // TODO: Log a WARNING that string large_buffer was truncated to buffer
     return 1;
   } else {
-    strscpy(buffer, large_buffer, sizeof(buffer));
+    strscpy(buffer, large_buffer, buffer_size);
     // TODO: Log a WARNING that buffer overflow may have occurred for number large_buffer
     return 2;
   }

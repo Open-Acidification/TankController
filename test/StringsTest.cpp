@@ -12,10 +12,13 @@ unittest(stringCopy) {
 
   assertEqual(1, strscpy(dest1, source, sizeof(dest1)));
   assertEqual("stringte", dest1);
+  assertEqual('\0', dest1[9]);
   assertEqual(1, strscpy(dest2, source, sizeof(dest2)));
   assertEqual("stringtes", dest2);
+  assertEqual('\0', dest2[10]);
   assertEqual(1, strscpy(dest3, source, 9));
   assertEqual("stringte", dest3);
+  assertEqual('\0', dest3[8]);
   assertEqual('9', dest3[9]);
   assertEqual('a', dest3[10]);
   assertEqual('\0', dest3[13]);
@@ -30,42 +33,42 @@ unittest(floatToString) {
   double num = 1000.5;
   char buffer[7];
   int error_code;
-  error_code = floattostrf(num, 6, 1, buffer);
+  error_code = floattostrf(num, 6, 1, buffer, sizeof(buffer));
   assertEqual(0, error_code);
   assertEqual("1000.5", buffer);
 
   num = 10.4;
-  error_code = floattostrf(num, 6, 1, buffer);
+  error_code = floattostrf(num, 6, 1, buffer, sizeof(buffer));
   assertEqual(0, error_code);
   assertEqual("  10.4", buffer);
 
   num = 10.444;
-  error_code = floattostrf(num, 6, 1, buffer);
+  error_code = floattostrf(num, 6, 1, buffer, sizeof(buffer));
   assertEqual(0, error_code);
   assertEqual("  10.4", buffer);
 
   num = -1.444;
-  error_code = floattostrf(num, 6, 2, buffer);
+  error_code = floattostrf(num, 6, 2, buffer, sizeof(buffer));
   assertEqual(0, error_code);
   assertEqual(" -1.44", buffer);
 
   num = -10.444;
-  error_code = floattostrf(num, 6, 2, buffer);
+  error_code = floattostrf(num, 6, 2, buffer, sizeof(buffer));
   assertEqual(0, error_code);
   assertEqual("-10.44", buffer);
 
   num = -1000.444;
-  error_code = floattostrf(num, 6, 2, buffer);
+  error_code = floattostrf(num, 6, 2, buffer, sizeof(buffer));
   assertEqual(1, error_code);
   assertEqual("-1000.", buffer);
 
   num = 1.3;
-  error_code = floattostrf(num, 6, 5, buffer);
+  error_code = floattostrf(num, 6, 5, buffer, sizeof(buffer));
   assertEqual(1, error_code);
   assertEqual("1.3000", buffer);
 
-  num = 10000000000000000;
-  error_code = floattostrf(num, 6, 0, buffer);
+  num = 100000000000000.0;
+  error_code = floattostrf(num, 6, 1, buffer, sizeof(buffer));
   assertEqual(2, error_code);
   assertEqual("100000", buffer);
 }

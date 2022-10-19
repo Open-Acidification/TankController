@@ -6,9 +6,9 @@
 unittest(stringCopy) {
   static const char source[11] = "stringtest";
   char dest1[9];
-  char* dest2 = "012345678";
-  char* dest3 = "0123456789abc";
-  char* dest4 = "0123456789abc";
+  char dest2[] = "012345678";
+  char dest3[] = "0123456789abc";
+  char dest4[] = "0123456789abc";
 
   assertEqual(1, strscpy(dest1, source, sizeof(dest1)));
   assertEqual("stringte", dest1);

@@ -2,7 +2,7 @@
 #include <Arduino.h>
 
 #if defined(__CYGWIN__)
-extern size_t strnlen(const char* s, size_t n);
+extern size_t strnlen(const char *s, size_t n);
 #endif
 
 #ifdef MOCK_PINS_COUNT
@@ -22,3 +22,5 @@ extern size_t strnlen(const char* s, size_t n);
 #else
 #define COUT(x) (void)0
 #endif
+
+int strscpy(char *destination, const char *source, unsigned long sizeOfDestination);

@@ -79,7 +79,7 @@ void PID_TC::logToSerial() {
   dtostrf(pPID->GetKi(), 6, 1, buffer2);
   dtostrf(pPID->GetKd(), 6, 1, buffer3);
   dtostrf(static_cast<float>(output) / 1000, 4, 1, buffer4);
-  serial(F("Kp: %s Ki: %s Kd: %s\r\nPID output in seconds: %s"), buffer1, buffer2, buffer3, buffer4);
+  serial(F("Kp: %s Ki: %s Kd: %s\r\nPID output in seconds:%s"), buffer1, buffer2, buffer3, buffer4);
 }
 
 void PID_TC::setKd(float Kd) {

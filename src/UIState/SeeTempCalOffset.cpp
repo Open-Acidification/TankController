@@ -13,6 +13,6 @@ void SeeTempCalOffset::start() {
   LiquidCrystal_TC::instance()->writeLine(prompt(), 0);
   // Second line: the offset (5 digits of precision)
   char buffer[17];
-  dtostrf(TempProbe_TC::instance()->getCorrection(), 7, 5, buffer);
+  floattostrf(TempProbe_TC::instance()->getCorrection(), 7, 5, buffer, sizeof(buffer));
   LiquidCrystal_TC::instance()->writeLine(buffer, 1);
 }

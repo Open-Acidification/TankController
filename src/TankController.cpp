@@ -251,8 +251,8 @@ void TankController::writeDataToSD() {
     snprintf_P(currentTemp, sizeof(currentTemp), (PGM_P)F("C"));
     snprintf_P(currentPh, sizeof(currentPh), (PGM_P)F("C"));
   } else {
-    dtostrf((float)TempProbe_TC::instance()->getRunningAverage(), 4, 2, currentTemp);
-    dtostrf((float)PHProbe::instance()->getPh(), 5, 3, currentPh);
+    floattostrf((float)TempProbe_TC::instance()->getRunningAverage(), 4, 2, currentTemp, sizeof(currentTemp));
+    floattostrf((float)PHProbe::instance()->getPh(), 5, 3, currentPh, sizeof(currentPh));
   }
   DateTime_TC dtNow = DateTime_TC::now();
   PID_TC *pPID = PID_TC::instance();
@@ -262,11 +262,11 @@ void TankController::writeDataToSD() {
   char kp[12];
   char ki[12];
   char kd[12];
-  dtostrf(TemperatureControl::instance()->getTargetTemperature(), 4, 2, targetTemp);
-  dtostrf(PHControl::instance()->getTargetPh(), 5, 3, targetPh);
-  dtostrf(pPID->getKp(), 8, 1, kp);
-  dtostrf(pPID->getKi(), 8, 1, ki);
-  dtostrf(pPID->getKd(), 8, 1, kd);
+  floattostrf(TemperatureControl::instance()->getTargetTemperature(), 4, 2, targetTemp, sizeof(targetTemp));
+  floattostrf(PHControl::instance()->getTargetPh(), 5, 3, targetPh, sizeof(targetPh));
+  floattostrf(pPID->getKp(), 8, 1, kp, sizeof(kp));
+  floattostrf(pPID->getKi(), 8, 1, ki, sizeof(ki));
+  floattostrf(pPID->getKd(), 8, 1, kd, sizeof(kd));
   static const char header[] PROGMEM = "time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd";
   static const char format[] PROGMEM = "%02i/%02i/%4i %02i:%02i:%02i, %3i, %s, %s, %s, %s, %4lu, %s, %s, %s";
   char header_buffer[sizeof(header)];
@@ -295,8 +295,8 @@ void TankController::writeDataToSerial() {
     DateTime_TC dtNow = DateTime_TC::now();
     char buffer1[12];
     char buffer2[11];
-    dtostrf((float)PHProbe::instance()->getPh(), 5, 3, buffer1);
-    dtostrf((float)TempProbe_TC::instance()->getRunningAverage(), 5, 2, buffer2);
+    floattostrf((float)PHProbe::instance()->getPh(), 5, 3, buffer1, sizeof(buffer1));
+    floattostrf((float)TempProbe_TC::instance()->getRunningAverage(), 5, 2, buffer2, sizeof(buffer2));
     serial(F("%02d:%02d pH=%s temp=%s"), (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(), buffer1, buffer2);
     nextWriteTime = msNow / 60000 * 60000 + 60000;  // round up to next minute
   }

@@ -88,7 +88,7 @@ TemperatureControl::TemperatureControl() {
   char buffer1[8];
   char buffer2[10];
   strscpy_P(buffer1, (this->isHeater() ? (PGM_P)F("Heater") : (PGM_P)F("Chiller")), sizeof(buffer1));
-  dtostrf(targetTemperature, 5, 2, buffer2);
+  floattostrf(targetTemperature, 5, 2, buffer2, sizeof(buffer2));
   serial(F("%s starts with solenoid off with target temperature of %s C"), buffer1, buffer2);
 }
 
@@ -97,8 +97,8 @@ void TemperatureControl::setRampDuration(float newTempRampDuration) {
     float currentRampTime = rampTimeEnd - rampTimeStart;
     char buffer1[10];
     char buffer2[10];
-    dtostrf(currentRampTime, 5, 3, buffer1);
-    dtostrf(newTempRampDuration, 5, 3, buffer2);
+    floattostrf(currentRampTime, 5, 3, buffer1, sizeof(buffer1));
+    floattostrf(newTempRampDuration, 5, 3, buffer2, sizeof(buffer2));
     serial(F("change ramp time from %s to %s"), buffer1, buffer2);
     rampTimeStart = DateTime_TC::now().secondstime();
     rampTimeEnd = rampTimeStart + (uint32_t)(newTempRampDuration * 3600);
@@ -146,8 +146,8 @@ void TemperatureControl::setTargetTemperature(float newTemperature) {
   if (targetTemperature != newTemperature) {
     char buffer1[10];
     char buffer2[10];
-    dtostrf(targetTemperature, 5, 2, buffer1);
-    dtostrf(newTemperature, 5, 2, buffer2);
+    floattostrf(targetTemperature, 5, 2, buffer1, sizeof(buffer1));
+    floattostrf(newTemperature, 5, 2, buffer2, sizeof(buffer2));
     serial(F("change target temperature from %s to %s"), buffer1, buffer2);
     EEPROM_TC::instance()->setTemp(newTemperature);
     targetTemperature = newTemperature;

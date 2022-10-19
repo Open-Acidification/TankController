@@ -71,7 +71,7 @@ PHControl::PHControl() {
       break;
   }
   char buffer[10];
-  dtostrf(targetPh, 5, 3, buffer);
+  floattostrf(targetPh, 5, 3, buffer, sizeof(buffer));
   serial(F("PHControl with target pH = %s"), buffer);
 }
 
@@ -79,8 +79,8 @@ void PHControl::setTargetPh(float newPh) {
   if (targetPh != newPh) {
     char buffer1[10];
     char buffer2[10];
-    dtostrf(targetPh, 5, 3, buffer1);
-    dtostrf(newPh, 5, 3, buffer2);
+    floattostrf(targetPh, 5, 3, buffer1, sizeof(buffer1));
+    floattostrf(newPh, 5, 3, buffer2, sizeof(buffer2));
     serial(F("change target pH from %s to %s"), buffer1, buffer2);
     targetPh = newPh;
     EEPROM_TC::instance()->setPh(newPh);
@@ -92,8 +92,8 @@ void PHControl::setRampDuration(float newPhRampDuration) {
     float currentRampTime = rampTimeEnd - rampTimeStart;
     char buffer1[10];
     char buffer2[10];
-    dtostrf(currentRampTime, 5, 3, buffer1);
-    dtostrf(newPhRampDuration, 5, 3, buffer2);
+    floattostrf(currentRampTime, 5, 3, buffer1, sizeof(buffer1));
+    floattostrf(newPhRampDuration, 5, 3, buffer2, sizeof(buffer2));
     serial(F("change ramp time from %s to %s"), buffer1, buffer2);
     rampTimeStart = DateTime_TC::now().secondstime();
     rampTimeEnd = rampTimeStart + (uint32_t)(newPhRampDuration * 3600);

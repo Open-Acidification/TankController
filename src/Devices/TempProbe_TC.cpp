@@ -44,7 +44,7 @@ TempProbe_TC::TempProbe_TC() {
     EEPROM_TC::instance()->setCorrectedTemp(correction);
   }
   char buffer[10];
-  dtostrf(correction, 5, 2, buffer);
+  floattostrf(correction, 5, 2, buffer, sizeof(buffer));
   serial(F("Temperature probe with correction of %s"), buffer);
 }
 

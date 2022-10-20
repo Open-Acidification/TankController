@@ -243,12 +243,12 @@ void MainMenu::idle() {
   output[1] = 'H';
   output[2] = millis() / 1000 % 2 ? '=' : ' ';
   floattostrf(PHProbe::instance()->getPh(), 5, 3, buffer, sizeof(buffer));
-  memcpy(output + 3, buffer, 5);
+  memcpy(output + 3, buffer, sizeof(buffer));
   output[8] = ' ';
   output[9] = phControl->isOn() ? 'B' : ' ';
   output[10] = ' ';
   floattostrf(PHControl::instance()->getTargetPh(), 5, 3, buffer, sizeof(buffer));
-  memcpy(output + 11, buffer, 5);
+  memcpy(output + 11, buffer, sizeof(buffer));
   LiquidCrystal_TC::instance()->writeLine(output, 0);
   TemperatureControl *tempControl = TemperatureControl::instance();
   TempProbe_TC *tempProbe = TempProbe_TC::instance();
@@ -265,12 +265,12 @@ void MainMenu::idle() {
   output[0] = 'T';
   output[1] = millis() / 1000 % 2 ? '=' : ' ';
   floattostrf(temp, 5, 2, buffer, sizeof(buffer));
-  memcpy(output + 2, buffer, 5);
+  memcpy(output + 2, buffer, sizeof(buffer));
   output[7] = ' ';
   output[8] = status;
   output[9] = ' ';
   floattostrf(tempControl->getTargetTemperature(), 5, 2, buffer, sizeof(buffer));
-  memcpy(output + 10, buffer, 5);
+  memcpy(output + 10, buffer, sizeof(buffer));
   LiquidCrystal_TC::instance()->writeLine(output, 1);
 }
 

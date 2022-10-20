@@ -62,7 +62,7 @@ void NumCollectorState::printValue() {
   // The Arduino does not support variable widths, so we construct the format string at runtime!
   char buffer[8];
   floattostrf(getCurrentValue(), 7, getCurrentValuePrecision(), buffer, sizeof(buffer));
-  memcpy(strValue, buffer, 7);
+  memcpy(strValue, buffer, sizeof(buffer));
   snprintf_P(strValue + 7, 3, (PGM_P)F("->"));
 
   if (!hasDecimal) {
@@ -77,7 +77,7 @@ void NumCollectorState::printValue() {
     // show user entry with appropriate precision (based on digits user has entered)
     uint16_t precision = log10(factor / 10);
     floattostrf(value, 7, precision, buffer, sizeof(buffer));
-    memcpy(strValue + 9, buffer, 7);
+    memcpy(strValue + 9, buffer, sizeof(buffer));
   }
   LiquidCrystal_TC::instance()->writeLine(strValue, 1);
 }

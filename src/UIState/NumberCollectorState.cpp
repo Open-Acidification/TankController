@@ -78,6 +78,7 @@ void NumCollectorState::printValue() {
     uint16_t precision = log10(factor / 10);
     floattostrf(value, 7, precision, buffer, sizeof(buffer));
     memcpy(strValue + 9, buffer, sizeof(buffer));
+    // TODO: Is there a test of this case?
   }
   LiquidCrystal_TC::instance()->writeLine(strValue, 1);
 }

@@ -77,7 +77,7 @@ void NumCollectorState::printValue() {
     // show user entry with appropriate precision (based on digits user has entered)
     uint16_t precision = log10(factor / 10);
     floattostrf(value, 7, precision, buffer, sizeof(buffer));
-    memcpy(strValue, buffer, 7);
+    memcpy(strValue + 9, buffer, 7);
   }
   LiquidCrystal_TC::instance()->writeLine(strValue, 1);
 }

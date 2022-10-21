@@ -93,12 +93,9 @@ unittest(floatToString) {
   assertEqual(1, error_code);
   assertEqual("-1000.", buffer);
   serialOutput = state->serialPort[0].dataOut;
-  int16_t i = serialOutput.indexOf('\n');
   int16_t j = serialOutput.indexOf('\r');
-  int16_t k = serialOutput.indexOf('\0');
-  assertEqual("WARNING! String \"-1000.44\" was truncated to \"-1000.\"", serialOutput.substring(0, i).c_str());
+  assertEqual("WARNING! String \"-1000.44\" was truncated to \"-1000.\"\r\n", serialOutput.c_str());
   assertEqual("WARNING! String \"-1000.44\" was truncated to \"-1000.\"", serialOutput.substring(0, j).c_str());
-  assertEqual("WARNING! String \"-1000.44\" was truncated to \"-1000.\"", serialOutput.substring(0, k).c_str());
 
   // String contents(data), line;
   // int16_t i = contents.indexOf('\n');
@@ -111,7 +108,7 @@ unittest(floatToString) {
   assertEqual(1, error_code);
   assertEqual("1.3000", buffer);
   serialOutput = state->serialPort[0].dataOut;
-  assertEqual("WARNING! String \"1.30000\" was truncated to \"1.3000\"", serialOutput.c_str());
+  assertEqual("WARNING! String \"1.30000\" was truncated to \"1.3000\"\r\n", serialOutput.c_str());
 
   state->serialPort[0].dataOut = "";
   num = 10000000000000.0;
@@ -119,7 +116,7 @@ unittest(floatToString) {
   assertEqual(2, error_code);
   assertEqual("100000", buffer);
   serialOutput = state->serialPort[0].dataOut;
-  assertEqual("WARNING! Overflow may have occurred before truncating to \"100000\"", serialOutput.c_str());
+  assertEqual("WARNING! Overflow may have occurred before truncating to \"100000\"\r\n", serialOutput.c_str());
 }
 
 unittest_main()

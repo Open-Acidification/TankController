@@ -2,6 +2,8 @@
 
 #include <string.h>
 
+#include "Devices/Serial_TC.h"
+
 // Example: strscpy(buffer, source, sizeof(buffer));
 int strscpy(char *destination, const char *source, unsigned long sizeOfDestination) {
   unsigned long sourceLength = strnlen(source, sizeOfDestination);
@@ -41,10 +43,12 @@ int floattostrf(double float_value, int min_width, int num_digits_after_decimal,
     return 0;
   } else if (strnlen(large_buffer, sizeof(large_buffer)) < sizeof(large_buffer) - 1) {
     strscpy(buffer, large_buffer, buffer_size);
+    serial(F("WARNING! String \"%s\" was truncated to \"%s\""), large_buffer, buffer);
     // TODO: Log a WARNING that string large_buffer was truncated to buffer
     return 1;
   } else {
     strscpy(buffer, large_buffer, buffer_size);
+    serial(F("WARNING! Overflow may have occurred before truncating to \"%s\""), buffer);
     // TODO: Log a WARNING that buffer overflow might have occurred for number large_buffer
     return 2;
   }

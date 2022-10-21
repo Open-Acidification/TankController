@@ -110,7 +110,7 @@ unittest(floatToString) {
   assertEqual("1.3000", buffer);
   serialOutput = state->serialPort[0].dataOut;
   assertEqual("WARNING! String \"1.30000\" was truncated to \"1.3000\"\r\n", serialOutput.c_str());
-  COUT << serialOutput.c_str();
+  // COUT << serialOutput.c_str();
 
   state->serialPort[0].dataOut = "";
   num = 10000000000000.0;
@@ -119,7 +119,7 @@ unittest(floatToString) {
   assertEqual("100000", buffer);
   serialOutput = state->serialPort[0].dataOut;
   assertEqual("WARNING! Overflow may have occurred before truncating to \"100000\"\r\n", serialOutput.c_str());
-  COUT << serialOutput.c_str();
+  // COUT << serialOutput.c_str();
 }
 
 unittest_main()

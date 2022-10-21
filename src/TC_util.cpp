@@ -8,26 +8,31 @@
 int strscpy(char *destination, const char *source, unsigned long sizeOfDestination) {
   unsigned long sourceLength = strnlen(source, sizeOfDestination);
   if (sourceLength < sizeOfDestination) {
+    // Put a null terminator in the final byte
     *((char *)memcpy(destination, source, sourceLength) + sourceLength) = '\0';
     return 0;
   } else {
-    // TODO: Log a WARNING that a string was truncated
     // Put a null terminator in the final byte
     *((char *)memcpy(destination, source, sizeOfDestination - 1) + sizeOfDestination - 1) = '\0';
+    serial(F("WARNING! String \"%s\" was truncated to \"%s\""), source, destination);
+    // TODO: Log a WARNING that a string was truncated
     return 1;
   }
 }
 
+// In this function, the source is treated as an address in PROGMEM, not RAM
 // Example: strscpy(buffer, source, sizeof(buffer));
 int strscpy_P(char *destination, const char *source, unsigned long sizeOfDestination) {
   unsigned long sourceLength = strnlen(source, sizeOfDestination);
   if (sourceLength < sizeOfDestination) {
+    // Put a null terminator in the final byte
     *((char *)memcpy_P(destination, source, sourceLength) + sourceLength) = '\0';
     return 0;
   } else {
-    // TODO: Log a WARNING that a string was truncated
     // Put a null terminator in the final byte
     *((char *)memcpy_P(destination, source, sizeOfDestination - 1) + sizeOfDestination - 1) = '\0';
+    // TODO: Log a WARNING that a string was truncated
+    serial(F("WARNING! String \"%s\" was truncated to \"%s\""), (PGM_P)source, destination);
     return 1;
   }
 }
@@ -43,12 +48,10 @@ int floattostrf(double float_value, int min_width, int num_digits_after_decimal,
     return 0;
   } else if (strnlen(large_buffer, sizeof(large_buffer)) < sizeof(large_buffer) - 1) {
     strscpy(buffer, large_buffer, buffer_size);
-    serial(F("WARNING! String \"%s\" was truncated to \"%s\""), large_buffer, buffer);
-    // TODO: Log a WARNING that string large_buffer was truncated to buffer
     return 1;
   } else {
+    serial(F("WARNING! Memory overflow may have occurred"), buffer);
     strscpy(buffer, large_buffer, buffer_size);
-    serial(F("WARNING! Overflow may have occurred before truncating to \"%s\""), buffer);
     // TODO: Log a WARNING that buffer overflow might have occurred for number large_buffer
     return 2;
   }

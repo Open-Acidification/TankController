@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
+#include <Serial_TC.h>
 
 #include "TC_util.h"
 
@@ -94,7 +95,7 @@ unittest(floatToString) {
   assertEqual("-10.44", buffer);
 
   // Error because number is too large
-  state->serialPort[0].dataOut = "";
+  state->serialPort[0].dataOut = "";  // the history of data written
   num = -1000.444;
   error_code = floattostrf(num, 6, 2, buffer, sizeof(buffer));
   assertEqual(1, error_code);
@@ -103,7 +104,7 @@ unittest(floatToString) {
   assertEqual("WARNING! String \"-1000.44\" was truncated to \"-1000.\"\r\n", serialOutput.c_str());
 
   // Error because too many decimal places are added
-  state->serialPort[0].dataOut = "";
+  state->serialPort[0].dataOut = "";  // the history of data written
   num = 1.3;
   error_code = floattostrf(num, 6, 5, buffer, sizeof(buffer));
   assertEqual(1, error_code);
@@ -112,7 +113,7 @@ unittest(floatToString) {
   assertEqual("WARNING! String \"1.30000\" was truncated to \"1.3000\"\r\n", serialOutput.c_str());
 
   // Dangerously large number; potential overflow
-  state->serialPort[0].dataOut = "";
+  state->serialPort[0].dataOut = "";  // the history of data written
   num = 10000000000000.0;
   error_code = floattostrf(num, 6, 1, buffer, sizeof(buffer));
   assertEqual(2, error_code);

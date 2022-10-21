@@ -3,6 +3,8 @@
 
 #include "TC_util.h"
 
+GodmodeState* state = GODMODE();
+
 unittest(stringCopy) {
   static const char source[11] = "stringtest";
   char dest1[9];
@@ -56,6 +58,8 @@ unittest(stringCopy_P) {
 }
 
 unittest(floatToString) {
+  String serialOutput;
+
   double num = 1000.5;
   char buffer[7];
   int error_code;
@@ -83,23 +87,29 @@ unittest(floatToString) {
   assertEqual(0, error_code);
   assertEqual("-10.44", buffer);
 
+  state->serialPort[0].dataOut = "";
   num = -1000.444;
   error_code = floattostrf(num, 6, 2, buffer, sizeof(buffer));
   assertEqual(1, error_code);
   assertEqual("-1000.", buffer);
-  assertEqual("WARNING! String \"-1000.44\" was truncated to \"-1000.\"", state->serialPort[0].dataOut);
+  serialOutput = state->serialPort[0].dataOut;
+  assertEqual("WARNING! String \"-1000.44\" was truncated to \"-1000.\"", serialOutput);
 
+  state->serialPort[0].dataOut = "";
   num = 1.3;
   error_code = floattostrf(num, 6, 5, buffer, sizeof(buffer));
   assertEqual(1, error_code);
   assertEqual("1.3000", buffer);
-  assertEqual("WARNING! String \"1.30000\" was truncated to \"1.3000\"", state->serialPort[0].dataOut);
+  serialOutput = state->serialPort[0].dataOut;
+  assertEqual("WARNING! String \"1.30000\" was truncated to \"1.3000\"", serialOutput);
 
+  state->serialPort[0].dataOut = "";
   num = 10000000000000.0;
   error_code = floattostrf(num, 6, 1, buffer, sizeof(buffer));
   assertEqual(2, error_code);
   assertEqual("100000", buffer);
-  assertEqual("WARNING! Overflow may have occurred before truncating to \"100000\"", state->serialPort[0].dataOut);
+  serialOutput = state->serialPort[0].dataOut;
+  assertEqual("WARNING! Overflow may have occurred before truncating to \"100000\"", serialOutput);
 }
 
 unittest_main()

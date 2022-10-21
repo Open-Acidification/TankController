@@ -59,7 +59,9 @@ unittest(stringCopy_P) {
 
 unittest(floatToString) {
   String serialOutput;
+  serial("This line of code initializes SD_TC so it won't pollute future logs.");
 
+  // Float fills the buffer
   double num = 1000.5;
   char buffer[7];
   int error_code;
@@ -67,42 +69,40 @@ unittest(floatToString) {
   assertEqual(0, error_code);
   assertEqual("1000.5", buffer);
 
+  // Padding on the left
   num = 10.4;
   error_code = floattostrf(num, 6, 1, buffer, sizeof(buffer));
   assertEqual(0, error_code);
   assertEqual("  10.4", buffer);
 
+  // Padding on the left, truncation on the right
   num = 10.444;
   error_code = floattostrf(num, 6, 1, buffer, sizeof(buffer));
   assertEqual(0, error_code);
   assertEqual("  10.4", buffer);
 
+  // Padding and truncation with negative number
   num = -1.444;
   error_code = floattostrf(num, 6, 2, buffer, sizeof(buffer));
   assertEqual(0, error_code);
   assertEqual(" -1.44", buffer);
 
+  // Truncation of negative number
   num = -10.444;
   error_code = floattostrf(num, 6, 2, buffer, sizeof(buffer));
   assertEqual(0, error_code);
   assertEqual("-10.44", buffer);
 
+  // Error because number is too large
   state->serialPort[0].dataOut = "";
   num = -1000.444;
   error_code = floattostrf(num, 6, 2, buffer, sizeof(buffer));
   assertEqual(1, error_code);
   assertEqual("-1000.", buffer);
   serialOutput = state->serialPort[0].dataOut;
-  int16_t j = serialOutput.indexOf('\r');
-  // assertEqual("WARNING! String \"-1000.44\" was truncated to \"-1000.\"\r\n", serialOutput.c_str());
-  assertEqual("WARNING! String \"-1000.44\" was truncated to \"-1000.\"", serialOutput.substring(0, j).c_str());
-  // COUT << serialOutput.c_str();
+  assertEqual("WARNING! String \"-1000.44\" was truncated to \"-1000.\"\r\n", serialOutput.c_str());
 
-  // String contents(data), line;
-  // int16_t i = contents.indexOf('\n');
-  // line = contents.substring(0, i);
-  // assertEqual("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd", line.c_str());
-
+  // Error because too many decimal places are added
   state->serialPort[0].dataOut = "";
   num = 1.3;
   error_code = floattostrf(num, 6, 5, buffer, sizeof(buffer));
@@ -110,8 +110,8 @@ unittest(floatToString) {
   assertEqual("1.3000", buffer);
   serialOutput = state->serialPort[0].dataOut;
   assertEqual("WARNING! String \"1.30000\" was truncated to \"1.3000\"\r\n", serialOutput.c_str());
-  // COUT << serialOutput.c_str();
 
+  // Dangerously large number; potential overflow
   state->serialPort[0].dataOut = "";
   num = 10000000000000.0;
   error_code = floattostrf(num, 6, 1, buffer, sizeof(buffer));
@@ -119,7 +119,6 @@ unittest(floatToString) {
   assertEqual("100000", buffer);
   serialOutput = state->serialPort[0].dataOut;
   assertEqual("WARNING! Overflow may have occurred before truncating to \"100000\"\r\n", serialOutput.c_str());
-  // COUT << serialOutput.c_str();
 }
 
 unittest_main()

@@ -93,7 +93,13 @@ unittest(floatToString) {
   assertEqual(1, error_code);
   assertEqual("-1000.", buffer);
   serialOutput = state->serialPort[0].dataOut;
-  assertEqual("WARNING! String \"-1000.44\" was truncated to \"-1000.\"", serialOutput.c_str());
+  int16_t i = serialOutput.indexOf('\n');
+  assertEqual("WARNING! String \"-1000.44\" was truncated to \"-1000.\"", serialOutput.substring(0, i).c_str());
+
+  // String contents(data), line;
+  // int16_t i = contents.indexOf('\n');
+  // line = contents.substring(0, i);
+  // assertEqual("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd", line.c_str());
 
   state->serialPort[0].dataOut = "";
   num = 1.3;

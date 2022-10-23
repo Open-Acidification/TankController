@@ -463,25 +463,25 @@ void EthernetServer_TC::sendResponse(int code) {
   char buffer[sizeof(response_303)];  // Use longest of above responses
   switch (code) {
     case HTTP_REDIRECT:
-      strscpy_P(buffer, (PGM_P)response_303, sizeof(buffer)) > sizeof(buffer);
+      strscpy_P(buffer, (PGM_P)response_303, sizeof(buffer));
       break;
     case HTTP_BAD_REQUEST:
-      strscpy_P(buffer, (PGM_P)response_400, sizeof(buffer)) > sizeof(buffer);
+      strscpy_P(buffer, (PGM_P)response_400, sizeof(buffer));
       break;
     case HTTP_NOT_FOUND:
-      strscpy_P(buffer, (PGM_P)response_404, sizeof(buffer)) > sizeof(buffer);
+      strscpy_P(buffer, (PGM_P)response_404, sizeof(buffer));
       break;
     case HTTP_NOT_PERMITTED:
-      strscpy_P(buffer, (PGM_P)response_405, sizeof(buffer)) > sizeof(buffer);
+      strscpy_P(buffer, (PGM_P)response_405, sizeof(buffer));
       break;
     case HTTP_TIMEOUT:
-      strscpy_P(buffer, (PGM_P)response_408, sizeof(buffer)) > sizeof(buffer);
+      strscpy_P(buffer, (PGM_P)response_408, sizeof(buffer));
       break;
     case HTTP_NOT_IMPLEMENTED:
-      strscpy_P(buffer, (PGM_P)response_501, sizeof(buffer)) > sizeof(buffer);
+      strscpy_P(buffer, (PGM_P)response_501, sizeof(buffer));
       break;
     default:
-      strscpy_P(buffer, (PGM_P)response_500, sizeof(buffer)) > sizeof(buffer);
+      strscpy_P(buffer, (PGM_P)response_500, sizeof(buffer));
   };
   client.write(buffer);
 }

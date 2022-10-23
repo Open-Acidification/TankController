@@ -460,42 +460,28 @@ void EthernetServer_TC::sendResponse(int code) {
   static const char response_501[] PROGMEM =
       "HTTP/1.1 501 Not Implemented\r\n"
       "\r\n";
-  char buffer[sizeof(response_303)];
+  char buffer[sizeof(response_303)];  // Use longest of above responses
   switch (code) {
     case HTTP_REDIRECT:
-      if (strscpy_P(buffer, (PGM_P)response_303, sizeof(buffer)) > sizeof(buffer)) {
-        // TODO: Log a warning that string was truncated
-      };
+      strscpy_P(buffer, (PGM_P)response_303, sizeof(buffer)) > sizeof(buffer);
       break;
     case HTTP_BAD_REQUEST:
-      if (strscpy_P(buffer, (PGM_P)response_400, sizeof(buffer)) > sizeof(buffer)) {
-        // TODO: Log a warning that string was truncated
-      };
+      strscpy_P(buffer, (PGM_P)response_400, sizeof(buffer)) > sizeof(buffer);
       break;
     case HTTP_NOT_FOUND:
-      if (strscpy_P(buffer, (PGM_P)response_404, sizeof(buffer)) > sizeof(buffer)) {
-        // TODO: Log a warning that string was truncated
-      };
+      strscpy_P(buffer, (PGM_P)response_404, sizeof(buffer)) > sizeof(buffer);
       break;
     case HTTP_NOT_PERMITTED:
-      if (strscpy_P(buffer, (PGM_P)response_405, sizeof(buffer)) > sizeof(buffer)) {
-        // TODO: Log a warning that string was truncated
-      };
+      strscpy_P(buffer, (PGM_P)response_405, sizeof(buffer)) > sizeof(buffer);
       break;
     case HTTP_TIMEOUT:
-      if (strscpy_P(buffer, (PGM_P)response_408, sizeof(buffer)) > sizeof(buffer)) {
-        // TODO: Log a warning that string was truncated
-      };
+      strscpy_P(buffer, (PGM_P)response_408, sizeof(buffer)) > sizeof(buffer);
       break;
     case HTTP_NOT_IMPLEMENTED:
-      if (strscpy_P(buffer, (PGM_P)response_501, sizeof(buffer)) > sizeof(buffer)) {
-        // TODO: Log a warning that string was truncated
-      };
+      strscpy_P(buffer, (PGM_P)response_501, sizeof(buffer)) > sizeof(buffer);
       break;
     default:
-      if (strscpy_P(buffer, (PGM_P)response_500, sizeof(buffer)) > sizeof(buffer)) {
-        // TODO: Log a warning that string was truncated
-      };
+      strscpy_P(buffer, (PGM_P)response_500, sizeof(buffer)) > sizeof(buffer);
   };
   client.write(buffer);
 }

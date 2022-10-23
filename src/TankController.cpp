@@ -279,6 +279,7 @@ void TankController::writeDataToSD() {
                       (unsigned long)(millis() / 1000), kp, ki, kd);
   if ((length > sizeof(buffer)) || (length < 0)) {
     // TODO: Log a warning that string was truncated
+    serial(F("WARNING! String was truncated to \"%s\""), buffer);
   }
   SD_TC::instance()->appendData(header_buffer, buffer);
   nextWriteTime = msNow / 1000 * 1000 + 1000;  // round up to next second

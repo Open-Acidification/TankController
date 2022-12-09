@@ -21,7 +21,7 @@ int strscpy(char *destination, const char *source, unsigned long sizeOfDestinati
 }
 
 // In this function, the source is treated as an address in PROGMEM, not RAM
-// Example: strscpy(buffer, source, sizeof(buffer));
+// Example: strscpy_P(buffer, (PGM_P)F("some string here"), sizeof(buffer));
 int strscpy_P(char *destination, const char *source, unsigned long sizeOfDestination) {
   unsigned long sourceLength = strnlen(source, sizeOfDestination);
   if (sourceLength < sizeOfDestination) {

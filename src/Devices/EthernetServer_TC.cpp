@@ -32,7 +32,9 @@ EthernetServer_TC::EthernetServer_TC(uint16_t port) : EthernetServer(port) {
   IPAddress IP = Ethernet_TC::instance()->getIP();
   serial(F("Ethernet Server is listening on %i.%i.%i.%i:80"), IP[0], IP[1], IP[2], IP[3]);
   static const char boundary_P[] PROGMEM = "boundary";
-  strncpy_P(boundary, (PGM_P)boundary_P, sizeof(boundary_P));
+  // TODO: A long string of apparently random characters should be used as the boundary instead,
+  // because they would be less likely to be part of the message
+  strscpy_P(boundary, (PGM_P)boundary_P, sizeof(boundary));
 }
 
 // echo() - Proof of concept for the EthernetServer
@@ -122,7 +124,6 @@ void EthernetServer_TC::apiHandler() {
     // Later API versions may be implemented here
     serial(F("unhandled API version"));
     sendResponse(HTTP_BAD_REQUEST);
-    ;
     state = FINISHED;
   }
 }
@@ -246,7 +247,7 @@ void EthernetServer_TC::testReadSpeed() {
   wdt_disable();
   static const char path[] PROGMEM = "tstRdSpd.txt";
   char temp[sizeof(path)];
-  strncpy_P(temp, (PGM_P)path, sizeof(temp));
+  strscpy_P(temp, (PGM_P)path, sizeof(temp));
   // Create the file and write garbage
   file = SD_TC::instance()->open(temp, O_RDWR | O_CREAT | O_AT_END);
   memset(buffer, ' ', sizeof(buffer));
@@ -317,6 +318,8 @@ bool EthernetServer_TC::fileContinue() {
     int writeSize = client.write(buffer, readSize);
     if (writeSize != readSize) {
       serial(F("read = %d; write = %d"), readSize, writeSize);
+      // TODO: This is an infinite loop (though non-blocking)
+      // Consider: Close file, change state, return true?
     }
     return false;
   } else {
@@ -413,7 +416,7 @@ void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
       "Content-Language: en-US\r\n"
       "Access-Control-Allow-Origin: *\r\n";
   char buffer[sizeof(response)];
-  strncpy_P(buffer, (PGM_P)response, sizeof(buffer));
+  strscpy_P(buffer, (PGM_P)response, sizeof(buffer));
   client.write(buffer);
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Content-Length: %lu\r\n"), (unsigned long)size);
   client.write(buffer);
@@ -457,28 +460,28 @@ void EthernetServer_TC::sendResponse(int code) {
   static const char response_501[] PROGMEM =
       "HTTP/1.1 501 Not Implemented\r\n"
       "\r\n";
-  char buffer[sizeof(response_303)];
+  char buffer[sizeof(response_303)];  // Use longest of above responses
   switch (code) {
     case HTTP_REDIRECT:
-      strncpy_P(buffer, (PGM_P)response_303, sizeof(buffer));
+      strscpy_P(buffer, (PGM_P)response_303, sizeof(buffer));
       break;
     case HTTP_BAD_REQUEST:
-      strncpy_P(buffer, (PGM_P)response_400, sizeof(buffer));
+      strscpy_P(buffer, (PGM_P)response_400, sizeof(buffer));
       break;
     case HTTP_NOT_FOUND:
-      strncpy_P(buffer, (PGM_P)response_404, sizeof(buffer));
+      strscpy_P(buffer, (PGM_P)response_404, sizeof(buffer));
       break;
     case HTTP_NOT_PERMITTED:
-      strncpy_P(buffer, (PGM_P)response_405, sizeof(buffer));
+      strscpy_P(buffer, (PGM_P)response_405, sizeof(buffer));
       break;
     case HTTP_TIMEOUT:
-      strncpy_P(buffer, (PGM_P)response_408, sizeof(buffer));
+      strscpy_P(buffer, (PGM_P)response_408, sizeof(buffer));
       break;
     case HTTP_NOT_IMPLEMENTED:
-      strncpy_P(buffer, (PGM_P)response_501, sizeof(buffer));
+      strscpy_P(buffer, (PGM_P)response_501, sizeof(buffer));
       break;
     default:
-      strncpy_P(buffer, (PGM_P)response_500, sizeof(buffer));
+      strscpy_P(buffer, (PGM_P)response_500, sizeof(buffer));
   };
   client.write(buffer);
 }

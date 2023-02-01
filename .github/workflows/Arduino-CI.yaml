@@ -17,11 +17,13 @@ jobs:
       - name: Run Arduino-CI Tests
         run: |
           g++ -v
+          cd server
           scripts/install_libraries.sh
           scripts/testAndBuild.sh
 
       - name: Ensure no Git changes
         run: |
+          cd server
           git status -s -uno
           cat size.txt
           (exit `git status -s -uno | wc -l`)

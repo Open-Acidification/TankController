@@ -18,7 +18,9 @@ jobs:
         run: |
           g++ -v
           cd server
-          gem update --system --silent
+          gem --version
+          gem update --system --quiet --silent
+          gem --version
           scripts/install_libraries.sh
           scripts/testAndBuild.sh
 

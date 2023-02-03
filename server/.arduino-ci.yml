@@ -19,7 +19,7 @@ unittest:
     - mega2560
   libraries:
     - "Adafruit BusIO"
-    - "Adafruit MAX31865"
+    - "Adafruit MAX31865 library"
     - "Arduino-PID-Library"
     - "Ethernet"
     - "LiquidCrystal"
@@ -32,7 +32,7 @@ compile:
     - mega2560
   libraries:
     - "Adafruit BusIO"
-    - "Adafruit MAX31865"
+    - "Adafruit MAX31865 library"
     - "Arduino-PID-Library"
     - "Ethernet"
     - "LiquidCrystal"

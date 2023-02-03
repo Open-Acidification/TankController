@@ -10,3 +10,4 @@ jobs:
       - uses: arduino/arduino-lint-action@v1
         with:
           library-manager: update
+          path: ./server/

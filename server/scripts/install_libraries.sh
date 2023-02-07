@@ -28,14 +28,14 @@ else
   git clone $SHALLOW_MASTER "$GITHUB/Adafruit_BusIO.git"
 fi
 
-if [ -d "./Adafruit_MAX31865" ]; then
+if [ -d "./Adafruit_MAX31865_library" ]; then
   (
-    echo update Adafruit_MAX31865
-    cd Adafruit_MAX31865
+    echo update Adafruit_MAX31865_library
+    cd Adafruit_MAX31865_library
     git pull
   )
 else
-  git clone $SHALLOW_MAIN "$GITHUB/Adafruit_MAX31865.git"
+  git clone $SHALLOW_MAIN "$GITHUB/Adafruit_MAX31865.git" Adafruit_MAX31865_library
 fi
 
 if [ -d "./Ethernet" ]; then

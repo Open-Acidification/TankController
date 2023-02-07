@@ -28,5 +28,5 @@ jobs:
         run: |
           cd server
           git status -s -uno
-          cat size.txt
+          cat server/size.txt
           (exit `git status -s -uno | wc -l`)

@@ -12,8 +12,8 @@ export SHALLOW_MASTER='--depth 1 --branch master --single-branch '
 if ! [ $(id -u) = 0 ]; then
   bundle config set --local path 'vendor/bundle'
   bundle install
-  mkdir -p $(bundle exec arduino_library_location.rb)
-  cd $(bundle exec arduino_library_location.rb)
+  mkdir -p "$(bundle exec arduino_library_location.rb)"
+  cd "$(bundle exec arduino_library_location.rb)"
 fi
 
 # add missing libraries
@@ -25,7 +25,7 @@ if [ -d "./Adafruit_BusIO" ]; then
     git pull
   )
 else
-  git clone $SHALLOW_MASTER "$GITHUB/Adafruit_BusIO.git"
+  git clone "$SHALLOW_MASTER" "$GITHUB/Adafruit_BusIO.git"
 fi
 
 if [ -d "./Adafruit_MAX31865_library" ]; then
@@ -35,7 +35,7 @@ if [ -d "./Adafruit_MAX31865_library" ]; then
     git pull
   )
 else
-  git clone $SHALLOW_MAIN "$GITHUB/Adafruit_MAX31865.git" Adafruit_MAX31865_library
+  git clone "$SHALLOW_MAIN" "$GITHUB/Adafruit_MAX31865.git" "Adafruit_MAX31865_library"
 fi
 
 if [ -d "./Ethernet" ]; then
@@ -45,7 +45,7 @@ if [ -d "./Ethernet" ]; then
     git pull
   )
 else
-  git clone $SHALLOW_MASTER "$GITHUB/Ethernet.git"
+  git clone "$SHALLOW_MASTER" "$GITHUB/Ethernet.git"
 fi
 
 if [ -d "./LiquidCrystal" ]; then
@@ -55,7 +55,7 @@ if [ -d "./LiquidCrystal" ]; then
     git pull
   )
 else
-  git clone $SHALLOW_MASTER "$GITHUB/LiquidCrystal.git"
+  git clone "$SHALLOW_MASTER" "$GITHUB/LiquidCrystal.git"
 fi
 
 if [ -d "./RTClib" ]; then
@@ -65,7 +65,7 @@ if [ -d "./RTClib" ]; then
     git pull
   )
 else
-  git clone $SHALLOW_MAIN "$GITHUB/RTClib.git"
+  git clone "$SHALLOW_MAIN" "$GITHUB/RTClib.git"
 fi
 
 if [ -d "./Keypad" ]; then
@@ -75,7 +75,7 @@ if [ -d "./Keypad" ]; then
     git pull
   )
 else
-  git clone $SHALLOW_MAIN "$GITHUB/Keypad.git"
+  git clone "$SHALLOW_MAIN" "$GITHUB/Keypad.git"
 fi
 
 if [ -d "./Arduino-PID-Library" ]; then
@@ -85,7 +85,7 @@ if [ -d "./Arduino-PID-Library" ]; then
     git pull
   )
 else
-  git clone $SHALLOW_MASTER "$GITHUB/Arduino-PID-Library.git"
+  git clone "$SHALLOW_MASTER" "$GITHUB/Arduino-PID-Library.git"
 fi
 
 if [ -d "./SdFat" ]; then
@@ -95,5 +95,5 @@ if [ -d "./SdFat" ]; then
     git pull
   )
 else
-  git clone $SHALLOW_MAIN "$GITHUB/SdFat.git"
+  git clone "$SHALLOW_MAIN" "$GITHUB/SdFat.git"
 fi

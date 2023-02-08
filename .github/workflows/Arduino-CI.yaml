@@ -26,7 +26,6 @@ jobs:
 
       - name: Ensure no Git changes
         run: |
-          cd server
           git status -s -uno
           cat server/size.txt
           (exit `git status -s -uno | wc -l`)

@@ -1,1 +1,0 @@
-Global variables use 2294 bytes (28%) of dynamic memory, leaving 5898 bytes for local variables. Maximum is 8192 bytes.

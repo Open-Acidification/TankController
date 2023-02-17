@@ -1,0 +1,1 @@
+Checking that free space of 5930 is less than desired minimum 5830...          ✓

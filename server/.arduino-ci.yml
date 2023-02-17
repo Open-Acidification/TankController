@@ -19,8 +19,8 @@ unittest:
     - mega2560
   libraries:
     - "Adafruit BusIO"
-    - "Adafruit MAX31865"
-    - "Arduino-PID-Library"
+    - "Adafruit MAX31865 library"
+    - "PID"
     - "Ethernet"
     - "LiquidCrystal"
     - "RTClib"
@@ -32,8 +32,8 @@ compile:
     - mega2560
   libraries:
     - "Adafruit BusIO"
-    - "Adafruit MAX31865"
-    - "Arduino-PID-Library"
+    - "Adafruit MAX31865 library"
+    - "PID"
     - "Ethernet"
     - "LiquidCrystal"
     - "RTClib"

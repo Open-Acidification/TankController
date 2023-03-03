@@ -28,8 +28,8 @@ stderr.txt
 
 # Arduino-CI Files
 Gemfile.lock
-server/.bundle/*
-server/vendor/*
+.bundle/*
+vendor/*
 *.cpp.bin*
 
 *libarduino*

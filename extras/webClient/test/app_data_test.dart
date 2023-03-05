@@ -21,9 +21,9 @@ void main() async {
     expect(appData.currentIndex, 3);
   });
 
-  test('App add, set current, and delete tank list', () {
+  test('App add, set current, and delete tank list', () async {
     expect(appData.tankList, []);
-    appData.addTank(Tank('Tank', '192.168.0.1'));
+    await appData.addTank(Tank('Tank', '192.168.0.1'));
     expect(appData.tankList[0], Tank('Tank', '192.168.0.1'));
     appData.currentTank = Tank('Tank', '192.168.0.1');
     expect(appData.currentTank, Tank('Tank', '192.168.0.1'));
@@ -46,5 +46,4 @@ void main() async {
     await appData.readTankList();
     expect(appData.tankList, [Tank('Tank', '192.168.0.2')]);
   });
-
 }

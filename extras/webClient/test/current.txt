@@ -1,0 +1,15 @@
+{
+    "IPAddress":"172.27.5.173",
+    "MAC":"90:A2:DA:FD:C2:38",
+    "FreeMemory":"3519 bytes",
+    "GoogleSheetInterval":20,
+    "LogFile":"",
+    "PHSlope":"",
+    "Kp":-31072.0,
+    "Ki":0.0,
+    "Kd":0.0,
+    "PID":"ON",
+    "TankID":99,
+    "Uptime":"4d 5h 15m 58s",
+    "Version":"21.09.1"
+}

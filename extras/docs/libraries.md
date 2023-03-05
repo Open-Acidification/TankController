@@ -1,6 +1,6 @@
 # Libraries
 
-As with any modern application, we use many third-party libraries. The definitive list is in `scripts/install_libraries.sh` (for installation) and in `.arduino-ci.yml` (for testing). These libraries are found in [Arduino Continuous Integration](https://github.com/Arduino-CI/) where we have forks of generally-available libraries that have been augmented with testing mocks.
+As with any modern application, we use many third-party libraries. The definitive list is in `extras/scripts/install_libraries.sh` (for installation) and in `.arduino-ci.yml` (for testing). These libraries are found in [Arduino Continuous Integration](https://github.com/Arduino-CI/) where we have forks of generally-available libraries that have been augmented with testing mocks.
 
 ## Licenses
 

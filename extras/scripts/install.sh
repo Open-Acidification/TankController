@@ -8,4 +8,4 @@ git clone https://github.com/Open-Acidification/TankController.git
 cd TankController
 bundle config set --local path 'vendor/bundle'
 bundle install
-scripts/install_libraries.sh
+extras/scripts/install_libraries.sh

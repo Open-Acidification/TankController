@@ -3,7 +3,7 @@
 if [ ${PWD##*/} != "GUI" ]; then
   cd GUI
 fi
-../scripts/install_libraries.sh
+../extras/scripts/install_libraries.sh
 python3 -m pip install wxPython pybind11
 x=$(bundle exec which arduino_library_location.rb)
 y=$(echo "${x%/bin/*}/bundler/gems/arduino_ci-*")

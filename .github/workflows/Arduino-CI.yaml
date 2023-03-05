@@ -17,5 +17,5 @@ jobs:
       - name: Run Arduino-CI Tests
         run: |
           g++ -v
-          scripts/install_libraries.sh
-          scripts/testAndBuild.sh
+          extras/scripts/install_libraries.sh
+          extras/scripts/testAndBuild.sh

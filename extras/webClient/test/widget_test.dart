@@ -40,7 +40,7 @@ void main() {
     var appData = AppData.instance;
     appData.currentTank = Tank("test_tank", "192.168.0.1");
 
-    // Force button visiblity for tester
+    // Force button visibility for tester
     // Verify a buttons exists
     // Verify no button result is already displayed
     // Tap a button and check display

@@ -11,6 +11,34 @@ class AppDrawer extends StatelessWidget {
 
   final BuildContext context;
 
+  showAlertDialog(String message, BuildContext context) {
+
+    // set up the button
+    Widget okButton = TextButton(
+      child: const Text("OK"),
+      onPressed: () { 
+        Navigator.pop(context);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(message),
+      content: const Text("Error connecting to Tank Controller. This is likely due to an incorrect IP address."),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var appData = AppData.instance;
@@ -33,9 +61,13 @@ class AppDrawer extends StatelessWidget {
           Align(
             alignment: Alignment.topRight,
             child: FloatingActionButton(
-              onPressed: () {
+              onPressed: () async {
                 var newTank = Tank(nameController.text, ipController.text);
-                appData.addTank(newTank);
+                try{
+                  await appData.addTank(newTank);     
+                } catch (e) {
+                  showAlertDialog(e.runtimeType.toString(), context);
+                }
               },
               tooltip: 'Add Tank',
               child: const Icon(Icons.add),

@@ -65,7 +65,7 @@ class Keypad extends StatelessWidget {
       child: TextButton(
           style: TextButton.styleFrom(
             textStyle: const TextStyle(fontSize: 40),
-            primary: Colors.white,
+            foregroundColor: Colors.white,
           ),
           onPressed: () {
             if (appData.currentTank != Tank('', '')) {

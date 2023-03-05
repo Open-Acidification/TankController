@@ -73,7 +73,10 @@ class AppData with ChangeNotifier {
     notifyListeners();
   }
 
-  void addTank(tank) {
+  Future<void> addTank(tank) async {
+    //make a call to the device to see if it exists
+    //ignore result 
+    await TcInterface.instance.get(tank.ip, 'current');
     _tankList.add(tank);
     notifyListeners();
     writeTankList(tankList);

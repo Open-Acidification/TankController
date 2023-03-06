@@ -1,14 +1,10 @@
 name: Flutter Web
-on: [push, pull_request]
-
+on: [push]
+permissions:
+  contents: write
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: write  # To push a branch 
-      pull-requests: write  # To create a PR from that branch
-
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
@@ -26,5 +22,4 @@ jobs:
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
-          branch: gh-pages # The branch the action should deploy to.
-          folder: extras/webClient/build/web # The folder the action should deploy.
+          folder: extras/webClient/build/web

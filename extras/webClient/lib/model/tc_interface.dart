@@ -1,5 +1,4 @@
 import 'package:http/http.dart' as http;
-import 'dart:io';
 
 abstract class TcInterface {
   static TcInterface? _instance;
@@ -17,7 +16,7 @@ abstract class TcInterface {
 class TcMockInterface extends TcInterface {
   Future<String> get(String ip, String path) async {
     if (ip == "127.0.0.1") {
-      throw("Invalid IP Address in TcMockInterface");
+      throw ("Invalid IP Address in TcMockInterface");
     }
     if (path == 'current') {
       return '{"IPAddress":"172.27.5.150","MAC":"90:A2:DA:0F:45:C0","FreeMemory":"3791 bytes","GoogleSheetInterval":10,"LogFile":"20220722.csv","PHSlope":"","Kp":9000.4,"Ki":0.0,"Kd":0.0,"PID":"ON","TankID":3,"Uptime":"0d 0h 1m 7s","Version":"22.04.1"}';
@@ -31,7 +30,6 @@ class TcMockInterface extends TcInterface {
   Future<String> post(var value, String path) async {
     return 'pH=7.352   7.218\nT=10.99 C 11.00${path.substring(path.length - 1)}';
   }
-
 }
 
 class TcRealInterface extends TcInterface {
@@ -40,7 +38,7 @@ class TcRealInterface extends TcInterface {
     var future = http.get(Uri.parse(uri));
     var response = await future.timeout(const Duration(seconds: 5));
     if (response.statusCode != 200) {
-      throw("HTTP response not code 200");
+      throw ("HTTP response not code 200");
     }
     final subString = response.body.toString().replaceAll("\r", '');
     return subString;
@@ -51,7 +49,7 @@ class TcRealInterface extends TcInterface {
     final future = http.post(Uri.parse(uri));
     var response = await future.timeout(const Duration(seconds: 5));
     if (response.statusCode != 200) {
-      throw("HTTP response not code 200");
+      throw ("HTTP response not code 200");
     }
     final subString = response.body.toString().replaceAll("\r", '');
 

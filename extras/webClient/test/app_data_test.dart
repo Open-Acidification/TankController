@@ -4,11 +4,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tank_manager/model/app_data.dart';
 import 'package:tank_manager/model/tank.dart';
+import 'package:tank_manager/model/tc_interface.dart';
 
 void main() async {
   TestWidgetsFlutterBinding.ensureInitialized();
   SharedPreferences.setMockInitialValues({});
   var appData = AppData.instance;
+
+  setUp(() {
+    TcInterface.useMock();
+  });
 
   tearDown(() {
     // Reset so that we no longer have objects in tankList

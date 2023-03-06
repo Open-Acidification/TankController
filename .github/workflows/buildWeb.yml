@@ -1,5 +1,5 @@
-name: Flutter Web
-on: [push, pull_request]
+name: Publish Flutter Web on GitHub Pages
+on: [published]
 permissions:
   contents: write
 jobs:

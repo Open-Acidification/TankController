@@ -1,0 +1,26 @@
+name: Publish Flutter Web on GitHub Pages
+on: [published]
+permissions:
+  contents: write
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+
+      - name: Install and Build 🔧
+        uses: subosito/flutter-action@v2.8.0
+        with:
+          channel: 'stable'
+      - run: |
+          echo "build for web"
+          cd extras/webClient
+          flutter --version
+          flutter pub get
+          flutter build web --release --base-href="/TankControllerManager/"
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        with:
+          token: ${{ secrets.GH_PAGES }}
+          folder: extras/webClient/build/web

@@ -10,7 +10,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install and Build 🔧
-        uses: subosito/flutter-action@v1
+        uses: subosito/flutter-action@v2.8.0
         with:
           channel: 'stable'
       - run: |
@@ -22,4 +22,5 @@ jobs:
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
+          token: ${{ secrets.GH_PAGES }}
           folder: extras/webClient/build/web

@@ -78,7 +78,7 @@ class AppDrawer extends StatelessWidget {
             child: FloatingActionButton(
               onPressed: () {
                 appData.removeTank(appData.currentTank);
-                appData.currentTank = Tank("", "");
+                appData.clearTank();
               },
               tooltip: 'Remove Tank',
               child: const Icon(Icons.delete_sharp)

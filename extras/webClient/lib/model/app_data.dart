@@ -90,6 +90,8 @@ class AppData with ChangeNotifier {
 
 
   void clearTank() {
+    _currentTank = Tank('', '');
+    notifyListeners();
     print("cleared tank");
   }
 

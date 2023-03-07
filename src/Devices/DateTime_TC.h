@@ -1,6 +1,6 @@
 #pragma once
 #include <Arduino.h>
-#ifdef MOCK_PINS_COUNT
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
 #include <RTClib_CI.h>
 #else
 #include <RTClib.h>

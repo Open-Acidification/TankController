@@ -87,7 +87,7 @@ bool SD_TC::format() {
 bool SD_TC::iterateOnFiles(doOnFile functionName, void* userData) {
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   return false;  // no more files
-#endif
+#else
   // Only called on real device
   // Returns false only when all files have been iterated on
   bool flag = true;
@@ -115,6 +115,7 @@ bool SD_TC::iterateOnFiles(doOnFile functionName, void* userData) {
     }
   }
   return true;  // There are (probably) more files remaining
+#endif
 }
 
 bool SD_TC::incrementFileCount(File* myFile, void* pFileCount) {
@@ -146,7 +147,7 @@ bool SD_TC::countFiles(void (*callWhenFinished)(int)) {
 bool SD_TC::listFile(File* myFile, void* userData) {
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   return false;
-#endif
+#else
   listFilesData_t* pListFileData = static_cast<listFilesData_t*>(userData);
   char fileName[15];
   myFile->getName(fileName, sizeof(fileName));
@@ -163,6 +164,7 @@ bool SD_TC::listFile(File* myFile, void* userData) {
   // "Overwrite" null terminator
   pListFileData->linePos += bytesWritten;
   return (++(pListFileData->filesWritten)) % 10 != 0;  // Stop iterating after 10 files
+#endif
 }
 
 bool SD_TC::listRootToBuffer(void (*callWhenFull)(char*, bool)) {
@@ -172,7 +174,7 @@ bool SD_TC::listRootToBuffer(void (*callWhenFull)(char*, bool)) {
   memcpy(buffer, (PGM_P)notImplemented, sizeof(notImplemented));
   callWhenFull(buffer, true);
   return true;
-#endif
+#else
   if (!inProgress) {
     const char path[] PROGMEM = "/";
     fileStack[0] = SD_TC::instance()->open(path);
@@ -192,6 +194,7 @@ bool SD_TC::listRootToBuffer(void (*callWhenFull)(char*, bool)) {
   listFileData.buffer[listFileData.linePos] = '\0';
   callWhenFull(listFileData.buffer, !inProgress);
   return true;
+#endif
 }
 
 bool SD_TC::mkdir(const char* path) {

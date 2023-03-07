@@ -86,7 +86,7 @@ bool SD_TC::format() {
 
 bool SD_TC::iterateOnFiles(doOnFile functionName, void* userData) {
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
-  return false;   // no more files
+  return false;  // no more files
 #endif
   // Only called on real device
   // Returns false only when all files have been iterated on

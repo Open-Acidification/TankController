@@ -3,7 +3,7 @@
 #include <Arduino.h>
 
 #include "SD_TC.h"
-#ifdef MOCK_PINS_COUNT
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
 #include "Ethernet.h"
 #else
 #include <Ethernet.h>

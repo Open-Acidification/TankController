@@ -5,7 +5,7 @@
 extern size_t strnlen(const char *s, size_t n);
 #endif
 
-#ifdef MOCK_PINS_COUNT
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
 #include <cassert>  // to support testing
 #else
 #define assert(p) (void)0

@@ -78,14 +78,14 @@ else
   git clone "${SHALLOW_MAIN[@]}" "$GITHUB/Keypad.git"
 fi
 
-if [ -d "./Arduino-PID-Library" ]; then
+if [ -d "./PID" ]; then
   (
-    echo update Arduino-PID-Library
-    cd Arduino-PID-Library
+    echo update PID
+    cd PID
     git pull
   )
 else
-  git clone "${SHALLOW_MASTER[@]}" "$GITHUB/Arduino-PID-Library.git"
+  git clone "${SHALLOW_MASTER[@]}" "$GITHUB/Arduino-PID-Library.git" "PID"
 fi
 
 if [ -d "./SdFat" ]; then

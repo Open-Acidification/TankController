@@ -88,6 +88,11 @@ class AppData with ChangeNotifier {
     writeTankList(tankList);
   }
 
+
+  void clearTank() {
+    print("cleared tank");
+  }
+
   set currentIndex(index) {
     _currentIndex = index;
     notifyListeners();

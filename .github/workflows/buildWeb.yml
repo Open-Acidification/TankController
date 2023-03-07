@@ -1,5 +1,5 @@
 name: Publish Flutter Web on GitHub Pages
-on: [published]
+on: [release]
 permissions:
   contents: write
 jobs:
@@ -19,8 +19,8 @@ jobs:
           flutter --version
           flutter pub get
           flutter build web --release --base-href="/TankControllerManager/"
+
       - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          token: ${{ secrets.GH_PAGES }}
           folder: extras/webClient/build/web

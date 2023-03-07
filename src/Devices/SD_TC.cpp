@@ -85,7 +85,9 @@ bool SD_TC::format() {
 }
 
 bool SD_TC::iterateOnFiles(doOnFile functionName, void* userData) {
-#ifndef MOCK_PINS_COUNT
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  return false;  // no more files
+#else
   // Only called on real device
   // Returns false only when all files have been iterated on
   bool flag = true;
@@ -113,8 +115,6 @@ bool SD_TC::iterateOnFiles(doOnFile functionName, void* userData) {
     }
   }
   return true;  // There are (probably) more files remaining
-#else
-  return false;
 #endif
 }
 
@@ -145,7 +145,9 @@ bool SD_TC::countFiles(void (*callWhenFinished)(int)) {
 // Issue: This function does not visually display depth for items in subfolders
 // With maxDepth set to 2, no subfolders are traversed
 bool SD_TC::listFile(File* myFile, void* userData) {
-#ifndef MOCK_PINS_COUNT
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  return false;
+#else
   listFilesData_t* pListFileData = static_cast<listFilesData_t*>(userData);
   char fileName[15];
   myFile->getName(fileName, sizeof(fileName));
@@ -162,13 +164,17 @@ bool SD_TC::listFile(File* myFile, void* userData) {
   // "Overwrite" null terminator
   pListFileData->linePos += bytesWritten;
   return (++(pListFileData->filesWritten)) % 10 != 0;  // Stop iterating after 10 files
-#else
-  return false;
 #endif
 }
 
 bool SD_TC::listRootToBuffer(void (*callWhenFull)(char*, bool)) {
-#ifndef MOCK_PINS_COUNT
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  static const char notImplemented[] PROGMEM = "Root directory not supported by CI framework.\r\n";
+  char buffer[sizeof(notImplemented)];
+  memcpy(buffer, (PGM_P)notImplemented, sizeof(notImplemented));
+  callWhenFull(buffer, true);
+  return true;
+#else
   if (!inProgress) {
     const char path[] PROGMEM = "/";
     fileStack[0] = SD_TC::instance()->open(path);
@@ -187,12 +193,6 @@ bool SD_TC::listRootToBuffer(void (*callWhenFull)(char*, bool)) {
   // Terminate the buffer
   listFileData.buffer[listFileData.linePos] = '\0';
   callWhenFull(listFileData.buffer, !inProgress);
-  return true;
-#else
-  static const char notImplemented[] PROGMEM = "Root directory not supported by CI framework.\r\n";
-  char buffer[sizeof(notImplemented)];
-  memcpy(buffer, (PGM_P)notImplemented, sizeof(notImplemented));
-  callWhenFull(buffer, true);
   return true;
 #endif
 }

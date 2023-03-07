@@ -80,7 +80,7 @@
 #pragma once
 #include "Arduino.h"
 
-#ifdef MOCK_PINS_COUNT
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
 #ifndef ARDUINO
 #define ARDUINO 100
 #endif
@@ -122,7 +122,7 @@ public:
   void setCorrection(float value);
   void clearCorrection();
 
-#ifdef MOCK_PINS_COUNT
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
   // set a temperature in the mock
   void setTemperature(float newTemp) {
     thermo.setTemperature(newTemp);

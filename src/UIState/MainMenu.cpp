@@ -242,12 +242,22 @@ void MainMenu::idle() {
   output[0] = 'p';
   output[1] = 'H';
   output[2] = millis() / 1000 % 2 ? '=' : ' ';
-  floattostrf(PHProbe::instance()->getPh(), 5, 3, buffer, sizeof(buffer));
+  float pH = PHProbe::instance()->getPh();
+  if (pH < 10.0) {
+    floattostrf(pH, 5, 3, buffer, sizeof(buffer));
+  } else {
+    floattostrf(pH, 5, 2, buffer, sizeof(buffer));
+  }
   memcpy(output + 3, buffer, sizeof(buffer));
   output[8] = ' ';
   output[9] = phControl->isOn() ? 'B' : ' ';
   output[10] = ' ';
-  floattostrf(PHControl::instance()->getTargetPh(), 5, 3, buffer, sizeof(buffer));
+  pH = PHControl::instance()->getTargetPh();
+  if (pH < 10.0) {
+    floattostrf(pH, 5, 3, buffer, sizeof(buffer));
+  } else {
+    floattostrf(pH, 5, 2, buffer, sizeof(buffer));
+  }
   memcpy(output + 11, buffer, sizeof(buffer));
   LiquidCrystal_TC::instance()->writeLine(output, 0);
   TemperatureControl *tempControl = TemperatureControl::instance();

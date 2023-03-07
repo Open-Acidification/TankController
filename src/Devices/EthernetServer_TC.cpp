@@ -103,7 +103,7 @@ void EthernetServer_TC::post() {
 void EthernetServer_TC::apiHandler() {
   if (buffer[9] == '1') {
     // API version 1
-    // Keep this for backwards compatibility
+    // When you add a new API, keep this for backwards compatibility
     if (memcmp_P(buffer + 11, F("current"), 7) == 0) {
       current();
     } else if (memcmp_P(buffer + 11, F("display"), 7) == 0) {
@@ -192,13 +192,13 @@ void countFilesCallback(int fileCount) {
 // for the header may be calculated
 void EthernetServer_TC::rootdirSetup() {
   if (state == COUNTING_FILES) {
-#ifndef MOCK_PINS_COUNT
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+    countFilesCallback(0);
+#else
     if (!SD_TC::instance()->countFiles(countFilesCallback)) {
       sendResponse(HTTP_ERROR);
       state = FINISHED;
     };
-#else
-    countFilesCallback(0);
 #endif
   } else {
     state = COUNTING_FILES;
@@ -231,14 +231,13 @@ void EthernetServer_TC::writeToClientBuffer(char *buffer, bool isFinished) {
 }
 
 void EthernetServer_TC::sendHeadersForRootdir(int fileCount) {
-#ifndef MOCK_PINS_COUNT
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  sendHeadersWithSize((uint32_t)49);
+#else
   serial(F("...%i files..."), fileCount);
   sendHeadersWithSize((uint32_t)fileCount * 24);  // 24 characters per line
-  state = LISTING_FILES;
-#else
-  sendHeadersWithSize((uint32_t)49);
-  state = LISTING_FILES;
 #endif
+  state = LISTING_FILES;
 }
 
 // Tests speed for reading a file from the SD Card

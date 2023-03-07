@@ -90,7 +90,7 @@ void TankController::blink() {
 
 // https://github.com/maniacbug/MemoryFree/blob/master/MemoryFree.cpp
 int TankController::freeMemory() {
-#ifdef MOCK_PINS_COUNT
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
   return 1024;
 #else
   extern char *__brkval;

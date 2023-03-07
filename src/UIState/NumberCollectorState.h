@@ -33,7 +33,7 @@ protected:
   bool hasDecimal = false;
 };
 
-#ifdef MOCK_PINS_COUNT
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
 class TestNumCollectorState : public NumCollectorState {
 public:
   TestNumCollectorState(TankController* tc) : NumCollectorState(tc) {

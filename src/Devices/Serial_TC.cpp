@@ -58,7 +58,7 @@ void Serial_TC::vprintf(const __FlashStringHelper *format, va_list args) {
     SD_TC::instance()->appendToLog(buffer);
     printIsActive = false;
   }
-#ifdef MOCK_PINS_COUNT
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
 #if DEBUG
   std::cout << "\tSERIAL: " << buffer << std::endl;
 #endif

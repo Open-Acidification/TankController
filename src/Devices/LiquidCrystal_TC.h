@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
-#ifdef MOCK_PINS_COUNT
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
 #include <LiquidCrystal_CI.h>
 #else
 #include <LiquidCrystal.h>

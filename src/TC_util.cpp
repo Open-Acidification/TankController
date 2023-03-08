@@ -21,9 +21,10 @@ int strscpy(char *destination, const char *source, unsigned long sizeOfDestinati
 }
 
 // In this function, the source is treated as an address in PROGMEM, not RAM
-// Example: strscpy_P(buffer, (PGM_P)F("some string here"), sizeof(buffer));
-int strscpy_P(char *destination, const char *source, unsigned long sizeOfDestination) {
-  unsigned long sourceLength = strnlen(source, sizeOfDestination);
+// Example: strscpy_P(buffer, F("some string here"), sizeof(buffer));
+int strscpy_P(char *destination, const __FlashStringHelper *source_F, unsigned long sizeOfDestination) {
+  PGM_P source = (PGM_P)source_F;
+  unsigned long sourceLength = strlen_P(source);
   if (sourceLength < sizeOfDestination) {
     // Put a null terminator in the final byte
     *((char *)memcpy_P(destination, source, sourceLength) + sourceLength) = '\0';

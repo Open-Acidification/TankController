@@ -43,7 +43,7 @@ void PHProbe::clearCalibration() {
 void PHProbe::sendSlopeRequest() {
   // Sending request for Calibration Slope
   Serial1.print(F("SLOPE,?\r"));
-  strscpy_P(slopeResponse, (PGM_P)F("       Slope requested!"), sizeof(slopeResponse));
+  strscpy_P(slopeResponse, F("       Slope requested!"), sizeof(slopeResponse));
 }
 
 void PHProbe::getSlope(char *buffer, int size) {

@@ -54,7 +54,7 @@ unittest(stringCopy_P) {
   String serialOutput;
   serial("This line of code initializes SD_TC so it won't pollute future logs.");
 
-  static const char source[11] PROGMEM = "stringtest";
+  const __FlashStringHelper* source = F("stringtest");
   char dest1[9];
   char dest2[] = "012345678";
   char dest3[] = "0123456789abc";

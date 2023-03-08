@@ -31,10 +31,10 @@ EthernetServer_TC::EthernetServer_TC(uint16_t port) : EthernetServer(port) {
   begin();
   IPAddress IP = Ethernet_TC::instance()->getIP();
   serial(F("Ethernet Server is listening on %i.%i.%i.%i:80"), IP[0], IP[1], IP[2], IP[3]);
-  static const char boundary_P[] PROGMEM = "boundary";
+  const __FlashStringHelper *boundary_P = F("boundary");
   // TODO: A long string of apparently random characters should be used as the boundary instead,
   // because they would be less likely to be part of the message
-  strscpy_P(boundary, (PGM_P)boundary_P, sizeof(boundary));
+  strscpy_P(boundary, boundary_P, sizeof(boundary));
 }
 
 // echo() - Proof of concept for the EthernetServer
@@ -244,9 +244,9 @@ void EthernetServer_TC::sendHeadersForRootdir(int fileCount) {
 // Empirical results show about 1 ms per 512 B
 void EthernetServer_TC::testReadSpeed() {
   wdt_disable();
-  static const char path[] PROGMEM = "tstRdSpd.txt";
+  const __FlashStringHelper *path = F("tstRdSpd.txt");
   char temp[sizeof(path)];
-  strscpy_P(temp, (PGM_P)path, sizeof(temp));
+  strscpy_P(temp, path, sizeof(temp));
   // Create the file and write garbage
   file = SD_TC::instance()->open(temp, O_RDWR | O_CREAT | O_AT_END);
   memset(buffer, ' ', sizeof(buffer));
@@ -408,21 +408,22 @@ void EthernetServer_TC::loop() {
 
 // 200 response with a content size
 void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
-  static const char response[] PROGMEM =
-      "HTTP/1.1 200 OK\r\n"
-      "Content-Type: text/plain;charset=UTF-8\r\n"
-      "Content-Encoding: identity\r\n"
-      "Content-Language: en-US\r\n"
-      "Access-Control-Allow-Origin: *\r\n";
+  const __FlashStringHelper *response =
+      F("HTTP/1.1 200 OK\r\n"
+        "Content-Type: text/plain;charset=UTF-8\r\n"
+        "Content-Encoding: identity\r\n"
+        "Content-Language: en-US\r\n"
+        "Access-Control-Allow-Origin: *\r\n");
   char buffer[sizeof(response)];
-  strscpy_P(buffer, (PGM_P)response, sizeof(buffer));
+  strscpy_P(buffer, response, sizeof(buffer));
   client.write(buffer);
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Content-Length: %lu\r\n"), (unsigned long)size);
   client.write(buffer);
 
   // TODO: add "Date: " header
-  // const __FlashStringHelper* weekdays[] = {F("Sun"), F("Mon"), F("Tue"), F("Wed"), F("Thu"), F("Fri"), F("Sat")};
-  // const __FlashStringHelper* months[] = {F("Jan"), F("Feb"), F("Mar"), F("Apr"), F("May"), F("Jun"),
+  // const PROGMEM __FlashStringHelper* weekdays[] = {F("Sun"), F("Mon"), F("Tue"), F("Wed"), F("Thu"), F("Fri"),
+  // F("Sat")}; const PROGMEM __FlashStringHelper* months[] = {F("Jan"), F("Feb"), F("Mar"), F("Apr"), F("May"),
+  // F("Jun"),
   //                                        F("Jul"), F("Aug"), F("Sep"), F("Oct"), F("Nov"), F("Dec")};
   // DateTime_TC now = DateTime_TC::now();
   // int weekday = weekday(now.getYear(), now.getMonth(), now.getDay());
@@ -434,53 +435,53 @@ void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
 }
 
 void EthernetServer_TC::sendResponse(int code) {
-  static const char response_303[] PROGMEM =
-      "HTTP/1.1 303 See Other\r\n"
-      "Location: /api/1/display\r\n"
-      "Access-Control-Allow-Origin: *\r\n"
-      "\r\n";
-  static const char response_400[] PROGMEM =
-      "HTTP/1.1 400 Bad Request\r\n"
-      "\r\n";
-  static const char response_404[] PROGMEM =
-      "HTTP/1.1 404 Not Found\r\n"
-      "\r\n";
-  static const char response_405[] PROGMEM =
-      "HTTP/1.1 405 Method Not Allowed\r\n"
-      "Allow: GET, POST\r\n"
-      "\r\n";
-  static const char response_408[] PROGMEM =
-      "HTTP/1.1 408 Request Timeout\r\n"
-      "Connection: close\r\n"
-      "\r\n";
-  static const char response_500[] PROGMEM =
-      "HTTP/1.1 500 Internal Server Error\r\n"
-      "\r\n";
-  static const char response_501[] PROGMEM =
-      "HTTP/1.1 501 Not Implemented\r\n"
-      "\r\n";
+  const __FlashStringHelper *response_303 =
+      F("HTTP/1.1 303 See Other\r\n"
+        "Location: /api/1/display\r\n"
+        "Access-Control-Allow-Origin: *\r\n"
+        "\r\n");
+  const __FlashStringHelper *response_400 =
+      F("HTTP/1.1 400 Bad Request\r\n"
+        "\r\n");
+  const __FlashStringHelper *response_404 =
+      F("HTTP/1.1 404 Not Found\r\n"
+        "\r\n");
+  const __FlashStringHelper *response_405 =
+      F("HTTP/1.1 405 Method Not Allowed\r\n"
+        "Allow: GET, POST\r\n"
+        "\r\n");
+  const __FlashStringHelper *response_408 =
+      F("HTTP/1.1 408 Request Timeout\r\n"
+        "Connection: close\r\n"
+        "\r\n");
+  const __FlashStringHelper *response_500 =
+      F("HTTP/1.1 500 Internal Server Error\r\n"
+        "\r\n");
+  const __FlashStringHelper *response_501 =
+      F("HTTP/1.1 501 Not Implemented\r\n"
+        "\r\n");
   char buffer[sizeof(response_303)];  // Use longest of above responses
   switch (code) {
     case HTTP_REDIRECT:
-      strscpy_P(buffer, (PGM_P)response_303, sizeof(buffer));
+      strscpy_P(buffer, response_303, sizeof(buffer));
       break;
     case HTTP_BAD_REQUEST:
-      strscpy_P(buffer, (PGM_P)response_400, sizeof(buffer));
+      strscpy_P(buffer, response_400, sizeof(buffer));
       break;
     case HTTP_NOT_FOUND:
-      strscpy_P(buffer, (PGM_P)response_404, sizeof(buffer));
+      strscpy_P(buffer, response_404, sizeof(buffer));
       break;
     case HTTP_NOT_PERMITTED:
-      strscpy_P(buffer, (PGM_P)response_405, sizeof(buffer));
+      strscpy_P(buffer, response_405, sizeof(buffer));
       break;
     case HTTP_TIMEOUT:
-      strscpy_P(buffer, (PGM_P)response_408, sizeof(buffer));
+      strscpy_P(buffer, response_408, sizeof(buffer));
       break;
     case HTTP_NOT_IMPLEMENTED:
-      strscpy_P(buffer, (PGM_P)response_501, sizeof(buffer));
+      strscpy_P(buffer, response_501, sizeof(buffer));
       break;
     default:
-      strscpy_P(buffer, (PGM_P)response_500, sizeof(buffer));
+      strscpy_P(buffer, response_500, sizeof(buffer));
   };
   client.write(buffer);
 }

@@ -45,7 +45,9 @@ void EthernetServer_TC::echo() {
     ++i;
   }
   serial(F("echo() found space or null at %d"), i);
-  if (memcmp_P(buffer + i - 3, F("%22"), 3)) {
+  char expected[4];
+  strncpy_P(expected, (PGM_P)F("%22"), sizeof(expected));
+  if (memcmp(buffer + i - 3, expected, 3)) {
     serial(F("bad"));
     state = FINISHED;
   } else {
@@ -63,9 +65,16 @@ void EthernetServer_TC::echo() {
 
 // Handles an HTTP GET request
 void EthernetServer_TC::get() {
-  if (memcmp_P(buffer + 5, F("echo"), 4) == 0) {
+  char expected[5] = {'x', 'x', 'x', 'x', 'x'};
+  strncpy_P(expected, (PGM_P)F("echo"), sizeof(expected));
+  serial(F("get() - 1 - %i"), (int)expected[4]);
+  if (memcmp(buffer + 5, expected, 4) == 0) {
     echo();
-  } else if (memcmp_P(buffer + 5, F("api"), 3) == 0) {
+    return;
+  }
+  strncpy_P(expected, (PGM_P)F("api"), sizeof(expected));
+  serial(F("get() - 2 - %i"), (int)expected[3]);
+  if (memcmp(buffer + 5, expected, 3) == 0) {
     apiHandler();
   } else if (isRequestForExistingFile()) {
     fileSetup();
@@ -85,7 +94,9 @@ void EthernetServer_TC::options() {
 
 // Handles an HTTP POST request
 void EthernetServer_TC::post() {
-  if (memcmp_P(buffer + 6, F("api"), 3) == 0) {
+  char expected[4];
+  strncpy_P(expected, (PGM_P)F("api"), sizeof(expected));
+  if (memcmp(buffer + 6, expected, 3) == 0) {
     keypress();
   } else {
     serial(F("post \"%s\" not recognized!"), buffer + 6);
@@ -101,19 +112,34 @@ void EthernetServer_TC::post() {
 
 // API for certain get and post requests
 void EthernetServer_TC::apiHandler() {
-  if (buffer[9] == '1') {
+  if (buffer[9] == '1' && buffer[10] == '/') {
     // API version 1
     // When you add a new API, keep this for backwards compatibility
-    if (memcmp_P(buffer + 11, F("current"), 7) == 0) {
+    char expected[10];
+    strncpy_P(expected, (PGM_P)F("current"), sizeof(expected));
+    if (memcmp(buffer + 11, expected, 7) == 0) {
       current();
-    } else if (memcmp_P(buffer + 11, F("display"), 7) == 0) {
+      return;
+    }
+    strncpy_P(expected, (PGM_P)F("display"), sizeof(expected));
+    if (memcmp(buffer + 11, expected, 7) == 0) {
       display();
-    } else if (memcmp_P(buffer + 11, F("rootdir"), 7) == 0) {
+      return;
+    }
+    strncpy_P(expected, (PGM_P)F("rootdir"), sizeof(expected));
+    if (memcmp(buffer + 11, expected, 7) == 0) {
       rootdirSetup();
-    } else if (memcmp_P(buffer + 11, F("testRead"), 8) == 0) {
+      return;
+    }
+    strncpy_P(expected, (PGM_P)F("testRead"), sizeof(expected));
+    if (memcmp(buffer + 11, expected, 8) == 0) {
       testReadSpeed();
-    } else if (memcmp_P(buffer + 11, F("testWrite"), 9) == 0) {
+      return;
+    }
+    strncpy_P(expected, (PGM_P)F("testWrite"), sizeof(expected));
+    if (memcmp(buffer + 11, expected, 9) == 0) {
       testWriteSpeed();
+      return;
     } else {
       // Unimplemented in API 1
       serial(F("Request unimplemented in API 1"));
@@ -341,6 +367,7 @@ void EthernetServer_TC::loop() {
     return;
   }
   if (client || (client = accept())) {  // if we have a connection
+    char expected[9];
     switch (state) {
       case IN_TRANSFER:
         if (fileContinue()) {
@@ -359,9 +386,10 @@ void EthernetServer_TC::loop() {
         __attribute__((fallthrough));  // Mwahahaha, use switch statement fall-through in a good way!
       case READ_REQUEST:
         int next;
+        strncpy_P(expected, (PGM_P)F("\r\n\r\n"), sizeof(expected));
         while (bufferContentsSize < sizeof(buffer) - 1 && (next = client.read()) != -1) {  // Flawfinder: ignore
           buffer[bufferContentsSize++] = (char)(next & 0xFF);
-          if (bufferContentsSize > 3 && (memcmp_P(buffer + bufferContentsSize - 4, F("\r\n\r\n"), 4) == 0)) {
+          if (bufferContentsSize > 3 && (memcmp(buffer + bufferContentsSize - 4, expected, 4) == 0)) {
             buffer[bufferContentsSize] = '\0';
             break;
           }
@@ -372,21 +400,28 @@ void EthernetServer_TC::loop() {
             state = FINISHED;
           }
         } else {
-          if (memcmp_P(buffer, F("GET "), 4) == 0) {
+          strncpy_P(expected, (PGM_P)F("GET "), sizeof(expected));
+          if (memcmp(buffer, expected, 4) == 0) {
             state = GET_REQUEST;
             get();
-          } else if (memcmp_P(buffer, F("POST "), 5) == 0) {
+            break;
+          }
+          strncpy_P(expected, (PGM_P)F("POST "), sizeof(expected));
+          if (memcmp(buffer, expected, 5) == 0) {
             state = POST_REQUEST;
             post();
-          } else if (memcmp_P(buffer, F("OPTIONS "), 8) == 0) {
+            break;
+          }
+          strncpy_P(expected, (PGM_P)F("OPTIONS "), sizeof(expected));
+          if (memcmp(buffer, expected, 8) == 0) {
             state = OPTIONS_REQUEST;
             options();
-          } else {
-            serial(buffer);
-            serial(F("Unsupported request"));
-            sendResponse(HTTP_NOT_IMPLEMENTED);
-            state = FINISHED;
+            break;
           }
+          serial(buffer);
+          serial(F("Unsupported request"));
+          sendResponse(HTTP_NOT_IMPLEMENTED);
+          state = FINISHED;
         }
         break;
       default:

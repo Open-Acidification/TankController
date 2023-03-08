@@ -21,11 +21,11 @@ int JSONBuilder::buildCurrentValues() {
   float kp = PID_TC::instance()->getKp();
   float ki = PID_TC::instance()->getKi();
   float kd = PID_TC::instance()->getKd();
-  char PIDStatus[4];
+  char pidStatus[4];
   if (PHControl::instance()->getUsePID()) {
-    snprintf_P(PIDStatus, sizeof(PIDStatus), (PGM_P)F("ON"));
+    snprintf_P(pidStatus, sizeof(pidStatus), (PGM_P)F("ON"));
   } else {
-    snprintf_P(PIDStatus, sizeof(PIDStatus), (PGM_P)F("OFF"));
+    snprintf_P(pidStatus, sizeof(pidStatus), (PGM_P)F("OFF"));
   }
   uint32_t ms = millis();
   uint16_t days = ms / 86400000;
@@ -50,7 +50,7 @@ int JSONBuilder::buildCurrentValues() {
                      IP[0], IP[1], IP[2], IP[3], mac[0], mac[1], mac[2], mac[3], mac[4], mac[5],
                      (int)TankController::instance()->freeMemory(), EEPROM_TC::instance()->getGoogleSheetInterval(),
                      logFilePath, pHSlope, (int)kp, (int)(kp * 10 + 0.5) % 10, (int)ki, (int)(ki * 10 + 0.5) % 10,
-                     (int)kd, (int)(kd * 10 + 0.5) % 10, PIDStatus, EEPROM_TC::instance()->getTankID(), days, hours,
+                     (int)kd, (int)(kd * 10 + 0.5) % 10, pidStatus, EEPROM_TC::instance()->getTankID(), days, hours,
                      minutes, seconds, TankController::instance()->version());
   return bytes;
 }

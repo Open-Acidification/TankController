@@ -13,7 +13,12 @@ class AppData with ChangeNotifier {
     return _instance;
   }
 
-  dynamic _currentTank = Tank('', '');
+  AppData() {
+    _currentTank = _emptyTank;
+  }
+
+  final _emptyTank = Tank('', '');
+  dynamic _currentTank;
   var _display = '';
   Map<String, dynamic> _information = <String, dynamic>{};
   Map<String, dynamic> _files = <String, dynamic>{};
@@ -37,16 +42,17 @@ class AppData with ChangeNotifier {
   }
 
   Future<void> refreshDisplay() async {
-    if (currentTank != Tank('', '')) {
+    if (currentTank.isNotEmpty()) {
       var tcInterface = TcInterface.instance;
-      tcInterface.get(currentTank.ip, 'display').then((value) {
-        display = value;
-      });
+      display = await tcInterface.get(currentTank.ip, 'display');
+    } else {
+      display = '';
     }
+    notifyListeners();
   }
 
   Future<void> refreshInformation() async {
-    if (currentTank == Tank('', '')) {
+    if (currentTank.isEmpty()) {
       _information = jsonDecode("{\"Error: Choose tank from menu\":\"\"}");
     } else {
       var tcInterface = TcInterface.instance;
@@ -57,7 +63,7 @@ class AppData with ChangeNotifier {
   }
 
   Future<void> refreshFiles() async {
-    if (currentTank == Tank('', '')) {
+    if (currentTank.isEmpty()) {
       _files = jsonDecode("{\"Error: Choose tank from menu\":\"\"}");
     } else {
       var tcInterface = TcInterface.instance;
@@ -78,21 +84,23 @@ class AppData with ChangeNotifier {
     // ignore result
     await TcInterface.instance.get(tank.ip, 'current');
     _tankList.add(tank);
+    refreshDisplay();
     notifyListeners();
     writeTankList(tankList);
   }
 
   void removeTank(tank) {
     _tankList.remove(tank);
+    clearTank();
+    refreshDisplay();
     notifyListeners();
     writeTankList(tankList);
   }
 
 
   void clearTank() {
-    _currentTank = Tank('', '');
+    _currentTank = _emptyTank;
     notifyListeners();
-    print("cleared tank");
   }
 
   set currentIndex(index) {

@@ -11,7 +11,7 @@ void main() {
 
   tearDown(() {
     // Reset so that we no longer have a tank
-    AppData.instance.currentTank = Tank("", "");
+    AppData.instance.clearTank();
   });
 
   testWidgets('Keypad buttons work as expected', (WidgetTester tester) async {

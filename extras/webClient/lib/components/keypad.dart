@@ -68,7 +68,7 @@ class Keypad extends StatelessWidget {
             foregroundColor: Colors.white,
           ),
           onPressed: () {
-            if (appData.currentTank != Tank('', '')) {
+            if (appData.currentTank.isNotEmpty()) {
               tcInterface
                   .post(appData.currentTank.ip, 'key?value=$label')
                   .then((value) {

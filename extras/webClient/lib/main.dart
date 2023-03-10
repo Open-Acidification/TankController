@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       value: AppData.instance,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Tank Manager',
+        title: "Tank Manager",
         theme: ThemeData(
           primarySwatch: Colors.blue,
           scaffoldBackgroundColor: Colors.grey.shade500,

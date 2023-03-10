@@ -175,7 +175,7 @@ void TankController::serialEvent1() {
  * Set the next state
  */
 void TankController::setNextState(UIState *newState, bool update) {
-  COUT("TankController::setNextState() from " << (nextState ? nextState->name() : "nullptr") << " to "
+  COUT("TankController::setNextState() from " << (nextState ? (PGM_P)nextState->name() : "nullptr") << " to "
                                               << newState->name());
   assert(nextState == nullptr);
   nextState = newState;
@@ -269,7 +269,7 @@ void TankController::writeDataToSD() {
   floattostrf(pPID->getKd(), 8, 1, kd, sizeof(kd));
   const __FlashStringHelper *header = F("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd");
   const __FlashStringHelper *format = F("%02i/%02i/%4i %02i:%02i:%02i, %3i, %s, %s, %s, %s, %4lu, %s, %s, %s");
-  char header_buffer[sizeof(header)];
+  char header_buffer[64];
   strscpy_P(header_buffer, header, sizeof(header_buffer));
   char buffer[128];
   int length;

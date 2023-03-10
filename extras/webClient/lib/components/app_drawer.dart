@@ -76,12 +76,13 @@ class AppDrawer extends StatelessWidget {
           Align(
             alignment: Alignment.topRight,
             child: FloatingActionButton(
-                onPressed: () {
-                  appData.removeTank(appData.currentTank);
-                  appData.currentTank = Tank("", "");
-                },
-                tooltip: 'Remove Tank',
-                child: const Icon(Icons.delete_sharp)),
+              onPressed: () {
+                appData.removeTank(appData.currentTank);
+                appData.clearTank();
+              },
+              tooltip: 'Remove Tank',
+              child: const Icon(Icons.delete_sharp),
+            ),
           ),
         ],
       ),

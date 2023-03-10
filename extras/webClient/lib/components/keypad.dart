@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tank_manager/model/tank.dart';
 import 'package:tank_manager/model/tc_interface.dart';
 import 'package:tank_manager/model/app_data.dart';
 
@@ -68,7 +67,7 @@ class Keypad extends StatelessWidget {
             foregroundColor: Colors.white,
           ),
           onPressed: () {
-            if (appData.currentTank != Tank('', '')) {
+            if (appData.currentTank.isNotEmpty()) {
               tcInterface
                   .post(appData.currentTank.ip, 'key?value=$label')
                   .then((value) {

@@ -18,4 +18,12 @@ class Tank {
 
   @override
   int get hashCode => name.hashCode;
+
+  bool isEmpty() {
+    return name == '' && ip == '';
+  }
+
+  bool isNotEmpty() {
+    return name != '' || ip != '';
+  }
 }

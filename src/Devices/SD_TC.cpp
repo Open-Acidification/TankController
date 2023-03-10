@@ -167,11 +167,9 @@ bool SD_TC::listFile(File* myFile, void* userData) {
 #endif
 }
 
-bool SD_TC::listRootToBuffer(void (*callWhenFull)(char*, bool)) {
+bool SD_TC::listRootToBuffer(void (*callWhenFull)(const char*, bool)) {
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
-  static const char notImplemented[] PROGMEM = "Root directory not supported by CI framework.\r\n";
-  char buffer[sizeof(notImplemented)];
-  memcpy(buffer, (PGM_P)notImplemented, sizeof(notImplemented));
+  const char buffer[] = "Root directory not supported by CI framework.\r\n";
   callWhenFull(buffer, true);
   return true;
 #else

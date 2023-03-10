@@ -47,7 +47,7 @@ public:
     return state;
   }
   void loop();
-  void writeToClientBuffer(char*, bool);
+  void writeToClientBuffer(const char*, bool);
   void sendHeadersForRootdir(int);
 
 private:

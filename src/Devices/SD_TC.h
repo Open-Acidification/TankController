@@ -24,7 +24,7 @@ public:
   void appendToLog(const char* line);
   bool exists(const char* path);
   bool format();
-  bool listRootToBuffer(void (*callWhenFull)(char*, bool));
+  bool listRootToBuffer(void (*callWhenFull)(const char*, bool));
   bool countFiles(void (*callWhenFinished)(int));
   bool mkdir(const char* path);
   File open(const char* path, oflag_t oflag = 0x00);

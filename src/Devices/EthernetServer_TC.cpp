@@ -177,7 +177,7 @@ void EthernetServer_TC::keypress() {
 }
 
 // Non-member callback wrapper for singleton
-void writeToClientBufferCallback(char *buffer, bool isFinished) {
+void writeToClientBufferCallback(const char *buffer, bool isFinished) {
   // The boolean value in the callback is true when the process is complete
   EthernetServer_TC::instance()->writeToClientBuffer(buffer, isFinished);
 }
@@ -218,7 +218,7 @@ void EthernetServer_TC::rootdir() {
 }
 
 // Write to the client buffer
-void EthernetServer_TC::writeToClientBuffer(char *buffer, bool isFinished) {
+void EthernetServer_TC::writeToClientBuffer(const char *buffer, bool isFinished) {
   // Write to client and return (ASSUME NULL-TERMINATED)
   client.write(buffer);
   if (isFinished) {
@@ -245,7 +245,7 @@ void EthernetServer_TC::sendHeadersForRootdir(int fileCount) {
 void EthernetServer_TC::testReadSpeed() {
   wdt_disable();
   const __FlashStringHelper *path = F("tstRdSpd.txt");
-  char temp[sizeof(path)];
+  char temp[15];
   strscpy_P(temp, path, sizeof(temp));
   // Create the file and write garbage
   file = SD_TC::instance()->open(temp, O_RDWR | O_CREAT | O_AT_END);
@@ -414,7 +414,7 @@ void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
         "Content-Encoding: identity\r\n"
         "Content-Language: en-US\r\n"
         "Access-Control-Allow-Origin: *\r\n");
-  char buffer[sizeof(response)];
+  char buffer[150];
   strscpy_P(buffer, response, sizeof(buffer));
   client.write(buffer);
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Content-Length: %lu\r\n"), (unsigned long)size);
@@ -460,7 +460,7 @@ void EthernetServer_TC::sendResponse(int code) {
   const __FlashStringHelper *response_501 =
       F("HTTP/1.1 501 Not Implemented\r\n"
         "\r\n");
-  char buffer[sizeof(response_303)];  // Use longest of above responses
+  char buffer[100];  // Space for longest of above responses
   switch (code) {
     case HTTP_REDIRECT:
       strscpy_P(buffer, response_303, sizeof(buffer));

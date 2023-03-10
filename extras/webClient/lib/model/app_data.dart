@@ -91,12 +91,13 @@ class AppData with ChangeNotifier {
 
   void removeTank(tank) {
     _tankList.remove(tank);
-    clearTank();
-    refreshDisplay();
+    if (_currentTank == tank) {
+      clearTank();
+      refreshDisplay();
+    }
     notifyListeners();
     writeTankList(tankList);
   }
-
 
   void clearTank() {
     _currentTank = _emptyTank;

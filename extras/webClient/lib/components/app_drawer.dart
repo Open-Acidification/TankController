@@ -81,7 +81,7 @@ class AppDrawer extends StatelessWidget {
                 appData.clearTank();
               },
               tooltip: 'Remove Tank',
-              child: const Icon(Icons.delete_sharp)
+              child: const Icon(Icons.delete_sharp),
             ),
           ),
         ],

@@ -12,9 +12,7 @@ jobs:
           channel: 'stable'
 
       - name: Install dependencies
-        run: |
-        cd extras/webClient
-        flutter pub get
+        run: flutter pub get
 
       - name: Verify formatting
         run: |

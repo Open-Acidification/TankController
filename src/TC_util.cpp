@@ -33,7 +33,7 @@ int strscpy_P(char *destination, const __FlashStringHelper *source_F, unsigned l
     // Put a null terminator in the final byte
     *((char *)memcpy_P(destination, source, sizeOfDestination - 1) + sizeOfDestination - 1) = '\0';
     // TODO: Log a WARNING that a string was truncated
-    serial(F("WARNING! String \"%s\" was truncated to \"%s\""), (PGM_P)source, destination);
+    serial(F("WARNING! String (P) \"%s\" was truncated to \"%s\""), (PGM_P)source, destination);
     return 1;
   }
 }

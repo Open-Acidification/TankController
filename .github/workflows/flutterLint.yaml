@@ -12,10 +12,16 @@ jobs:
           channel: 'stable'
 
       - name: Install dependencies
-        run: flutter pub get
+        run: |
+        cd extras/webClient
+        flutter pub get
 
       - name: Verify formatting
-        run: dart format --output=none --set-exit-if-changed .
+        run: |
+        cd extras/webClient
+        dart format --output=none --set-exit-if-changed .
 
       - name: Analyze project source
-        run: dart analyze --fatal-infos
+        run: |
+        cd extras/webClient
+        dart analyze --fatal-infos

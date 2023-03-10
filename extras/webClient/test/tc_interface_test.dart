@@ -5,7 +5,7 @@ void main() {
   TcInterface.useMock();
   var tcInterface = TcInterface.instance;
   test('Post', () async {
-    var post = await tcInterface.post("192.168.0.1", 'key?value=4');
+    var post = await tcInterface.post('192.168.0.1', 'key?value=4');
     expect(
         post,
         'pH=7.352   7.218\n'
@@ -13,7 +13,7 @@ void main() {
   });
 
   test('Get', () async {
-    var get = await tcInterface.get("192.168.0.1", '7');
+    var get = await tcInterface.get('192.168.0.1', '7');
     expect(
         get,
         'pH=7.352   7.218\n'

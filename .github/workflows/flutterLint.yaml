@@ -16,10 +16,10 @@ jobs:
 
       - name: Verify formatting
         run: |
-        cd extras/webClient
-        dart format --output=none --set-exit-if-changed .
+          cd extras/webClient
+          dart format --output=none --set-exit-if-changed .
 
       - name: Analyze project source
         run: |
-        cd extras/webClient
-        dart analyze --fatal-infos
+          cd extras/webClient
+          dart analyze --fatal-infos

@@ -68,6 +68,6 @@ void LiquidCrystal_TC::writeLine(const char* text, uint16_t line) {
 void LiquidCrystal_TC::writeLine(const __FlashStringHelper* text, uint16_t line) {
   // copy from program memory to SRAM and then call other function
   char buffer[17];
-  strscpy_P(buffer, (PGM_P)text, sizeof(buffer));
+  strscpy_P(buffer, text, sizeof(buffer));
   writeLine(buffer, line);
 }

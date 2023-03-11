@@ -38,7 +38,7 @@ void main() {
 
     // Create a tank
     var appData = AppData.instance;
-    appData.currentTank = Tank("test_tank", "192.168.0.1");
+    appData.currentTank = Tank('test_tank', '192.168.0.1');
 
     // Force button visibility for tester
     // Verify a buttons exists
@@ -62,19 +62,19 @@ void main() {
 
     // Create a tank
     var appData = AppData.instance;
-    appData.currentTank = Tank("test_tank", "192.168.0.1");
+    appData.currentTank = Tank('test_tank', '192.168.0.1');
 
     // Verify information is not displayed
     // Navigate to Information
     // Verify information is displayed
-    await tester.ensureVisible(find.text("Information"));
-    expect(find.text("Information"), findsOneWidget);
-    expect(find.text("90:A2:DA:0F:45:C0"), findsNothing);
-    expect(find.text("FreeMemory"), findsNothing);
-    await tester.tap(find.text("Information"));
+    await tester.ensureVisible(find.text('Information'));
+    expect(find.text('Information'), findsOneWidget);
+    expect(find.text('90:A2:DA:0F:45:C0'), findsNothing);
+    expect(find.text('FreeMemory'), findsNothing);
+    await tester.tap(find.text('Information'));
     await tester.pump();
-    expect(find.text("90:A2:DA:0F:45:C0"), findsOneWidget);
-    expect(find.text("FreeMemory"), findsOneWidget);
+    expect(find.text('90:A2:DA:0F:45:C0'), findsOneWidget);
+    expect(find.text('FreeMemory'), findsOneWidget);
   });
 
   testWidgets('Files are displayed', (WidgetTester tester) async {
@@ -83,21 +83,21 @@ void main() {
 
     // Create a tank
     var appData = AppData.instance;
-    appData.currentTank = Tank("test_tank", "192.168.0.1");
+    appData.currentTank = Tank('test_tank', '192.168.0.1');
 
     // Verify files are not displayed
     // Navigate to Files
     // Verify files are displayed
-    await tester.ensureVisible(find.text("Files"));
-    expect(find.text("Files"), findsOneWidget);
-    expect(find.text("20220217.csv"), findsNothing);
-    expect(find.text("20220809.log"), findsNothing);
-    expect(find.text("8005 KB"), findsNothing);
-    await tester.tap(find.text("Files"));
+    await tester.ensureVisible(find.text('Files'));
+    expect(find.text('Files'), findsOneWidget);
+    expect(find.text('20220217.csv'), findsNothing);
+    expect(find.text('20220809.log'), findsNothing);
+    expect(find.text('8005 KB'), findsNothing);
+    await tester.tap(find.text('Files'));
     await tester.pump();
-    expect(find.text("20220217.csv"), findsOneWidget);
-    expect(find.text("20220809.log"), findsOneWidget);
-    expect(find.text("8005 KB"), findsWidgets);
+    expect(find.text('20220217.csv'), findsOneWidget);
+    expect(find.text('20220809.log'), findsOneWidget);
+    expect(find.text('8005 KB'), findsWidgets);
   });
 
   testWidgets('No tank selected', (WidgetTester tester) async {
@@ -109,25 +109,25 @@ void main() {
     // Verify error message is not displayed
     // Navigate to Information
     // Verify error message is displayed
-    await tester.ensureVisible(find.text("Information"));
-    expect(find.text("Information"), findsOneWidget);
-    expect(find.text("Error: Choose tank from menu"), findsNothing);
-    await tester.tap(find.text("Information"));
+    await tester.ensureVisible(find.text('Information'));
+    expect(find.text('Information'), findsOneWidget);
+    expect(find.text('Error: Choose tank from menu'), findsNothing);
+    await tester.tap(find.text('Information'));
     await tester.pump();
-    expect(find.text("Error: Choose tank from menu"), findsOneWidget);
+    expect(find.text('Error: Choose tank from menu'), findsOneWidget);
 
     // Navigate back to Keypad
     // Verify error message is not displayed
     // Navigate to Files
     // Verify error message is displayed
-    await tester.ensureVisible(find.text("Keypad"));
-    await tester.tap(find.text("Keypad"));
+    await tester.ensureVisible(find.text('Keypad'));
+    await tester.tap(find.text('Keypad'));
     await tester.pump();
-    await tester.ensureVisible(find.text("Files"));
-    expect(find.text("Files"), findsOneWidget);
-    expect(find.text("Error: Choose tank from menu"), findsNothing);
-    await tester.tap(find.text("Files"));
+    await tester.ensureVisible(find.text('Files'));
+    expect(find.text('Files'), findsOneWidget);
+    expect(find.text('Error: Choose tank from menu'), findsNothing);
+    await tester.tap(find.text('Files'));
     await tester.pump();
-    expect(find.text("Error: Choose tank from menu"), findsOneWidget);
+    expect(find.text('Error: Choose tank from menu'), findsOneWidget);
   });
 }

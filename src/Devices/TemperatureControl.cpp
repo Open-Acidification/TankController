@@ -42,7 +42,7 @@ void TemperatureControl::enableHeater(bool flag) {
     delete _instance;
     _instance = nullptr;
     char buffer[7];
-    strscpy_P(buffer, (flag ? (PGM_P)F("true)") : (PGM_P)F("false)")), sizeof(buffer));
+    strscpy_P(buffer, (flag ? F("true)") : F("false)")), sizeof(buffer));
     serial(F("TemperatureControl::enableHeater(%s"), buffer);
   }
 }
@@ -87,7 +87,7 @@ TemperatureControl::TemperatureControl() {
   digitalWrite(TEMP_CONTROL_PIN, TURN_SOLENOID_OFF);
   char buffer1[8];
   char buffer2[10];
-  strscpy_P(buffer1, (this->isHeater() ? (PGM_P)F("Heater") : (PGM_P)F("Chiller")), sizeof(buffer1));
+  strscpy_P(buffer1, (this->isHeater() ? F("Heater") : F("Chiller")), sizeof(buffer1));
   floattostrf(targetTemperature, 5, 2, buffer2, sizeof(buffer2));
   serial(F("%s starts with solenoid off with target temperature of %s C"), buffer1, buffer2);
 }

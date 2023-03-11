@@ -54,7 +54,7 @@ unittest(stringCopy_P) {
   String serialOutput;
   serial("This line of code initializes SD_TC so it won't pollute future logs.");
 
-  static const char source[11] PROGMEM = "stringtest";
+  const __FlashStringHelper* source = F("stringtest");
   char dest1[9];
   char dest2[] = "012345678";
   char dest3[] = "0123456789abc";
@@ -65,14 +65,14 @@ unittest(stringCopy_P) {
   assertEqual("stringte", dest1);
   assertEqual('\0', dest1[8]);
   serialOutput = state->serialPort[0].dataOut;
-  assertEqual("WARNING! String \"stringtest\" was truncated to \"stringte\"\r\n", serialOutput.c_str());
+  assertEqual("WARNING! String (P) \"stringtest\" was truncated to \"stringte\"\r\n", serialOutput.c_str());
 
   state->serialPort[0].dataOut = "";  // the history of data written
   assertEqual(1, strscpy_P(dest2, source, sizeof(dest2)));
   assertEqual("stringtes", dest2);
   assertEqual('\0', dest2[9]);
   serialOutput = state->serialPort[0].dataOut;
-  assertEqual("WARNING! String \"stringtest\" was truncated to \"stringtes\"\r\n", serialOutput.c_str());
+  assertEqual("WARNING! String (P) \"stringtest\" was truncated to \"stringtes\"\r\n", serialOutput.c_str());
 
   state->serialPort[0].dataOut = "";  // the history of data written
   assertEqual(1, strscpy_P(dest3, source, 9));
@@ -82,7 +82,7 @@ unittest(stringCopy_P) {
   assertEqual('a', dest3[10]);
   assertEqual('\0', dest3[13]);
   serialOutput = state->serialPort[0].dataOut;
-  assertEqual("WARNING! String \"stringtest\" was truncated to \"stringte\"\r\n", serialOutput.c_str());
+  assertEqual("WARNING! String (P) \"stringtest\" was truncated to \"stringte\"\r\n", serialOutput.c_str());
 
   state->serialPort[0].dataOut = "";  // the history of data written
   assertEqual(0, strscpy_P(dest4, source, sizeof(dest4)));

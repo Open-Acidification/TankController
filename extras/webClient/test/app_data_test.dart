@@ -47,7 +47,7 @@ void main() async {
   test('App read tank list', () async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<Tank> tankList = [Tank('Tank', '192.168.0.2')];
-    prefs.setString('obj1', jsonEncode(tankList));
+    await prefs.setString('obj1', jsonEncode(tankList));
     await appData.readTankList();
     expect(appData.tankList, [Tank('Tank', '192.168.0.2')]);
   });

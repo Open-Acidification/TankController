@@ -58,24 +58,26 @@ class Keypad extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-          color: color,
-          border: Border.all(width: 5, color: Colors.white),
-          borderRadius: const BorderRadius.all(Radius.circular(20))),
+        color: color,
+        border: Border.all(width: 5, color: Colors.white),
+        borderRadius: const BorderRadius.all(Radius.circular(20)),
+      ),
       child: TextButton(
-          style: TextButton.styleFrom(
-            textStyle: const TextStyle(fontSize: 40),
-            foregroundColor: Colors.white,
-          ),
-          onPressed: () {
-            if (appData.currentTank.isNotEmpty()) {
-              tcInterface
-                  .post(appData.currentTank.ip, 'key?value=$label')
-                  .then((value) {
-                appData.display = value;
-              });
-            }
-          },
-          child: Text(label)),
+        style: TextButton.styleFrom(
+          textStyle: const TextStyle(fontSize: 40),
+          foregroundColor: Colors.white,
+        ),
+        onPressed: () {
+          if (appData.currentTank.isNotEmpty()) {
+            tcInterface
+                .post(appData.currentTank.ip, 'key?value=$label')
+                .then((value) {
+              appData.display = value;
+            });
+          }
+        },
+        child: Text(label),
+      ),
     );
   }
 }

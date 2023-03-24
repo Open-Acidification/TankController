@@ -11,7 +11,7 @@ class AppDrawer extends StatelessWidget {
 
   final BuildContext context;
 
-  showAlertDialog(String message, BuildContext context) {
+  showAlertDialog(String message, BuildContext context) async {
     // set up the button
     Widget okButton = TextButton(
       child: const Text('OK'),
@@ -24,14 +24,15 @@ class AppDrawer extends StatelessWidget {
     AlertDialog alert = AlertDialog(
       title: Text(message),
       content: const Text(
-          'Error connecting to Tank Controller. This is likely due to an incorrect IP address.'),
+        'Error connecting to Tank Controller. This is likely due to an incorrect IP address.',
+      ),
       actions: [
         okButton,
       ],
     );
 
     // show the dialog
-    showDialog(
+    await showDialog(
       context: context,
       builder: (BuildContext context) {
         return alert;

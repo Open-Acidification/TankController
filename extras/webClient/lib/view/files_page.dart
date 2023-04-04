@@ -22,10 +22,12 @@ class Files extends StatelessWidget {
               DataRow(
                 cells: <DataCell>[
                   DataCell(Text(fileName.toString())),
-                  DataCell(Container(
-                    alignment: const Alignment(1.0, 0.0),
-                    child: Text(fileSize.toString().trim()),
-                  )),
+                  DataCell(
+                    Container(
+                      alignment: const Alignment(1.0, 0.0),
+                      child: Text(fileSize.toString().trim()),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -35,16 +37,18 @@ class Files extends StatelessWidget {
                 .toString()
                 .compareTo(b.cells[0].child.toString()),
           );
-          return ListView(children: <Widget>[
-            DataTable(
-              headingRowHeight: 0,
-              columns: const <DataColumn>[
-                DataColumn(label: Text('File Name')),
-                DataColumn(label: Text('File Size')),
-              ],
-              rows: fileRows,
-            )
-          ]);
+          return ListView(
+            children: <Widget>[
+              DataTable(
+                headingRowHeight: 0,
+                columns: const <DataColumn>[
+                  DataColumn(label: Text('File Name')),
+                  DataColumn(label: Text('File Size')),
+                ],
+                rows: fileRows,
+              )
+            ],
+          );
         },
       ),
     );

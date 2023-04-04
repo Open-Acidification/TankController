@@ -22,8 +22,13 @@ linter:
   # `// ignore_for_file: name_of_lint` syntax on the line or in the file
   # producing the lint.
   rules:
-    # avoid_print: false  # Uncomment to disable the `avoid_print` rule
-    prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
+    prefer_single_quotes: true  # Use single quotes for text
+    always_use_package_imports: true  # Use absolute imports for packages instead of relative imports
+    discarded_futures: true # Don't call async functions in non-async functions
+    unawaited_futures: true # Mark async functions with await or use 'unawaited'
+    leading_newlines_in_multiline_strings: true # Start multiline strings with a newline for readability
+    require_trailing_commas: true # Use trailing commas for all function calls and declarations
+    sort_pub_dependencies: true #Sort pub dependencies alphabetically for ease of readability
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

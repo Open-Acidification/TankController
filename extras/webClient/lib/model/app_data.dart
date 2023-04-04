@@ -38,7 +38,7 @@ class AppData with ChangeNotifier {
 
   Future<void> writeTankList(tankList) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('obj1', jsonEncode(tankList));
+    await prefs.setString('obj1', jsonEncode(tankList));
   }
 
   Future<void> refreshDisplay() async {
@@ -84,19 +84,19 @@ class AppData with ChangeNotifier {
     // ignore result
     await TcInterface.instance.get(tank.ip, 'current');
     _tankList.add(tank);
-    refreshDisplay();
+    unawaited(refreshDisplay());
     notifyListeners();
-    writeTankList(tankList);
+    unawaited(writeTankList(tankList));
   }
 
-  void removeTank(tank) {
+  void removeTank(tank) async {
     _tankList.remove(tank);
     if (_currentTank == tank) {
       clearTank();
-      refreshDisplay();
+      unawaited(refreshDisplay());
     }
     notifyListeners();
-    writeTankList(tankList);
+    unawaited(writeTankList(tankList));
   }
 
   void clearTank() {

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -15,8 +17,8 @@ class Display extends StatelessWidget {
       builder: (context, appData, child) {
         return InkWell(
           splashColor: Colors.grey.shade300,
-          onTap: () {
-            appData.refreshDisplay();
+          onTap: () async {
+            unawaited(appData.refreshDisplay());
           },
           child: Container(
             margin: const EdgeInsets.only(top: 20, bottom: 20),

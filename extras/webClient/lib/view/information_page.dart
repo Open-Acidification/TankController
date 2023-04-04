@@ -27,20 +27,22 @@ class Information extends StatelessWidget {
               ),
             ),
           );
-          return ListView(children: <Widget>[
-            DataTable(
-              headingRowHeight: 0,
-              columns: const <DataColumn>[
-                DataColumn(
-                  label: Text('Key'),
-                ),
-                DataColumn(
-                  label: Text('Value'),
-                ),
-              ],
-              rows: informationRows,
-            )
-          ]);
+          return ListView(
+            children: <Widget>[
+              DataTable(
+                headingRowHeight: 0,
+                columns: const <DataColumn>[
+                  DataColumn(
+                    label: Text('Key'),
+                  ),
+                  DataColumn(
+                    label: Text('Value'),
+                  ),
+                ],
+                rows: informationRows,
+              )
+            ],
+          );
         },
       ),
     );

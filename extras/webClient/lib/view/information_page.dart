@@ -10,6 +10,13 @@ class Information extends StatelessWidget {
 
   final BuildContext context;
 
+  bool showedit(var valueString) {
+    return valueString == 'PHSlope' ||
+        valueString == 'Kp' ||
+        valueString == 'Ki' ||
+        valueString == 'Kd';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -22,7 +29,13 @@ class Information extends StatelessWidget {
               DataRow(
                 cells: <DataCell>[
                   DataCell(Text(key.toString())),
-                  DataCell(Text(value.toString()))
+                  DataCell(
+                    Text(value.toString()),
+                    showEditIcon: showedit(key.toString()),
+                    onTap: () {
+                      print('ontap ${key.toString()}');
+                    },
+                  )
                 ],
               ),
             ),

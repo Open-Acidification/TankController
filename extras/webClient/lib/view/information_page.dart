@@ -51,6 +51,7 @@ class Information extends StatelessWidget {
                                         onFieldSubmitted: (val) {
                                           //print('onSubmit $val');
                                           //PUT function goes here
+                                          print('${appData.information["IPAddress"]}' '${key.toString()}=$val');
                                           //TcInterface.instance.put('${appData.information["IPAddress"]}', '${key.toString()}=$val');
                                           Navigator.pop(context);
                                         },

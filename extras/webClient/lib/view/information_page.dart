@@ -10,7 +10,7 @@ class Information extends StatelessWidget {
 
   final BuildContext context;
 
-  bool showedit(var valueString) {
+  bool showEdit(var valueString) {
     return valueString == 'PHSlope' ||
         valueString == 'Kp' ||
         valueString == 'Ki' ||
@@ -31,8 +31,37 @@ class Information extends StatelessWidget {
                   DataCell(Text(key.toString())),
                   DataCell(
                     Text(value.toString()),
-                    showEditIcon: showedit(key.toString()),
-                    onTap: () {
+                    showEditIcon: showEdit(key.toString()),
+                    onTap: () async {
+                      if (showEdit(key.toString())) {
+                        await showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Edit ${key.toString()}'),
+                              content: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Form(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      TextFormField(
+                                        initialValue: value.toString(),
+                                        onFieldSubmitted: (val) {
+                                          print('onSubmit $val');
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                      const Text(''), //Placeholder for spacing
+                                      const Text('Press "Esc" to cancel, or "Enter" to submit'),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      }
                       print('ontap ${key.toString()}');
                     },
                   )

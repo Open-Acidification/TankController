@@ -52,7 +52,17 @@ class TcRealInterface extends TcInterface {
       throw ('HTTP response not code 200');
     }
     final subString = response.body.toString().replaceAll('\r', '');
+    return subString;
+  }
 
+  Future<String> put(String ip, String path) async {
+    var uri = 'http://$ip/api/1/$path';
+    final future = http.put(Uri.parse(uri));
+    var response = await future.timeout(const Duration(seconds: 5));
+    if (response.statusCode != 200) {
+      throw ('HTTP response not code 200');
+    }
+    final subString = response.body.toString().replaceAll('\r', '');
     return subString;
   }
 }

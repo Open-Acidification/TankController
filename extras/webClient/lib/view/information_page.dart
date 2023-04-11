@@ -59,7 +59,8 @@ class Information extends StatelessWidget {
                                         '',
                                       ), //Placeholder for spacing until I find the correct way
                                       const Text(
-                                          'Press "Esc" to cancel, or "Enter" to submit'),
+                                        'Press "Esc" to cancel, or "Enter" to submit',
+                                      ),
                                     ],
                                   ),
                                 ),

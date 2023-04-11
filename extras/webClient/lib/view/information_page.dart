@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tank_manager/model/app_data.dart';
-import 'package:tank_manager/model/tank.dart';
 import 'package:tank_manager/model/tc_interface.dart';
 
 class Information extends StatelessWidget {
@@ -50,13 +49,13 @@ class Information extends StatelessWidget {
                                       TextFormField(
                                         initialValue: value.toString(),
                                         onFieldSubmitted: (val) {
-                                          print('onSubmit $val');
+                                          //print('onSubmit $val');
                                           //PUT function goes here
                                           //TcInterface.instance.put('${appData.information["IPAddress"]}', '${key.toString()}=$val');
                                           Navigator.pop(context);
                                         },
                                       ),
-                                      const Text(''), //Placeholder for spacing
+                                      const Text(''), //Placeholder for spacing until I find the correct way
                                       const Text('Press "Esc" to cancel, or "Enter" to submit'),
                                     ],
                                   ),
@@ -66,7 +65,6 @@ class Information extends StatelessWidget {
                           },
                         );
                       }
-                      print('ontap ${key.toString()}');
                     },
                   )
                 ],

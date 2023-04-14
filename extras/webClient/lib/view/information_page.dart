@@ -18,6 +18,48 @@ class Information extends StatelessWidget {
         valueString == 'Kd';
   }
 
+  showEditDialog(var appData, BuildContext context, var key, var value) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Submit new ${key.toString()} value'),
+          content: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Form(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  TextFormField(
+                    initialValue: value.toString(),
+                    onFieldSubmitted: (val) {
+                      TcInterface.instance
+                          .put(
+                        '${appData.information["IPAddress"]}',
+                        '${key.toString()}=$val',
+                      )
+                          .then((value) {
+                        appData.information = value;
+                      });
+                      Navigator.pop(context);
+                    },
+                  ),
+
+                  const Text(
+                    '',
+                  ), //Placeholder for spacing until I find the correct way
+                  const Text(
+                    'Press "Esc" to cancel, or "Enter" to submit',
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -36,47 +78,7 @@ class Information extends StatelessWidget {
                           Text(value.toString()),
                           showEditIcon: true,
                           onTap: () async {
-                            await showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text('Edit ${key.toString()}'),
-                                  content: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Form(
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                          TextFormField(
-                                            initialValue: value.toString(),
-                                            onFieldSubmitted: (val) {
-                                              print(
-                                                  '${appData.information["IPAddress"]} ${key.toString()}=$val');
-                                              TcInterface.instance
-                                                  .put(
-                                                '${appData.information["IPAddress"]}',
-                                                '${key.toString()}=$val',
-                                              )
-                                                  .then((value) {
-                                                appData.information = value;
-                                              });
-                                              Navigator.pop(context);
-                                            },
-                                          ),
-
-                                          const Text(
-                                            '',
-                                          ), //Placeholder for spacing until I find the correct way
-                                          const Text(
-                                            'Press "Esc" to cancel, or "Enter" to submit',
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
+                            showEditDialog(appData, context, key, value);
                           },
                         )
                 ],

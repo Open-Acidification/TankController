@@ -1,6 +1,7 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
-import 'dart:html';
+import 'dart:html' as html;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tank_manager/model/app_data.dart';
@@ -12,6 +13,14 @@ class Information extends StatelessWidget {
   }) : super(key: key);
 
   final BuildContext context;
+
+  startWebFilePicker() async {
+    print('Add file even more');
+    html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
+    uploadInput.multiple = true;
+    uploadInput.draggable = true;
+    uploadInput.click();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,23 +39,33 @@ class Information extends StatelessWidget {
               ),
             ),
           );
-          return ListView(
-            children: <Widget>[
-              DataTable(
-                headingRowHeight: 0,
-                columns: const <DataColumn>[
-                  DataColumn(
-                    label: Text('Key'),
-                  ),
-                  DataColumn(
-                    label: Text('Value'),
-                  ),
-                ],
-                rows: informationRows,
+          return Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  children: <Widget>[
+                    DataTable(
+                      headingRowHeight: 0,
+                      columns: const <DataColumn>[
+                        DataColumn(
+                          label: Text('Key'),
+                        ),
+                        DataColumn(
+                          label: Text('Value'),
+                        ),
+                      ],
+                      rows: informationRows,
+                    ),
+                  ],
+                ),
               ),
-              // Container(
-              //   child: TextButton,
-              // )
+              OutlinedButton(
+                onPressed: () {
+                  print('Add File');
+                  startWebFilePicker();
+                },
+                child: const Text('Add File'),
+              )
             ],
           );
         },

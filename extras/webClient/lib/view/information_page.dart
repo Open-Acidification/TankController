@@ -13,14 +13,24 @@ class Information extends StatelessWidget {
   }) : super(key: key);
 
   final BuildContext context;
+  List<int> _selectedFile;
+  Uint8List _bytesData;
 
-  startWebFilePicker() async {
-    print('Add file even more');
-    html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
-    uploadInput.multiple = true;
-    uploadInput.draggable = true;
-    uploadInput.click();
-  }
+  // void _handleResult(Object result) {
+  //   setState(())
+  // }
+
+  // startWebFilePicker() async {
+  //   html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
+  //   uploadInput.multiple = true;
+  //   uploadInput.draggable = true;
+  //   uploadInput.click();
+  //   uploadInput.onChange.listen((e) { 
+  //     final files = uploadInput.files;
+  //     final file = files[0];
+  //     final reader = new html.FileReader();
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +71,6 @@ class Information extends StatelessWidget {
               ),
               OutlinedButton(
                 onPressed: () {
-                  print('Add File');
                   startWebFilePicker();
                 },
                 child: const Text('Add File'),

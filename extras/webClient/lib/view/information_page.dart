@@ -13,24 +13,27 @@ class Information extends StatelessWidget {
   }) : super(key: key);
 
   final BuildContext context;
-  List<int> _selectedFile;
-  Uint8List _bytesData;
 
-  // void _handleResult(Object result) {
-  //   setState(())
-  // }
+  void handleResult(Object result) {
+    Uint8List bytesData = const Base64Decoder().convert(result.toString().split(',').last);
+    List<int> selectedFile = bytesData;
+  }
 
-  // startWebFilePicker() async {
-  //   html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
-  //   uploadInput.multiple = true;
-  //   uploadInput.draggable = true;
-  //   uploadInput.click();
-  //   uploadInput.onChange.listen((e) { 
-  //     final files = uploadInput.files;
-  //     final file = files[0];
-  //     final reader = new html.FileReader();
-  //   });
-  // }
+  startWebFilePicker() async {
+    html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
+    uploadInput.multiple = true;
+    uploadInput.draggable = true;
+    uploadInput.click();
+    uploadInput.onChange.listen((e) { 
+      final files = uploadInput.files;
+      final file = files![0];
+      dynamic reader = html.FileReader();
+      reader.onLoadEnd.listen((e) { 
+        handleResult(reader.result);
+      });
+      reader.readAsDataUrl(file);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

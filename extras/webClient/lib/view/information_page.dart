@@ -44,7 +44,7 @@ class Information extends StatelessWidget {
                       Navigator.pop(context);
                     },
                   ),
-                  const Spacer(), //Placeholder for spacing until I find the correct way
+                  const Spacer(),
                   const Text(
                     'Press "Esc" to cancel, or "Enter" to submit',
                   ),

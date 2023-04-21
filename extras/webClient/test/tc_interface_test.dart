@@ -21,12 +21,12 @@ void main() {
   });
 
   test('Put', () async {
-    var put = await tcInterface.put('192.168.0.1', 'PHSlope = 22');
-    expect(put, 'PHSlope = 22');
+    var put = await tcInterface.put('192.168.0.1', 'PHSlope=22');
+    expect(put, 'PHSlope=22');
   });
 
   test('Get Put', () async {
     var get = await tcInterface.get('192.168.0.1', 'PHSlope');
-    expect(get, 'PHSlope = 22');
+    expect(get, 'PHSlope=22');
   });
 }

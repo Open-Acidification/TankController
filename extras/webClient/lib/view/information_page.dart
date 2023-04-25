@@ -49,7 +49,6 @@ class Information extends StatelessWidget {
       final file = files![0];
       dynamic reader = html.FileReader();
       reader.onLoadEnd.listen((e) {
-        print(reader.result);
         handleResult(reader.result, ip);
       });
       reader.readAsDataUrl(file);

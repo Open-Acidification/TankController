@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tank_manager/model/app_data.dart';
 import 'package:tank_manager/model/tc_interface.dart';
+import 'package:version/version.dart';
 
 class Information extends StatelessWidget {
   const Information({
@@ -75,7 +76,15 @@ class Information extends StatelessWidget {
                           Text(value.toString()),
                           showEditIcon: true,
                           onTap: () async {
-                            showEditDialog(appData, context, key, value);
+                            print(appData.information['Version']);
+                            Version latestVersion = Version.parse(appData.information['Version']);
+                            print(latestVersion);
+                            if (latestVersion > Version.parse('23.03.0')) {
+                              print('Very up to date');
+                            } else {
+                              print('Update your version');
+                            }
+                            //showEditDialog(appData, context, key, value);
                           },
                         )
                 ],

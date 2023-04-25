@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:html' as html;
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tank_manager/model/app_data.dart';
@@ -15,27 +16,47 @@ class Information extends StatelessWidget {
 
   final BuildContext context;
 
-  // void handleResult(Object result) {
-  //   Uint8List bytesData = const Base64Decoder().convert(result.toString().split(',').last);
-  //   List<int> selectedFile = bytesData;
-  //   var url = Uri.parse(AppData.instance.ip));
-  // }
+  void handleResult(Object result, String ip) async {
+    Uint8List bytesData =
+        const Base64Decoder().convert(result.toString().split(',').last);
+    List<int> selectedFile = bytesData;
+    await makeRequest(ip, selectedFile);
+  }
 
-  // startWebFilePicker() async {
-  //   html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
-  //   uploadInput.multiple = true;
-  //   uploadInput.draggable = true;
-  //   uploadInput.click();
-  //   uploadInput.onChange.listen((e) { 
-  //     final files = uploadInput.files;
-  //     final file = files![0];
-  //     dynamic reader = html.FileReader();
-  //     reader.onLoadEnd.listen((e) { 
-  //       handleResult(reader.result);
-  //     });
-  //     reader.readAsDataUrl(file);
-  //   });
-  // }
+  Future<String> makeRequest(String ip, List<int> selectedFile) async {
+    var url = Uri.parse(ip);
+    var request = http.MultipartRequest('POST', url);
+    request.files.add(
+      await http.MultipartFile.fromBytes(
+        'file',
+        selectedFile,
+        contentType: MediaType('application', 'octet-stream'),
+        filename: 'file_up',
+      ),
+    );
+    request.send().then(response) {
+      print('test');
+      if (response.statusCode == 200) {
+        print("Uploaded");
+      }
+    };
+  }
+
+  startWebFilePicker(String ip) async {
+    html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
+    uploadInput.multiple = true;
+    uploadInput.draggable = true;
+    uploadInput.click();
+    uploadInput.onChange.listen((e) {
+      final files = uploadInput.files;
+      final file = files![0];
+      dynamic reader = html.FileReader();
+      reader.onLoadEnd.listen((e) {
+        handleResult(reader.result, ip);
+      });
+      reader.readAsDataUrl(file);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,8 +97,7 @@ class Information extends StatelessWidget {
               ),
               OutlinedButton(
                 onPressed: () {
-                  //startWebFilePicker();
-                  print(appData.currentTank.ip);
+                  startWebFilePicker(appData.currentTank.ip.toString());
                 },
                 child: const Text('Add File'),
               )

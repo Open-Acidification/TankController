@@ -40,18 +40,16 @@ class Information extends StatelessWidget {
 //Can I copy Dialog box frame from Shortcuts?
 
   startWebFilePicker(String ip) async {
-    print('Start Web File Picker-1');
     html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
     uploadInput.multiple = true;
     uploadInput.draggable = true;
     uploadInput.click();
     uploadInput.onChange.listen((e) {
-      print('Start Web File Picker-2');
       final files = uploadInput.files;
       final file = files![0];
       dynamic reader = html.FileReader();
       reader.onLoadEnd.listen((e) {
-        print('Start Web File Picker-3');
+        print(reader.result);
         handleResult(reader.result, ip);
       });
       reader.readAsDataUrl(file);
@@ -97,7 +95,6 @@ class Information extends StatelessWidget {
               ),
               OutlinedButton(
                 onPressed: () {
-                  print('Button pressed');
                   unawaited(startWebFilePicker(appData.currentTank.ip.toString()));
                 },
                 child: const Text('Add File'),

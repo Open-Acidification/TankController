@@ -24,6 +24,7 @@ dependencies:
   google_fonts: ^4.0.3
   html: ^0.15.0
   http: ^0.13.4
+  http_parser: ^4.0.2
   provider: ^6.0.3
   shared_preferences: ^2.0.15
 

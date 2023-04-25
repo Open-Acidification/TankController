@@ -23,23 +23,21 @@ class Information extends StatelessWidget {
     await makeRequest(ip, selectedFile);
   }
 
-  Future<String> makeRequest(String ip, List<int> selectedFile) async {
+  Future<String?> makeRequest(String ip, List<int> selectedFile) async {
     var url = Uri.parse(ip);
     var request = http.MultipartRequest('POST', url);
     request.files.add(
-      await http.MultipartFile.fromBytes(
+      http.MultipartFile.fromBytes(
         'file',
         selectedFile,
         contentType: MediaType('application', 'octet-stream'),
         filename: 'file_up',
       ),
     );
-    request.send().then(response) {
-      print('test');
-      if (response.statusCode == 200) {
-        print("Uploaded");
-      }
-    };
+    var res = await request.send();
+    return res.reasonPhrase;
+    }
+    //Can I copy Dialog box frame from Shortcuts?
   }
 
   startWebFilePicker(String ip) async {

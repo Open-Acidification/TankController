@@ -36,7 +36,7 @@ class Information extends StatelessWidget {
                       TcInterface.instance
                           .put(
                         '${appData.information["IPAddress"]}',
-                        '${key.toString()}=$val',
+                        'set?${key.toString()}=$val',
                       )
                           .then((value) {
                         appData.information = value;

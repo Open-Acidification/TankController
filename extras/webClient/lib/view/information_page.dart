@@ -75,7 +75,8 @@ class Information extends StatelessWidget {
               DataRow(
                 cells: <DataCell>[
                   DataCell(Text(key.toString())),
-                  (!showEdit(key.toString()) || !versionCheck(appData.information['Version']))
+                  (!showEdit(key.toString()) ||
+                          !versionCheck(appData.information['Version']))
                       ? DataCell(Text(value.toString()))
                       : DataCell(
                           Text(value.toString()),

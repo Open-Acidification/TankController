@@ -19,6 +19,11 @@ class Information extends StatelessWidget {
         valueString == 'Kd';
   }
 
+  bool versionCheck(var versionValue) {
+    Version latestVersion = Version.parse(versionValue);
+    return latestVersion > Version.parse('23.3.0');
+  }
+
   showEditDialog(var appData, BuildContext context, var key, var value) async {
     await showDialog(
       context: context,
@@ -45,7 +50,7 @@ class Information extends StatelessWidget {
                       Navigator.pop(context);
                     },
                   ),
-                  const Spacer(),
+                  const SizedBox(height: 20),
                   const Text(
                     'Press "Esc" to cancel, or "Enter" to submit',
                   ),
@@ -70,21 +75,13 @@ class Information extends StatelessWidget {
               DataRow(
                 cells: <DataCell>[
                   DataCell(Text(key.toString())),
-                  !showEdit(key.toString())
+                  (!showEdit(key.toString()) || !versionCheck(appData.information['Version']))
                       ? DataCell(Text(value.toString()))
                       : DataCell(
                           Text(value.toString()),
                           showEditIcon: true,
                           onTap: () async {
-                            print(appData.information['Version']);
-                            Version latestVersion = Version.parse(appData.information['Version']);
-                            print(latestVersion);
-                            if (latestVersion > Version.parse('23.03.0')) {
-                              print('Very up to date');
-                            } else {
-                              print('Update your version');
-                            }
-                            //showEditDialog(appData, context, key, value);
+                            showEditDialog(appData, context, key, value);
                           },
                         )
                 ],

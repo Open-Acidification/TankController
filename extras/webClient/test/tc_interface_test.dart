@@ -21,8 +21,11 @@ void main() {
   });
 
   test('Put', () async {
-    var put = await tcInterface.put('192.168.0.1', 'PHSlope=22');
-    expect(put, 'PHSlope=22');
+    var put = await tcInterface.put('192.168.0.1', 'set?PHSlope=22');
+    expect(
+      put,
+      '{"IPAddress":"172.27.5.150","MAC":"90:A2:DA:0F:45:C0","FreeMemory":"3791 bytes","GoogleSheetInterval":10,"LogFile":"20220722.csv","PHSlope":"22","Kp":9000.4,"Ki":0.0,"Kd":0.0,"PID":"ON","TankID":3,"Uptime":"0d 0h 1m 7s","Version":"22.04.1"}',
+    );
   });
 
   test('Get Put', () async {

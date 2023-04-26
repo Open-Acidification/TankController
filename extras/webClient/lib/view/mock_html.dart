@@ -8,6 +8,4 @@ class FileUploadInputElement {
   dynamic files;
 }
 
-class FileReader {
-
-}
+class FileReader {}

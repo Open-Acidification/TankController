@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:tank_manager/view/mock_html.dart' if (dart.library.html) 'dart:html' as html;
+import 'package:tank_manager/view/mock_html.dart'
+    if (dart.library.html) 'dart:html' as html;
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:flutter/material.dart';
@@ -94,7 +95,9 @@ class Information extends StatelessWidget {
               ),
               OutlinedButton(
                 onPressed: () {
-                  unawaited(startWebFilePicker(appData.currentTank.ip.toString()));
+                  unawaited(
+                    startWebFilePicker(appData.currentTank.ip.toString()),
+                  );
                 },
                 child: const Text('Add File'),
               )

@@ -14,7 +14,7 @@ abstract class TcInterface {
 }
 
 class TcMockInterface extends TcInterface {
-  Future<String> get(String ip, String path) async {
+  Future<String> get(String ip, String path, [int timeout = 5]) async {
     if (ip == '127.0.0.1') {
       throw ('Invalid IP Address in TcMockInterface');
     }
@@ -27,16 +27,16 @@ class TcMockInterface extends TcInterface {
     return 'pH=7.352   7.218\nT=10.99 C 11.00$path';
   }
 
-  Future<String> post(var value, String path) async {
+  Future<String> post(var value, String path, [int timeout = 5]) async {
     return 'pH=7.352   7.218\nT=10.99 C 11.00${path.substring(path.length - 1)}';
   }
 }
 
 class TcRealInterface extends TcInterface {
-  Future<String> get(String ip, String path) async {
+  Future<String> get(String ip, String path, [int timeout = 5]) async {
     var uri = 'http://$ip/api/1/$path';
     var future = http.get(Uri.parse(uri));
-    var response = await future.timeout(const Duration(seconds: 5));
+    var response = await future.timeout(Duration(seconds: timeout));
     if (response.statusCode != 200) {
       throw ('HTTP response not code 200');
     }
@@ -44,10 +44,10 @@ class TcRealInterface extends TcInterface {
     return subString;
   }
 
-  Future<String> post(var ip, var path) async {
+  Future<String> post(var ip, var path, [int timeout = 5]) async {
     var uri = 'http://$ip/api/1/$path';
     final future = http.post(Uri.parse(uri));
-    var response = await future.timeout(const Duration(seconds: 5));
+    var response = await future.timeout(Duration(seconds: timeout));
     if (response.statusCode != 200) {
       throw ('HTTP response not code 200');
     }

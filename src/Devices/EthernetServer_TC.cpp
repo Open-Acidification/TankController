@@ -212,6 +212,7 @@ void EthernetServer_TC::rootdir() {
   // Call function on SD Card
   // Provide callback to call when writing to the client buffer
   if (!SD_TC::instance()->listRootToBuffer(writeToClientBufferCallback)) {
+    serial(F("listRootToBuffer() failed"));
     sendResponse(HTTP_ERROR);
     state = FINISHED;
   };
@@ -241,7 +242,7 @@ void EthernetServer_TC::sendHeadersForRootdir(int fileCount) {
 }
 
 // Tests speed for reading a file from the SD Card
-// Empirical results show about 1 ms per 512 B
+// Empirical results show about 1.28 ms per 512 B
 void EthernetServer_TC::testReadSpeed() {
   wdt_disable();
   const __FlashStringHelper *path = F("tstRdSpd.txt");
@@ -255,27 +256,27 @@ void EthernetServer_TC::testReadSpeed() {
   file.close();
   // Read 1 MB
   file = SD_TC::instance()->open(temp, O_RDONLY);
-  int startTime = micros();
+  long startTime = micros();
   file.read(buffer, sizeof(buffer));  // Flawfinder: ignore
-  int endTime = micros();
+  long endTime = micros();
   SD_TC::instance()->remove(temp);
-  serial(F("Time reading 512B: %i us"), (endTime - startTime));
+  serial(F("Time reading %i bytes: %i us"), sizeof(buffer), (endTime - startTime));
   wdt_enable(WDTO_8S);
   state = FINISHED;
 }
 
 // Tests speed for writing to client buffer
-// Empirical results show about 6 ms per 512 B
+// Empirical results show about 6.43 ms per 512 B
 void EthernetServer_TC::testWriteSpeed() {
   wdt_disable();
   char buffer[512];
   memset(buffer, ' ', 511);
   buffer[511] = '\0';
   for (int i = 0; i < 10; ++i) {
-    int startTime = micros();
+    long startTime = micros();
     client.write(buffer);
-    int endTime = micros();
-    serial(F("Time writing 512B to client: %i us"), (endTime - startTime));
+    long endTime = micros();
+    serial(F("Time writing %i bytes: %i us"), sizeof(buffer), (endTime - startTime));
   }
   wdt_enable(WDTO_8S);
   state = FINISHED;

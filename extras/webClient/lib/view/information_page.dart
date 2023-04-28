@@ -70,6 +70,30 @@ class Information extends StatelessWidget {
     );
   }
 
+  showNoFileDialog() async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Feature coming soon'),
+          content: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Form(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const <Widget>[
+                  Text(
+                    'Your tank controller is not at a version that supports file upload',
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   void handleResult(Object result, String ip) async {
     Uint8List bytesData =
         const Base64Decoder().convert(result.toString().split(',').last);
@@ -91,7 +115,6 @@ class Information extends StatelessWidget {
     var res = await request.send();
     return res.reasonPhrase;
   }
-//Can I copy Dialog box frame from Shortcuts?
 
   startWebFilePicker(String ip) async {
     html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
@@ -155,14 +178,25 @@ class Information extends StatelessWidget {
                   ],
                 ),
               ),
-              OutlinedButton(
-                onPressed: () {
-                  unawaited(
-                    startWebFilePicker(appData.currentTank.ip.toString()),
-                  );
-                },
-                child: const Text('Add File'),
-              )
+              (appData.information['Version'] != null)
+                  ? OutlinedButton(
+                      onPressed: versionCheck(appData.information['Version'])
+                          ? () {
+                              unawaited(
+                                startWebFilePicker(
+                                  appData.currentTank.ip.toString(),
+                                ),
+                              );
+                            }
+                          : () {
+                              showNoFileDialog();
+                            },
+                      child: const Text('Add File'),
+                    )
+                  : OutlinedButton(
+                      onPressed: () {},
+                      child: const Text('Add File'),
+                    )
             ],
           );
         },

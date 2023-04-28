@@ -26,6 +26,7 @@ dependencies:
   http: ^0.13.4
   provider: ^6.0.3
   shared_preferences: ^2.0.15
+  version: ^3.0.2
 
 dev_dependencies:  
   build_runner: ^2.3.3

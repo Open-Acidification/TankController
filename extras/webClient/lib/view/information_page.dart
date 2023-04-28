@@ -8,6 +8,8 @@ import 'package:http_parser/http_parser.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tank_manager/model/app_data.dart';
+import 'package:tank_manager/model/tc_interface.dart';
+import 'package:version/version.dart';
 
 class Information extends StatelessWidget {
   const Information({
@@ -16,6 +18,57 @@ class Information extends StatelessWidget {
   }) : super(key: key);
 
   final BuildContext context;
+
+  bool showEdit(var valueString) {
+    return valueString == 'PHSlope' ||
+        valueString == 'Kp' ||
+        valueString == 'Ki' ||
+        valueString == 'Kd';
+  }
+
+  bool versionCheck(var versionValue) {
+    Version latestVersion = Version.parse(versionValue);
+    return latestVersion > Version.parse('23.3.0');
+  }
+
+  showEditDialog(var appData, BuildContext context, var key, var value) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Submit new ${key.toString()} value'),
+          content: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Form(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  TextFormField(
+                    initialValue: value.toString(),
+                    onFieldSubmitted: (val) {
+                      TcInterface.instance
+                          .put(
+                        '${appData.information["IPAddress"]}',
+                        'set?${key.toString()}=$val',
+                      )
+                          .then((value) {
+                        appData.information = value;
+                      });
+                      Navigator.pop(context);
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Press "Esc" to cancel, or "Enter" to submit',
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   void handleResult(Object result, String ip) async {
     Uint8List bytesData =
@@ -68,7 +121,16 @@ class Information extends StatelessWidget {
               DataRow(
                 cells: <DataCell>[
                   DataCell(Text(key.toString())),
-                  DataCell(Text(value.toString()))
+                  (!showEdit(key.toString()) ||
+                          !versionCheck(appData.information['Version']))
+                      ? DataCell(Text(value.toString()))
+                      : DataCell(
+                          Text(value.toString()),
+                          showEditIcon: true,
+                          onTap: () async {
+                            showEditDialog(appData, context, key, value);
+                          },
+                        )
                 ],
               ),
             ),

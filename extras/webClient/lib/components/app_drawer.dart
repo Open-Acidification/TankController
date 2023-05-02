@@ -133,5 +133,3 @@ class AppDrawer extends StatelessWidget {
     );
   }
 }
-
-//TODO: I think this is where I should add in Information page refresh.

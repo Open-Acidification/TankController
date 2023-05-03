@@ -178,6 +178,8 @@ class Information extends StatelessWidget {
                   ],
                 ),
               ),
+              // This outer ternary is required to prevent the screen flashing an error
+              // for a split second while appData.information loads to do the check.
               (appData.information['Version'] != null)
                   ? OutlinedButton(
                       onPressed: versionCheck(appData.information['Version'])

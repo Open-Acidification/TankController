@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:html';
+import 'package:universal_html/html.dart';
 import 'dart:typed_data';
 import 'package:tank_manager/view/mock_html.dart'
     if (dart.library.html) 'dart:html' as html;
@@ -126,7 +126,7 @@ class Information extends StatelessWidget {
     FileUploadInputElement uploadInput = FileUploadInputElement();
     uploadInput.multiple = true;
     uploadInput.draggable = true;
-    uploadInput.accept = '.rtf,.txt,.csv';
+    uploadInput.accept = '.rtf,.txt,.csv,';
     uploadInput.click();
     uploadInput.onChange.listen((e) {
       final files = uploadInput.files;

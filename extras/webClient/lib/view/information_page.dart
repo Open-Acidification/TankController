@@ -198,8 +198,10 @@ class Information extends StatelessWidget {
                               );
                             }
                           : () {
-                              showPopupDialog('Feature coming soon',
-                                  'Your tank controller is not at a version that supports file upload');
+                              showPopupDialog(
+                                'Feature coming soon',
+                                'Your tank controller is not at a version that supports file upload',
+                              );
                             },
                       child: const Text('Upload file for arbitrary path'),
                     )

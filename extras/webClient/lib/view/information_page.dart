@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:html';
 import 'dart:typed_data';
 import 'package:tank_manager/view/mock_html.dart'
     if (dart.library.html) 'dart:html' as html;
@@ -70,20 +71,20 @@ class Information extends StatelessWidget {
     );
   }
 
-  showNoFileDialog() async {
+  showPopupDialog(String titleString, String messageString) async {
     await showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Feature coming soon'),
+          title: Text(titleString),
           content: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Form(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: const <Widget>[
+                children: <Widget>[
                   Text(
-                    'Your tank controller is not at a version that supports file upload',
+                    messageString,
                   ),
                 ],
               ),
@@ -97,6 +98,11 @@ class Information extends StatelessWidget {
   void handleResult(Object result, String ip) async {
     Uint8List bytesData =
         const Base64Decoder().convert(result.toString().split(',').last);
+    if (bytesData.length > 10000) {
+      throw UnsupportedError(
+        showPopupDialog('File too large', 'Your file exceeds 10 KB.'),
+      );
+    }
     List<int> selectedFile = bytesData;
     await makeRequest(ip, selectedFile);
   }
@@ -117,9 +123,10 @@ class Information extends StatelessWidget {
   }
 
   startWebFilePicker(String ip) async {
-    html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
+    FileUploadInputElement uploadInput = FileUploadInputElement();
     uploadInput.multiple = true;
     uploadInput.draggable = true;
+    uploadInput.accept = '.rtf,.txt,.csv';
     uploadInput.click();
     uploadInput.onChange.listen((e) {
       final files = uploadInput.files;
@@ -191,13 +198,14 @@ class Information extends StatelessWidget {
                               );
                             }
                           : () {
-                              showNoFileDialog();
+                              showPopupDialog('Feature coming soon',
+                                  'Your tank controller is not at a version that supports file upload');
                             },
-                      child: const Text('Add File'),
+                      child: const Text('Upload file for arbitrary path'),
                     )
                   : OutlinedButton(
                       onPressed: () {},
-                      child: const Text('Add File'),
+                      child: const Text('Upload file for arbitrary path'),
                     )
             ],
           );

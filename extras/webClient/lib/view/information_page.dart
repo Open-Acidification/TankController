@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:html';
+// import 'dart:html';
 import 'dart:typed_data';
 import 'package:tank_manager/view/mock_html.dart'
     if (dart.library.html) 'dart:html' as html;
@@ -11,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tank_manager/model/app_data.dart';
 import 'package:tank_manager/model/tc_interface.dart';
+import 'package:universal_html/html.dart';
 import 'package:version/version.dart';
 
 class Information extends StatelessWidget {

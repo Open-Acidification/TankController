@@ -3,6 +3,7 @@
 class FileUploadInputElement {
   dynamic multiple;
   dynamic draggable;
+  dynamic accept;
   dynamic click;
   dynamic onChange;
   dynamic files;

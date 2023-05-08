@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tank_manager/model/app_data.dart';
 import 'package:tank_manager/model/tc_interface.dart';
-import 'package:universal_html/html.dart';
+import 'package:universal_html/html.dart' as universal_html;
 import 'package:version/version.dart';
 
 class Information extends StatelessWidget {
@@ -124,7 +124,7 @@ class Information extends StatelessWidget {
   }
 
   startWebFilePicker(String ip) async {
-    FileUploadInputElement uploadInput = FileUploadInputElement();
+    universal_html.FileUploadInputElement uploadInput = universal_html.FileUploadInputElement();
     uploadInput.multiple = true;
     uploadInput.draggable = true;
     uploadInput.accept = '.rtf,.txt,.csv,';

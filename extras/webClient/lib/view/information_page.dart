@@ -20,10 +20,12 @@ class Information extends StatelessWidget {
   final BuildContext context;
 
   bool showEdit(var valueString) {
-    return valueString == 'PHSlope' ||
+    return valueString == 'GoogleSheetInterval' ||
         valueString == 'Kp' ||
         valueString == 'Ki' ||
-        valueString == 'Kd';
+        valueString == 'Kd' ||
+        valueString == 'PID' ||
+        valueString == 'TankID';
   }
 
   bool versionCheck(var versionValue) {

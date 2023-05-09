@@ -127,7 +127,7 @@ class Information extends StatelessWidget {
     html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
     uploadInput.multiple = true;
     uploadInput.draggable = true;
-    uploadInput.accept = '.txt,.csv,';
+    uploadInput.accept = '.txt,.csv';
     uploadInput.click();
     uploadInput.onChange.listen((e) {
       final files = uploadInput.files;

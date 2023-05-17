@@ -6,6 +6,7 @@
 #include "Devices/Ethernet_TC.h"
 #include "Devices/JSONBuilder.h"
 #include "Devices/LiquidCrystal_TC.h"
+#include "Devices/PID_TC.h"
 #include "Serial_TC.h"
 #include "TankController.h"
 
@@ -94,6 +95,23 @@ void EthernetServer_TC::post() {
   }
 }
 
+// Handles an HTTP PUT request
+void EthernetServer_TC::put() {
+  if (memcmp_P(buffer + 4, F("/api/1/set?Kd="), 14) == 0) {
+    PID_TC::instance()->setKd(1.0);
+    sendRedirect();
+    state = FINISHED;
+  } else if (memcmp_P(buffer + 4, F("/api/1/set?Ki="), 14) == 0) {
+    PID_TC::instance()->setKi(1.0);      
+  } else if (memcmp_P(buffer + 4, F("/api/1/set?Kp="), 14) == 0) {
+    PID_TC::instance()->setKp(1.0);      
+  } else {
+    serial(F("put \"%s\" not recognized!"), buffer + 5);
+    sendResponse(HTTP_BAD_REQUEST);
+    state = FINISHED;
+  }
+}
+
 /* API Handler
  * currently only version 1 is supported
  * Calls helper functions
@@ -167,7 +185,7 @@ void EthernetServer_TC::keypress() {
     if (key == '#' || key == '*' || (key >= '0' && key <= '9') || (key >= 'A' && key <= 'D')) {
       // States will handle keypresses appropriately
       TankController::instance()->setNextKey(key);
-      sendResponse(HTTP_REDIRECT);
+      sendRedirect();
     } else {
       serial(F("bad character: %c"), key);
       sendResponse(HTTP_BAD_REQUEST);
@@ -378,6 +396,9 @@ void EthernetServer_TC::loop() {
           } else if (memcmp_P(buffer, F("POST "), 5) == 0) {
             state = POST_REQUEST;
             post();
+          } else if (memcmp_P(buffer, F("PUT "), 4) == 0) {
+            state = PUT_REQUEST;
+            put();
           } else if (memcmp_P(buffer, F("OPTIONS "), 8) == 0) {
             state = OPTIONS_REQUEST;
             options();
@@ -434,12 +455,17 @@ void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
   client.write('\n');
 }
 
-void EthernetServer_TC::sendResponse(int code) {
+void EthernetServer_TC::sendRedirect(){
   const __FlashStringHelper *response_303 =
-      F("HTTP/1.1 303 See Other\r\n"
-        "Location: /api/1/display\r\n"
-        "Access-Control-Allow-Origin: *\r\n"
-        "\r\n");
+    F("HTTP/1.1 303 See Other\r\n"
+    "Location: /api/1/display\r\n"
+    "Access-Control-Allow-Origin: *\r\n"
+    "\r\n");
+  strscpy_P(buffer, response_303, sizeof(buffer));
+  client.write(buffer);
+}
+
+void EthernetServer_TC::sendResponse(int code) {
   const __FlashStringHelper *response_400 =
       F("HTTP/1.1 400 Bad Request\r\n"
         "\r\n");
@@ -462,9 +488,6 @@ void EthernetServer_TC::sendResponse(int code) {
         "\r\n");
   char buffer[100];  // Space for longest of above responses
   switch (code) {
-    case HTTP_REDIRECT:
-      strscpy_P(buffer, response_303, sizeof(buffer));
-      break;
     case HTTP_BAD_REQUEST:
       strscpy_P(buffer, response_400, sizeof(buffer));
       break;

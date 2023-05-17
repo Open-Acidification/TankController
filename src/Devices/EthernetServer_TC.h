@@ -23,6 +23,7 @@ enum serverState_t {
   READ_REQUEST,
   GET_REQUEST,
   POST_REQUEST,
+  PUT_REQUEST,
   OPTIONS_REQUEST,
   COUNTING_FILES,
   LISTING_FILES,
@@ -69,10 +70,12 @@ private:
   // instance methods: utility
   void sendHeadersWithSize(uint32_t size);
   void sendResponse(int);
+  void sendRedirect();
   int weekday(int year, int month, int day);
   // instance methods: HTTP
   void get();
   void post();
+  void put();
   void options();
   void echo();
   void apiHandler();

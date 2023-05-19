@@ -80,3 +80,4 @@ This project follows the [all-contributors](https://github.com/all-contributors/
 ## Other
 
 *   [Libraries](docs/libraries.md) lists the external libraries and their licenses.
+*   For documentation on the Tank Controller Manager, click [here](extras/docs/README.md)

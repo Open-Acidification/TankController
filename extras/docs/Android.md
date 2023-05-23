@@ -1,22 +1,7 @@
-# Tank Controller Manager
-The Tank Controller Manager (TCM) works to monitor, operate, and consolidate multiple tank controllers. A tank controller regulates tank pH through CO2 addition and temperature. The purpose of the TCM is to allow over-the-network access to tank controllers while facilitating research by reporting data. Created in Flutter with the programming language Dart, the TCM runs on virtually every main platform.
+# Android
+This documentation is helpful for running and testing this project on Android devices. 
 
-
-## Deployment
-The web application is built automatically on each commit to main and can be viewed [here](https://open-acidification.github.io/TankControllerManager/).
-### Web
-1. Open a terminal and run
-```
-flutter build web
-```
-2. Navigate to TankControllerManager/build/web and run
-```python
-python -m http.server 8000
-```
-
-### Android
-
-#### Signed Appbundle
+## Signed Appbundle
 https://docs.flutter.dev/deployment/android
 1. Open a terminal and run
 ```
@@ -34,12 +19,12 @@ storeFile=<location of output from step one, may require double backslashes '\\'
 ```
 flutter build appbundle
 ```
-#### Unsigned APK
+## Unsigned APK
 1. Open a terminal and run
 ```
 flutter build apk --split-per-abi
 ```
-#### Debugging
+## Debugging
 1. Ensure Android Studio, Android SDK, Android SDK Platform-Tools, and Android SDK Build-Tools, are all updated. Run
 ```
 flutter doctor

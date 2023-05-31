@@ -70,7 +70,8 @@ private:
   // instance methods: utility
   void sendHeadersWithSize(uint32_t size);
   void sendResponse(int);
-  void sendRedirect();
+  void sendCurrentRedirect();
+  void sendDisplayRedirect();
   int weekday(int year, int month, int day);
   // instance methods: HTTP
   void get();

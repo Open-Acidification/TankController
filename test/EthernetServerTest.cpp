@@ -423,7 +423,7 @@ unittest(notImplemented) {
   server->loop();
 }
 
-unittest(PUT) {
+unittest(PUT_Kd) {
   TankController* tc = TankController::instance();
   LiquidCrystal_TC* lcd = LiquidCrystal_TC::instance();
   assertEqual("MainMenu", tc->stateName());
@@ -455,7 +455,7 @@ unittest(PUT) {
   }
   const char expectedResponse[] =
       "HTTP/1.1 303 See Other\r\n"
-      "Location: /api/1/display\r\n"
+      "Location: /api/1/current\r\n"
       "Access-Control-Allow-Origin: *\r\n"
       "\r\n";
   assertEqual(expectedResponse, response);
@@ -466,6 +466,96 @@ unittest(PUT) {
   client.stop();
   server->loop();
   assertEqual(1.0, singleton->getKd());
+}
+
+unittest(PUT_Ki) {
+  TankController* tc = TankController::instance();
+  LiquidCrystal_TC* lcd = LiquidCrystal_TC::instance();
+  assertEqual("MainMenu", tc->stateName());
+
+  PID_TC *singleton = PID_TC::instance();
+  assertEqual(0.0, singleton->getKi());
+  
+  EthernetServer_TC* server = EthernetServer_TC::instance();
+  server->setHasClientCalling(true);
+  delay(1);
+  server->loop();
+  EthernetClient_CI client;
+  client = server->getClient();
+  const char request[] =
+      "PUT /api/1/set?Ki=100.50 HTTP/1.1\r\n"
+      "Host: localhost:80\r\n"
+      "Accept: text/plain;charset=UTF-8\r\n"
+      "Accept-Encoding: identity\r\n"
+      "Accept-Language: en-US\r\n"
+      "\r\n";
+  client.pushToReadBuffer(request);
+  server->loop();
+  deque<uint8_t>* pBuffer = client.writeBuffer();
+  assertEqual(84, pBuffer->size());
+  String response;
+  while (!pBuffer->empty()) {
+    response.concat(pBuffer->front());
+    pBuffer->pop_front();
+  }
+  const char expectedResponse[] =
+      "HTTP/1.1 303 See Other\r\n"
+      "Location: /api/1/current\r\n"
+      "Access-Control-Allow-Origin: *\r\n"
+      "\r\n";
+  assertEqual(expectedResponse, response);
+  assertEqual(FINISHED, server->getState());
+  tc->loop();  // Loop to handle the UI press
+  assertEqual("MainMenu", tc->stateName());
+  assertEqual(NOT_CONNECTED, server->getState());
+  client.stop();
+  server->loop();
+  assertEqual(100.5, singleton->getKi());
+}
+
+unittest(PUT_Kp) {
+  TankController* tc = TankController::instance();
+  LiquidCrystal_TC* lcd = LiquidCrystal_TC::instance();
+  assertEqual("MainMenu", tc->stateName());
+
+  PID_TC *singleton = PID_TC::instance();
+  assertEqual(100000, singleton->getKp());
+  
+  EthernetServer_TC* server = EthernetServer_TC::instance();
+  server->setHasClientCalling(true);
+  delay(1);
+  server->loop();
+  EthernetClient_CI client;
+  client = server->getClient();
+  const char request[] =
+      "PUT /api/1/set?Kp=1000.125 HTTP/1.1\r\n"
+      "Host: localhost:80\r\n"
+      "Accept: text/plain;charset=UTF-8\r\n"
+      "Accept-Encoding: identity\r\n"
+      "Accept-Language: en-US\r\n"
+      "\r\n";
+  client.pushToReadBuffer(request);
+  server->loop();
+  deque<uint8_t>* pBuffer = client.writeBuffer();
+  assertEqual(84, pBuffer->size());
+  String response;
+  while (!pBuffer->empty()) {
+    response.concat(pBuffer->front());
+    pBuffer->pop_front();
+  }
+  const char expectedResponse[] =
+      "HTTP/1.1 303 See Other\r\n"
+      "Location: /api/1/current\r\n"
+      "Access-Control-Allow-Origin: *\r\n"
+      "\r\n";
+  assertEqual(expectedResponse, response);
+  assertEqual(FINISHED, server->getState());
+  tc->loop();  // Loop to handle the UI press
+  assertEqual("MainMenu", tc->stateName());
+  assertEqual(NOT_CONNECTED, server->getState());
+  client.stop();
+  server->loop();
+  assertEqual(1000.125, singleton->getKp());
 }
 
 unittest_main()

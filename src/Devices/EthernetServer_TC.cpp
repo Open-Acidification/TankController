@@ -97,19 +97,33 @@ void EthernetServer_TC::post() {
 
 // Handles an HTTP PUT request
 void EthernetServer_TC::put() {
+  enum { Kd, Ki, Kp } var;
   if (memcmp_P(buffer + 4, F("/api/1/set?Kd="), 14) == 0) {
-    PID_TC::instance()->setKd(1.0);
-    sendRedirect();
-    state = FINISHED;
+    var = Kd;
   } else if (memcmp_P(buffer + 4, F("/api/1/set?Ki="), 14) == 0) {
-    PID_TC::instance()->setKi(1.0);      
+    var = Ki;
   } else if (memcmp_P(buffer + 4, F("/api/1/set?Kp="), 14) == 0) {
-    PID_TC::instance()->setKp(1.0);      
+    var = Kp;
   } else {
     serial(F("put \"%s\" not recognized!"), buffer + 5);
     sendResponse(HTTP_BAD_REQUEST);
     state = FINISHED;
+    return;
   }
+  float value = strtofloat(buffer + 18);
+  switch (var) {
+    case Kd: 
+      PID_TC::instance()->setKd(value);
+      break;
+    case Ki:
+      PID_TC::instance()->setKi(value);      
+      break;
+    case Kp:
+      PID_TC::instance()->setKp(value);      
+      break;
+  }
+  sendCurrentRedirect();
+  state = FINISHED;
 }
 
 /* API Handler
@@ -185,7 +199,7 @@ void EthernetServer_TC::keypress() {
     if (key == '#' || key == '*' || (key >= '0' && key <= '9') || (key >= 'A' && key <= 'D')) {
       // States will handle keypresses appropriately
       TankController::instance()->setNextKey(key);
-      sendRedirect();
+      sendDisplayRedirect();
     } else {
       serial(F("bad character: %c"), key);
       sendResponse(HTTP_BAD_REQUEST);
@@ -455,7 +469,17 @@ void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
   client.write('\n');
 }
 
-void EthernetServer_TC::sendRedirect(){
+void EthernetServer_TC::sendCurrentRedirect(){
+  const __FlashStringHelper *response_303 =
+    F("HTTP/1.1 303 See Other\r\n"
+    "Location: /api/1/current\r\n"
+    "Access-Control-Allow-Origin: *\r\n"
+    "\r\n");
+  strscpy_P(buffer, response_303, sizeof(buffer));
+  client.write(buffer);
+}
+
+void EthernetServer_TC::sendDisplayRedirect(){
   const __FlashStringHelper *response_303 =
     F("HTTP/1.1 303 See Other\r\n"
     "Location: /api/1/display\r\n"

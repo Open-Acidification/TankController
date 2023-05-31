@@ -148,7 +148,7 @@ unittest(keypress) {
 }
 
 unittest(current) {
-  // Fake DateTime  
+  // Fake DateTime
   DateTime_TC feb(2022, 2, 22, 20, 50, 00);
   feb.setAsCurrent();
 

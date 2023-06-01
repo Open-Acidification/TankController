@@ -18,7 +18,12 @@ unittest(current) {
   assertTrue(builder.bytesFull() == size);
   char* text = builder.bufferPtr();
   const char expected[] =
-      "{\"IPAddress\":\"192.168.1.10\","
+      "{"
+      "\"pH\":8.125,"
+      "\"Target_pH\":8.25,"
+      "\"Temperature\":21.25,"
+      "\"TargetTemperature\":21.75,"
+      "\"IPAddress\":\"192.168.1.10\","
       "\"MAC\":\"90:A2:DA:FB:F6:F1\","
       "\"FreeMemory\":\"1024 bytes\","
       "\"GoogleSheetInterval\":65535,"
@@ -30,7 +35,8 @@ unittest(current) {
       "\"PID\":\"ON\","
       "\"TankID\":0,"
       "\"Uptime\":\"0d 0h 0m 1s\","
-      "\"Version\":\"23.03.1\"}";
+      "\"Version\":\"23.03.1\""
+      ""}";
   assertEqual(expected, text);
 }
 

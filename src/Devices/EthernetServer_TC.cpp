@@ -112,14 +112,14 @@ void EthernetServer_TC::put() {
   }
   float value = strtofloat(buffer + 18);
   switch (var) {
-    case Kd: 
+    case Kd:
       PID_TC::instance()->setKd(value);
       break;
     case Ki:
-      PID_TC::instance()->setKi(value);      
+      PID_TC::instance()->setKi(value);
       break;
     case Kp:
-      PID_TC::instance()->setKp(value);      
+      PID_TC::instance()->setKp(value);
       break;
   }
   sendCurrentRedirect();
@@ -469,22 +469,22 @@ void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
   client.write('\n');
 }
 
-void EthernetServer_TC::sendCurrentRedirect(){
+void EthernetServer_TC::sendCurrentRedirect() {
   const __FlashStringHelper *response_303 =
-    F("HTTP/1.1 303 See Other\r\n"
-    "Location: /api/1/current\r\n"
-    "Access-Control-Allow-Origin: *\r\n"
-    "\r\n");
+      F("HTTP/1.1 303 See Other\r\n"
+        "Location: /api/1/current\r\n"
+        "Access-Control-Allow-Origin: *\r\n"
+        "\r\n");
   strscpy_P(buffer, response_303, sizeof(buffer));
   client.write(buffer);
 }
 
-void EthernetServer_TC::sendDisplayRedirect(){
+void EthernetServer_TC::sendDisplayRedirect() {
   const __FlashStringHelper *response_303 =
-    F("HTTP/1.1 303 See Other\r\n"
-    "Location: /api/1/display\r\n"
-    "Access-Control-Allow-Origin: *\r\n"
-    "\r\n");
+      F("HTTP/1.1 303 See Other\r\n"
+        "Location: /api/1/display\r\n"
+        "Access-Control-Allow-Origin: *\r\n"
+        "\r\n");
   strscpy_P(buffer, response_303, sizeof(buffer));
   client.write(buffer);
 }

@@ -36,7 +36,7 @@ unittest(current) {
       "\"TankID\":0,"
       "\"Uptime\":\"0d 0h 0m 1s\","
       "\"Version\":\"23.03.1\""
-      ""}";
+      "}";
   assertEqual(expected, text);
 }
 

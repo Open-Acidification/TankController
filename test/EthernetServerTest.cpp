@@ -428,9 +428,9 @@ unittest(PUT_Kd) {
   LiquidCrystal_TC* lcd = LiquidCrystal_TC::instance();
   assertEqual("MainMenu", tc->stateName());
 
-  PID_TC *singleton = PID_TC::instance();
+  PID_TC* singleton = PID_TC::instance();
   assertEqual(0.0, singleton->getKd());
-  
+
   EthernetServer_TC* server = EthernetServer_TC::instance();
   server->setHasClientCalling(true);
   delay(1);
@@ -473,9 +473,9 @@ unittest(PUT_Ki) {
   LiquidCrystal_TC* lcd = LiquidCrystal_TC::instance();
   assertEqual("MainMenu", tc->stateName());
 
-  PID_TC *singleton = PID_TC::instance();
+  PID_TC* singleton = PID_TC::instance();
   assertEqual(0.0, singleton->getKi());
-  
+
   EthernetServer_TC* server = EthernetServer_TC::instance();
   server->setHasClientCalling(true);
   delay(1);
@@ -518,9 +518,9 @@ unittest(PUT_Kp) {
   LiquidCrystal_TC* lcd = LiquidCrystal_TC::instance();
   assertEqual("MainMenu", tc->stateName());
 
-  PID_TC *singleton = PID_TC::instance();
+  PID_TC* singleton = PID_TC::instance();
   assertEqual(100000, singleton->getKp());
-  
+
   EthernetServer_TC* server = EthernetServer_TC::instance();
   server->setHasClientCalling(true);
   delay(1);

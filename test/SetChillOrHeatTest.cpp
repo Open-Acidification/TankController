@@ -13,10 +13,10 @@ unittest(ignoreInvalidValues) {
   assertTrue(EEPROM_TC::instance()->getHeat());
   test->setValue(2.0);
   assertTrue(EEPROM_TC::instance()->getHeat());
-  tc->loop();  // transition to Wait
+  tc->loop(false);  // transition to Wait
   delay(3000);
-  tc->loop();  // queue MainMenu to be next
-  tc->loop();  // transition to MainMenu
+  tc->loop(false);  // queue MainMenu to be next
+  tc->loop(false);  // transition to MainMenu
   // now we should be back to the main menu
   assertEqual("MainMenu", tc->stateName());
 }
@@ -29,10 +29,10 @@ unittest(switchToHeat) {
   assertEqual(1, test->getCurrentValue());
   test->setValue(9.0);
   assertTrue(EEPROM_TC::instance()->getHeat());
-  tc->loop();  // transition to Wait
+  tc->loop(false);  // transition to Wait
   delay(3000);
-  tc->loop();  // queue MainMenu to be next
-  tc->loop();  // transition to MainMenu
+  tc->loop(false);  // queue MainMenu to be next
+  tc->loop(false);  // transition to MainMenu
   // now we should be back to the main menu
   assertEqual("MainMenu", tc->stateName());
 }
@@ -49,11 +49,11 @@ unittest(switchToChill) {
   std::vector<String> lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("Use chiller     ", lines[1]);
   assertEqual("SetChillOrHeat", tc->stateName());
-  tc->loop();  // transition to Wait
+  tc->loop(false);  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(3000);
-  tc->loop();  // queue MainMenu to be next
-  tc->loop();  // transition to MainMenu
+  tc->loop(false);  // queue MainMenu to be next
+  tc->loop(false);  // transition to MainMenu
   // now we should be back to the main menu
   assertEqual("MainMenu", tc->stateName());
 }

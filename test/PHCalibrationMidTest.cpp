@@ -25,7 +25,7 @@ unittest(test) {
   tc->serialEvent1();                           // fake interrupt
   lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("  7.125->     0 ", lines.at(1));
-  tc->loop();
+  tc->loop(false);
   lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("  7.325->     0 ", lines.at(1));
   // setValue
@@ -34,11 +34,11 @@ unittest(test) {
   lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("New Mid = 12.345", lines.at(1));
   assertEqual("PHCalibrationMid", tc->stateName());
-  tc->loop();  // transition to Wait
+  tc->loop(false);  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(3000);
-  tc->loop();  // after the delay, Wait will call setNextState to prepare to go to PHCalibrationLow
-  tc->loop();  // updateState to PHCalibrationLow
+  tc->loop(false);  // after the delay, Wait will call setNextState to prepare to go to PHCalibrationLow
+  tc->loop(false);  // updateState to PHCalibrationLow
   assertEqual("PHCalibrationLow", tc->stateName());
 }
 

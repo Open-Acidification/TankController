@@ -21,15 +21,15 @@ unittest(testOutput) {
   // Test the output
   assertEqual("PH Slope:       ", display->getLines().at(0));
   assertEqual("requesting slope", display->getLines().at(1));
-  tc->loop();
+  tc->loop(false);
   assertEqual("Slope requested!", display->getLines().at(1));
   GODMODE()->serialPort[1].dataIn = "?SLOPE,99.7,100.3,-0.89\r";  // the queue of data waiting to be read
   tc->serialEvent1();                                             // fake interrupt
-  tc->loop();
+  tc->loop(false);
   assertEqual("99.7,100.3,-0.89", display->getLines().at(1));
   // Return to mainMenu
   Keypad_TC::instance()->_getPuppet()->push_back('D');
-  tc->loop();
+  tc->loop(false);
   assertEqual("MainMenu", tc->stateName());
 }
 

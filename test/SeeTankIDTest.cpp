@@ -22,7 +22,7 @@ unittest(testOutput) {
   assertEqual("12              ", display->getLines().at(1));
   // Return to mainMenu
   Keypad_TC::instance()->_getPuppet()->push_back('D');
-  tc->loop();
+  tc->loop(false);
   assertEqual("MainMenu", tc->stateName());
 }
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:tank_manager/model/app_data.dart';
 
@@ -52,7 +54,7 @@ class NavBar extends StatelessWidget {
       appData.refreshInformation();
     }
     if (items[index].label == 'Files') {
-      appData.refreshFiles();
+      unawaited(appData.refreshFiles());
     }
   }
 }

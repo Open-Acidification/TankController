@@ -27,3 +27,4 @@ int strscpy(char *destination, const char *source, unsigned long sizeOfDestinati
 int strscpy_P(char *destination, const __FlashStringHelper *source, unsigned long sizeOfDestination);
 int floattostrf(double float_value, int min_width, int num_digits_after_decimal, char *buffer,
                 unsigned long buffer_size);
+float strtofloat(const char *buffer);

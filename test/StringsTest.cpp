@@ -160,5 +160,17 @@ unittest(floatToString) {
       "\"100000\"\r\n",
       serialOutput.c_str());
 }
+unittest(strtofloat) {
+  assertEqual(0.0, strtofloat(" "));
+  assertEqual(0.0, strtofloat("0 "));
+  assertEqual(0.0, strtofloat(".0 "));
+  assertEqual(0.0, strtofloat("0.0 "));
+  assertEqual(0.0, strtofloat("00.00 "));
+  assertEqual(5.0, strtofloat("5 "));
+  assertEqual(0.5, strtofloat(".5 "));
+  assertEqual(5.5, strtofloat("5.5 "));
+  assertEqual(12.25, strtofloat("12.25 "));
+  assertEqual(3.125, strtofloat("3.125 "));
+}
 
 unittest_main()

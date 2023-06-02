@@ -83,3 +83,5 @@ This project follows the [all-contributors](https://github.com/all-contributors/
 ## Other
 
 *   [Libraries](docs/libraries.md) lists the external libraries and their licenses.
+*   For documentation on the Tank Controller Manager, click [here](extras/docs/FrontEnd.md)
+*   For documentation on running the Tank Controller Manager on Android, click [here](extras/docs/Android.md)

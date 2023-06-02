@@ -150,7 +150,7 @@ void TankController::loop(bool report_loop_delay) {
   unsigned long thisTime = millis();
   if (report_loop_delay && lastTime && thisTime - lastTime > 50) {
     // report unusual delay
-    serial(F("unexpected delay of %i ms\n"), thisTime - lastTime);
+    serial(F("unexpected delay of %i ms"), thisTime - lastTime);
   }
   lastTime = thisTime;
   wdt_reset();

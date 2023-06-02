@@ -4,8 +4,8 @@
 #include "ArduinoUnitTests.h"
 #include "Devices/DateTime_TC.h"
 #include "Devices/Serial_TC.h"
-#include "TankController.h"
 #include "TC_util.h"
+#include "TankController.h"
 
 unittest(SerialTest) {
   GodmodeState* state = GODMODE();

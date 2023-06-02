@@ -30,7 +30,7 @@ unittest_setup() {
   controlSolenoid->setTargetPh(7.00);
   state->serialPort[1].dataIn = "7.00\r";  // the queue of data waiting to be read
   tc->serialEvent1();                      // fake interrupt to update the current pH reading
-  tc->loop(false);                              // update the controls based on the current readings
+  tc->loop(false);                         // update the controls based on the current readings
   state->serialPort[0].dataOut = "";       // clear serial output
 }
 

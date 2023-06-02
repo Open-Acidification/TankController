@@ -25,7 +25,7 @@ void setPhMeasurementTo(float value) {
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("%i.%03i\r"), (int)value, (int)(value * 1000 + 0.5) % 1000);
   state->serialPort[1].dataIn = buffer;  // the queue of data waiting to be read
   tc->serialEvent1();                    // fake interrupt to update the current pH reading
-  tc->loop(false);                            // update the controls based on the current readings
+  tc->loop(false);                       // update the controls based on the current readings
 }
 
 unittest(TestVerticalScrollWithFlatSet) {

@@ -19,7 +19,7 @@ unittest(SerialTest) {
   assertEqual("abc XYZ 42 1.3750\r\n", state->serialPort[0].dataOut);
 }
 
-unittest(report loop delay) {
+unittest(report_loop_delay) {
   GodmodeState* state = GODMODE();
   TankController* tc = TankController::instance();
   DateTime_TC::now();                 // this puts stuff on the serial port that we want to ignore

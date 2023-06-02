@@ -19,4 +19,25 @@ unittest(SerialTest) {
   assertEqual("abc XYZ 42 1.3750\r\n", state->serialPort[0].dataOut);
 }
 
+unittest(report loop delay) {
+  GodmodeState* state = GODMODE();
+  TankController* tc = TankController::instance();
+  DateTime_TC::now();                 // this puts stuff on the serial port that we want to ignore
+  serial(F("foo"));                   // "Unable to create directory"
+  state->serialPort[0].dataIn = "";   // the queue of data waiting to be read
+  state->serialPort[0].dataOut = "";  // the history of data written
+
+  // no report if no delay
+  tc->loop();
+  delay(45);
+  tc->loop();
+  assertEqual("", state->serialPort[0].dataIn);
+  assertEqual("", state->serialPort[0].dataOut);
+
+  delay(55);
+  tc->loop();
+  assertEqual("", state->serialPort[0].dataIn);
+  assertEqual("unexpected delay of 55 ms\n", state->serialPort[0].dataOut);
+}
+
 unittest_main()

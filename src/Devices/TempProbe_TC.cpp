@@ -119,16 +119,16 @@ void TempProbe_TC::clearCorrection() {
 }
 
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
-  // set a temperature in the mock
-  void TempProbe_TC::setTemperature(float newTemp, bool clearCorrection, bool setHistory) {
-    if (setHistory) {
-      for (size_t i = 0; i < HISTORY_SIZE; ++i) {
-        history[i] = newTemp;
-      }
+// set a temperature in the mock
+void TempProbe_TC::setTemperature(float newTemp, bool clearCorrection, bool setHistory) {
+  if (setHistory) {
+    for (size_t i = 0; i < HISTORY_SIZE; ++i) {
+      history[i] = newTemp;
     }
-    if (clearCorrection) {
-      this->clearCorrection();
-    }
-    thermo.setTemperature(newTemp);
   }
+  if (clearCorrection) {
+    this->clearCorrection();
+  }
+  thermo.setTemperature(newTemp);
+}
 #endif

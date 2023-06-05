@@ -29,7 +29,7 @@ unittest_setup() {
   controlSolenoid->enablePID(false);
   controlSolenoid->setTargetPh(7.00);
   PHProbe::instance()->setPh(7.0);
-  state->serialPort[0].dataOut = "";       // clear serial output
+  state->serialPort[0].dataOut = "";  // clear serial output
 }
 
 unittest_teardown() {

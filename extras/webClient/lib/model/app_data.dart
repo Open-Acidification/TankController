@@ -66,7 +66,8 @@ class AppData with ChangeNotifier {
       _files = jsonDecode('{"Error: Choose tank from menu":""}');
     } else {
       var tcInterface = TcInterface.instance;
-      var value = await tcInterface.get(currentTank.ip, 'rootdir');
+      // wait 15 seconds (the default of 5 seconds could be too little)
+      var value = await tcInterface.get(currentTank.ip, 'rootdir', 15);
       while (value.substring(value.length - 1) == '\n') {
         value = value.substring(0, value.length - 1);
       }

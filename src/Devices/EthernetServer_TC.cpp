@@ -6,6 +6,7 @@
 #include "Devices/Ethernet_TC.h"
 #include "Devices/JSONBuilder.h"
 #include "Devices/LiquidCrystal_TC.h"
+#include "Devices/PID_TC.h"
 #include "Serial_TC.h"
 #include "TankController.h"
 
@@ -94,6 +95,37 @@ void EthernetServer_TC::post() {
   }
 }
 
+// Handles an HTTP PUT request
+void EthernetServer_TC::put() {
+  enum { Kd, Ki, Kp } var;
+  if (memcmp_P(buffer + 4, F("/api/1/set?Kd="), 14) == 0) {
+    var = Kd;
+  } else if (memcmp_P(buffer + 4, F("/api/1/set?Ki="), 14) == 0) {
+    var = Ki;
+  } else if (memcmp_P(buffer + 4, F("/api/1/set?Kp="), 14) == 0) {
+    var = Kp;
+  } else {
+    serial(F("put \"%s\" not recognized!"), buffer + 5);
+    sendResponse(HTTP_BAD_REQUEST);
+    state = FINISHED;
+    return;
+  }
+  float value = strtofloat(buffer + 18);
+  switch (var) {
+    case Kd:
+      PID_TC::instance()->setKd(value);
+      break;
+    case Ki:
+      PID_TC::instance()->setKi(value);
+      break;
+    case Kp:
+      PID_TC::instance()->setKp(value);
+      break;
+  }
+  sendCurrentRedirect();
+  state = FINISHED;
+}
+
 /* API Handler
  * currently only version 1 is supported
  * Calls helper functions
@@ -167,7 +199,7 @@ void EthernetServer_TC::keypress() {
     if (key == '#' || key == '*' || (key >= '0' && key <= '9') || (key >= 'A' && key <= 'D')) {
       // States will handle keypresses appropriately
       TankController::instance()->setNextKey(key);
-      sendResponse(HTTP_REDIRECT);
+      sendDisplayRedirect();
     } else {
       serial(F("bad character: %c"), key);
       sendResponse(HTTP_BAD_REQUEST);
@@ -212,6 +244,7 @@ void EthernetServer_TC::rootdir() {
   // Call function on SD Card
   // Provide callback to call when writing to the client buffer
   if (!SD_TC::instance()->listRootToBuffer(writeToClientBufferCallback)) {
+    serial(F("listRootToBuffer() failed"));
     sendResponse(HTTP_ERROR);
     state = FINISHED;
   };
@@ -241,7 +274,7 @@ void EthernetServer_TC::sendHeadersForRootdir(int fileCount) {
 }
 
 // Tests speed for reading a file from the SD Card
-// Empirical results show about 1 ms per 512 B
+// Empirical results show about 1.28 ms per 512 B
 void EthernetServer_TC::testReadSpeed() {
   wdt_disable();
   const __FlashStringHelper *path = F("tstRdSpd.txt");
@@ -255,27 +288,27 @@ void EthernetServer_TC::testReadSpeed() {
   file.close();
   // Read 1 MB
   file = SD_TC::instance()->open(temp, O_RDONLY);
-  int startTime = micros();
+  long startTime = micros();
   file.read(buffer, sizeof(buffer));  // Flawfinder: ignore
-  int endTime = micros();
+  long endTime = micros();
   SD_TC::instance()->remove(temp);
-  serial(F("Time reading 512B: %i us"), (endTime - startTime));
+  serial(F("Time reading %i bytes: %i us"), sizeof(buffer), (endTime - startTime));
   wdt_enable(WDTO_8S);
   state = FINISHED;
 }
 
 // Tests speed for writing to client buffer
-// Empirical results show about 6 ms per 512 B
+// Empirical results show about 6.43 ms per 512 B
 void EthernetServer_TC::testWriteSpeed() {
   wdt_disable();
   char buffer[512];
   memset(buffer, ' ', 511);
   buffer[511] = '\0';
   for (int i = 0; i < 10; ++i) {
-    int startTime = micros();
+    long startTime = micros();
     client.write(buffer);
-    int endTime = micros();
-    serial(F("Time writing 512B to client: %i us"), (endTime - startTime));
+    long endTime = micros();
+    serial(F("Time writing %i bytes: %i us"), sizeof(buffer), (endTime - startTime));
   }
   wdt_enable(WDTO_8S);
   state = FINISHED;
@@ -378,6 +411,9 @@ void EthernetServer_TC::loop() {
           } else if (memcmp_P(buffer, F("POST "), 5) == 0) {
             state = POST_REQUEST;
             post();
+          } else if (memcmp_P(buffer, F("PUT "), 4) == 0) {
+            state = PUT_REQUEST;
+            put();
           } else if (memcmp_P(buffer, F("OPTIONS "), 8) == 0) {
             state = OPTIONS_REQUEST;
             options();
@@ -434,12 +470,27 @@ void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
   client.write('\n');
 }
 
-void EthernetServer_TC::sendResponse(int code) {
+void EthernetServer_TC::sendCurrentRedirect() {
+  const __FlashStringHelper *response_303 =
+      F("HTTP/1.1 303 See Other\r\n"
+        "Location: /api/1/current\r\n"
+        "Access-Control-Allow-Origin: *\r\n"
+        "\r\n");
+  strscpy_P(buffer, response_303, sizeof(buffer));
+  client.write(buffer);
+}
+
+void EthernetServer_TC::sendDisplayRedirect() {
   const __FlashStringHelper *response_303 =
       F("HTTP/1.1 303 See Other\r\n"
         "Location: /api/1/display\r\n"
         "Access-Control-Allow-Origin: *\r\n"
         "\r\n");
+  strscpy_P(buffer, response_303, sizeof(buffer));
+  client.write(buffer);
+}
+
+void EthernetServer_TC::sendResponse(int code) {
   const __FlashStringHelper *response_400 =
       F("HTTP/1.1 400 Bad Request\r\n"
         "\r\n");
@@ -462,9 +513,6 @@ void EthernetServer_TC::sendResponse(int code) {
         "\r\n");
   char buffer[100];  // Space for longest of above responses
   switch (code) {
-    case HTTP_REDIRECT:
-      strscpy_P(buffer, response_303, sizeof(buffer));
-      break;
     case HTTP_BAD_REQUEST:
       strscpy_P(buffer, response_400, sizeof(buffer));
       break;

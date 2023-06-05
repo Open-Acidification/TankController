@@ -193,11 +193,21 @@
         "test",
         "code"
       ]
+    },
+    {
+      "login": "Suocesky",
+      "name": "Suocesky",
+      "avatar_url": "https://avatars.githubusercontent.com/u/73154821?v=4",
+      "profile": "https://github.com/Suocesky",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "projectName": "TankController",
   "projectOwner": "Open-Acidification",
   "repoType": "github",
   "repoHost": "https://github.com",
-  "skipCi": false
+  "skipCi": false,
+  "commitConvention": "angular"
 }

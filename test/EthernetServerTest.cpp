@@ -4,7 +4,11 @@
 #include "DateTime_TC.h"
 #include "Devices/EthernetServer_TC.h"
 #include "Devices/LiquidCrystal_TC.h"
+#include "Devices/PHControl.h"
+#include "Devices/PHProbe.h"
 #include "Devices/PID_TC.h"
+#include "Devices/TempProbe_TC.h"
+#include "Devices/TemperatureControl.h"
 #include "SetTime.h"
 #include "TankController.h"
 
@@ -151,6 +155,10 @@ unittest(current) {
   // Fake DateTime
   DateTime_TC feb(2022, 2, 22, 20, 50, 00);
   feb.setAsCurrent();
+  PHProbe::instance()->setPh(8.125);                            // actual
+  PHControl::instance()->setTargetPh(8.25);                     // target
+  TempProbe_TC::instance()->setTemperature(21.25, true);        // actual
+  TemperatureControl::instance()->setTargetTemperature(21.75);  // target
 
   EthernetServer_TC* server = EthernetServer_TC::instance();
   server->setHasClientCalling(true);
@@ -180,9 +188,14 @@ unittest(current) {
       "Content-Encoding: identity\r\n"
       "Content-Language: en-US\r\n"
       "Access-Control-Allow-Origin: *\r\n"
-      "Content-Length: 243\r\n"
+      "Content-Length: 317\r\n"
       "\r\n"
-      "{\"IPAddress\":\"192.168.1.10\","
+      "{"
+      "\"pH\":8.125,"
+      "\"Target_pH\":8.25,"
+      "\"Temperature\":21.25,"
+      "\"TargetTemperature\":21.75,"
+      "\"IPAddress\":\"192.168.1.10\","
       "\"MAC\":\"90:A2:DA:FB:F6:F1\","
       "\"FreeMemory\":\"1024 bytes\","
       "\"GoogleSheetInterval\":65535,"
@@ -194,7 +207,8 @@ unittest(current) {
       "\"PID\":\"ON\","
       "\"TankID\":0,"
       "\"Uptime\":\"0d 0h 0m 1s\","
-      "\"Version\":\"23.03.1\"}\r\n";
+      "\"Version\":\"23.03.1\""
+      "}\r\n";
   assertEqual(expectedResponse, response);
   assertEqual(FINISHED, server->getState());
   server->loop();  // Process finished state

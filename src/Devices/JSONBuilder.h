@@ -6,7 +6,7 @@
  * JSONBuilder builds a text-based JSON file.
  */
 
-const int BUFFER_SIZE = 256;
+const int BUFFER_SIZE = 360;
 
 class JSONBuilder {
 public:

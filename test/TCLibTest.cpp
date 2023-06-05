@@ -29,8 +29,7 @@ unittest_setup() {
   EEPROM_TC::instance()->setTankID(42);
 
   // set temperature
-  tempProbe->setTemperature(16.75);
-  tempProbe->setCorrection(0.0);
+  tempProbe->setTemperature(16.75, true);
   for (size_t i = 0; i < 100; ++i) {
     delay(1000);
     tempProbe->getRunningAverage();

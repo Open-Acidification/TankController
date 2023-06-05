@@ -1,5 +1,5 @@
 #pragma once
-#include "Arduino.h"
+#include <Arduino.h>
 
 /**
  * wrapper class for EZO pH Circuit | Atlas Scientific
@@ -30,7 +30,9 @@ public:
   void setLowpointCalibration(float lowpoint);
   void setMidpointCalibration(float midpoint);
   void setTemperatureCompensation(float temperature);
-
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  void setPh(float newValue);
+#endif
 private:
   // Class variable
   static PHProbe* _instance;

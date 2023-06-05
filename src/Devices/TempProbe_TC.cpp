@@ -49,6 +49,21 @@ TempProbe_TC::TempProbe_TC() {
 }
 
 /**
+ * getRunningAverage()
+ *
+ * Return the corrected running average within the range of 00.00-99.99
+ */
+float TempProbe_TC::getRunningAverage() {
+  float temp = getUncorrectedRunningAverage() + correction;
+  if (temp < 0.0) {
+    temp = 0.0;
+  } else if (99.99 < temp) {
+    temp = 99.99;
+  }
+  return temp;
+}
+
+/**
  * getUncorrectedRunningAverage()
  *
  * Read the current temperature and return a running average.
@@ -102,3 +117,18 @@ void TempProbe_TC::clearCorrection() {
     serial(F("Set temperature correction to %i.%02i"), (int)correction, (int)(correction * 100 + 0.5) % 100);
   }
 }
+
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  // set a temperature in the mock
+  void TempProbe_TC::setTemperature(float newTemp, bool clearCorrection, bool setHistory) {
+    if (setHistory) {
+      for (size_t i = 0; i < HISTORY_SIZE; ++i) {
+        history[i] = newTemp;
+      }
+    }
+    if (clearCorrection) {
+      this->clearCorrection();
+    }
+    thermo.setTemperature(newTemp);
+  }
+#endif

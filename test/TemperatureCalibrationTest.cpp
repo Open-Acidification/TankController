@@ -12,8 +12,7 @@ unittest(test) {
   GodmodeState* state = GODMODE();
   // with no correction, we have a temperature of 10.0
   TempProbe_TC* tempProbe = TempProbe_TC::instance();
-  tempProbe->setTemperature(10.0);
-  tempProbe->setCorrection(0.0);
+  tempProbe->setTemperature(10.0, true, false);
   assertEqual(0.0, EEPROM_TC::instance()->getCorrectedTemp());
   for (size_t i = 0; i < 100; ++i) {
     delay(1000);
@@ -42,7 +41,7 @@ unittest(test) {
   assertTrue(10.49 <= temp && temp <= 10.51);
 
   // A new measured temperature should also be adjusted
-  tempProbe->setTemperature(15.5);
+  tempProbe->setTemperature(15.5, false, false);
   for (size_t i = 0; i < 100; ++i) {
     delay(1000);
     tempProbe->getRunningAverage();

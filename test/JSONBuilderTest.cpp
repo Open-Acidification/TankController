@@ -3,6 +3,10 @@
 
 #include "Devices/DateTime_TC.h"
 #include "Devices/JSONBuilder.h"
+#include "Devices/PHControl.h"
+#include "Devices/PHProbe.h"
+#include "Devices/TempProbe_TC.h"
+#include "Devices/TemperatureControl.h"
 #include "TankController.h"
 /**
  * Test correctness of JSON output from JSONBuilder
@@ -12,6 +16,10 @@ unittest(current) {
   // Fake DateTime
   DateTime_TC feb(2022, 2, 22, 20, 50, 00);
   feb.setAsCurrent();
+  PHProbe::instance()->setPh(8.125);                            // actual
+  PHControl::instance()->setTargetPh(8.25);                     // target
+  TempProbe_TC::instance()->setTemperature(21.25, true);        // actual
+  TemperatureControl::instance()->setTargetTemperature(21.75);  // target
   JSONBuilder builder;
   int size = builder.buildCurrentValues();
   assertTrue(size > 200);
@@ -24,7 +32,7 @@ unittest(current) {
       "\"Temperature\":21.25,"
       "\"TargetTemperature\":21.75,"
       "\"IPAddress\":\"192.168.1.10\","
-      "\"MAC\":\"90:A2:DA:FB:F6:F1\","
+      "\"MAC\":\"90:A2:DA:80:7B:76\","
       "\"FreeMemory\":\"1024 bytes\","
       "\"GoogleSheetInterval\":65535,"
       "\"LogFile\":\"20220222.csv\","

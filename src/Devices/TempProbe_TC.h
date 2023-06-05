@@ -103,7 +103,13 @@ public:
   }
 
   float getRunningAverage() {
-    return getUncorrectedRunningAverage() + correction;
+    float temp = getUncorrectedRunningAverage() + correction;
+    if (temp < 0.0) {
+      temp = 0.0;
+    } else if (99.99 < temp) {
+      temp = 99.99;
+    }
+    return temp;
   }
 
   float getUncorrectedRunningAverage();

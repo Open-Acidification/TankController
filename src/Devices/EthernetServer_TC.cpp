@@ -52,9 +52,19 @@ void EthernetServer_TC::echo() {
   } else {
     buffer[i - 3] = '\0';
     serial(F("echo \"%s\""), buffer + 19);
-    sendHeadersWithSize(strnlen(buffer, sizeof(buffer)) - 19);
-    client.write(buffer + 19);
-    state = FINISHED;
+
+    // get current timestamp
+    DateTime_TC now = DateTime_TC::now();
+    String timestamp = now.toString();
+
+    // the response
+    JSONBuilder builder;
+    builder.addProperty("timestamp", timestamp);
+    builder.endObject();
+    String reponse = builder.toString();
+
+    sendHeadersWithSize(response.length());
+    client.write(response.c_str()) : state = FINISHED;
   }
 }
 

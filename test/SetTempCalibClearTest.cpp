@@ -14,7 +14,7 @@ Keypad* keypad = Keypad_TC::instance()->_getPuppet();
 // reduce duplicate code and make it more explicit
 void enterKey(char key) {
   keypad->push_back(key);
-  tc->loop();  // recognize and apply the key entry
+  tc->loop(false);  // recognize and apply the key entry
 }
 
 unittest(test) {
@@ -26,8 +26,8 @@ unittest(test) {
   assertEqual("Cleared TempCali", lines2[1]);
   assertEqual("Wait", tc->stateName());
   delay(3000);
-  tc->loop();  // queue MainMenu to be next
-  tc->loop();  // transition to MainMenu
+  tc->loop(false);  // queue MainMenu to be next
+  tc->loop(false);  // transition to MainMenu
   assertEqual("MainMenu", tc->stateName());
 }
 

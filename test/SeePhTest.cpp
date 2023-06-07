@@ -25,7 +25,7 @@ void setPhMeasurementTo(float value) {
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("%i.%03i\r"), (int)value, (int)(value * 1000 + 0.5) % 1000);
   state->serialPort[1].dataIn = buffer;  // the queue of data waiting to be read
   tc->serialEvent1();                    // fake interrupt to update the current pH reading
-  tc->loop();                            // update the controls based on the current readings
+  tc->loop(false);                       // update the controls based on the current readings
 }
 
 unittest(TestVerticalScrollWithFlatSet) {
@@ -36,7 +36,7 @@ unittest(TestVerticalScrollWithFlatSet) {
   // Transition states
   assertEqual("MainMenu", tc->stateName());
   tc->setNextState(test, true);  // MainMenu -> SeePh nextState: Wait
-  tc->loop();
+  tc->loop(false);
   assertEqual("SeePh", tc->stateName());
 
   // Set up
@@ -63,7 +63,7 @@ unittest(TestVerticalScrollWithFlatSet) {
   assertEqual("7.06 7.062 7.062", lc->getLines().at(1));
 
   Keypad_TC::instance()->_getPuppet()->push_back('D');
-  tc->loop();
+  tc->loop(false);
   assertEqual("MainMenu", tc->stateName());
 }
 
@@ -76,7 +76,7 @@ unittest(TestVerticalScrollWithRampSet) {
   // Transition states
   assertEqual("MainMenu", tc->stateName());
   tc->setNextState(test, true);  // MainMenu -> SeePh nextState: Wait
-  tc->loop();
+  tc->loop(false);
   assertEqual("SeePh", tc->stateName());
 
   // Set up
@@ -110,7 +110,7 @@ unittest(TestVerticalScrollWithRampSet) {
   assertEqual("Now  Next  Goal ", lc->getLines().at(0));
   assertEqual("7.67 7.667 7.000", lc->getLines().at(1));
   delay(3000);
-  tc->loop();
+  tc->loop(false);
   assertEqual("type: ramp      ", lc->getLines().at(0));
   assertEqual("left: 0:0:0     ", lc->getLines().at(1));
   delay(3000);
@@ -119,7 +119,7 @@ unittest(TestVerticalScrollWithRampSet) {
   assertEqual("7.00 7.000 7.000", lc->getLines().at(1));
 
   Keypad_TC::instance()->_getPuppet()->push_back('D');
-  tc->loop();
+  tc->loop(false);
   assertEqual("MainMenu", tc->stateName());
 }
 
@@ -132,7 +132,7 @@ unittest(TestVerticalScrollWithSineSet) {
   // Transition states
   assertEqual("MainMenu", tc->stateName());
   tc->setNextState(test, true);  // MainMenu -> SeePh nextState: Wait
-  tc->loop();
+  tc->loop(false);
   assertEqual("SeePh", tc->stateName());
 
   // Set up
@@ -159,7 +159,7 @@ unittest(TestVerticalScrollWithSineSet) {
   assertEqual("p=0.125 a=1.500 ", lc->getLines().at(1));
 
   Keypad_TC::instance()->_getPuppet()->push_back('D');
-  tc->loop();
+  tc->loop(false);
   assertEqual("MainMenu", tc->stateName());
 }
 

@@ -69,7 +69,7 @@ unittest(display) {
   EthernetClient_CI client;
   client = server->getClient();
   TankController* tc = TankController::instance();
-  tc->loop();  // for main menu to idle
+  tc->loop(false);  // for main menu to idle
   const char request[] =
       "GET /api/1/display HTTP/1.1\r\n"
       "Host: localhost:80\r\n"
@@ -137,10 +137,10 @@ unittest(keypress) {
       "\r\n";
   assertEqual(expectedResponse, response);
   assertEqual(FINISHED, server->getState());
-  tc->loop();  // Loop to handle the UI press
+  tc->loop(false);  // Loop to handle the UI press
   assertEqual("Change settings ", lcd->getLines().at(0));
   delay(60000);  // IDLE_TIMEOUT
-  tc->loop();
+  tc->loop(false);
   assertEqual("MainMenu", tc->stateName());
   assertEqual(NOT_CONNECTED, server->getState());
   client.stop();

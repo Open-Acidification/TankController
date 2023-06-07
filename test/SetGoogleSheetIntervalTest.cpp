@@ -25,11 +25,11 @@ unittest(test) {
   assertEqual("New interval=30 ", lines[1]);
   assertEqual("SetGoogleSheetInterval", tc->stateName());
 
-  tc->loop();  // transition to Wait
+  tc->loop(false);  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(3000);
-  tc->loop();  // queue MainMenu to be next
-  tc->loop();  // transition to MainMenu
+  tc->loop(false);  // queue MainMenu to be next
+  tc->loop(false);  // transition to MainMenu
   assertEqual("MainMenu", tc->stateName());
 }
 

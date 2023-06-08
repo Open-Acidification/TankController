@@ -148,18 +148,18 @@ void TankController::handleUI() {
 void TankController::loop(bool report_loop_delay) {
   static unsigned long lastTime = 0;
   unsigned long thisTime = millis();
-  if (report_loop_delay && lastTime && thisTime - lastTime > 50) {
+  if (report_loop_delay && lastTime && thisTime - lastTime > 500) {
     // report unusual delay
     serial(F("unexpected delay of %i ms"), thisTime - lastTime);
   }
   lastTime = thisTime;
   wdt_reset();
   blink();                                // blink the on-board LED to show that we are running
-  handleUI();                             // look at keypad, update LCD
+  handleUI();                             // look at keypad, update LCD (~90ms)
   updateControls();                       // turn CO2 and temperature controls on or off
-  writeDataToSD();                        // record current state to data log
+  writeDataToSD();                        // record current state to data log (~200ms)
   writeDataToSerial();                    // record current pH and temperature to serial
-  PushingBox::instance()->loop();         // write data to Google Sheets
+  PushingBox::instance()->loop();         // write data to Google Sheets (~1130ms every report)
   Ethernet_TC::instance()->loop();        // renew DHCP lease
   EthernetServer_TC::instance()->loop();  // handle any HTTP requests
 }
@@ -238,7 +238,6 @@ void TankController::updateState() {
  * What is the current version?
  */
 const char *TankController::version() {
-  serial(F("TankController::version() = %s"), TANK_CONTROLLER_VERSION);
   return TANK_CONTROLLER_VERSION;
 }
 

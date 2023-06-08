@@ -146,9 +146,9 @@ class CurrentData extends StatelessWidget {
       color: Colors.white,
       child: Consumer<AppData>(
         builder: (context, appData, child) {
-          var informationRows = <DataRow>[];
+          var currentDataRows = <DataRow>[];
           appData.currentData.forEach(
-            (key, value) => informationRows.add(
+            (key, value) => currentDataRows.add(
               DataRow(
                 cells: <DataCell>[
                   DataCell(Text(key.toString())),
@@ -180,7 +180,7 @@ class CurrentData extends StatelessWidget {
                           label: Text('Value'),
                         ),
                       ],
-                      rows: informationRows,
+                      rows: currentDataRows,
                     ),
                   ],
                 ),

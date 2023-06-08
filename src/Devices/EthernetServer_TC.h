@@ -67,27 +67,28 @@ private:
 
   // instance methods: constructor
   EthernetServer_TC(uint16_t port);
-  // instance methods: utility
-  void sendHeadersWithSize(uint32_t size);
-  void sendResponse(int);
-  void sendCurrentRedirect();
-  void sendDisplayRedirect();
-  int weekday(int year, int month, int day);
-  // instance methods: HTTP
-  void get();
-  void post();
-  void put();
-  void options();
-  void echo();
-  void getApiHandler();
+
+  // other instance methods
   void currentData();
   void display();
+  void echo();
+  bool fileContinue();
+  void fileSetup();
+  void get();
+  void getApiHandler();
+  bool isRequestForExistingFile();
   void keypress();
-  void rootdirSetup();
+  void options();
+  void post();
+  void put();
   void rootdir();
+  void rootdirSetup();
+  void sendCurrentRedirect();
+  void sendDisplayRedirect();
+  void sendHeadersWithSize(uint32_t size);
+  void sendHomeRedirect();
+  void sendResponse(int);
   void testReadSpeed();
   void testWriteSpeed();
-  bool isRequestForExistingFile();
-  void fileSetup();
-  bool fileContinue();
+  int weekday(int year, int month, int day);
 };

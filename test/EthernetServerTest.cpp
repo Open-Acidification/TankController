@@ -565,4 +565,38 @@ unittest(PUT_Kp) {
   assertEqual(1000.125, singleton->getKp());
 }
 
+unittest(home) {
+  EthernetServer_TC* server = EthernetServer_TC::instance();
+  server->setHasClientCalling(true);
+  delay(1);
+  server->loop();
+  EthernetClient_CI client = server->getClient();
+  const char request[] =
+      "GET / HTTP/1.1\r\n"
+      "Host: localhost:80\r\n"
+      "Accept: text/plain;charset=UTF-8\r\n"
+      "Accept-Encoding: identity\r\n"
+      "Accept-Language: en-US\r\n"
+      "\r\n";
+  client.pushToReadBuffer(request);
+  server->loop();
+  deque<uint8_t>* pBuffer = client.writeBuffer();
+  assertEqual(129, pBuffer->size());
+  String response;
+  while (!pBuffer->empty()) {
+    response.concat(pBuffer->front());
+    pBuffer->pop_front();
+  }
+  const char expectedResponse[] =
+      "HTTP/1.1 303 See Other\r\n"
+      "Location: https://open-acidification.github.io/TankControllerManager/\r\n"
+      "Access-Control-Allow-Origin: *\r\n"
+      "\r\n";
+  assertEqual(expectedResponse, response);
+  server->loop();
+  assertEqual(NOT_CONNECTED, server->getState());
+  client.stop();
+  server->loop();
+}
+
 unittest_main()

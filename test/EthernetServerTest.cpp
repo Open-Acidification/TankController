@@ -163,7 +163,7 @@ unittest(currentData) {
   server->loop();
   EthernetClient_CI client = server->getClient();
   const char request[] =
-      "GET /api/1/currentData HTTP/1.1\r\n"
+      "GET /api/1/data HTTP/1.1\r\n"
       "Host: localhost:80\r\n"
       "Accept: text/plain;charset=UTF-8\r\n"
       "Accept-Encoding: identity\r\n"
@@ -447,7 +447,7 @@ unittest(PUT_Kd) {
   server->loop();
   EthernetClient_CI client = server->getClient();
   const char request[] =
-      "PUT /api/1/set?Kd=1.0 HTTP/1.1\r\n"
+      "PUT /api/1/data?Kd=1.0 HTTP/1.1\r\n"
       "Host: localhost:80\r\n"
       "Accept: text/plain;charset=UTF-8\r\n"
       "Accept-Encoding: identity\r\n"
@@ -456,7 +456,7 @@ unittest(PUT_Kd) {
   client.pushToReadBuffer(request);
   server->loop();
   deque<uint8_t>* pBuffer = client.writeBuffer();
-  assertEqual(88, pBuffer->size());
+  assertEqual(81, pBuffer->size());
   String response;
   while (!pBuffer->empty()) {
     response.concat(pBuffer->front());
@@ -464,7 +464,7 @@ unittest(PUT_Kd) {
   }
   const char expectedResponse[] =
       "HTTP/1.1 303 See Other\r\n"
-      "Location: /api/1/currentData\r\n"
+      "Location: /api/1/data\r\n"
       "Access-Control-Allow-Origin: *\r\n"
       "\r\n";
   assertEqual(expectedResponse, response);
@@ -491,7 +491,7 @@ unittest(PUT_Ki) {
   server->loop();
   EthernetClient_CI client = server->getClient();
   const char request[] =
-      "PUT /api/1/set?Ki=100.50 HTTP/1.1\r\n"
+      "PUT /api/1/data?Ki=100.50 HTTP/1.1\r\n"
       "Host: localhost:80\r\n"
       "Accept: text/plain;charset=UTF-8\r\n"
       "Accept-Encoding: identity\r\n"
@@ -500,7 +500,7 @@ unittest(PUT_Ki) {
   client.pushToReadBuffer(request);
   server->loop();
   deque<uint8_t>* pBuffer = client.writeBuffer();
-  assertEqual(88, pBuffer->size());
+  assertEqual(81, pBuffer->size());
   String response;
   while (!pBuffer->empty()) {
     response.concat(pBuffer->front());
@@ -508,7 +508,7 @@ unittest(PUT_Ki) {
   }
   const char expectedResponse[] =
       "HTTP/1.1 303 See Other\r\n"
-      "Location: /api/1/currentData\r\n"
+      "Location: /api/1/data\r\n"
       "Access-Control-Allow-Origin: *\r\n"
       "\r\n";
   assertEqual(expectedResponse, response);
@@ -535,7 +535,7 @@ unittest(PUT_Kp) {
   server->loop();
   EthernetClient_CI client = server->getClient();
   const char request[] =
-      "PUT /api/1/set?Kp=1000.125 HTTP/1.1\r\n"
+      "PUT /api/1/data?Kp=1000.125 HTTP/1.1\r\n"
       "Host: localhost:80\r\n"
       "Accept: text/plain;charset=UTF-8\r\n"
       "Accept-Encoding: identity\r\n"
@@ -544,7 +544,7 @@ unittest(PUT_Kp) {
   client.pushToReadBuffer(request);
   server->loop();
   deque<uint8_t>* pBuffer = client.writeBuffer();
-  assertEqual(88, pBuffer->size());
+  assertEqual(81, pBuffer->size());
   String response;
   while (!pBuffer->empty()) {
     response.concat(pBuffer->front());
@@ -552,7 +552,7 @@ unittest(PUT_Kp) {
   }
   const char expectedResponse[] =
       "HTTP/1.1 303 See Other\r\n"
-      "Location: /api/1/currentData\r\n"
+      "Location: /api/1/data\r\n"
       "Access-Control-Allow-Origin: *\r\n"
       "\r\n";
   assertEqual(expectedResponse, response);

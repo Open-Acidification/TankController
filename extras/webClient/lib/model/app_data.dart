@@ -56,7 +56,7 @@ class AppData with ChangeNotifier {
       currentData = jsonDecode('{"Error: Choose tank from menu":""}');
     } else {
       var tcInterface = TcInterface.instance;
-      var value = await tcInterface.get(currentTank.ip, 'currentData');
+      var value = await tcInterface.get(currentTank.ip, 'data');
       currentData = jsonDecode(value);
     }
   }
@@ -82,7 +82,7 @@ class AppData with ChangeNotifier {
   Future<void> addTank(tank) async {
     // make a call to the device to see if it exists
     // ignore result
-    await TcInterface.instance.get(tank.ip, 'currentData');
+    await TcInterface.instance.get(tank.ip, 'data');
     _tankList.add(tank);
     unawaited(refreshDisplay());
     notifyListeners();

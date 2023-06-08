@@ -52,7 +52,7 @@ class CurrentData extends StatelessWidget {
                       TcInterface.instance
                           .put(
                         '${appData.currentData["IPAddress"]}',
-                        'set?${key.toString()}=$val',
+                        'data?${key.toString()}=$val',
                       )
                           .then((value) {
                         appData.currentData = json.decode(value);

@@ -79,7 +79,7 @@ private:
   void put();
   void options();
   void echo();
-  void apiHandler();
+  void getApiHandler();
   void currentData();
   void display();
   void keypress();

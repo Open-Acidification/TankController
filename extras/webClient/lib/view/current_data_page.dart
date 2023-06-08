@@ -30,8 +30,7 @@ class CurrentData extends StatelessWidget {
 
   bool canUploadFile(AppData appData) {
     Version latestVersion = Version.parse(appData.currentData['Version']);
-    // return latestVersion >= Version.parse('23.6.0');
-    return latestVersion >= Version.parse('99.9.9');
+    return latestVersion >= Version.parse('99.9.9'); // not supported yet!
   }
 
   showEditDialog(var appData, BuildContext context, var key, var value) async {

@@ -43,7 +43,7 @@ unittest(currentData) {
       "\"PID\":\"ON\","
       "\"TankID\":0,"
       "\"Uptime\":\"0d 0h 0m 1s\","
-      "\"Version\":\"23.06.1\""
+      "\"Version\":\"23.06.0\""
       "}";
   assertEqual(expected, text);
 }

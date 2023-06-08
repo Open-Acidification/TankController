@@ -54,11 +54,11 @@ unittest(test) {
   // a year ago ensures that it precedes the compile time
   assertEqual("2020-03-18 13:15", DateTime_TC::now().as16CharacterString());
   assertEqual("SetTime", tc->stateName());
-  tc->loop();  // transition to Wait
+  tc->loop(false);  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(3000);
-  tc->loop();  // queue MainMenu to be next
-  tc->loop();  // transition to MainMenu
+  tc->loop(false);  // queue MainMenu to be next
+  tc->loop(false);  // transition to MainMenu
   // now we should be back to the main menu
   assertEqual("MainMenu", tc->stateName());
 }

@@ -41,10 +41,10 @@ unittest(NoTankID) {
   EEPROM_TC::instance()->setTankID(0);
   EEPROM_TC::instance()->setGoogleSheetInterval(1);
 
-  tc->loop();
+  tc->loop(false);
   delay(75 * 1000);  // a bit over one minute
   state->serialPort[0].dataOut = "";
-  tc->loop();
+  tc->loop(false);
   char expected[] =
       "15:26 pH=7.000 temp= 0.00\r\n"
       "Set Tank ID in order to send data to PushingBox\r\n";
@@ -75,7 +75,7 @@ unittest(SendData) {
   assertFalse(pClient->connected());  // not yet connected!
   state->serialPort[0].dataOut = "";
   delay(60 * 1000);  // wait for one minute to ensure we send
-  tc->loop();
+  tc->loop(false);
   assertTrue(pClient->connected());
   assertNotNull(pClient->writeBuffer());
   deque<uint8_t> buffer = *(pClient->writeBuffer());
@@ -117,7 +117,7 @@ unittest(inCalibration) {
   EthernetClient *pClient = pPushingBox->getClient();
   assertNull(pClient->writeBuffer());
   delay(60 * 20 * 1000);  // wait for 20 minutes to ensure we send again
-  tc->loop();
+  tc->loop(false);
   assertNotNull(pClient->writeBuffer());
   deque<uint8_t> buffer = *(pPushingBox->getClient()->writeBuffer());
   String bufferResult;
@@ -143,7 +143,7 @@ unittest(without_DHCP) {
   EthernetClient *pClient = pPushingBox->getClient();
   assertNull(pClient->writeBuffer());
   delay(60 * 20 * 1000);  // wait for 20 minutes to ensure we still do not send
-  tc->loop();
+  tc->loop(false);
   assertNull(pClient->writeBuffer());
 }
 

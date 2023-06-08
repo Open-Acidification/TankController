@@ -145,7 +145,14 @@ void TankController::handleUI() {
  * It is called repeatedly while the board is on.
  * (It appears to be called about once every 15 ms.)
  */
-void TankController::loop() {
+void TankController::loop(bool report_loop_delay) {
+  static unsigned long lastTime = 0;
+  unsigned long thisTime = millis();
+  if (report_loop_delay && lastTime && thisTime - lastTime > 50) {
+    // report unusual delay
+    serial(F("unexpected delay of %i ms"), thisTime - lastTime);
+  }
+  lastTime = thisTime;
   wdt_reset();
   blink();                                // blink the on-board LED to show that we are running
   handleUI();                             // look at keypad, update LCD

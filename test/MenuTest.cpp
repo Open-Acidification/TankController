@@ -20,7 +20,7 @@ Keypad* keypad = Keypad_TC::instance()->_getPuppet();
 // reduce duplicate code and make it more explicit
 void enterKey(char key) {
   keypad->push_back(key);
-  tc->loop();  // recognize and apply the key entry
+  tc->loop(false);  // recognize and apply the key entry
 }
 
 unittest_setup() {
@@ -48,11 +48,11 @@ unittest(MainMenu) {
   assertEqual("pH=0.000   8.100", lc->getLines().at(0));
   assertEqual("T=12.23 h 15.75 ", lc->getLines().at(1));
   delay(1000);
-  tc->loop();
+  tc->loop(false);
   assertEqual("pH 0.000   8.100", lc->getLines().at(0));
   assertEqual("T 12.23 H 15.75 ", lc->getLines().at(1));
   delay(1000);
-  tc->loop();
+  tc->loop(false);
   assertEqual("pH=0.000   8.100", lc->getLines().at(0));
   assertEqual("T=12.23 H 15.75 ", lc->getLines().at(1));
 }
@@ -112,12 +112,12 @@ unittest(ViewTime) {
   enterKey('6');
   assertEqual(DateTime_TC::now().as16CharacterString(), lc->getLines().at(0).c_str());
   delay(6000);
-  tc->loop();
-  tc->loop();
+  tc->loop(false);
+  tc->loop(false);
   assertEqual("SeeDeviceUptime", tc->stateName());
   delay(55000);  // idle timeout should return to main menu
-  tc->loop();
-  tc->loop();
+  tc->loop(false);
+  tc->loop(false);
   assertEqual("MainMenu", tc->stateName());
 }
 
@@ -130,8 +130,8 @@ unittest(DisableTimeout) {
   enterKey('6');
   assertEqual("PHCalibrationMid", tc->stateName());
   delay(65000);  // wait for over 60 seconds to verify that it does not return to main menu
-  tc->loop();
-  tc->loop();
+  tc->loop(false);
+  tc->loop(false);
   assertEqual("PHCalibrationMid", tc->stateName());
 }
 

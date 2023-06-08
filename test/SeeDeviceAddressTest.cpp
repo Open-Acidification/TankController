@@ -16,7 +16,7 @@ unittest(testOutput) {
   assertEqual("SeeDeviceAddress", tc->stateName());
 
   // Test the output
-  tc->loop();
+  tc->loop(false);
   assertEqual("192.168.1.10    ", display->getLines().at(0));
   char buffer[8];
   strscpy(buffer, display->getLines().at(1).c_str(), sizeof(buffer));
@@ -26,16 +26,16 @@ unittest(testOutput) {
   GODMODE()->resetClock();
   delay(1);
   Keypad_TC::instance()->_getPuppet()->push_back('C');
-  tc->loop();
+  tc->loop(false);
   assertEqual("90A2:DAFC:F7F2  ", display->getLines().at(1));
   delay(1);
   Keypad_TC::instance()->_getPuppet()->push_back('C');
-  tc->loop();
+  tc->loop(false);
   assertEqual("90A2:DA03:FEF9  ", display->getLines().at(1));
 
   // Return to mainMenu
   Keypad_TC::instance()->_getPuppet()->push_back('D');
-  tc->loop();
+  tc->loop(false);
   assertEqual("MainMenu", tc->stateName());
 }
 

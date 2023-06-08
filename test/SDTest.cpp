@@ -28,9 +28,9 @@ unittest(tankControllerLoop) {
   DateTime_TC d1(2021, 4, 15);
   d1.setAsCurrent();
   assertFalse(SD_TC::instance()->exists("20210415.csv"));
-  tc->loop();
+  tc->loop(false);
   delay(1000);
-  tc->loop();
+  tc->loop(false);
   assertTrue(SD_TC::instance()->exists("20210415.csv"));
   File file = SD_TC::instance()->open("20210415.csv");
   assertTrue(file.size() < sizeof(data));
@@ -55,9 +55,9 @@ unittest(loopInCalibration) {
   DateTime_TC d1(2021, 4, 15);
   d1.setAsCurrent();
   assertFalse(SD_TC::instance()->exists("20210415.csv"));
-  tc->loop();
+  tc->loop(false);
   delay(1000);
-  tc->loop();
+  tc->loop(false);
   assertTrue(SD_TC::instance()->exists("20210415.csv"));
   File file = SD_TC::instance()->open("20210415.csv");
   assertTrue(file.size() < sizeof(data));

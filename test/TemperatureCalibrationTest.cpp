@@ -53,8 +53,8 @@ unittest(test) {
   assertTrue(0.49 < temp && temp < 0.51);
 
   // test for issue #174
-  tc->loop();
-  tc->loop();
+  tc->loop(false);
+  tc->loop(false);
   test = new TemperatureCalibration(tc);
   tc->setNextState(test, true);
   test->setValue(16.0);

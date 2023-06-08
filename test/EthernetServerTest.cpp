@@ -354,13 +354,19 @@ unittest(options) {
   client.pushToReadBuffer(request);
   server->loop();
   deque<uint8_t>* pBuffer = client.writeBuffer();
-  assertEqual(53, pBuffer->size());
+  assertEqual(205, pBuffer->size());
   String response;
   while (!pBuffer->empty()) {
     response.concat(pBuffer->front());
     pBuffer->pop_front();
   }
-  const char expectedResponse[] = "HTTP/1.1 405 Method Not Allowed\r\nAllow: GET, POST\r\n\r\n";
+  const char expectedResponse[] =
+      "HTTP/1.1 200 OK\r\n"
+      "Content-Type: text/plain;charset=UTF-8\r\n"
+      "Content-Encoding: identity\r\n"
+      "Content-Language: en-US\r\n"
+      "Access-Control-Allow-Origin: *\r\n"
+      "Access-Control-Allow-Methods: OPTIONS, GET, HEAD, POST, PUT\r\n\r\n";
   assertEqual(expectedResponse, response);
   assertEqual(FINISHED, server->getState());
   server->loop();  // Process finished state

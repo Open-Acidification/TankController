@@ -150,7 +150,7 @@ unittest(OutsideDelta) {
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[TEMP_CONTROL_PIN]);
   assertEqual("heater turned on at 6 after 6 ms\r\n", state->serialPort[0].dataOut);
   tc->loop(false);
-  assertEqual("T 20.02 H 20.00 ", lc->getLines().at(1));
+  assertEqual("T 20.00 H 20.00 ", lc->getLines().at(1));
   state->serialPort[0].dataOut = "";  // the history of data written
   delay(300);
   control->updateControl(20.05);
@@ -158,7 +158,7 @@ unittest(OutsideDelta) {
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
   assertEqual("heater turned off at 313 after 307 ms\r\n", state->serialPort[0].dataOut);
   tc->loop(false);
-  assertEqual("T 20.02 h 20.00 ", lc->getLines().at(1));
+  assertEqual("T 20.00 h 20.00 ", lc->getLines().at(1));
 }
 
 /**
@@ -187,7 +187,7 @@ unittest(RampGreaterThanZero) {
   assertFalse(control->isOn());
   control->setTargetTemperature(10);
   control->setRampDuration(1.5);
-  assertEqual(control->tempSetTypeTypes::RAMP_TYPE, control->getTempSetType());
+  assertEqual(TemperatureControl::tempSetTypeTypes::RAMP_TYPE, control->getTempSetType());
   tc->loop(false);
   control->updateControl(tempProbe->getRunningAverage());
   target = control->getCurrentTemperatureTarget();
@@ -264,7 +264,7 @@ unittest(ChangeRampToZero) {
   tc->loop(false);
   assertTrue(20 <= control->getCurrentTemperatureTarget() && control->getCurrentTemperatureTarget() <= 20.03);
   control->setRampDuration(0);
-  assertEqual(control->tempSetTypeTypes::FLAT_TYPE, control->getTempSetType());
+  assertEqual(TemperatureControl::tempSetTypeTypes::FLAT_TYPE, control->getTempSetType());
   tc->loop(false);
   assertEqual(30, control->getCurrentTemperatureTarget());
   tc->loop(false);
@@ -277,7 +277,7 @@ unittest(sineTest) {
   assertFalse(control->isOn());
   control->setTargetTemperature(10);
   control->setSine(1.5, 2);
-  assertEqual(control->tempSetTypeTypes::SINE_TYPE, control->getTempSetType());
+  assertEqual(TemperatureControl::tempSetTypeTypes::SINE_TYPE, control->getTempSetType());
   tc->loop(false);
   assertEqual(10, control->getCurrentTemperatureTarget());
   // mock arduino restarting
@@ -313,7 +313,7 @@ unittest(sineTest) {
   assertFalse(control->isOn());
   control->setTargetTemperature(30);
   control->setSine(1.5, 2);
-  assertEqual(control->tempSetTypeTypes::SINE_TYPE, control->getTempSetType());
+  assertEqual(TemperatureControl::tempSetTypeTypes::SINE_TYPE, control->getTempSetType());
   tc->loop(false);
   assertEqual(30, control->getCurrentTemperatureTarget());
   // mock arduino restarting

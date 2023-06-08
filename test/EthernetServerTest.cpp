@@ -24,8 +24,7 @@ unittest(echo) {
   server->setHasClientCalling(true);
   delay(1);        // so that start time is not zero!
   server->loop();  // accept connection
-  EthernetClient_CI client;
-  client = server->getClient();
+  EthernetClient_CI client = server->getClient();
   assertTrue(client);
   assertEqual(0, client.writeBuffer()->size());
   const char request[] =
@@ -66,8 +65,7 @@ unittest(display) {
   server->setHasClientCalling(true);
   delay(1);
   server->loop();
-  EthernetClient_CI client;
-  client = server->getClient();
+  EthernetClient_CI client = server->getClient();
   TankController* tc = TankController::instance();
   tc->loop(false);  // for main menu to idle
   const char request[] =
@@ -112,8 +110,7 @@ unittest(keypress) {
   server->setHasClientCalling(true);
   delay(1);
   server->loop();
-  EthernetClient_CI client;
-  client = server->getClient();
+  EthernetClient_CI client = server->getClient();
   const char request[] =
       "POST /api/1/key?value=2 HTTP/1.1\r\n"
       "Host: localhost:80\r\n"
@@ -156,8 +153,7 @@ unittest(current) {
   server->setHasClientCalling(true);
   delay(1000);
   server->loop();
-  EthernetClient_CI client;
-  client = server->getClient();
+  EthernetClient_CI client = server->getClient();
   const char request[] =
       "GET /api/1/current HTTP/1.1\r\n"
       "Host: localhost:80\r\n"
@@ -209,8 +205,7 @@ unittest(badRequest) {
   server->setHasClientCalling(true);
   delay(1);
   server->loop();
-  EthernetClient_CI client;
-  client = server->getClient();
+  EthernetClient_CI client = server->getClient();
   const char request[] =
       "POST /api/1/key?value=foo HTTP/1.1\r\n"
       "Host: localhost:80\r\n"
@@ -242,8 +237,7 @@ unittest(rootDir) {
   server->setHasClientCalling(true);
   delay(1);
   server->loop();
-  EthernetClient_CI client;
-  client = server->getClient();
+  EthernetClient_CI client = server->getClient();
   const char request[] =
       "GET /api/1/rootdir HTTP/1.1\r\n"
       "Host: localhost:80\r\n"
@@ -295,8 +289,7 @@ unittest(fileNotFound) {
   server->setHasClientCalling(true);
   delay(1);
   server->loop();
-  EthernetClient_CI client;
-  client = server->getClient();
+  EthernetClient_CI client = server->getClient();
   const char request[] =
       "GET /17760704.log HTTP/1.1\r\n"
       "Host: localhost:80\r\n"
@@ -328,8 +321,7 @@ unittest(options) {
   server->setHasClientCalling(true);
   delay(1);
   server->loop();
-  EthernetClient_CI client;
-  client = server->getClient();
+  EthernetClient_CI client = server->getClient();
   const char request[] =
       "OPTIONS /index.html HTTP/1.1\r\n"
       "Host: localhost:80\r\n"
@@ -361,8 +353,7 @@ unittest(timeout) {
   server->setHasClientCalling(true);
   delay(1);
   server->loop();
-  EthernetClient_CI client;
-  client = server->getClient();
+  EthernetClient_CI client = server->getClient();
   server->loop();
   assertEqual(READ_REQUEST, server->getState());
   delay(50);
@@ -396,8 +387,7 @@ unittest(notImplemented) {
   server->setHasClientCalling(true);
   delay(1);
   server->loop();
-  EthernetClient_CI client;
-  client = server->getClient();
+  EthernetClient_CI client = server->getClient();
   const char request[] =
       "FOO /index.html HTTP/1.1\r\n"
       "Host: localhost:80\r\n"
@@ -435,8 +425,7 @@ unittest(PUT_Kd) {
   server->setHasClientCalling(true);
   delay(1);
   server->loop();
-  EthernetClient_CI client;
-  client = server->getClient();
+  EthernetClient_CI client = server->getClient();
   const char request[] =
       "PUT /api/1/set?Kd=1.0 HTTP/1.1\r\n"
       "Host: localhost:80\r\n"
@@ -480,8 +469,7 @@ unittest(PUT_Ki) {
   server->setHasClientCalling(true);
   delay(1);
   server->loop();
-  EthernetClient_CI client;
-  client = server->getClient();
+  EthernetClient_CI client = server->getClient();
   const char request[] =
       "PUT /api/1/set?Ki=100.50 HTTP/1.1\r\n"
       "Host: localhost:80\r\n"
@@ -525,8 +513,7 @@ unittest(PUT_Kp) {
   server->setHasClientCalling(true);
   delay(1);
   server->loop();
-  EthernetClient_CI client;
-  client = server->getClient();
+  EthernetClient_CI client = server->getClient();
   const char request[] =
       "PUT /api/1/set?Kp=1000.125 HTTP/1.1\r\n"
       "Host: localhost:80\r\n"

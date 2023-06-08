@@ -59,16 +59,16 @@ int floattostrf(double float_value, int min_width, int num_digits_after_decimal,
 }
 
 float strtofloat(const char *buffer) {
-  float left = 0, right = 0;
-  int i, j = 1;
+  float integerPortion = 0, fractionalPortion = 0;
+  int i, digitsAfterDecimal = 0;
   for (i = 0; isDigit(buffer[i]); ++i) {
-    left = left * 10 + buffer[i] - '0';
+    integerPortion = integerPortion * 10 + buffer[i] - '0';
   }
   if (buffer[i] == '.') {
-    for (i = i + 1; isDigit(buffer[i]); ++i) {
-      right = right * 10 + buffer[i] - '0';
-      j = j * 10;
+    for (i += 1; isDigit(buffer[i]); ++i) {
+      fractionalPortion = fractionalPortion * 10 + buffer[i] - '0';
+      ++digitsAfterDecimal;
     }
   }
-  return left + right / j;
+  return integerPortion + fractionalPortion / pow(10, digitsAfterDecimal);
 }

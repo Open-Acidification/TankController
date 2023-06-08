@@ -63,8 +63,7 @@ void EthernetServer_TC::get() {
   if (memcmp_P(buffer + 4, F("/ "), 2) == 0) {
     sendHomeRedirect();
     state = FINISHED;
-  } else 
-  if (memcmp_P(buffer + 5, F("echo"), 4) == 0) {
+  } else if (memcmp_P(buffer + 5, F("echo"), 4) == 0) {
     echo();
   } else if (memcmp_P(buffer + 5, F("api"), 3) == 0) {
     getApiHandler();

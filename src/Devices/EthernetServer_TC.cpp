@@ -145,8 +145,8 @@ void EthernetServer_TC::apiHandler() {
   if (buffer[9] == '1') {
     // API version 1
     // When you add a new API, keep this for backwards compatibility
-    if (memcmp_P(buffer + 11, F("current"), 7) == 0) {
-      current();
+    if (memcmp_P(buffer + 11, F("currentData"), 11) == 0) {
+      currentData();
     } else if (memcmp_P(buffer + 11, F("display"), 7) == 0) {
       display();
     } else if (memcmp_P(buffer + 11, F("rootdir"), 7) == 0) {
@@ -170,7 +170,7 @@ void EthernetServer_TC::apiHandler() {
 }
 
 // Get list of current values
-void EthernetServer_TC::current() {
+void EthernetServer_TC::currentData() {
   JSONBuilder builder;
   int size = builder.buildCurrentValues();
   char *text = builder.bufferPtr();
@@ -483,7 +483,7 @@ void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
 void EthernetServer_TC::sendCurrentRedirect() {
   const __FlashStringHelper *response_303 =
       F("HTTP/1.1 303 See Other\r\n"
-        "Location: /api/1/current\r\n"
+        "Location: /api/1/currentData\r\n"
         "Access-Control-Allow-Origin: *\r\n"
         "\r\n");
   strscpy_P(buffer, response_303, sizeof(buffer));

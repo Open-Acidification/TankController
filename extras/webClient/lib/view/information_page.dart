@@ -11,8 +11,8 @@ import 'package:tank_manager/model/app_data.dart';
 import 'package:tank_manager/model/tc_interface.dart';
 import 'package:version/version.dart';
 
-class Information extends StatelessWidget {
-  const Information({
+class CurrentData extends StatelessWidget {
+  const CurrentData({
     Key? key,
     required this.context,
   }) : super(key: key);
@@ -24,12 +24,12 @@ class Information extends StatelessWidget {
   }
 
   bool canEditCurrentInfo(AppData appData) {
-    Version latestVersion = Version.parse(appData.information['Version']);
+    Version latestVersion = Version.parse(appData.currentData['Version']);
     return latestVersion >= Version.parse('23.6.0');
   }
 
   bool canUploadFile(AppData appData) {
-    Version latestVersion = Version.parse(appData.information['Version']);
+    Version latestVersion = Version.parse(appData.currentData['Version']);
     // return latestVersion >= Version.parse('23.6.0');
     return latestVersion >= Version.parse('99.9.9');
   }
@@ -51,11 +51,11 @@ class Information extends StatelessWidget {
                     onFieldSubmitted: (val) {
                       TcInterface.instance
                           .put(
-                        '${appData.information["IPAddress"]}',
+                        '${appData.currentData["IPAddress"]}',
                         'set?${key.toString()}=$val',
                       )
                           .then((value) {
-                        appData.information = json.decode(value);
+                        appData.currentData = json.decode(value);
                       });
                       Navigator.pop(context);
                     },
@@ -147,7 +147,7 @@ class Information extends StatelessWidget {
       child: Consumer<AppData>(
         builder: (context, appData, child) {
           var informationRows = <DataRow>[];
-          appData.information.forEach(
+          appData.currentData.forEach(
             (key, value) => informationRows.add(
               DataRow(
                 cells: <DataCell>[
@@ -186,8 +186,8 @@ class Information extends StatelessWidget {
                 ),
               ),
               // This outer ternary is required to prevent the screen flashing an error
-              // for a split second while appData.information loads to do the check.
-              (appData.information['Version'] != null)
+              // for a split second while appData.currentData loads to do the check.
+              (appData.currentData['Version'] != null)
                   ? OutlinedButton(
                       onPressed: canUploadFile(appData)
                           ? () {

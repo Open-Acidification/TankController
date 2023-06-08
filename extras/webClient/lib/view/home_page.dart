@@ -35,7 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     final List<Widget> children = [
       appBody(context),
-      Information(context: context),
+      CurrentData(context: context),
       Files(context: context),
     ];
     return Consumer<AppData>(

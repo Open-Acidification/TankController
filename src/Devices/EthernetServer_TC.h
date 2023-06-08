@@ -80,7 +80,7 @@ private:
   void options();
   void echo();
   void apiHandler();
-  void current();
+  void currentData();
   void display();
   void keypress();
   void rootdirSetup();

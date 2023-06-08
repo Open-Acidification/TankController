@@ -20,7 +20,7 @@ class AppData with ChangeNotifier {
   final _emptyTank = Tank('', '');
   dynamic _currentTank;
   var _display = '';
-  Map<String, dynamic> _information = <String, dynamic>{};
+  Map<String, dynamic> _currentData = <String, dynamic>{};
   Map<String, dynamic> _files = <String, dynamic>{};
   List<Tank> _tankList = [];
   int _currentIndex = 0;
@@ -51,13 +51,13 @@ class AppData with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> refreshInformation() async {
+  Future<void> refreshCurrentData() async {
     if (currentTank.isEmpty()) {
-      information = jsonDecode('{"Error: Choose tank from menu":""}');
+      currentData = jsonDecode('{"Error: Choose tank from menu":""}');
     } else {
       var tcInterface = TcInterface.instance;
-      var value = await tcInterface.get(currentTank.ip, 'current');
-      information = jsonDecode(value);
+      var value = await tcInterface.get(currentTank.ip, 'currentData');
+      currentData = jsonDecode(value);
     }
   }
 
@@ -82,7 +82,7 @@ class AppData with ChangeNotifier {
   Future<void> addTank(tank) async {
     // make a call to the device to see if it exists
     // ignore result
-    await TcInterface.instance.get(tank.ip, 'current');
+    await TcInterface.instance.get(tank.ip, 'currentData');
     _tankList.add(tank);
     unawaited(refreshDisplay());
     notifyListeners();
@@ -119,8 +119,8 @@ class AppData with ChangeNotifier {
     notifyListeners();
   }
 
-  set information(text) {
-    _information = text;
+  set currentData(text) {
+    _currentData = text;
     notifyListeners();
   }
 
@@ -129,7 +129,7 @@ class AppData with ChangeNotifier {
     notifyListeners();
   }
 
-  Map<String, dynamic> get information => _information;
+  Map<String, dynamic> get currentData => _currentData;
   Map<String, dynamic> get files => _files;
   int get currentIndex => _currentIndex;
   List<Tank> get tankList => _tankList;

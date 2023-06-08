@@ -148,7 +148,7 @@ unittest(keypress) {
   server->loop();
 }
 
-unittest(current) {
+unittest(currentData) {
   // Fake DateTime
   DateTime_TC feb(2022, 2, 22, 20, 50, 00);
   feb.setAsCurrent();
@@ -163,7 +163,7 @@ unittest(current) {
   server->loop();
   EthernetClient_CI client = server->getClient();
   const char request[] =
-      "GET /api/1/current HTTP/1.1\r\n"
+      "GET /api/1/currentData HTTP/1.1\r\n"
       "Host: localhost:80\r\n"
       "Accept: text/plain;charset=UTF-8\r\n"
       "Accept-Encoding: identity\r\n"
@@ -456,7 +456,7 @@ unittest(PUT_Kd) {
   client.pushToReadBuffer(request);
   server->loop();
   deque<uint8_t>* pBuffer = client.writeBuffer();
-  assertEqual(84, pBuffer->size());
+  assertEqual(88, pBuffer->size());
   String response;
   while (!pBuffer->empty()) {
     response.concat(pBuffer->front());
@@ -464,7 +464,7 @@ unittest(PUT_Kd) {
   }
   const char expectedResponse[] =
       "HTTP/1.1 303 See Other\r\n"
-      "Location: /api/1/current\r\n"
+      "Location: /api/1/currentData\r\n"
       "Access-Control-Allow-Origin: *\r\n"
       "\r\n";
   assertEqual(expectedResponse, response);
@@ -500,7 +500,7 @@ unittest(PUT_Ki) {
   client.pushToReadBuffer(request);
   server->loop();
   deque<uint8_t>* pBuffer = client.writeBuffer();
-  assertEqual(84, pBuffer->size());
+  assertEqual(88, pBuffer->size());
   String response;
   while (!pBuffer->empty()) {
     response.concat(pBuffer->front());
@@ -508,7 +508,7 @@ unittest(PUT_Ki) {
   }
   const char expectedResponse[] =
       "HTTP/1.1 303 See Other\r\n"
-      "Location: /api/1/current\r\n"
+      "Location: /api/1/currentData\r\n"
       "Access-Control-Allow-Origin: *\r\n"
       "\r\n";
   assertEqual(expectedResponse, response);
@@ -544,7 +544,7 @@ unittest(PUT_Kp) {
   client.pushToReadBuffer(request);
   server->loop();
   deque<uint8_t>* pBuffer = client.writeBuffer();
-  assertEqual(84, pBuffer->size());
+  assertEqual(88, pBuffer->size());
   String response;
   while (!pBuffer->empty()) {
     response.concat(pBuffer->front());
@@ -552,7 +552,7 @@ unittest(PUT_Kp) {
   }
   const char expectedResponse[] =
       "HTTP/1.1 303 See Other\r\n"
-      "Location: /api/1/current\r\n"
+      "Location: /api/1/currentData\r\n"
       "Access-Control-Allow-Origin: *\r\n"
       "\r\n";
   assertEqual(expectedResponse, response);

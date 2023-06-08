@@ -18,7 +18,7 @@ class NavBar extends StatelessWidget {
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.event_note_outlined),
-      label: 'Information',
+      label: 'Current Data',
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.folder),

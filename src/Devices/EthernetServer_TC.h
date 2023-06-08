@@ -79,8 +79,8 @@ private:
   void put();
   void options();
   void echo();
-  void apiHandler();
-  void current();
+  void getApiHandler();
+  void currentData();
   void display();
   void keypress();
   void rootdirSetup();

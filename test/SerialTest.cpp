@@ -30,16 +30,16 @@ unittest(report_loop_delay) {
 
   // no report if no delay
   tc->loop();
-  delay(35);
+  delay(450);
   state->serialPort[0].dataOut = "";  // the history of data written
   tc->loop();
   assertEqual("", state->serialPort[0].dataIn);
   assertEqual("", state->serialPort[0].dataOut);
 
-  delay(55);
+  delay(505);
   tc->loop();
   assertEqual("", state->serialPort[0].dataIn);
-  assertEqual("unexpected delay of 62 ms\r\n", state->serialPort[0].dataOut);
+  assertEqual("unexpected delay of 512 ms\r\n", state->serialPort[0].dataOut);
 }
 
 unittest_main()

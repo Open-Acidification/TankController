@@ -116,3 +116,17 @@ void PHProbe::setMidpointCalibration(float midpoint) {
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
   serial(F("PHProbe::setMidpointCalibration(%i.%03i)"), (int)midpoint, (int)(midpoint * 1000) % 1000);
 }
+
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+#include <Arduino.h>
+
+#include "TankController.h"
+void PHProbe::setPh(float newValue) {
+  GodmodeState *state = GODMODE();
+  char buffer[10];
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("%i.%03i\r"), (int)newValue, (int)(newValue * 1000 + 0.5) % 1000);
+  state->serialPort[1].dataIn = buffer;        // the queue of data waiting to be read
+  TankController::instance()->serialEvent1();  // fake interrupt to update the current pH reading
+  TankController::instance()->loop();          // update the controls based on the current readings
+}
+#endif

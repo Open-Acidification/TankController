@@ -5,7 +5,7 @@ import 'package:tank_manager/components/nav_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:tank_manager/model/app_data.dart';
 import 'package:tank_manager/components/keypad.dart';
-import 'package:tank_manager/view/information_page.dart';
+import 'package:tank_manager/view/current_data_page.dart';
 import 'package:tank_manager/view/files_page.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -35,7 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     final List<Widget> children = [
       appBody(context),
-      Information(context: context),
+      CurrentData(context: context),
       Files(context: context),
     ];
     return Consumer<AppData>(

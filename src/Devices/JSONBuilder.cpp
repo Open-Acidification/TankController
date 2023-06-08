@@ -7,11 +7,33 @@
 #include "Devices/PHProbe.h"
 #include "Devices/PID_TC.h"
 #include "Devices/SD_TC.h"
+#include "Devices/TempProbe_TC.h"
+#include "Devices/TemperatureControl.h"
 #include "TC_util.h"
 #include "TankController.h"
 
 int JSONBuilder::buildCurrentValues() {
   // Grab all necessary pieces
+  float pH = PHProbe::instance()->getPh();
+  int pH_f = (int)(pH * 1000 + 0.5) % 1000;
+  while (pH_f && pH_f % 10 == 0) {
+    pH_f /= 10;
+  }
+  float target_pH = PHControl::instance()->getTargetPh();
+  int target_pH_f = (int)(target_pH * 1000 + 0.5) % 1000;
+  while (target_pH_f && target_pH_f % 10 == 0) {
+    target_pH_f /= 10;
+  }
+  float temp = TempProbe_TC::instance()->getRunningAverage();
+  int temp_f = (int)(temp * 1000 + 0.5) % 1000;
+  while (temp_f && temp_f % 10 == 0) {
+    temp_f /= 10;
+  }
+  float target_temp = TemperatureControl::instance()->getTargetTemperature();
+  int target_temp_f = (int)(target_temp * 1000 + 0.5) % 1000;
+  while (target_temp_f && target_temp_f % 10 == 0) {
+    target_temp_f /= 10;
+  }
   IPAddress IP = Ethernet_TC::instance()->getIP();
   byte* mac = Ethernet_TC::instance()->getMac();
   char logFilePath[30];
@@ -34,7 +56,12 @@ int JSONBuilder::buildCurrentValues() {
   uint16_t seconds = (ms - (days * 86400000) - (hours * 3600000) - (minutes * 60000)) / 1000;
 
   bytes = snprintf_P(buffer, BUFFER_SIZE,
-                     (PGM_P)F("{\"IPAddress\":\"%d.%d.%d.%d\","
+                     (PGM_P)F("{"
+                              "\"pH\":%i.%i,"
+                              "\"Target_pH\":%i.%i,"
+                              "\"Temperature\":%i.%i,"
+                              "\"TargetTemperature\":%i.%i,"
+                              "\"IPAddress\":\"%d.%d.%d.%d\","
                               "\"MAC\":\"%02X:%02X:%02X:%02X:%02X:%02X\","
                               "\"FreeMemory\":\"%i bytes\","
                               "\"GoogleSheetInterval\":%i,"
@@ -46,7 +73,9 @@ int JSONBuilder::buildCurrentValues() {
                               "\"PID\":\"%s\","
                               "\"TankID\":%i,"
                               "\"Uptime\":\"%id %ih %im %is\","
-                              "\"Version\":\"%s\"}"),
+                              "\"Version\":\"%s\""
+                              "}"),
+                     (int)pH, pH_f, (int)target_pH, target_pH_f, (int)temp, temp_f, (int)target_temp, target_temp_f,
                      IP[0], IP[1], IP[2], IP[3], mac[0], mac[1], mac[2], mac[3], mac[4], mac[5],
                      (int)TankController::instance()->freeMemory(), EEPROM_TC::instance()->getGoogleSheetInterval(),
                      logFilePath, pHSlope, (int)kp, (int)(kp * 10 + 0.5) % 10, (int)ki, (int)(ki * 10 + 0.5) % 10,

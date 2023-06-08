@@ -11,8 +11,8 @@ import 'package:tank_manager/model/app_data.dart';
 import 'package:tank_manager/model/tc_interface.dart';
 import 'package:version/version.dart';
 
-class Information extends StatelessWidget {
-  const Information({
+class CurrentData extends StatelessWidget {
+  const CurrentData({
     Key? key,
     required this.context,
   }) : super(key: key);
@@ -20,17 +20,17 @@ class Information extends StatelessWidget {
   final BuildContext context;
 
   bool showEdit(var valueString) {
-    return valueString == 'GoogleSheetInterval' ||
-        valueString == 'Kp' ||
-        valueString == 'Ki' ||
-        valueString == 'Kd' ||
-        valueString == 'PID' ||
-        valueString == 'TankID';
+    return valueString == 'Kp' || valueString == 'Ki' || valueString == 'Kd';
   }
 
-  bool versionCheck(var versionValue) {
-    Version latestVersion = Version.parse(versionValue);
-    return latestVersion > Version.parse('23.3.0');
+  bool canEditCurrentInfo(AppData appData) {
+    Version latestVersion = Version.parse(appData.currentData['Version']);
+    return latestVersion >= Version.parse('23.6.0');
+  }
+
+  bool canUploadFile(AppData appData) {
+    Version latestVersion = Version.parse(appData.currentData['Version']);
+    return latestVersion >= Version.parse('99.9.9'); // not supported yet!
   }
 
   showEditDialog(var appData, BuildContext context, var key, var value) async {
@@ -50,11 +50,11 @@ class Information extends StatelessWidget {
                     onFieldSubmitted: (val) {
                       TcInterface.instance
                           .put(
-                        '${appData.information["IPAddress"]}',
-                        'set?${key.toString()}=$val',
+                        '${appData.currentData["IPAddress"]}',
+                        'data?${key.toString()}=$val',
                       )
                           .then((value) {
-                        appData.information = value;
+                        appData.currentData = json.decode(value);
                       });
                       Navigator.pop(context);
                     },
@@ -96,34 +96,33 @@ class Information extends StatelessWidget {
     );
   }
 
-  void handleResult(Object result, String ip) async {
-    Uint8List bytesData =
-        const Base64Decoder().convert(result.toString().split(',').last);
-    if (bytesData.length > 10000) {
+  void sendArbitraryPathString(String arbitraryPath, String ip) async {
+    Uint8List bytes =
+        const Base64Decoder().convert(arbitraryPath.split(',').last);
+    if (bytes.length > 10000) {
       throw UnsupportedError(
         showPopupDialog('File too large', 'Your file exceeds 10 KB.'),
       );
     }
-    List<int> selectedFile = bytesData;
-    await makeRequest(ip, selectedFile);
+    await postArbitraryPathAsFile(ip, bytes);
   }
 
-  Future<String?> makeRequest(String ip, List<int> selectedFile) async {
-    var url = Uri.parse(ip);
-    var request = http.MultipartRequest('POST', url);
+  Future<String?> postArbitraryPathAsFile(String ip, Uint8List bytes) async {
+    var uri = Uri.parse(ip);
+    var request = http.MultipartRequest('POST', uri);
     request.files.add(
       http.MultipartFile.fromBytes(
         'file',
-        selectedFile,
+        bytes,
         contentType: MediaType('application', 'octet-stream'),
-        filename: 'file_up',
+        filename: 'arbitraryPath.txt',
       ),
     );
     var res = await request.send();
     return res.reasonPhrase;
   }
 
-  startWebFilePicker(String ip) async {
+  selectFileToUpload(String ip) async {
     html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
     uploadInput.multiple = true;
     uploadInput.draggable = true;
@@ -134,7 +133,7 @@ class Information extends StatelessWidget {
       final file = files![0];
       dynamic reader = html.FileReader();
       reader.onLoadEnd.listen((e) {
-        handleResult(reader.result, ip);
+        sendArbitraryPathString(reader.result as String, ip);
       });
       reader.readAsDataUrl(file);
     });
@@ -146,14 +145,13 @@ class Information extends StatelessWidget {
       color: Colors.white,
       child: Consumer<AppData>(
         builder: (context, appData, child) {
-          var informationRows = <DataRow>[];
-          appData.information.forEach(
-            (key, value) => informationRows.add(
+          var currentDataRows = <DataRow>[];
+          appData.currentData.forEach(
+            (key, value) => currentDataRows.add(
               DataRow(
                 cells: <DataCell>[
                   DataCell(Text(key.toString())),
-                  (!showEdit(key.toString()) ||
-                          !versionCheck(appData.information['Version']))
+                  (!showEdit(key.toString()) || !canEditCurrentInfo(appData))
                       ? DataCell(Text(value.toString()))
                       : DataCell(
                           Text(value.toString()),
@@ -181,19 +179,19 @@ class Information extends StatelessWidget {
                           label: Text('Value'),
                         ),
                       ],
-                      rows: informationRows,
+                      rows: currentDataRows,
                     ),
                   ],
                 ),
               ),
               // This outer ternary is required to prevent the screen flashing an error
-              // for a split second while appData.information loads to do the check.
-              (appData.information['Version'] != null)
+              // for a split second while appData.currentData loads to do the check.
+              (appData.currentData['Version'] != null)
                   ? OutlinedButton(
-                      onPressed: versionCheck(appData.information['Version'])
+                      onPressed: canUploadFile(appData)
                           ? () {
                               unawaited(
-                                startWebFilePicker(
+                                selectFileToUpload(
                                   appData.currentTank.ip.toString(),
                                 ),
                               );

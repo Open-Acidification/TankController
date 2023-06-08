@@ -24,12 +24,12 @@ void enterKey(char key) {
 }
 
 unittest_setup() {
-  EEPROM_TC::instance()->setPh(8.100);
   PHControl::instance()->setTargetPh(8.100);
+  EEPROM_TC::instance()->setPh(8.100);
   tc->setNextState(new MainMenu(tc), true);
-  TempProbe_TC::instance()->setTemperature(12.25);
   TemperatureControl::enableHeater(true);
   TemperatureControl::instance()->setTargetTemperature(15.75);
+  TempProbe_TC::instance()->setTemperature(12.25, true);
   enterKey('D');
 }
 
@@ -63,14 +63,14 @@ unittest(ChangeSettings) {
   assertEqual("<4   ^2  8v   6>", lc->getLines().at(1));
   enterKey('D');
   assertEqual("pH=0.000   8.100", lc->getLines().at(0));
-  assertEqual("T=12.23 H 15.75 ", lc->getLines().at(1));
+  assertEqual("T=12.25 H 15.75 ", lc->getLines().at(1));
   enterKey('8');
   enterKey('8');
   assertEqual("Change settings ", lc->getLines().at(0));
   assertEqual("<4   ^2  8v   6>", lc->getLines().at(1));
   enterKey('4');
   assertEqual("pH=0.000   8.100", lc->getLines().at(0));
-  assertEqual("T=12.23 H 15.75 ", lc->getLines().at(1));
+  assertEqual("T=12.25 H 15.75 ", lc->getLines().at(1));
 }
 
 unittest(ViewSettings) {
@@ -79,14 +79,14 @@ unittest(ViewSettings) {
   assertEqual("<4   ^2  8v   6>", lc->getLines().at(1));
   enterKey('D');
   assertEqual("pH=0.000   8.100", lc->getLines().at(0));
-  assertEqual("T=12.23 H 15.75 ", lc->getLines().at(1));
+  assertEqual("T=12.25 H 15.75 ", lc->getLines().at(1));
   enterKey('2');
   enterKey('2');
   assertEqual("View settings   ", lc->getLines().at(0));
   assertEqual("<4   ^2  8v   6>", lc->getLines().at(1));
   enterKey('D');
   assertEqual("pH=0.000   8.100", lc->getLines().at(0));
-  assertEqual("T=12.23 H 15.75 ", lc->getLines().at(1));
+  assertEqual("T=12.25 H 15.75 ", lc->getLines().at(1));
 }
 
 unittest(SetPHSetPoint) {

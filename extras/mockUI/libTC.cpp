@@ -8,6 +8,8 @@
 // Arduino defines this and thread gets confused with it!
 #undef yield
 
+#include <Arduino.h>
+
 #include <cassert>
 #include <chrono>
 #include <ctime>
@@ -17,7 +19,6 @@
 #include <thread>
 #include <vector>
 
-#include "Arduino.h"
 #include "DateTime_TC.h"
 #include "EEPROM_TC.h"
 #include "Keypad_TC.h"

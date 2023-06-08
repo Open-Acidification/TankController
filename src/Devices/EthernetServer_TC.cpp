@@ -58,16 +58,12 @@ void EthernetServer_TC::echo() {
   }
 }
 
-/* get() and post()
- * For handling respective HTTP requests
- */
-
 // Handles an HTTP GET request
 void EthernetServer_TC::get() {
   if (memcmp_P(buffer + 5, F("echo"), 4) == 0) {
     echo();
   } else if (memcmp_P(buffer + 5, F("api"), 3) == 0) {
-    apiHandler();
+    getApiHandler();
   } else if (isRequestForExistingFile()) {
     fileSetup();
   } else {
@@ -79,14 +75,23 @@ void EthernetServer_TC::get() {
 
 // Handles an HTTP OPTIONS request
 void EthernetServer_TC::options() {
-  // Method not allowed
-  sendResponse(HTTP_NOT_PERMITTED);
+  const __FlashStringHelper *response =
+      F("HTTP/1.1 200 OK\r\n"
+        "Content-Type: text/plain;charset=UTF-8\r\n"
+        "Content-Encoding: identity\r\n"
+        "Content-Language: en-US\r\n"
+        "Access-Control-Allow-Origin: *\r\n"
+        "Access-Control-Allow-Methods: OPTIONS, GET, HEAD, POST, PUT\r\n"
+        "\r\n");
+  strscpy_P(buffer, response, sizeof(buffer));
+  client.write(buffer);
+
   state = FINISHED;
 }
 
 // Handles an HTTP POST request
 void EthernetServer_TC::post() {
-  if (memcmp_P(buffer + 6, F("api"), 3) == 0) {
+  if (memcmp_P(buffer + 6, F("api/1/key?value="), 16) == 0) {
     keypress();
   } else {
     serial(F("post \"%s\" not recognized!"), buffer + 6);
@@ -98,11 +103,11 @@ void EthernetServer_TC::post() {
 // Handles an HTTP PUT request
 void EthernetServer_TC::put() {
   enum { Kd, Ki, Kp } var;
-  if (memcmp_P(buffer + 4, F("/api/1/set?Kd="), 14) == 0) {
+  if (memcmp_P(buffer + 4, F("/api/1/data?Kd="), 15) == 0) {
     var = Kd;
-  } else if (memcmp_P(buffer + 4, F("/api/1/set?Ki="), 14) == 0) {
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?Ki="), 15) == 0) {
     var = Ki;
-  } else if (memcmp_P(buffer + 4, F("/api/1/set?Kp="), 14) == 0) {
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?Kp="), 15) == 0) {
     var = Kp;
   } else {
     serial(F("put \"%s\" not recognized!"), buffer + 5);
@@ -110,7 +115,7 @@ void EthernetServer_TC::put() {
     state = FINISHED;
     return;
   }
-  float value = strtofloat(buffer + 18);
+  float value = strtofloat(buffer + 19);
   switch (var) {
     case Kd:
       PID_TC::instance()->setKd(value);
@@ -132,12 +137,12 @@ void EthernetServer_TC::put() {
  */
 
 // API for certain get and post requests
-void EthernetServer_TC::apiHandler() {
+void EthernetServer_TC::getApiHandler() {
   if (buffer[9] == '1') {
     // API version 1
     // When you add a new API, keep this for backwards compatibility
-    if (memcmp_P(buffer + 11, F("current"), 7) == 0) {
-      current();
+    if (memcmp_P(buffer + 11, F("data"), 4) == 0) {
+      currentData();
     } else if (memcmp_P(buffer + 11, F("display"), 7) == 0) {
       display();
     } else if (memcmp_P(buffer + 11, F("rootdir"), 7) == 0) {
@@ -161,7 +166,7 @@ void EthernetServer_TC::apiHandler() {
 }
 
 // Get list of current values
-void EthernetServer_TC::current() {
+void EthernetServer_TC::currentData() {
   JSONBuilder builder;
   int size = builder.buildCurrentValues();
   char *text = builder.bufferPtr();
@@ -405,6 +410,7 @@ void EthernetServer_TC::loop() {
             state = FINISHED;
           }
         } else {
+          // serial(F("HTTP Request: \"%s\""), buffer);
           if (memcmp_P(buffer, F("GET "), 4) == 0) {
             state = GET_REQUEST;
             get();
@@ -450,7 +456,7 @@ void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
         "Content-Encoding: identity\r\n"
         "Content-Language: en-US\r\n"
         "Access-Control-Allow-Origin: *\r\n");
-  char buffer[150];
+  char buffer[200];
   strscpy_P(buffer, response, sizeof(buffer));
   client.write(buffer);
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Content-Length: %lu\r\n"), (unsigned long)size);
@@ -473,7 +479,7 @@ void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
 void EthernetServer_TC::sendCurrentRedirect() {
   const __FlashStringHelper *response_303 =
       F("HTTP/1.1 303 See Other\r\n"
-        "Location: /api/1/current\r\n"
+        "Location: /api/1/data\r\n"
         "Access-Control-Allow-Origin: *\r\n"
         "\r\n");
   strscpy_P(buffer, response_303, sizeof(buffer));

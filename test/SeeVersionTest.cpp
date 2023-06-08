@@ -17,7 +17,7 @@ unittest(testOutput) {
   // Test the output
   tc->loop(false);
   assertEqual("Software Version", display->getLines().at(0));
-  assertEqual("23.03.1         ", display->getLines().at(1));
+  assertEqual("23.06.0         ", display->getLines().at(1));
   // Return to mainMenu
   Keypad_TC::instance()->_getPuppet()->push_back('D');
   tc->loop(false);

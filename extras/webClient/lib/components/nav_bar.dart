@@ -18,7 +18,7 @@ class NavBar extends StatelessWidget {
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.event_note_outlined),
-      label: 'Information',
+      label: 'Current Data',
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.folder),
@@ -50,8 +50,8 @@ class NavBar extends StatelessWidget {
     if (items[index].label == 'Keypad') {
       appData.refreshDisplay();
     }
-    if (items[index].label == 'Information') {
-      appData.refreshInformation();
+    if (items[index].label == 'Current Data') {
+      appData.refreshCurrentData();
     }
     if (items[index].label == 'Files') {
       unawaited(appData.refreshFiles());

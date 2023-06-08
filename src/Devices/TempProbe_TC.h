@@ -78,7 +78,7 @@
  */
 
 #pragma once
-#include "Arduino.h"
+#include <Arduino.h>
 
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
 #ifndef ARDUINO
@@ -94,29 +94,26 @@ public:
   static TempProbe_TC* instance();
   static void reset();
 
-  uint16_t getResistance() {
+  inline uint16_t getResistance() {
     return thermo.readRTD();
   }
 
-  float getRawTemperature() {
+  inline float getRawTemperature() {
     return thermo.temperature(RTDnominal, refResistor);
   }
 
-  float getRunningAverage() {
-    return getUncorrectedRunningAverage() + correction;
-  }
-
+  float getRunningAverage();
   float getUncorrectedRunningAverage();
 
-  uint8_t readFault() {
+  inline uint8_t readFault() {
     return thermo.readFault();
   }
 
-  void clearFault() {
+  inline void clearFault() {
     thermo.clearFault();
   }
 
-  float getCorrection() {
+  inline float getCorrection() {
     return correction;
   }
   void setCorrection(float value);
@@ -124,9 +121,7 @@ public:
 
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   // set a temperature in the mock
-  void setTemperature(float newTemp) {
-    thermo.setTemperature(newTemp);
-  }
+  void setTemperature(float newTemp, bool clearCorrection = false, bool setHistory = true);
 #endif
 
 private:

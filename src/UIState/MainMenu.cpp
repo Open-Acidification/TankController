@@ -263,11 +263,6 @@ void MainMenu::idle() {
   TemperatureControl *tempControl = TemperatureControl::instance();
   TempProbe_TC *tempProbe = TempProbe_TC::instance();
   float temp = tempProbe->getRunningAverage();
-  if (temp < 0.0) {
-    temp = 0.0;
-  } else if (99.99 < temp) {
-    temp = 99.99;
-  }
   char status = tempControl->isHeater() ? 'h' : 'c';
   if (tempControl->isOn()) {
     status = toupper(status);

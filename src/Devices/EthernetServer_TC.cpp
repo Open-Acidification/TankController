@@ -79,8 +79,17 @@ void EthernetServer_TC::get() {
 
 // Handles an HTTP OPTIONS request
 void EthernetServer_TC::options() {
-  // Method not allowed
-  sendResponse(HTTP_NOT_PERMITTED);
+  const __FlashStringHelper *response =
+      F("HTTP/1.1 200 OK\r\n"
+        "Content-Type: text/plain;charset=UTF-8\r\n"
+        "Content-Encoding: identity\r\n"
+        "Content-Language: en-US\r\n"
+        "Access-Control-Allow-Origin: *\r\n"
+        "Access-Control-Allow-Methods: OPTIONS, GET, HEAD, POST, PUT\r\n"
+        "\r\n");
+  strscpy_P(buffer, response, sizeof(buffer));
+  client.write(buffer);
+
   state = FINISHED;
 }
 
@@ -405,6 +414,7 @@ void EthernetServer_TC::loop() {
             state = FINISHED;
           }
         } else {
+          // serial(F("HTTP Request: \"%s\""), buffer);
           if (memcmp_P(buffer, F("GET "), 4) == 0) {
             state = GET_REQUEST;
             get();
@@ -450,7 +460,7 @@ void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
         "Content-Encoding: identity\r\n"
         "Content-Language: en-US\r\n"
         "Access-Control-Allow-Origin: *\r\n");
-  char buffer[150];
+  char buffer[200];
   strscpy_P(buffer, response, sizeof(buffer));
   client.write(buffer);
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Content-Length: %lu\r\n"), (unsigned long)size);

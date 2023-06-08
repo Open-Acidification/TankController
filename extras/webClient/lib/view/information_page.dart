@@ -20,17 +20,18 @@ class Information extends StatelessWidget {
   final BuildContext context;
 
   bool showEdit(var valueString) {
-    return valueString == 'GoogleSheetInterval' ||
-        valueString == 'Kp' ||
-        valueString == 'Ki' ||
-        valueString == 'Kd' ||
-        valueString == 'PID' ||
-        valueString == 'TankID';
+    return valueString == 'Kp' || valueString == 'Ki' || valueString == 'Kd';
   }
 
-  bool versionCheck(var versionValue) {
-    Version latestVersion = Version.parse(versionValue);
-    return latestVersion > Version.parse('23.3.0');
+  bool canEditCurrentInfo(AppData appData) {
+    Version latestVersion = Version.parse(appData.information['Version']);
+    return latestVersion >= Version.parse('23.6.0');
+  }
+
+  bool canUploadFile(AppData appData) {
+    Version latestVersion = Version.parse(appData.information['Version']);
+    // return latestVersion >= Version.parse('23.6.0');
+    return latestVersion >= Version.parse('99.9.9');
   }
 
   showEditDialog(var appData, BuildContext context, var key, var value) async {
@@ -54,7 +55,7 @@ class Information extends StatelessWidget {
                         'set?${key.toString()}=$val',
                       )
                           .then((value) {
-                        appData.information = value;
+                        appData.information = json.decode(value);
                       });
                       Navigator.pop(context);
                     },
@@ -96,34 +97,33 @@ class Information extends StatelessWidget {
     );
   }
 
-  void handleResult(Object result, String ip) async {
-    Uint8List bytesData =
-        const Base64Decoder().convert(result.toString().split(',').last);
-    if (bytesData.length > 10000) {
+  void sendArbitraryPathString(String arbitraryPath, String ip) async {
+    Uint8List bytes =
+        const Base64Decoder().convert(arbitraryPath.split(',').last);
+    if (bytes.length > 10000) {
       throw UnsupportedError(
         showPopupDialog('File too large', 'Your file exceeds 10 KB.'),
       );
     }
-    List<int> selectedFile = bytesData;
-    await makeRequest(ip, selectedFile);
+    await postArbitraryPathAsFile(ip, bytes);
   }
 
-  Future<String?> makeRequest(String ip, List<int> selectedFile) async {
-    var url = Uri.parse(ip);
-    var request = http.MultipartRequest('POST', url);
+  Future<String?> postArbitraryPathAsFile(String ip, Uint8List bytes) async {
+    var uri = Uri.parse(ip);
+    var request = http.MultipartRequest('POST', uri);
     request.files.add(
       http.MultipartFile.fromBytes(
         'file',
-        selectedFile,
+        bytes,
         contentType: MediaType('application', 'octet-stream'),
-        filename: 'file_up',
+        filename: 'arbitraryPath.txt',
       ),
     );
     var res = await request.send();
     return res.reasonPhrase;
   }
 
-  startWebFilePicker(String ip) async {
+  selectFileToUpload(String ip) async {
     html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
     uploadInput.multiple = true;
     uploadInput.draggable = true;
@@ -134,7 +134,7 @@ class Information extends StatelessWidget {
       final file = files![0];
       dynamic reader = html.FileReader();
       reader.onLoadEnd.listen((e) {
-        handleResult(reader.result, ip);
+        sendArbitraryPathString(reader.result as String, ip);
       });
       reader.readAsDataUrl(file);
     });
@@ -152,8 +152,7 @@ class Information extends StatelessWidget {
               DataRow(
                 cells: <DataCell>[
                   DataCell(Text(key.toString())),
-                  (!showEdit(key.toString()) ||
-                          !versionCheck(appData.information['Version']))
+                  (!showEdit(key.toString()) || !canEditCurrentInfo(appData))
                       ? DataCell(Text(value.toString()))
                       : DataCell(
                           Text(value.toString()),
@@ -190,10 +189,10 @@ class Information extends StatelessWidget {
               // for a split second while appData.information loads to do the check.
               (appData.information['Version'] != null)
                   ? OutlinedButton(
-                      onPressed: versionCheck(appData.information['Version'])
+                      onPressed: canUploadFile(appData)
                           ? () {
                               unawaited(
-                                startWebFilePicker(
+                                selectFileToUpload(
                                   appData.currentTank.ip.toString(),
                                 ),
                               );

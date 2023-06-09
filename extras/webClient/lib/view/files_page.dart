@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tank_manager/model/app_data.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Files extends StatelessWidget {
   const Files({
@@ -21,7 +24,19 @@ class Files extends StatelessWidget {
             (fileName, fileSize) => fileRows.add(
               DataRow(
                 cells: <DataCell>[
-                  DataCell(Text(fileName.toString())),
+                  DataCell(
+                    GestureDetector(
+                      onTap: () {
+                        String ip = appData.currentTank.ip;
+                        String file = fileName.toString();
+                        String loc = 'http://$ip/$file';
+                        unawaited(launchUrl(Uri.parse(loc)));
+                      },
+                      child: Text(
+                        fileName.toString(),
+                      ),
+                    ),
+                  ),
                   DataCell(
                     Container(
                       alignment: const Alignment(1.0, 0.0),

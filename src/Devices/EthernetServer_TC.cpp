@@ -60,7 +60,10 @@ void EthernetServer_TC::echo() {
 
 // Handles an HTTP GET request
 void EthernetServer_TC::get() {
-  if (memcmp_P(buffer + 5, F("echo"), 4) == 0) {
+  if (memcmp_P(buffer + 4, F("/ "), 2) == 0) {
+    sendHomeRedirect();
+    state = FINISHED;
+  } else if (memcmp_P(buffer + 5, F("echo"), 4) == 0) {
     echo();
   } else if (memcmp_P(buffer + 5, F("api"), 3) == 0) {
     getApiHandler();
@@ -490,6 +493,16 @@ void EthernetServer_TC::sendDisplayRedirect() {
   const __FlashStringHelper *response_303 =
       F("HTTP/1.1 303 See Other\r\n"
         "Location: /api/1/display\r\n"
+        "Access-Control-Allow-Origin: *\r\n"
+        "\r\n");
+  strscpy_P(buffer, response_303, sizeof(buffer));
+  client.write(buffer);
+}
+
+void EthernetServer_TC::sendHomeRedirect() {
+  const __FlashStringHelper *response_303 =
+      F("HTTP/1.1 303 See Other\r\n"
+        "Location: https://open-acidification.github.io/TankControllerManager/\r\n"
         "Access-Control-Allow-Origin: *\r\n"
         "\r\n");
   strscpy_P(buffer, response_303, sizeof(buffer));

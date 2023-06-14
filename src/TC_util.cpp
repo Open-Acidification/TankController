@@ -43,11 +43,14 @@ int strscpy_P(char *destination, const __FlashStringHelper *source_F, unsigned l
 int floattostrf(double float_value, int min_width, int num_digits_after_decimal, char *buffer,
                 unsigned long buffer_size) {
   char large_buffer[buffer_size + 10];
+  // TODO: Round to nearest value instead of truncating (See what is done in PushingBox)
   dtostrf(float_value, min_width, num_digits_after_decimal, large_buffer);
   if (strnlen(large_buffer, sizeof(large_buffer)) < buffer_size) {
     strscpy(buffer, large_buffer, buffer_size);
     return 0;
   } else if (strnlen(large_buffer, sizeof(large_buffer)) < sizeof(large_buffer) - 1) {
+    // TODO: instead of letting strscpy() truncate the string, print the maximum number --
+    // for example, 999.99 -- and log a warning that the string length was reduced
     strscpy(buffer, large_buffer, buffer_size);
     return 1;
   } else {

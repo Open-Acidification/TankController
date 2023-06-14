@@ -13,15 +13,15 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd extras/webClient
+          cd extras/web_client
           flutter pub get
 
       - name: Verify formatting
         run: |
-          cd extras/webClient
+          cd extras/web_client
           dart format --output=none --set-exit-if-changed .
 
       - name: Analyze project source
         run: |
-          cd extras/webClient
+          cd extras/web_client
           dart analyze --fatal-infos

@@ -581,7 +581,7 @@ unittest(home) {
   client.pushToReadBuffer(request);
   server->loop();
   deque<uint8_t>* pBuffer = client.writeBuffer();
-  assertEqual(129, pBuffer->size());
+  assertEqual(99, pBuffer->size());
   String response;
   while (!pBuffer->empty()) {
     response.concat(pBuffer->front());
@@ -589,7 +589,7 @@ unittest(home) {
   }
   const char expectedResponse[] =
       "HTTP/1.1 303 See Other\r\n"
-      "Location: https://open-acidification.github.io/TankControllerManager/\r\n"
+      "Location: http://oap.cs.wallawalla.edu/\r\n"
       "Access-Control-Allow-Origin: *\r\n"
       "\r\n";
   assertEqual(expectedResponse, response);

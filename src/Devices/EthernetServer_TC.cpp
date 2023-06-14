@@ -502,7 +502,7 @@ void EthernetServer_TC::sendDisplayRedirect() {
 void EthernetServer_TC::sendHomeRedirect() {
   const __FlashStringHelper *response_303 =
       F("HTTP/1.1 303 See Other\r\n"
-        "Location: https://open-acidification.github.io/TankControllerManager/\r\n"
+        "Location: http://oap.cs.wallawalla.edu/\r\n"
         "Access-Control-Allow-Origin: *\r\n"
         "\r\n");
   strscpy_P(buffer, response_303, sizeof(buffer));

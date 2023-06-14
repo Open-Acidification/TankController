@@ -15,12 +15,7 @@ jobs:
           channel: 'stable'
       - run: |
           echo "build for web"
-          cd extras/webClient
+          cd extras/web_client
           flutter --version
           flutter pub get
-          flutter build web --release --base-href="/TankControllerManager/"
-
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: extras/webClient/build/web
+          flutter build web --release

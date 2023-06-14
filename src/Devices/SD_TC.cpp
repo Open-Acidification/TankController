@@ -96,9 +96,9 @@ bool SD_TC::iterateOnFiles(doOnFile functionName, void* userData) {
       if (!fileStack[fileStackSize].isHidden()) {
         flag = functionName(&fileStack[fileStackSize], userData);
         if (fileStack[fileStackSize].isDir()) {
-          // maxDepth was set to 2 in SD_TC.h
+          // MAX_DEPTH was set to 2 in SD_TC.h
           // So this code is untested
-          if (fileStackSize < maxDepth - 1) {
+          if (fileStackSize < MAX_DEPTH - 1) {
             ++fileStackSize;
           };
         } else {
@@ -143,7 +143,7 @@ bool SD_TC::countFiles(void (*callWhenFinished)(int)) {
 }
 
 // Issue: This function does not visually display depth for items in subfolders
-// With maxDepth set to 2, no subfolders are traversed
+// With MAX_DEPTH set to 2, no subfolders are traversed
 bool SD_TC::listFile(File* myFile, void* userData) {
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   return false;

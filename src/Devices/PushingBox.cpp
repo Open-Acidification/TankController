@@ -22,6 +22,7 @@ PushingBox* PushingBox::instance(const char* pushingBoxID) {
   return _instance;
 }
 
+//  instance methods
 PushingBox::PushingBox(const char* pushingBoxID) {
   DevID = pushingBoxID;
 }

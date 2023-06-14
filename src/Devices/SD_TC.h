@@ -2,7 +2,7 @@
 
 #include <Arduino.h>
 
-#define maxDepth 2
+#define MAX_DEPTH 2
 #define SS 4
 #include <SdFat.h>
 
@@ -44,7 +44,7 @@ private:
   // Max depth of file system search for rootdir()
   // Two is minimum: First for root, second for files
   // Each is 64 bytes
-  File fileStack[maxDepth];
+  File fileStack[MAX_DEPTH];
   int fileStackSize;
   int fileCount;
   bool inProgress = false;

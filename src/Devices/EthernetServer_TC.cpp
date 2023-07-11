@@ -4,10 +4,10 @@
 
 #include "DateTime_TC.h"
 #include "Devices/Ethernet_TC.h"
-#include "Devices/favicon.h"
 #include "Devices/JSONBuilder.h"
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PID_TC.h"
+#include "Devices/favicon.h"
 #include "Serial_TC.h"
 #include "TankController.h"
 
@@ -86,12 +86,12 @@ void EthernetServer_TC::getFavIcon() {
   sendIconHeadersWithSize(FAVICON_ICO_LEN);
   char buffer[BUFFER_SIZE];
   int i;
-  for (i = 0; i < FAVICON_ICO_LEN - BUFFER_SIZE; i += BUFFER_SIZE) { // 0, 200, ..., 15000, 15200
+  for (i = 0; i < FAVICON_ICO_LEN - BUFFER_SIZE; i += BUFFER_SIZE) {  // 0, 200, ..., 15000, 15200
     memcpy_P(buffer, favicon_ico + i, BUFFER_SIZE);
     client.write(buffer, BUFFER_SIZE);
   }
   // i should end with 15400
-  memcpy_P(buffer, favicon_ico + i, FAVICON_ICO_LEN - i); // 15400 to 15406
+  memcpy_P(buffer, favicon_ico + i, FAVICON_ICO_LEN - i);  // 15400 to 15406
   client.write(buffer, FAVICON_ICO_LEN - i);
 }
 

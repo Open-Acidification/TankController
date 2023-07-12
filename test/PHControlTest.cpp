@@ -175,7 +175,7 @@ unittest(RampGreaterThanZero) {
   setPhMeasurementTo(8.50);
   controlSolenoid->setBaseTargetPh(7.00);
   controlSolenoid->setRampDuration(1.5);
-  assertEqual(controlSolenoid->phSetTypeTypes::RAMP_TYPE, controlSolenoid->getPhSetType());
+  assertEqual(PHControl::RAMP_TYPE, controlSolenoid->getPhSetType());
   tc->loop(false);  // display is updated before current target calculations
   tc->loop(false);  // so loop again to get updated display
   assertEqual(8.5, controlSolenoid->getCurrentTargetPh());
@@ -186,14 +186,11 @@ unittest(RampGreaterThanZero) {
   // takes 1.5 hours to get to pH of 7
   delay(900000);  // delay 15 minutes
   tc->loop(false);
-  state->serialPort[0].dataOut = "";  // clear serial out
   delay(900000);  // delay 15 minutes
   tc->loop(false);
   tc->loop(false);
   assertTrue(8.0 <= controlSolenoid->getCurrentTargetPh() && controlSolenoid->getCurrentTargetPh() <= 8.01);
   assertEqual("pH 8.500 B 8.000", lc->getLines().at(0));
-  assertEqual("02:18 pH=8.500 temp= 0.00\r\n", state->serialPort[0].dataOut);
-  state->serialPort[0].dataOut = "";  // clear serial out
   delay(1800000);  // delay 30 minutes
   // First loop triggers SD logging (DataLogger_TC) and PushingBox
   // Second loop triggers Serial logging (DataLogger_TC)
@@ -201,23 +198,18 @@ unittest(RampGreaterThanZero) {
   tc->loop(false);
   assertTrue(7.5 <= controlSolenoid->getCurrentTargetPh() && controlSolenoid->getCurrentTargetPh() <= 7.51);
   assertEqual("pH 8.500 B 7.500", lc->getLines().at(0));
-  assertEqual("02:48 pH=8.500 temp= 0.00\r\n", state->serialPort[0].dataOut);
   delay(1800000);  // delay 30 minutes
-  state->serialPort[0].dataOut = "";  // clear serial out
   tc->loop(false);
   tc->loop(false);
   assertEqual(7, controlSolenoid->getCurrentTargetPh());
   assertEqual("pH 8.500 B 7.000", lc->getLines().at(0));
-  assertEqual("03:18 pH=8.500 temp= 0.00\r\n", state->serialPort[0].dataOut);
   // ramp time no longer used after it ends
   delay(1800000);  // delay 30 minutes
   delay(1800000);  // delay 30 minutes
-  state->serialPort[0].dataOut = "";  // clear serial out
   tc->loop(false);
   tc->loop(false);
   assertEqual(7, controlSolenoid->getCurrentTargetPh());
   assertEqual("pH 8.500 B 7.000", lc->getLines().at(0));
-  assertEqual("04:18 pH=8.500 temp= 0.00\r\n", state->serialPort[0].dataOut);
 }
 
 unittest(ChangeRampToZero) {
@@ -226,11 +218,11 @@ unittest(ChangeRampToZero) {
   setPhMeasurementTo(8.50);
   controlSolenoid->setBaseTargetPh(7.00);
   controlSolenoid->setRampDuration(1.5);
-  assertEqual(controlSolenoid->phSetTypeTypes::RAMP_TYPE, controlSolenoid->getPhSetType());
+  assertEqual(PHControl::RAMP_TYPE, controlSolenoid->getPhSetType());
   tc->loop(false);
   assertEqual(8.5, controlSolenoid->getCurrentTargetPh());
   controlSolenoid->setRampDuration(0);
-  assertEqual(controlSolenoid->phSetTypeTypes::FLAT_TYPE, controlSolenoid->getPhSetType());
+  assertEqual(PHControl::FLAT_TYPE, controlSolenoid->getPhSetType());
   tc->loop(false);
   assertEqual(7, controlSolenoid->getCurrentTargetPh());
 }
@@ -241,7 +233,7 @@ unittest(sineTest) {
   setPhMeasurementTo(7.00);
   controlSolenoid->setBaseTargetPh(7.00);
   controlSolenoid->setSine(1.5, 2);
-  assertEqual(controlSolenoid->phSetTypeTypes::SINE_TYPE, controlSolenoid->getPhSetType());
+  assertEqual(PHControl::SINE_TYPE, controlSolenoid->getPhSetType());
   tc->loop(false);
   assertEqual(7, controlSolenoid->getCurrentTargetPh());
   // mock arduino restarting

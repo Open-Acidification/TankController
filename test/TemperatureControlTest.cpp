@@ -190,59 +190,79 @@ unittest(RampGreaterThanZero) {
   assertEqual(TemperatureControl::tempSetTypeTypes::RAMP_TYPE, control->getTempSetType());
   tc->loop(false);
   control->updateControl(tempProbe->getRunningAverage());
+  tc->loop(false);
+  tc->loop(false);
   target = control->getCurrentTemperatureTarget();
   assertTrue(20 <= target && target <= 20.03);
+  assertEqual("T 20.00 c 20.00 ", lc->getLines().at(1));
   delay(31000);
   // mock arduino restarting
   TemperatureControl::clearInstance();
   control = TemperatureControl::instance();
   // takes 1.5 hours to get to Temp of 7
   delay(1800000);  // delay 30 minutes
-  tc->loop();
+  tc->loop(false);
+  tc->loop(false);
   target = control->getCurrentTemperatureTarget();
   assertTrue(16.6 <= target && target <= 16.8);
-  delay(1800000);  // delay 30 minutes
-  tc->loop();
-  target = control->getCurrentTemperatureTarget();
-  assertTrue(13.2 <= target && target <= 13.4);
+  assertEqual("T=20.00 C 16.61 ", lc->getLines().at(1));
   delay(1800000);  // delay 30 minutes
   tc->loop(false);
+  tc->loop(false);
+  target = control->getCurrentTemperatureTarget();
+  assertTrue(13.2 <= target && target <= 13.4);
+  assertEqual("T=20.00 C 13.28 ", lc->getLines().at(1));
+  delay(1800000);  // delay 30 minutes
+  tc->loop(false);
+  tc->loop(false);
   assertEqual(10, control->getCurrentTemperatureTarget());
+  assertEqual("T=20.01 C 10.00 ", lc->getLines().at(1));
   // ramp time no longer used after it ends
   delay(1800000);  // delay 30 minutes
   delay(1800000);  // delay 30 minutes
   tc->loop(false);
+  tc->loop(false);
   assertEqual(10, control->getCurrentTemperatureTarget());
+  assertEqual("T=20.01 C 10.00 ", lc->getLines().at(1));
   TemperatureControl::enableHeater(true);
   control = TemperatureControl::instance();
   assertFalse(control->isOn());
   control->setTargetTemperature(30);
   control->setRampDuration(1.5);
   control->updateControl(tempProbe->getRunningAverage());
+  tc->loop(false);
+  tc->loop(false);
   target = control->getCurrentTemperatureTarget();
   assertTrue(20 <= target && target <= 20.03);
+  assertEqual("T=20.01 h 20.01 ", lc->getLines().at(1));
   delay(31000);
   // mock arduino restarting
   TemperatureControl::clearInstance();
   control = TemperatureControl::instance();
   // takes 1.5 hours to get to Temp of 7
   delay(1800000);  // delay 30 minutes
-  tc->loop();
+  tc->loop(false);
+  tc->loop(false);
   target = control->getCurrentTemperatureTarget();
-  std::cout << "target = " << target << std::endl;
   assertTrue(23.3 <= target && target <= 23.4);
+  assertEqual("T 20.01 H 23.40 ", lc->getLines().at(1));
   delay(1800000);  // delay 30 minutes
-  tc->loop();
+  tc->loop(false);
+  tc->loop(false);
   target = control->getCurrentTemperatureTarget();
   assertTrue(26.7 <= target && target <= 26.8);
+  assertEqual("T 20.01 H 26.73 ", lc->getLines().at(1));
   delay(1800000);  // delay 30 minutes
+  tc->loop(false);
   tc->loop(false);
   assertEqual(30, control->getCurrentTemperatureTarget());
   // ramp time no longer used after it ends
   delay(1800000);  // delay 30 minutes
   delay(1800000);  // delay 30 minutes
   tc->loop(false);
+  tc->loop(false);
   assertEqual(30, control->getCurrentTemperatureTarget());
+  assertEqual("T 20.02 H 30.00 ", lc->getLines().at(1));
 }
 
 unittest(ChangeRampToZero) {

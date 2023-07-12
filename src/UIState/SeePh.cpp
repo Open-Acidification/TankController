@@ -90,8 +90,8 @@ void SeePh::loadHeader(uint16_t line) {
 
 void SeePh::loadValues(uint16_t line) {
   char buffer[17];
-  float overallTargetPh = PHControl::instance()->getTargetPh();
-  float currentTargetPh = PHControl::instance()->getCurrentPhTarget();
+  float overallTargetPh = PHControl::instance()->getBaseTargetPh();
+  float currentTargetPh = PHControl::instance()->getCurrentTargetPh();
   float currentPh = PHProbe::instance()->getPh();
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("%i.%02i %i.%03i %i.%03i"), (int)currentPh,
              (int)(currentPh * 100 + 0.5) % 100, (int)currentTargetPh, (int)(currentTargetPh * 1000 + 0.5) % 1000,

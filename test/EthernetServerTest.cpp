@@ -80,7 +80,8 @@ unittest(display) {
       "Accept-Language: en-US\r\n"
       "\r\n";
   client.pushToReadBuffer(request);
-  server->loop();
+  tc->loop(false);  // for targets to take effect
+  // server->loop();
   deque<uint8_t>* pBuffer = client.writeBuffer();
   assertTrue(pBuffer->size() > 100);
   String response;
@@ -97,7 +98,7 @@ unittest(display) {
       "Content-Length: 36\r\n"
       "\r\n"
       "pH 0.000   8.100\r\n"
-      "T  0.00 h 20.00 \r\n";
+      "T  0.00 H 20.00 \r\n";
   assertEqual(expectedResponse, response);
   assertEqual(FINISHED, server->getState());
   server->loop();  // Process finished state
@@ -153,9 +154,10 @@ unittest(currentData) {
   DateTime_TC feb(2022, 2, 22, 20, 50, 00);
   feb.setAsCurrent();
   PHProbe::instance()->setPh(8.125);                            // actual
-  PHControl::instance()->setTargetPh(8.25);                     // target
+  PHControl::instance()->setBaseTargetPh(8.25);                 // target
   TempProbe_TC::instance()->setTemperature(21.25, true);        // actual
   TemperatureControl::instance()->setTargetTemperature(21.75);  // target
+  TankController::instance()->loop(false);                      // for targets to take effect
 
   EthernetServer_TC* server = EthernetServer_TC::instance();
   server->setHasClientCalling(true);

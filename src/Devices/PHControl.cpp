@@ -39,10 +39,10 @@ void PHControl::clearInstance() {
 PHControl::PHControl() {
   pinMode(PH_CONTROL_PIN, OUTPUT);
   digitalWrite(PH_CONTROL_PIN, TURN_SOLENOID_OFF);
-  targetPh = EEPROM_TC::instance()->getPh();
-  if (isnan(targetPh)) {
-    targetPh = DEFAULT_PH;
-    EEPROM_TC::instance()->setPh(targetPh);
+  baseTargetPh = EEPROM_TC::instance()->getPh();
+  if (isnan(baseTargetPh)) {
+    baseTargetPh = DEFAULT_PH;
+    EEPROM_TC::instance()->setPh(baseTargetPh);
   }
   pHSetType = EEPROM_TC::instance()->getPhSetType();
   if (pHSetType == 0xFFFFFFFF) {
@@ -71,18 +71,18 @@ PHControl::PHControl() {
       break;
   }
   char buffer[10];
-  floattostrf(targetPh, 5, 3, buffer, sizeof(buffer));
+  floattostrf(baseTargetPh, 5, 3, buffer, sizeof(buffer));
   serial(F("PHControl with target pH = %s"), buffer);
 }
 
-void PHControl::setTargetPh(float newPh) {
-  if (targetPh != newPh) {
+void PHControl::setBaseTargetPh(float newPh) {
+  if (baseTargetPh != newPh) {
     char buffer1[10];
     char buffer2[10];
-    floattostrf(targetPh, 5, 3, buffer1, sizeof(buffer1));
+    floattostrf(baseTargetPh, 5, 3, buffer1, sizeof(buffer1));
     floattostrf(newPh, 5, 3, buffer2, sizeof(buffer2));
     serial(F("change target pH from %s to %s"), buffer1, buffer2);
-    targetPh = newPh;
+    baseTargetPh = newPh;
     EEPROM_TC::instance()->setPh(newPh);
   }
 }
@@ -134,20 +134,21 @@ bool PHControl::isOn() {
 }
 
 void PHControl::updateControl(float pH) {
+  // called each loop()
   int msToBeOn;
   int nowModWindow = millis() % WINDOW_SIZE;
   uint32_t currentTime = DateTime_TC::now().secondstime();
   switch (pHSetType) {
     case FLAT_TYPE: {
-      currentPHTarget = targetPh;
+      currentTargetPh = baseTargetPh;
       break;
     }
     case RAMP_TYPE: {
       if (currentTime < rampTimeEnd) {
-        currentPHTarget = rampStartingPh +
-                          ((currentTime - rampTimeStart) * (targetPh - rampStartingPh) / (rampTimeEnd - rampTimeStart));
+        currentTargetPh = rampStartingPh + ((currentTime - rampTimeStart) * (baseTargetPh - rampStartingPh) /
+                                            (rampTimeEnd - rampTimeStart));
       } else {
-        currentPHTarget = targetPh;
+        currentTargetPh = baseTargetPh;
       }
       break;
     }
@@ -161,8 +162,8 @@ void PHControl::updateControl(float pH) {
       float timeLeftTillPeriodEnd = sineEndTime - currentTime;
       float percentNOTThroughPeriod = timeLeftTillPeriodEnd / period;
       float percentThroughPeriod = 1 - percentNOTThroughPeriod;
-      float x = percentThroughPeriod * (2 * PI);        // the x position for our sine wave
-      currentPHTarget = amplitude * sin(x) + targetPh;  // y position in our sine wave
+      float x = percentThroughPeriod * (2 * PI);            // the x position for our sine wave
+      currentTargetPh = amplitude * sin(x) + baseTargetPh;  // y position in our sine wave
       break;
     }
     default:
@@ -170,7 +171,7 @@ void PHControl::updateControl(float pH) {
   }
   COUT("PHControl::updateControl(" << pH << ") at " << millis());
   if (usePID) {
-    msToBeOn = PID_TC::instance()->computeOutput(currentPHTarget, pH);
+    msToBeOn = PID_TC::instance()->computeOutput(currentTargetPh, pH);
     if (msToBeOn > 9000) {
       if (msToBeOn > 10000 && lastWarnMS + 60000 < millis()) {
         serial(F("WARNING: PID asked for an on time of %i which has been capped at 9000"), msToBeOn);
@@ -179,9 +180,9 @@ void PHControl::updateControl(float pH) {
       msToBeOn = 9000;
     }
   } else {
-    msToBeOn = pH > currentPHTarget ? 9000 : 0;
+    msToBeOn = pH > currentTargetPh ? 9000 : 0;
   }
-  COUT("target: " << currentPHTarget << "; current: " << pH << "; nowModWindow = " << nowModWindow
+  COUT("target: " << currentTargetPh << "; current: " << pH << "; nowModWindow = " << nowModWindow
                   << "; msToBeOn = " << msToBeOn);
   bool newValue;
   if (TankController::instance()->isInCalibration()) {

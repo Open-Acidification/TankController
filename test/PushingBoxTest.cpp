@@ -27,7 +27,7 @@ unittest_setup() {
   DateTime_TC now(2021, 6, 8, 15, 25, 15);
   now.setAsCurrent();
   controlSolenoid->enablePID(false);
-  controlSolenoid->setTargetPh(7.00);
+  controlSolenoid->setBaseTargetPh(7.00);
   PHProbe::instance()->setPh(7.0);
   state->serialPort[0].dataOut = "";  // clear serial output
 }

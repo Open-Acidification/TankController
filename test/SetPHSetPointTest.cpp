@@ -21,7 +21,7 @@ unittest(test_target_of_7_125_with_ramp_of_4_125) {
   assertEqual(PHControl::instance()->phSetTypeTypes::FLAT_TYPE, PHControl::instance()->getPhSetType());
   assertEqual(8.125, EEPROM_TC::instance()->getPh());
   assertEqual(0, 8.125 - EEPROM_TC::instance()->getPh());
-  assertEqual(8.125, PHControl::instance()->getTargetPh());
+  assertEqual(8.125, PHControl::instance()->getBaseTargetPh());
   assertEqual(0, EEPROM_TC::instance()->getPhRampTimeEnd());
   assertEqual(0, EEPROM_TC::instance()->getPhRampTimeStart());
   SetPHSetPoint* test = new SetPHSetPoint(tc);
@@ -46,7 +46,7 @@ unittest(test_target_of_7_125_with_ramp_of_4_125) {
 
   // during the delay we showed the new value
   lines = lcd->getLines();
-  assertEqual(7.125, PHControl::instance()->getTargetPh());
+  assertEqual(7.125, PHControl::instance()->getBaseTargetPh());
   assertEqual(7.125, EEPROM_TC::instance()->getPh());
   assertEqual(PHControl::instance()->phSetTypeTypes::RAMP_TYPE, EEPROM_TC::instance()->getPhSetType());
 
@@ -73,7 +73,7 @@ unittest(test_target_of_14_with_ramp_of_0) {
   test->setValue(0);
 
   // during the delay we showed the new value
-  assertEqual(14, PHControl::instance()->getTargetPh());
+  assertEqual(14, PHControl::instance()->getBaseTargetPh());
   assertEqual(14, EEPROM_TC::instance()->getPh());
   assertEqual(PHControl::instance()->phSetTypeTypes::FLAT_TYPE, EEPROM_TC::instance()->getPhSetType());
   std::vector<String> lines = lcd->getLines();

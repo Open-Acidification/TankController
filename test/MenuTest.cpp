@@ -24,12 +24,13 @@ void enterKey(char key) {
 }
 
 unittest_setup() {
-  PHControl::instance()->setTargetPh(8.100);
+  PHControl::instance()->setBaseTargetPh(8.100);
   EEPROM_TC::instance()->setPh(8.100);
   tc->setNextState(new MainMenu(tc), true);
   TemperatureControl::enableHeater(true);
   TemperatureControl::instance()->setTargetTemperature(15.75);
   TempProbe_TC::instance()->setTemperature(12.25, true);
+  tc->loop(false);  // recognize and apply the targets
   enterKey('D');
 }
 
@@ -46,7 +47,7 @@ unittest_teardown() {
 
 unittest(MainMenu) {
   assertEqual("pH=0.000   8.100", lc->getLines().at(0));
-  assertEqual("T=12.23 h 15.75 ", lc->getLines().at(1));
+  assertEqual("T=12.23 H 15.75 ", lc->getLines().at(1));
   delay(1000);
   tc->loop(false);
   assertEqual("pH 0.000   8.100", lc->getLines().at(0));

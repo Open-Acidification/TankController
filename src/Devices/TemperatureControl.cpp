@@ -52,10 +52,10 @@ void TemperatureControl::enableHeater(bool flag) {
  */
 TemperatureControl::TemperatureControl() {
   COUT("TemperatureControl()");
-  targetTemperature = EEPROM_TC::instance()->getTemp();
-  if (isnan(targetTemperature)) {
-    targetTemperature = DEFAULT_TEMPERATURE;
-    EEPROM_TC::instance()->setTemp(targetTemperature);
+  baseTargetTemperature = EEPROM_TC::instance()->getTemp();
+  if (isnan(baseTargetTemperature)) {
+    baseTargetTemperature = DEFAULT_TEMPERATURE;
+    EEPROM_TC::instance()->setTemp(baseTargetTemperature);
   }
   tempSetType = EEPROM_TC::instance()->getTempSetType();
   if (tempSetType == 0xFFFFFFFF) {
@@ -88,7 +88,7 @@ TemperatureControl::TemperatureControl() {
   char buffer1[8];
   char buffer2[10];
   strscpy_P(buffer1, (this->isHeater() ? F("Heater") : F("Chiller")), sizeof(buffer1));
-  floattostrf(targetTemperature, 5, 2, buffer2, sizeof(buffer2));
+  floattostrf(baseTargetTemperature, 5, 2, buffer2, sizeof(buffer2));
   serial(F("%s starts with solenoid off with target temperature of %s C"), buffer1, buffer2);
 }
 
@@ -143,32 +143,33 @@ bool TemperatureControl::isOn() {
  * set target temperature and save in EEPROM
  */
 void TemperatureControl::setTargetTemperature(float newTemperature) {
-  if (targetTemperature != newTemperature) {
+  if (baseTargetTemperature != newTemperature) {
     char buffer1[10];
     char buffer2[10];
-    floattostrf(targetTemperature, 5, 2, buffer1, sizeof(buffer1));
+    floattostrf(baseTargetTemperature, 5, 2, buffer1, sizeof(buffer1));
     floattostrf(newTemperature, 5, 2, buffer2, sizeof(buffer2));
     serial(F("change target temperature from %s to %s"), buffer1, buffer2);
     EEPROM_TC::instance()->setTemp(newTemperature);
-    targetTemperature = newTemperature;
+    baseTargetTemperature = newTemperature;
   }
 }
 
 void Chiller::updateControl(float currentTemperature) {
+  // called each loop()
   uint32_t currentMillis = millis();
   uint32_t currentTime = DateTime_TC::now().secondstime();
   switch (tempSetType) {
     case FLAT_TYPE: {
-      currentTemperatureTarget = targetTemperature;
+      currentTemperatureTarget = baseTargetTemperature;
       break;
     }
     case RAMP_TYPE: {
       if (currentTime < rampTimeEnd) {
         currentTemperatureTarget =
             rampStartingTemp +
-            ((currentTime - rampTimeStart) * (targetTemperature - rampStartingTemp) / (rampTimeEnd - rampTimeStart));
+            ((currentTime - rampTimeStart) * (baseTargetTemperature - rampStartingTemp) / (rampTimeEnd - rampTimeStart));
       } else {
-        currentTemperatureTarget = targetTemperature;
+        currentTemperatureTarget = baseTargetTemperature;
       }
       break;
     }
@@ -183,7 +184,7 @@ void Chiller::updateControl(float currentTemperature) {
       float percentNOTThroughPeriod = timeLeftTillPeriodEnd / period;
       float percentThroughPeriod = 1 - percentNOTThroughPeriod;
       float x = percentThroughPeriod * (2 * PI);                          // the x position for our sine wave
-      currentTemperatureTarget = amplitude * sin(x) + targetTemperature;  // y position in our sine wave
+      currentTemperatureTarget = amplitude * sin(x) + baseTargetTemperature;  // y position in our sine wave
       break;
     }
     default:
@@ -228,19 +229,20 @@ void Chiller::updateControl(float currentTemperature) {
 }
 
 void Heater::updateControl(float currentTemperature) {
+  // called each loop()
   uint32_t currentTime = DateTime_TC::now().secondstime();
   switch (tempSetType) {
     case FLAT_TYPE: {
-      currentTemperatureTarget = targetTemperature;
+      currentTemperatureTarget = baseTargetTemperature;
       break;
     }
     case RAMP_TYPE: {
       if (currentTime < rampTimeEnd) {
         currentTemperatureTarget =
             rampStartingTemp +
-            ((currentTime - rampTimeStart) * (targetTemperature - rampStartingTemp) / (rampTimeEnd - rampTimeStart));
+            ((currentTime - rampTimeStart) * (baseTargetTemperature - rampStartingTemp) / (rampTimeEnd - rampTimeStart));
       } else {
-        currentTemperatureTarget = targetTemperature;
+        currentTemperatureTarget = baseTargetTemperature;
       }
       break;
     }
@@ -255,7 +257,7 @@ void Heater::updateControl(float currentTemperature) {
       float percentNOTThroughPeriod = timeLeftTillPeriodEnd / period;
       float percentThroughPeriod = 1 - percentNOTThroughPeriod;
       float x = percentThroughPeriod * (2 * PI);                          // the x position for our sine wave
-      currentTemperatureTarget = amplitude * sin(x) + targetTemperature;  // y position in our sine wave
+      currentTemperatureTarget = amplitude * sin(x) + baseTargetTemperature;  // y position in our sine wave
       break;
     }
     default:

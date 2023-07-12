@@ -19,7 +19,7 @@ int JSONBuilder::buildCurrentValues() {
   while (pH_f && pH_f % 10 == 0) {
     pH_f /= 10;
   }
-  float target_pH = PHControl::instance()->getTargetPh();
+  float target_pH = PHControl::instance()->getBaseTargetPh();
   int target_pH_f = (int)(target_pH * 1000 + 0.5) % 1000;
   while (target_pH_f && target_pH_f % 10 == 0) {
     target_pH_f /= 10;
@@ -29,7 +29,7 @@ int JSONBuilder::buildCurrentValues() {
   while (temp_f && temp_f % 10 == 0) {
     temp_f /= 10;
   }
-  float target_temp = TemperatureControl::instance()->getTargetTemperature();
+  float target_temp = TemperatureControl::instance()->getCurrentTemperatureTarget();
   int target_temp_f = (int)(target_temp * 1000 + 0.5) % 1000;
   while (target_temp_f && target_temp_f % 10 == 0) {
     target_temp_f /= 10;

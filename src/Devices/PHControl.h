@@ -11,8 +11,8 @@ private:
   uint32_t lastWarnMS = 0;
   const uint16_t PH_CONTROL_PIN = 49;
   const uint16_t SOLENOID_OPENING_TIME = 100;
-  float targetPh;  // actual target
-  float currentPHTarget;
+  float baseTargetPh;     // base target
+  float currentTargetPh;  // current target (ramp, sine, arbitrary)
   float rampStartingPh;
   uint32_t rampTimeStart;
   uint32_t rampTimeEnd;
@@ -32,11 +32,11 @@ public:
   };
   static PHControl *instance();
   static void clearInstance();
-  float getTargetPh() {
-    return targetPh;
+  float getBaseTargetPh() {
+    return baseTargetPh;
   }
-  float getCurrentPhTarget() {
-    return currentPHTarget;
+  float getCurrentTargetPh() {
+    return currentTargetPh;
   }
   int getPhSetType() {
     return pHSetType;
@@ -57,7 +57,7 @@ public:
     return usePID;
   }
   bool isOn();
-  void setTargetPh(float newPh);
+  void setBaseTargetPh(float newPh);
   void setRampDuration(float newPhRampDuration);
   void setSine(float sineAmplitude, float sinePeriodInHours);
   void enablePID(bool flag);

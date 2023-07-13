@@ -31,7 +31,7 @@ unittest(testOutput) {
   delay(1);
   Keypad_TC::instance()->_getPuppet()->push_back('C');
   tc->loop(false);
-  assertEqual("90A2:DA03:FEF9  ", display->getLines().at(1));
+  assertEqual("90A2:DA00:FBF6  ", display->getLines().at(1));
 
   // Return to mainMenu
   Keypad_TC::instance()->_getPuppet()->push_back('D');

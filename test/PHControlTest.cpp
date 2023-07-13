@@ -55,9 +55,11 @@ unittest(bubblerTurnsOnAndOff) {
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
   state->serialPort[1].dataIn = "8.00\r";  // the queue of data waiting to be read
-  tc->serialEvent1();                      // fake interrupt to update the current pH reading
-  tc->loop(false);                         // update the controls based on the current readings
-  assertEqual(13, millis());
+  assertEqual(6, millis());
+  tc->serialEvent1();  // fake interrupt to update the current pH reading
+  assertEqual(6, millis());
+  tc->loop(false);  // update the controls based on the current readings
+  assertEqual(10, millis());
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
   String serialOutput = state->serialPort[0].dataOut;
@@ -74,8 +76,8 @@ unittest(bubblerTurnsOnAndOff) {
     i = j + 2;
   } while (line.charAt(0) != 'C');
   assertEqual((int)'C', line.charAt(0));
-  assertEqual("CO2 bubbler turned on after 13 ms", line);
-  assertEqual(13, millis());
+  assertEqual("CO2 bubbler turned on after 6 ms", line);
+  assertEqual(10, millis());
   delay(9500);
   tc->loop(false);  // solenoid should turn off briefly at end of window
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
@@ -111,7 +113,7 @@ unittest(afterTenSecondsAndPhIsLower) {
   tc->loop(false);  // update the controls based on the current readings
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
-  assertEqual("CO2 bubbler turned on after 7 ms\r\n", state->serialPort[0].dataOut);
+  assertEqual("CO2 bubbler turned on after 6 ms\r\n", state->serialPort[0].dataOut);
   tc->loop(false);
   assertEqual("pH 8.500 B 7.500", lc->getLines().at(0));
   delay(8000);
@@ -121,7 +123,7 @@ unittest(afterTenSecondsAndPhIsLower) {
   state->serialPort[0].dataOut = "";  // the history of data written
   delay(1000);
   tc->loop(false);
-  assertEqual("CO2 bubbler turned off after 9021 ms\r\n", state->serialPort[0].dataOut);  // after 10 seconds
+  assertEqual("CO2 bubbler turned off after 9004 ms\r\n", state->serialPort[0].dataOut);  // after 10 seconds
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
   delay(1000);

@@ -14,7 +14,7 @@
 
 unittest_setup() {
   GODMODE()->resetClock();
-  PID_TC::instance()->setKd(0.0);
+  PID_TC::instance()->setTunings(0.0, 0.0, 0.0);
 }
 
 /**
@@ -80,7 +80,7 @@ unittest(display) {
       "Accept-Language: en-US\r\n"
       "\r\n";
   client.pushToReadBuffer(request);
-  server->loop();
+  tc->loop(false);  // for targets to take effect
   deque<uint8_t>* pBuffer = client.writeBuffer();
   assertTrue(pBuffer->size() > 100);
   String response;
@@ -156,6 +156,8 @@ unittest(currentData) {
   PHControl::instance()->setTargetPh(8.25);                     // target
   TempProbe_TC::instance()->setTemperature(21.25, true);        // actual
   TemperatureControl::instance()->setTargetTemperature(21.75);  // target
+  TankController::instance()->loop(false);                      // for targets to take effect
+  PID_TC::instance()->setTunings(5000.55, 1234.46, 987.44);
 
   EthernetServer_TC* server = EthernetServer_TC::instance();
   server->setHasClientCalling(true);
@@ -184,7 +186,7 @@ unittest(currentData) {
       "Content-Encoding: identity\r\n"
       "Content-Language: en-US\r\n"
       "Access-Control-Allow-Origin: *\r\n"
-      "Content-Length: 317\r\n"
+      "Content-Length: 320\r\n"
       "\r\n"
       "{"
       "\"pH\":8.125,"
@@ -197,9 +199,9 @@ unittest(currentData) {
       "\"GoogleSheetInterval\":65535,"
       "\"LogFile\":\"20220222.csv\","
       "\"PHSlope\":\"\","
-      "\"Kp\":100000.0,"
-      "\"Ki\":0.0,"
-      "\"Kd\":0.0,"
+      "\"Kp\":5000.6,"
+      "\"Ki\":1234.5,"
+      "\"Kd\":987.4,"
       "\"PID\":\"ON\","
       "\"TankID\":0,"
       "\"Uptime\":\"0d 0h 0m 1s\","
@@ -527,7 +529,7 @@ unittest(PUT_Kp) {
   assertEqual("MainMenu", tc->stateName());
 
   PID_TC* singleton = PID_TC::instance();
-  assertEqual(100000, singleton->getKp());
+  assertEqual(0.0, singleton->getKp());
 
   EthernetServer_TC* server = EthernetServer_TC::instance();
   server->setHasClientCalling(true);

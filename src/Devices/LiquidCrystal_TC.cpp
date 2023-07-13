@@ -46,23 +46,27 @@ void LiquidCrystal_TC::splashScreen(const char* version) {
  * Prints an input string to the desired line of the LCD screen
  * Even numbers go on the bottom line, odd ones go on the top line
  */
-void LiquidCrystal_TC::writeLine(const char* text, uint16_t line) {
-  line = line % 2;
-  setCursor(0, line);
-  char* result = _lines[line];
+void LiquidCrystal_TC::writeLine(const char* text, uint16_t lineNo) {
+  char buffer[17];
   bool moreText = true;
   for (size_t i = 0; i < 16; i++) {
     if (moreText && text[i] == '\0') {
       moreText = false;
     }
     if (moreText) {
-      result[i] = text[i];
+      buffer[i] = text[i];
     } else {
-      result[i] = ' ';
+      buffer[i] = ' ';
     }
   }
-  result[16] = '\0';
-  print(result);
+  buffer[16] = '\0';
+  lineNo = lineNo % 2;
+  char* pLine = _lines[lineNo];
+  if (memcmp(buffer, pLine, sizeof(buffer)) != 0) {
+    memcpy(pLine, buffer, sizeof(buffer));
+    setCursor(0, lineNo);  // this may have a 1 ms delay
+    print(pLine);          // this has a 3 ms delay
+  }
 }
 
 void LiquidCrystal_TC::writeLine(const __FlashStringHelper* text, uint16_t line) {

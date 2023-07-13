@@ -83,13 +83,13 @@ unittest(AfterIntervalAndOutsideDelta) {
   state->serialPort[0].dataOut = "";  // the history of data written
   // chiller is initially off and goes on when needed
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
-  assertEqual(6, millis());
+  assertEqual(0, millis());
   delay(31006);
-  assertEqual(31012, millis());
+  assertEqual(31006, millis());
   control->updateControl(20.05);
   assertTrue(control->isOn());
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[TEMP_CONTROL_PIN]);
-  assertEqual("chiller turned on at 31012 after 31012 ms\r\n", state->serialPort[0].dataOut);
+  assertEqual("chiller turned on at 31006 after 31006 ms\r\n", state->serialPort[0].dataOut);
   tc->loop(false);
   assertEqual("T=20.02 C 20.00 ", lc->getLines().at(1));
   state->serialPort[0].dataOut = "";  // the history of data written
@@ -97,7 +97,7 @@ unittest(AfterIntervalAndOutsideDelta) {
   control->updateControl(19.95);
   assertFalse(control->isOn());
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
-  assertEqual("chiller turned off at 62031 after 31019 ms\r\n", state->serialPort[0].dataOut);
+  assertEqual("chiller turned off at 62024 after 31018 ms\r\n", state->serialPort[0].dataOut);
   tc->loop(false);
   assertEqual("T 20.02 c 20.00 ", lc->getLines().at(1));
 }
@@ -148,7 +148,7 @@ unittest(OutsideDelta) {
   control->updateControl(19.95);
   assertTrue(control->isOn());
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[TEMP_CONTROL_PIN]);
-  assertEqual("heater turned on at 6 after 6 ms\r\n", state->serialPort[0].dataOut);
+  assertEqual("heater turned on at 0 after 0 ms\r\n", state->serialPort[0].dataOut);
   tc->loop(false);
   assertEqual("T 20.00 H 20.00 ", lc->getLines().at(1));
   state->serialPort[0].dataOut = "";  // the history of data written
@@ -156,7 +156,7 @@ unittest(OutsideDelta) {
   control->updateControl(20.05);
   assertFalse(control->isOn());
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
-  assertEqual("heater turned off at 313 after 307 ms\r\n", state->serialPort[0].dataOut);
+  assertEqual("heater turned off at 306 after 306 ms\r\n", state->serialPort[0].dataOut);
   tc->loop(false);
   assertEqual("T 20.00 h 20.00 ", lc->getLines().at(1));
 }

@@ -37,7 +37,7 @@ void reset() {
   setPhMeasurementTo(7.50);
   controlSolenoid->setBaseTargetPh(7.50);
   controlSolenoid->setRampDuration(0);  // No ramp
-  state->serialPort[0].dataOut = "";  // the history of data written
+  state->serialPort[0].dataOut = "";    // the history of data written
   tc->loop(false);
 }
 
@@ -87,7 +87,7 @@ unittest(afterTenSecondsButPhStillHigher) {
   assertFalse(controlSolenoid->isOn());
   controlSolenoid->setBaseTargetPh(7.50);
   setPhMeasurementTo(8.50);
-  tc->loop(false);                       // update the controls based on the current readings
+  tc->loop(false);  // update the controls based on the current readings
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
   delay(8000);

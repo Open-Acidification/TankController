@@ -115,7 +115,6 @@ bool TankController::isInCalibration() {
  * Handles keypresses
  */
 void TankController::handleUI() {
-  COUT("TankController::handleUI() - " << state->name());
   // Get server key, otherwise check for Keypad key
   char key = nextKey ? nextKey : Keypad_TC::instance()->getKey();
   nextKey = 0;
@@ -138,7 +137,6 @@ void TankController::handleUI() {
     lastKeypadTime = millis();
   }
   updateState();
-  COUT("TankController::handleUI() - " << state->name() << "::loop()");
   state->loop();
 }
 
@@ -157,8 +155,8 @@ void TankController::loop(bool report_loop_delay) {
   lastTime = thisTime;
   wdt_reset();
   blink();                                // blink the on-board LED to show that we are running
-  handleUI();                             // look at keypad, update LCD (~90ms)
   updateControls();                       // turn CO2 and temperature controls on or off
+  handleUI();                             // look at keypad, update LCD (~90ms)
   DataLogger_TC::instance()->loop();      // record current data to SD and serial
   PushingBox::instance()->loop();         // write data to Google Sheets (~1130ms every report)
   Ethernet_TC::instance()->loop();        // renew DHCP lease

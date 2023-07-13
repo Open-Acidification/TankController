@@ -97,7 +97,7 @@ unittest(display) {
       "Content-Length: 36\r\n"
       "\r\n"
       "pH 0.000   8.100\r\n"
-      "T  0.00 h 20.00 \r\n";
+      "T  0.00 H 20.00 \r\n";
   assertEqual(expectedResponse, response);
   assertEqual(FINISHED, server->getState());
   server->loop();  // Process finished state

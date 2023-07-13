@@ -76,6 +76,7 @@ private:
   void fileSetup();
   void get();
   void getApiHandler();
+  void getFavIcon();
   bool isRequestForExistingFile();
   void keypress();
   void options();
@@ -86,6 +87,7 @@ private:
   void sendCurrentRedirect();
   void sendDisplayRedirect();
   void sendHeadersWithSize(uint32_t size);
+  void sendIconHeadersWithSize(uint32_t size);
   void sendHomeRedirect();
   void sendResponse(int);
   void testReadSpeed();

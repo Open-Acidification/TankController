@@ -81,7 +81,6 @@ unittest(display) {
       "\r\n";
   client.pushToReadBuffer(request);
   tc->loop(false);  // for targets to take effect
-  // server->loop();
   deque<uint8_t>* pBuffer = client.writeBuffer();
   assertTrue(pBuffer->size() > 100);
   String response;

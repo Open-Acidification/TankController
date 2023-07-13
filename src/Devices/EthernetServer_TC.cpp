@@ -7,8 +7,11 @@
 #include "Devices/JSONBuilder.h"
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PID_TC.h"
+#include "Devices/favicon.h"
 #include "Serial_TC.h"
 #include "TankController.h"
+
+#define BUFFER_SIZE 200
 
 //  class variables
 EthernetServer_TC *EthernetServer_TC::_instance = nullptr;
@@ -67,6 +70,9 @@ void EthernetServer_TC::get() {
     echo();
   } else if (memcmp_P(buffer + 5, F("api"), 3) == 0) {
     getApiHandler();
+  } else if (memcmp_P(buffer + 5, F("favicon.ico "), 12) == 0) {
+    getFavIcon();
+    state = FINISHED;
   } else if (isRequestForExistingFile()) {
     fileSetup();
   } else {
@@ -74,6 +80,19 @@ void EthernetServer_TC::get() {
     sendResponse(HTTP_NOT_FOUND);
     state = FINISHED;
   }
+}
+
+void EthernetServer_TC::getFavIcon() {
+  sendIconHeadersWithSize(FAVICON_ICO_LEN);
+  char buffer[BUFFER_SIZE];
+  int i;
+  for (i = 0; i < FAVICON_ICO_LEN - BUFFER_SIZE; i += BUFFER_SIZE) {  // 0, 200, ..., 15000, 15200
+    memcpy_P(buffer, favicon_ico + i, BUFFER_SIZE);
+    client.write(buffer, BUFFER_SIZE);
+  }
+  // i should end with 15400
+  memcpy_P(buffer, favicon_ico + i, FAVICON_ICO_LEN - i);  // 15400 to 15406
+  client.write(buffer, FAVICON_ICO_LEN - i);
 }
 
 // Handles an HTTP OPTIONS request
@@ -459,7 +478,7 @@ void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
         "Content-Encoding: identity\r\n"
         "Content-Language: en-US\r\n"
         "Access-Control-Allow-Origin: *\r\n");
-  char buffer[200];
+  char buffer[BUFFER_SIZE];
   strscpy_P(buffer, response, sizeof(buffer));
   client.write(buffer);
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Content-Length: %lu\r\n"), (unsigned long)size);
@@ -473,6 +492,25 @@ void EthernetServer_TC::sendHeadersWithSize(uint32_t size) {
   // DateTime_TC now = DateTime_TC::now();
   // int weekday = weekday(now.getYear(), now.getMonth(), now.getDay());
   // snprintf_P(buffer, sizeof(buffer), F("Date: %s, %02d %s %04d %02d:%02d:%02d GMT\r\n"), );
+
+  // blank line indicates end of headers
+  client.write('\r');
+  client.write('\n');
+}
+
+// 200 response with a content size
+void EthernetServer_TC::sendIconHeadersWithSize(uint32_t size) {
+  const __FlashStringHelper *response =
+      F("HTTP/1.1 200 OK\r\n"
+        "Content-Type: image/x-icon\r\n"
+        "Access-Control-Allow-Origin: *\r\n");
+  char buffer[BUFFER_SIZE];
+  strscpy_P(buffer, response, sizeof(buffer));
+  client.write(buffer);
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Content-Length: %lu\r\n"), (unsigned long)size);
+  client.write(buffer);
+
+  // TODO: add "Date: " header
 
   // blank line indicates end of headers
   client.write('\r');

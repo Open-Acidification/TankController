@@ -25,7 +25,7 @@ class CurrentData extends StatelessWidget {
 
   bool canEditCurrentInfo(AppData appData) {
     Version latestVersion = Version.parse(appData.currentData['Version']);
-    return latestVersion >= Version.parse('23.6.0');
+    return latestVersion >= Version.parse('23.7.0');
   }
 
   bool canUploadFile(AppData appData) {

@@ -44,7 +44,7 @@ unittest_setup() {
 
   // set target pH
   pPHControl->enablePID(false);  // Stay on continually if needed
-  pPHControl->setTargetPh(7.325);
+  pPHControl->setBaseTargetPh(7.325);
 
   // set Kp, Ki, and Kd
   EEPROM_TC::instance()->setKP(123456.7);
@@ -71,7 +71,7 @@ unittest(basicOperation) {
 
   // change targets
   tempControl->setTargetTemperature(17.25);
-  pPHControl->setTargetPh(6.875);
+  pPHControl->setBaseTargetPh(6.875);
 
   // verify that solonoids are on
   delay(1000);
@@ -83,7 +83,7 @@ unittest(basicOperation) {
 
   // reset targets
   tempControl->setTargetTemperature(16.25);
-  pPHControl->setTargetPh(7.375);
+  pPHControl->setBaseTargetPh(7.375);
 
   // verify that solonoids are off
   delay(1000);

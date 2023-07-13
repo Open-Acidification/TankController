@@ -14,7 +14,7 @@ SetPHSetPoint::SetPHSetPoint(TankController* tc) : NumCollectorState(tc) {
 
 float SetPHSetPoint::getCurrentValue() {
   if (subState == 0) {
-    return PHControl::instance()->getTargetPh();
+    return PHControl::instance()->getBaseTargetPh();
   } else {
     uint32_t rampTimeStart = PHControl::instance()->getPhRampTimeStart();
     uint32_t rampTimeEnd = PHControl::instance()->getPhRampTimeEnd();
@@ -28,7 +28,7 @@ void SetPHSetPoint::setValue(float value) {
     clear();
     start();
   } else {
-    PHControl::instance()->setTargetPh(values[0]);
+    PHControl::instance()->setBaseTargetPh(values[0]);
     PHControl::instance()->setRampDuration(values[1]);
     char output0[17];
     char output1[17];

@@ -17,12 +17,12 @@ unittest(test) {
   EEPROM_TC::instance()->setPh(8.125);
   TankController* tc = TankController::instance();  // instantiate after setting eeprom stuff
   assertEqual(8.125, EEPROM_TC::instance()->getPh());
-  assertEqual(8.125, PHControl::instance()->getTargetPh());
+  assertEqual(8.125, PHControl::instance()->getBaseTargetPh());
   SetPHWithSine* test = new SetPHWithSine(tc);
   tc->setNextState(test, true);
 
   assertEqual(EEPROM_TC::instance()->getPhSetType(), PHControl::instance()->phSetTypeTypes::FLAT_TYPE);
-  assertEqual(8.125, PHControl::instance()->getTargetPh());
+  assertEqual(8.125, PHControl::instance()->getBaseTargetPh());
 
   // get currently displayed lines
   std::vector<String> lines = lcd->getLines();
@@ -49,7 +49,7 @@ unittest(test) {
 
   // during the delay we showed the new value
   lines = lcd->getLines();
-  assertEqual(7.125, PHControl::instance()->getTargetPh());
+  assertEqual(7.125, PHControl::instance()->getBaseTargetPh());
   assertEqual(7.125, EEPROM_TC::instance()->getPh());
   assertEqual(PHControl::instance()->phSetTypeTypes::SINE_TYPE, EEPROM_TC::instance()->getPhSetType());
 

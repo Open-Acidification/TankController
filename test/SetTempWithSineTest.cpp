@@ -17,12 +17,12 @@ unittest(test) {
   EEPROM_TC::instance()->setTemp(20.00);
   TankController* tc = TankController::instance();  // instantiate after setting eeprom stuff
   assertEqual(20.00, EEPROM_TC::instance()->getTemp());
-  assertEqual(20.00, TemperatureControl::instance()->getTargetTemperature());
+  assertEqual(20.00, TemperatureControl::instance()->getBaseTargetTemperature());
   SetTempWithSine* test = new SetTempWithSine(tc);
   tc->setNextState(test, true);
 
   assertEqual(EEPROM_TC::instance()->getTempSetType(), TemperatureControl::instance()->tempSetTypeTypes::FLAT_TYPE);
-  assertEqual(20, TemperatureControl::instance()->getTargetTemperature());
+  assertEqual(20, TemperatureControl::instance()->getBaseTargetTemperature());
 
   // get currently displayed lines
   std::vector<String> lines = lcd->getLines();
@@ -49,7 +49,7 @@ unittest(test) {
 
   // during the delay we showed the new value
   lines = lcd->getLines();
-  assertEqual(25, TemperatureControl::instance()->getTargetTemperature());
+  assertEqual(25, TemperatureControl::instance()->getBaseTargetTemperature());
   assertEqual(25, EEPROM_TC::instance()->getTemp());
   assertEqual(TemperatureControl::instance()->tempSetTypeTypes::SINE_TYPE, EEPROM_TC::instance()->getTempSetType());
 

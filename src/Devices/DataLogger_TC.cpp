@@ -36,7 +36,8 @@ void DataLogger_TC::loop() {
   if (msNow >= nextSDLogTime) {
     writeToSD();
     nextSDLogTime = (msNow / (unsigned long)SD_LOGGING_INTERVAL + 1) * (unsigned long)SD_LOGGING_INTERVAL;
-  } else if (msNow >= nextSerialLogTime) {
+  }
+  if (msNow >= nextSerialLogTime) {
     writeToSerial();
     nextSerialLogTime = (msNow / (unsigned long)SERIAL_LOGGING_INTERVAL + 1) * (unsigned long)SERIAL_LOGGING_INTERVAL;
   }
@@ -47,15 +48,15 @@ void DataLogger_TC::loop() {
  *
  */
 void DataLogger_TC::writeToSD() {
-  char currentTemperature[10];
-  char currentPh[10];
+  char currentTemperatureString[10];
+  char currentPhString[10];
   if (TankController::instance()->isInCalibration()) {
-    strscpy_P(currentTemperature, F("C"), sizeof(currentTemperature));
-    strscpy_P(currentPh, F("C"), sizeof(currentPh));
+    strscpy_P(currentTemperatureString, F("C"), sizeof(currentTemperatureString));
+    strscpy_P(currentPhString, F("C"), sizeof(currentPhString));
   } else {
-    floattostrf((float)TempProbe_TC::instance()->getRunningAverage(), 4, 2, currentTemperature,
-                sizeof(currentTemperature));
-    floattostrf((float)PHProbe::instance()->getPh(), 5, 3, currentPh, sizeof(currentPh));
+    floattostrf((float)TempProbe_TC::instance()->getRunningAverage(), 4, 2, currentTemperatureString,
+                sizeof(currentTemperatureString));
+    floattostrf((float)PHProbe::instance()->getPh(), 5, 3, currentPhString, sizeof(currentPhString));
   }
   DateTime_TC dtNow = DateTime_TC::now();
   PID_TC* pPID = PID_TC::instance();
@@ -65,8 +66,8 @@ void DataLogger_TC::writeToSD() {
   char kp[12];
   char ki[12];
   char kd[12];
-  floattostrf(TemperatureControl::instance()->getTargetTemperature(), 4, 2, targetTemp, sizeof(targetTemp));
-  floattostrf(PHControl::instance()->getTargetPh(), 5, 3, targetPh, sizeof(targetPh));
+  floattostrf(TemperatureControl::instance()->getCurrentTemperatureTarget(), 4, 2, targetTemp, sizeof(targetTemp));
+  floattostrf(PHControl::instance()->getCurrentTargetPh(), 5, 3, targetPh, sizeof(targetPh));
   floattostrf(pPID->getKp(), 8, 1, kp, sizeof(kp));
   floattostrf(pPID->getKi(), 8, 1, ki, sizeof(ki));
   floattostrf(pPID->getKd(), 8, 1, kd, sizeof(kd));
@@ -74,12 +75,11 @@ void DataLogger_TC::writeToSD() {
   const __FlashStringHelper* format = F("%02i/%02i/%4i %02i:%02i:%02i, %3i, %s, %s, %s, %s, %4lu, %s, %s, %s");
   char header_buffer[64];
   strscpy_P(header_buffer, header, sizeof(header_buffer));
-  char buffer[128];
   int length;
   length = snprintf_P(buffer, sizeof(buffer), (PGM_P)format, (uint16_t)dtNow.month(), (uint16_t)dtNow.day(),
                       (uint16_t)dtNow.year(), (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(),
-                      (uint16_t)dtNow.second(), (uint16_t)tankId, currentTemperature, targetTemp, currentPh, targetPh,
-                      (unsigned long)(millis() / 1000), kp, ki, kd);
+                      (uint16_t)dtNow.second(), (uint16_t)tankId, currentTemperatureString, targetTemp, currentPhString,
+                      targetPh, (unsigned long)(millis() / 1000), kp, ki, kd);
   if ((length > sizeof(buffer)) || (length < 0)) {
     // TODO: Log a warning that string was truncated
     serial(F("WARNING! String was truncated to \"%s\""), buffer);

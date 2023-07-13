@@ -15,7 +15,7 @@ SetTempWithSine::SetTempWithSine(TankController* tc) : NumCollectorState(tc) {
 
 float SetTempWithSine::getCurrentValue() {
   if (subState == 0) {
-    return TemperatureControl::instance()->getTargetTemperature();
+    return TemperatureControl::instance()->getBaseTargetTemperature();
   } else if (subState == 1) {
     if (TemperatureControl::instance()->getTempSetType() ==
         TemperatureControl::instance()->tempSetTypeTypes::SINE_TYPE) {

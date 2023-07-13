@@ -252,7 +252,7 @@ void MainMenu::idle() {
   output[8] = ' ';
   output[9] = phControl->isOn() ? 'B' : ' ';
   output[10] = ' ';
-  pH = PHControl::instance()->getTargetPh();
+  pH = PHControl::instance()->getCurrentTargetPh();
   if (pH < 10.0) {
     floattostrf(pH, 5, 3, buffer, sizeof(buffer));
   } else {
@@ -274,7 +274,7 @@ void MainMenu::idle() {
   output[7] = ' ';
   output[8] = status;
   output[9] = ' ';
-  floattostrf(tempControl->getTargetTemperature(), 5, 2, buffer, sizeof(buffer));
+  floattostrf(tempControl->getCurrentTemperatureTarget(), 5, 2, buffer, sizeof(buffer));
   memcpy(output + 10, buffer, sizeof(buffer));
   LiquidCrystal_TC::instance()->writeLine(output, 1);
 }

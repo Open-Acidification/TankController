@@ -13,7 +13,7 @@ SetTempSetPoint::SetTempSetPoint(TankController* tc) : NumCollectorState(tc) {
 
 float SetTempSetPoint::getCurrentValue() {
   if (subState == 0) {
-    return TemperatureControl::instance()->getTargetTemperature();
+    return TemperatureControl::instance()->getBaseTargetTemperature();
   } else {
     uint32_t rampTimeStart = TemperatureControl::instance()->getRampTimeStart();
     uint32_t rampTimeEnd = TemperatureControl::instance()->getRampTimeEnd();

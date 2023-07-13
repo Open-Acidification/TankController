@@ -1,7 +1,7 @@
 #pragma once
 #include <Arduino.h>
 
-// Logging intervals (1sec, 1 min)
+// Logging intervals (1 sec, 1 min)
 #define SD_LOGGING_INTERVAL 1000
 #define SERIAL_LOGGING_INTERVAL 60000
 
@@ -12,6 +12,9 @@ public:
 
   // instance methods
   void loop();
+
+  // instance variables
+  char buffer[128];
 
 private:
   // class variables

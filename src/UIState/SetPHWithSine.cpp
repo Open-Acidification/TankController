@@ -15,7 +15,7 @@ SetPHWithSine::SetPHWithSine(TankController* tc) : NumCollectorState(tc) {
 
 float SetPHWithSine::getCurrentValue() {
   if (subState == 0) {
-    return PHControl::instance()->getTargetPh();
+    return PHControl::instance()->getBaseTargetPh();
   } else if (subState == 1) {
     if (PHControl::instance()->getPhSetType() == PHControl::instance()->phSetTypeTypes::SINE_TYPE) {
       return PHControl::instance()->getAmplitude();
@@ -37,7 +37,7 @@ void SetPHWithSine::setValue(float value) {
     clear();
     start();
   } else {
-    PHControl::instance()->setTargetPh(values[0]);
+    PHControl::instance()->setBaseTargetPh(values[0]);
     PHControl::instance()->setSine(values[1], values[2]);
     char output0[17];
     char temp1[8];

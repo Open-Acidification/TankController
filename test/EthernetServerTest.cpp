@@ -205,7 +205,7 @@ unittest(currentData) {
       "\"PID\":\"ON\","
       "\"TankID\":0,"
       "\"Uptime\":\"0d 0h 0m 1s\","
-      "\"Version\":\"23.7.0\""
+      "\"Version\":\"23.7.0 \""
       "}\r\n";
   assertEqual(expectedResponse, response);
   assertEqual(FINISHED, server->getState());

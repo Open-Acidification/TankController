@@ -20,8 +20,8 @@ unittest(loop) {
   assertEqual(16, lines.at(1).length());
   assertEqual("Tank Controller ", lines.at(0));
   assertEqual(
-      "v"
-      "23.7.0 loading",  // this allows a word-search to find the number
+      "v"  // separating the 'v' allows a word-search to find the number
+      "23.7.0  loading",
       lines.at(1));
 }
 

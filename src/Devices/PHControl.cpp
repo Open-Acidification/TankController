@@ -169,7 +169,6 @@ void PHControl::updateControl(float pH) {
     default:
       break;
   }
-  COUT("PHControl::updateControl(" << pH << ") at " << millis());
   if (usePID) {
     msToBeOn = PID_TC::instance()->computeOutput(currentTargetPh, pH);
     if (msToBeOn > 9000) {
@@ -182,8 +181,6 @@ void PHControl::updateControl(float pH) {
   } else {
     msToBeOn = pH > currentTargetPh ? 9000 : 0;
   }
-  COUT("target: " << currentTargetPh << "; current: " << pH << "; nowModWindow = " << nowModWindow
-                  << "; msToBeOn = " << msToBeOn);
   bool newValue;
   if (TankController::instance()->isInCalibration()) {
     COUT("pH control should be off since in calibration");

@@ -52,9 +52,9 @@ unittest(test) {
   temp = EEPROM_TC::instance()->getCorrectedTemp();
   assertTrue(0.49 < temp && temp < 0.51);
 
-  // test for issue #174
+  // test for https://github.com/Open-Acidification/TankController/issues/174
   tc->loop(false);
-  tc->loop(false);
+  tc->loop(false);  // second loop needed to set the next state
   test = new TemperatureCalibration(tc);
   tc->setNextState(test, true);
   test->setValue(16.0);

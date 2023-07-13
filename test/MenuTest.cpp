@@ -114,10 +114,8 @@ unittest(ViewTime) {
   assertEqual(DateTime_TC::now().as16CharacterString(), lc->getLines().at(0).c_str());
   delay(6000);
   tc->loop(false);
-  tc->loop(false);
   assertEqual("SeeDeviceUptime", tc->stateName());
   delay(55000);  // idle timeout should return to main menu
-  tc->loop(false);
   tc->loop(false);
   assertEqual("MainMenu", tc->stateName());
 }
@@ -131,7 +129,6 @@ unittest(DisableTimeout) {
   enterKey('6');
   assertEqual("PHCalibrationMid", tc->stateName());
   delay(65000);  // wait for over 60 seconds to verify that it does not return to main menu
-  tc->loop(false);
   tc->loop(false);
   assertEqual("PHCalibrationMid", tc->stateName());
 }

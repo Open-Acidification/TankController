@@ -22,7 +22,7 @@ unittest(currentData) {
   TempProbe_TC::instance()->setTemperature(99.99, true);        // actual
   TemperatureControl::instance()->setTargetTemperature(98.88);  // target
   PID_TC::instance()->setTunings(100001.1, 100002.2, 100003.3);
-  TankController::instance()->loop(false);                      // recognize and apply the targets
+  TankController::instance()->loop(false);  // recognize and apply the targets
   JSONBuilder builder;
   int size = builder.buildCurrentValues();
   assertTrue(size > 200);

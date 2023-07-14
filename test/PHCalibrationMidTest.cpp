@@ -2,6 +2,7 @@
 #include <ArduinoUnitTests.h>
 
 #include "Devices/LiquidCrystal_TC.h"
+#include "Devices/PHProbe.h"
 #include "PHCalibrationMid.h"
 #include "TankController.h"
 
@@ -9,8 +10,7 @@ unittest(test) {
   GodmodeState *state = GODMODE();
   TankController *tc = TankController::instance();
   state->reset();
-  GODMODE()->serialPort[1].dataIn = "7.125\r";  // the queue of data waiting to be read
-  tc->serialEvent1();                           // fake interrupt
+  PHProbe::instance()->setPh(7.125);
   PHProbe *pPHProbe = PHProbe::instance();
   float pH = pPHProbe->getPh();
   assertEqual(7.125, pH);
@@ -21,11 +21,7 @@ unittest(test) {
   assertTrue(tc->isInCalibration());
   lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("  7.125->     0 ", lines.at(1));
-  GODMODE()->serialPort[1].dataIn = "7.325\r";  // the queue of data waiting to be read
-  tc->serialEvent1();                           // fake interrupt
-  lines = LiquidCrystal_TC::instance()->getLines();
-  assertEqual("  7.125->     0 ", lines.at(1));
-  tc->loop(false);
+  PHProbe::instance()->setPh(7.325);
   lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("  7.325->     0 ", lines.at(1));
   // setValue

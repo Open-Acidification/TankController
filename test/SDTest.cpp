@@ -48,7 +48,7 @@ unittest(tankControllerLoop) {
 
 unittest(loopInCalibration) {
   TankController* tc = TankController::instance();
-  PHCalibrationMid* test = new PHCalibrationMid(tc);
+  PHCalibrationMidThree* test = new PHCalibrationMidThree(tc);
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
   char data[250];

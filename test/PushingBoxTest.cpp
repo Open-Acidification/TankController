@@ -111,7 +111,7 @@ unittest(SendData) {
 unittest(inCalibration) {
   // set tank id
   EEPROM_TC::instance()->setTankID(99);
-  PHCalibrationMid *test = new PHCalibrationMid(tc);
+  PHCalibrationMidThree *test = new PHCalibrationMidThree(tc);
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
   EthernetClient::startMockServer(pPushingBox->getServer(), (uint32_t)0, 80);

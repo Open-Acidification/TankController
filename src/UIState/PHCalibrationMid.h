@@ -14,13 +14,14 @@ public:
   const __FlashStringHelper* prompt() {
     return F("pH-Midpoint");
   };
+
 protected:
   void setMidValue(float value);
 };
 
 /**
  * @brief midpoint for 1-point pH calibration
- * 
+ *
  */
 class PHCalibrationMidOne : public PHCalibrationMid {
 public:
@@ -34,7 +35,7 @@ public:
 
 /**
  * @brief midpoint for 2-point pH calibration
- * 
+ *
  */
 class PHCalibrationMidTwo : public PHCalibrationMid {
 public:
@@ -48,7 +49,7 @@ public:
 
 /**
  * @brief midpoint for 3-point pH calibration
- * 
+ *
  */
 class PHCalibrationMidThree : public PHCalibrationMid {
 public:

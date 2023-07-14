@@ -14,13 +14,14 @@ public:
   const __FlashStringHelper* prompt() {
     return F("pH-Lowpoint");
   };
+
 protected:
   void setLowValue(float value);
 };
 
 /**
  * @brief lowpoint for 2-point pH calibration
- * 
+ *
  */
 class PHCalibrationLowTwo : public PHCalibrationLow {
 public:
@@ -34,7 +35,7 @@ public:
 
 /**
  * @brief lowpoint for 3-point pH calibration
- * 
+ *
  */
 class PHCalibrationLowThree : public PHCalibrationLow {
 public:

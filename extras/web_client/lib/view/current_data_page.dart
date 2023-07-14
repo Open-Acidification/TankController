@@ -24,12 +24,14 @@ class CurrentData extends StatelessWidget {
   }
 
   bool canEditCurrentInfo(AppData appData) {
-    Version latestVersion = Version.parse(appData.currentData['Version']);
+    String v = appData.currentData['Version'].trim();
+    Version latestVersion = Version.parse(v);
     return latestVersion >= Version.parse('23.6.0');
   }
 
   bool canUploadFile(AppData appData) {
-    Version latestVersion = Version.parse(appData.currentData['Version']);
+    String v = appData.currentData['Version'].trim();
+    Version latestVersion = Version.parse(v);
     return latestVersion >= Version.parse('99.9.9'); // not supported yet!
   }
 

@@ -1,9 +1,8 @@
-#include "PHCalibrationPrompt.h"
-
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
 #include "Devices/LiquidCrystal_TC.h"
+#include "PHCalibrationPrompt.h"
 #include "TankController.h"
 
 unittest(onePoint) {
@@ -80,7 +79,7 @@ unittest(badEntry) {
   assertEqual("PHCalibrationPrompt", tc->stateName());
   tc->loop(false);  // transition to Wait
   assertEqual("Wait", tc->stateName());
-  delay(2000);
+  delay(3000);
   tc->loop(false);  // after the delay, Wait will call setNextState to prepare to go to MainMenu
   tc->loop(false);  // updateState to MainMenu
   assertEqual("MainMenu", tc->stateName());

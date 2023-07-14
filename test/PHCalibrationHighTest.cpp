@@ -20,8 +20,8 @@ unittest(test) {
   tc->loop(false);  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(3000);
-  tc->loop(false);  // after the delay, Wait will call setNextState to prepare to go to PHCalibrationLow
-  tc->loop(false);  // updateState to PHCalibrationLow
+  tc->loop(false);  // after the delay, Wait will call setNextState to prepare to go to MainMenu
+  tc->loop(false);  // updateState to MainMenu
   assertEqual("MainMenu", tc->stateName());
 }
 

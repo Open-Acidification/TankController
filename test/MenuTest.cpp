@@ -127,10 +127,10 @@ unittest(DisableTimeout) {
   enterKey('8');
   enterKey('8');
   enterKey('6');
-  assertEqual("PHCalibrationMid", tc->stateName());
+  assertEqual("PHCalibrationPrompt", tc->stateName());
   delay(65000);  // wait for over 60 seconds to verify that it does not return to main menu
   tc->loop(false);
-  assertEqual("PHCalibrationMid", tc->stateName());
+  assertEqual("PHCalibrationPrompt", tc->stateName());
 }
 
 unittest_main()

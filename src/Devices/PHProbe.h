@@ -32,6 +32,7 @@ public:
   void setTemperatureCompensation(float temperature);
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   void setPh(float newValue);
+  void setPhSlope(const char* slope = "?SLOPE,99.7,100.3,-0.89\r");
 #endif
 private:
   // Class variable

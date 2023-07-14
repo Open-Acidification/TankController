@@ -2,6 +2,7 @@
 #include <ArduinoUnitTests.h>
 
 #include "Devices/DateTime_TC.h"
+#include "Devices/PHProbe.h"
 #include "EEPROM_TC.h"
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
@@ -20,16 +21,16 @@ unittest_setup() {
   january.setAsCurrent();
 }
 
-void setPhMeasurementTo(float value) {
-  char buffer[10];
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("%i.%03i\r"), (int)value, (int)(value * 1000 + 0.5) % 1000);
-  state->serialPort[1].dataIn = buffer;  // the queue of data waiting to be read
-  tc->serialEvent1();                    // fake interrupt to update the current pH reading
-  tc->loop(false);                       // update the controls based on the current readings
-}
+// void setPhMeasurementTo(float value) {
+//   char buffer[10];
+//   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("%i.%03i\r"), (int)value, (int)(value * 1000 + 0.5) % 1000);
+//   state->serialPort[1].dataIn = buffer;  // the queue of data waiting to be read
+//   tc->serialEvent1();                    // fake interrupt to update the current pH reading
+//   tc->loop(false);                       // update the controls based on the current readings
+// }
 
 unittest(TestVerticalScrollWithFlatSet) {
-  setPhMeasurementTo(7.062);
+  PHProbe::instance()->setPh(7.062);
   controlSolenoid->setBaseTargetPh(7.062);
   SeePh *test = new SeePh(tc);
 
@@ -40,25 +41,30 @@ unittest(TestVerticalScrollWithFlatSet) {
   assertEqual("SeePh", tc->stateName());
 
   // Set up
-  setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
+  PHProbe::instance()->setPh(controlSolenoid->getCurrentTargetPh());
+  // setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
 
   // during the delay we cycle through displays
   assertEqual("Now  Next  Goal ", lc->getLines().at(0));
   assertEqual("7.06 7.062 7.062", lc->getLines().at(1));
   delay(1000);
-  setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
+  PHProbe::instance()->setPh(controlSolenoid->getCurrentTargetPh());
+  // setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
   assertEqual("Now  Next  Goal ", lc->getLines().at(0));
   assertEqual("7.06 7.062 7.062", lc->getLines().at(1));
   delay(2000);
-  setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
+  PHProbe::instance()->setPh(controlSolenoid->getCurrentTargetPh());
+  // setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
   assertEqual("type: flat      ", lc->getLines().at(0));
   assertEqual("7.06 7.062 7.062", lc->getLines().at(1));
   delay(3000);
-  setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
+  PHProbe::instance()->setPh(controlSolenoid->getCurrentTargetPh());
+  // setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
   assertEqual("Now  Next  Goal ", lc->getLines().at(0));
   assertEqual("7.06 7.062 7.062", lc->getLines().at(1));
   delay(3000);
-  setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
+  PHProbe::instance()->setPh(controlSolenoid->getCurrentTargetPh());
+  // setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
   assertEqual("type: flat      ", lc->getLines().at(0));
   assertEqual("7.06 7.062 7.062", lc->getLines().at(1));
 
@@ -68,7 +74,8 @@ unittest(TestVerticalScrollWithFlatSet) {
 }
 
 unittest(TestVerticalScrollWithRampSet) {
-  setPhMeasurementTo(8.50);
+  PHProbe::instance()->setPh(8.50);
+  // setPhMeasurementTo(8.50);
   controlSolenoid->setBaseTargetPh(7.00);
   controlSolenoid->setRampDuration(0.005);  // 18 seconds
   SeePh *test = new SeePh(tc);
@@ -80,33 +87,40 @@ unittest(TestVerticalScrollWithRampSet) {
   assertEqual("SeePh", tc->stateName());
 
   // Set up
-  setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
+  PHProbe::instance()->setPh(controlSolenoid->getCurrentTargetPh());
+  // setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
 
   // during the delay we cycle through displays
   assertEqual("Now  Next  Goal ", lc->getLines().at(0));
   assertEqual("8.50 8.500 7.000", lc->getLines().at(1));
   delay(1000);
-  setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
+  PHProbe::instance()->setPh(controlSolenoid->getCurrentTargetPh());
+  // setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
   assertEqual("Now  Next  Goal ", lc->getLines().at(0));
   assertEqual("8.50 8.417 7.000", lc->getLines().at(1));
   delay(2000);
-  setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
+  PHProbe::instance()->setPh(controlSolenoid->getCurrentTargetPh());
+  // setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
   assertEqual("type: ramp      ", lc->getLines().at(0));
   assertEqual("left: 0:0:15    ", lc->getLines().at(1));
   delay(3000);
-  setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
+  PHProbe::instance()->setPh(controlSolenoid->getCurrentTargetPh());
+  // setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
   assertEqual("Now  Next  Goal ", lc->getLines().at(0));
   assertEqual("8.25 8.000 7.000", lc->getLines().at(1));
   delay(3000);
-  setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
+  PHProbe::instance()->setPh(controlSolenoid->getCurrentTargetPh());
+  // setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
   assertEqual("type: ramp      ", lc->getLines().at(0));
   assertEqual("left: 0:0:9     ", lc->getLines().at(1));
   delay(1000);
-  setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
+  PHProbe::instance()->setPh(controlSolenoid->getCurrentTargetPh());
+  // setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
   assertEqual("type: ramp      ", lc->getLines().at(0));
   assertEqual("left: 0:0:8     ", lc->getLines().at(1));
   delay(8000);
-  setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
+  PHProbe::instance()->setPh(controlSolenoid->getCurrentTargetPh());
+  // setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
   assertEqual("Now  Next  Goal ", lc->getLines().at(0));
   assertEqual("7.67 7.000 7.000", lc->getLines().at(1));
   delay(3000);
@@ -114,7 +128,8 @@ unittest(TestVerticalScrollWithRampSet) {
   assertEqual("type: ramp      ", lc->getLines().at(0));
   assertEqual("left: 0:0:0     ", lc->getLines().at(1));
   delay(3000);
-  setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
+  PHProbe::instance()->setPh(controlSolenoid->getCurrentTargetPh());
+  // setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
   assertEqual("Now  Next  Goal ", lc->getLines().at(0));
   assertEqual("7.00 7.000 7.000", lc->getLines().at(1));
 
@@ -124,7 +139,8 @@ unittest(TestVerticalScrollWithRampSet) {
 }
 
 unittest(TestVerticalScrollWithSineSet) {
-  setPhMeasurementTo(8.50);
+  PHProbe::instance()->setPh(8.50);
+  // setPhMeasurementTo(8.50);
   controlSolenoid->setBaseTargetPh(7.00);
   controlSolenoid->setSine(1.5, 0.125);
   SeePh *test = new SeePh(tc);
@@ -136,25 +152,30 @@ unittest(TestVerticalScrollWithSineSet) {
   assertEqual("SeePh", tc->stateName());
 
   // Set up
-  setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
+  PHProbe::instance()->setPh(controlSolenoid->getCurrentTargetPh());
+  // setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
 
   // during the delay we cycle through displays
   assertEqual("Now  Next  Goal ", lc->getLines().at(0));
   assertEqual("7.00 7.000 7.000", lc->getLines().at(1));
   delay(1000);
-  setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
+  PHProbe::instance()->setPh(controlSolenoid->getCurrentTargetPh());
+  // setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
   assertEqual("Now  Next  Goal ", lc->getLines().at(0));
   assertEqual("7.00 7.021 7.000", lc->getLines().at(1));
   delay(2000);
-  setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
+  PHProbe::instance()->setPh(controlSolenoid->getCurrentTargetPh());
+  // setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
   assertEqual("type: sine      ", lc->getLines().at(0));
   assertEqual("p=0.125 a=1.500 ", lc->getLines().at(1));
   delay(3000);
-  setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
+  PHProbe::instance()->setPh(controlSolenoid->getCurrentTargetPh());
+  // setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
   assertEqual("Now  Next  Goal ", lc->getLines().at(0));
   assertEqual("7.06 7.126 7.000", lc->getLines().at(1));
   delay(3000);
-  setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
+  PHProbe::instance()->setPh(controlSolenoid->getCurrentTargetPh());
+  // setPhMeasurementTo(controlSolenoid->getCurrentTargetPh());
   assertEqual("type: sine      ", lc->getLines().at(0));
   assertEqual("p=0.125 a=1.500 ", lc->getLines().at(1));
 

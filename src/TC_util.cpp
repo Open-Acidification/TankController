@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "Devices/Serial_TC.h"
+#include "TankController.h"
 
 // Example: strscpy(buffer, source, sizeof(buffer));
 int strscpy(char *destination, const char *source, unsigned long sizeOfDestination) {
@@ -74,4 +75,9 @@ float strtofloat(const char *buffer) {
     }
   }
   return integerPortion + fractionalPortion / pow(10, digitsAfterDecimal);
+}
+
+void writeSerial1(const char *data) {
+  GODMODE()->serialPort[1].dataIn = data;      // the queue of data waiting to be read
+  TankController::instance()->serialEvent1();  // fake interrupt
 }

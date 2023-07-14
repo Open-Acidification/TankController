@@ -61,11 +61,11 @@ unittest(SendData) {
   // set temperature
   TemperatureControl::instance()->setTargetTemperature(20.25);
   tempProbe->setTemperature(20.25, true);
-  tempProbe->setCorrection(0.0);
-  for (int i = 0; i < 100; ++i) {
-    delay(1000);
-    tempProbe->getRunningAverage();
-  }
+  // tempProbe->setCorrection(0.0);
+  // for (int i = 0; i < 100; ++i) {
+  //   delay(1000);
+  //   tempProbe->getRunningAverage();
+  // }
 
   // set pH
   state->serialPort[1].dataIn = "7.125\r";  // the queue of data waiting to be read
@@ -83,6 +83,7 @@ unittest(SendData) {
   String bufferResult;
   bool flag = false;
   for (int i = 0; i < buffer.size(); i++) {
+    // Capture everything after the first 'G'
     flag = flag || buffer[i] == 'G';
     if (flag) {
       bufferResult += buffer[i];

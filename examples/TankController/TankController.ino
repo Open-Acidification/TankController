@@ -4,7 +4,9 @@
  * used in the mock environment.
  */
 
-const char pushingBoxID[] = "PushingBoxIdentifier";  // <<== REPLACE THIS!
+// For PushingBox to work you need to provide an ID.
+// If it remains empty, then no data will be sent.
+const char pushingBoxID[] = "";
 
 #include "TankController.h"
 

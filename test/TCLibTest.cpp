@@ -5,6 +5,7 @@
 #include "EEPROM_TC.h"
 #include "PHControl.h"
 #include "PHProbe.h"
+#include "PID_TC.h"
 #include "SD_TC.h"
 #include "TC_util.h"
 #include "TankController.h"
@@ -30,26 +31,23 @@ unittest_setup() {
 
   // set temperature
   tempProbe->setTemperature(16.75, true);
-  for (size_t i = 0; i < 100; ++i) {
-    delay(1000);
-    tempProbe->getRunningAverage();
-  }
 
   // set target temperature
   tempControl->setTargetTemperature(16.25);
 
   // set pH
-  state->serialPort[1].dataIn = "7.125\r";  // the queue of data waiting to be read
-  tc->serialEvent1();                       // fake interrupt
+  PHProbe::instance()->setPh(7.125);
 
   // set target pH
   pPHControl->enablePID(false);  // Stay on continually if needed
   pPHControl->setBaseTargetPh(7.325);
 
   // set Kp, Ki, and Kd
-  EEPROM_TC::instance()->setKP(123456.7);
-  EEPROM_TC::instance()->setKI(12345.6);
-  EEPROM_TC::instance()->setKD(1234.5);
+  PID_TC::instance()->setTunings(123456.7, 12345.6, 1234.5);
+
+  // EEPROM_TC::instance()->setKP(123456.7);
+  // EEPROM_TC::instance()->setKI(12345.6);
+  // EEPROM_TC::instance()->setKD(1234.5);
 
   // clear SD card
   sd->format();
@@ -121,13 +119,13 @@ unittest(storeDataToSD) {
   contents = contents.substring(i + 1);
   i = contents.indexOf('\n');
   line = contents.substring(0, i);
-  String expected("04/27/2021 14:24:50,  42, 16.75, 16.25, 7.125, 7.325,  110, 123456.7,  12345.6,   1234.5");
+  String expected("04/27/2021 14:24:50,  42, 16.75, 16.25, 7.125, 7.325,   10, 123456.7,  12345.6,   1234.5");
   COUT("expectedSize = " << expected.length() << "; actualSize = " << line.length());
   assertEqual(expected, line);
   contents = contents.substring(i + 1);
   i = contents.indexOf('\n');
   line = contents.substring(0, i);
-  expected = String("04/27/2021 14:24:51,  42, 16.75, 16.25, 7.125, 7.325,  111, 123456.7,  12345.6,   1234.5");
+  expected = String("04/27/2021 14:24:51,  42, 16.75, 16.25, 7.125, 7.325,   11, 123456.7,  12345.6,   1234.5");
   COUT("expectedSize = " << expected.length() << "; actualSize = " << line.length());
   assertEqual(expected, line);
   COUT(data);

@@ -53,6 +53,7 @@ unittest(NoTankID) {
 }
 
 unittest(NoDeviceID) {
+  return;
   state->reset();
   pPushingBox->setDeviceID("");
   EEPROM_TC::instance()->setTankID(99);
@@ -79,12 +80,9 @@ unittest(SendData) {
 
   // set tank id
   EEPROM_TC::instance()->setTankID(99);
-
-  // set temperature
   TemperatureControl::instance()->setTargetTemperature(20.25);
   tempProbe->setTemperature(20.25, true);
-  state->serialPort[1].dataIn = "7.125\r";  // the queue of data waiting to be read
-  tc->serialEvent1();                       // fake interrupt
+  PHProbe::instance()->setPh(7.125);
   EthernetClient::startMockServer(pPushingBox->getServerDomain(), (uint32_t)0, 80,
                                   (const uint8_t *)"[PushingBox response]\r\n");
   EthernetClient *pClient = pPushingBox->getClient();

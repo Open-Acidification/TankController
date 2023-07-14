@@ -157,7 +157,7 @@ unittest(currentData) {
   TempProbe_TC::instance()->setTemperature(21.25, true);        // actual
   TemperatureControl::instance()->setTargetTemperature(21.75);  // target
   TankController::instance()->loop(false);                      // for targets to take effect
-  PID_TC::instance()->setTunings(5000.55, 1234.46, 987.44);
+  PID_TC::instance()->setTunings(5000.5, 1234.46, 987.44);
 
   EthernetServer_TC* server = EthernetServer_TC::instance();
   server->setHasClientCalling(true);
@@ -199,7 +199,7 @@ unittest(currentData) {
       "\"GoogleSheetInterval\":65535,"
       "\"LogFile\":\"20220222.csv\","
       "\"PHSlope\":\"\","
-      "\"Kp\":5000.6,"
+      "\"Kp\":5000.5,"
       "\"Ki\":1234.5,"
       "\"Kd\":987.4,"
       "\"PID\":\"ON\","

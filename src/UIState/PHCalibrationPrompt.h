@@ -17,11 +17,13 @@ public:
   const __FlashStringHelper* prompt() {
     return F("1, 2 or 3 point?");
   };
+  void setValue(float value);
+
+protected:
   uint16_t getCurrentValuePrecision() {
     return 0;
   }
-  virtual bool isInteger() {
+  bool isInteger() {
     return true;
   }
-  void setValue(float value);
 };

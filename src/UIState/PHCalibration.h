@@ -6,16 +6,18 @@ class PHCalibration : public NumCollectorState {
 public:
   PHCalibration(TankController* tc) : NumCollectorState(tc) {
   }
-  virtual bool isInCalibration() {
+  bool isInCalibration() {
     return true;  // disable controls during calibration
   }
   float getCurrentValue() {
     return PHProbe::instance()->getPh();
   }
-  virtual uint16_t getCurrentValuePrecision() {
-    return 3;
-  }
   void loop() {
     printValue();
+  }
+
+protected:
+  virtual uint16_t getCurrentValuePrecision() {
+    return 3;
   }
 };

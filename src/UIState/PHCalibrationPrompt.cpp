@@ -11,20 +11,20 @@
 
 void PHCalibrationPrompt::setValue(float value) {
   char buffer[17];
-  if(value == 1.0) {
-    strscpy_P(buffer, F("1-point pH calib"), sizeof(buffer));
+  if (value == 1) {
+    strscpy_P(buffer, F("1-pt pH calib..."), sizeof(buffer));
     LiquidCrystal_TC::instance()->writeLine(buffer, 1);
-    this->setNextState((UIState*)new Wait(tc, 3000, new PHCalibrationMidOne(tc)));
-  } else if (value == 2.0) {
-    strscpy_P(buffer, F("2-point pH calib"), sizeof(buffer));
+    this->setNextState((UIState*)new Wait(tc, 2000, new PHCalibrationMidOne(tc)));
+  } else if (value == 2) {
+    strscpy_P(buffer, F("2-pt pH calib..."), sizeof(buffer));
     LiquidCrystal_TC::instance()->writeLine(buffer, 1);
-    this->setNextState((UIState*)new Wait(tc, 3000, new PHCalibrationMidTwo(tc)));
-  } else if (value == 3.0) {
-    strscpy_P(buffer, F("3-point pH calib"), sizeof(buffer));
+    this->setNextState((UIState*)new Wait(tc, 2000, new PHCalibrationMidTwo(tc)));
+  } else if (value == 3) {
+    strscpy_P(buffer, F("3-pt pH calib..."), sizeof(buffer));
     LiquidCrystal_TC::instance()->writeLine(buffer, 1);
-    this->setNextState((UIState*)new Wait(tc, 3000, new PHCalibrationMidThree(tc)));
+    this->setNextState((UIState*)new Wait(tc, 2000, new PHCalibrationMidThree(tc)));
   } else {
-    strscpy_P(buffer, F("Invalid choice"), sizeof(buffer));
+    strscpy_P(buffer, F("Invalid entry"), sizeof(buffer));
     LiquidCrystal_TC::instance()->writeLine(buffer, 1);
     returnToMainMenu(3000);
   }

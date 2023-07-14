@@ -15,8 +15,8 @@ unittest(onePoint) {
   test->setValue(1);
   // during the delay we showed the new value
   std::vector<String> lines = LiquidCrystal_TC::instance()->getLines();
-  assertEqual("1, 2 or 3 point?", lines[1]);
-  assertEqual("1-pt pH calib...", lines[2]);
+  assertEqual("1, 2 or 3 point?", lines[0]);
+  assertEqual("1-pt pH calib...", lines[1]);
   assertEqual("PHCalibrationPrompt", tc->stateName());
   tc->loop(false);  // transition to Wait
   assertEqual("Wait", tc->stateName());
@@ -35,8 +35,8 @@ unittest(twoPoints) {
   test->setValue(2);
   // during the delay we showed the new value
   std::vector<String> lines = LiquidCrystal_TC::instance()->getLines();
-  assertEqual("1, 2 or 3 point?", lines[1]);
-  assertEqual("2-pt pH calib...", lines[2]);
+  assertEqual("1, 2 or 3 point?", lines[0]);
+  assertEqual("2-pt pH calib...", lines[1]);
   assertEqual("PHCalibrationPrompt", tc->stateName());
   tc->loop(false);  // transition to Wait
   assertEqual("Wait", tc->stateName());
@@ -55,8 +55,8 @@ unittest(threePoints) {
   test->setValue(3);
   // during the delay we showed the new value
   std::vector<String> lines = LiquidCrystal_TC::instance()->getLines();
-  assertEqual("1, 2 or 3 point?", lines[1]);
-  assertEqual("3-pt pH calib...", lines[2]);
+  assertEqual("1, 2 or 3 point?", lines[0]);
+  assertEqual("3-pt pH calib...", lines[1]);
   assertEqual("PHCalibrationPrompt", tc->stateName());
   tc->loop(false);  // transition to Wait
   assertEqual("Wait", tc->stateName());
@@ -75,8 +75,8 @@ unittest(badEntry) {
   test->setValue(4);
   // during the delay we showed feedback
   std::vector<String> lines = LiquidCrystal_TC::instance()->getLines();
-  assertEqual("1, 2 or 3 point?", lines[1]);
-  assertEqual("Invalid entry", lines[2]);
+  assertEqual("1, 2 or 3 point?", lines[0]);
+  assertEqual("Invalid entry", lines[1]);
   assertEqual("PHCalibrationPrompt", tc->stateName());
   tc->loop(false);  // transition to Wait
   assertEqual("Wait", tc->stateName());

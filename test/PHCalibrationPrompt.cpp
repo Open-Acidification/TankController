@@ -76,14 +76,14 @@ unittest(badEntry) {
   // during the delay we showed feedback
   std::vector<String> lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("1, 2 or 3 point?", lines[0]);
-  assertEqual("Invalid entry", lines[1]);
+  assertEqual("Invalid entry   ", lines[1]);
   assertEqual("PHCalibrationPrompt", tc->stateName());
   tc->loop(false);  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(2000);
   tc->loop(false);  // after the delay, Wait will call setNextState to prepare to go to MainMenu
   tc->loop(false);  // updateState to MainMenu
-  assertEqual("PHCalibrationMainMenu", tc->stateName());
+  assertEqual("MainMenu", tc->stateName());
 }
 
 unittest_main()

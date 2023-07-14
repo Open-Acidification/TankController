@@ -12,7 +12,7 @@ public:
   float getCurrentValue() {
     return PHProbe::instance()->getPh();
   }
-  uint16_t getCurrentValuePrecision() {
+  virtual uint16_t getCurrentValuePrecision() {
     return 3;
   }
   void loop() {

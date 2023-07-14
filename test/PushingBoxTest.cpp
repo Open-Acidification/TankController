@@ -52,8 +52,30 @@ unittest(NoTankID) {
   assertEqual(expected, state->serialPort[0].dataOut);
 }
 
+unittest(NoDeviceID) {
+  state->reset();
+  pPushingBox->setDeviceID("");
+  EEPROM_TC::instance()->setTankID(99);
+
+  // set temperature
+  TemperatureControl::instance()->setTargetTemperature(20.25);
+  tempProbe->setTemperature(20.25, true);
+  state->serialPort[1].dataIn = "7.125\r";  // the queue of data waiting to be read
+  tc->serialEvent1();                       // fake interrupt
+  EthernetClient::startMockServer(pPushingBox->getServerDomain(), (uint32_t)0, 80,
+                                  (const uint8_t *)"[PushingBox response]\r\n");
+  EthernetClient *pClient = pPushingBox->getClient();
+  assertFalse(pClient->connected());  // not yet connected!
+  state->serialPort[0].dataOut = "";
+  delay(120 * 1000);  // less than this seems to cause a crash!?
+  tc->loop(false);
+  assertFalse(pClient->connected());  // still not connected because we have no device ID
+  pClient->stop();
+}
+
 unittest(SendData) {
   state->reset();
+  pPushingBox->setDeviceID("PushingBoxIdentifier");
 
   // set tank id
   EEPROM_TC::instance()->setTankID(99);
@@ -61,21 +83,14 @@ unittest(SendData) {
   // set temperature
   TemperatureControl::instance()->setTargetTemperature(20.25);
   tempProbe->setTemperature(20.25, true);
-  // tempProbe->setCorrection(0.0);
-  // for (int i = 0; i < 100; ++i) {
-  //   delay(1000);
-  //   tempProbe->getRunningAverage();
-  // }
-
-  // set pH
   state->serialPort[1].dataIn = "7.125\r";  // the queue of data waiting to be read
   tc->serialEvent1();                       // fake interrupt
-  EthernetClient::startMockServer(pPushingBox->getServer(), (uint32_t)0, 80,
+  EthernetClient::startMockServer(pPushingBox->getServerDomain(), (uint32_t)0, 80,
                                   (const uint8_t *)"[PushingBox response]\r\n");
   EthernetClient *pClient = pPushingBox->getClient();
   assertFalse(pClient->connected());  // not yet connected!
   state->serialPort[0].dataOut = "";
-  delay(60 * 1000);  // wait for one minute to ensure we send
+  delay(120 * 1000);  // less than this seems to cause a crash!?
   tc->loop(false);
   assertTrue(pClient->connected());
   assertNotNull(pClient->writeBuffer());
@@ -90,21 +105,21 @@ unittest(SendData) {
     }
   }
   char expected1[] =
-      "GET /pushingbox?devid=PushingBoxIdentifier&tankid=99&tempData=20.26&pHdata=7.125 HTTP/1.1\r\n"
+      "GET /pushingbox?devid=PushingBoxIdentifier&tankid=99&tempData=20.25&pHdata=7.125 HTTP/1.1\r\n"
       "Host: api.pushingbox.com\r\n"
       "Connection: close\r\n"
       "\r\n";
   assertEqual(expected1, bufferResult.c_str());
   char expected2[] =
-      "15:26 pH=7.125 temp=20.26\r\n"
-      "GET /pushingbox?devid=PushingBoxIdentifier&tankid=99&tempData=20.26&pHdata=7.125 HTTP/1.1\r\n"
+      "15:25 pH=7.125 temp=20.25\r\n"
+      "GET /pushingbox?devid=PushingBoxIdentifier&tankid=99&tempData=20.25&pHdata=7.125 HTTP/1.1\r\n"
       "attempting to connect to PushingBox...\r\n"
       "connected\r\n"
       "===== PushingBox response:\r\n"
       "[PushingBox response]\r\n"
       "===== end of PushingBox response\r\n";
   assertEqual(expected2, state->serialPort[0].dataOut);
-  EthernetClient::stopMockServer(pPushingBox->getServer(), (uint32_t)0, 80);
+  EthernetClient::stopMockServer(pPushingBox->getServerDomain(), (uint32_t)0, 80);
   pClient->writeBuffer()->clear();
   pClient->stop();
 }
@@ -115,7 +130,7 @@ unittest(inCalibration) {
   PHCalibrationMid *test = new PHCalibrationMid(tc);
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
-  EthernetClient::startMockServer(pPushingBox->getServer(), (uint32_t)0, 80);
+  EthernetClient::startMockServer(pPushingBox->getServerDomain(), (uint32_t)0, 80);
   EthernetClient *pClient = pPushingBox->getClient();
   assertNull(pClient->writeBuffer());
   delay(60 * 20 * 1000);  // wait for 20 minutes to ensure we send again
@@ -141,7 +156,7 @@ unittest(without_DHCP) {
   assertFalse(Ethernet_TC::instance(true)->getIsUsingDHCP());
   // set tank id
   EEPROM_TC::instance()->setTankID(99);
-  EthernetClient::startMockServer(pPushingBox->getServer(), (uint32_t)0, 80);
+  EthernetClient::startMockServer(pPushingBox->getServerDomain(), (uint32_t)0, 80);
   EthernetClient *pClient = pPushingBox->getClient();
   assertNull(pClient->writeBuffer());
   delay(60 * 20 * 1000);  // wait for 20 minutes to ensure we still do not send

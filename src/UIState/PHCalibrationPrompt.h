@@ -20,9 +20,6 @@ public:
   void setValue(float value);
 
 protected:
-  uint16_t getCurrentValuePrecision() {
-    return 0;
-  }
   bool isInteger() {
     return true;
   }

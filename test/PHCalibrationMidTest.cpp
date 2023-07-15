@@ -20,14 +20,14 @@ unittest(onePointMid) {
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
   lines = LiquidCrystal_TC::instance()->getLines();
-  assertEqual("  7.125->     0 ", lines.at(1));
+  assertEqual("              0 ", lines.at(1));
   GODMODE()->serialPort[1].dataIn = "7.325\r";  // the queue of data waiting to be read
   tc->serialEvent1();                           // fake interrupt
   lines = LiquidCrystal_TC::instance()->getLines();
-  assertEqual("  7.125->     0 ", lines.at(1));
+  assertEqual("              0 ", lines.at(1));
   tc->loop(false);
   lines = LiquidCrystal_TC::instance()->getLines();
-  assertEqual("  7.325->     0 ", lines.at(1));
+  assertEqual("              0 ", lines.at(1));
   // setValue
   test->setValue(12.345);
   // during the delay we showed the new value
@@ -57,14 +57,14 @@ unittest(twoPointMid) {
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
   lines = LiquidCrystal_TC::instance()->getLines();
-  assertEqual("  7.125->     0 ", lines.at(1));
+  assertEqual("              0 ", lines.at(1));
   GODMODE()->serialPort[1].dataIn = "7.325\r";  // the queue of data waiting to be read
   tc->serialEvent1();                           // fake interrupt
   lines = LiquidCrystal_TC::instance()->getLines();
-  assertEqual("  7.125->     0 ", lines.at(1));
+  assertEqual("              0 ", lines.at(1));
   tc->loop(false);
   lines = LiquidCrystal_TC::instance()->getLines();
-  assertEqual("  7.325->     0 ", lines.at(1));
+  assertEqual("              0 ", lines.at(1));
   // setValue
   test->setValue(12.345);
   // during the delay we showed the new value
@@ -94,14 +94,14 @@ unittest(threePointMid) {
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
   lines = LiquidCrystal_TC::instance()->getLines();
-  assertEqual("  7.125->     0 ", lines.at(1));
+  assertEqual("              0 ", lines.at(1));
   GODMODE()->serialPort[1].dataIn = "7.325\r";  // the queue of data waiting to be read
   tc->serialEvent1();                           // fake interrupt
   lines = LiquidCrystal_TC::instance()->getLines();
-  assertEqual("  7.125->     0 ", lines.at(1));
+  assertEqual("              0 ", lines.at(1));
   tc->loop(false);
   lines = LiquidCrystal_TC::instance()->getLines();
-  assertEqual("  7.325->     0 ", lines.at(1));
+  assertEqual("              0 ", lines.at(1));
   // setValue
   test->setValue(12.345);
   // during the delay we showed the new value

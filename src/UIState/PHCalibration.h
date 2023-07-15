@@ -10,14 +10,14 @@ public:
     return true;  // disable controls during calibration
   }
   float getCurrentValue() {
-    return PHProbe::instance()->getPh();
+    return 0;
   }
   void loop() {
     printValue();
   }
 
 protected:
-  virtual uint16_t getCurrentValuePrecision() {
+  uint16_t getCurrentValuePrecision() {
     return 3;
   }
   bool showCurrentValue() {

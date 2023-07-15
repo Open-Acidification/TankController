@@ -27,7 +27,7 @@ unittest(serialEvent1) {
   assertEqual("", pPHProbe->getSlopeResponse());
   GODMODE()->serialPort[1].dataIn = "7.125\r?SLOPE,99.7,100.3,-0.89\r";  // the queue of data waiting to be read
   tc->serialEvent1();                                                    // fake interrupt
-  assertEqual("?SLOPE,99.7,100.3,-0.89", pPHProbe->getSlopeResponse());
+  assertEqual("99.7,100.3,-0.89", pPHProbe->getSlopeResponse());
   assertEqual(7.125, pPHProbe->getPh());
 }
 

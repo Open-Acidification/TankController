@@ -48,7 +48,7 @@ void PHProbe::sendCalibrationRequest() {
 
 void PHProbe::getCalibration(char *buffer, int size) {
   // for example "?Cal,2" or "     Calib requested!"
-  if (strcmp_P(calibrationResponse, PSTR("R"))) {
+  if (strcmp_P(calibrationResponse, PSTR("R")) == 0) {
     strscpy_P(buffer, F("Calib requested!"), sizeof(buffer));
   } else {
     strscpy(buffer, calibrationResponse, size);
@@ -63,7 +63,7 @@ void PHProbe::sendSlopeRequest() {
 
 void PHProbe::getSlope(char *buffer, int size) {
   // for example "99.7,100.3, -0.89" or "R"
-  if (strcmp_P(slopeResponse, PSTR("R"))) {
+  if (strcmp_P(slopeResponse, PSTR("R")) == 0) {
     strscpy_P(buffer, F("Slope requested!"), sizeof(buffer));
   } else {
     strscpy(buffer, slopeResponse, size);

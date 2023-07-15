@@ -26,6 +26,9 @@ protected:
   virtual uint16_t getCurrentValuePrecision() {
     return 0;
   };
+  virtual bool showCurrentValue() {
+    return true;
+  }
 
   float value = 0.0;
   uint16_t numDigits = 0;
@@ -81,6 +84,15 @@ public:
   }
   virtual bool isInteger() {
     return true;
+  }
+};
+
+class TestNoCurrentNumCollectorState : public TestNumCollectorState {
+public:
+  TestNoCurrentNumCollectorState(TankController* tc) : TestNumCollectorState(tc) {
+  }
+  bool showCurrentValue() {
+    return false;
   }
 };
 

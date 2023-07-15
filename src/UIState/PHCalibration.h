@@ -20,4 +20,7 @@ protected:
   virtual uint16_t getCurrentValuePrecision() {
     return 3;
   }
+  bool showCurrentValue() {
+    return false;
+  }
 };

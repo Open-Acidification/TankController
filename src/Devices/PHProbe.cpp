@@ -43,30 +43,30 @@ void PHProbe::clearCalibration() {
 void PHProbe::sendCalibrationRequest() {
   // Sending request for calibration status
   Serial1.print(F("Cal,?\r"));
-  strscpy_P(probeResponse, F("     Calib requested!"), sizeof(probeResponse));
+  strscpy_P(calibrationResponse, F("R"), sizeof(calibrationResponse));
 }
 
 void PHProbe::getCalibration(char *buffer, int size) {
   // for example "?Cal,2" or "     Calib requested!"
-  if (strnlen(probeResponse, sizeof(probeResponse)) > 5) {  // Flawfinder: ignore
-    strscpy(buffer, probeResponse + 5, size);               // Flawfinder: ignore
+  if (strcmp_P(calibrationResponse, PSTR("R"))) {
+    strscpy_P(buffer, F("Calib requested!"), sizeof(buffer));
   } else {
-    buffer[0] = '\0';
+    strscpy(buffer, calibrationResponse, size);
   }
 }
 
 void PHProbe::sendSlopeRequest() {
   // Sending request for Calibration Slope
   Serial1.print(F("SLOPE,?\r"));
-  strscpy_P(probeResponse, F("       Slope requested!"), sizeof(probeResponse));
+  strscpy_P(slopeResponse, F("R"), sizeof(slopeResponse));
 }
 
 void PHProbe::getSlope(char *buffer, int size) {
-  // for example "?SLOPE,99.7,100.3, -0.89" or "       Slope requested!"
-  if (strnlen(probeResponse, sizeof(probeResponse)) > 10) {  // Flawfinder: ignore
-    strscpy(buffer, probeResponse + 7, size);                // Flawfinder: ignore
+  // for example "99.7,100.3, -0.89" or "R"
+  if (strcmp_P(slopeResponse, PSTR("R"))) {
+    strscpy_P(buffer, F("Slope requested!"), sizeof(buffer));
   } else {
-    buffer[0] = '\0';
+    strscpy(buffer, slopeResponse, size);
   }
 }
 
@@ -89,10 +89,10 @@ void PHProbe::serialEvent1() {
         serial(F("PHProbe serialEvent1: \"%s\""), string.c_str());
         if (string.length() > 7 && string.substring(0, 7) == "?SLOPE,") {
           // for example "?SLOPE,16.1,100.0"
-          strscpy(probeResponse, string.c_str(), sizeof(probeResponse));  // Flawfinder: ignore
+          strscpy(slopeResponse, string.c_str() + 7, sizeof(slopeResponse));  // Flawfinder: ignore
         } else if (string.length() > 5 && string.substring(0, 5) == "?Cal,") {
           // for example "?Cal,2"
-          strscpt(probeResponse, string.c_str(), sizeof(probeResponse));  // Flawfinder: ignore
+          strscpy(calibrationResponse, string.c_str() + 5, sizeof(calibrationResponse));  // Flawfinder: ignore
         }
       }
     }

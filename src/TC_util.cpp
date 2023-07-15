@@ -76,8 +76,3 @@ float strtofloat(const char *buffer) {
   }
   return integerPortion + fractionalPortion / pow(10, digitsAfterDecimal);
 }
-
-void writeSerial1(const char *data) {
-  GODMODE()->serialPort[1].dataIn = data;      // the queue of data waiting to be read
-  TankController::instance()->serialEvent1();  // fake interrupt
-}

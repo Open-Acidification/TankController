@@ -20,10 +20,12 @@ public:
     return value;
   }
   const char* getSlopeResponse() const {
-    return slopeResponse;
+    return probeResponse;
   }
   void clearCalibration();
+  void getCalibration(char* buffer, int size);
   void getSlope(char* buffer, int size);
+  void sendCalibrationRequest();
   void sendSlopeRequest();
   void serialEvent1();
   void setHighpointCalibration(float highpoint);
@@ -38,7 +40,7 @@ private:
   static PHProbe* _instance;
   // instance variable
   float value = 0;
-  char slopeResponse[32] = "";
+  char probeResponse[32] = "";
   // Methods
   PHProbe();
 };

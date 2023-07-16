@@ -31,6 +31,13 @@ public:
     nextKey = value;
   }
 
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  // remove:
+  UIState* returnState() {
+    return this->nextState;
+  }
+#endif
+
 private:
   // class variables
   static TankController* _instance;

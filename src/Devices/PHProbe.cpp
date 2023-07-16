@@ -74,7 +74,7 @@ void PHProbe::sendSlopeRequest() {
   Serial1.print(F("SLOPE,?\r"));
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   GodmodeState *state = GODMODE();
-  char buffer[10];
+  char buffer[25];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("?SLOPE,99.7,100.3,-0.89\r"));
   state->serialPort[1].dataIn = buffer;  // the queue of data waiting to be read
 #endif

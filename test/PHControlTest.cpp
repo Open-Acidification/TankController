@@ -185,7 +185,7 @@ unittest(disableDuringCalibration) {
   assertEqual("PHCalibrationMid", tc->stateName());  // test
   tc->loop(false);                                   // without this there is a buffer overflow -- check DataLogger_TC?
 
-  assertEqual("testing", tc->returnState()->stateName());
+  assertEqual("testing", tc->returnState()->name());
 
   // device remains off between calibration states
   // test->setValue(7.00);

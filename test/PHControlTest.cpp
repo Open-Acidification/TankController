@@ -184,7 +184,7 @@ unittest(disableDuringCalibration) {
 
   // // device remains off between calibration states
   // test->setValue(7.00);
-  // tc->loop(false);
+  tc->loop(false);
   // assertEqual("Wait", tc->stateName());
   // delay(2000);
   // tc->loop(false);

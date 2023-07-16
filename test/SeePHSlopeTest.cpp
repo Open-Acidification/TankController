@@ -3,6 +3,7 @@
 
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
+#include "PHProbe.h"
 #include "SeePHSlope.h"
 #include "TankController.h"
 
@@ -10,8 +11,7 @@ unittest(testOutput) {
   // Set up
   TankController* tc = TankController::instance();
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
-  GODMODE()->serialPort[1].dataIn = "?SLOPE,99.7,100.3,-0.89\r";  // the queue of data waiting to be read
-  tc->serialEvent1();                                             // fake interrupt
+  PHProbe* pPHProbe = PHProbe::instance();
 
   assertEqual("MainMenu", tc->stateName());
   SeePHSlope* test = new SeePHSlope(tc);
@@ -20,11 +20,8 @@ unittest(testOutput) {
 
   // Test the output
   assertEqual("PH Slope:       ", display->getLines().at(0));
-  assertEqual("requesting slope", display->getLines().at(1));
   tc->loop(false);
   assertEqual("Requesting...   ", display->getLines().at(1));
-  GODMODE()->serialPort[1].dataIn = "?SLOPE,99.7,100.3,-0.89\r";  // the queue of data waiting to be read
-  tc->serialEvent1();                                             // fake interrupt
   tc->loop(false);
   assertEqual("99.7,100.3,-0.89", display->getLines().at(1));
   // Return to mainMenu

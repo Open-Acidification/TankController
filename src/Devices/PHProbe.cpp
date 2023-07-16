@@ -56,8 +56,8 @@ void PHProbe::sendCalibrationRequest() {
   GodmodeState *state = GODMODE();
   char buffer[10];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("?Cal,%i\r"), calibrationPoints);
-  state->serialPort[1].dataIn = buffer;  // the queue of data waiting to be read
-  tc->serialEvent1();                    // fake interrupt
+  state->serialPort[1].dataIn = buffer;        // the queue of data waiting to be read
+  TankController::instance()->serialEvent1();  // fake interrupt
 #endif
   strscpy_P(calibrationResponse, F("Requesting..."), sizeof(calibrationResponse));
 }
@@ -74,8 +74,8 @@ void PHProbe::sendSlopeRequest() {
   GodmodeState *state = GODMODE();
   char buffer[10];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("?SLOPE,99.7,100.3,-0.89\r"));
-  state->serialPort[1].dataIn = buffer;  // the queue of data waiting to be read
-  tc->serialEvent1();                    // fake interrupt
+  state->serialPort[1].dataIn = buffer;        // the queue of data waiting to be read
+  TankController::instance()->serialEvent1();  // fake interrupt
 #endif
   strscpy_P(slopeResponse, F("Requesting..."), sizeof(slopeResponse));
 }

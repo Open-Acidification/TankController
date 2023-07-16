@@ -33,7 +33,7 @@ public:
 
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   // remove:
-  UIState* returnState() {
+  UIState* returnNextState() {
     return this->nextState;
   }
 #endif

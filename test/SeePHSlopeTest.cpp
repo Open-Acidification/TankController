@@ -22,7 +22,7 @@ unittest(testOutput) {
   assertEqual("PH Slope:       ", display->getLines().at(0));
   assertEqual("requesting slope", display->getLines().at(1));
   tc->loop(false);
-  assertEqual("Requesting...", display->getLines().at(1));
+  assertEqual("Requesting...   ", display->getLines().at(1));
   GODMODE()->serialPort[1].dataIn = "?SLOPE,99.7,100.3,-0.89\r";  // the queue of data waiting to be read
   tc->serialEvent1();                                             // fake interrupt
   tc->loop(false);

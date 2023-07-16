@@ -18,8 +18,8 @@ public:
   const __FlashStringHelper* prompt() override {
     return F("pH-Midpoint");
   };
+  void setValue(float value) override;
 
 private:
   int numberOfCalibrationPoints;
-  void setValue(float value) override;
 };

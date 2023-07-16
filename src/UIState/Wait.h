@@ -9,6 +9,9 @@
 class Wait : public UIState {
 public:
   Wait(TankController* tc, uint16_t msDelay = 1000, UIState* nextState = nullptr);
+  bool isInCalibration() {
+    return nextState->isInCalibration();
+  }
   // watch to see if enough time has passed
   void loop();
   const __FlashStringHelper* name() {

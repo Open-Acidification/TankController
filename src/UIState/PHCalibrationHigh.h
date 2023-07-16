@@ -11,11 +11,11 @@ class PHCalibrationHigh : public PHCalibration {
 public:
   PHCalibrationHigh(TankController* tc) : PHCalibration(tc) {
   }
-  const __FlashStringHelper* name() {
+  const __FlashStringHelper* name() override {
     return F("PHCalibrationHigh");
   }
-  const __FlashStringHelper* prompt() {
+  const __FlashStringHelper* prompt() override {
     return F("pH-Highpoint");
   };
-  void setValue(float value);
+  void setValue(float value) override;
 };

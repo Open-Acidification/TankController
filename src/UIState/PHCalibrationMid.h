@@ -9,54 +9,17 @@
 
 class PHCalibrationMid : public PHCalibration {
 public:
-  PHCalibrationMid(TankController* tc) : PHCalibration(tc) {
+  PHCalibrationMid(TankController* tc, int numberOfCalibrationPoints = 3) : PHCalibration(tc) {
+    this->numberOfCalibrationPoints = numberOfCalibrationPoints;
   }
-  const __FlashStringHelper* prompt() {
+  const __FlashStringHelper* name() override {
+    return F("PHCalibrationMid");
+  }
+  const __FlashStringHelper* prompt() override {
     return F("pH-Midpoint");
   };
 
-protected:
-  void setMidValue(float value);
-};
-
-/**
- * @brief midpoint for 1-point pH calibration
- *
- */
-class PHCalibrationMidOne : public PHCalibrationMid {
-public:
-  PHCalibrationMidOne(TankController* tc) : PHCalibrationMid(tc) {
-  }
-  const __FlashStringHelper* name() {
-    return F("PHCalibrationMidOne");
-  }
-  void setValue(float value);
-};
-
-/**
- * @brief midpoint for 2-point pH calibration
- *
- */
-class PHCalibrationMidTwo : public PHCalibrationMid {
-public:
-  PHCalibrationMidTwo(TankController* tc) : PHCalibrationMid(tc) {
-  }
-  const __FlashStringHelper* name() {
-    return F("PHCalibrationMidTwo");
-  }
-  void setValue(float value);
-};
-
-/**
- * @brief midpoint for 3-point pH calibration
- *
- */
-class PHCalibrationMidThree : public PHCalibrationMid {
-public:
-  PHCalibrationMidThree(TankController* tc) : PHCalibrationMid(tc) {
-  }
-  const __FlashStringHelper* name() {
-    return F("PHCalibrationMidThree");
-  }
-  void setValue(float value);
+private:
+  int numberOfCalibrationPoints;
+  void setValue(float value) override;
 };

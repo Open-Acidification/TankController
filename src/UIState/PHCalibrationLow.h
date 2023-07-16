@@ -9,40 +9,17 @@
 
 class PHCalibrationLow : public PHCalibration {
 public:
-  PHCalibrationLow(TankController* tc) : PHCalibration(tc) {
+  PHCalibrationLow(TankController* tc, int numberOfCalibrationPoints = 3) : PHCalibration(tc) {
+    this->numberOfCalibrationPoints = numberOfCalibrationPoints;
   }
-  const __FlashStringHelper* prompt() {
+  const __FlashStringHelper* name() override {
+    return F("PHCalibrationLow");
+  }
+  const __FlashStringHelper* prompt() override {
     return F("pH-Lowpoint");
   };
 
-protected:
-  void setLowValue(float value);
-};
-
-/**
- * @brief lowpoint for 2-point pH calibration
- *
- */
-class PHCalibrationLowTwo : public PHCalibrationLow {
-public:
-  PHCalibrationLowTwo(TankController* tc) : PHCalibrationLow(tc) {
-  }
-  const __FlashStringHelper* name() {
-    return F("PHCalibrationLowTwo");
-  }
-  void setValue(float value);
-};
-
-/**
- * @brief lowpoint for 3-point pH calibration
- *
- */
-class PHCalibrationLowThree : public PHCalibrationLow {
-public:
-  PHCalibrationLowThree(TankController* tc) : PHCalibrationLow(tc) {
-  }
-  const __FlashStringHelper* name() {
-    return F("PHCalibrationLowThree");
-  }
-  void setValue(float value);
+private:
+  int numberOfCalibrationPoints;
+  void setValue(float value) override;
 };

@@ -11,16 +11,16 @@ class PHCalibrationPrompt : public PHCalibration {
 public:
   PHCalibrationPrompt(TankController* tc) : PHCalibration(tc) {
   }
-  const __FlashStringHelper* name() {
+  const __FlashStringHelper* name() override {
     return F("PHCalibrationPrompt");
   }
-  const __FlashStringHelper* prompt() {
+  const __FlashStringHelper* prompt() override {
     return F("1, 2 or 3 point?");
   };
-  void setValue(float value);
+  void setValue(float value) override;
 
-protected:
-  bool isInteger() {
+private:
+  bool isInteger() override {
     return true;
   }
 };

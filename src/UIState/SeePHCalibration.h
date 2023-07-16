@@ -10,8 +10,11 @@ class SeePHCalibration : public UIState {
 public:
   SeePHCalibration(TankController* tc) : UIState(tc) {
   }
-  void start() override;
+  bool isInCalibration() override {
+    return true;
+  }
   void loop() override;
+  void start() override;
   const __FlashStringHelper* name() override {
     return F("SeePHCalibration");
   }

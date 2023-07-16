@@ -170,7 +170,7 @@ unittest(PhEvenWithTarget) {
  */
 unittest(disableDuringCalibration) {
   assertFalse(tc->isInCalibration());
-  PHCalibrationMidThree* test = new PHCalibrationMidThree(tc);
+  PHCalibrationMid* test = new PHCalibrationMid(tc, 3);
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
   // device is initially off and stays off due to calibration

@@ -114,7 +114,7 @@ unittest(disableChillerDuringCalibration) {
   control->setTargetTemperature(20);
   control->updateControl(20);
   assertFalse(tc->isInCalibration());
-  PHCalibrationMidThree* test = new PHCalibrationMidThree(tc);
+  PHCalibrationMid* test = new PHCalibrationMid(tc, 3);
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
   // chiller is initially off and stays off during calibration
@@ -171,7 +171,7 @@ unittest(disableHeaterDuringCalibration) {
   TemperatureControl::enableHeater(true);
   control = TemperatureControl::instance();
   assertFalse(tc->isInCalibration());
-  PHCalibrationMidThree* test = new PHCalibrationMidThree(tc);
+  PHCalibrationMid* test = new PHCalibrationMid(tc, 3);
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
   // heater is initially off, and stays off due to calibration

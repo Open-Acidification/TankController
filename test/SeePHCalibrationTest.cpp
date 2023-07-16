@@ -3,6 +3,7 @@
 
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
+#include "PHProbe.h"
 #include "SeePHCalibration.h"
 #include "TankController.h"
 
@@ -15,12 +16,12 @@ unittest(testOutput) {
   pPHProbe->setCalibrationPoints(3);
 
   assertEqual("MainMenu", tc->stateName());
-  SeePHSlope* test = new SeePHSlope(tc);
+  SeePHSlope* test = new SeePHCalibration(tc);
   tc->setNextState(test, true);
-  assertEqual("SeePHSlope", tc->stateName());
+  assertEqual("SeePHCalibration", tc->stateName());
 
   // Test the output
-  assertEqual("PH Slope:       ", display->getLines().at(0));
+  assertEqual("PH Calibration: ", display->getLines().at(0));
   assertEqual("requesting slope", display->getLines().at(1));
   tc->loop(false);
   assertEqual("Requesting...   ", display->getLines().at(1));

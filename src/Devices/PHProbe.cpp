@@ -55,7 +55,7 @@ void PHProbe::sendCalibrationRequest() {
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   GodmodeState *state = GODMODE();
   char buffer[10];
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("?Cal,%i\r"), calibrationPoints);
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("?Cal,%i\r"), this->calibrationPoints);
   state->serialPort[1].dataIn = buffer;        // the queue of data waiting to be read
   TankController::instance()->serialEvent1();  // fake interrupt
 #endif

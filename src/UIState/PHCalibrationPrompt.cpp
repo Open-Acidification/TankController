@@ -13,7 +13,7 @@
 void PHCalibrationPrompt::setValue(float value) {
   char buffer[17];
   if (value == 1 || value == 2 || value == 3) {
-    snprintf_P(buffer, sizeof(buffer, F("%i-pt pH calib..."), value);
+    snprintf_P(buffer, sizeof(buffer), PSTR("%i-pt pH calib..."), (int)value);
     LiquidCrystal_TC::instance()->writeLine(buffer, 1);
     this->setNextState((UIState*)new Wait(tc, 2000, new PHCalibrationMid(tc, value)));
   } else {

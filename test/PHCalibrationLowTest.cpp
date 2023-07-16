@@ -7,7 +7,7 @@
 
 unittest(twoPointLow) {
   TankController* tc = TankController::instance();
-  PHCalibrationLowTwo* test = new PHCalibrationLowTwo(tc);
+  PHCalibrationLow* test = new PHCalibrationLow(tc, 2);
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
   // setValue
@@ -15,18 +15,18 @@ unittest(twoPointLow) {
   // during the delay we showed the new value
   std::vector<String> lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("New Low = 12.345", lines[1]);
-  assertEqual("PHCalibrationLowTwo", tc->stateName());
+  assertEqual("PHCalibrationLow", tc->stateName());
   tc->loop(false);  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(3000);
-  tc->loop(false);  // after the delay, Wait will call setNextState to prepare to go to MainMenu
-  tc->loop(false);  // updateState to MainMenu
-  assertEqual("MainMenu", tc->stateName());
+  tc->loop(false);  // after the delay, Wait will call setNextState to prepare to go to SeePHCalibration
+  tc->loop(false);  // updateState to SeePHCalibration
+  assertEqual("SeePHCalibration", tc->stateName());
 }
 
 unittest(threePointLow) {
   TankController* tc = TankController::instance();
-  PHCalibrationLowThree* test = new PHCalibrationLowThree(tc);
+  PHCalibrationLow* test = new PHCalibrationLow(tc, 3);
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
   // setValue
@@ -34,7 +34,7 @@ unittest(threePointLow) {
   // during the delay we showed the new value
   std::vector<String> lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("New Low = 12.345", lines[1]);
-  assertEqual("PHCalibrationLowThree", tc->stateName());
+  assertEqual("PHCalibrationLow", tc->stateName());
   tc->loop(false);  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(3000);

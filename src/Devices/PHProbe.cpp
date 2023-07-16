@@ -6,6 +6,12 @@
 #include "Devices/Serial_TC.h"
 #include "TC_util.h"
 
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+#include <Arduino.h>
+
+#include "TankController.h"
+#endif
+
 //  class instance variables
 /**
  * static variable for singleton
@@ -38,36 +44,45 @@ PHProbe::PHProbe() {
 
 void PHProbe::clearCalibration() {
   Serial1.print(F("Cal,clear\r"));  // send that string to the Atlas Scientific product
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  this->calibrationPoints = 0;
+#endif
 }
 
 void PHProbe::sendCalibrationRequest() {
   // Sending request for calibration status
   Serial1.print(F("Cal,?\r"));
-  strscpy_P(calibrationResponse, F("R"), sizeof(calibrationResponse));
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  GodmodeState *state = GODMODE();
+  char buffer[10];
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("?Cal,%i\r"), calibrationPoints);
+  state->serialPort[1].dataIn = buffer;  // the queue of data waiting to be read
+  tc->serialEvent1();                    // fake interrupt
+#endif
+  strscpy_P(calibrationResponse, F("Requesting..."), sizeof(calibrationResponse));
 }
 
 void PHProbe::getCalibration(char *buffer, int size) {
-  // for example "?Cal,2" or "     Calib requested!"
-  if (strcmp_P(calibrationResponse, PSTR("R")) == 0) {
-    strscpy_P(buffer, F("Calib requested!"), size);
-  } else {
-    strscpy(buffer, calibrationResponse, size);
-  }
+  // for example "2" or "Requesting..."
+  strscpy(buffer, calibrationResponse, size);
 }
 
 void PHProbe::sendSlopeRequest() {
   // Sending request for Calibration Slope
   Serial1.print(F("SLOPE,?\r"));
-  strscpy_P(slopeResponse, F("R"), sizeof(slopeResponse));
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  GodmodeState *state = GODMODE();
+  char buffer[10];
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("?SLOPE,99.7,100.3,-0.89\r"));
+  state->serialPort[1].dataIn = buffer;  // the queue of data waiting to be read
+  tc->serialEvent1();                    // fake interrupt
+#endif
+  strscpy_P(slopeResponse, F("Requesting..."), sizeof(slopeResponse));
 }
 
 void PHProbe::getSlope(char *buffer, int size) {
-  // for example "99.7,100.3, -0.89" or "R"
-  if (strcmp_P(slopeResponse, PSTR("R")) == 0) {
-    strscpy_P(buffer, F("Slope requested!"), size);
-  } else {
-    strscpy(buffer, slopeResponse, size);
-  }
+  // for example "99.7,100.3, -0.89" or "Requesting..."
+  strscpy(buffer, slopeResponse, size);
 }
 
 /**
@@ -87,12 +102,13 @@ void PHProbe::serialEvent1() {
         value = string.toFloat();
       } else if (string[0] == '?') {  // answer to a previous query
         serial(F("PHProbe serialEvent1: \"%s\""), string.c_str());
-        if (string.length() > 7 && string.substring(0, 7) == "?SLOPE,") {
+        if (string.length() > 7 && memcmp_P(string.c_str(), F("?SLOPE,"), 7) == 0) {
           // for example "?SLOPE,16.1,100.0"
           strscpy(slopeResponse, string.c_str() + 7, sizeof(slopeResponse));  // Flawfinder: ignore
-        } else if (string.length() > 5 && string.substring(0, 5) == "?Cal,") {
+        } else if (string.length() > 5 && memcmp_P(string.c_str(), F("?Cal,"), 5) == 0) {
           // for example "?Cal,2"
-          strscpy(calibrationResponse, string.c_str() + 5, sizeof(calibrationResponse));  // Flawfinder: ignore
+          snprintf_P(calibrationResponse, sizeof(calibrationResponse), PSTR("%s point"),
+                     string.c_str() + 5);  // Flawfinder: ignore
         }
       }
     }
@@ -118,6 +134,9 @@ void PHProbe::setHighpointCalibration(float highpoint) {
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,High,%i.%03i\r"), (int)highpoint,
              (int)(highpoint * 1000 + 0.5) % 1000);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  this->calibrationPoints += 1;
+#endif
   serial(F("PHProbe::setHighpointCalibration(%i.%03i)"), (int)highpoint, (int)(highpoint * 1000) % 1000);
 }
 
@@ -125,6 +144,9 @@ void PHProbe::setLowpointCalibration(float lowpoint) {
   char buffer[16];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,low,%i.%03i\r"), (int)lowpoint, (int)(lowpoint * 1000 + 0.5) % 1000);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  this->calibrationPoints += 1;
+#endif
   serial(F("PHProbe::setLowpointCalibration(%i.%03i)"), (int)lowpoint, (int)(lowpoint * 1000) % 1000);
 }
 
@@ -132,13 +154,17 @@ void PHProbe::setMidpointCalibration(float midpoint) {
   char buffer[16];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,mid,%i.%03i\r"), (int)midpoint, (int)(midpoint * 1000 + 0.5) % 1000);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  this->calibrationPoints = 1;
+#endif
   serial(F("PHProbe::setMidpointCalibration(%i.%03i)"), (int)midpoint, (int)(midpoint * 1000) % 1000);
 }
 
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
-#include <Arduino.h>
+void PHProbe::setCalibrationPoints(int newValue) {
+  this->calibrationPoints = newValue;
+}
 
-#include "TankController.h"
 void PHProbe::setPh(float newValue) {
   GodmodeState *state = GODMODE();
   char buffer[10];

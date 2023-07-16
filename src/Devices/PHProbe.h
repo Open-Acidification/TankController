@@ -33,6 +33,7 @@ public:
   void setMidpointCalibration(float midpoint);
   void setTemperatureCompensation(float temperature);
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  void setCalibrationPoints(int newValue);
   void setPh(float newValue);
 #endif
 private:
@@ -42,6 +43,9 @@ private:
   float value = 0;
   char calibrationResponse[2] = "";
   char slopeResponse[32] = "";
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  int calibrationPoints = 0;
+#endif
   // Methods
   PHProbe();
 };

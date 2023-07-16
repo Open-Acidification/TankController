@@ -56,8 +56,7 @@ void PHProbe::sendCalibrationRequest() {
   GodmodeState *state = GODMODE();
   char buffer[10];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("?Cal,%i\r"), this->calibrationPoints);
-  state->serialPort[1].dataIn = buffer;        // the queue of data waiting to be read
-  TankController::instance()->serialEvent1();  // fake interrupt
+  state->serialPort[1].dataIn = buffer;  // the queue of data waiting to be read
 #endif
   strscpy_P(calibrationResponse, F("Requesting..."), sizeof(calibrationResponse));
 }
@@ -65,6 +64,9 @@ void PHProbe::sendCalibrationRequest() {
 void PHProbe::getCalibration(char *buffer, int size) {
   // for example "2" or "Requesting..."
   strscpy(buffer, calibrationResponse, size);
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  TankController::instance()->serialEvent1();  // fake interrupt
+#endif
 }
 
 void PHProbe::sendSlopeRequest() {
@@ -74,8 +76,7 @@ void PHProbe::sendSlopeRequest() {
   GodmodeState *state = GODMODE();
   char buffer[10];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("?SLOPE,99.7,100.3,-0.89\r"));
-  state->serialPort[1].dataIn = buffer;        // the queue of data waiting to be read
-  TankController::instance()->serialEvent1();  // fake interrupt
+  state->serialPort[1].dataIn = buffer;  // the queue of data waiting to be read
 #endif
   strscpy_P(slopeResponse, F("Requesting..."), sizeof(slopeResponse));
 }
@@ -83,6 +84,9 @@ void PHProbe::sendSlopeRequest() {
 void PHProbe::getSlope(char *buffer, int size) {
   // for example "99.7,100.3, -0.89" or "Requesting..."
   strscpy(buffer, slopeResponse, size);
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  TankController::instance()->serialEvent1();  // fake interrupt
+#endif
 }
 
 /**
@@ -163,11 +167,6 @@ void PHProbe::setMidpointCalibration(float midpoint) {
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
 void PHProbe::setCalibrationPoints(int newValue) {
   this->calibrationPoints = newValue;
-  GodmodeState *state = GODMODE();
-  char buffer[10];
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("?Cal,%i\r"), this->calibrationPoints);
-  state->serialPort[1].dataIn = buffer;        // the queue of data waiting to be read
-  TankController::instance()->serialEvent1();  // fake interrupt
 }
 
 void PHProbe::setPh(float newValue) {

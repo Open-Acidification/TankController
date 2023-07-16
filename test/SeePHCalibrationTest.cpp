@@ -16,7 +16,7 @@ unittest(testOutput) {
   pPHProbe->setCalibrationPoints(3);
 
   assertEqual("MainMenu", tc->stateName());
-  SeePHSlope* test = new SeePHCalibration(tc);
+  SeePHCalibration* test = new SeePHCalibration(tc);
   tc->setNextState(test, true);
   assertEqual("SeePHCalibration", tc->stateName());
 

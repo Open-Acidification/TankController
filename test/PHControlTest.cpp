@@ -178,13 +178,15 @@ unittest(disableDuringCalibration) {
   assertFalse(controlSolenoid->isOn());
   controlSolenoid->setBaseTargetPh(7.50);
   setPhMeasurementTo(8.50);
-  tc->loop(false);  // update the controls based on the current readings
+  assertEqual("PHCalibrationMid", tc->stateName());  // test
+  tc->loop(false);                                   // update the controls based on the current readings
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
+  assertEqual("PHCalibrationMid", tc->stateName());  // test
 
   // device remains off between calibration states
-  test->setValue(7.00);
-  tc->loop(false);
+  // test->setValue(7.00);
+  // tc->loop(false);
   // assertEqual("Wait", tc->stateName());
   // delay(2000);
   // tc->loop(false);

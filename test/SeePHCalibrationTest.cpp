@@ -22,9 +22,10 @@ unittest(testOutput) {
 
   // Test the output
   assertEqual("PH Calibration: ", display->getLines().at(0));
-  assertEqual("requesting slope", display->getLines().at(1));
+  assertEqual("requesting calib", display->getLines().at(1));
   tc->loop(false);
   assertEqual("Requesting...   ", display->getLines().at(1));
+  pPHProbe->setCalibrationPoints(3);
   tc->loop(false);
   assertEqual("3 point         ", display->getLines().at(1));
   // Return to mainMenu

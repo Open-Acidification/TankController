@@ -41,7 +41,7 @@ private:
   static PHProbe* _instance;
   // instance variable
   float value = 0;
-  char calibrationResponse[2] = "";
+  char calibrationResponse[14] = "";
   char slopeResponse[32] = "";
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   int calibrationPoints = 0;

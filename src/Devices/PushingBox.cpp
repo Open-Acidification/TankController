@@ -64,7 +64,7 @@ void PushingBox::sendData() {
   if (deviceID == nullptr) {
     return;
   }
-  if (strlen(deviceID) == 0) {
+  if (strnlen(deviceID, 64) == 0) {
     serial(F("Provide a PushingBox ID to send data to PushingBox"));
     return;
   }

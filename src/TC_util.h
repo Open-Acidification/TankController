@@ -15,9 +15,9 @@ extern size_t strnlen(const char *s, size_t n);
 #define DEBUG 0
 #endif
 #if DEBUG
-#define COUT(x)                                                          \
-  do {                                                                   \
-    std::cout << __FILE__ << ":" << __LINE__ << " - " << x << std::endl; \
+#define COUT(x)                                                                        \
+  do {                                                                                 \
+    std::cout << __FILE__ << ":" << __LINE__ << " - " << x << std::endl << std::flush; \
   } while (0)
 #else
 #define COUT(x) (void)0

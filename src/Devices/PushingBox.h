@@ -13,10 +13,13 @@ public:
   EthernetClient *getClient() {
     return &client;
   }
-  const char *getServer() {
-    return server;
+  const char *getServerDomain() {
+    return serverDomain;
   }
   void loop();
+  void setDeviceID(const char *id) {
+    deviceID = id;
+  }
 
 private:
   // class variables
@@ -24,10 +27,10 @@ private:
 
   // instance variables
   EthernetClient client;
-  const char *DevID = nullptr;  // DeviceID assigned by PushingBox and passed-in from TankController.ino
+  const char *deviceID = nullptr;  // DeviceID assigned by PushingBox and passed-in from TankController.ino
   // wait a bit for first reading (https://github.com/Open-Acidification/TankController/issues/179)
   uint32_t nextSendTime = 70000;
-  const char *server = "api.pushingbox.com";
+  const char *serverDomain = "api.pushingbox.com";
 
   // instance method
   void sendData();

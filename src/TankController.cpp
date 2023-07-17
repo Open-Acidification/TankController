@@ -182,7 +182,7 @@ void TankController::serialEvent1() {
  */
 void TankController::setNextState(UIState *newState, bool update) {
   COUT("TankController::setNextState() from " << (nextState ? (PGM_P)nextState->name() : "nullptr") << " to "
-                                              << newState->name());
+                                              << (PGM_P)newState->name());
   assert(nextState == nullptr);
   nextState = newState;
   if (update) {
@@ -224,7 +224,7 @@ void TankController::updateControls() {
  */
 void TankController::updateState() {
   if (nextState) {
-    COUT("TankController::updateState() to " << nextState->name());
+    COUT("TankController::updateState() to " << (PGM_P)nextState->name());
     assert(state != nextState);
     delete state;
     state = nextState;

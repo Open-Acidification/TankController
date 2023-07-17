@@ -42,6 +42,6 @@ bool Wait::isInCalibration() {
 void Wait::loop() {
   if (endTime <= millis()) {
     this->setNextState(nextState);
-    nextState = nullptr;  // otherwise ~Wait() will destroy an active state
+    nextState = nullptr;  // otherwise ~Wait() will destroy the active state
   }
 }

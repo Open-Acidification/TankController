@@ -17,7 +17,7 @@ public:
     return serverDomain;
   }
   void loop();
-  void setDeviceID(const char* id) {
+  void setDeviceID(const char *id) {
     deviceID = id;
   }
 

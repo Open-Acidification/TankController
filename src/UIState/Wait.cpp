@@ -35,5 +35,6 @@ Wait::~Wait() {
 void Wait::loop() {
   if (endTime <= millis()) {
     this->setNextState(nextState);
+    nextState = nullptr
   }
 }

@@ -35,6 +35,7 @@ public:
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   void setCalibrationPoints(int newValue);
   void setPh(float newValue);
+  void setPhSlope(const char* slope = "?SLOPE,99.7,100.3,-0.89\r");
 #endif
 private:
   // Class variable

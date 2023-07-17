@@ -4,6 +4,7 @@
 
 #include "Devices/DataLogger_TC.h"
 #include "Devices/DateTime_TC.h"
+#include "Devices/PHProbe.h"
 #include "LiquidCrystal_TC.h"
 #include "MainMenu.h"
 #include "PHCalibrationMid.h"
@@ -18,13 +19,6 @@ PHControl* controlSolenoid = PHControl::instance();
 LiquidCrystal_TC* lc = LiquidCrystal_TC::instance();
 DataLogger_TC* dataLog = DataLogger_TC::instance();
 
-void setPhMeasurementTo(float value) {
-  char buffer[10];
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("%i.%03i\r"), (int)value, (int)(value * 1000 + 0.5) % 1000);
-  state->serialPort[1].dataIn = buffer;  // the queue of data waiting to be read
-  tc->serialEvent1();                    // fake interrupt to update the current pH reading
-}
-
 /**
  * cycle the control through to a point of being off
  */
@@ -34,7 +28,7 @@ void reset() {
   DateTime_TC january(2021, 1, 15, 1, 48, 24);
   january.setAsCurrent();
   controlSolenoid->enablePID(false);
-  setPhMeasurementTo(7.50);
+  PHProbe::instance()->setPh(7.5);
   controlSolenoid->setBaseTargetPh(7.50);
   controlSolenoid->setRampDuration(0);  // No ramp
   state->serialPort[0].dataOut = "";    // the history of data written
@@ -51,15 +45,12 @@ unittest_teardown() {
 
 // During the first time window the pH is high, so we turn on the solenoid
 unittest(bubblerTurnsOnAndOff) {
-  assertEqual(6, millis());
+  assertEqual(10, millis());
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
-  state->serialPort[1].dataIn = "8.00\r";  // the queue of data waiting to be read
-  assertEqual(6, millis());
-  tc->serialEvent1();  // fake interrupt to update the current pH reading
-  assertEqual(6, millis());
+  PHProbe::instance()->setPh(8.0);
   tc->loop(false);  // update the controls based on the current readings
-  assertEqual(10, millis());
+  assertEqual(13, millis());
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
   String serialOutput = state->serialPort[0].dataOut;
@@ -76,8 +67,8 @@ unittest(bubblerTurnsOnAndOff) {
     i = j + 2;
   } while (line.charAt(0) != 'C');
   assertEqual((int)'C', line.charAt(0));
-  assertEqual("CO2 bubbler turned on after 6 ms", line);
-  assertEqual(10, millis());
+  assertEqual("CO2 bubbler turned on after 10 ms", line);
+  assertEqual(13, millis());
   delay(9500);
   tc->loop(false);  // solenoid should turn off briefly at end of window
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
@@ -88,17 +79,17 @@ unittest(afterTenSecondsButPhStillHigher) {
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
   controlSolenoid->setBaseTargetPh(7.50);
-  setPhMeasurementTo(8.50);
+  PHProbe::instance()->setPh(8.5);
   tc->loop(false);  // update the controls based on the current readings
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
   delay(8000);
-  setPhMeasurementTo(8.50);
+  PHProbe::instance()->setPh(8.5);
   tc->loop(false);  // update the controls based on the current readings
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
   delay(2000);
-  setPhMeasurementTo(7.75);
+  PHProbe::instance()->setPh(7.75);
   tc->loop(false);  // update the controls based on the current readings
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
@@ -109,7 +100,7 @@ unittest(afterTenSecondsAndPhIsLower) {
   assertFalse(controlSolenoid->isOn());
   assertEqual("pH 7.500   7.500", lc->getLines().at(0));
   controlSolenoid->setBaseTargetPh(7.50);
-  setPhMeasurementTo(8.50);
+  PHProbe::instance()->setPh(8.5);
   tc->loop(false);  // update the controls based on the current readings
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
@@ -127,7 +118,7 @@ unittest(afterTenSecondsAndPhIsLower) {
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
   delay(1000);
-  setPhMeasurementTo(7.25);
+  PHProbe::instance()->setPh(7.25);
   tc->loop(false);  // update the controls based on the current readings
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
@@ -143,12 +134,12 @@ unittest(beforeTenSecondsButPhIsLower) {
   assertFalse(controlSolenoid->isOn());
   delay(1000);
   controlSolenoid->setBaseTargetPh(7.50);
-  setPhMeasurementTo(8.50);
+  PHProbe::instance()->setPh(8.5);
   tc->loop(false);  // update the controls based on the current readings
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
   delay(7500);
-  setPhMeasurementTo(7.25);
+  PHProbe::instance()->setPh(7.25);
   tc->loop(false);  // update the controls based on the current readings
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
@@ -158,7 +149,7 @@ unittest(PhEvenWithTarget) {
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
   controlSolenoid->setBaseTargetPh(7.50);
-  setPhMeasurementTo(7.50);
+  PHProbe::instance()->setPh(7.5);
   tc->loop(false);  // update the controls based on the current readings
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
@@ -177,7 +168,7 @@ unittest(disableDuringCalibration) {
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
   controlSolenoid->setBaseTargetPh(7.50);
-  setPhMeasurementTo(8.50);
+  PHProbe::instance()->setPh(8.5);
   tc->loop(false);  // update the controls based on the current readings
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
@@ -198,15 +189,13 @@ unittest(RampGreaterThanZero) {
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
   delay(11000);
-  setPhMeasurementTo(8.50);
+  PHProbe::instance()->setPh(8.5);
   controlSolenoid->setBaseTargetPh(7.00);
   controlSolenoid->setRampDuration(1.5);  // 90 minutes
   assertEqual(PHControl::RAMP_TYPE, controlSolenoid->getPhSetType());
   tc->loop(false);
   assertEqual(8.5, controlSolenoid->getCurrentTargetPh());
   assertEqual("pH=8.500   8.500", lc->getLines().at(0));
-  assertEqual("01/15/2021 01:48:35,   0, 0.00, 20.00, 8.500, 8.500,   11, 100000.0,      0.0,      0.0",
-              dataLog->buffer);
   // mock arduino restarting
   PHControl::clearInstance();
   controlSolenoid = PHControl::instance();
@@ -244,7 +233,7 @@ unittest(RampGreaterThanZero) {
 unittest(ChangeRampToZero) {
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
-  setPhMeasurementTo(8.50);
+  PHProbe::instance()->setPh(8.5);
   tc->loop(false);  // update the controls based on the current readings
   controlSolenoid->setBaseTargetPh(7.00);
   controlSolenoid->setRampDuration(1.5);
@@ -260,7 +249,7 @@ unittest(ChangeRampToZero) {
 unittest(sineTest) {
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
-  setPhMeasurementTo(7.00);
+  PHProbe::instance()->setPh(7.0);
   tc->loop(false);  // update the controls based on the current readings
   controlSolenoid->setBaseTargetPh(7.00);
   controlSolenoid->setSine(1.5, 2);

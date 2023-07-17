@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "Devices/Serial_TC.h"
+#include "TankController.h"
 
 // Example: strscpy(buffer, source, sizeof(buffer));
 int strscpy(char *destination, const char *source, unsigned long sizeOfDestination) {

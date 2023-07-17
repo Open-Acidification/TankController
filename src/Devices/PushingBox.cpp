@@ -24,7 +24,7 @@ PushingBox* PushingBox::instance(const char* pushingBoxID) {
 
 //  instance methods
 PushingBox::PushingBox(const char* pushingBoxID) {
-  DevID = pushingBoxID;
+  deviceID = pushingBoxID;
 }
 
 void PushingBox::loop() {
@@ -61,6 +61,13 @@ void PushingBox::loop() {
 }
 
 void PushingBox::sendData() {
+  if (deviceID == nullptr) {
+    return;
+  }
+  if (strnlen(deviceID, 64) == 0) {
+    serial(F("Provide a PushingBox ID to send data to PushingBox"));
+    return;
+  }
   int tankID = EEPROM_TC::instance()->getTankID();
   if (!tankID) {
     serial(F("Set Tank ID in order to send data to PushingBox"));
@@ -73,7 +80,7 @@ void PushingBox::sendData() {
         "Host: api.pushingbox.com\r\n"
         "Connection: close\r\n"
         "\r\n";
-    snprintf_P(buffer, sizeof(buffer), (PGM_P)format, DevID, tankID);
+    snprintf_P(buffer, sizeof(buffer), (PGM_P)format, deviceID, tankID);
   } else {
     static const char format[] PROGMEM =
         "GET /pushingbox?devid=%s&tankid=%i&tempData=%i.%02i&pHdata=%i.%03i HTTP/1.1\r\n"
@@ -83,7 +90,7 @@ void PushingBox::sendData() {
     // look up tankid, temperature, ph
     float temperature = TempProbe_TC::instance()->getRunningAverage();
     float pH = PHProbe::instance()->getPh();
-    snprintf_P(buffer, sizeof(buffer), (PGM_P)format, DevID, tankID, (int)temperature,
+    snprintf_P(buffer, sizeof(buffer), (PGM_P)format, deviceID, tankID, (int)temperature,
                (int)(temperature * 100 + 0.5) % 100, (int)pH, (int)(pH * 1000) % 1000);
   }
   size_t i = 0;
@@ -96,7 +103,7 @@ void PushingBox::sendData() {
   serial(F("%s"), buffer);
   buffer[i] = '\r';
   serial(F("attempting to connect to PushingBox..."));
-  if (client.connected() || client.connect(server, 80)) {
+  if (client.connected() || client.connect(serverDomain, 80)) {
     serial(F("connected"));
     client.write(buffer, strnlen(buffer, sizeof(buffer)));
   } else {

@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
+#include "Devices/PHProbe.h"
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
 #include "PHProbe.h"

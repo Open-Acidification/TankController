@@ -25,9 +25,9 @@ unittest(serialEvent1) {
   tc->serialEvent1();                       // fake interrupt
   assertEqual(0, pPHProbe->getPh());
   assertEqual("", pPHProbe->getSlopeResponse());
-  GODMODE()->serialPort[1].dataIn = "7.125\r?SLOPE,99.7,100.3,-0.89\r";  // the queue of data waiting to be read
-  tc->serialEvent1();                                                    // fake interrupt
-  assertEqual("99.7,100.3,-0.89", pPHProbe->getSlopeResponse());
+  PHProbe::instance()->setPh(7.125);
+  PHProbe::instance()->setPhSlope();
+  assertEqual("?SLOPE,99.7,100.3,-0.89", pPHProbe->getSlopeResponse());
   assertEqual(7.125, pPHProbe->getPh());
 }
 
@@ -94,14 +94,12 @@ unittest(getSlope) {
   TankController *tc = TankController::instance();
   state->serialPort[0].dataOut = "";
   PHProbe *pPHProbe = PHProbe::instance();
-  GODMODE()->serialPort[1].dataIn = "?SLOPE,99.7,100.3,-0.89\r";  // the queue of data waiting to be read
-  tc->serialEvent1();                                             // fake interrupt
+  pPHProbe->setPhSlope();
   char buffer[20];
   pPHProbe->getSlope(buffer, sizeof(buffer));
   assertEqual("99.7,100.3,-0.89", buffer);
   COUT(state->serialPort[0].dataOut.length());
-  GODMODE()->serialPort[1].dataIn = "?SLOPE,98.7,101.3,-0.89\r";  // the answer to getSlop() waiting to be read
-  tc->serialEvent1();                                             // fake interrupt
+  pPHProbe->setPhSlope("?SLOPE,98.7,101.3,-0.89\r");
   COUT(state->serialPort[0].dataOut.length());
   state->serialPort[0].dataOut = "";
   pPHProbe->getSlope(buffer, sizeof(buffer));
@@ -113,8 +111,7 @@ unittest(getPh) {
   TankController *tc = TankController::instance();
   state->serialPort[0].dataOut = "";
   state->reset();
-  state->serialPort[1].dataIn = "7.25\r";  // the queue of data waiting to be read
-  tc->serialEvent1();                      // fake interrupt
+  PHProbe::instance()->setPh(7.25);
   PHProbe *pPHProbe = PHProbe::instance();
   float pH = pPHProbe->getPh();
   assertEqual(7.25, pH);

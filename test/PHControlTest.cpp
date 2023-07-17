@@ -178,7 +178,7 @@ unittest(disableDuringCalibration) {
   assertFalse(controlSolenoid->isOn());
   controlSolenoid->setBaseTargetPh(7.50);
   setPhMeasurementTo(8.50);
-  tc->loop(false);                                   // update the controls based on the current readings
+  tc->loop(false);  // update the controls based on the current readings
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
   tc->loop(false);

@@ -45,13 +45,172 @@ INCLUDE=-I$(ARDUINO_CI)/arduino \
   -I$(LIBRARIES)/SdFat/src/iostream
 
 .PHONY : all
-all : $(BIN)/BlinkTest.cpp.bin 
-
+all : $(BIN)/BlinkTest.cpp.bin $(BIN)/DateTimeTest.cpp.bin $(BIN)/EEPROMTest.cpp.bin \
+  $(BIN)/EnablePIDTest.cpp.bin $(BIN)/EthernetServerTest.cpp.bin $(BIN)/EthernetTest.cpp.bin \
+  $(BIN)/JSONBuilderTest.cpp.bin $(BIN)/KeypadTest.cpp.bin $(BIN)/LiquidCrystalTest.cpp.bin \
+  $(BIN)/MenuTest.cpp.bin $(BIN)/NumberCollectorStateTest.cpp.bin $(BIN)/PHCalibrationHighTest.cpp.bin \
+  $(BIN)/PHCalibrationLowTest.cpp.bin $(BIN)/PHCalibrationMidTest.cpp.bin $(BIN)/PHControlTest.cpp.bin \
+  $(BIN)/PHProbeTest.cpp.bin $(BIN)/PIDTest.cpp.bin $(BIN)/PushingBoxTest.cpp.bin $(BIN)/SDTest.cpp.bin \
+  $(BIN)/SeeDeviceAddressTest.cpp.bin $(BIN)/SeeDeviceUptimeTest.cpp.bin $(BIN)/SeeFreeMemoryTest.cpp.bin \
+  $(BIN)/SeeGoogleMinsTest.cpp.bin $(BIN)/SeeLogFileTest.cpp.bin $(BIN)/SeePHSlopeTest.cpp.bin \
+  $(BIN)/SeePIDConstantsTest.cpp.bin $(BIN)/SeePhTest.cpp.bin $(BIN)/SeeTankIDTest.cpp.bin \
+  $(BIN)/SeeTempCalOffsetTest.cpp.bin $(BIN)/SeeVersionTest.cpp.bin $(BIN)/SerialTest.cpp.bin \
+  $(BIN)/SetChillOrHeatTest.cpp.bin $(BIN)/SetGoogleSheetIntervalTest.cpp.bin $(BIN)/SetKDTest.cpp.bin \
+  $(BIN)/SetKITest.cpp.bin $(BIN)/SetKPTest.cpp.bin $(BIN)/SetPHCalibClearTest.cpp.bin \
+  $(BIN)/SetPHSetPointTest.cpp.bin $(BIN)/SetPHWithSineTest.cpp.bin $(BIN)/SetTankIDTest.cpp.bin \
+  $(BIN)/SetTempCalibClearTest.cpp.bin $(BIN)/SetTempSetPointTest.cpp.bin $(BIN)/SetTempWithSineTest.cpp.bin \
+  $(BIN)/SetTimeTest.cpp.bin $(BIN)/StringsTest.cpp.bin $(BIN)/TCLibTest.cpp.bin \
+  $(BIN)/TempProbe_TCTest.cpp.bin $(BIN)/TemperatureCalibrationTest.cpp.bin \
+  $(BIN)/TemperatureControlTest.cpp.bin $(BIN)
 
 GPP_TEST=g++ $(FLAGS) -L$(LIBRARIES)/TankController/.arduino_ci $(INCLUDE)
 
 $(BIN)/BlinkTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/BlinkTest.cpp
 	$(GPP_TEST) -o $(BIN)/BlinkTest.cpp.bin $(TEST)/BlinkTest.cpp $(LIBS) -larduino
+
+$(BIN)/DateTimeTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/DateTimeTest.cpp
+	$(GPP_TEST) -o $(BIN)/DateTimeTest.cpp.bin $(TEST)/DateTimeTest.cpp $(LIBS) -larduino
+
+$(BIN)/EEPROMTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/EEPROMTest.cpp
+	$(GPP_TEST) -o $(BIN)/EEPROMTest.cpp.bin $(TEST)/EEPROMTest.cpp $(LIBS) -larduino
+
+$(BIN)/EnablePIDTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/EnablePIDTest.cpp
+	$(GPP_TEST) -o $(BIN)/EnablePIDTest.cpp.bin $(TEST)/EnablePIDTest.cpp $(LIBS) -larduino
+
+$(BIN)/EthernetServerTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/EthernetServerTest.cpp
+	$(GPP_TEST) -o $(BIN)/EthernetServerTest.cpp.bin $(TEST)/EthernetServerTest.cpp $(LIBS) -larduino
+
+$(BIN)/EthernetTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/EthernetTest.cpp
+	$(GPP_TEST) -o $(BIN)/EthernetTest.cpp.bin $(TEST)/EthernetTest.cpp $(LIBS) -larduino
+
+$(BIN)/JSONBuilderTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/JSONBuilderTest.cpp
+	$(GPP_TEST) -o $(BIN)/JSONBuilderTest.cpp.bin $(TEST)/JSONBuilderTest.cpp $(LIBS) -larduino
+
+$(BIN)/KeypadTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/KeypadTest.cpp
+	$(GPP_TEST) -o $(BIN)/KeypadTest.cpp.bin $(TEST)/KeypadTest.cpp $(LIBS) -larduino
+
+$(BIN)/LiquidCrystalTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/LiquidCrystalTest.cpp
+	$(GPP_TEST) -o $(BIN)/LiquidCrystalTest.cpp.bin $(TEST)/LiquidCrystalTest.cpp $(LIBS) -larduino
+
+$(BIN)/MenuTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/MenuTest.cpp
+	$(GPP_TEST) -o $(BIN)/MenuTest.cpp.bin $(TEST)/MenuTest.cpp $(LIBS) -larduino
+
+$(BIN)/NumberCollectorStateTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/NumberCollectorStateTest.cpp
+	$(GPP_TEST) -o $(BIN)/NumberCollectorStateTest.cpp.bin $(TEST)/NumberCollectorStateTest.cpp $(LIBS) -larduino
+
+$(BIN)/PHCalibrationHighTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/PHCalibrationHighTest.cpp
+	$(GPP_TEST) -o $(BIN)/PHCalibrationHighTest.cpp.bin $(TEST)/PHCalibrationHighTest.cpp $(LIBS) -larduino
+
+$(BIN)/PHCalibrationLowTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/PHCalibrationLowTest.cpp
+	$(GPP_TEST) -o $(BIN)/PHCalibrationLowTest.cpp.bin $(TEST)/PHCalibrationLowTest.cpp $(LIBS) -larduino
+
+$(BIN)/PHCalibrationMidTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/PHCalibrationMidTest.cpp
+	$(GPP_TEST) -o $(BIN)/PHCalibrationMidTest.cpp.bin $(TEST)/PHCalibrationMidTest.cpp $(LIBS) -larduino
+
+$(BIN)/PHControlTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/PHControlTest.cpp
+	$(GPP_TEST) -o $(BIN)/PHControlTest.cpp.bin $(TEST)/PHControlTest.cpp $(LIBS) -larduino
+
+$(BIN)/PHProbeTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/PHProbeTest.cpp
+	$(GPP_TEST) -o $(BIN)/PHProbeTest.cpp.bin $(TEST)/PHProbeTest.cpp $(LIBS) -larduino
+
+$(BIN)/PIDTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/PIDTest.cpp
+	$(GPP_TEST) -o $(BIN)/PIDTest.cpp.bin $(TEST)/PIDTest.cpp $(LIBS) -larduino
+
+$(BIN)/PushingBoxTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/PushingBoxTest.cpp
+	$(GPP_TEST) -o $(BIN)/PushingBoxTest.cpp.bin $(TEST)/PushingBoxTest.cpp $(LIBS) -larduino
+
+$(BIN)/SDTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/SDTest.cpp
+	$(GPP_TEST) -o $(BIN)/SDTest.cpp.bin $(TEST)/SDTest.cpp $(LIBS) -larduino
+
+$(BIN)/SeeDeviceAddressTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/SeeDeviceAddressTest.cpp
+	$(GPP_TEST) -o $(BIN)/SeeDeviceAddressTest.cpp.bin $(TEST)/SeeDeviceAddressTest.cpp $(LIBS) -larduino
+
+$(BIN)/SeeDeviceUptimeTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/SeeDeviceUptimeTest.cpp
+	$(GPP_TEST) -o $(BIN)/SeeDeviceUptimeTest.cpp.bin $(TEST)/SeeDeviceUptimeTest.cpp $(LIBS) -larduino
+
+$(BIN)/SeeFreeMemoryTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/SeeFreeMemoryTest.cpp
+	$(GPP_TEST) -o $(BIN)/SeeFreeMemoryTest.cpp.bin $(TEST)/SeeFreeMemoryTest.cpp $(LIBS) -larduino
+
+$(BIN)/SeeGoogleMinsTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/SeeGoogleMinsTest.cpp
+	$(GPP_TEST) -o $(BIN)/SeeGoogleMinsTest.cpp.bin $(TEST)/SeeGoogleMinsTest.cpp $(LIBS) -larduino
+
+$(BIN)/SeeLogFileTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/SeeLogFileTest.cpp
+	$(GPP_TEST) -o $(BIN)/SeeLogFileTest.cpp.bin $(TEST)/SeeLogFileTest.cpp $(LIBS) -larduino
+
+$(BIN)/SeePHSlopeTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/SeePHSlopeTest.cpp
+	$(GPP_TEST) -o $(BIN)/SeePHSlopeTest.cpp.bin $(TEST)/SeePHSlopeTest.cpp $(LIBS) -larduino
+
+$(BIN)/SeePIDConstantsTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/SeePIDConstantsTest.cpp
+	$(GPP_TEST) -o $(BIN)/SeePIDConstantsTest.cpp.bin $(TEST)/SeePIDConstantsTest.cpp $(LIBS) -larduino
+
+$(BIN)/SeePhTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/SeePhTest.cpp
+	$(GPP_TEST) -o $(BIN)/SeePhTest.cpp.bin $(TEST)/SeePhTest.cpp $(LIBS) -larduino
+
+$(BIN)/SeeTankIDTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/SeeTankIDTest.cpp
+	$(GPP_TEST) -o $(BIN)/SeeTankIDTest.cpp.bin $(TEST)/SeeTankIDTest.cpp $(LIBS) -larduino
+
+$(BIN)/SeeTempCalOffsetTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/SeeTempCalOffsetTest.cpp
+	$(GPP_TEST) -o $(BIN)/SeeTempCalOffsetTest.cpp.bin $(TEST)/SeeTempCalOffsetTest.cpp $(LIBS) -larduino
+
+$(BIN)/SeeVersionTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/SeeVersionTest.cpp
+	$(GPP_TEST) -o $(BIN)/SeeVersionTest.cpp.bin $(TEST)/SeeVersionTest.cpp $(LIBS) -larduino
+
+$(BIN)/SerialTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/SerialTest.cpp
+	$(GPP_TEST) -o $(BIN)/SerialTest.cpp.bin $(TEST)/SerialTest.cpp $(LIBS) -larduino
+
+$(BIN)/SetChillOrHeatTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/SetChillOrHeatTest.cpp
+	$(GPP_TEST) -o $(BIN)/SetChillOrHeatTest.cpp.bin $(TEST)/SetChillOrHeatTest.cpp $(LIBS) -larduino
+
+$(BIN)/SetGoogleSheetIntervalTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/SetGoogleSheetIntervalTest.cpp
+	$(GPP_TEST) -o $(BIN)/SetGoogleSheetIntervalTest.cpp.bin $(TEST)/SetGoogleSheetIntervalTest.cpp $(LIBS) -larduino
+
+$(BIN)/SetKDTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/SetKDTest.cpp
+	$(GPP_TEST) -o $(BIN)/SetKDTest.cpp.bin $(TEST)/SetKDTest.cpp $(LIBS) -larduino
+
+$(BIN)/SetKITest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/SetKITest.cpp
+	$(GPP_TEST) -o $(BIN)/SetKITest.cpp.bin $(TEST)/SetKITest.cpp $(LIBS) -larduino
+
+$(BIN)/SetKPTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/SetKPTest.cpp
+	$(GPP_TEST) -o $(BIN)/SetKPTest.cpp.bin $(TEST)/SetKPTest.cpp $(LIBS) -larduino
+
+$(BIN)/SetPHCalibClearTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/SetPHCalibClearTest.cpp
+	$(GPP_TEST) -o $(BIN)/SetPHCalibClearTest.cpp.bin $(TEST)/SetPHCalibClearTest.cpp $(LIBS) -larduino
+
+$(BIN)/SetPHSetPointTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/SetPHSetPointTest.cpp
+	$(GPP_TEST) -o $(BIN)/SetPHSetPointTest.cpp.bin $(TEST)/SetPHSetPointTest.cpp $(LIBS) -larduino
+
+$(BIN)/SetPHWithSineTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/SetPHWithSineTest.cpp
+	$(GPP_TEST) -o $(BIN)/SetPHWithSineTest.cpp.bin $(TEST)/SetPHWithSineTest.cpp $(LIBS) -larduino
+
+$(BIN)/SetTankIDTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/SetTankIDTest.cpp
+	$(GPP_TEST) -o $(BIN)/SetTankIDTest.cpp.bin $(TEST)/SetTankIDTest.cpp $(LIBS) -larduino
+
+$(BIN)/SetTempCalibClearTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/SetTempCalibClearTest.cpp
+	$(GPP_TEST) -o $(BIN)/SetTempCalibClearTest.cpp.bin $(TEST)/SetTempCalibClearTest.cpp $(LIBS) -larduino
+
+$(BIN)/SetTempSetPointTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/SetTempSetPointTest.cpp
+	$(GPP_TEST) -o $(BIN)/SetTempSetPointTest.cpp.bin $(TEST)/SetTempSetPointTest.cpp $(LIBS) -larduino
+
+$(BIN)/SetTempWithSineTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/SetTempWithSineTest.cpp
+	$(GPP_TEST) -o $(BIN)/SetTempWithSineTest.cpp.bin $(TEST)/SetTempWithSineTest.cpp $(LIBS) -larduino
+
+$(BIN)/SetTimeTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/SetTimeTest.cpp
+	$(GPP_TEST) -o $(BIN)/SetTimeTest.cpp.bin $(TEST)/SetTimeTest.cpp $(LIBS) -larduino
+
+$(BIN)/StringsTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/StringsTest.cpp
+	$(GPP_TEST) -o $(BIN)/StringsTest.cpp.bin $(TEST)/StringsTest.cpp $(LIBS) -larduino
+
+$(BIN)/TCLibTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/TCLibTest.cpp
+	$(GPP_TEST) -o $(BIN)/TCLibTest.cpp.bin $(TEST)/TCLibTest.cpp $(LIBS) -larduino
+
+$(BIN)/TempProbe_TCTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/TempProbe_TCTest.cpp
+	$(GPP_TEST) -o $(BIN)/TempProbe_TCTest.cpp.bin $(TEST)/TempProbe_TCTest.cpp $(LIBS) -larduino
+
+$(BIN)/TemperatureCalibrationTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/TemperatureCalibrationTest.cpp
+	$(GPP_TEST) -o $(BIN)/TemperatureCalibrationTest.cpp.bin $(TEST)/TemperatureCalibrationTest.cpp $(LIBS) -larduino
+
+$(BIN)/TemperatureControlTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/TemperatureControlTest.cpp
+	$(GPP_TEST) -o $(BIN)/TemperatureControlTest.cpp.bin $(TEST)/TemperatureControlTest.cpp $(LIBS) -larduino
 
 BUSIO=$(BIN)/BusIO.o $(BIN)/I2CDevice.o $(BIN)/SPIDevice.o
 ETHERNET=$(BIN)/Dhcp.o $(BIN)/Dns.o $(BIN)/Ethernet.o $(BIN)/EthernetClient.o $(BIN)/EthernetClient_CI.o \

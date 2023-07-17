@@ -51,10 +51,10 @@ void PHProbe::clearCalibration() {
 
 void PHProbe::sendCalibrationRequest() {
   // Sending request for calibration status
-  Serial1.print(F("Cal,?\r"));
+  Serial1.print(F("CAL,?\r"));
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   char buffer[10];
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("?Cal,%i\r"), this->calibrationPoints);
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("?CAL,%i\r"), this->calibrationPoints);
   GODMODE()->serialPort[1].dataIn = buffer;  // the queue of data waiting to be read
 #endif
   strscpy_P(calibrationResponse, F("Requesting..."), sizeof(calibrationResponse));
@@ -107,8 +107,8 @@ void PHProbe::serialEvent1() {
         if (string.length() > 7 && memcmp_P(string.c_str(), F("?SLOPE,"), 7) == 0) {
           // for example "?SLOPE,16.1,100.0"
           strscpy(slopeResponse, string.c_str() + 7, sizeof(slopeResponse));  // Flawfinder: ignore
-        } else if (string.length() > 5 && memcmp_P(string.c_str(), F("?Cal,"), 5) == 0) {
-          // for example "?Cal,2"
+        } else if (string.length() > 5 && memcmp_P(string.c_str(), F("?CAL,"), 5) == 0) {
+          // for example "?CAL,2"
           snprintf_P(calibrationResponse, sizeof(calibrationResponse), PSTR("%s point"),
                      string.c_str() + 5);  // Flawfinder: ignore
         }

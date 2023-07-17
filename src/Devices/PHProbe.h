@@ -10,6 +10,7 @@
  * clear the other calibration points.
  *
  * While the data sheet uses "Slope" the actual string is "SLOPE"
+ * Similarly, "Cal,?" is actually "CAL,?" and responses are "?CAL,2" for example.
  */
 
 // getValue() function is for testing purposes

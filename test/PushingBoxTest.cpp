@@ -11,6 +11,7 @@
 #include "TankController.h"
 #include "UIState/PHCalibrationMid.h"
 
+EthernetClient *pClient;
 GodmodeState *state = GODMODE();
 PushingBox *pPushingBox;
 TankController *tc;
@@ -23,6 +24,7 @@ unittest_setup() {
   Ethernet_TC::instance(true);
   pPushingBox = PushingBox::instance();
   pPushingBox->setDeviceID("PushingBoxIdentifier");
+  pClient = pPushingBox->getClient();
   tempProbe = TempProbe_TC::instance();
   controlSolenoid = PHControl::instance();
   DateTime_TC now(2021, 6, 8, 15, 25, 15);
@@ -34,7 +36,11 @@ unittest_setup() {
 }
 
 unittest_teardown() {
-  pPushingBox->getClient()->stop();  // clears the writeBuffer and readBuffer
+  if (pClient->writeBuffer()) {
+    pClient->writeBuffer()->clear();
+  }
+  pClient->stop();  // clears the readBuffer (but not the write buffer!?)
+  EthernetClient::stopMockServer(pPushingBox->getServerDomain(), (uint32_t)0, 80);
 }
 
 unittest(NoTankID) {
@@ -61,7 +67,6 @@ unittest(SendData) {
   PHProbe::instance()->setPh(7.125);
   EthernetClient::startMockServer(pPushingBox->getServerDomain(), (uint32_t)0, 80,
                                   (const uint8_t *)"[PushingBox response]\r\n");
-  EthernetClient *pClient = pPushingBox->getClient();
   assertFalse(pClient->connected());  // not yet connected!
   state->serialPort[0].dataOut = "";
   delay(120 * 1000);  // less than this seems to cause a crash!?
@@ -94,9 +99,6 @@ unittest(SendData) {
       "[PushingBox response]\r\n"
       "===== end of PushingBox response\r\n";
   assertEqual(expected2, state->serialPort[0].dataOut);
-  EthernetClient::stopMockServer(pPushingBox->getServerDomain(), (uint32_t)0, 80);
-  pClient->writeBuffer()->clear();
-  pClient->stop();
 }
 
 unittest(inCalibration) {
@@ -105,12 +107,12 @@ unittest(inCalibration) {
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
   EthernetClient::startMockServer(pPushingBox->getServerDomain(), (uint32_t)0, 80);
-  EthernetClient *pClient = pPushingBox->getClient();
-  assertNull(pClient->writeBuffer());
+  assertFalse(pClient->connected());
   delay(60 * 20 * 1000);  // wait for 20 minutes to ensure we send again
   tc->loop(false);
+  assertTrue(pClient->connected());
   assertNotNull(pClient->writeBuffer());
-  deque<uint8_t> buffer = *(pPushingBox->getClient()->writeBuffer());
+  deque<uint8_t> buffer = *(pClient->writeBuffer());
   String bufferResult;
   for (int i = 0; i < buffer.size(); i++) {
     bufferResult += buffer[i];
@@ -121,40 +123,25 @@ unittest(inCalibration) {
       "Connection: close\r\n"
       "\r\n";
   assertEqual(expected1, bufferResult.c_str());
-  pClient->writeBuffer()->clear();
-  pClient->stop();
 }
 
 unittest(without_DHCP) {
   Ethernet.mockDHCP(IPAddress((uint32_t)0));
   assertFalse(Ethernet_TC::instance(true)->getIsUsingDHCP());
   EthernetClient::startMockServer(pPushingBox->getServerDomain(), (uint32_t)0, 80);
-  EthernetClient *pClient = pPushingBox->getClient();
-  assertNull(pClient->writeBuffer());
+  assertFalse(pClient->connected());
   delay(60 * 20 * 1000);  // wait for 20 minutes to ensure we still do not send
   tc->loop(false);
-  assertNull(pClient->writeBuffer());
-}
-
-unittest(without_DHCP_) {
-  Ethernet.mockDHCP(IPAddress((uint32_t)0));
-  assertFalse(Ethernet_TC::instance(true)->getIsUsingDHCP());
-  EthernetClient::startMockServer(pPushingBox->getServerDomain(), (uint32_t)0, 80);
-  EthernetClient *pClient = pPushingBox->getClient();
-  assertNull(pClient->writeBuffer());
-  delay(60 * 20 * 1000);  // wait for 20 minutes to ensure we still do not send
-  tc->loop(false);
-  assertNull(pClient->writeBuffer());
+  assertFalse(pClient->connected());
 }
 
 unittest(NoDeviceID) {
   pPushingBox->setDeviceID("");
   EthernetClient::startMockServer(pPushingBox->getServerDomain(), (uint32_t)0, 80);
-  EthernetClient *pClient = pPushingBox->getClient();
-  assertNull(pClient->writeBuffer());
+  assertFalse(pClient->connected());
   delay(60 * 20 * 1000);  // wait for 20 minutes to ensure we still do not send
   tc->loop(false);
-  assertNull(pClient->writeBuffer());
+  assertFalse(pClient->connected());
 }
 
 unittest_main()

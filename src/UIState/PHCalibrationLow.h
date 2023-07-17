@@ -21,5 +21,5 @@ public:
   void setValue(float value) override;
 
 private:
-  int numberOfCalibrationPoints;
+  int numberOfCalibrationPoints = 3;
 };

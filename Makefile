@@ -1,14 +1,11 @@
 LIBRARIES=/Users/jfoster/Documents/Arduino/libraries
 ARDUINO_CI=$(LIBRARIES)/TankController/vendor/bundle/ruby/3.2.0/bundler/gems/arduino_ci-bc9c7e5b3bc3/cpp
 SRC=$(LIBRARIES)/TankController/src
+TEST=$(LIBRARIES)/TankController/test
 BIN=$(LIBRARIES)/TankController/.arduino_ci
 
 FLAGS=-std=c++0x \
-  -shared \
-  -fPIC \
-  -Wl,-undefined,dynamic_lookup \
   -Wno-deprecated-declarations \
-  -L$(LIBRARIES)/TankController/.arduino_ci \
   -DARDUINO=100 \
   -g \
   -O1 \
@@ -47,6 +44,19 @@ INCLUDE=-I$(ARDUINO_CI)/arduino \
   -I$(LIBRARIES)/SdFat/src/common \
   -I$(LIBRARIES)/SdFat/src/iostream
 
+.PHONY : all
+all : $(BIN)/BlinkTest.cpp.bin 
+
+
+LIBS_SO=$(BIN)/libBusIO.so $(BIN)/libMAX31865.so $(BIN)/libPID.so $(BIN)/libEthernet.so \
+	$(BIN)/libLiquidCrystal.so $(BIN)/libRTClib.so $(BIN)/libKeypad.so $(BIN)/libSdFat.so \
+	$(BIN)/libarduino.so
+LIBS=-lBusIO -lMAX31865 -lPID -lEthernet -lLiquidCrystal -lRTClib -lKeypad -lSdFat -larduino
+GPP_TEST=g++ $(FLAGS) -L$(LIBRARIES)/TankController/.arduino_ci $(INCLUDE)
+
+$(BIN)/BlinkTest.cpp.bin: $(LIBS_SO) $(TEST)/BlinkTest.cpp
+	$(GPP_TEST) -o $(BIN)/BlinkTest.cpp.bin $(TEST)/BlinkTest.cpp $(LIBS)
+
 OBJECTS=$(BIN)/Arduino.o $(BIN)/Godmode.o $(BIN)/stdlib.o $(BIN)/ArduinoUnitTests.o \
   $(BIN)/TC_util.o $(BIN)/TankController.o $(BIN)/DataLogger_TC.o $(BIN)/DateTime_TC.o \
   $(BIN)/EEPROM_TC.o $(BIN)/EthernetServer_TC.o $(BIN)/Ethernet_TC.o $(BIN)/JSONBuilder.o \
@@ -60,193 +70,195 @@ OBJECTS=$(BIN)/Arduino.o $(BIN)/Godmode.o $(BIN)/stdlib.o $(BIN)/ArduinoUnitTest
   $(BIN)/SetChillOrHeat.o $(BIN)/SetGoogleSheetInterval.o $(BIN)/SetKD.o $(BIN)/SetKI.o \
   $(BIN)/SetKP.o $(BIN)/SetPHCalibClear.o $(BIN)/SetPHSetPoint.o $(BIN)/SetPHWithSine.o \
   $(BIN)/SetTankID.o $(BIN)/SetTempCalibClear.o $(BIN)/SetTempSetPoint.o $(BIN)/SetTempWithSine.o \
-  $(BIN)/SetTime.o $(BIN)/TemperatureCalibration.o $(BIN)/UIState.o $(BIN)/Wait.o \
-  $(BIN)/BusIO.o $(BIN)/MAX31865.o $(BIN)/PID.o $(BIN)/Ethernet.o $(BIN)/LiquidCrystal.o \
-  $(BIN)/RTClib.o $(BIN)/Keypad.o $(BIN)/SdFat.o
+  $(BIN)/SetTime.o $(BIN)/TemperatureCalibration.o $(BIN)/UIState.o $(BIN)/Wait.o
 $(BIN)/libarduino.so: $(OBJECTS)
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/libarduino.so $(OBJECTS)
+	g++ $(FLAGS) -shared -fPIC -Wl,-undefined,dynamic_lookup -L$(LIBRARIES)/TankController/.arduino_ci \
+	$(INCLUDE) -o $(BIN)/libarduino.so $(OBJECTS)
 
 $(BIN)/Arduino.o: $(ARDUINO_CI)/arduino/Arduino.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/Arduino.o $(ARDUINO_CI)/arduino/Arduino.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/Arduino.o $(ARDUINO_CI)/arduino/Arduino.cpp
 
 $(BIN)/Godmode.o: $(ARDUINO_CI)/arduino/Godmode.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/Godmode.o $(ARDUINO_CI)/arduino/Godmode.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/Godmode.o $(ARDUINO_CI)/arduino/Godmode.cpp
 
 $(BIN)/stdlib.o: $(ARDUINO_CI)/arduino/stdlib.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/stdlib.o $(ARDUINO_CI)/arduino/stdlib.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/stdlib.o $(ARDUINO_CI)/arduino/stdlib.cpp
 
 $(BIN)/ArduinoUnitTests.o: $(ARDUINO_CI)/unittest/ArduinoUnitTests.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/ArduinoUnitTests.o $(ARDUINO_CI)/unittest/ArduinoUnitTests.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/ArduinoUnitTests.o $(ARDUINO_CI)/unittest/ArduinoUnitTests.cpp
 
 $(BIN)/TC_util.o: $(SRC)/TC_util.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/TC_util.o $(SRC)/TC_util.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/TC_util.o $(SRC)/TC_util.cpp
 
 $(BIN)/TankController.o: $(SRC)/TankController.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/TankController.o $(SRC)/TankController.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/TankController.o $(SRC)/TankController.cpp
 
 $(BIN)/DataLogger_TC.o: $(SRC)/Devices/DataLogger_TC.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/DataLogger_TC.o $(SRC)/Devices/DataLogger_TC.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/DataLogger_TC.o $(SRC)/Devices/DataLogger_TC.cpp
 
 $(BIN)/DateTime_TC.o: $(SRC)/Devices/DateTime_TC.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/DateTime_TC.o $(SRC)/Devices/DateTime_TC.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/DateTime_TC.o $(SRC)/Devices/DateTime_TC.cpp
 
 $(BIN)/EEPROM_TC.o: $(SRC)/Devices/EEPROM_TC.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/EEPROM_TC.o $(SRC)/Devices/EEPROM_TC.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/EEPROM_TC.o $(SRC)/Devices/EEPROM_TC.cpp
 
 $(BIN)/EthernetServer_TC.o: $(SRC)/Devices/EthernetServer_TC.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/EthernetServer_TC.o $(SRC)/Devices/EthernetServer_TC.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/EthernetServer_TC.o $(SRC)/Devices/EthernetServer_TC.cpp
 
 $(BIN)/Ethernet_TC.o: $(SRC)/Devices/Ethernet_TC.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/Ethernet_TC.o $(SRC)/Devices/Ethernet_TC.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/Ethernet_TC.o $(SRC)/Devices/Ethernet_TC.cpp
 
 $(BIN)/JSONBuilder.o: $(SRC)/Devices/JSONBuilder.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/JSONBuilder.o $(SRC)/Devices/JSONBuilder.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/JSONBuilder.o $(SRC)/Devices/JSONBuilder.cpp
 
 $(BIN)/Keypad_TC.o: $(SRC)/Devices/Keypad_TC.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/Keypad_TC.o $(SRC)/Devices/Keypad_TC.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/Keypad_TC.o $(SRC)/Devices/Keypad_TC.cpp
 
 $(BIN)/LiquidCrystal_TC.o: $(SRC)/Devices/LiquidCrystal_TC.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/LiquidCrystal_TC.o $(SRC)/Devices/LiquidCrystal_TC.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/LiquidCrystal_TC.o $(SRC)/Devices/LiquidCrystal_TC.cpp
 
 $(BIN)/PHControl.o: $(SRC)/Devices/PHControl.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/PHControl.o $(SRC)/Devices/PHControl.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/PHControl.o $(SRC)/Devices/PHControl.cpp
 
 $(BIN)/PHProbe.o: $(SRC)/Devices/PHProbe.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/PHProbe.o $(SRC)/Devices/PHProbe.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/PHProbe.o $(SRC)/Devices/PHProbe.cpp
 
 $(BIN)/PID_TC.o: $(SRC)/Devices/PID_TC.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/PID_TC.o $(SRC)/Devices/PID_TC.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/PID_TC.o $(SRC)/Devices/PID_TC.cpp
 
 $(BIN)/PushingBox.o: $(SRC)/Devices/PushingBox.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/PushingBox.o $(SRC)/Devices/PushingBox.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/PushingBox.o $(SRC)/Devices/PushingBox.cpp
 
 $(BIN)/SD_TC.o: $(SRC)/Devices/SD_TC.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/SD_TC.o $(SRC)/Devices/SD_TC.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SD_TC.o $(SRC)/Devices/SD_TC.cpp
 
 $(BIN)/Serial_TC.o: $(SRC)/Devices/Serial_TC.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/Serial_TC.o $(SRC)/Devices/Serial_TC.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/Serial_TC.o $(SRC)/Devices/Serial_TC.cpp
 
 $(BIN)/TempProbe_TC.o: $(SRC)/Devices/TempProbe_TC.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/TempProbe_TC.o $(SRC)/Devices/TempProbe_TC.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/TempProbe_TC.o $(SRC)/Devices/TempProbe_TC.cpp
 
 $(BIN)/TemperatureControl.o: $(SRC)/Devices/TemperatureControl.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/TemperatureControl.o $(SRC)/Devices/TemperatureControl.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/TemperatureControl.o $(SRC)/Devices/TemperatureControl.cpp
 
 $(BIN)/CalibrationManagement.o: $(SRC)/UIState/CalibrationManagement.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/CalibrationManagement.o $(SRC)/UIState/CalibrationManagement.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/CalibrationManagement.o $(SRC)/UIState/CalibrationManagement.cpp
 
 $(BIN)/EnablePID.o: $(SRC)/UIState/EnablePID.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/EnablePID.o $(SRC)/UIState/EnablePID.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/EnablePID.o $(SRC)/UIState/EnablePID.cpp
 
 $(BIN)/MainMenu.o: $(SRC)/UIState/MainMenu.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/MainMenu.o $(SRC)/UIState/MainMenu.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/MainMenu.o $(SRC)/UIState/MainMenu.cpp
 
 $(BIN)/NumberCollectorState.o: $(SRC)/UIState/NumberCollectorState.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/NumberCollectorState.o $(SRC)/UIState/NumberCollectorState.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/NumberCollectorState.o $(SRC)/UIState/NumberCollectorState.cpp
 
 $(BIN)/PHCalibrationHigh.o: $(SRC)/UIState/PHCalibrationHigh.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/PHCalibrationHigh.o $(SRC)/UIState/PHCalibrationHigh.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/PHCalibrationHigh.o $(SRC)/UIState/PHCalibrationHigh.cpp
 
 $(BIN)/PHCalibrationLow.o: $(SRC)/UIState/PHCalibrationLow.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/PHCalibrationLow.o $(SRC)/UIState/PHCalibrationLow.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/PHCalibrationLow.o $(SRC)/UIState/PHCalibrationLow.cpp
 
 $(BIN)/PHCalibrationMid.o: $(SRC)/UIState/PHCalibrationMid.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/PHCalibrationMid.o $(SRC)/UIState/PHCalibrationMid.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/PHCalibrationMid.o $(SRC)/UIState/PHCalibrationMid.cpp
 
 $(BIN)/SeeDeviceAddress.o: $(SRC)/UIState/SeeDeviceAddress.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/SeeDeviceAddress.o $(SRC)/UIState/SeeDeviceAddress.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SeeDeviceAddress.o $(SRC)/UIState/SeeDeviceAddress.cpp
 
 $(BIN)/SeeDeviceUptime.o: $(SRC)/UIState/SeeDeviceUptime.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/SeeDeviceUptime.o $(SRC)/UIState/SeeDeviceUptime.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SeeDeviceUptime.o $(SRC)/UIState/SeeDeviceUptime.cpp
 
 $(BIN)/SeeFreeMemory.o: $(SRC)/UIState/SeeFreeMemory.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/SeeFreeMemory.o $(SRC)/UIState/SeeFreeMemory.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SeeFreeMemory.o $(SRC)/UIState/SeeFreeMemory.cpp
 
 $(BIN)/SeeGoogleMins.o: $(SRC)/UIState/SeeGoogleMins.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/SeeGoogleMins.o $(SRC)/UIState/SeeGoogleMins.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SeeGoogleMins.o $(SRC)/UIState/SeeGoogleMins.cpp
 
 $(BIN)/SeeLogFile.o: $(SRC)/UIState/SeeLogFile.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/SeeLogFile.o $(SRC)/UIState/SeeLogFile.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SeeLogFile.o $(SRC)/UIState/SeeLogFile.cpp
 
 $(BIN)/SeePHSlope.o: $(SRC)/UIState/SeePHSlope.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/SeePHSlope.o $(SRC)/UIState/SeePHSlope.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SeePHSlope.o $(SRC)/UIState/SeePHSlope.cpp
 
 $(BIN)/SeePIDConstants.o: $(SRC)/UIState/SeePIDConstants.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/SeePIDConstants.o $(SRC)/UIState/SeePIDConstants.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SeePIDConstants.o $(SRC)/UIState/SeePIDConstants.cpp
 
 $(BIN)/SeePh.o: $(SRC)/UIState/SeePh.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/SeePh.o $(SRC)/UIState/SeePh.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SeePh.o $(SRC)/UIState/SeePh.cpp
 
 $(BIN)/SeeTankID.o: $(SRC)/UIState/SeeTankID.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/SeeTankID.o $(SRC)/UIState/SeeTankID.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SeeTankID.o $(SRC)/UIState/SeeTankID.cpp
 
 $(BIN)/SeeTempCalOffset.o: $(SRC)/UIState/SeeTempCalOffset.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/SeeTempCalOffset.o $(SRC)/UIState/SeeTempCalOffset.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SeeTempCalOffset.o $(SRC)/UIState/SeeTempCalOffset.cpp
 
 $(BIN)/SeeVersion.o: $(SRC)/UIState/SeeVersion.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/SeeVersion.o $(SRC)/UIState/SeeVersion.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SeeVersion.o $(SRC)/UIState/SeeVersion.cpp
 
 $(BIN)/SetChillOrHeat.o: $(SRC)/UIState/SetChillOrHeat.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/SetChillOrHeat.o $(SRC)/UIState/SetChillOrHeat.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SetChillOrHeat.o $(SRC)/UIState/SetChillOrHeat.cpp
 
 $(BIN)/SetGoogleSheetInterval.o: $(SRC)/UIState/SetGoogleSheetInterval.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/SetGoogleSheetInterval.o $(SRC)/UIState/SetGoogleSheetInterval.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SetGoogleSheetInterval.o $(SRC)/UIState/SetGoogleSheetInterval.cpp
 
 $(BIN)/SetKD.o: $(SRC)/UIState/SetKD.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/SetKD.o $(SRC)/UIState/SetKD.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SetKD.o $(SRC)/UIState/SetKD.cpp
 
 $(BIN)/SetKI.o: $(SRC)/UIState/SetKI.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/SetKI.o $(SRC)/UIState/SetKI.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SetKI.o $(SRC)/UIState/SetKI.cpp
 
 $(BIN)/SetKP.o: $(SRC)/UIState/SetKP.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/SetKP.o $(SRC)/UIState/SetKP.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SetKP.o $(SRC)/UIState/SetKP.cpp
 
 $(BIN)/SetPHCalibClear.o: $(SRC)/UIState/SetPHCalibClear.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/SetPHCalibClear.o $(SRC)/UIState/SetPHCalibClear.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SetPHCalibClear.o $(SRC)/UIState/SetPHCalibClear.cpp
 
 $(BIN)/SetPHSetPoint.o: $(SRC)/UIState/SetPHSetPoint.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/SetPHSetPoint.o $(SRC)/UIState/SetPHSetPoint.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SetPHSetPoint.o $(SRC)/UIState/SetPHSetPoint.cpp
 
 $(BIN)/SetPHWithSine.o: $(SRC)/UIState/SetPHWithSine.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/SetPHWithSine.o $(SRC)/UIState/SetPHWithSine.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SetPHWithSine.o $(SRC)/UIState/SetPHWithSine.cpp
 
 $(BIN)/SetTankID.o: $(SRC)/UIState/SetTankID.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/SetTankID.o $(SRC)/UIState/SetTankID.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SetTankID.o $(SRC)/UIState/SetTankID.cpp
 
 $(BIN)/SetTempCalibClear.o: $(SRC)/UIState/SetTempCalibClear.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/SetTempCalibClear.o $(SRC)/UIState/SetTempCalibClear.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SetTempCalibClear.o $(SRC)/UIState/SetTempCalibClear.cpp
 
 $(BIN)/SetTempSetPoint.o: $(SRC)/UIState/SetTempSetPoint.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/SetTempSetPoint.o $(SRC)/UIState/SetTempSetPoint.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SetTempSetPoint.o $(SRC)/UIState/SetTempSetPoint.cpp
 
 $(BIN)/SetTempWithSine.o: $(SRC)/UIState/SetTempWithSine.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/SetTempWithSine.o $(SRC)/UIState/SetTempWithSine.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SetTempWithSine.o $(SRC)/UIState/SetTempWithSine.cpp
 
 $(BIN)/SetTime.o: $(SRC)/UIState/SetTime.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/SetTime.o $(SRC)/UIState/SetTime.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SetTime.o $(SRC)/UIState/SetTime.cpp
 
 $(BIN)/TemperatureCalibration.o: $(SRC)/UIState/TemperatureCalibration.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/TemperatureCalibration.o $(SRC)/UIState/TemperatureCalibration.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/TemperatureCalibration.o $(SRC)/UIState/TemperatureCalibration.cpp
 
 $(BIN)/UIState.o: $(SRC)/UIState/UIState.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/UIState.o $(SRC)/UIState/UIState.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/UIState.o $(SRC)/UIState/UIState.cpp
 
 $(BIN)/Wait.o: $(SRC)/UIState/Wait.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/Wait.o $(SRC)/UIState/Wait.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/Wait.o $(SRC)/UIState/Wait.cpp
 
 BUSIO=$(LIBRARIES)/Adafruit_BusIO/src/Adafruit_BusIO_Register.cpp \
   $(LIBRARIES)/Adafruit_BusIO/src/Adafruit_I2CDevice.cpp \
   $(LIBRARIES)/Adafruit_BusIO/src/Adafruit_SPIDevice.cpp
-$(BIN)/BusIO.o: $(BUSIO)
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/BusIO.o $(BUSIO)
+$(BIN)/libBusIO.so: $(BUSIO)
+	g++ -$(FLAGS) -shared -fPIC -Wl,-undefined,dynamic_lookup \
+	$(INCLUDE) -o $(BIN)/libBusIO.so $(BUSIO)
 
 MAX31865=$(LIBRARIES)/Adafruit_MAX31865_library/src/Adafruit_MAX31865.cpp \
   $(LIBRARIES)/Adafruit_MAX31865_library/src/Adafruit_MAX31865_CI.cpp
-$(BIN)/MAX31865.o: $(MAX31865)
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/MAX31865.o $(MAX31865)
+$(BIN)/libMAX31865.so: $(MAX31865)
+	g++ -$(FLAGS) -shared -fPIC -Wl,-undefined,dynamic_lookup \
+	$(INCLUDE) -o $(BIN)/libMAX31865.so $(MAX31865)
 
-$(BIN)/PID.o: $(LIBRARIES)/PID/src/PID_v1.cpp
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/PID.o $(LIBRARIES)/PID/src/PID_v1.cpp
+$(BIN)/libPID.so: $(LIBRARIES)/PID/src/PID_v1.cpp
+	g++ -$(FLAGS) -shared -fPIC -Wl,-undefined,dynamic_lookup \
+	$(INCLUDE) -o $(BIN)/libPID.so $(LIBRARIES)/PID/src/PID_v1.cpp
 
 ETHERNET=$(LIBRARIES)/Ethernet/src/Dhcp.cpp \
   $(LIBRARIES)/Ethernet/src/Dns.cpp \
@@ -259,13 +271,15 @@ ETHERNET=$(LIBRARIES)/Ethernet/src/Dhcp.cpp \
   $(LIBRARIES)/Ethernet/src/Ethernet_CI.cpp \
   $(LIBRARIES)/Ethernet/src/socket.cpp \
   $(LIBRARIES)/Ethernet/src/utility/w5100.cpp
-$(BIN)/Ethernet.o: $(ETHERNET)
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/Ethernet.o $(ETHERNET)
+$(BIN)/libEthernet.so: $(ETHERNET)
+	g++ -$(FLAGS) -shared -fPIC -Wl,-undefined,dynamic_lookup \
+	$(INCLUDE) -o $(BIN)/libEthernet.so $(ETHERNET)
 
 LCD=$(LIBRARIES)/LiquidCrystal/src/LiquidCrystal.cpp \
   $(LIBRARIES)/LiquidCrystal/src/LiquidCrystal_CI.cpp
-$(BIN)/LiquidCrystal.o: $(LCD)
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/LiquidCrystal.o $(LCD)
+$(BIN)/libLiquidCrystal.so: $(LCD)
+	g++ -$(FLAGS) -shared -fPIC -Wl,-undefined,dynamic_lookup \
+	$(INCLUDE) -o $(BIN)/libLiquidCrystal.so $(LCD)
 
 RTC=$(LIBRARIES)/RTClib/src/RTC_DS1307.cpp \
   $(LIBRARIES)/RTClib/src/RTC_DS3231.cpp \
@@ -275,14 +289,16 @@ RTC=$(LIBRARIES)/RTClib/src/RTC_DS1307.cpp \
   $(LIBRARIES)/RTClib/src/RTC_PCF8563.cpp \
   $(LIBRARIES)/RTClib/src/RTClib.cpp \
   $(LIBRARIES)/RTClib/src/RTClib_CI.cpp
-$(BIN)/RTClib.o: $(RTC)
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/RTClib.o $(RTC)
+$(BIN)/libRTClib.so: $(RTC)
+	g++ -$(FLAGS) -shared -fPIC -Wl,-undefined,dynamic_lookup \
+	$(INCLUDE) -o $(BIN)/libRTClib.so $(RTC)
 
 KEYPAD=$(LIBRARIES)/Keypad/src/Key.cpp \
   $(LIBRARIES)/Keypad/src/Keypad.cpp \
   $(LIBRARIES)/Keypad/src/Keypad_CI.cpp
-$(BIN)/Keypad.o: $(KEYPAD)
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/Keypad.o $(KEYPAD)
+$(BIN)/libKeypad.so: $(KEYPAD)
+	g++ -$(FLAGS) -shared -fPIC -Wl,-undefined,dynamic_lookup \
+	$(INCLUDE) -o $(BIN)/libKeypad.so $(KEYPAD)
 
 SDFAT=$(LIBRARIES)/SdFat/src/FreeStack.cpp \
   $(LIBRARIES)/SdFat/src/MinimumSerial.cpp \
@@ -328,5 +344,10 @@ SDFAT=$(LIBRARIES)/SdFat/src/FreeStack.cpp \
   $(LIBRARIES)/SdFat/src/iostream/StreamBaseClass.cpp \
   $(LIBRARIES)/SdFat/src/iostream/istream.cpp \
   $(LIBRARIES)/SdFat/src/iostream/ostream.cpp
-$(BIN)/SdFat.o: $(SDFAT)
-	g++ $(FLAGS) $(INCLUDE) -o $(BIN)/SdFat.o $(SDFAT)
+$(BIN)/libSdFat.so: $(SDFAT)
+	g++ -$(FLAGS) -shared -fPIC -Wl,-undefined,dynamic_lookup \
+	$(INCLUDE) -o $(BIN)/libSdFat.so $(SDFAT)
+
+.PHONY: clean
+clean:
+	rm -rf $(BIN)/*

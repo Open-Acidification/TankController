@@ -32,6 +32,13 @@ Wait::~Wait() {
   }
 }
 
+bool Wait::isInCalibration() {
+  if (nextState) {
+    return nextState->isInCalibration();
+  }
+  return false;
+}
+
 void Wait::loop() {
   if (endTime <= millis()) {
     this->setNextState(nextState);

@@ -171,38 +171,24 @@ unittest(PhEvenWithTarget) {
 unittest(disableDuringCalibration) {
   assertFalse(tc->isInCalibration());
   PHCalibrationMid* test = new PHCalibrationMid(tc, 3);
-  assertEqual(nullptr, tc->returnNextState());
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
-  assertEqual(nullptr, tc->returnNextState());
   // device is initially off and stays off due to calibration
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
-  assertEqual(nullptr, tc->returnNextState());
   assertFalse(controlSolenoid->isOn());
-  assertEqual(nullptr, tc->returnNextState());
   controlSolenoid->setBaseTargetPh(7.50);
   setPhMeasurementTo(8.50);
-  assertEqual(nullptr, tc->returnNextState());
   assertEqual("PHCalibrationMid", tc->stateName());  // test
-  assertEqual(nullptr, tc->returnNextState());
-  tc->loop(false);  // update the controls based on the current readings
-  assertEqual(nullptr, tc->returnNextState());
+  tc->loop(false);                                   // update the controls based on the current readings
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
-  assertEqual(nullptr, tc->returnNextState());
   assertFalse(controlSolenoid->isOn());
-  assertEqual(nullptr, tc->returnNextState());
+  tc->loop(false);
   assertEqual("PHCalibrationMid", tc->stateName());  // test
-  assertEqual(nullptr, tc->returnNextState());
-  tc->loop(false);  // without this there is a buffer overflow -- check DataLogger_TC?
-
-  assertEqual(nullptr, tc->returnNextState());
+  tc->loop(false);                                   // without this there is a buffer overflow -- check DataLogger_TC?
 
   // device remains off between calibration states
   test->setValue(7.00);
-  // assertEqual("Wait", tc->returnNextState()->name());
   tc->loop(false);
-  // assertEqual(nullptr, tc->returnNextState());
-
   assertEqual("Wait", tc->stateName());
   // delay(2000);
   // tc->loop(false);

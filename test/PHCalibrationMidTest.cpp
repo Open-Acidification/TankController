@@ -7,10 +7,9 @@
 #include "TankController.h"
 
 unittest(onePointMid) {
-  GodmodeState *state = GODMODE();
   TankController *tc = TankController::instance();
-  state->reset();
   PHProbe *pPHProbe = PHProbe::instance();
+  GODMODE()->reset();
   pPHProbe->setPh(7.125);
   float pH = pPHProbe->getPh();
   assertEqual(7.125, pH);
@@ -42,10 +41,9 @@ unittest(onePointMid) {
 }
 
 unittest(twoPointMid) {
-  GodmodeState *state = GODMODE();
   TankController *tc = TankController::instance();
-  state->reset();
   PHProbe *pPHProbe = PHProbe::instance();
+  GODMODE()->reset();
   pPHProbe->setPh(7.125);
   float pH = pPHProbe->getPh();
   assertEqual(7.125, pH);

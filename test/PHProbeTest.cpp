@@ -25,9 +25,9 @@ unittest(serialEvent1) {
   tc->serialEvent1();                       // fake interrupt
   assertEqual(0, pPHProbe->getPh());
   assertEqual("", pPHProbe->getSlopeResponse());
-  PHProbe::instance()->setPh(7.125);
-  PHProbe::instance()->setPhSlope();
-  assertEqual("?SLOPE,99.7,100.3,-0.89", pPHProbe->getSlopeResponse());
+  pPHProbe->setPh(7.125);
+  pPHProbe->setPhSlope();
+  assertEqual("99.7,100.3,-0.89", pPHProbe->getSlopeResponse());
   assertEqual(7.125, pPHProbe->getPh());
 }
 
@@ -84,7 +84,7 @@ unittest(sendSlopeRequest) {
   state->reset();
   state->serialPort[0].dataOut = "";
   PHProbe::instance()->sendSlopeRequest();
-  assertEqual("SLOPE,?\r", GODMODE()->serialPort[1].dataOut);
+  assertEqual("SLOPE,?\r", state->serialPort[1].dataOut);
 }
 
 // this test assumes that earlier tests have run and that there is a slope available
@@ -108,7 +108,6 @@ unittest(getSlope) {
 
 unittest(getPh) {
   GodmodeState *state = GODMODE();
-  TankController *tc = TankController::instance();
   state->serialPort[0].dataOut = "";
   state->reset();
   PHProbe::instance()->setPh(7.25);
@@ -121,7 +120,7 @@ unittest(clearCalibration) {
   GodmodeState *state = GODMODE();
   state->reset();
   PHProbe::instance()->clearCalibration();
-  assertEqual("Cal,clear\r", GODMODE()->serialPort[1].dataOut);
+  assertEqual("Cal,clear\r", state->serialPort[1].dataOut);
 }
 
 unittest_main()

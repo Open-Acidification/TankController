@@ -53,10 +53,9 @@ void PHProbe::sendCalibrationRequest() {
   // Sending request for calibration status
   Serial1.print(F("Cal,?\r"));
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
-  GodmodeState *state = GODMODE();
   char buffer[10];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("?Cal,%i\r"), this->calibrationPoints);
-  state->serialPort[1].dataIn = buffer;  // the queue of data waiting to be read
+  GODMODE()->serialPort[1].dataIn = buffer;  // the queue of data waiting to be read
 #endif
   strscpy_P(calibrationResponse, F("Requesting..."), sizeof(calibrationResponse));
 }
@@ -73,10 +72,9 @@ void PHProbe::sendSlopeRequest() {
   // Sending request for Calibration Slope
   Serial1.print(F("SLOPE,?\r"));
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
-  GodmodeState *state = GODMODE();
   char buffer[25];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("?SLOPE,99.7,100.3,-0.89\r"));
-  state->serialPort[1].dataIn = buffer;  // the queue of data waiting to be read
+  GODMODE()->serialPort[1].dataIn = buffer;  // the queue of data waiting to be read
 #endif
   strscpy_P(slopeResponse, F("Requesting..."), sizeof(slopeResponse));
 }
@@ -168,7 +166,6 @@ void PHProbe::setMidpointCalibration(float midpoint) {
 void PHProbe::setCalibrationPoints(int newValue) {
   this->calibrationPoints = newValue;
 }
-
 void PHProbe::setPh(float newValue) {
   char buffer[10];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("%i.%03i\r"), (int)newValue, (int)(newValue * 1000 + 0.5) % 1000);

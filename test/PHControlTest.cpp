@@ -200,14 +200,15 @@ unittest(disableDuringCalibration) {
   // device remains off between calibration states
   test->setValue(7.00);
   // assertEqual("Wait", tc->returnNextState()->name());
-  // tc->loop(false);
+  tc->loop(false);
   // assertEqual(nullptr, tc->returnNextState());
 
-  // assertEqual("Wait", tc->stateName());
+  assertEqual("Wait", tc->stateName());
   // delay(2000);
   // tc->loop(false);
   // assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   // assertFalse(controlSolenoid->isOn());
+  tc->loop(false);
 }
 
 unittest(RampGreaterThanZero) {

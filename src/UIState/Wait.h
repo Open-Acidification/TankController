@@ -9,9 +9,9 @@
 class Wait : public UIState {
 public:
   Wait(TankController* tc, uint16_t msDelay = 1000, UIState* nextState = nullptr);
-  // bool isInCalibration() {
-  //   return nextState->isInCalibration();
-  // }
+  bool isInCalibration() {
+    return nextState->isInCalibration();
+  }
   // watch to see if enough time has passed
   void loop() override;
   const __FlashStringHelper* name() override {
@@ -22,6 +22,10 @@ public:
   }
 
 private:
+  // instance variables
   uint32_t endTime = 0;
   UIState* nextState = nullptr;
+
+  // instance methods
+  ~Wait();
 };

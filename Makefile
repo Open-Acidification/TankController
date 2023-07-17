@@ -5,7 +5,7 @@ TEST=$(LIBRARIES)/TankController/test
 BIN=$(LIBRARIES)/TankController/.arduino_ci
 
 FLAGS=-std=c++0x \
-  -Wno-deprecated-declarations \
+	-Wno-deprecated-declarations \
   -DARDUINO=100 \
   -g \
   -O1 \
@@ -48,14 +48,30 @@ INCLUDE=-I$(ARDUINO_CI)/arduino \
 all : $(BIN)/BlinkTest.cpp.bin 
 
 
-LIBS_SO=$(BIN)/libBusIO.so $(BIN)/libMAX31865.so $(BIN)/libPID.so $(BIN)/libEthernet.so \
-	$(BIN)/libLiquidCrystal.so $(BIN)/libRTClib.so $(BIN)/libKeypad.so $(BIN)/libSdFat.so \
-	$(BIN)/libarduino.so
-LIBS=-lBusIO -lMAX31865 -lPID -lEthernet -lLiquidCrystal -lRTClib -lKeypad -lSdFat -larduino
 GPP_TEST=g++ $(FLAGS) -L$(LIBRARIES)/TankController/.arduino_ci $(INCLUDE)
 
-$(BIN)/BlinkTest.cpp.bin: $(LIBS_SO) $(TEST)/BlinkTest.cpp
-	$(GPP_TEST) -o $(BIN)/BlinkTest.cpp.bin $(TEST)/BlinkTest.cpp $(LIBS)
+$(BIN)/BlinkTest.cpp.bin: $(LIBS_SO) $(BIN)/libarduino.so $(TEST)/BlinkTest.cpp
+	$(GPP_TEST) -o $(BIN)/BlinkTest.cpp.bin $(TEST)/BlinkTest.cpp $(LIBS) -larduino
+
+BUSIO=$(BIN)/BusIO.o $(BIN)/I2CDevice.o $(BIN)/SPIDevice.o
+ETHERNET=$(BIN)/Dhcp.o $(BIN)/Dns.o $(BIN)/Ethernet.o $(BIN)/EthernetClient.o $(BIN)/EthernetClient_CI.o \
+$(BIN)/EthernetServer.o $(BIN)/EthernetServer_CI.o $(BIN)/EthernetUdp.o $(BIN)/Ethernet_CI.o \
+$(BIN)/socket.o $(BIN)/w5100.o
+LCD=$(BIN)/LiquidCrystal.o $(BIN)/LiquidCrystal_CI.o
+MAX31865=$(BIN)/MAX31865.o $(BIN)/MAX31865_CI.o
+RTC=$(BIN)/RTC_DS1307.o $(BIN)/RTC_DS3231.o $(BIN)/RTC_Micros.o $(BIN)/RTC_Millis.o \
+  $(BIN)/RTC_PCF8523.o $(BIN)/RTC_PCF8563.o $(BIN)/RTClib.o $(BIN)/RTClib_CI.o
+KEYPAD=$(BIN)/Key.o $(BIN)/Keypad.o $(BIN)/Keypad_CI.o
+SDFAT=$(BIN)/FreeStack.o $(BIN)/MinimumSerial.o $(BIN)/File_CI.o $(BIN)/SD_CI.o $(BIN)/ExFatDbg.o \
+  $(BIN)/ExFatFile.o $(BIN)/ExFatFilePrint.o $(BIN)/ExFatFileWrite.o $(BIN)/ExFatFormatter.o \
+  $(BIN)/ExFatName.o $(BIN)/ExFatPartition.o $(BIN)/ExFatVolume.o $(BIN)/FatDbg.o $(BIN)/FatFile.o \
+  $(BIN)/FatFormatter.o $(BIN)/FatName.o $(BIN)/FatPartition.o $(BIN)/FatVolume.o $(BIN)/FsFile.o \
+  $(BIN)/FsNew.o $(BIN)/FsVolume.o $(BIN)/SdCardInfo.o $(BIN)/SdSpiCard.o $(BIN)/SdioTeensy.o \
+  $(BIN)/SdSpiArtemis.o $(BIN)/SdSpiChipSelect.o $(BIN)/SdSpiDue.o $(BIN)/SdSpiESP.o $(BIN)/FatFileSFN.o \
+  $(BIN)/SdSpiParticle.o $(BIN)/SdSpiSTM32.o $(BIN)/SdSpiSTM32Core.o $(BIN)/SdSpiTeensy3.o \
+  $(BIN)/FmtNumber.o $(BIN)/FsCache.o $(BIN)/FsDateTime.o $(BIN)/FsName.o $(BIN)/FsStructs.o \
+  $(BIN)/FsUtf.o $(BIN)/PrintBasic.o $(BIN)/upcase.o $(BIN)/StdioStream.o $(BIN)/StreamBaseClass.o \
+  $(BIN)/istream.o $(BIN)/ostream.o
 
 OBJECTS=$(BIN)/Arduino.o $(BIN)/Godmode.o $(BIN)/stdlib.o $(BIN)/ArduinoUnitTests.o \
   $(BIN)/TC_util.o $(BIN)/TankController.o $(BIN)/DataLogger_TC.o $(BIN)/DateTime_TC.o \
@@ -70,10 +86,12 @@ OBJECTS=$(BIN)/Arduino.o $(BIN)/Godmode.o $(BIN)/stdlib.o $(BIN)/ArduinoUnitTest
   $(BIN)/SetChillOrHeat.o $(BIN)/SetGoogleSheetInterval.o $(BIN)/SetKD.o $(BIN)/SetKI.o \
   $(BIN)/SetKP.o $(BIN)/SetPHCalibClear.o $(BIN)/SetPHSetPoint.o $(BIN)/SetPHWithSine.o \
   $(BIN)/SetTankID.o $(BIN)/SetTempCalibClear.o $(BIN)/SetTempSetPoint.o $(BIN)/SetTempWithSine.o \
-  $(BIN)/SetTime.o $(BIN)/TemperatureCalibration.o $(BIN)/UIState.o $(BIN)/Wait.o
-$(BIN)/libarduino.so: $(OBJECTS)
+  $(BIN)/SetTime.o $(BIN)/TemperatureCalibration.o $(BIN)/UIState.o $(BIN)/Wait.o \
+	$(BUSIO) $(LCD) $(MAX31865) $(BIN)/PID.o $(ETHERNET) $(RTC) $(KEYPAD) $(SDFAT)
+
+$(BIN)/libarduino.so: $(OBJECTS) $(LIBS_SO)
 	g++ $(FLAGS) -shared -fPIC -Wl,-undefined,dynamic_lookup -L$(LIBRARIES)/TankController/.arduino_ci \
-	$(INCLUDE) -o $(BIN)/libarduino.so $(OBJECTS)
+	$(INCLUDE) -o $(BIN)/libarduino.so $(OBJECTS) $(LIBS)
 
 $(BIN)/Arduino.o: $(ARDUINO_CI)/arduino/Arduino.cpp
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/Arduino.o $(ARDUINO_CI)/arduino/Arduino.cpp
@@ -243,110 +261,231 @@ $(BIN)/UIState.o: $(SRC)/UIState/UIState.cpp
 $(BIN)/Wait.o: $(SRC)/UIState/Wait.cpp
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/Wait.o $(SRC)/UIState/Wait.cpp
 
-BUSIO=$(LIBRARIES)/Adafruit_BusIO/src/Adafruit_BusIO_Register.cpp \
-  $(LIBRARIES)/Adafruit_BusIO/src/Adafruit_I2CDevice.cpp \
-  $(LIBRARIES)/Adafruit_BusIO/src/Adafruit_SPIDevice.cpp
-$(BIN)/libBusIO.so: $(BUSIO)
-	g++ -$(FLAGS) -shared -fPIC -Wl,-undefined,dynamic_lookup \
-	$(INCLUDE) -o $(BIN)/libBusIO.so $(BUSIO)
+$(BIN)/BusIO.o: $(LIBRARIES)/Adafruit_BusIO/src/Adafruit_BusIO_Register.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/BusIO.o $(LIBRARIES)/Adafruit_BusIO/src/Adafruit_BusIO_Register.cpp
 
-MAX31865=$(LIBRARIES)/Adafruit_MAX31865_library/src/Adafruit_MAX31865.cpp \
-  $(LIBRARIES)/Adafruit_MAX31865_library/src/Adafruit_MAX31865_CI.cpp
-$(BIN)/libMAX31865.so: $(MAX31865)
-	g++ -$(FLAGS) -shared -fPIC -Wl,-undefined,dynamic_lookup \
-	$(INCLUDE) -o $(BIN)/libMAX31865.so $(MAX31865)
+$(BIN)/I2CDevice.o: $(LIBRARIES)/Adafruit_BusIO/src/Adafruit_I2CDevice.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/I2CDevice.o $(LIBRARIES)/Adafruit_BusIO/src/Adafruit_I2CDevice.cpp
 
-$(BIN)/libPID.so: $(LIBRARIES)/PID/src/PID_v1.cpp
-	g++ -$(FLAGS) -shared -fPIC -Wl,-undefined,dynamic_lookup \
-	$(INCLUDE) -o $(BIN)/libPID.so $(LIBRARIES)/PID/src/PID_v1.cpp
+$(BIN)/SPIDevice.o: $(LIBRARIES)/Adafruit_BusIO/src/Adafruit_SPIDevice.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SPIDevice.o $(LIBRARIES)/Adafruit_BusIO/src/Adafruit_SPIDevice.cpp
 
-ETHERNET=$(LIBRARIES)/Ethernet/src/Dhcp.cpp \
-  $(LIBRARIES)/Ethernet/src/Dns.cpp \
-  $(LIBRARIES)/Ethernet/src/Ethernet.cpp \
-  $(LIBRARIES)/Ethernet/src/EthernetClient.cpp \
-  $(LIBRARIES)/Ethernet/src/EthernetClient_CI.cpp \
-  $(LIBRARIES)/Ethernet/src/EthernetServer.cpp \
-  $(LIBRARIES)/Ethernet/src/EthernetServer_CI.cpp \
-  $(LIBRARIES)/Ethernet/src/EthernetUdp.cpp \
-  $(LIBRARIES)/Ethernet/src/Ethernet_CI.cpp \
-  $(LIBRARIES)/Ethernet/src/socket.cpp \
-  $(LIBRARIES)/Ethernet/src/utility/w5100.cpp
-$(BIN)/libEthernet.so: $(ETHERNET)
-	g++ -$(FLAGS) -shared -fPIC -Wl,-undefined,dynamic_lookup \
-	$(INCLUDE) -o $(BIN)/libEthernet.so $(ETHERNET)
+$(BIN)/MAX31865.o: $(LIBRARIES)/Adafruit_MAX31865_library/src/Adafruit_MAX31865.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/MAX31865.o $(LIBRARIES)/Adafruit_MAX31865_library/src/Adafruit_MAX31865.cpp
 
-LCD=$(LIBRARIES)/LiquidCrystal/src/LiquidCrystal.cpp \
-  $(LIBRARIES)/LiquidCrystal/src/LiquidCrystal_CI.cpp
-$(BIN)/libLiquidCrystal.so: $(LCD)
-	g++ -$(FLAGS) -shared -fPIC -Wl,-undefined,dynamic_lookup \
-	$(INCLUDE) -o $(BIN)/libLiquidCrystal.so $(LCD)
+$(BIN)/MAX31865_CI.o: $(LIBRARIES)/Adafruit_MAX31865_library/src/Adafruit_MAX31865_CI.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/MAX31865_CI.o $(LIBRARIES)/Adafruit_MAX31865_library/src/Adafruit_MAX31865_CI.cpp
 
-RTC=$(LIBRARIES)/RTClib/src/RTC_DS1307.cpp \
-  $(LIBRARIES)/RTClib/src/RTC_DS3231.cpp \
-  $(LIBRARIES)/RTClib/src/RTC_Micros.cpp \
-  $(LIBRARIES)/RTClib/src/RTC_Millis.cpp \
-  $(LIBRARIES)/RTClib/src/RTC_PCF8523.cpp \
-  $(LIBRARIES)/RTClib/src/RTC_PCF8563.cpp \
-  $(LIBRARIES)/RTClib/src/RTClib.cpp \
-  $(LIBRARIES)/RTClib/src/RTClib_CI.cpp
-$(BIN)/libRTClib.so: $(RTC)
-	g++ -$(FLAGS) -shared -fPIC -Wl,-undefined,dynamic_lookup \
-	$(INCLUDE) -o $(BIN)/libRTClib.so $(RTC)
+$(BIN)/PID.o: $(LIBRARIES)/PID/src/PID_v1.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/PID.o $(LIBRARIES)/PID/src/PID_v1.cpp
 
-KEYPAD=$(LIBRARIES)/Keypad/src/Key.cpp \
-  $(LIBRARIES)/Keypad/src/Keypad.cpp \
-  $(LIBRARIES)/Keypad/src/Keypad_CI.cpp
-$(BIN)/libKeypad.so: $(KEYPAD)
-	g++ -$(FLAGS) -shared -fPIC -Wl,-undefined,dynamic_lookup \
-	$(INCLUDE) -o $(BIN)/libKeypad.so $(KEYPAD)
+$(BIN)/Dhcp.o: $(LIBRARIES)/Ethernet/src/Dhcp.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/Dhcp.o $(LIBRARIES)/Ethernet/src/Dhcp.cpp
 
-SDFAT=$(LIBRARIES)/SdFat/src/FreeStack.cpp \
-  $(LIBRARIES)/SdFat/src/MinimumSerial.cpp \
-  $(LIBRARIES)/SdFat/src/ArduinoCI/File_CI.cpp \
-  $(LIBRARIES)/SdFat/src/ArduinoCI/SD_CI.cpp \
-  $(LIBRARIES)/SdFat/src/ExFatLib/ExFatDbg.cpp \
-  $(LIBRARIES)/SdFat/src/ExFatLib/ExFatFile.cpp \
-  $(LIBRARIES)/SdFat/src/ExFatLib/ExFatFilePrint.cpp \
-  $(LIBRARIES)/SdFat/src/ExFatLib/ExFatFileWrite.cpp \
-  $(LIBRARIES)/SdFat/src/ExFatLib/ExFatFormatter.cpp \
-  $(LIBRARIES)/SdFat/src/ExFatLib/ExFatName.cpp \
-  $(LIBRARIES)/SdFat/src/ExFatLib/ExFatPartition.cpp \
-  $(LIBRARIES)/SdFat/src/ExFatLib/ExFatVolume.cpp \
-  $(LIBRARIES)/SdFat/src/FatLib/FatDbg.cpp \
-  $(LIBRARIES)/SdFat/src/FatLib/FatFile.cpp \
-  $(LIBRARIES)/SdFat/src/FatLib/FatFormatter.cpp \
-  $(LIBRARIES)/SdFat/src/FatLib/FatName.cpp \
-  $(LIBRARIES)/SdFat/src/FatLib/FatPartition.cpp \
-  $(LIBRARIES)/SdFat/src/FatLib/FatVolume.cpp \
-  $(LIBRARIES)/SdFat/src/FsLib/FsFile.cpp \
-  $(LIBRARIES)/SdFat/src/FsLib/FsNew.cpp \
-  $(LIBRARIES)/SdFat/src/FsLib/FsVolume.cpp \
-  $(LIBRARIES)/SdFat/src/SdCard/SdCardInfo.cpp \
-  $(LIBRARIES)/SdFat/src/SdCard/SdSpiCard.cpp \
-  $(LIBRARIES)/SdFat/src/SdCard/SdioTeensy.cpp \
-  $(LIBRARIES)/SdFat/src/SpiDriver/SdSpiArtemis.cpp \
-  $(LIBRARIES)/SdFat/src/SpiDriver/SdSpiChipSelect.cpp \
-  $(LIBRARIES)/SdFat/src/SpiDriver/SdSpiDue.cpp \
-  $(LIBRARIES)/SdFat/src/SpiDriver/SdSpiESP.cpp \
-  $(LIBRARIES)/SdFat/src/SpiDriver/SdSpiParticle.cpp \
-  $(LIBRARIES)/SdFat/src/SpiDriver/SdSpiSTM32.cpp \
-  $(LIBRARIES)/SdFat/src/SpiDriver/SdSpiSTM32Core.cpp \
-  $(LIBRARIES)/SdFat/src/SpiDriver/SdSpiTeensy3.cpp \
-  $(LIBRARIES)/SdFat/src/common/FmtNumber.cpp \
-  $(LIBRARIES)/SdFat/src/common/FsCache.cpp \
-  $(LIBRARIES)/SdFat/src/common/FsDateTime.cpp \
-  $(LIBRARIES)/SdFat/src/common/FsName.cpp \
-  $(LIBRARIES)/SdFat/src/common/FsStructs.cpp \
-  $(LIBRARIES)/SdFat/src/common/FsUtf.cpp \
-  $(LIBRARIES)/SdFat/src/common/PrintBasic.cpp \
-  $(LIBRARIES)/SdFat/src/common/upcase.cpp \
-  $(LIBRARIES)/SdFat/src/iostream/StdioStream.cpp \
-  $(LIBRARIES)/SdFat/src/iostream/StreamBaseClass.cpp \
-  $(LIBRARIES)/SdFat/src/iostream/istream.cpp \
-  $(LIBRARIES)/SdFat/src/iostream/ostream.cpp
-$(BIN)/libSdFat.so: $(SDFAT)
-	g++ -$(FLAGS) -shared -fPIC -Wl,-undefined,dynamic_lookup \
-	$(INCLUDE) -o $(BIN)/libSdFat.so $(SDFAT)
+$(BIN)/Dns.o: $(LIBRARIES)/Ethernet/src/Dns.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/Dns.o $(LIBRARIES)/Ethernet/src/Dns.cpp
+
+$(BIN)/Ethernet.o: $(LIBRARIES)/Ethernet/src/Ethernet.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/Ethernet.o $(LIBRARIES)/Ethernet/src/Ethernet.cpp
+
+$(BIN)/EthernetClient.o: $(LIBRARIES)/Ethernet/src/EthernetClient.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/EthernetClient.o $(LIBRARIES)/Ethernet/src/EthernetClient.cpp
+
+$(BIN)/EthernetClient_CI.o: $(LIBRARIES)/Ethernet/src/EthernetClient_CI.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/EthernetClient_CI.o $(LIBRARIES)/Ethernet/src/EthernetClient_CI.cpp
+
+$(BIN)/EthernetServer.o: $(LIBRARIES)/Ethernet/src/EthernetServer.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/EthernetServer.o $(LIBRARIES)/Ethernet/src/EthernetServer.cpp
+
+$(BIN)/EthernetServer_CI.o: $(LIBRARIES)/Ethernet/src/EthernetServer_CI.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/EthernetServer_CI.o $(LIBRARIES)/Ethernet/src/EthernetServer_CI.cpp
+
+$(BIN)/EthernetUdp.o: $(LIBRARIES)/Ethernet/src/EthernetUdp.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/EthernetUdp.o $(LIBRARIES)/Ethernet/src/EthernetUdp.cpp
+
+$(BIN)/Ethernet_CI.o: $(LIBRARIES)/Ethernet/src/Ethernet_CI.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/Ethernet_CI.o $(LIBRARIES)/Ethernet/src/Ethernet_CI.cpp
+
+$(BIN)/socket.o: $(LIBRARIES)/Ethernet/src/socket.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/socket.o $(LIBRARIES)/Ethernet/src/socket.cpp
+
+$(BIN)/w5100.o: $(LIBRARIES)/Ethernet/src/utility/w5100.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/w5100.o $(LIBRARIES)/Ethernet/src/utility/w5100.cpp
+
+$(BIN)/LiquidCrystal.o: $(LIBRARIES)/LiquidCrystal/src/LiquidCrystal.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/LiquidCrystal.o $(LIBRARIES)/LiquidCrystal/src/LiquidCrystal.cpp
+
+$(BIN)/LiquidCrystal_CI.o: $(LIBRARIES)/LiquidCrystal/src/LiquidCrystal_CI.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/LiquidCrystal_CI.o $(LIBRARIES)/LiquidCrystal/src/LiquidCrystal_CI.cpp
+
+$(BIN)/RTC_DS1307.o: $(LIBRARIES)/RTClib/src/RTC_DS1307.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/RTC_DS1307.o $(LIBRARIES)/RTClib/src/RTC_DS1307.cpp
+
+$(BIN)/RTC_DS3231.o: $(LIBRARIES)/RTClib/src/RTC_DS3231.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/RTC_DS3231.o $(LIBRARIES)/RTClib/src/RTC_DS3231.cpp
+
+$(BIN)/RTC_Micros.o: $(LIBRARIES)/RTClib/src/RTC_Micros.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/RTC_Micros.o $(LIBRARIES)/RTClib/src/RTC_Micros.cpp
+
+$(BIN)/RTC_Millis.o: $(LIBRARIES)/RTClib/src/RTC_Millis.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/RTC_Millis.o $(LIBRARIES)/RTClib/src/RTC_Millis.cpp
+
+$(BIN)/RTC_PCF8523.o: $(LIBRARIES)/RTClib/src/RTC_PCF8523.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/RTC_PCF8523.o $(LIBRARIES)/RTClib/src/RTC_PCF8523.cpp
+
+$(BIN)/RTC_PCF8563.o: $(LIBRARIES)/RTClib/src/RTC_PCF8563.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/RTC_PCF8563.o $(LIBRARIES)/RTClib/src/RTC_PCF8563.cpp
+
+$(BIN)/RTClib.o: $(LIBRARIES)/RTClib/src/RTClib.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/RTClib.o $(LIBRARIES)/RTClib/src/RTClib.cpp
+
+$(BIN)/RTClib_CI.o: $(LIBRARIES)/RTClib/src/RTClib_CI.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/RTClib_CI.o $(LIBRARIES)/RTClib/src/RTClib_CI.cpp
+
+$(BIN)/Key.o: $(LIBRARIES)/Keypad/src/Key.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/Key.o $(LIBRARIES)/Keypad/src/Key.cpp
+
+$(BIN)/Keypad.o: $(LIBRARIES)/Keypad/src/Keypad.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/Keypad.o $(LIBRARIES)/Keypad/src/Keypad.cpp
+
+$(BIN)/Keypad_CI.o: $(LIBRARIES)/Keypad/src/Keypad_CI.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/Keypad_CI.o $(LIBRARIES)/Keypad/src/Keypad_CI.cpp
+
+
+$(BIN)/FreeStack.o: $(LIBRARIES)/SdFat/src/FreeStack.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/FreeStack.o $(LIBRARIES)/SdFat/src/FreeStack.cpp
+
+$(BIN)/MinimumSerial.o: $(LIBRARIES)/SdFat/src/MinimumSerial.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/MinimumSerial.o $(LIBRARIES)/SdFat/src/MinimumSerial.cpp
+
+$(BIN)/File_CI.o: $(LIBRARIES)/SdFat/src/ArduinoCI/File_CI.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/File_CI.o $(LIBRARIES)/SdFat/src/ArduinoCI/File_CI.cpp
+
+$(BIN)/SD_CI.o: $(LIBRARIES)/SdFat/src/ArduinoCI/SD_CI.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SD_CI.o $(LIBRARIES)/SdFat/src/ArduinoCI/SD_CI.cpp
+
+$(BIN)/ExFatDbg.o: $(LIBRARIES)/SdFat/src/ExFatLib/ExFatDbg.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/ExFatDbg.o $(LIBRARIES)/SdFat/src/ExFatLib/ExFatDbg.cpp
+
+$(BIN)/ExFatFile.o: $(LIBRARIES)/SdFat/src/ExFatLib/ExFatFile.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/ExFatFile.o $(LIBRARIES)/SdFat/src/ExFatLib/ExFatFile.cpp
+
+$(BIN)/ExFatFilePrint.o: $(LIBRARIES)/SdFat/src/ExFatLib/ExFatFilePrint.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/ExFatFilePrint.o $(LIBRARIES)/SdFat/src/ExFatLib/ExFatFilePrint.cpp
+
+$(BIN)/ExFatFileWrite.o: $(LIBRARIES)/SdFat/src/ExFatLib/ExFatFileWrite.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/ExFatFileWrite.o $(LIBRARIES)/SdFat/src/ExFatLib/ExFatFileWrite.cpp
+
+$(BIN)/ExFatFormatter.o: $(LIBRARIES)/SdFat/src/ExFatLib/ExFatFormatter.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/ExFatFormatter.o $(LIBRARIES)/SdFat/src/ExFatLib/ExFatFormatter.cpp
+
+$(BIN)/ExFatName.o: $(LIBRARIES)/SdFat/src/ExFatLib/ExFatName.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/ExFatName.o $(LIBRARIES)/SdFat/src/ExFatLib/ExFatName.cpp
+
+$(BIN)/ExFatPartition.o: $(LIBRARIES)/SdFat/src/ExFatLib/ExFatPartition.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/ExFatPartition.o $(LIBRARIES)/SdFat/src/ExFatLib/ExFatPartition.cpp
+
+$(BIN)/ExFatVolume.o: $(LIBRARIES)/SdFat/src/ExFatLib/ExFatVolume.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/ExFatVolume.o $(LIBRARIES)/SdFat/src/ExFatLib/ExFatVolume.cpp
+
+$(BIN)/FatDbg.o: $(LIBRARIES)/SdFat/src/FatLib/FatDbg.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/FatDbg.o $(LIBRARIES)/SdFat/src/FatLib/FatDbg.cpp
+
+$(BIN)/FatFile.o: $(LIBRARIES)/SdFat/src/FatLib/FatFile.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/FatFile.o $(LIBRARIES)/SdFat/src/FatLib/FatFile.cpp
+
+$(BIN)/FatFileSFN.o: $(LIBRARIES)/SdFat/src/FatLib/FatFileSFN.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/FatFileSFN.o $(LIBRARIES)/SdFat/src/FatLib/FatFileSFN.cpp
+
+$(BIN)/FatFormatter.o: $(LIBRARIES)/SdFat/src/FatLib/FatFormatter.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/FatFormatter.o $(LIBRARIES)/SdFat/src/FatLib/FatFormatter.cpp
+
+$(BIN)/FatName.o: $(LIBRARIES)/SdFat/src/FatLib/FatName.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/FatName.o $(LIBRARIES)/SdFat/src/FatLib/FatName.cpp
+
+$(BIN)/FatPartition.o: $(LIBRARIES)/SdFat/src/FatLib/FatPartition.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/FatPartition.o $(LIBRARIES)/SdFat/src/FatLib/FatPartition.cpp
+
+$(BIN)/FatVolume.o: $(LIBRARIES)/SdFat/src/FatLib/FatVolume.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/FatVolume.o $(LIBRARIES)/SdFat/src/FatLib/FatVolume.cpp
+
+$(BIN)/FsFile.o: $(LIBRARIES)/SdFat/src/FsLib/FsFile.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/FsFile.o $(LIBRARIES)/SdFat/src/FsLib/FsFile.cpp
+
+$(BIN)/FsNew.o: $(LIBRARIES)/SdFat/src/FsLib/FsNew.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/FsNew.o $(LIBRARIES)/SdFat/src/FsLib/FsNew.cpp
+
+$(BIN)/FsVolume.o: $(LIBRARIES)/SdFat/src/FsLib/FsVolume.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/FsVolume.o $(LIBRARIES)/SdFat/src/FsLib/FsVolume.cpp
+
+$(BIN)/SdCardInfo.o: $(LIBRARIES)/SdFat/src/SdCard/SdCardInfo.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SdCardInfo.o $(LIBRARIES)/SdFat/src/SdCard/SdCardInfo.cpp
+
+$(BIN)/SdSpiCard.o: $(LIBRARIES)/SdFat/src/SdCard/SdSpiCard.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SdSpiCard.o $(LIBRARIES)/SdFat/src/SdCard/SdSpiCard.cpp
+
+$(BIN)/SdioTeensy.o: $(LIBRARIES)/SdFat/src/SdCard/SdioTeensy.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SdioTeensy.o $(LIBRARIES)/SdFat/src/SdCard/SdioTeensy.cpp
+
+$(BIN)/SdSpiArtemis.o: $(LIBRARIES)/SdFat/src/SpiDriver/SdSpiArtemis.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SdSpiArtemis.o $(LIBRARIES)/SdFat/src/SpiDriver/SdSpiArtemis.cpp
+
+$(BIN)/SdSpiChipSelect.o: $(LIBRARIES)/SdFat/src/SpiDriver/SdSpiChipSelect.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SdSpiChipSelect.o $(LIBRARIES)/SdFat/src/SpiDriver/SdSpiChipSelect.cpp
+
+$(BIN)/SdSpiDue.o: $(LIBRARIES)/SdFat/src/SpiDriver/SdSpiDue.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SdSpiDue.o $(LIBRARIES)/SdFat/src/SpiDriver/SdSpiDue.cpp
+
+$(BIN)/SdSpiESP.o: $(LIBRARIES)/SdFat/src/SpiDriver/SdSpiESP.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SdSpiESP.o $(LIBRARIES)/SdFat/src/SpiDriver/SdSpiESP.cpp
+
+$(BIN)/SdSpiParticle.o: $(LIBRARIES)/SdFat/src/SpiDriver/SdSpiParticle.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SdSpiParticle.o $(LIBRARIES)/SdFat/src/SpiDriver/SdSpiParticle.cpp
+
+$(BIN)/SdSpiSTM32.o: $(LIBRARIES)/SdFat/src/SpiDriver/SdSpiSTM32.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SdSpiSTM32.o $(LIBRARIES)/SdFat/src/SpiDriver/SdSpiSTM32.cpp
+
+$(BIN)/SdSpiSTM32Core.o: $(LIBRARIES)/SdFat/src/SpiDriver/SdSpiSTM32Core.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SdSpiSTM32Core.o $(LIBRARIES)/SdFat/src/SpiDriver/SdSpiSTM32Core.cpp
+
+$(BIN)/SdSpiTeensy3.o: $(LIBRARIES)/SdFat/src/SpiDriver/SdSpiTeensy3.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SdSpiTeensy3.o $(LIBRARIES)/SdFat/src/SpiDriver/SdSpiTeensy3.cpp
+
+$(BIN)/FmtNumber.o: $(LIBRARIES)/SdFat/src/common/FmtNumber.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/FmtNumber.o $(LIBRARIES)/SdFat/src/common/FmtNumber.cpp
+
+$(BIN)/FsCache.o: $(LIBRARIES)/SdFat/src/common/FsCache.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/FsCache.o $(LIBRARIES)/SdFat/src/common/FsCache.cpp
+
+$(BIN)/FsDateTime.o: $(LIBRARIES)/SdFat/src/common/FsDateTime.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/FsDateTime.o $(LIBRARIES)/SdFat/src/common/FsDateTime.cpp
+
+$(BIN)/FsName.o: $(LIBRARIES)/SdFat/src/common/FsName.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/FsName.o $(LIBRARIES)/SdFat/src/common/FsName.cpp
+
+$(BIN)/FsStructs.o: $(LIBRARIES)/SdFat/src/common/FsStructs.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/FsStructs.o $(LIBRARIES)/SdFat/src/common/FsStructs.cpp
+
+$(BIN)/FsUtf.o: $(LIBRARIES)/SdFat/src/common/FsUtf.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/FsUtf.o $(LIBRARIES)/SdFat/src/common/FsUtf.cpp
+
+$(BIN)/PrintBasic.o: $(LIBRARIES)/SdFat/src/common/PrintBasic.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/PrintBasic.o $(LIBRARIES)/SdFat/src/common/PrintBasic.cpp
+
+$(BIN)/upcase.o: $(LIBRARIES)/SdFat/src/common/upcase.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/upcase.o $(LIBRARIES)/SdFat/src/common/upcase.cpp
+
+$(BIN)/StdioStream.o: $(LIBRARIES)/SdFat/src/iostream/StdioStream.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/StdioStream.o $(LIBRARIES)/SdFat/src/iostream/StdioStream.cpp
+
+$(BIN)/StreamBaseClass.o: $(LIBRARIES)/SdFat/src/iostream/StreamBaseClass.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/StreamBaseClass.o $(LIBRARIES)/SdFat/src/iostream/StreamBaseClass.cpp
+
+$(BIN)/istream.o: $(LIBRARIES)/SdFat/src/iostream/istream.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/istream.o $(LIBRARIES)/SdFat/src/iostream/istream.cpp
+
+$(BIN)/ostream.o: $(LIBRARIES)/SdFat/src/iostream/ostream.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/ostream.o $(LIBRARIES)/SdFat/src/iostream/ostream.cpp
 
 .PHONY: clean
 clean:

@@ -198,7 +198,7 @@ unittest(disableDuringCalibration) {
   assertEqual(nullptr, tc->returnNextState());
 
   // device remains off between calibration states
-  // test->setValue(7.00);
+  test->setValue(7.00);
   // assertEqual("Wait", tc->returnNextState()->name());
   // tc->loop(false);
   // assertEqual(nullptr, tc->returnNextState());

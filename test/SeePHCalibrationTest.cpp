@@ -12,7 +12,7 @@ unittest(testOutput) {
   TankController* tc = TankController::instance();
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
   PHProbe* pPHProbe = PHProbe::instance();
-  pPHProbe->setCalibrationPoints(3);
+  pPHProbe->setCalibration(2);
 
   assertEqual("MainMenu", tc->stateName());
   SeePHCalibration* test = new SeePHCalibration(tc);
@@ -23,8 +23,9 @@ unittest(testOutput) {
   assertEqual("PH Calibration: ", display->getLines().at(0));
   tc->loop(false);
   assertEqual("Requesting...   ", display->getLines().at(1));
+  tc->serialEvent1();  // fake interrupt
   tc->loop(false);
-  assertEqual("3 point         ", display->getLines().at(1));
+  assertEqual("2 point         ", display->getLines().at(1));
   // Return to mainMenu
   Keypad_TC::instance()->_getPuppet()->push_back('D');
   tc->loop(false);

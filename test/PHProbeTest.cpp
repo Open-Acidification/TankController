@@ -15,20 +15,57 @@ unittest(constructor) {
   assertEqual("*OK,0\rC,1\r", GODMODE()->serialPort[1].dataOut);
 }
 
+unittest(clearCalibration) {
+  GodmodeState *state = GODMODE();
+  state->reset();
+  assertEqual("", state->serialPort[1].dataOut);
+  PHProbe::instance()->clearCalibration();
+  assertEqual("Cal,clear\r", state->serialPort[1].dataOut);
+}
+
+unittest(sendCalibrationRequest) {
+  GodmodeState *state = GODMODE();
+  state->reset();
+  assertEqual("", state->serialPort[1].dataOut);
+  PHProbe::instance()->sendCalibrationRequest();
+  assertEqual("CAL,?\r", state->serialPort[1].dataOut);
+  char buffer[10];
+  PHProbe::instance()->getCalibration(buffer, sizeof(buffer));
+  assertEqual("Requesting...", buffer);
+}
+
+unittest(getCalibration) {
+  GodmodeState *state = GODMODE();
+  state->reset();
+  TankController *tc = TankController::instance();
+  PHProbe *pPHProbe = PHProbe::instance();
+  assertEqual("", state->serialPort[1].dataOut);
+  char buffer[10];
+  pPHProbe->setCalibration(0);
+  pPHProbe->getCalibration(buffer, sizeof(buffer));
+  assertEqual("0 point", buffer);
+  pPHProbe->setCalibration(3);
+  pPHProbe->getCalibration(buffer, sizeof(buffer));
+  assertEqual("3 point", buffer);
+}
+
 // tests getPh() and getSlopeResponse as well
 unittest(serialEvent1) {
   GodmodeState *state = GODMODE();
   state->reset();
   TankController *tc = TankController::instance();
-  state->serialPort[0].dataOut = "";
+  assertEqual("", state->serialPort[0].dataOut);
   PHProbe *pPHProbe = PHProbe::instance();  // the constructor writes data to the serial port
   tc->serialEvent1();                       // fake interrupt
+  assertEqual("", pPHProbe->getCalibrationResponse());
   assertEqual(0, pPHProbe->getPh());
   assertEqual("", pPHProbe->getSlopeResponse());
+  pPHProbe->setCalibration(2);
   pPHProbe->setPh(7.125);
   pPHProbe->setPhSlope();
-  assertEqual("99.7,100.3,-0.89", pPHProbe->getSlopeResponse());
+  assertEqual("2 point", pPHProbe->getCalibrationResponse());
   assertEqual(7.125, pPHProbe->getPh());
+  assertEqual("99.7,100.3,-0.89", pPHProbe->getSlopeResponse());
 }
 
 unittest(setTemperatureCompensation) {
@@ -82,9 +119,12 @@ unittest(setHighpointCalibration) {
 unittest(sendSlopeRequest) {
   GodmodeState *state = GODMODE();
   state->reset();
-  state->serialPort[0].dataOut = "";
+  assertEqual("", state->serialPort[1].dataOut);
   PHProbe::instance()->sendSlopeRequest();
   assertEqual("SLOPE,?\r", state->serialPort[1].dataOut);
+  char buffer[20];
+  PHProbe::instance()->getSlope(buffer, sizeof(buffer));
+  assertEqual("Requesting...", buffer);
 }
 
 // this test assumes that earlier tests have run and that there is a slope available
@@ -114,13 +154,6 @@ unittest(getPh) {
   PHProbe *pPHProbe = PHProbe::instance();
   float pH = pPHProbe->getPh();
   assertEqual(7.25, pH);
-}
-
-unittest(clearCalibration) {
-  GodmodeState *state = GODMODE();
-  state->reset();
-  PHProbe::instance()->clearCalibration();
-  assertEqual("Cal,clear\r", state->serialPort[1].dataOut);
 }
 
 unittest_main()

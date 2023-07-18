@@ -22,6 +22,7 @@ unittest(testOutput) {
   assertEqual("PH Slope:       ", display->getLines().at(0));
   tc->loop(false);
   assertEqual("Requesting...   ", display->getLines().at(1));
+  tc->serialEvent1();  // fake interrupt
   tc->loop(false);
   assertEqual("99.7,100.3,-0.89", display->getLines().at(1));
   // Return to mainMenu

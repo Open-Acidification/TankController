@@ -20,9 +20,6 @@ public:
   float getPh() {
     return value;
   }
-  const char* getSlopeResponse() const {
-    return slopeResponse;
-  }
   void clearCalibration();
   void getCalibration(char* buffer, int size);
   void getSlope(char* buffer, int size);
@@ -34,7 +31,13 @@ public:
   void setMidpointCalibration(float midpoint);
   void setTemperatureCompensation(float temperature);
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
-  void setCalibrationPoints(int newValue);
+  const char* getCalibrationResponse() const {
+    return calibrationResponse;
+  }
+  const char* getSlopeResponse() const {
+    return slopeResponse;
+  }
+  void setCalibration(int calibrationPoints = 0);
   void setPh(float newValue);
   void setPhSlope(const char* slope = "?SLOPE,99.7,100.3,-0.89\r");
 #endif
@@ -45,9 +48,6 @@ private:
   float value = 0;
   char calibrationResponse[14] = "";
   char slopeResponse[32] = "";
-#if defined(ARDUINO_CI_COMPILATION_MOCKS)
-  int calibrationPoints = 0;
-#endif
   // Methods
   PHProbe();
 };

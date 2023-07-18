@@ -139,7 +139,7 @@ unittest(printing) {
 unittest(printingNoCurrent) {
   LiquidCrystal_TC* testLcd = LiquidCrystal_TC::instance();
   std::vector<String> lines;
-  TestNoCurrentNumCollectorState test(TankController::instance());
+  TestNumCollectorStateWithNoCurrentValue test(TankController::instance());
   test.start();
   lines = testLcd->getLines();
   assertEqual("              0 ", lines.at(1));

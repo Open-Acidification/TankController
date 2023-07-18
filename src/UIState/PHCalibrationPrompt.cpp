@@ -15,10 +15,10 @@ void PHCalibrationPrompt::setValue(float value) {
   if (value == 1 || value == 2 || value == 3) {
     snprintf_P(buffer, sizeof(buffer), PSTR("%i-pt pH calib..."), (int)value);
     LiquidCrystal_TC::instance()->writeLine(buffer, 1);
-    this->setNextState((UIState*)new Wait(tc, 2000, new PHCalibrationMid(tc, value)));
+    this->setNextState(new Wait(tc, 2000, new PHCalibrationMid(tc, value)));
   } else {
     strscpy_P(buffer, F("Invalid entry"), sizeof(buffer));
     LiquidCrystal_TC::instance()->writeLine(buffer, 1);
-    this->setNextState((UIState*)new Wait(tc, 3000, new SeePHCalibration(tc)));
+    this->setNextState(new Wait(tc, 3000, new SeePHCalibration(tc)));
   }
 }

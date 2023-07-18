@@ -87,9 +87,9 @@ public:
   }
 };
 
-class TestNoCurrentNumCollectorState : public TestNumCollectorState {
+class TestNumCollectorStateWithNoCurrentValue : public TestNumCollectorState {
 public:
-  TestNoCurrentNumCollectorState(TankController* tc) : TestNumCollectorState(tc) {
+  TestNumCollectorStateWithNoCurrentValue(TankController* tc) : TestNumCollectorState(tc) {
   }
   bool showCurrentValue() {
     return false;

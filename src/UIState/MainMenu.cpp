@@ -69,10 +69,10 @@ MainMenu::MainMenu(TankController *tc) : UIState(tc) {
 void MainMenu::handleKey(char key) {
   switch (key) {
     case 'A':  // Set pH set_point
-      this->setNextState(static_cast<UIState *>(new SetPHSetPoint(tc)));
+      this->setNextState(new SetPHSetPoint(tc));
       break;
     case 'B':  // Set Temperature set_point
-      this->setNextState(static_cast<UIState *>(new SetTempSetPoint(tc)));
+      this->setNextState(new SetTempSetPoint(tc));
       break;
     case 'D':  // Reset
       level1 = 0;
@@ -144,34 +144,34 @@ void MainMenu::down() {
 void MainMenu::selectView() {
   switch (level2) {
     case VIEW_ADDRESS:
-      this->setNextState(static_cast<UIState *>(new SeeDeviceAddress(tc)));
+      this->setNextState(new SeeDeviceAddress(tc));
       break;
     case VIEW_FREE_MEMORY:
-      this->setNextState(static_cast<UIState *>(new SeeFreeMemory(tc)));
+      this->setNextState(new SeeFreeMemory(tc));
       break;
     case VIEW_GOOGLE_MINS:
-      this->setNextState(static_cast<UIState *>(new SeeGoogleMins(tc)));
+      this->setNextState(new SeeGoogleMins(tc));
       break;
     case VIEW_LOG_FILE:
-      this->setNextState(static_cast<UIState *>(new SeeLogFile(tc)));
+      this->setNextState(new SeeLogFile(tc));
       break;
     case VIEW_PH_SLOPE:
-      this->setNextState(static_cast<UIState *>(new SeePHSlope(tc)));
+      this->setNextState(new SeePHSlope(tc));
       break;
     case VIEW_PID:
-      this->setNextState(static_cast<UIState *>(new SeePIDConstants(tc)));
+      this->setNextState(new SeePIDConstants(tc));
       break;
     case VIEW_TANK_ID:
-      this->setNextState(static_cast<UIState *>(new SeeTankID(tc)));
+      this->setNextState(new SeeTankID(tc));
       break;
     case VIEW_TEMP_CAL_OFFSET:
-      this->setNextState(static_cast<UIState *>(new SeeTempCalOffset(tc)));
+      this->setNextState(new SeeTempCalOffset(tc));
       break;
     case VIEW_TIME:
-      this->setNextState(static_cast<UIState *>(new SeeDeviceUptime(tc)));
+      this->setNextState(new SeeDeviceUptime(tc));
       break;
     case VIEW_VERSION:
-      this->setNextState(static_cast<UIState *>(new SeeVersion(tc)));
+      this->setNextState(new SeeVersion(tc));
       break;
     default:
       break;
@@ -181,52 +181,52 @@ void MainMenu::selectView() {
 void MainMenu::selectSet() {
   switch (level2) {
     case SET_CALIBRATION:
-      this->setNextState(static_cast<UIState *>(new PHCalibrationMid(tc)));
+      this->setNextState(new PHCalibrationMid(tc));
       break;
     case SET_PH_CALIBRATION_CLEAR:
-      this->setNextState(static_cast<UIState *>(new SetPHCalibClear(tc)));
+      this->setNextState(new SetPHCalibClear(tc));
       break;
     case SET_TEMP_CALIBRATION_CLEAR:
-      this->setNextState(static_cast<UIState *>(new SetTempCalibClear(tc)));
+      this->setNextState(new SetTempCalibClear(tc));
       break;
     case SET_CHILL_OR_HEAT:
-      this->setNextState(static_cast<UIState *>(new SetChillOrHeat(tc)));
+      this->setNextState(new SetChillOrHeat(tc));
       break;
     case SET_GOOGLE_MINS:
-      this->setNextState(static_cast<UIState *>(new SetGoogleSheetInterval(tc)));
+      this->setNextState(new SetGoogleSheetInterval(tc));
       break;
     case SET_KD:
-      this->setNextState(static_cast<UIState *>(new SetKD(tc)));
+      this->setNextState(new SetKD(tc));
       break;
     case SET_KI:
-      this->setNextState(static_cast<UIState *>(new SetKI(tc)));
+      this->setNextState(new SetKI(tc));
       break;
     case SET_KP:
-      this->setNextState(static_cast<UIState *>(new SetKP(tc)));
+      this->setNextState(new SetKP(tc));
       break;
     case SET_PH:
-      this->setNextState(static_cast<UIState *>(new SetPHSetPoint(tc)));
+      this->setNextState(new SetPHSetPoint(tc));
       break;
     case SET_PH_WITH_SINE:
-      this->setNextState(static_cast<UIState *>(new SetPHWithSine(tc)));
+      this->setNextState(new SetPHWithSine(tc));
       break;
     case SET_TEMP_WITH_SINE:
-      this->setNextState(static_cast<UIState *>(new SetTempWithSine(tc)));
+      this->setNextState(new SetTempWithSine(tc));
       break;
     case SET_PID_ON_OFF:
-      this->setNextState(static_cast<UIState *>(new EnablePID(tc)));
+      this->setNextState(new EnablePID(tc));
       break;
     case SET_TANK_ID:
-      this->setNextState(static_cast<UIState *>(new SetTankID(tc)));
+      this->setNextState(new SetTankID(tc));
       break;
     case SET_TEMP_CALIBRATION:
-      this->setNextState(static_cast<UIState *>(new TemperatureCalibration(tc)));
+      this->setNextState(new TemperatureCalibration(tc));
       break;
     case SET_TEMPERATURE:
-      this->setNextState(static_cast<UIState *>(new SetTempSetPoint(tc)));
+      this->setNextState(new SetTempSetPoint(tc));
       break;
     case SET_TIME:
-      this->setNextState(static_cast<UIState *>(new SetTime(tc)));
+      this->setNextState(new SetTime(tc));
       break;
     default:
       break;

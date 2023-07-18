@@ -15,6 +15,26 @@ unittest(constructor) {
   assertEqual("*OK,0\rC,1\r", GODMODE()->serialPort[1].dataOut);
 }
 
+// tests getPh() and getSlopeResponse as well
+unittest(serialEvent1) {
+  GodmodeState *state = GODMODE();
+  state->reset();
+  TankController *tc = TankController::instance();
+  assertEqual("", state->serialPort[0].dataOut);
+  assertEqual("", state->serialPort[1].dataOut);
+  PHProbe *pPHProbe = PHProbe::instance();  // the constructor writes data to the serial port
+  tc->serialEvent1();                       // fake interrupt
+  assertEqual("", pPHProbe->getCalibrationResponse());
+  assertEqual(0, pPHProbe->getPh());
+  assertEqual("", pPHProbe->getSlopeResponse());
+  pPHProbe->setCalibration(2);
+  pPHProbe->setPh(7.125);
+  pPHProbe->setPhSlope();
+  assertEqual("2 point", pPHProbe->getCalibrationResponse());
+  assertEqual(7.125, pPHProbe->getPh());
+  assertEqual("99.7,100.3,-0.89", pPHProbe->getSlopeResponse());
+}
+
 unittest(clearCalibration) {
   GodmodeState *state = GODMODE();
   state->reset();
@@ -29,7 +49,7 @@ unittest(sendCalibrationRequest) {
   assertEqual("", state->serialPort[1].dataOut);
   PHProbe::instance()->sendCalibrationRequest();
   assertEqual("CAL,?\r", state->serialPort[1].dataOut);
-  char buffer[10];
+  char buffer[20];
   PHProbe::instance()->getCalibration(buffer, sizeof(buffer));
   assertEqual("Requesting...", buffer);
 }
@@ -47,25 +67,6 @@ unittest(getCalibration) {
   pPHProbe->setCalibration(3);
   pPHProbe->getCalibration(buffer, sizeof(buffer));
   assertEqual("3 point", buffer);
-}
-
-// tests getPh() and getSlopeResponse as well
-unittest(serialEvent1) {
-  GodmodeState *state = GODMODE();
-  state->reset();
-  TankController *tc = TankController::instance();
-  assertEqual("", state->serialPort[0].dataOut);
-  PHProbe *pPHProbe = PHProbe::instance();  // the constructor writes data to the serial port
-  tc->serialEvent1();                       // fake interrupt
-  assertEqual("", pPHProbe->getCalibrationResponse());
-  assertEqual(0, pPHProbe->getPh());
-  assertEqual("", pPHProbe->getSlopeResponse());
-  pPHProbe->setCalibration(2);
-  pPHProbe->setPh(7.125);
-  pPHProbe->setPhSlope();
-  assertEqual("2 point", pPHProbe->getCalibrationResponse());
-  assertEqual(7.125, pPHProbe->getPh());
-  assertEqual("99.7,100.3,-0.89", pPHProbe->getSlopeResponse());
 }
 
 unittest(setTemperatureCompensation) {

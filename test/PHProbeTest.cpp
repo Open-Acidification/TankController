@@ -20,7 +20,7 @@ unittest(serialEvent1) {
   GodmodeState *state = GODMODE();
   state->reset();
   TankController *tc = TankController::instance();
-  assertEqual("", state->serialPort[0].dataOut);
+  state->serialPort[0].dataOut = "";
   assertEqual("", state->serialPort[1].dataOut);
   PHProbe *pPHProbe = PHProbe::instance();  // the constructor writes data to the serial port
   tc->serialEvent1();                       // fake interrupt

@@ -17,8 +17,8 @@ void PHCalibrationMid::setValue(float value) {
   floattostrf(value, 5, 3, buffer + strnlen(buffer, sizeof(buffer)), 7);  // "New Mid = 12.345"
   LiquidCrystal_TC::instance()->writeLine(buffer, 1);
   if (this->numberOfCalibrationPoints > 1) {
-    this->setNextState((UIState*)new Wait(tc, 3000, new PHCalibrationLow(tc, this->numberOfCalibrationPoints)));
+    this->setNextState(new Wait(tc, 3000, new PHCalibrationLow(tc, this->numberOfCalibrationPoints)));
   } else {
-    this->setNextState((UIState*)new Wait(tc, 3000, new SeePHCalibration(tc)));
+    this->setNextState(new Wait(tc, 3000, new SeePHCalibration(tc)));
   }
 }

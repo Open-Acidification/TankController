@@ -224,9 +224,10 @@ KEYPAD=$(BIN)/Key.o $(BIN)/Keypad.o $(BIN)/Keypad_CI.o
 SDFAT=$(BIN)/FreeStack.o $(BIN)/MinimumSerial.o $(BIN)/File_CI.o $(BIN)/SD_CI.o $(BIN)/ExFatDbg.o \
   $(BIN)/ExFatFile.o $(BIN)/ExFatFilePrint.o $(BIN)/ExFatFileWrite.o $(BIN)/ExFatFormatter.o \
   $(BIN)/ExFatName.o $(BIN)/ExFatPartition.o $(BIN)/ExFatVolume.o $(BIN)/FatDbg.o $(BIN)/FatFile.o \
+	$(BIN)/FatFileLFN.o  $(BIN)/FatFileSFN.o \
   $(BIN)/FatFormatter.o $(BIN)/FatName.o $(BIN)/FatPartition.o $(BIN)/FatVolume.o $(BIN)/FsFile.o \
   $(BIN)/FsNew.o $(BIN)/FsVolume.o $(BIN)/SdCardInfo.o $(BIN)/SdSpiCard.o $(BIN)/SdioTeensy.o \
-  $(BIN)/SdSpiArtemis.o $(BIN)/SdSpiChipSelect.o $(BIN)/SdSpiDue.o $(BIN)/SdSpiESP.o $(BIN)/FatFileSFN.o \
+  $(BIN)/SdSpiArtemis.o $(BIN)/SdSpiChipSelect.o $(BIN)/SdSpiDue.o $(BIN)/SdSpiESP.o \
   $(BIN)/SdSpiParticle.o $(BIN)/SdSpiSTM32.o $(BIN)/SdSpiSTM32Core.o $(BIN)/SdSpiTeensy3.o \
   $(BIN)/FmtNumber.o $(BIN)/FsCache.o $(BIN)/FsDateTime.o $(BIN)/FsName.o $(BIN)/FsStructs.o \
   $(BIN)/FsUtf.o $(BIN)/PrintBasic.o $(BIN)/upcase.o $(BIN)/StdioStream.o $(BIN)/StreamBaseClass.o \
@@ -552,6 +553,9 @@ $(BIN)/FatDbg.o: $(LIBRARIES)/SdFat/src/FatLib/FatDbg.cpp
 
 $(BIN)/FatFile.o: $(LIBRARIES)/SdFat/src/FatLib/FatFile.cpp
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/FatFile.o $(LIBRARIES)/SdFat/src/FatLib/FatFile.cpp
+
+$(BIN)/FatFileLFN.o: $(LIBRARIES)/SdFat/src/FatLib/FatFileLFN.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/FatFileLFN.o $(LIBRARIES)/SdFat/src/FatLib/FatFileLFN.cpp
 
 $(BIN)/FatFileSFN.o: $(LIBRARIES)/SdFat/src/FatLib/FatFileSFN.cpp
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/FatFileSFN.o $(LIBRARIES)/SdFat/src/FatLib/FatFileSFN.cpp

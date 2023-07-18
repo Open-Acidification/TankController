@@ -17,9 +17,9 @@ void UIState::handleKey(char key) {
 
 void UIState::returnToMainMenu(uint16_t msDelay) {
   if (msDelay) {
-    this->setNextState((UIState*)new Wait(tc, msDelay));
+    this->setNextState(new Wait(tc, msDelay));
   } else {
-    this->setNextState((UIState*)new MainMenu(tc));
+    this->setNextState(new MainMenu(tc));
   }
 }
 

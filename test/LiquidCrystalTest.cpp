@@ -5,6 +5,7 @@
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "TankController.h"
+#include "Version.h"
 
 unittest(loop) {
   TankController* tank = TankController::instance();
@@ -19,10 +20,7 @@ unittest(loop) {
   assertEqual(16, lines.at(0).length());
   assertEqual(16, lines.at(1).length());
   assertEqual("Tank Controller ", lines.at(0));
-  assertEqual(
-      "v"  // separating the 'v' allows a word-search to find the number
-      "23.7.0  loading",
-      lines.at(1));
+  assertEqual(VERSION, lines.at(1));
 }
 
 unittest(writeLine) {

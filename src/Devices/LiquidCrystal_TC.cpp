@@ -37,9 +37,7 @@ void LiquidCrystal_TC::splashScreen(const char* version) {
   clear();
   print(F("Tank Controller "));
   setCursor(0, 1);
-  print('v');
   print(version);
-  print(F(" loading"));
 }
 
 /**

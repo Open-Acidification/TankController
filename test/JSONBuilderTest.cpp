@@ -9,6 +9,8 @@
 #include "Devices/TempProbe_TC.h"
 #include "Devices/TemperatureControl.h"
 #include "TankController.h"
+#include "Version.h"
+
 /**
  * Test correctness of JSON output from JSONBuilder
  */
@@ -46,7 +48,8 @@ unittest(currentData) {
       "\"PID\":\"ON\","
       "\"TankID\":0,"
       "\"Uptime\":\"0d 0h 0m 1s\","
-      "\"Version\":\"23.7.0 \""
+      "\"Version\":\"" VERSION
+      "\""
       "}";
   assertEqual(expected, text);
 }

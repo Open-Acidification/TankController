@@ -5,6 +5,7 @@
 #include "../src/Devices/LiquidCrystal_TC.h"
 #include "../src/TankController.h"
 #include "../src/UIState/SeeVersion.h"
+#include "Version.h"
 
 unittest(testOutput) {
   TankController* tc = TankController::instance();
@@ -17,7 +18,7 @@ unittest(testOutput) {
   // Test the output
   tc->loop(false);
   assertEqual("Software Version", display->getLines().at(0));
-  assertEqual("23.7.0          ", display->getLines().at(1));
+  assertEqual(VERSION, display->getLines().at(1));
   // Return to mainMenu
   Keypad_TC::instance()->_getPuppet()->push_back('D');
   tc->loop(false);

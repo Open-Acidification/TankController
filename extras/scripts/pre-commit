@@ -1,0 +1,9 @@
+version=`git describe --tags`
+changes=`git diff | grep "+++" | grep -v "src/Version.h" | wc -l | xargs`
+if [[ "$changes" == "0" ]]
+then
+  echo "#define VERSION \"${version:0:16}\"" > src/Version.h
+else
+  echo "#define VERSION \"${version:0:15}+\"" > src/Version.h
+fi
+git add src/Version.h

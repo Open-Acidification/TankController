@@ -1,0 +1,2 @@
+version=`git describe --tags`
+echo "#define VERSION \"${version:0:15}+\"" > src/Version.h

@@ -11,6 +11,7 @@
 #include "Devices/TemperatureControl.h"
 #include "SetTime.h"
 #include "TankController.h"
+#include "Version.h"
 
 unittest_setup() {
   GODMODE()->resetClock();
@@ -186,7 +187,7 @@ unittest(currentData) {
       "Content-Encoding: identity\r\n"
       "Content-Language: en-US\r\n"
       "Access-Control-Allow-Origin: *\r\n"
-      "Content-Length: 320\r\n"
+      "Content-Length: 329\r\n"
       "\r\n"
       "{"
       "\"pH\":8.125,"
@@ -205,7 +206,7 @@ unittest(currentData) {
       "\"PID\":\"ON\","
       "\"TankID\":0,"
       "\"Uptime\":\"0d 0h 0m 1s\","
-      "\"Version\":\"23.7.0 \""
+      "\"Version\":\"" VERSION "\""
       "}\r\n";
   assertEqual(expectedResponse, response);
   assertEqual(FINISHED, server->getState());

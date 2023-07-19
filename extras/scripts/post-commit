@@ -1,2 +1,3 @@
 version=`git describe --tags`
 echo "#define VERSION \"${version:0:15}+\"" > src/Version.h
+echo "const String gitVersion = '$version';" > extras/web_client/lib/model/version.dart

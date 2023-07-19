@@ -23,12 +23,7 @@ unittest(test) {
   enterKey('A');
   std::vector<String> lines2 = lc->getLines();
   assertEqual("A: Clear pH Cali", lines2[0]);
-  assertEqual("Cleared pH Calib", lines2[1]);
-  assertEqual("Wait", tc->stateName());
-  delay(3000);
-  tc->loop(false);  // queue MainMenu to be next
-  tc->loop(false);  // transition to MainMenu
-  assertEqual("MainMenu", tc->stateName());
+  assertEqual("SeePHCalibration", tc->stateName());
 }
 
 unittest_main()

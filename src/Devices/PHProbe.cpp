@@ -6,12 +6,6 @@
 #include "Devices/Serial_TC.h"
 #include "TC_util.h"
 
-#if defined(ARDUINO_CI_COMPILATION_MOCKS)
-#include <Arduino.h>
-
-#include "TankController.h"
-#endif
-
 //  class instance variables
 /**
  * static variable for singleton
@@ -87,11 +81,10 @@ void PHProbe::serialEvent1() {
         serial(F("PHProbe serialEvent1: \"%s\""), string.c_str());
         if (string.length() > 7 && memcmp_P(string.c_str(), F("?SLOPE,"), 7) == 0) {
           // for example "?SLOPE,16.1,100.0"
-          strscpy(slopeResponse, string.c_str() + 7, sizeof(slopeResponse));  // Flawfinder: ignore
+          strscpy(slopeResponse, string.c_str() + 7, sizeof(slopeResponse));
         } else if (string.length() > 5 && memcmp_P(string.c_str(), F("?CAL,"), 5) == 0) {
           // for example "?CAL,2"
-          snprintf_P(calibrationResponse, sizeof(calibrationResponse), PSTR("%s point"),
-                     string.c_str() + 5);  // Flawfinder: ignore
+          snprintf_P(calibrationResponse, sizeof(calibrationResponse), PSTR("%s pt calibrated"), string.c_str() + 5);
         }
       }
     }
@@ -135,6 +128,10 @@ void PHProbe::setMidpointCalibration(float midpoint) {
 }
 
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
+#include <Arduino.h>
+
+#include "TankController.h"
+
 void PHProbe::setCalibration(int calibrationPoints) {
   char buffer[10];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("?CAL,%i\r"), calibrationPoints);

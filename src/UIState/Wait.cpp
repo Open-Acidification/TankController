@@ -33,10 +33,7 @@ Wait::~Wait() {
 }
 
 bool Wait::isInCalibration() {
-  if (nextState) {
-    return nextState->isInCalibration();
-  }
-  return false;
+  return nextState ? nextState->isInCalibration() : false;
 }
 
 void Wait::loop() {

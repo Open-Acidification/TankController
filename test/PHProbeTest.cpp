@@ -30,7 +30,7 @@ unittest(serialEvent1) {
   pPHProbe->setCalibration(2);
   pPHProbe->setPh(7.125);
   pPHProbe->setPhSlope();
-  assertEqual("2 point", pPHProbe->getCalibrationResponse());
+  assertEqual("2 pt calibrated", pPHProbe->getCalibrationResponse());
   assertEqual(7.125, pPHProbe->getPh());
   assertEqual("99.7,100.3,-0.89", pPHProbe->getSlopeResponse());
 }
@@ -49,9 +49,7 @@ unittest(sendCalibrationRequest) {
   assertEqual("", state->serialPort[1].dataOut);
   PHProbe::instance()->sendCalibrationRequest();
   assertEqual("CAL,?\r", state->serialPort[1].dataOut);
-  char buffer[20];
-  PHProbe::instance()->getCalibration(buffer, sizeof(buffer));
-  assertEqual("Requesting...", buffer);
+  assertEqual("Requesting...", PHProbe::instance()->getCalibrationResponse());
 }
 
 unittest(getCalibration) {
@@ -60,13 +58,13 @@ unittest(getCalibration) {
   TankController *tc = TankController::instance();
   PHProbe *pPHProbe = PHProbe::instance();
   assertEqual("", state->serialPort[1].dataOut);
-  char buffer[10];
+  char buffer[17];
   pPHProbe->setCalibration(0);
   pPHProbe->getCalibration(buffer, sizeof(buffer));
-  assertEqual("0 point", buffer);
+  assertEqual("0 pt calibrated", buffer);
   pPHProbe->setCalibration(3);
   pPHProbe->getCalibration(buffer, sizeof(buffer));
-  assertEqual("3 point", buffer);
+  assertEqual("3 pt calibrated", buffer);
 }
 
 unittest(setTemperatureCompensation) {
@@ -123,9 +121,7 @@ unittest(sendSlopeRequest) {
   assertEqual("", state->serialPort[1].dataOut);
   PHProbe::instance()->sendSlopeRequest();
   assertEqual("SLOPE,?\r", state->serialPort[1].dataOut);
-  char buffer[20];
-  PHProbe::instance()->getSlope(buffer, sizeof(buffer));
-  assertEqual("Requesting...", buffer);
+  assertEqual("Requesting...", PHProbe::instance()->getSlopeResponse());
 }
 
 // this test assumes that earlier tests have run and that there is a slope available

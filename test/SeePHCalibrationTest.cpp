@@ -23,7 +23,7 @@ unittest(testOutput) {
   tc->loop(false);
   assertEqual("Requesting...   ", display->getLines().at(1));
   pPHProbe->setCalibration(2);
-  assertEqual("2 point         ", display->getLines().at(1));
+  assertEqual("2 pt calibrated ", display->getLines().at(1));
   // Return to mainMenu
   Keypad_TC::instance()->_getPuppet()->push_back('D');
   tc->loop(false);

@@ -1,4 +1,5 @@
 version=`git describe --tags`
+version="$version                    "
 changes=`git diff | grep "+++" | grep -v "Version.h" | grep -v "version.dart" | wc -l | xargs`
 if [[ "$changes" == "0" ]]
 then

@@ -23,6 +23,7 @@ unittest(test) {
   enterKey('A');
   std::vector<String> lines2 = lc->getLines();
   assertEqual("A: Clear pH Cali", lines2[0]);
+  tc->loop();
   assertEqual("SeePHCalibration", tc->stateName());
 }
 

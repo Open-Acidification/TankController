@@ -1,10 +1,10 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#include "Devices/PHProbe.h"
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
-#include "SeePHSlope.h"
+#include "PHProbe.h"
+#include "SeePHCalibration.h"
 #include "TankController.h"
 
 unittest(testOutput) {
@@ -14,16 +14,16 @@ unittest(testOutput) {
   PHProbe* pPHProbe = PHProbe::instance();
 
   assertEqual("MainMenu", tc->stateName());
-  SeePHSlope* test = new SeePHSlope(tc);
+  SeePHCalibration* test = new SeePHCalibration(tc);
   tc->setNextState(test, true);
-  assertEqual("SeePHSlope", tc->stateName());
+  assertEqual("SeePHCalibration", tc->stateName());
 
   // Test the output
-  assertEqual("PH Slope:       ", display->getLines().at(0));
+  assertEqual("PH Calibration: ", display->getLines().at(0));
   tc->loop(false);
   assertEqual("Requesting...   ", display->getLines().at(1));
-  pPHProbe->setPhSlope();
-  assertEqual("99.7,100.3,-0.89", display->getLines().at(1));
+  pPHProbe->setCalibration(2);
+  assertEqual("2 pt calibrated ", display->getLines().at(1));
   // Return to mainMenu
   Keypad_TC::instance()->_getPuppet()->push_back('D');
   tc->loop(false);

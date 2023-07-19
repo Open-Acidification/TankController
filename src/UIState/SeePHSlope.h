@@ -1,7 +1,7 @@
 /**
  * SeePHSlope.h
  *
- * Display the tank ID
+ * Display the pH slope
  */
 #pragma once
 #include "UIState.h"

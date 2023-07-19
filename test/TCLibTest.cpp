@@ -45,10 +45,6 @@ unittest_setup() {
   // set Kp, Ki, and Kd
   PID_TC::instance()->setTunings(123456.7, 12345.6, 1234.5);
 
-  // EEPROM_TC::instance()->setKP(123456.7);
-  // EEPROM_TC::instance()->setKI(12345.6);
-  // EEPROM_TC::instance()->setKD(1234.5);
-
   // clear SD card
   sd->format();
 }

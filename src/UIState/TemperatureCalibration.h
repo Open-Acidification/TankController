@@ -26,4 +26,7 @@ public:
     return F("Real Temperature");
   };
   void setValue(float value);
+  bool showCurrentValue() {
+    return false;
+  }
 };

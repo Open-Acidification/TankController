@@ -1,4 +1,6 @@
 #! /bin/bash
+(cd .git; mkdir -p hooks)
+cp extras/scripts/p*-commit .git/hooks/
 bundle config set --local path 'vendor/bundle'
 bundle install
 if [ -z "$1" ]; then

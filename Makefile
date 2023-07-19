@@ -77,19 +77,19 @@ $(BIN)/EEPROMTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/EEPROMTest.cpp
 $(BIN)/EnablePIDTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/EnablePIDTest.cpp
 	$(GPP_TEST) -o $(BIN)/EnablePIDTest.cpp.bin $(TEST)/EnablePIDTest.cpp -larduino
 
-$(BIN)/EthernetServerTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/EthernetServerTest.cpp
+$(BIN)/EthernetServerTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/EthernetServerTest.cpp $(SRC)/Version.h
 	$(GPP_TEST) -o $(BIN)/EthernetServerTest.cpp.bin $(TEST)/EthernetServerTest.cpp -larduino
 
 $(BIN)/EthernetTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/EthernetTest.cpp
 	$(GPP_TEST) -o $(BIN)/EthernetTest.cpp.bin $(TEST)/EthernetTest.cpp -larduino
 
-$(BIN)/JSONBuilderTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/JSONBuilderTest.cpp
+$(BIN)/JSONBuilderTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/JSONBuilderTest.cpp $(SRC)/Version.h
 	$(GPP_TEST) -o $(BIN)/JSONBuilderTest.cpp.bin $(TEST)/JSONBuilderTest.cpp -larduino
 
 $(BIN)/KeypadTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/KeypadTest.cpp
 	$(GPP_TEST) -o $(BIN)/KeypadTest.cpp.bin $(TEST)/KeypadTest.cpp -larduino
 
-$(BIN)/LiquidCrystalTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/LiquidCrystalTest.cpp
+$(BIN)/LiquidCrystalTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/LiquidCrystalTest.cpp $(SRC)/Version.h
 	$(GPP_TEST) -o $(BIN)/LiquidCrystalTest.cpp.bin $(TEST)/LiquidCrystalTest.cpp -larduino
 
 $(BIN)/MenuTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/MenuTest.cpp
@@ -152,7 +152,7 @@ $(BIN)/SeeTankIDTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SeeTankIDTest.cpp
 $(BIN)/SeeTempCalOffsetTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SeeTempCalOffsetTest.cpp
 	$(GPP_TEST) -o $(BIN)/SeeTempCalOffsetTest.cpp.bin $(TEST)/SeeTempCalOffsetTest.cpp -larduino
 
-$(BIN)/SeeVersionTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SeeVersionTest.cpp
+$(BIN)/SeeVersionTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SeeVersionTest.cpp $(SRC)/Version.h
 	$(GPP_TEST) -o $(BIN)/SeeVersionTest.cpp.bin $(TEST)/SeeVersionTest.cpp -larduino
 
 $(BIN)/SerialTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SerialTest.cpp
@@ -268,7 +268,7 @@ $(BIN)/ArduinoUnitTests.o: $(ARDUINO_CI)/unittest/ArduinoUnitTests.cpp
 $(BIN)/TC_util.o: $(SRC)/TC_util.cpp
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/TC_util.o $(SRC)/TC_util.cpp
 
-$(BIN)/TankController.o: $(SRC)/TankController.cpp
+$(BIN)/TankController.o: $(SRC)/TankController.cpp $(SRC)/Version.h
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/TankController.o $(SRC)/TankController.cpp
 
 $(BIN)/DataLogger_TC.o: $(SRC)/Devices/DataLogger_TC.cpp

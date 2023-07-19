@@ -21,8 +21,9 @@
 #include "TC_util.h"
 #include "UIState/MainMenu.h"
 #include "UIState/UIState.h"
+#include "Version.h"
 
-const char TANK_CONTROLLER_VERSION[] = "23.7.0 ";
+const char TANK_CONTROLLER_VERSION[] = VERSION;
 
 // ------------ Class Methods ------------
 /**

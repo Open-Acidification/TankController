@@ -1,0 +1,12 @@
+version=`git describe --tags`
+version="$version                    "
+changes=`git diff | grep "+++" | grep -v "Version.h" | grep -v "version.dart" | wc -l | xargs`
+if [[ "$changes" == "0" ]]
+then
+  version="${version:0:16}"
+else
+  version="${version:0:15}+"
+fi
+echo "#define VERSION \"$version\"" > src/Version.h
+echo "const String gitVersion = '$version';" > extras/web_client/lib/model/version.dart
+git add src/Version.h extras/web_client/lib/model/version.dart

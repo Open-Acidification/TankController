@@ -20,9 +20,8 @@ void enterKey(char key) {
 unittest(test) {
   SetPHCalibClear* test = new SetPHCalibClear(tc);
   tc->setNextState(test, true);
+  assertEqual("A: Clear pH Cali", lc->getLines().at(0));
   enterKey('A');
-  std::vector<String> lines2 = lc->getLines();
-  assertEqual("A: Clear pH Cali", lines2[0]);
   tc->loop();
   assertEqual("SeePHCalibration", tc->stateName());
 }

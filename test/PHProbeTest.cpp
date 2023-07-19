@@ -49,9 +49,7 @@ unittest(sendCalibrationRequest) {
   assertEqual("", state->serialPort[1].dataOut);
   PHProbe::instance()->sendCalibrationRequest();
   assertEqual("CAL,?\r", state->serialPort[1].dataOut);
-  char buffer[20];
-  PHProbe::instance()->getCalibration(buffer, sizeof(buffer));
-  assertEqual("Requesting...", buffer);
+  assertEqual("Requesting...", PHProbe::instance()->getCalibrationResponse());
 }
 
 unittest(getCalibration) {
@@ -123,9 +121,7 @@ unittest(sendSlopeRequest) {
   assertEqual("", state->serialPort[1].dataOut);
   PHProbe::instance()->sendSlopeRequest();
   assertEqual("SLOPE,?\r", state->serialPort[1].dataOut);
-  char buffer[20];
-  PHProbe::instance()->getSlope(buffer, sizeof(buffer));
-  assertEqual("Requesting...", buffer);
+  assertEqual("Requesting...", PHProbe::instance()->getSlopeResponse());
 }
 
 // this test assumes that earlier tests have run and that there is a slope available

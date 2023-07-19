@@ -30,7 +30,7 @@ unittest(serialEvent1) {
   pPHProbe->setCalibration(2);
   pPHProbe->setPh(7.125);
   pPHProbe->setPhSlope();
-  assertEqual("2 pt calibrated ", pPHProbe->getCalibrationResponse());
+  assertEqual("2 pt calibrated", pPHProbe->getCalibrationResponse());
   assertEqual(7.125, pPHProbe->getPh());
   assertEqual("99.7,100.3,-0.89", pPHProbe->getSlopeResponse());
 }
@@ -61,10 +61,10 @@ unittest(getCalibration) {
   char buffer[17];
   pPHProbe->setCalibration(0);
   pPHProbe->getCalibration(buffer, sizeof(buffer));
-  assertEqual("0 pt calibrated ", buffer);
+  assertEqual("0 pt calibrated", buffer);
   pPHProbe->setCalibration(3);
   pPHProbe->getCalibration(buffer, sizeof(buffer));
-  assertEqual("3 pt calibrated ", buffer);
+  assertEqual("3 pt calibrated", buffer);
 }
 
 unittest(setTemperatureCompensation) {

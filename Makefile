@@ -47,7 +47,8 @@ INCLUDE=-I$(ARDUINO_CI)/arduino \
 .PHONY : all
 all : $(BIN)/BlinkTest.cpp.bin $(BIN)/DateTimeTest.cpp.bin $(BIN)/EEPROMTest.cpp.bin \
   $(BIN)/EnablePIDTest.cpp.bin $(BIN)/EthernetServerTest.cpp.bin $(BIN)/EthernetTest.cpp.bin \
-  $(BIN)/JSONBuilderTest.cpp.bin $(BIN)/KeypadTest.cpp.bin $(BIN)/LiquidCrystalTest.cpp.bin \
+  $(BIN)/GetTimeTest.cpp.bin $(BIN)/JSONBuilderTest.cpp.bin $(BIN)/KeypadTest.cpp.bin \
+	$(BIN)/LiquidCrystalTest.cpp.bin \
   $(BIN)/MenuTest.cpp.bin $(BIN)/NumberCollectorStateTest.cpp.bin $(BIN)/PHCalibrationHighTest.cpp.bin \
   $(BIN)/PHCalibrationLowTest.cpp.bin $(BIN)/PHCalibrationMidTest.cpp.bin $(BIN)/PHControlTest.cpp.bin \
   $(BIN)/PHProbeTest.cpp.bin $(BIN)/PIDTest.cpp.bin $(BIN)/PushingBoxTest.cpp.bin $(BIN)/SDTest.cpp.bin \
@@ -82,6 +83,9 @@ $(BIN)/EthernetServerTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/EthernetServerTe
 
 $(BIN)/EthernetTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/EthernetTest.cpp
 	$(GPP_TEST) -o $(BIN)/EthernetTest.cpp.bin $(TEST)/EthernetTest.cpp -larduino
+
+$(BIN)/GetTimeTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/GetTimeTest.cpp
+	$(GPP_TEST) -o $(BIN)/GetTimeTest.cpp.bin $(TEST)/GetTimeTest.cpp -larduino
 
 $(BIN)/JSONBuilderTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/JSONBuilderTest.cpp $(SRC)/Version.h
 	$(GPP_TEST) -o $(BIN)/JSONBuilderTest.cpp.bin $(TEST)/JSONBuilderTest.cpp -larduino
@@ -235,7 +239,8 @@ SDFAT=$(BIN)/FreeStack.o $(BIN)/MinimumSerial.o $(BIN)/File_CI.o $(BIN)/SD_CI.o 
 
 OBJECTS=$(BIN)/Arduino.o $(BIN)/Godmode.o $(BIN)/stdlib.o $(BIN)/ArduinoUnitTests.o \
   $(BIN)/TC_util.o $(BIN)/TankController.o $(BIN)/DataLogger_TC.o $(BIN)/DateTime_TC.o \
-  $(BIN)/EEPROM_TC.o $(BIN)/EthernetServer_TC.o $(BIN)/Ethernet_TC.o $(BIN)/JSONBuilder.o \
+  $(BIN)/EEPROM_TC.o $(BIN)/EthernetServer_TC.o $(BIN)/Ethernet_TC.o $(BIN)/GetTime.o \
+	$(BIN)/JSONBuilder.o \
   $(BIN)/Keypad_TC.o $(BIN)/LiquidCrystal_TC.o $(BIN)/PHControl.o $(BIN)/PHProbe.o \
   $(BIN)/PID_TC.o $(BIN)/PushingBox.o $(BIN)/SD_TC.o $(BIN)/Serial_TC.o $(BIN)/TempProbe_TC.o \
   $(BIN)/TemperatureControl.o $(BIN)/CalibrationManagement.o $(BIN)/EnablePID.o $(BIN)/MainMenu.o \
@@ -288,6 +293,9 @@ $(BIN)/Ethernet_TC.o: $(SRC)/Devices/Ethernet_TC.cpp
 
 $(BIN)/JSONBuilder.o: $(SRC)/Devices/JSONBuilder.cpp
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/JSONBuilder.o $(SRC)/Devices/JSONBuilder.cpp
+
+$(BIN)/GetTime.o: $(SRC)/Devices/GetTime.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/GetTime.o $(SRC)/Devices/GetTime.cpp
 
 $(BIN)/Keypad_TC.o: $(SRC)/Devices/Keypad_TC.cpp
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/Keypad_TC.o $(SRC)/Devices/Keypad_TC.cpp

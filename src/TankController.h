@@ -15,7 +15,7 @@ class UIState;
 class TankController {
 public:
   // class methods
-  static TankController* instance(const char* pushingBoxID = nullptr);
+  static TankController* instance(const char* pushingBoxID = nullptr, int tzOffsetHrs = -7);
 
   // instance methods
   bool isInCalibration();

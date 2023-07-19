@@ -8,6 +8,9 @@
 // If it remains empty, then no data will be sent.
 const char pushingBoxID[] = "";
 
+// We query a web server for GMT time and then adjust for local time
+const int tzOffsetHrs = -7;
+
 #include "TankController.h"
 
 TankController *tank = nullptr;
@@ -23,7 +26,7 @@ void serialEvent1() {  // if the hardware serial port_1 receives a char
 void setup() {
   // the install process is followed by a reset and we get two startups
   delay(500);
-  tank = TankController::instance(pushingBoxID);
+  tank = TankController::instance(pushingBoxID, tzOffsetHrs);
   tank->setup();
 }
 

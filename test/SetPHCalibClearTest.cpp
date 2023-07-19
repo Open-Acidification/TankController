@@ -24,6 +24,7 @@ unittest(test) {
   enterKey('A');
   tc->loop();
   assertEqual("SeePHCalibration", tc->stateName());
+  assertFalse(tc->isInCalibration());
 }
 
 unittest_main()

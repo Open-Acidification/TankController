@@ -19,6 +19,6 @@ void PHCalibrationMid::setValue(float value) {
   if (this->numberOfCalibrationPoints > 1) {
     this->setNextState(new Wait(tc, 3000, new PHCalibrationLow(tc, this->numberOfCalibrationPoints)));
   } else {
-    this->setNextState(new Wait(tc, 3000, new SeePHCalibration(tc)));
+    this->setNextState(new Wait(tc, 3000, new SeePHCalibration(tc, true)));
   }
 }

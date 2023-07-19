@@ -23,6 +23,7 @@ unittest(test) {
   tc->loop(false);  // after the delay, Wait will call setNextState to prepare to go to SeePHCalibration
   tc->loop(false);  // updateState to SeePHCalibration
   assertEqual("SeePHCalibration", tc->stateName());
+  assertTrue(tc->isInCalibration());
 }
 
 unittest_main()

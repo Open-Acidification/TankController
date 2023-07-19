@@ -12,7 +12,7 @@ void SetPHCalibClear::handleKey(char key) {
   switch (key) {
     case 'A':  // Save (clear calibration)
       PHProbe::instance()->clearCalibration();
-      this->setNextState(new SeePHCalibration(tc));
+      this->setNextState(new SeePHCalibration(tc, false));
       break;
     case 'D':  // Don't save (cancel)
       returnToMainMenu();

@@ -19,6 +19,6 @@ void PHCalibrationPrompt::setValue(float value) {
   } else {
     strscpy_P(buffer, F("Invalid entry"), sizeof(buffer));
     LiquidCrystal_TC::instance()->writeLine(buffer, 1);
-    this->setNextState(new Wait(tc, 3000, new SeePHCalibration(tc)));
+    this->setNextState(new Wait(tc, 3000));
   }
 }

@@ -8,10 +8,11 @@
 
 class SeePHCalibration : public UIState {
 public:
-  SeePHCalibration(TankController* tc) : UIState(tc) {
+  SeePHCalibration(TankController* tc, bool inCalibration = false) : UIState(tc) {
+    this->inCalibration = inCalibration;
   }
   bool isInCalibration() override {
-    return true;
+    return inCalibration;
   }
   void loop() override;
   void start() override;
@@ -21,4 +22,7 @@ public:
   const __FlashStringHelper* prompt() override {
     return F("PH Calibration:");
   };
+
+private:
+  bool inCalibration;
 };

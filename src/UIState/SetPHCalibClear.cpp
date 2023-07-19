@@ -5,6 +5,8 @@
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHProbe.h"
+#include "SeePHCalibration.h"
+#include "Wait.h"
 
 void SetPHCalibClear::handleKey(char key) {
   switch (key) {

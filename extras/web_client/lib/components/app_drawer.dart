@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:tank_manager/model/app_data.dart';
 import 'package:tank_manager/model/tank.dart';
 import 'package:tank_manager/model/tc_interface.dart';
+import 'package:tank_manager/model/version.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({
@@ -40,50 +43,76 @@ class AppDrawer extends StatelessWidget {
     );
   }
 
+  Widget addTankButton(
+    TextEditingController nameController,
+    TextEditingController ipController,
+    AppData appData,
+  ) {
+    return Align(
+      alignment: Alignment.topRight,
+      child: FloatingActionButton(
+        onPressed: () async {
+          var newTank = Tank(nameController.text, ipController.text);
+          try {
+            await appData.addTank(newTank);
+          } catch (e) {
+            showAlertDialog(e.runtimeType.toString(), context);
+          }
+        },
+        tooltip: 'Add Tank',
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+
+  Widget removeTankButton(
+    TextEditingController nameController,
+    TextEditingController ipController,
+    AppData appData,
+  ) {
+    return Align(
+      alignment: Alignment.topRight,
+      child: FloatingActionButton(
+        onPressed: () {
+          appData.removeTank(appData.currentTank);
+          appData.clearTank();
+        },
+        tooltip: 'Remove Tank',
+        child: const Icon(Icons.delete_sharp),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    var appData = AppData.instance;
+    AppData appData = AppData.instance;
     final ipController = TextEditingController();
     final nameController = TextEditingController();
     List<Widget> tiles = <Widget>[];
-    appData.readTankList();
+    unawaited(appData.readTankList()); // this doesn't await!
     for (var tank in appData.tankList) {
       tiles.add(tile(tank));
     }
     return Drawer(
       backgroundColor: Colors.grey.shade600,
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          drawerHeader(context),
-          ...tiles,
-          field(nameController, 'Name', 'Tank 99'),
-          field(ipController, 'IP', '000.000.000.000'),
-          Align(
-            alignment: Alignment.topRight,
-            child: FloatingActionButton(
-              onPressed: () async {
-                var newTank = Tank(nameController.text, ipController.text);
-                try {
-                  await appData.addTank(newTank);
-                } catch (e) {
-                  showAlertDialog(e.runtimeType.toString(), context);
-                }
-              },
-              tooltip: 'Add Tank',
-              child: const Icon(Icons.add),
+      child: Column(
+        children: <Widget>[
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: <Widget>[
+                drawerHeader(context),
+                ...tiles,
+                field(nameController, 'Name', 'Tank 99'),
+                field(ipController, 'IP', '000.000.000.000'),
+                addTankButton(nameController, ipController, appData),
+                removeTankButton(nameController, ipController, appData),
+              ],
             ),
           ),
-          Align(
-            alignment: Alignment.topRight,
-            child: FloatingActionButton(
-              onPressed: () {
-                appData.removeTank(appData.currentTank);
-                appData.clearTank();
-              },
-              tooltip: 'Remove Tank',
-              child: const Icon(Icons.delete_sharp),
-            ),
+          const Align(
+            alignment: FractionalOffset.bottomCenter,
+            child: Text(gitVersion),
           ),
         ],
       ),

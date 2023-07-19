@@ -84,7 +84,7 @@ void PHProbe::serialEvent1() {
           strscpy(slopeResponse, string.c_str() + 7, sizeof(slopeResponse));
         } else if (string.length() > 5 && memcmp_P(string.c_str(), F("?CAL,"), 5) == 0) {
           // for example "?CAL,2"
-          snprintf_P(calibrationResponse, sizeof(calibrationResponse), PSTR("%s point"), string.c_str() + 5);
+          snprintf_P(calibrationResponse, sizeof(calibrationResponse), PSTR("%s pt calibrated"), string.c_str() + 5);
         }
       }
     }

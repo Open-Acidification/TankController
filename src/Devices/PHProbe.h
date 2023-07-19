@@ -46,7 +46,7 @@ private:
   static PHProbe* _instance;
   // instance variable
   float value = 0;
-  char calibrationResponse[14] = "";
+  char calibrationResponse[17] = "";
   char slopeResponse[32] = "";
   // Methods
   PHProbe();

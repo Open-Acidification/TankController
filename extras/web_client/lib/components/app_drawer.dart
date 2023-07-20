@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:tank_manager/model/app_data.dart';
 import 'package:tank_manager/model/tank.dart';
@@ -85,11 +83,11 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppData appData = AppData.instance;
+    var appData = AppData.instance();
     final ipController = TextEditingController();
     final nameController = TextEditingController();
     List<Widget> tiles = <Widget>[];
-    unawaited(appData.readTankList()); // this doesn't await!
+    appData.readTankList();
     for (var tank in appData.tankList) {
       tiles.add(tile(tank));
     }
@@ -145,8 +143,8 @@ class AppDrawer extends StatelessWidget {
   }
 
   Widget tile(var selected) {
-    var appData = AppData.instance;
-    var tcInterface = TcInterface.instance;
+    var appData = AppData.instance();
+    var tcInterface = TcInterface.instance();
     return ListTile(
       title: Text(
         selected.name,

@@ -9,7 +9,7 @@ import 'package:tank_manager/model/tc_interface.dart';
 void main() async {
   TestWidgetsFlutterBinding.ensureInitialized();
   SharedPreferences.setMockInitialValues({});
-  var appData = AppData.instance;
+  var appData = AppData.instance();
 
   setUp(() {
     TcInterface.useMock();

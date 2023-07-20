@@ -53,8 +53,8 @@ class Keypad extends StatelessWidget {
   }
 
   Widget button(BuildContext context, var label, var color) {
-    var appData = AppData.instance;
-    var tcInterface = TcInterface.instance;
+    var appData = AppData.instance();
+    var tcInterface = TcInterface.instance();
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(

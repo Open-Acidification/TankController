@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:tank_manager/model/app_data.dart';
 
 Future<void> main() async {
-  await AppData.instance.readTankList();
+  await AppData.instance().readTankList();
   runApp(const MyApp());
 }
 
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<AppData>.value(
-      value: AppData.instance,
+      value: AppData.instance(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Tank Manager',

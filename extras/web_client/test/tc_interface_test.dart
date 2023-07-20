@@ -3,7 +3,7 @@ import 'package:tank_manager/model/tc_interface.dart';
 
 void main() {
   TcInterface.useMock();
-  var tcInterface = TcInterface.instance;
+  var tcInterface = TcInterface.instance();
   test('Post', () async {
     var post = await tcInterface.post('192.168.0.1', 'key?value=4');
     expect(

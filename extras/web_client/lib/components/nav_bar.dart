@@ -32,7 +32,7 @@ class NavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var appData = AppData.instance;
+    var appData = AppData.instance();
     int currentIndex = appData.currentIndex;
     return BottomNavigationBar(
       currentIndex: currentIndex,
@@ -45,7 +45,7 @@ class NavBar extends StatelessWidget {
   }
 
   void onTabTapped(int index) {
-    var appData = AppData.instance;
+    var appData = AppData.instance();
     appData.currentIndex = index;
     if (items[index].label == 'Keypad') {
       appData.refreshDisplay();

@@ -11,7 +11,7 @@ void main() {
 
   tearDown(() {
     // Reset so that we no longer have a tank
-    AppData.instance.clearTank();
+    AppData.instance().clearTank();
   });
 
   testWidgets('Keypad buttons work as expected', (WidgetTester tester) async {
@@ -37,7 +37,7 @@ void main() {
     ];
 
     // Create a tank
-    var appData = AppData.instance;
+    var appData = AppData.instance();
     appData.currentTank = Tank('test_tank', '192.168.0.1');
 
     // Force button visibility for tester
@@ -61,7 +61,7 @@ void main() {
     await tester.pumpWidget(const MyApp());
 
     // Create a tank
-    var appData = AppData.instance;
+    var appData = AppData.instance();
     appData.currentTank = Tank('test_tank', '192.168.0.1');
 
     // Verify Current Data is not displayed
@@ -82,7 +82,7 @@ void main() {
     await tester.pumpWidget(const MyApp());
 
     // Create a tank
-    var appData = AppData.instance;
+    var appData = AppData.instance();
     appData.currentTank = Tank('test_tank', '192.168.0.1');
 
     // Verify files are not displayed

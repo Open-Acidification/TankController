@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
-gem 'arduino_ci', github: 'Arduino-CI/arduino_ci', branch: 'master'
-# gem 'arduino_ci', github: 'jgfoster/arduino_ci', branch: 'makefile'
+# gem 'arduino_ci', github: 'Arduino-CI/arduino_ci', branch: 'master'
+gem 'arduino_ci', github: 'jgfoster/arduino_ci', branch: 'makefile'
 
 # Following are alternate ways to reference a specific tag or commit
 # This is helpful when a change to arduino_ci breaks the tests

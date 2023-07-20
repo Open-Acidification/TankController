@@ -88,7 +88,6 @@ class AppDrawer extends StatelessWidget {
     final ipController = TextEditingController();
     final nameController = TextEditingController();
     List<Widget> tiles = <Widget>[];
-    unawaited(appData.readTankList()); // TODO
     for (var tank in appData.tankList) {
       tiles.add(tile(tank));
     }

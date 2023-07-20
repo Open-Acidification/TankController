@@ -21,6 +21,11 @@ public:
     deviceID = id;
   }
 
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  void resetNextSendTime() {
+    nextSendTime = 70000;
+  }
+#endif
 private:
   // class variables
   static PushingBox *_instance;

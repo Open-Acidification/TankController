@@ -8,6 +8,7 @@
 #include "Devices/EEPROM_TC.h"
 #include "Devices/EthernetServer_TC.h"
 #include "Devices/Ethernet_TC.h"
+#include "Devices/GetTime.h"
 #include "Devices/Keypad_TC.h"
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHControl.h"
@@ -34,10 +35,11 @@ TankController *TankController::_instance = nullptr;
 /**
  * static function to return singleton
  */
-TankController *TankController::instance(const char *pushingBoxID) {
+TankController *TankController::instance(const char *pushingBoxID, int tzOffsetHrs) {
   if (!_instance) {
     _instance = new TankController;
     PushingBox::instance(pushingBoxID);
+    GetTime::instance(tzOffsetHrs);
   }
   return _instance;
 }
@@ -159,6 +161,7 @@ void TankController::loop(bool report_loop_delay) {
   updateControls();                       // turn CO2 and temperature controls on or off
   handleUI();                             // look at keypad, update LCD (~90ms)
   DataLogger_TC::instance()->loop();      // record current data to SD and serial
+  GetTime::instance()->loop();            // update the time
   PushingBox::instance()->loop();         // write data to Google Sheets (~1130ms every report)
   Ethernet_TC::instance()->loop();        // renew DHCP lease
   EthernetServer_TC::instance()->loop();  // handle any HTTP requests

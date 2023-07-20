@@ -93,6 +93,7 @@ void PushingBox::sendData() {
     snprintf_P(buffer, sizeof(buffer), (PGM_P)format, deviceID, tankID, (int)temperature,
                (int)(temperature * 100 + 0.5) % 100, (int)pH, (int)(pH * 1000) % 1000);
   }
+  // Truncate the string after the first line to print to serial but then restore newline
   size_t i = 0;
   for (; i < sizeof(buffer); ++i) {
     if (buffer[i] == '\r') {

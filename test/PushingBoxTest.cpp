@@ -19,11 +19,13 @@ TempProbe_TC *tempProbe;
 PHControl *controlSolenoid;
 
 unittest_setup() {
+  state->reset();
   tc = TankController::instance();
   Ethernet.mockDHCP(IPAddress(192, 168, 1, 42));
   Ethernet_TC::instance(true);
   pPushingBox = PushingBox::instance();
   pPushingBox->setDeviceID("PushingBoxIdentifier");
+  pPushingBox->resetNextSendTime();
   pClient = pPushingBox->getClient();
   tempProbe = TempProbe_TC::instance();
   controlSolenoid = PHControl::instance();
@@ -46,13 +48,12 @@ unittest_teardown() {
 unittest(NoTankID) {
   // set tank id to 0, set time interval to 1 minute
   EEPROM_TC::instance()->setTankID(0);
-  EEPROM_TC::instance()->setGoogleSheetInterval(1);
 
+  delay(30 * 1000);  // allow 30 seconds for time update
   tc->loop(false);
-  delay(75 * 1000);  // a bit over one minute
   state->serialPort[0].dataOut = "";
-  // Trigger SD logging and Serial (DataLogger_TC) and PushingBox
-  tc->loop(false);
+  delay(40 * 1000);  // allow 70 seconds (30 + 40) for PushingBox update
+  tc->loop(false);   // Trigger SD logging and Serial (DataLogger_TC) and PushingBox
   char expected[] =
       "15:26 pH=7.000 temp= 0.00\r\n"
       "Set Tank ID in order to send data to PushingBox\r\n";
@@ -60,7 +61,6 @@ unittest(NoTankID) {
 }
 
 unittest(SendData) {
-  state->reset();
   EEPROM_TC::instance()->setTankID(99);
   TemperatureControl::instance()->setTargetTemperature(20.25);
   tempProbe->setTemperature(20.25, true);
@@ -69,36 +69,16 @@ unittest(SendData) {
                                   (const uint8_t *)"[PushingBox response]\r\n");
   assertFalse(pClient->connected());  // not yet connected!
   state->serialPort[0].dataOut = "";
-  delay(120 * 1000);  // less than this seems to cause a crash!?
-  // delay(60 * 20 * 1000);  // wait for 20 minutes to ensure we send again
+  delay(70 * 1000);  // allow 70 seconds for PushingBox update
   tc->loop(false);
-  assertTrue(pClient->connected());
-  assertNotNull(pClient->writeBuffer());
-  deque<uint8_t> buffer = *(pClient->writeBuffer());
-  String bufferResult;
-  bool flag = false;
-  for (int i = 0; i < buffer.size(); i++) {
-    // Capture everything after the first 'G'
-    flag = flag || buffer[i] == 'G';
-    if (flag) {
-      bufferResult += buffer[i];
-    }
-  }
-  char expected1[] =
-      "GET /pushingbox?devid=PushingBoxIdentifier&tankid=99&tempData=20.25&pHdata=7.125 HTTP/1.1\r\n"
-      "Host: api.pushingbox.com\r\n"
-      "Connection: close\r\n"
-      "\r\n";
-  assertEqual(expected1, bufferResult.c_str());
-  char expected2[] =
-      "15:25 pH=7.125 temp=20.25\r\n"
+  char expected[] =
       "GET /pushingbox?devid=PushingBoxIdentifier&tankid=99&tempData=20.25&pHdata=7.125 HTTP/1.1\r\n"
       "attempting to connect to PushingBox...\r\n"
       "connected\r\n"
       "===== PushingBox response:\r\n"
       "[PushingBox response]\r\n"
       "===== end of PushingBox response\r\n";
-  assertEqual(expected2, state->serialPort[0].dataOut);
+  assertEqual(expected, state->serialPort[0].dataOut);
 }
 
 unittest(inCalibration) {

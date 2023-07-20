@@ -48,10 +48,10 @@ class NavBar extends StatelessWidget {
     var appData = AppData.instance();
     appData.currentIndex = index;
     if (items[index].label == 'Keypad') {
-      appData.refreshDisplay();
+      unawaited(appData.refreshDisplay()); // TODO
     }
     if (items[index].label == 'Current Data') {
-      appData.refreshCurrentData();
+      unawaited(appData.refreshCurrentData()); // TODO
     }
     if (items[index].label == 'Files') {
       unawaited(appData.refreshFiles());

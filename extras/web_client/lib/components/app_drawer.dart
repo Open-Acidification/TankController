@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:tank_manager/model/app_data.dart';
 import 'package:tank_manager/model/tank.dart';
@@ -87,7 +88,7 @@ class AppDrawer extends StatelessWidget {
     final ipController = TextEditingController();
     final nameController = TextEditingController();
     List<Widget> tiles = <Widget>[];
-    appData.readTankList();
+    unawaited(appData.readTankList()); // TODO
     for (var tank in appData.tankList) {
       tiles.add(tile(tank));
     }
@@ -142,19 +143,22 @@ class AppDrawer extends StatelessWidget {
     );
   }
 
-  Widget tile(var selected) {
+  Future<void> updateDisplay() async {
     var appData = AppData.instance();
     var tcInterface = TcInterface.instance();
+    String value = await tcInterface.get(appData.currentTank.ip, 'display');
+    appData.display = value; // setter notifies listeners of change
+  }
+
+  Widget tile(var selected) {
     return ListTile(
       title: Text(
         selected.name,
         style: const TextStyle(color: Colors.white),
       ),
       onTap: () {
-        appData.currentTank = selected;
-        tcInterface.get(appData.currentTank.ip, 'display').then((value) {
-          appData.display = value;
-        });
+        AppData.instance().currentTank = selected;
+        unawaited(updateDisplay());
         Navigator.pop(context);
       },
     );

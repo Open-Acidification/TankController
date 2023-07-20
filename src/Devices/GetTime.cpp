@@ -23,6 +23,7 @@ GetTime* GetTime::instance(int tzOffsetHrs) {
 
 //  instance methods
 GetTime::GetTime(int tzOffsetHrs) {
+  this->buffer[0] = '\0';
   this->tzOffsetHrs = tzOffsetHrs;
 }
 

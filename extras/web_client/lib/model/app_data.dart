@@ -57,7 +57,11 @@ class AppData with ChangeNotifier {
     } else {
       var tcInterface = TcInterface.instance();
       var value = await tcInterface.get(currentTank.ip, 'data');
-      currentData = jsonDecode(value);
+      try {
+        currentData = jsonDecode(value);
+      } catch (e) {
+        currentData = jsonDecode('{"Error: $e":""}');
+      }
     }
   }
 

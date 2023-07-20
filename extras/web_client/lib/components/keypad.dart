@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:tank_manager/model/tc_interface.dart';
 import 'package:tank_manager/model/app_data.dart';
@@ -52,9 +53,13 @@ class Keypad extends StatelessWidget {
     ];
   }
 
+  Future<void> sendKeypress(String ip, String path) async {
+    String value = await TcInterface.instance().post(ip, path);
+    AppData.instance().display = value;
+  }
+
   Widget button(BuildContext context, var label, var color) {
-    var appData = AppData.instance;
-    var tcInterface = TcInterface.instance;
+    var appData = AppData.instance();
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
@@ -69,11 +74,7 @@ class Keypad extends StatelessWidget {
         ),
         onPressed: () {
           if (appData.currentTank.isNotEmpty()) {
-            tcInterface
-                .post(appData.currentTank.ip, 'key?value=$label')
-                .then((value) {
-              appData.display = value;
-            });
+            unawaited(sendKeypress(appData.currentTank.ip, 'key?value=$label'));
           }
         },
         child: Text(label),

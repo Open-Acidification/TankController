@@ -8,9 +8,9 @@ import 'dart:async';
 class AppData with ChangeNotifier {
   static AppData? _instance;
 
-  static get instance {
+  static AppData instance() {
     _instance ??= AppData();
-    return _instance;
+    return _instance!;
   }
 
   AppData() {
@@ -43,7 +43,7 @@ class AppData with ChangeNotifier {
 
   Future<void> refreshDisplay() async {
     if (currentTank.isNotEmpty()) {
-      var tcInterface = TcInterface.instance;
+      var tcInterface = TcInterface.instance();
       display = await tcInterface.get(currentTank.ip, 'display');
     } else {
       display = '';
@@ -55,7 +55,7 @@ class AppData with ChangeNotifier {
     if (currentTank.isEmpty()) {
       currentData = jsonDecode('{"Error: Choose tank from menu":""}');
     } else {
-      var tcInterface = TcInterface.instance;
+      var tcInterface = TcInterface.instance();
       var value = await tcInterface.get(currentTank.ip, 'data');
       currentData = jsonDecode(value);
     }
@@ -65,7 +65,7 @@ class AppData with ChangeNotifier {
     if (currentTank.isEmpty()) {
       _files = jsonDecode('{"Error: Choose tank from menu":""}');
     } else {
-      var tcInterface = TcInterface.instance;
+      var tcInterface = TcInterface.instance();
       // wait 15 seconds (the default of 5 seconds could be too little)
       var value = await tcInterface.get(currentTank.ip, 'rootdir', 15);
       while (value.substring(value.length - 1) == '\n') {
@@ -82,7 +82,7 @@ class AppData with ChangeNotifier {
   Future<void> addTank(tank) async {
     // make a call to the device to see if it exists
     // ignore result
-    await TcInterface.instance.get(tank.ip, 'data');
+    await TcInterface.instance().get(tank.ip, 'data');
     _tankList.add(tank);
     unawaited(refreshDisplay());
     notifyListeners();

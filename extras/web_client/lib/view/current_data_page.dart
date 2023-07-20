@@ -50,7 +50,7 @@ class CurrentData extends StatelessWidget {
                   TextFormField(
                     initialValue: value.toString(),
                     onFieldSubmitted: (val) {
-                      TcInterface.instance
+                      TcInterface.instance()
                           .put(
                         '${appData.currentData["IPAddress"]}',
                         'data?${key.toString()}=$val',

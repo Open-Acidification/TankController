@@ -3,17 +3,22 @@ import 'package:http/http.dart' as http;
 abstract class TcInterface {
   static TcInterface? _instance;
 
-  static get instance {
+  static TcInterface instance() {
     _instance ??= TcRealInterface();
-    return _instance;
+    return _instance!;
   }
 
   static void useMock() {
     _instance = TcMockInterface();
   }
+
+  Future<String> get(String ip, String path, [int timeout = 5]);
+  Future<String> post(String ip, String path, [int timeout = 5]);
+  Future<String> put(String ip, String path);
 }
 
 class TcMockInterface extends TcInterface {
+  @override
   Future<String> get(String ip, String path, [int timeout = 5]) async {
     if (ip == '127.0.0.1') {
       throw ('Invalid IP Address in TcMockInterface');
@@ -27,16 +32,19 @@ class TcMockInterface extends TcInterface {
     return 'pH=7.352   7.218\nT=10.99 C 11.00$path';
   }
 
-  Future<String> post(var value, String path, [int timeout = 5]) async {
+  @override
+  Future<String> post(String ip, String path, [int timeout = 5]) async {
     return 'pH=7.352   7.218\nT=10.99 C 11.00${path.substring(path.length - 1)}';
   }
 
-  Future<String> put(var value, String path) async {
+  @override
+  Future<String> put(String ip, String path) async {
     return '{"IPAddress":"172.27.5.150","MAC":"90:A2:DA:0F:45:C0","FreeMemory":"3791 bytes","GoogleSheetInterval":10,"LogFile":"20220722.csv","PHSlope":"22","Kp":9000.4,"Ki":0.0,"Kd":0.0,"PID":"ON","TankID":3,"Uptime":"0d 0h 1m 7s","Version":"22.04.1"}';
   }
 }
 
 class TcRealInterface extends TcInterface {
+  @override
   Future<String> get(String ip, String path, [int timeout = 5]) async {
     var uri = 'http://$ip/api/1/$path';
     var future = http.get(Uri.parse(uri));
@@ -48,7 +56,8 @@ class TcRealInterface extends TcInterface {
     return subString;
   }
 
-  Future<String> post(var ip, var path, [int timeout = 5]) async {
+  @override
+  Future<String> post(String ip, var path, [int timeout = 5]) async {
     var uri = 'http://$ip/api/1/$path';
     final future = http.post(Uri.parse(uri));
     var response = await future.timeout(Duration(seconds: timeout));
@@ -59,6 +68,7 @@ class TcRealInterface extends TcInterface {
     return subString;
   }
 
+  @override
   Future<String> put(String ip, String path) async {
     var uri = 'http://$ip/api/1/$path';
     final future = http.put(Uri.parse(uri));

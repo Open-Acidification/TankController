@@ -136,6 +136,43 @@ unittest(printing) {
   assertEqual(" 34.125-> 21.341", lines.at(1));
 }
 
+unittest(printingNoCurrent) {
+  LiquidCrystal_TC* testLcd = LiquidCrystal_TC::instance();
+  std::vector<String> lines;
+  TestNumCollectorStateWithNoCurrentValue test(TankController::instance());
+  test.start();
+  lines = testLcd->getLines();
+  assertEqual("              0 ", lines.at(1));
+
+  test.setPriorValue(34.125);
+  test.setPriorValuePrecision(1);
+  test.handleKey('2');
+  lines = testLcd->getLines();
+  assertEqual("              2 ", lines.at(1));
+
+  test.handleKey('1');
+  lines = testLcd->getLines();
+  assertEqual("             21 ", lines.at(1));
+
+  test.handleKey('*');
+  lines = testLcd->getLines();
+  assertEqual("             21.", lines.at(1));
+
+  test.handleKey('3');
+  lines = testLcd->getLines();
+  assertEqual("            21.3", lines.at(1));
+
+  test.setPriorValuePrecision(2);
+  test.handleKey('4');
+  lines = testLcd->getLines();
+  assertEqual("           21.34", lines.at(1));
+
+  test.setPriorValuePrecision(3);
+  test.handleKey('1');
+  lines = testLcd->getLines();
+  assertEqual("          21.341", lines.at(1));
+}
+
 unittest(integer) {
   TestIntNumCollectorState testDecimal(TankController::instance());
   testDecimal.handleKey('1');

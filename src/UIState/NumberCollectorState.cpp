@@ -61,9 +61,13 @@ void NumCollectorState::printValue() {
   char format[20], strValue[20];
   // The Arduino does not support variable widths, so we construct the format string at runtime!
   char buffer[8];
-  floattostrf(getCurrentValue(), 7, getCurrentValuePrecision(), buffer, sizeof(buffer));
-  memcpy(strValue, buffer, sizeof(buffer));
-  snprintf_P(strValue + 7, 3, (PGM_P)F("->"));
+  if (this->showCurrentValue()) {
+    floattostrf(getCurrentValue(), 7, getCurrentValuePrecision(), buffer, sizeof(buffer));
+    memcpy(strValue, buffer, sizeof(buffer));
+    snprintf_P(strValue + 7, 3, (PGM_P)F("->"));
+  } else {
+    strscpy_P(strValue, F("         "), sizeof(strValue));
+  }
 
   if (!hasDecimal) {
     // show user entry as an integer (no decimal yet)

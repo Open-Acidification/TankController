@@ -9,13 +9,17 @@
 
 class PHCalibrationMid : public PHCalibration {
 public:
-  PHCalibrationMid(TankController* tc) : PHCalibration(tc) {
+  PHCalibrationMid(TankController* tc, int numberOfCalibrationPoints = 3) : PHCalibration(tc) {
+    this->numberOfCalibrationPoints = numberOfCalibrationPoints;
   }
-  const __FlashStringHelper* name() {
+  const __FlashStringHelper* name() override {
     return F("PHCalibrationMid");
   }
-  const __FlashStringHelper* prompt() {
+  const __FlashStringHelper* prompt() override {
     return F("pH-Midpoint");
   };
-  void setValue(float value);
+  void setValue(float value) override;
+
+private:
+  int numberOfCalibrationPoints = 3;
 };

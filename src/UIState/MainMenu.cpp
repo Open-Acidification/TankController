@@ -7,7 +7,7 @@
 #include "Devices/TempProbe_TC.h"
 #include "Devices/TemperatureControl.h"
 #include "EnablePID.h"
-#include "PHCalibrationMid.h"
+#include "PHCalibrationPrompt.h"
 #include "SeeDeviceAddress.h"
 #include "SeeDeviceUptime.h"
 #include "SeeFreeMemory.h"
@@ -181,7 +181,7 @@ void MainMenu::selectView() {
 void MainMenu::selectSet() {
   switch (level2) {
     case SET_CALIBRATION:
-      this->setNextState(new PHCalibrationMid(tc));
+      this->setNextState(new PHCalibrationPrompt(tc));
       break;
     case SET_PH_CALIBRATION_CLEAR:
       this->setNextState(new SetPHCalibClear(tc));

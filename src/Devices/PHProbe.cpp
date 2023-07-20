@@ -40,19 +40,26 @@ void PHProbe::clearCalibration() {
   Serial1.print(F("Cal,clear\r"));  // send that string to the Atlas Scientific product
 }
 
+void PHProbe::sendCalibrationRequest() {
+  // Sending request for calibration status
+  Serial1.print(F("CAL,?\r"));
+  strscpy_P(calibrationResponse, F("Requesting..."), sizeof(calibrationResponse));
+}
+
+void PHProbe::getCalibration(char *buffer, int size) {
+  // for example "2" or "Requesting..."
+  strscpy(buffer, calibrationResponse, size);
+}
+
 void PHProbe::sendSlopeRequest() {
   // Sending request for Calibration Slope
   Serial1.print(F("SLOPE,?\r"));
-  strscpy_P(slopeResponse, F("       Slope requested!"), sizeof(slopeResponse));
+  strscpy_P(slopeResponse, F("Requesting..."), sizeof(slopeResponse));
 }
 
 void PHProbe::getSlope(char *buffer, int size) {
-  // for example "?SLOPE,99.7,100.3, -0.89"
-  if (strnlen(slopeResponse, sizeof(slopeResponse)) > 10) {  // Flawfinder: ignore
-    strscpy(buffer, slopeResponse + 7, size);                // Flawfinder: ignore
-  } else {
-    buffer[0] = '\0';
-  }
+  // for example "99.7,100.3, -0.89" or "Requesting..."
+  strscpy(buffer, slopeResponse, size);
 }
 
 /**
@@ -72,9 +79,12 @@ void PHProbe::serialEvent1() {
         value = string.toFloat();
       } else if (string[0] == '?') {  // answer to a previous query
         serial(F("PHProbe serialEvent1: \"%s\""), string.c_str());
-        if (string.length() > 7 && string.substring(0, 7) == "?SLOPE,") {
+        if (string.length() > 7 && memcmp_P(string.c_str(), F("?SLOPE,"), 7) == 0) {
           // for example "?SLOPE,16.1,100.0"
-          strscpy(slopeResponse, string.c_str(), sizeof(slopeResponse));  // Flawfinder: ignore
+          strscpy(slopeResponse, string.c_str() + 7, sizeof(slopeResponse));
+        } else if (string.length() > 5 && memcmp_P(string.c_str(), F("?CAL,"), 5) == 0) {
+          // for example "?CAL,2"
+          snprintf_P(calibrationResponse, sizeof(calibrationResponse), PSTR("%s pt calibrated"), string.c_str() + 5);
         }
       }
     }
@@ -121,6 +131,14 @@ void PHProbe::setMidpointCalibration(float midpoint) {
 #include <Arduino.h>
 
 #include "TankController.h"
+
+void PHProbe::setCalibration(int calibrationPoints) {
+  char buffer[10];
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)F("?CAL,%i\r"), calibrationPoints);
+  GODMODE()->serialPort[1].dataIn = buffer;    // the queue of data waiting to be read
+  TankController::instance()->serialEvent1();  // fake interrupt to update the calibration reading
+  TankController::instance()->loop();          // update the controls based on the current readings
+}
 void PHProbe::setPh(float newValue) {
   char buffer[10];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("%i.%03i\r"), (int)newValue, (int)(newValue * 1000 + 0.5) % 1000);

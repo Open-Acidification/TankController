@@ -23,7 +23,7 @@ GetTime* GetTime::instance(int tzOffsetHrs) {
 
 //  instance methods
 GetTime::GetTime(int tzOffsetHrs) {
-    this->tzOffsetHrs = tzOffsetHrs;
+  this->tzOffsetHrs = tzOffsetHrs;
 }
 
 void GetTime::loop() {

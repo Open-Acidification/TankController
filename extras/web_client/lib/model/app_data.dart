@@ -68,10 +68,13 @@ class AppData with ChangeNotifier {
   Future<void> refreshFiles() async {
     if (currentTank.isEmpty()) {
       _files = jsonDecode('{"Error: Choose tank from menu":""}');
-    } else {
-      var tcInterface = TcInterface.instance();
-      // wait 15 seconds (the default of 5 seconds could be too little)
-      var value = await tcInterface.get(currentTank.ip, 'rootdir', 15);
+      return;
+    }
+    var tcInterface = TcInterface.instance();
+    var value = '';
+    // wait 15 seconds (the default of 5 seconds could be too little)
+    try {
+      value = await tcInterface.get(currentTank.ip, 'rootdir', 15);
       while (value.substring(value.length - 1) == '\n') {
         value = value.substring(0, value.length - 1);
       }
@@ -79,6 +82,8 @@ class AppData with ChangeNotifier {
       value = value.replaceAll('\t', '":"');
       value = '{"$value"}';
       _files = jsonDecode(value);
+    } catch (e) {
+      _files = jsonDecode('{"Error: $e":""}');
     }
     notifyListeners();
   }

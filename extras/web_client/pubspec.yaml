@@ -6,7 +6,7 @@ description: A web UI for the Open Acidification Tank Controller.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
-version: 23.7.0
+version: 23.7.2
 
 environment:
   sdk: ">=2.19.3 <3.0.0"

@@ -30,4 +30,24 @@ unittest(testOutput) {
   assertEqual("MainMenu", tc->stateName());
 }
 
+unittest(testTimeout) {
+  // Set up
+  TankController* tc = TankController::instance();
+  LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
+  PHProbe* pPHProbe = PHProbe::instance();
+
+  assertEqual("MainMenu", tc->stateName());
+  SeePHCalibration* test = new SeePHCalibration(tc);
+  tc->setNextState(test, true);
+  assertEqual("SeePHCalibration", tc->stateName());
+
+  pPHProbe->setCalibration(2);
+  delay(55000);
+  tc->loop(false);
+  assertEqual("SeePHCalibration", tc->stateName());
+  delay(5000);
+  tc->loop(false);
+  assertEqual("MainMenu", tc->stateName());
+}
+
 unittest_main()

@@ -1,6 +1,7 @@
 #pragma once
 #include "Devices/PHProbe.h"
 #include "NumberCollectorState.h"
+#include "SeePHCalibration.h"
 
 class PHCalibration : public NumCollectorState {
 public:
@@ -11,6 +12,13 @@ public:
   }
   float getCurrentValue() override {
     return 0;
+  }
+  void handleKey(char key) {
+    if (key == 'D') {  // cancel but show calibration status
+      this->setNextState(new SeePHCalibration(tc, true));
+    } else {
+      NumCollectorState::handleKey(key);
+    }
   }
   void loop() override {
     printValue();

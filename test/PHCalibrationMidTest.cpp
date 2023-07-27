@@ -117,4 +117,35 @@ unittest(threePointMid) {
   assertTrue(tc->isInCalibration());
 }
 
+// Test when keys are passed to superclass NumCollectorState or intercepted
+unittest(keyEntry) {
+  TankController *tc = TankController::instance();
+  PHProbe *pPHProbe = PHProbe::instance();
+  LiquidCrystal_TC *lc = LiquidCrystal_TC::instance();
+  GODMODE()->reset();
+  pPHProbe->setPh(7.125);
+  float pH = pPHProbe->getPh();
+  assertEqual(7.125, pH);
+
+  PHCalibrationMid *test = new PHCalibrationMid(tc);
+  tc->setNextState(test, true);
+  assertTrue(tc->isInCalibration());
+  assertEqual("              0 ", lc->getLines().at(1));
+  pPHProbe->setPh(7.325);
+  assertEqual("              0 ", lc->getLines().at(1));
+  tc->loop(false);
+  assertEqual("              0 ", lc->getLines().at(1));
+
+  // See whether a typed '7' causes the display to update correctly
+  test->handleKey('7');
+  tc->loop(false);
+  assertEqual("              7 ", lc->getLines().at(1));
+
+  // See whether a typed 'D' causes the calibration status to be shown
+  test->handleKey('D');
+  tc->loop(false);
+  assertEqual("SeePHCalibration", tc->stateName());
+  assertTrue(tc->isInCalibration());
+}
+
 unittest_main()

@@ -93,6 +93,14 @@ void TankController::blink() {
   }
 }
 
+/**
+ * @brief Ask the current UIState to check the latest received pH slope
+ *
+ */
+void TankController::checkPhSlope() {
+  state->checkPhSlope();
+}
+
 // https://github.com/maniacbug/MemoryFree/blob/master/MemoryFree.cpp
 int TankController::freeMemory() {
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)

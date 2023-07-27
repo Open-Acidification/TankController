@@ -13,7 +13,7 @@ public:
   float getCurrentValue() override {
     return 0;
   }
-  void handleKey(char key) {
+  void handleKey(char key) override {
     if (key == 'D') {  // cancel but show calibration status
       this->setNextState(new SeePHCalibration(tc, true));
     } else {

@@ -17,6 +17,8 @@ public:
 
   void vprintf(const __FlashStringHelper *format, va_list args);
 
+  char buffer[128];
+
 private:
   //  class variable
   static Serial_TC *_instance;

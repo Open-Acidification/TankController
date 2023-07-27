@@ -6,7 +6,9 @@
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHProbe.h"
+#include "Devices/Serial_TC.h"
 #include "MainMenu.h"
+#include "TC_util.h"
 
 SeePHCalibration::SeePHCalibration(TankController* tc, bool inCalibration) : UIState(tc) {
   endTime = millis() + 60000;
@@ -14,16 +16,38 @@ SeePHCalibration::SeePHCalibration(TankController* tc, bool inCalibration) : UIS
 }
 
 void SeePHCalibration::loop() {
-  char buffer[20];
-  PHProbe::instance()->getCalibration(buffer, sizeof(buffer));
-  LiquidCrystal_TC::instance()->writeLine(buffer, 1);
+  char pointsBuffer[20];
+  char slopeBuffer[20];
+  PHProbe::instance()->getCalibration(pointsBuffer, sizeof(pointsBuffer));
+  PHProbe::instance()->getSlope(slopeBuffer, sizeof(slopeBuffer));
+  LiquidCrystal_TC::instance()->writeLine(pointsBuffer, 0);
+  LiquidCrystal_TC::instance()->writeLine(slopeBuffer, 1);
   if (endTime <= millis()) {
     this->setNextState(new MainMenu(tc));
   }
 }
 
 void SeePHCalibration::start() {
-  LiquidCrystal_TC::instance()->writeLine(prompt(), 0);
-  LiquidCrystal_TC::instance()->writeLine(F("requesting calib"), 1);
   PHProbe::instance()->sendCalibrationRequest();
+  PHProbe::instance()->sendSlopeRequest();
+}
+
+void SeePHCalibration::checkPhSlope() {
+  char buffer[20];
+  PHProbe::instance()->getSlope(buffer, sizeof(buffer));
+  char acidSlopePercent[20];
+  char baseSlopePercent[20];
+  char millivoltOffset[20];
+  if (isDigit(buffer[0])) {
+    sscanf_P(buffer, PSTR(" %[^,] , %[^,] , %s"), acidSlopePercent, baseSlopePercent, millivoltOffset);
+    if ((95.0 <= strtofloat(acidSlopePercent)) && (strtofloat(acidSlopePercent) <= 105.0) &&
+        (95.0 <= strtofloat(baseSlopePercent)) && (strtofloat(baseSlopePercent) <= 105.0)) {
+      serial(F("pH slopes are within 5%% of ideal"));
+    } else {
+      serial(F("BAD CALIBRATION? pH slopes are more than 5%% from ideal"));
+      // this->setNextState(new BadPHCalibration(tc, buffer));
+    }
+  } else {
+    serial(F("SeePHCalibration::checkPhSlope() failed to parse slope from PHProbe::instance()"));
+  }
 }

@@ -18,6 +18,7 @@ public:
   static TankController* instance(const char* pushingBoxID = nullptr, int tzOffsetHrs = -7);
 
   // instance methods
+  void checkPhSlope();
   bool isInCalibration();
   int freeMemory();
   void loop(bool report_loop_delay = true);

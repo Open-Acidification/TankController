@@ -5,6 +5,7 @@
 
 #include "Devices/Serial_TC.h"
 #include "TC_util.h"
+#include "TankController.h"
 
 //  class instance variables
 /**
@@ -82,6 +83,7 @@ void PHProbe::serialEvent1() {
         if (string.length() > 7 && memcmp_P(string.c_str(), F("?SLOPE,"), 7) == 0) {
           // for example "?SLOPE,16.1,100.0"
           strscpy(slopeResponse, string.c_str() + 7, sizeof(slopeResponse));
+          TankController::instance()->checkPhSlope();
         } else if (string.length() > 5 && memcmp_P(string.c_str(), F("?CAL,"), 5) == 0) {
           // for example "?CAL,2"
           snprintf_P(calibrationResponse, sizeof(calibrationResponse), PSTR("%s pt calibrated"), string.c_str() + 5);

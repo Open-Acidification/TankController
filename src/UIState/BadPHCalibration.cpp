@@ -6,6 +6,7 @@
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHProbe.h"
+#include "TankController.h"
 #include "UIState/MainMenu.h"
 #include "UIState/SeePHCalibration.h"
 
@@ -16,11 +17,11 @@ BadPHCalibration::BadPHCalibration(TankController* tc) : UIState(tc) {
 void BadPHCalibration::handleKey(char key) {
   switch (key) {
     case 'A':
-      // warnForBadCalibration = false;
+      tc->setWarningForPHSlope(false);
       returnToMainMenu();
       break;
     case 'C':
-      // warnForBadCalibration = true;
+      tc->setWarningForPHSlope(true);
       PHProbe::instance()->clearCalibration();
       this->setNextState(new SeePHCalibration(tc, true));
       break;

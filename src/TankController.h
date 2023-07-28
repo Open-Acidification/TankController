@@ -18,7 +18,6 @@ public:
   static TankController* instance(const char* pushingBoxID = nullptr, int tzOffsetHrs = -7);
 
   // instance methods
-  void checkPhSlope();
   bool isInCalibration();
   int freeMemory();
   void loop(bool report_loop_delay = true);
@@ -31,6 +30,12 @@ public:
   void setNextKey(char value) {
     nextKey = value;
   }
+  void setWarningForPHSlope(bool value) {
+    warningForPHSlope = value;
+  }
+  bool giveWarningForPHSlope() {
+    return warningForPHSlope;
+  }
 
 private:
   // class variables
@@ -42,6 +47,7 @@ private:
   UIState* nextState = nullptr;
   uint32_t lastKeypadTime = 0;
   char nextKey = 0;
+  bool warningForPHSlope = true;
 
   // instance methods
   TankController();

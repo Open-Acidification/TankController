@@ -30,6 +30,9 @@ public:
   void setLowpointCalibration(float lowpoint);
   void setMidpointCalibration(float midpoint);
   void setTemperatureCompensation(float temperature);
+  bool slopeIsBad() {
+    return badSlopeFlag;
+  }
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   const char* getCalibrationResponse() const {
     return calibrationResponse;
@@ -48,6 +51,7 @@ private:
   float value = 0;
   char calibrationResponse[17] = "";
   char slopeResponse[32] = "";
+  bool badSlopeFlag = false;
   // Methods
   PHProbe();
 };

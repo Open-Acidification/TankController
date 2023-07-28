@@ -20,7 +20,6 @@ public:
   const __FlashStringHelper* prompt() override {
     return F("PH Calibration:");
   };
-  void checkPhSlope() override;
 
 private:
   uint32_t endTime = 0;

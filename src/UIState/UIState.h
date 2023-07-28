@@ -33,9 +33,6 @@ public:
     return F("");
   }
   virtual void start();
-  virtual void checkPhSlope() {
-    // Should be received only in the SeePHCalibration state
-  }
 
 protected:
   void setNextState(UIState* state);

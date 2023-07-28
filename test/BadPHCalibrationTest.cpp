@@ -66,7 +66,7 @@ unittest(testAccept) {
   tc->loop(false);
   assertEqual("MainMenu", tc->stateName());
   assertEqual("", GODMODE()->serialPort[1].dataOut);
-  // assertFalse(warnForBadCalibration);
+  assertFalse(tc->giveWarningForPHSlope());
 }
 
 unittest(testClear) {
@@ -93,7 +93,7 @@ unittest(testClear) {
   tc->loop(false);
   assertEqual("Cal,clear\r", GODMODE()->serialPort[1].dataOut);
   assertEqual("SeePHCalibration", tc->stateName());
-  // assertTrue(warnForBadCalibration);
+  assertTrue(tc->giveWarningForPHSlope());
 }
 
 unittest_main()

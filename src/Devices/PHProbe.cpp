@@ -35,6 +35,7 @@ PHProbe::PHProbe() {
     ;
   Serial1.print(F("*OK,0\r"));  // Turn off the returning of OK after command to EZO pH
   Serial1.print(F("C,1\r"));    // Reset pH stamp to continuous measurement: once per second
+  sendSlopeRequest();
 }
 
 void PHProbe::clearCalibration() {
@@ -83,7 +84,18 @@ void PHProbe::serialEvent1() {
         if (string.length() > 7 && memcmp_P(string.c_str(), F("?SLOPE,"), 7) == 0) {
           // for example "?SLOPE,16.1,100.0"
           strscpy(slopeResponse, string.c_str() + 7, sizeof(slopeResponse));
-          TankController::instance()->checkPhSlope();
+          char acidSlopePercent[7];
+          char baseSlopePercent[7];
+          char millivoltOffset[7];
+          sscanf_P(slopeResponse, PSTR(" %[^,] , %[^,] , %s"), acidSlopePercent, baseSlopePercent, millivoltOffset);
+          if ((95.0 <= strtofloat(acidSlopePercent)) && (strtofloat(acidSlopePercent) <= 105.0) &&
+              (95.0 <= strtofloat(baseSlopePercent)) && (strtofloat(baseSlopePercent) <= 105.0)) {
+            badSlopeFlag = false;
+            TankController::instance()->setWarningForPHSlope(true);
+          } else {
+            badSlopeFlag = true;
+          }
+          // TankController::instance()->checkPhSlope();
         } else if (string.length() > 5 && memcmp_P(string.c_str(), F("?CAL,"), 5) == 0) {
           // for example "?CAL,2"
           snprintf_P(calibrationResponse, sizeof(calibrationResponse), PSTR("%s pt calibrated"), string.c_str() + 5);

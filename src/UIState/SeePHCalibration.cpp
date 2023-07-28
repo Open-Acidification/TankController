@@ -23,7 +23,9 @@ void SeePHCalibration::loop() {
   PHProbe::instance()->getSlope(slopeBuffer, sizeof(slopeBuffer));
   LiquidCrystal_TC::instance()->writeLine(pointsBuffer, 0);
   LiquidCrystal_TC::instance()->writeLine(slopeBuffer, 1);
-  if (endTime <= millis()) {
+  if (PHProbe::instance()->slopeIsBad()) {
+    this->setNextState(new BadPHCalibration(tc));
+  } else if (endTime <= millis()) {
     this->setNextState(new MainMenu(tc));
   }
 }
@@ -31,24 +33,4 @@ void SeePHCalibration::loop() {
 void SeePHCalibration::start() {
   PHProbe::instance()->sendCalibrationRequest();
   PHProbe::instance()->sendSlopeRequest();
-}
-
-void SeePHCalibration::checkPhSlope() {
-  char buffer[20];
-  PHProbe::instance()->getSlope(buffer, sizeof(buffer));
-  char acidSlopePercent[20];
-  char baseSlopePercent[20];
-  char millivoltOffset[20];
-  if (memcmp_P(buffer, F("Requesting"), 10) == 0) {
-    serial(F("SeePHCalibration::checkPhSlope() failed to parse slope from PHProbe::instance()"));
-  } else {
-    sscanf_P(buffer, PSTR(" %[^,] , %[^,] , %s"), acidSlopePercent, baseSlopePercent, millivoltOffset);
-    if ((95.0 <= strtofloat(acidSlopePercent)) && (strtofloat(acidSlopePercent) <= 105.0) &&
-        (95.0 <= strtofloat(baseSlopePercent)) && (strtofloat(baseSlopePercent) <= 105.0)) {
-      serial(F("pH slopes are within 5%% of ideal"));
-    } else {
-      serial(F("BAD CALIBRATION? pH slopes are more than 5%% from ideal"));
-      this->setNextState(new BadPHCalibration(tc));
-    }
-  }
 }

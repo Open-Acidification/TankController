@@ -69,36 +69,56 @@ unittest(checkPhSlope) {
   assertEqual("SeePHCalibration", tc->stateName());
 
   // slopeResponse should say "Requesting..."
-  state->checkPhSlope();
+  tc->checkPhSlope();
   assertEqual("SeePHCalibration::checkPhSlope() failed to parse slope from PHProbe::instance()",
               Serial_TC::instance()->buffer);
+
   // set slopes to good values
   pPHProbe->setCalibration(3);
   pPHProbe->setPhSlope();
-  state->checkPhSlope();
+  tc->checkPhSlope();
   assertEqual("pH slopes are within 5\% of ideal", Serial_TC::instance()->buffer);
+  tc->loop(false);
+  assertEqual("SeePHCalibration", tc->stateName());
+
   // set slope to bad value
-  pPHProbe->setPhSlope("?SLOPE,94.3,100.3,-0.89\r");
-  state->checkPhSlope();
+  pPHProbe->setPhSlope("?SLOPE,-2.6,-2.7,-0.89\r");
+  tc->checkPhSlope();
   assertEqual("BAD CALIBRATION? pH slopes are more than 5\% from ideal", Serial_TC::instance()->buffer);
+  tc->loop(false);
+  assertEqual("BadPHCalibration", tc->stateName());
+
   // set slope to bad value
+  tc->setNextState(new SeePHCalibration(tc, true), true);
   pPHProbe->setPhSlope("?SLOPE,105.7,100.3,-0.89\r");
-  state->checkPhSlope();
+  tc->checkPhSlope();
   assertEqual("BAD CALIBRATION? pH slopes are more than 5\% from ideal", Serial_TC::instance()->buffer);
+  tc->loop(false);
+  assertEqual("BadPHCalibration", tc->stateName());
+
   // set slope to bad value
+  tc->setNextState(new SeePHCalibration(tc, true), true);
   pPHProbe->setPhSlope("?SLOPE,99.7,10,-0.89\r");
-  state->checkPhSlope();
+  tc->checkPhSlope();
   assertEqual("BAD CALIBRATION? pH slopes are more than 5\% from ideal", Serial_TC::instance()->buffer);
+  tc->loop(false);
+  assertEqual("BadPHCalibration", tc->stateName());
+
   // set slope to bad value
+  tc->setNextState(new SeePHCalibration(tc, true), true);
   pPHProbe->setPhSlope("?SLOPE,99.7,105.9,-0.89\r");
-  state->checkPhSlope();
+  tc->checkPhSlope();
   assertEqual("BAD CALIBRATION? pH slopes are more than 5\% from ideal", Serial_TC::instance()->buffer);
+  tc->loop(false);
+  assertEqual("BadPHCalibration", tc->stateName());
+
   // set slopes to good values
+  tc->setNextState(new SeePHCalibration(tc, true), true);
   pPHProbe->setPhSlope();
-  state->checkPhSlope();
+  tc->checkPhSlope();
   assertEqual("pH slopes are within 5\% of ideal", Serial_TC::instance()->buffer);
-  // tc->loop();
-  // assertEqual("MainMenu", tc->stateName());
+  tc->loop(false);
+  assertEqual("SeePHCalibration", tc->stateName());
 }
 
 unittest_main()

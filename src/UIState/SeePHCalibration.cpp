@@ -7,8 +7,9 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHProbe.h"
 #include "Devices/Serial_TC.h"
-#include "MainMenu.h"
 #include "TC_util.h"
+#include "UIState/BadPHCalibration.h"
+#include "UIState/MainMenu.h"
 
 SeePHCalibration::SeePHCalibration(TankController* tc, bool inCalibration) : UIState(tc) {
   endTime = millis() + 60000;
@@ -38,16 +39,16 @@ void SeePHCalibration::checkPhSlope() {
   char acidSlopePercent[20];
   char baseSlopePercent[20];
   char millivoltOffset[20];
-  if (isDigit(buffer[0])) {
+  if (memcmp_P(buffer, F("Requesting"), 10) == 0) {
+    serial(F("SeePHCalibration::checkPhSlope() failed to parse slope from PHProbe::instance()"));
+  } else {
     sscanf_P(buffer, PSTR(" %[^,] , %[^,] , %s"), acidSlopePercent, baseSlopePercent, millivoltOffset);
     if ((95.0 <= strtofloat(acidSlopePercent)) && (strtofloat(acidSlopePercent) <= 105.0) &&
         (95.0 <= strtofloat(baseSlopePercent)) && (strtofloat(baseSlopePercent) <= 105.0)) {
       serial(F("pH slopes are within 5%% of ideal"));
     } else {
       serial(F("BAD CALIBRATION? pH slopes are more than 5%% from ideal"));
-      // this->setNextState(new BadPHCalibration(tc, buffer));
+      this->setNextState(new BadPHCalibration(tc));
     }
-  } else {
-    serial(F("SeePHCalibration::checkPhSlope() failed to parse slope from PHProbe::instance()"));
   }
 }

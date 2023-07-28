@@ -17,11 +17,10 @@ BadPHCalibration::BadPHCalibration(TankController* tc) : UIState(tc) {
 void BadPHCalibration::handleKey(char key) {
   switch (key) {
     case 'A':
-      tc->setWarningForPHSlope(false);
+      tc->setIgnoreBadPHSlope(true);
       returnToMainMenu();
       break;
     case 'C':
-      tc->setWarningForPHSlope(true);
       PHProbe::instance()->clearCalibration();
       this->setNextState(new SeePHCalibration(tc, true));
       break;
@@ -43,7 +42,7 @@ void BadPHCalibration::loop() {
     LiquidCrystal_TC::instance()->writeLine(slopeResponse, 1);
   } else {
     // Prompt for response
-    LiquidCrystal_TC::instance()->writeLine(F("A: Accept anyway"), 0);
-    LiquidCrystal_TC::instance()->writeLine(F("C: Clear/reset"), 1);
+    LiquidCrystal_TC::instance()->writeLine(F("A: Accept/Ignore"), 0);
+    LiquidCrystal_TC::instance()->writeLine(F("C: Clear calibra"), 1);
   }
 }

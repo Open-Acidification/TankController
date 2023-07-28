@@ -30,11 +30,11 @@ public:
   void setNextKey(char value) {
     nextKey = value;
   }
-  void setWarningForPHSlope(bool value) {
-    warningForPHSlope = value;
+  void setIgnoreBadPHSlope(bool value) {
+    ignoreBadPHSlope = value;
   }
-  bool giveWarningForPHSlope() {
-    return warningForPHSlope;
+  bool getIgnoreBadPHSlope() {
+    return ignoreBadPHSlope;
   }
 
 private:
@@ -47,7 +47,7 @@ private:
   UIState* nextState = nullptr;
   uint32_t lastKeypadTime = 0;
   char nextKey = 0;
-  bool warningForPHSlope = true;
+  bool ignoreBadPHSlope = false;
 
   // instance methods
   TankController();

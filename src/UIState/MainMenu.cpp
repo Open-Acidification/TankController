@@ -237,7 +237,7 @@ void MainMenu::selectSet() {
 // pH=7.325 B 7.125
 // T=12.25 H 12.75
 void MainMenu::idle() {
-  if (PHProbe::instance()->slopeIsBad() && tc->giveWarningForPHSlope()) {
+  if (PHProbe::instance()->slopeIsBad() && !tc->getIgnoreBadPHSlope()) {
     this->setNextState(new BadPHCalibration(tc));
     return;
   }

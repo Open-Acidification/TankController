@@ -55,7 +55,6 @@ all : $(BIN)/BadPHCalibrationTest.cpp.bin $(BIN)/BlinkTest.cpp.bin $(BIN)/DateTi
   $(BIN)/PHProbeTest.cpp.bin $(BIN)/PIDTest.cpp.bin $(BIN)/PushingBoxTest.cpp.bin $(BIN)/SDTest.cpp.bin \
   $(BIN)/SeeDeviceAddressTest.cpp.bin $(BIN)/SeeDeviceUptimeTest.cpp.bin $(BIN)/SeeFreeMemoryTest.cpp.bin \
   $(BIN)/SeeGoogleMinsTest.cpp.bin $(BIN)/SeeLogFileTest.cpp.bin $(BIN)/SeePHCalibrationTest.cpp.bin \
-	$(BIN)/SeePHSlopeTest.cpp.bin \
   $(BIN)/SeePIDConstantsTest.cpp.bin $(BIN)/SeePhTest.cpp.bin $(BIN)/SeeTankIDTest.cpp.bin \
   $(BIN)/SeeTempCalOffsetTest.cpp.bin $(BIN)/SeeVersionTest.cpp.bin $(BIN)/SerialTest.cpp.bin \
   $(BIN)/SetChillOrHeatTest.cpp.bin $(BIN)/SetGoogleSheetIntervalTest.cpp.bin $(BIN)/SetKDTest.cpp.bin \
@@ -151,9 +150,6 @@ $(BIN)/SeeLogFileTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SeeLogFileTest.cpp
 
 $(BIN)/SeePHCalibrationTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SeePHCalibrationTest.cpp
 	$(GPP_TEST) -o $(BIN)/SeePHCalibrationTest.cpp.bin $(TEST)/SeePHCalibrationTest.cpp -larduino
-
-$(BIN)/SeePHSlopeTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SeePHSlopeTest.cpp
-	$(GPP_TEST) -o $(BIN)/SeePHSlopeTest.cpp.bin $(TEST)/SeePHSlopeTest.cpp -larduino
 
 $(BIN)/SeePIDConstantsTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SeePIDConstantsTest.cpp
 	$(GPP_TEST) -o $(BIN)/SeePIDConstantsTest.cpp.bin $(TEST)/SeePIDConstantsTest.cpp -larduino
@@ -258,7 +254,7 @@ OBJECTS=$(BIN)/Arduino.o $(BIN)/Godmode.o $(BIN)/stdlib.o $(BIN)/ArduinoUnitTest
   $(BIN)/NumberCollectorState.o $(BIN)/PHCalibrationHigh.o $(BIN)/PHCalibrationLow.o \
   $(BIN)/PHCalibrationMid.o $(BIN)/PHCalibrationPrompt.o $(BIN)/SeeDeviceAddress.o \
 	$(BIN)/SeeDeviceUptime.o $(BIN)/SeeFreeMemory.o \
-  $(BIN)/SeeGoogleMins.o $(BIN)/SeeLogFile.o $(BIN)/SeePHCalibration.o $(BIN)/SeePHSlope.o \
+  $(BIN)/SeeGoogleMins.o $(BIN)/SeeLogFile.o $(BIN)/SeePHCalibration.o \
 	$(BIN)/SeePIDConstants.o \
   $(BIN)/SeePh.o $(BIN)/SeeTankID.o $(BIN)/SeeTempCalOffset.o $(BIN)/SeeVersion.o \
   $(BIN)/SetChillOrHeat.o $(BIN)/SetGoogleSheetInterval.o $(BIN)/SetKD.o $(BIN)/SetKI.o \
@@ -384,9 +380,6 @@ $(BIN)/SeeLogFile.o: $(SRC)/UIState/SeeLogFile.cpp
 
 $(BIN)/SeePHCalibration.o: $(SRC)/UIState/SeePHCalibration.cpp
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SeePHCalibration.o $(SRC)/UIState/SeePHCalibration.cpp
-
-$(BIN)/SeePHSlope.o: $(SRC)/UIState/SeePHSlope.cpp
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SeePHSlope.o $(SRC)/UIState/SeePHSlope.cpp
 
 $(BIN)/SeePIDConstants.o: $(SRC)/UIState/SeePIDConstants.cpp
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SeePIDConstants.o $(SRC)/UIState/SeePIDConstants.cpp

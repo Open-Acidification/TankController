@@ -39,18 +39,18 @@ PHProbe::PHProbe() {
 }
 
 void PHProbe::clearCalibration() {
-  tc->setIgnoreBadPHSlope(false);
+  TankController::instance()->setIgnoreBadPHSlope(false);
+  badSlopeFlag = false;
   Serial1.print(F("Cal,clear\r"));  // send that string to the Atlas Scientific product
 }
 
 void PHProbe::sendCalibrationRequest() {
   // Sending request for calibration status
   Serial1.print(F("CAL,?\r"));
-  strscpy_P(calibrationResponse, F("Requesting..."), sizeof(calibrationResponse));
+  strscpy_P(calibrationResponse, F("PH Calibration"), sizeof(calibrationResponse));
 }
 
 void PHProbe::getCalibration(char *buffer, int size) {
-  // for example "2" or "Requesting..."
   strscpy(buffer, calibrationResponse, size);
 }
 
@@ -93,13 +93,15 @@ void PHProbe::serialEvent1() {
               (95.0 <= strtofloat(baseSlopePercent)) && (strtofloat(baseSlopePercent) <= 105.0)) {
             badSlopeFlag = false;
             TankController::instance()->setIgnoreBadPHSlope(false);
+            serial(F("pH slopes are within 5%% of ideal"));
           } else {
             badSlopeFlag = true;
+            serial(F("BAD CALIBRATION? pH slopes are more than 5%% from ideal"));
           }
           // TankController::instance()->checkPhSlope();
         } else if (string.length() > 5 && memcmp_P(string.c_str(), F("?CAL,"), 5) == 0) {
           // for example "?CAL,2"
-          snprintf_P(calibrationResponse, sizeof(calibrationResponse), PSTR("%s pt calibrated"), string.c_str() + 5);
+          snprintf_P(calibrationResponse, sizeof(calibrationResponse), PSTR("PH Calibra: %s pt"), string.c_str() + 5);
         }
       }
     }
@@ -121,6 +123,7 @@ void PHProbe::setTemperatureCompensation(float temperature) {
 }
 
 void PHProbe::setHighpointCalibration(float highpoint) {
+  TankController::instance()->setIgnoreBadPHSlope(false);
   char buffer[17];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,High,%i.%03i\r"), (int)highpoint,
              (int)(highpoint * 1000 + 0.5) % 1000);
@@ -129,6 +132,7 @@ void PHProbe::setHighpointCalibration(float highpoint) {
 }
 
 void PHProbe::setLowpointCalibration(float lowpoint) {
+  TankController::instance()->setIgnoreBadPHSlope(false);
   char buffer[16];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,low,%i.%03i\r"), (int)lowpoint, (int)(lowpoint * 1000 + 0.5) % 1000);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
@@ -136,7 +140,8 @@ void PHProbe::setLowpointCalibration(float lowpoint) {
 }
 
 void PHProbe::setMidpointCalibration(float midpoint) {
-  tc->setIgnoreBadPHSlope(false);
+  TankController::instance()->setIgnoreBadPHSlope(false);
+  badSlopeFlag = false;
   char buffer[16];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,mid,%i.%03i\r"), (int)midpoint, (int)(midpoint * 1000 + 0.5) % 1000);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product

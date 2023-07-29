@@ -42,7 +42,7 @@ void BadPHCalibration::loop() {
     LiquidCrystal_TC::instance()->writeLine(slopeResponse, 1);
   } else {
     // Prompt for response
-    LiquidCrystal_TC::instance()->writeLine(F("A: Accept/Ignore"), 0);
+    LiquidCrystal_TC::instance()->writeLine(F("A: Accept/ignore"), 0);
     LiquidCrystal_TC::instance()->writeLine(F("C: Clear calibra"), 1);
   }
 }

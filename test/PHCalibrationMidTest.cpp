@@ -8,10 +8,10 @@
 
 unittest(onePointMid) {
   TankController *tc = TankController::instance();
-  PHProbe *pPHProbe = PHProbe::instance();
+  PHProbe *pHProbe = PHProbe::instance();
   GODMODE()->reset();
-  pPHProbe->setPh(7.125);
-  float pH = pPHProbe->getPh();
+  pHProbe->setPh(7.125);
+  float pH = pHProbe->getPh();
   assertEqual(7.125, pH);
 
   std::vector<String> lines;
@@ -20,7 +20,7 @@ unittest(onePointMid) {
   assertTrue(tc->isInCalibration());
   lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("              0 ", lines.at(1));
-  pPHProbe->setPh(7.325);
+  pHProbe->setPh(7.325);
   lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("              0 ", lines.at(1));
   tc->loop(false);
@@ -45,10 +45,10 @@ unittest(onePointMid) {
 
 unittest(twoPointMid) {
   TankController *tc = TankController::instance();
-  PHProbe *pPHProbe = PHProbe::instance();
+  PHProbe *pHProbe = PHProbe::instance();
   GODMODE()->reset();
-  pPHProbe->setPh(7.125);
-  float pH = pPHProbe->getPh();
+  pHProbe->setPh(7.125);
+  float pH = pHProbe->getPh();
   assertEqual(7.125, pH);
 
   std::vector<String> lines;
@@ -57,7 +57,7 @@ unittest(twoPointMid) {
   assertTrue(tc->isInCalibration());
   lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("              0 ", lines.at(1));
-  pPHProbe->setPh(7.325);
+  pHProbe->setPh(7.325);
   lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("              0 ", lines.at(1));
   tc->loop(false);
@@ -82,10 +82,10 @@ unittest(twoPointMid) {
 
 unittest(threePointMid) {
   TankController *tc = TankController::instance();
-  PHProbe *pPHProbe = PHProbe::instance();
+  PHProbe *pHProbe = PHProbe::instance();
   GODMODE()->reset();
-  pPHProbe->setPh(7.125);
-  float pH = pPHProbe->getPh();
+  pHProbe->setPh(7.125);
+  float pH = pHProbe->getPh();
   assertEqual(7.125, pH);
 
   std::vector<String> lines;
@@ -94,7 +94,7 @@ unittest(threePointMid) {
   assertTrue(tc->isInCalibration());
   lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("              0 ", lines.at(1));
-  pPHProbe->setPh(7.325);
+  pHProbe->setPh(7.325);
   lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("              0 ", lines.at(1));
   tc->loop(false);
@@ -120,18 +120,18 @@ unittest(threePointMid) {
 // Test when keys are passed to superclass NumCollectorState or intercepted
 unittest(keyEntry) {
   TankController *tc = TankController::instance();
-  PHProbe *pPHProbe = PHProbe::instance();
+  PHProbe *pHProbe = PHProbe::instance();
   LiquidCrystal_TC *lc = LiquidCrystal_TC::instance();
   GODMODE()->reset();
-  pPHProbe->setPh(7.125);
-  float pH = pPHProbe->getPh();
+  pHProbe->setPh(7.125);
+  float pH = pHProbe->getPh();
   assertEqual(7.125, pH);
 
   PHCalibrationMid *test = new PHCalibrationMid(tc);
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
   assertEqual("              0 ", lc->getLines().at(1));
-  pPHProbe->setPh(7.325);
+  pHProbe->setPh(7.325);
   assertEqual("              0 ", lc->getLines().at(1));
   tc->loop(false);
   assertEqual("              0 ", lc->getLines().at(1));

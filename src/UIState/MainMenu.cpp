@@ -14,7 +14,7 @@
 #include "SeeFreeMemory.h"
 #include "SeeGoogleMins.h"
 #include "SeeLogFile.h"
-#include "SeePHSlope.h"
+#include "SeePHCalibration.h"
 #include "SeePIDConstants.h"
 #include "SeeTankID.h"
 #include "SeeTempCalOffset.h"
@@ -157,7 +157,7 @@ void MainMenu::selectView() {
       this->setNextState(new SeeLogFile(tc));
       break;
     case VIEW_PH_SLOPE:
-      this->setNextState(new SeePHSlope(tc));
+      this->setNextState(new SeePHCalibration(tc));
       break;
     case VIEW_PID:
       this->setNextState(new SeePIDConstants(tc));
@@ -243,7 +243,7 @@ void MainMenu::idle() {
   }
   char buffer[6];
   char output[20];
-  bool pHBlink = PHProbe::instance()->slopeIsBad() && (millis() / 500 % 2);
+  bool pHBlink = PHProbe::instance()->slopeIsBad() && ((millis() + 1000) / 1000 % 2);
   output[0] = pHBlink ? ' ' : 'p';
   output[1] = pHBlink ? ' ' : 'H';
   output[2] = millis() / 1000 % 2 ? '=' : ' ';

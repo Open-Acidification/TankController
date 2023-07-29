@@ -6,13 +6,14 @@
 #include "Devices/PHProbe.h"
 #include "TankController.h"
 #include "UIState/BadPHCalibration.h"
+#include "UIState/MainMenu.h"
 
-unittest(testDisplay) {
+unittest(Display) {
   // Set up
   TankController* tc = TankController::instance();
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
-  PHProbe* pPHProbe = PHProbe::instance();
-  pPHProbe->setPhSlope();
+  PHProbe* pHProbe = PHProbe::instance();
+  pHProbe->setPhSlope();
 
   assertEqual("MainMenu", tc->stateName());
   tc->setNextState(new BadPHCalibration(tc), true);
@@ -33,23 +34,22 @@ unittest(testDisplay) {
   assertEqual("99.7,100.3,-0.89", display->getLines().at(1));
   delay(4000);
   tc->loop(false);
-  assertEqual("A: Accept anyway", display->getLines().at(0));
-  assertEqual("C: Clear/reset  ", display->getLines().at(1));
+  assertEqual("A: Accept/ignore", display->getLines().at(0));
+  assertEqual("C: Clear calibra", display->getLines().at(1));
   delay(3000);
   tc->loop(false);
   assertEqual("BAD CALIBRATION?", display->getLines().at(0));
   assertEqual("99.7,100.3,-0.89", display->getLines().at(1));
 }
 
-unittest(testAccept) {
+unittest(Accept) {
   // Set up
   GODMODE()->reset();
   TankController* tc = TankController::instance();
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
-  PHProbe* pPHProbe = PHProbe::instance();
-  pPHProbe->setPhSlope();
+  PHProbe* pHProbe = PHProbe::instance();
+  pHProbe->setPhSlope();
 
-  assertEqual("MainMenu", tc->stateName());
   tc->setNextState(new BadPHCalibration(tc), true);
   assertEqual("BadPHCalibration", tc->stateName());
   assertTrue(tc->isInCalibration());
@@ -69,15 +69,14 @@ unittest(testAccept) {
   assertTrue(tc->getIgnoreBadPHSlope());
 }
 
-unittest(testClear) {
+unittest(Clear) {
   // Set up
   GODMODE()->reset();
   TankController* tc = TankController::instance();
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
-  PHProbe* pPHProbe = PHProbe::instance();
-  pPHProbe->setPhSlope();
+  PHProbe* pHProbe = PHProbe::instance();
+  pHProbe->setPhSlope();
 
-  assertEqual("MainMenu", tc->stateName());
   tc->setNextState(new BadPHCalibration(tc), true);
   assertEqual("BadPHCalibration", tc->stateName());
   assertTrue(tc->isInCalibration());
@@ -91,9 +90,51 @@ unittest(testClear) {
   assertEqual("", GODMODE()->serialPort[1].dataOut);
   Keypad_TC::instance()->_getPuppet()->push_back('C');
   tc->loop(false);
-  assertEqual("Cal,clear\r", GODMODE()->serialPort[1].dataOut);
   assertEqual("SeePHCalibration", tc->stateName());
+  assertEqual("Cal,clear\rCAL,?\rSLOPE,?\r", GODMODE()->serialPort[1].dataOut);
   assertFalse(tc->getIgnoreBadPHSlope());
+}
+
+unittest(CatchBadCalibration) {
+  GODMODE()->reset();
+  TankController* tc = TankController::instance();
+  PHProbe* pHProbe = PHProbe::instance();
+  pHProbe->setPhSlope();
+  assertFalse(tc->getIgnoreBadPHSlope());
+  assertFalse(pHProbe->slopeIsBad());
+
+  tc->setNextState(new MainMenu(tc));
+  tc->loop(false);
+  assertEqual("MainMenu", tc->stateName());
+  assertFalse(tc->isInCalibration());
+  pHProbe->setPhSlope("?SLOPE,99.7,0");  // 0% base slope is outside range
+  assertTrue(pHProbe->slopeIsBad());
+  assertEqual("MainMenu", tc->stateName());
+  tc->loop(false);  // catch flag and queue next state
+  tc->loop(false);  // make new state active
+  assertEqual("BadPHCalibration", tc->stateName());
+}
+
+unittest(IgnoreBadCalibration) {
+  GODMODE()->reset();
+  TankController* tc = TankController::instance();
+  PHProbe* pHProbe = PHProbe::instance();
+  pHProbe->setPhSlope();
+  assertFalse(tc->getIgnoreBadPHSlope());
+  assertFalse(pHProbe->slopeIsBad());
+  tc->setIgnoreBadPHSlope(true);
+  assertTrue(tc->getIgnoreBadPHSlope());
+
+  tc->setNextState(new MainMenu(tc));
+  tc->loop(false);
+  assertEqual("MainMenu", tc->stateName());
+  assertFalse(tc->isInCalibration());
+  pHProbe->setPhSlope("?SLOPE,99.7,0");  // 0% base slope is outside range
+  assertTrue(pHProbe->slopeIsBad());
+  assertEqual("MainMenu", tc->stateName());
+  tc->loop(false);  // ignore bad calibration flag
+  tc->loop(false);  // continue to ignore flag
+  assertEqual("MainMenu", tc->stateName());
 }
 
 unittest_main()

@@ -154,6 +154,7 @@ unittest(currentData) {
   DateTime_TC feb(2022, 2, 22, 20, 50, 00);
   feb.setAsCurrent();
   PHProbe::instance()->setPh(8.125);                            // actual
+  PHProbe::instance()->setPhSlope();                            // actual
   PHControl::instance()->setBaseTargetPh(8.25);                 // target
   TempProbe_TC::instance()->setTemperature(21.25, true);        // actual
   TemperatureControl::instance()->setTargetTemperature(21.75);  // target
@@ -187,7 +188,7 @@ unittest(currentData) {
       "Content-Encoding: identity\r\n"
       "Content-Language: en-US\r\n"
       "Access-Control-Allow-Origin: *\r\n"
-      "Content-Length: 329\r\n"
+      "Content-Length: 345\r\n"
       "\r\n"
       "{"
       "\"pH\":8.125,"
@@ -199,7 +200,7 @@ unittest(currentData) {
       "\"FreeMemory\":\"1024 bytes\","
       "\"GoogleSheetInterval\":65535,"
       "\"LogFile\":\"20220222.csv\","
-      "\"PHSlope\":\"\","
+      "\"PHSlope\":\"99.7,100.3,-0.89\","
       "\"Kp\":5000.5,"
       "\"Ki\":1234.5,"
       "\"Kd\":987.4,"

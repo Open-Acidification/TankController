@@ -6,7 +6,6 @@
 #include "Devices/EEPROM_TC.h"
 #include "Devices/Serial_TC.h"
 #include "TC_util.h"
-#include "TankController.h"
 
 //  class instance variables
 /**

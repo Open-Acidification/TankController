@@ -8,7 +8,7 @@
 
 class SeeDeviceUptime : public UIState {
 public:
-  SeeDeviceUptime(TankController* tc) : UIState(tc) {
+  SeeDeviceUptime() : UIState() {
   }
   void loop() override;
   const __FlashStringHelper* name() override {

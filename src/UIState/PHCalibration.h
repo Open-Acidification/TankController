@@ -5,7 +5,7 @@
 
 class PHCalibration : public NumCollectorState {
 public:
-  PHCalibration(TankController* tc) : NumCollectorState(tc) {
+  PHCalibration() : NumCollectorState() {
   }
   bool isInCalibration() override {
     return true;  // disable controls during calibration
@@ -15,7 +15,7 @@ public:
   }
   void handleKey(char key) override {
     if (key == 'D') {  // cancel but show calibration status
-      this->setNextState(new SeePHCalibration(tc, true));
+      this->setNextState(new SeePHCalibration(true));
     } else {
       NumCollectorState::handleKey(key);
     }

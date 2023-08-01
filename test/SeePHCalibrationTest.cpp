@@ -15,7 +15,7 @@ unittest(testOutput) {
   PHProbe* pHProbe = PHProbe::instance();
 
   assertEqual("MainMenu", tc->stateName());
-  SeePHCalibration* state = new SeePHCalibration(tc);
+  SeePHCalibration* state = new SeePHCalibration();
   tc->setNextState(state, true);
   assertEqual("SeePHCalibration", tc->stateName());
   assertFalse(tc->isInCalibration());
@@ -41,7 +41,7 @@ unittest(testTimeout) {
   PHProbe* pHProbe = PHProbe::instance();
 
   assertEqual("MainMenu", tc->stateName());
-  SeePHCalibration* state = new SeePHCalibration(tc, true);
+  SeePHCalibration* state = new SeePHCalibration(true);
   tc->setNextState(state, true);
   assertEqual("SeePHCalibration", tc->stateName());
 

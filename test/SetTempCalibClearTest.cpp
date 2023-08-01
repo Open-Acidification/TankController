@@ -18,7 +18,7 @@ void enterKey(char key) {
 }
 
 unittest(test) {
-  SetTempCalibClear* test = new SetTempCalibClear(tc);
+  SetTempCalibClear* test = new SetTempCalibClear();
   tc->setNextState(test, true);
   enterKey('A');
   std::vector<String> lines2 = lc->getLines();

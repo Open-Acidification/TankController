@@ -24,7 +24,7 @@ unittest(test_target_of_7_125_with_ramp_of_4_125) {
   assertEqual(8.125, PHControl::instance()->getBaseTargetPh());
   assertEqual(0, EEPROM_TC::instance()->getPhRampTimeEnd());
   assertEqual(0, EEPROM_TC::instance()->getPhRampTimeStart());
-  SetPHSetPoint* test = new SetPHSetPoint(tc);
+  SetPHSetPoint* test = new SetPHSetPoint();
   tc->setNextState(test, true);
 
   // get currently displayed lines
@@ -65,7 +65,7 @@ unittest(test_target_of_7_125_with_ramp_of_4_125) {
 unittest(test_target_of_14_with_ramp_of_0) {
   TankController* tc = TankController::instance();
   LiquidCrystal_TC* lcd = LiquidCrystal_TC::instance();
-  SetPHSetPoint* test = new SetPHSetPoint(tc);
+  SetPHSetPoint* test = new SetPHSetPoint();
   tc->setNextState(test, true);
 
   // setValue

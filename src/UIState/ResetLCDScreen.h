@@ -8,7 +8,7 @@
 
 class ResetLCDScreen : public UIState {
 public:
-  ResetLCDScreen(TankController* tc) : UIState(tc) {
+  ResetLCDScreen() : UIState() {
   }
   void handleKey(char key);
   const __FlashStringHelper* name() {

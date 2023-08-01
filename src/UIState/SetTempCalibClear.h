@@ -8,7 +8,7 @@
 
 class SetTempCalibClear : public UIState {
 public:
-  SetTempCalibClear(TankController* tc) : UIState(tc) {
+  SetTempCalibClear() : UIState() {
   }
   void handleKey(char key);
   const __FlashStringHelper* name() {

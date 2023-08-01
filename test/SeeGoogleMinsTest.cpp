@@ -15,7 +15,7 @@ unittest(testOutput) {
   TankController* tc = TankController::instance();
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
   assertEqual("MainMenu", tc->stateName());
-  SeeGoogleMins* test = new SeeGoogleMins(tc);
+  SeeGoogleMins* test = new SeeGoogleMins();
   tc->setNextState(test, true);
   assertEqual("SeeGoogleMins", tc->stateName());
 

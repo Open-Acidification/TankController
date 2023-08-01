@@ -8,7 +8,7 @@
 
 class SeeTankID : public UIState {
 public:
-  SeeTankID(TankController* tc) : UIState(tc) {
+  SeeTankID() : UIState() {
   }
   void start() override;
   const __FlashStringHelper* name() override {

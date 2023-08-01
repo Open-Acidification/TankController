@@ -8,7 +8,7 @@
 
 class SeeVersion : public UIState {
 public:
-  SeeVersion(TankController* tc) : UIState(tc) {
+  SeeVersion() : UIState() {
   }
   void start() override;
   const __FlashStringHelper* name() override {

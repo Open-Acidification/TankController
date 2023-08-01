@@ -11,7 +11,7 @@
 #include "UIState/MainMenu.h"
 #include "UIState/SeePHCalibration.h"
 
-BadPHCalibration::BadPHCalibration(TankController* tc) : UIState(tc) {
+BadPHCalibration::BadPHCalibration() : UIState() {
   startTime = millis();
 }
 
@@ -23,7 +23,7 @@ void BadPHCalibration::handleKey(char key) {
       break;
     case 'C':
       PHProbe::instance()->clearCalibration();
-      this->setNextState(new SeePHCalibration(tc, true));
+      this->setNextState(new SeePHCalibration(true));
       break;
     default:
       break;

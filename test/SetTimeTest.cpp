@@ -11,7 +11,7 @@ unittest(test) {
   TankController* tc = TankController::instance();
   DateTime_TC june(2021, 06, 01, 20, 57, 15);
   june.setAsCurrent();
-  SetTime* test = new SetTime(tc);
+  SetTime* test = new SetTime();
   tc->setNextState(test, true);
   DateTime_TC now = DateTime_TC::now();
   // the default time is the code compile time

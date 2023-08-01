@@ -7,7 +7,7 @@
 
 class NumCollectorState : public UIState {
 public:
-  NumCollectorState(TankController* tc) : UIState(tc) {
+  NumCollectorState() : UIState() {
   }
   virtual void handleKey(char key);
   virtual void setValue(float value) = 0;
@@ -39,7 +39,7 @@ protected:
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
 class TestNumCollectorState : public NumCollectorState {
 public:
-  TestNumCollectorState(TankController* tc) : NumCollectorState(tc) {
+  TestNumCollectorState() : NumCollectorState() {
   }
   // Implementation
   void setValue(float value) {
@@ -80,7 +80,7 @@ private:
 
 class TestIntNumCollectorState : public TestNumCollectorState {
 public:
-  TestIntNumCollectorState(TankController* tc) : TestNumCollectorState(tc) {
+  TestIntNumCollectorState() : TestNumCollectorState() {
   }
   virtual bool isInteger() {
     return true;
@@ -89,7 +89,7 @@ public:
 
 class TestNumCollectorStateWithNoCurrentValue : public TestNumCollectorState {
 public:
-  TestNumCollectorStateWithNoCurrentValue(TankController* tc) : TestNumCollectorState(tc) {
+  TestNumCollectorStateWithNoCurrentValue() : TestNumCollectorState() {
   }
   bool showCurrentValue() {
     return false;

@@ -17,7 +17,7 @@ unittest(Display) {
   pHProbe->setPhSlope();
 
   assertEqual("MainMenu", tc->stateName());
-  tc->setNextState(new BadPHCalibration(tc), true);
+  tc->setNextState(new BadPHCalibration(), true);
   assertEqual("BadPHCalibration", tc->stateName());
   assertTrue(tc->isInCalibration());
 
@@ -51,7 +51,7 @@ unittest(Accept) {
   PHProbe* pHProbe = PHProbe::instance();
   pHProbe->setPhSlope();
 
-  tc->setNextState(new BadPHCalibration(tc), true);
+  tc->setNextState(new BadPHCalibration(), true);
   assertEqual("BadPHCalibration", tc->stateName());
   assertTrue(tc->isInCalibration());
   assertEqual("", GODMODE()->serialPort[1].dataOut);
@@ -78,7 +78,7 @@ unittest(Clear) {
   PHProbe* pHProbe = PHProbe::instance();
   pHProbe->setPhSlope();
 
-  tc->setNextState(new BadPHCalibration(tc), true);
+  tc->setNextState(new BadPHCalibration(), true);
   assertEqual("BadPHCalibration", tc->stateName());
   assertTrue(tc->isInCalibration());
 
@@ -105,7 +105,7 @@ unittest(CatchBadCalibration) {
   assertFalse(pHProbe->slopeIsBad());
   assertFalse(pHProbe->shouldWarnAboutCalibration());
 
-  tc->setNextState(new MainMenu(tc));
+  tc->setNextState(new MainMenu());
   tc->loop(false);
   assertEqual("MainMenu", tc->stateName());
   assertFalse(tc->isInCalibration());
@@ -130,7 +130,7 @@ unittest(IgnoreBadCalibration) {
   eeprom->setIgnoreBadPHSlope(true);
   assertTrue(eeprom->getIgnoreBadPHSlope());
 
-  tc->setNextState(new MainMenu(tc));
+  tc->setNextState(new MainMenu());
   tc->loop(false);
   assertEqual("MainMenu", tc->stateName());
   assertFalse(tc->isInCalibration());

@@ -11,9 +11,7 @@ class TankController;  // Forward reference
 class UIState {
 public:
   // constructor that captures the owning TankController
-  UIState(TankController* tc) {
-    this->tc = tc;
-  }
+  UIState(TankController* = nullptr);
   // virtual destructor so subclass destructor is called
   virtual ~UIState() {
   }

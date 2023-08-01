@@ -7,7 +7,7 @@
 
 unittest(onePoint) {
   TankController* tc = TankController::instance();
-  PHCalibrationPrompt* test = new PHCalibrationPrompt(tc);
+  PHCalibrationPrompt* test = new PHCalibrationPrompt();
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
   // setValue
@@ -29,7 +29,7 @@ unittest(onePoint) {
 
 unittest(twoPoint) {
   TankController* tc = TankController::instance();
-  PHCalibrationPrompt* test = new PHCalibrationPrompt(tc);
+  PHCalibrationPrompt* test = new PHCalibrationPrompt();
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
   // setValue
@@ -51,7 +51,7 @@ unittest(twoPoint) {
 
 unittest(threePoint) {
   TankController* tc = TankController::instance();
-  PHCalibrationPrompt* test = new PHCalibrationPrompt(tc);
+  PHCalibrationPrompt* test = new PHCalibrationPrompt();
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
   // setValue
@@ -73,7 +73,7 @@ unittest(threePoint) {
 
 unittest(badEntry) {
   TankController* tc = TankController::instance();
-  PHCalibrationPrompt* test = new PHCalibrationPrompt(tc);
+  PHCalibrationPrompt* test = new PHCalibrationPrompt();
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
   // setValue

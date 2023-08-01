@@ -24,7 +24,7 @@ DataLogger_TC* dataLog = DataLogger_TC::instance();
  * cycle the control through to a point of being off
  */
 void reset() {
-  tc->setNextState(new MainMenu(tc), true);
+  tc->setNextState(new MainMenu(), true);
   state->resetClock();
   DateTime_TC january(2021, 1, 15, 1, 48, 24);
   january.setAsCurrent();
@@ -162,7 +162,7 @@ unittest(PhEvenWithTarget) {
  */
 unittest(disableDuringCalibration) {
   assertFalse(tc->isInCalibration());
-  PHCalibrationMid* test = new PHCalibrationMid(tc);
+  PHCalibrationMid* test = new PHCalibrationMid();
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
   // device is initially off and stays off due to calibration

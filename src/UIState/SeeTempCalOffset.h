@@ -8,7 +8,7 @@
 
 class SeeTempCalOffset : public UIState {
 public:
-  SeeTempCalOffset(TankController* tc) : UIState(tc) {
+  SeeTempCalOffset() : UIState() {
   }
   void start() override;
   const __FlashStringHelper* name() override {

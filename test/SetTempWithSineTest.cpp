@@ -18,7 +18,7 @@ unittest(test) {
   TankController* tc = TankController::instance();  // instantiate after setting eeprom stuff
   assertEqual(20.00, EEPROM_TC::instance()->getTemp());
   assertEqual(20.00, TemperatureControl::instance()->getBaseTargetTemperature());
-  SetTempWithSine* test = new SetTempWithSine(tc);
+  SetTempWithSine* test = new SetTempWithSine();
   tc->setNextState(test, true);
 
   assertEqual(EEPROM_TC::instance()->getTempSetType(), TemperatureControl::instance()->tempSetTypeTypes::FLAT_TYPE);

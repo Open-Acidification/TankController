@@ -130,7 +130,7 @@ void TankController::handleUI() {
       // we already have a next state teed-up, do don't try to return to main menu
     } else if (millis() - lastKeypadTime > IDLE_TIMEOUT) {
       // time since last keypress exceeds the idle timeout, so return to main menu
-      setNextState((UIState *)new MainMenu(this));
+      setNextState((UIState *)new MainMenu());
       lastKeypadTime = 0;  // so we don't do this until another keypress!
     }
   } else {

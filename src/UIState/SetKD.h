@@ -9,7 +9,7 @@
 
 class SetKD : public NumCollectorState {
 public:
-  SetKD(TankController* tc) : NumCollectorState(tc) {
+  SetKD() : NumCollectorState() {
   }
   const __FlashStringHelper* name() {
     return F("SetKD");

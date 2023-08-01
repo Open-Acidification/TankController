@@ -8,7 +8,7 @@
 
 class SetPHSetPoint : public NumCollectorState {
 public:
-  SetPHSetPoint(TankController* tc);
+  SetPHSetPoint();
   const __FlashStringHelper* name() {
     return F("SetPHSetPoint");
   }

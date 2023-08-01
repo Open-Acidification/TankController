@@ -9,7 +9,7 @@
 
 class SetKP : public NumCollectorState {
 public:
-  SetKP(TankController* tc) : NumCollectorState(tc) {
+  SetKP() : NumCollectorState() {
   }
   const __FlashStringHelper* name() {
     return F("SetKP");

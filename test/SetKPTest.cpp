@@ -9,7 +9,7 @@
 
 unittest(test) {
   TankController* tc = TankController::instance();
-  SetKP* test = new SetKP(tc);
+  SetKP* test = new SetKP();
   tc->setNextState(test, true);
   EEPROM_TC::instance()->setKP(7);
 

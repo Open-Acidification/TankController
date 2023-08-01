@@ -8,7 +8,7 @@
 
 class BadPHCalibration : public UIState {
 public:
-  BadPHCalibration(TankController* tc);
+  BadPHCalibration();
   void handleKey(char key) override;
   bool isInCalibration() override {
     return true;

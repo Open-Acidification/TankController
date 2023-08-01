@@ -7,7 +7,7 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHControl.h"
 
-SetPHWithSine::SetPHWithSine(TankController* tc) : NumCollectorState(tc) {
+SetPHWithSine::SetPHWithSine() : NumCollectorState() {
   prompts[0] = F("Set pH Mean:");
   prompts[1] = F("Set Amplitude:");
   prompts[2] = F("Set Period hrs:");

@@ -8,7 +8,7 @@
 
 class SeeDeviceAddress : public UIState {
 public:
-  SeeDeviceAddress(TankController* tc) : UIState(tc) {
+  SeeDeviceAddress() : UIState() {
   }
   void start() override;
   void handleKey(char key) override;

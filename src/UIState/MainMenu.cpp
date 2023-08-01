@@ -34,7 +34,7 @@
 #include "SetTime.h"
 #include "TemperatureCalibration.h"
 
-MainMenu::MainMenu(TankController* tc) : UIState(tc) {
+MainMenu::MainMenu(TankController *tc) : UIState(tc) {
   viewMenus[VIEW_ADDRESS] = F("View IP and MAC");
   viewMenus[VIEW_FREE_MEMORY] = F("View free memory");
   viewMenus[VIEW_GOOGLE_MINS] = F("View Google mins");

@@ -7,6 +7,10 @@
 #include "PHCalibration.h"
 #include "TC_util.h"  // For strnlen
 
+/**
+ * @brief Set high/basic buffer pH value as part of a 3-point calibration
+ *
+ */
 class PHCalibrationHigh : public PHCalibration {
 public:
   PHCalibrationHigh(TankController* tc) : PHCalibration(tc) {
@@ -15,7 +19,7 @@ public:
     return F("PHCalibrationHigh");
   }
   const __FlashStringHelper* prompt() override {
-    return F("pH-Highpoint");
+    return F("High buffer pH");
   };
   void setValue(float value) override;
 };

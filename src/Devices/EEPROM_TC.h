@@ -19,6 +19,7 @@ public:
   uint16_t getGoogleSheetInterval();  // how often to send data using PushingBox
   float getGranularity();             // not used
   bool getHeat();                     // boolean for heater (true) or chiller (false)
+  bool getIgnoreBadPHSlope();         // whether to warn about an out-of-range calibration
   float getKD();                      // constants used for PID to calculate bubbler timer
   float getKI();                      // constants used for PID to calculate bubbler timer
   float getKP();                      // constants used for PID to calculate bubbler timer
@@ -57,6 +58,7 @@ public:
   void setGoogleSheetInterval(uint16_t value);
   void setGranularity(float value);
   void setHeat(bool value);
+  void setIgnoreBadPHSlope(bool value);
   void setKD(float value);
   void setKI(float value);
   void setKP(float value);
@@ -130,6 +132,8 @@ private:
   const uint16_t TEMP_SINE_PERIOD_ADDRESS = 132;
   const uint16_t PH_SET_TYPE_ADDRESS = 136;
   const uint16_t TEMP_SET_TYPE_ADDRESS = 140;
+  // new with v23.8.1
+  const uint16_t IGNORE_BAD_PH_SLOPE_ADDRESS = 144;
 
   // class variables
   static EEPROM_TC* _instance;

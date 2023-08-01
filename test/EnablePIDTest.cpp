@@ -3,6 +3,7 @@
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHControl.h"
+#include "Devices/PHProbe.h"
 #include "EnablePID.h"
 #include "TankController.h"
 

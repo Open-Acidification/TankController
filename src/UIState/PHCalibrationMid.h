@@ -7,19 +7,54 @@
 #include "PHCalibration.h"
 #include "TC_util.h"  // For strnlen
 
+/**
+ * @brief Set mid/neutral buffer pH value as part of a 3-point calibration
+ *
+ */
 class PHCalibrationMid : public PHCalibration {
 public:
-  PHCalibrationMid(TankController* tc, int numberOfCalibrationPoints = 3) : PHCalibration(tc) {
-    this->numberOfCalibrationPoints = numberOfCalibrationPoints;
+  PHCalibrationMid(TankController* tc) : PHCalibration(tc) {
   }
   const __FlashStringHelper* name() override {
     return F("PHCalibrationMid");
   }
   const __FlashStringHelper* prompt() override {
-    return F("pH-Midpoint");
+    return F("Mid buffer pH");
   };
   void setValue(float value) override;
+};
 
-private:
-  int numberOfCalibrationPoints = 3;
+/**
+ * @brief Set mid/neutral buffer pH value as part of a 2-point calibration. We're using the comparative "higher" for the
+ * sake of students who have trouble remembering which of two buffers is the "mid" one.
+ *
+ */
+class PHCalibrationHigher : public PHCalibration {
+public:
+  PHCalibrationHigher(TankController* tc) : PHCalibration(tc) {
+  }
+  const __FlashStringHelper* name() override {
+    return F("PHCalibrationHigher");
+  }
+  const __FlashStringHelper* prompt() override {
+    return F("Higher buffer pH");
+  };
+  void setValue(float value) override;
+};
+
+/**
+ * @brief Set buffer pH value for a 1-point calibration.
+ *
+ */
+class PHCalibrationOnly : public PHCalibration {
+public:
+  PHCalibrationOnly(TankController* tc) : PHCalibration(tc) {
+  }
+  const __FlashStringHelper* name() override {
+    return F("PHCalibrationOnly");
+  }
+  const __FlashStringHelper* prompt() override {
+    return F("Buffer pH");
+  };
+  void setValue(float value) override;
 };

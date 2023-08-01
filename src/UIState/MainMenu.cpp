@@ -1,5 +1,6 @@
 #include "MainMenu.h"
 
+#include "BadPHCalibration.h"
 #include "CalibrationManagement.h"
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHControl.h"
@@ -13,7 +14,7 @@
 #include "SeeFreeMemory.h"
 #include "SeeGoogleMins.h"
 #include "SeeLogFile.h"
-#include "SeePHSlope.h"
+#include "SeePHCalibration.h"
 #include "SeePIDConstants.h"
 #include "SeeTankID.h"
 #include "SeeTempCalOffset.h"
@@ -156,7 +157,7 @@ void MainMenu::selectView() {
       this->setNextState(new SeeLogFile(tc));
       break;
     case VIEW_PH_SLOPE:
-      this->setNextState(new SeePHSlope(tc));
+      this->setNextState(new SeePHCalibration(tc));
       break;
     case VIEW_PID:
       this->setNextState(new SeePIDConstants(tc));
@@ -236,11 +237,15 @@ void MainMenu::selectSet() {
 // pH=7.325 B 7.125
 // T=12.25 H 12.75
 void MainMenu::idle() {
-  PHControl *phControl = PHControl::instance();
+  if (PHProbe::instance()->shouldWarnAboutCalibration()) {
+    this->setNextState(new BadPHCalibration(tc));
+    return;
+  }
   char buffer[6];
   char output[20];
-  output[0] = 'p';
-  output[1] = 'H';
+  bool pHBlink = PHProbe::instance()->slopeIsBad() && ((millis() + 1000) / 1000 % 2);
+  output[0] = pHBlink ? ' ' : 'p';
+  output[1] = pHBlink ? ' ' : 'H';
   output[2] = millis() / 1000 % 2 ? '=' : ' ';
   float pH = PHProbe::instance()->getPh();
   if (pH < 10.0) {
@@ -250,7 +255,7 @@ void MainMenu::idle() {
   }
   memcpy(output + 3, buffer, sizeof(buffer));
   output[8] = ' ';
-  output[9] = phControl->isOn() ? 'B' : ' ';
+  output[9] = PHControl::instance()->isOn() ? 'B' : ' ';
   output[10] = ' ';
   pH = PHControl::instance()->getCurrentTargetPh();
   if (pH < 10.0) {

@@ -30,12 +30,6 @@ public:
   void setNextKey(char value) {
     nextKey = value;
   }
-  void setIgnoreBadPHSlope(bool value) {
-    ignoreBadPHSlope = value;
-  }
-  bool getIgnoreBadPHSlope() {
-    return ignoreBadPHSlope;
-  }
 
 private:
   // class variables
@@ -47,7 +41,6 @@ private:
   UIState* nextState = nullptr;
   uint32_t lastKeypadTime = 0;
   char nextKey = 0;
-  bool ignoreBadPHSlope = false;
 
   // instance methods
   TankController();

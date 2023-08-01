@@ -4,6 +4,7 @@
 
 #include "BadPHCalibration.h"
 
+#include "Devices/EEPROM_TC.h"
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHProbe.h"
 #include "TankController.h"
@@ -17,7 +18,7 @@ BadPHCalibration::BadPHCalibration(TankController* tc) : UIState(tc) {
 void BadPHCalibration::handleKey(char key) {
   switch (key) {
     case 'A':
-      tc->setIgnoreBadPHSlope(true);
+      EEPROM_TC::instance()->setIgnoreBadPHSlope(true);
       returnToMainMenu();
       break;
     case 'C':
@@ -32,7 +33,7 @@ void BadPHCalibration::handleKey(char key) {
 void BadPHCalibration::loop() {
   if ((millis() - startTime) % 8000 < 5000) {
     // Blink "BAD CALIBRATION?" in first line and show slope in second line
-    if ((millis() - startTime) % 1000 < 750) {
+    if ((millis() - startTime) % 1000 < 700) {
       LiquidCrystal_TC::instance()->writeLine(this->prompt(), 0);
     } else {
       LiquidCrystal_TC::instance()->writeLine(F(""), 0);

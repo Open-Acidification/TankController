@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
+#include "Devices/EEPROM_TC.h"
 #include "Devices/Keypad_TC.h"
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHProbe.h"
@@ -24,11 +25,11 @@ unittest(Display) {
   tc->loop(false);
   assertEqual("BAD CALIBRATION?", display->getLines().at(0));
   assertEqual("99.7,100.3,-0.89", display->getLines().at(1));
-  delay(750);
+  delay(700);
   tc->loop(false);
   assertEqual("                ", display->getLines().at(0));
   assertEqual("99.7,100.3,-0.89", display->getLines().at(1));
-  delay(250);
+  delay(300);
   tc->loop(false);
   assertEqual("BAD CALIBRATION?", display->getLines().at(0));
   assertEqual("99.7,100.3,-0.89", display->getLines().at(1));
@@ -66,7 +67,7 @@ unittest(Accept) {
   tc->loop(false);
   assertEqual("MainMenu", tc->stateName());
   assertEqual("", GODMODE()->serialPort[1].dataOut);
-  assertTrue(tc->getIgnoreBadPHSlope());
+  assertTrue(EEPROM_TC::instance()->getIgnoreBadPHSlope());
 }
 
 unittest(Clear) {
@@ -92,7 +93,7 @@ unittest(Clear) {
   tc->loop(false);
   assertEqual("SeePHCalibration", tc->stateName());
   assertEqual("Cal,clear\rCAL,?\rSLOPE,?\r", GODMODE()->serialPort[1].dataOut);
-  assertFalse(tc->getIgnoreBadPHSlope());
+  assertFalse(EEPROM_TC::instance()->getIgnoreBadPHSlope());
 }
 
 unittest(CatchBadCalibration) {
@@ -100,8 +101,9 @@ unittest(CatchBadCalibration) {
   TankController* tc = TankController::instance();
   PHProbe* pHProbe = PHProbe::instance();
   pHProbe->setPhSlope();
-  assertFalse(tc->getIgnoreBadPHSlope());
+  assertFalse(EEPROM_TC::instance()->getIgnoreBadPHSlope());
   assertFalse(pHProbe->slopeIsBad());
+  assertFalse(pHProbe->shouldWarnAboutCalibration());
 
   tc->setNextState(new MainMenu(tc));
   tc->loop(false);
@@ -109,6 +111,7 @@ unittest(CatchBadCalibration) {
   assertFalse(tc->isInCalibration());
   pHProbe->setPhSlope("?SLOPE,99.7,0");  // 0% base slope is outside range
   assertTrue(pHProbe->slopeIsBad());
+  assertTrue(pHProbe->shouldWarnAboutCalibration());
   assertEqual("MainMenu", tc->stateName());
   tc->loop(false);  // catch flag and queue next state
   tc->loop(false);  // make new state active
@@ -118,12 +121,14 @@ unittest(CatchBadCalibration) {
 unittest(IgnoreBadCalibration) {
   GODMODE()->reset();
   TankController* tc = TankController::instance();
+  EEPROM_TC* eeprom = EEPROM_TC::instance();
   PHProbe* pHProbe = PHProbe::instance();
   pHProbe->setPhSlope();
-  assertFalse(tc->getIgnoreBadPHSlope());
+  assertFalse(eeprom->getIgnoreBadPHSlope());
   assertFalse(pHProbe->slopeIsBad());
-  tc->setIgnoreBadPHSlope(true);
-  assertTrue(tc->getIgnoreBadPHSlope());
+  assertFalse(pHProbe->shouldWarnAboutCalibration());
+  eeprom->setIgnoreBadPHSlope(true);
+  assertTrue(eeprom->getIgnoreBadPHSlope());
 
   tc->setNextState(new MainMenu(tc));
   tc->loop(false);
@@ -131,6 +136,7 @@ unittest(IgnoreBadCalibration) {
   assertFalse(tc->isInCalibration());
   pHProbe->setPhSlope("?SLOPE,99.7,0");  // 0% base slope is outside range
   assertTrue(pHProbe->slopeIsBad());
+  assertFalse(pHProbe->shouldWarnAboutCalibration());
   assertEqual("MainMenu", tc->stateName());
   tc->loop(false);  // ignore bad calibration flag
   tc->loop(false);  // continue to ignore flag

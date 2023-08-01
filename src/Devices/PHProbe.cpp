@@ -3,6 +3,7 @@
 #include <avr/wdt.h>
 #include <stdlib.h>
 
+#include "Devices/EEPROM_TC.h"
 #include "Devices/Serial_TC.h"
 #include "TC_util.h"
 #include "TankController.h"
@@ -39,8 +40,8 @@ PHProbe::PHProbe() {
 }
 
 void PHProbe::clearCalibration() {
-  TankController::instance()->setIgnoreBadPHSlope(false);
-  badSlopeFlag = false;
+  slopeIsOutOfRange = false;
+  EEPROM_TC::instance()->setIgnoreBadPHSlope(false);
   Serial1.print(F("Cal,clear\r"));  // send that string to the Atlas Scientific product
 }
 
@@ -91,11 +92,11 @@ void PHProbe::serialEvent1() {
           sscanf_P(slopeResponse, PSTR(" %[^,] , %[^,] , %s"), acidSlopePercent, baseSlopePercent, millivoltOffset);
           if ((95.0 <= strtofloat(acidSlopePercent)) && (strtofloat(acidSlopePercent) <= 105.0) &&
               (95.0 <= strtofloat(baseSlopePercent)) && (strtofloat(baseSlopePercent) <= 105.0)) {
-            badSlopeFlag = false;
-            TankController::instance()->setIgnoreBadPHSlope(false);
+            slopeIsOutOfRange = false;
+            EEPROM_TC::instance()->setIgnoreBadPHSlope(false);
             serial(F("pH slopes are within 5%% of ideal"));
           } else {
-            badSlopeFlag = true;
+            slopeIsOutOfRange = true;
             serial(F("BAD CALIBRATION? pH slopes are more than 5%% from ideal"));
           }
           // TankController::instance()->checkPhSlope();
@@ -123,7 +124,8 @@ void PHProbe::setTemperatureCompensation(float temperature) {
 }
 
 void PHProbe::setHighpointCalibration(float highpoint) {
-  TankController::instance()->setIgnoreBadPHSlope(false);
+  slopeIsOutOfRange = false;
+  EEPROM_TC::instance()->setIgnoreBadPHSlope(false);
   char buffer[17];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,High,%i.%03i\r"), (int)highpoint,
              (int)(highpoint * 1000 + 0.5) % 1000);
@@ -132,7 +134,8 @@ void PHProbe::setHighpointCalibration(float highpoint) {
 }
 
 void PHProbe::setLowpointCalibration(float lowpoint) {
-  TankController::instance()->setIgnoreBadPHSlope(false);
+  slopeIsOutOfRange = false;
+  EEPROM_TC::instance()->setIgnoreBadPHSlope(false);
   char buffer[16];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,low,%i.%03i\r"), (int)lowpoint, (int)(lowpoint * 1000 + 0.5) % 1000);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
@@ -140,12 +143,22 @@ void PHProbe::setLowpointCalibration(float lowpoint) {
 }
 
 void PHProbe::setMidpointCalibration(float midpoint) {
-  TankController::instance()->setIgnoreBadPHSlope(false);
-  badSlopeFlag = false;
+  slopeIsOutOfRange = false;
+  EEPROM_TC::instance()->setIgnoreBadPHSlope(false);
   char buffer[16];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,mid,%i.%03i\r"), (int)midpoint, (int)(midpoint * 1000 + 0.5) % 1000);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
   serial(F("PHProbe::setMidpointCalibration(%i.%03i)"), (int)midpoint, (int)(midpoint * 1000) % 1000);
+}
+
+/**
+ * @brief whether the user should be warned about a bad PH calibration
+ *
+ * @return true
+ * @return false
+ */
+bool PHProbe::shouldWarnAboutCalibration() {
+  return (slopeIsOutOfRange && !EEPROM_TC::instance()->getIgnoreBadPHSlope());
 }
 
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)

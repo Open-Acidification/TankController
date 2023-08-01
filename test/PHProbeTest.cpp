@@ -1,10 +1,15 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
+#include "Devices/EEPROM_TC.h"
 #include "Devices/PHProbe.h"
 #include "Devices/Serial_TC.h"
 #include "TC_util.h"
 #include "TankController.h"
+
+EEPROM_TC *eeprom = EEPROM_TC::instance();
+PHProbe *pHProbe = PHProbe::instance();
+TankController *tc = TankController::instance();
 
 unittest(singleton) {
   PHProbe *singleton1 = PHProbe::instance();
@@ -20,11 +25,9 @@ unittest(constructor) {
 unittest(serialEvent1) {
   GodmodeState *state = GODMODE();
   state->reset();
-  TankController *tc = TankController::instance();
   state->serialPort[0].dataOut = "";
   assertEqual("", state->serialPort[1].dataOut);
-  PHProbe *pHProbe = PHProbe::instance();  // the constructor writes data to the serial port
-  tc->serialEvent1();                      // fake interrupt
+  tc->serialEvent1();  // fake interrupt
   assertEqual("", pHProbe->getCalibrationResponse());
   assertEqual(0, pHProbe->getPh());
   assertEqual("Requesting...", pHProbe->getSlopeResponse());
@@ -37,23 +40,24 @@ unittest(serialEvent1) {
 }
 
 unittest(serialEvent1CatchBadSlope) {
-  TankController *tc = TankController::instance();
-  PHProbe *pHProbe = PHProbe::instance();
-  tc->setIgnoreBadPHSlope(true);
-  assertTrue(tc->getIgnoreBadPHSlope());
+  eeprom->setIgnoreBadPHSlope(true);
+  assertTrue(eeprom->getIgnoreBadPHSlope());
   tc->serialEvent1();
   assertFalse(pHProbe->slopeIsBad());
+  assertFalse(pHProbe->shouldWarnAboutCalibration());
 
   // Bad slope
   pHProbe->setPhSlope("?SLOPE,-2.7,101.3\r");
   assertTrue(pHProbe->slopeIsBad());
-  assertTrue(tc->getIgnoreBadPHSlope());
+  assertTrue(eeprom->getIgnoreBadPHSlope());
+  assertFalse(pHProbe->shouldWarnAboutCalibration());
   assertEqual("BAD CALIBRATION? pH slopes are more than 5\% from ideal", Serial_TC::instance()->buffer);
 
   // Good slope
   pHProbe->setPhSlope();
   assertFalse(pHProbe->slopeIsBad());
-  assertFalse(tc->getIgnoreBadPHSlope());
+  assertFalse(eeprom->getIgnoreBadPHSlope());
+  assertFalse(pHProbe->shouldWarnAboutCalibration());
   assertEqual("pH slopes are within 5\% of ideal", Serial_TC::instance()->buffer);
 
   // Bad slope
@@ -65,25 +69,24 @@ unittest(serialEvent1CatchBadSlope) {
 unittest(clearCalibration) {
   GodmodeState *state = GODMODE();
   state->reset();
-  TankController::instance()->setIgnoreBadPHSlope(true);
-  assertTrue(TankController::instance()->getIgnoreBadPHSlope());
+  eeprom->setIgnoreBadPHSlope(true);
+  assertTrue(eeprom->getIgnoreBadPHSlope());
   assertEqual("", state->serialPort[1].dataOut);
-  PHProbe::instance()->clearCalibration();
+  pHProbe->clearCalibration();
   assertEqual("Cal,clear\r", state->serialPort[1].dataOut);
-  assertFalse(TankController::instance()->getIgnoreBadPHSlope());
-  assertFalse(PHProbe::instance()->slopeIsBad());
+  assertFalse(eeprom->getIgnoreBadPHSlope());
+  assertFalse(pHProbe->slopeIsBad());
 }
 
 unittest(clearBadCalibration) {
   GodmodeState *state = GODMODE();
-  PHProbe *pHProbe = PHProbe::instance();
   state->reset();
-  TankController::instance()->setIgnoreBadPHSlope(true);
-  assertTrue(TankController::instance()->getIgnoreBadPHSlope());
+  eeprom->setIgnoreBadPHSlope(true);
+  assertTrue(eeprom->getIgnoreBadPHSlope());
   pHProbe->setPhSlope("?SLOPE,99.7,110.4,-0.89\r");
   assertTrue(pHProbe->slopeIsBad());
   pHProbe->clearCalibration();
-  assertFalse(TankController::instance()->getIgnoreBadPHSlope());
+  assertFalse(eeprom->getIgnoreBadPHSlope());
   assertFalse(pHProbe->slopeIsBad());
 }
 
@@ -91,16 +94,14 @@ unittest(sendCalibrationRequest) {
   GodmodeState *state = GODMODE();
   state->reset();
   assertEqual("", state->serialPort[1].dataOut);
-  PHProbe::instance()->sendCalibrationRequest();
+  pHProbe->sendCalibrationRequest();
   assertEqual("CAL,?\r", state->serialPort[1].dataOut);
-  assertEqual("PH Calibration", PHProbe::instance()->getCalibrationResponse());
+  assertEqual("PH Calibration", pHProbe->getCalibrationResponse());
 }
 
 unittest(getCalibration) {
   GodmodeState *state = GODMODE();
   state->reset();
-  TankController *tc = TankController::instance();
-  PHProbe *pHProbe = PHProbe::instance();
   assertEqual("", state->serialPort[1].dataOut);
   char buffer[17];
   pHProbe->setCalibration(0);
@@ -115,7 +116,6 @@ unittest(setTemperatureCompensation) {
   GodmodeState *state = GODMODE();
   state->reset();
   assertEqual("", state->serialPort[1].dataOut);
-  PHProbe *pHProbe = PHProbe::instance();
   pHProbe->setTemperatureCompensation(30.25);
   assertEqual("T,30.25\r", state->serialPort[1].dataOut);
   state->serialPort[1].dataOut = "";
@@ -129,74 +129,68 @@ unittest(setTemperatureCompensation) {
 unittest(setLowpointCalibration) {
   GodmodeState *state = GODMODE();
   state->reset();
-  TankController::instance()->setIgnoreBadPHSlope(true);
-  assertTrue(TankController::instance()->getIgnoreBadPHSlope());
-  PHProbe *pHProbe = PHProbe::instance();
+  eeprom->setIgnoreBadPHSlope(true);
+  assertTrue(eeprom->getIgnoreBadPHSlope());
   assertEqual("", state->serialPort[0].dataOut);
   assertEqual("", state->serialPort[1].dataOut);
   pHProbe->setLowpointCalibration(10.875);
   assertEqual("PHProbe::setLowpointCalibration(10.875)\r\n", state->serialPort[0].dataOut);
   assertEqual("Cal,low,10.875\r", state->serialPort[1].dataOut);
-  assertFalse(TankController::instance()->getIgnoreBadPHSlope());
+  assertFalse(eeprom->getIgnoreBadPHSlope());
 }
 
 unittest(setMidpointCalibration) {
   GodmodeState *state = GODMODE();
   state->reset();
-  TankController::instance()->setIgnoreBadPHSlope(true);
-  assertTrue(TankController::instance()->getIgnoreBadPHSlope());
-  PHProbe *pHProbe = PHProbe::instance();
+  eeprom->setIgnoreBadPHSlope(true);
+  assertTrue(eeprom->getIgnoreBadPHSlope());
   assertEqual("", state->serialPort[0].dataOut);
   assertEqual("", state->serialPort[1].dataOut);
   pHProbe->setMidpointCalibration(11.875);
   assertEqual("PHProbe::setMidpointCalibration(11.875)\r\n", state->serialPort[0].dataOut);
   assertEqual("Cal,mid,11.875\r", state->serialPort[1].dataOut);
-  assertFalse(TankController::instance()->getIgnoreBadPHSlope());
+  assertFalse(eeprom->getIgnoreBadPHSlope());
 }
 
 unittest(settingMidpointClearsBadCalibration) {
   GodmodeState *state = GODMODE();
-  PHProbe *pHProbe = PHProbe::instance();
   state->reset();
-  TankController::instance()->setIgnoreBadPHSlope(true);
-  assertTrue(TankController::instance()->getIgnoreBadPHSlope());
+  eeprom->setIgnoreBadPHSlope(true);
+  assertTrue(eeprom->getIgnoreBadPHSlope());
   pHProbe->setPhSlope("?SLOPE,-2.7,100.0,-0.50\r");
   assertTrue(pHProbe->slopeIsBad());
   pHProbe->setMidpointCalibration(11.875);
-  assertFalse(TankController::instance()->getIgnoreBadPHSlope());
+  assertFalse(eeprom->getIgnoreBadPHSlope());
   assertFalse(pHProbe->slopeIsBad());
 }
 
 unittest(setHighpointCalibration) {
   GodmodeState *state = GODMODE();
   state->reset();
-  TankController::instance()->setIgnoreBadPHSlope(true);
-  assertTrue(TankController::instance()->getIgnoreBadPHSlope());
-  PHProbe *pHProbe = PHProbe::instance();
+  eeprom->setIgnoreBadPHSlope(true);
+  assertTrue(eeprom->getIgnoreBadPHSlope());
   assertEqual("", state->serialPort[0].dataOut);
   assertEqual("", state->serialPort[1].dataOut);
   pHProbe->setHighpointCalibration(12.875);
   assertEqual("PHProbe::setHighpointCalibration(12.875)\r\n", state->serialPort[0].dataOut);
   assertEqual("Cal,High,12.875\r", state->serialPort[1].dataOut);
-  assertFalse(TankController::instance()->getIgnoreBadPHSlope());
+  assertFalse(eeprom->getIgnoreBadPHSlope());
 }
 
 unittest(sendSlopeRequest) {
   GodmodeState *state = GODMODE();
   state->reset();
   assertEqual("", state->serialPort[1].dataOut);
-  PHProbe::instance()->sendSlopeRequest();
+  pHProbe->sendSlopeRequest();
   assertEqual("SLOPE,?\r", state->serialPort[1].dataOut);
-  assertEqual("Requesting...", PHProbe::instance()->getSlopeResponse());
+  assertEqual("Requesting...", pHProbe->getSlopeResponse());
 }
 
 // this test assumes that earlier tests have run and that there is a slope available
 unittest(getSlope) {
   GodmodeState *state = GODMODE();
   state->reset();
-  TankController *tc = TankController::instance();
   state->serialPort[0].dataOut = "";
-  PHProbe *pHProbe = PHProbe::instance();
   pHProbe->setPhSlope();
   char buffer[20];
   pHProbe->getSlope(buffer, sizeof(buffer));
@@ -213,8 +207,7 @@ unittest(getPh) {
   GodmodeState *state = GODMODE();
   state->serialPort[0].dataOut = "";
   state->reset();
-  PHProbe::instance()->setPh(7.25);
-  PHProbe *pHProbe = PHProbe::instance();
+  pHProbe->setPh(7.25);
   float pH = pHProbe->getPh();
   assertEqual(7.25, pH);
 }

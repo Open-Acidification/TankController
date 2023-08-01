@@ -3,6 +3,7 @@
 #include <avr/wdt.h>
 #include <stdlib.h>
 
+#include "Devices/EEPROM_TC.h"
 #include "Devices/Serial_TC.h"
 #include "TC_util.h"
 
@@ -34,20 +35,22 @@ PHProbe::PHProbe() {
     ;
   Serial1.print(F("*OK,0\r"));  // Turn off the returning of OK after command to EZO pH
   Serial1.print(F("C,1\r"));    // Reset pH stamp to continuous measurement: once per second
+  sendSlopeRequest();
 }
 
 void PHProbe::clearCalibration() {
+  slopeIsOutOfRange = false;
+  EEPROM_TC::instance()->setIgnoreBadPHSlope(false);
   Serial1.print(F("Cal,clear\r"));  // send that string to the Atlas Scientific product
 }
 
 void PHProbe::sendCalibrationRequest() {
   // Sending request for calibration status
   Serial1.print(F("CAL,?\r"));
-  strscpy_P(calibrationResponse, F("Requesting..."), sizeof(calibrationResponse));
+  strscpy_P(calibrationResponse, F("PH Calibration"), sizeof(calibrationResponse));
 }
 
 void PHProbe::getCalibration(char *buffer, int size) {
-  // for example "2" or "Requesting..."
   strscpy(buffer, calibrationResponse, size);
 }
 
@@ -82,9 +85,23 @@ void PHProbe::serialEvent1() {
         if (string.length() > 7 && memcmp_P(string.c_str(), F("?SLOPE,"), 7) == 0) {
           // for example "?SLOPE,16.1,100.0"
           strscpy(slopeResponse, string.c_str() + 7, sizeof(slopeResponse));
+          char acidSlopePercent[7];
+          char baseSlopePercent[7];
+          char millivoltOffset[7];
+          sscanf_P(slopeResponse, PSTR(" %[^,] , %[^,] , %s"), acidSlopePercent, baseSlopePercent, millivoltOffset);
+          if ((95.0 <= strtofloat(acidSlopePercent)) && (strtofloat(acidSlopePercent) <= 105.0) &&
+              (95.0 <= strtofloat(baseSlopePercent)) && (strtofloat(baseSlopePercent) <= 105.0)) {
+            slopeIsOutOfRange = false;
+            EEPROM_TC::instance()->setIgnoreBadPHSlope(false);
+            serial(F("pH slopes are within 5%% of ideal"));
+          } else {
+            slopeIsOutOfRange = true;
+            serial(F("BAD CALIBRATION? pH slopes are more than 5%% from ideal"));
+          }
+          // TankController::instance()->checkPhSlope();
         } else if (string.length() > 5 && memcmp_P(string.c_str(), F("?CAL,"), 5) == 0) {
           // for example "?CAL,2"
-          snprintf_P(calibrationResponse, sizeof(calibrationResponse), PSTR("%s pt calibrated"), string.c_str() + 5);
+          snprintf_P(calibrationResponse, sizeof(calibrationResponse), PSTR("PH Calibra: %s pt"), string.c_str() + 5);
         }
       }
     }
@@ -106,6 +123,8 @@ void PHProbe::setTemperatureCompensation(float temperature) {
 }
 
 void PHProbe::setHighpointCalibration(float highpoint) {
+  slopeIsOutOfRange = false;
+  EEPROM_TC::instance()->setIgnoreBadPHSlope(false);
   char buffer[17];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,High,%i.%03i\r"), (int)highpoint,
              (int)(highpoint * 1000 + 0.5) % 1000);
@@ -114,6 +133,8 @@ void PHProbe::setHighpointCalibration(float highpoint) {
 }
 
 void PHProbe::setLowpointCalibration(float lowpoint) {
+  slopeIsOutOfRange = false;
+  EEPROM_TC::instance()->setIgnoreBadPHSlope(false);
   char buffer[16];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,low,%i.%03i\r"), (int)lowpoint, (int)(lowpoint * 1000 + 0.5) % 1000);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
@@ -121,10 +142,22 @@ void PHProbe::setLowpointCalibration(float lowpoint) {
 }
 
 void PHProbe::setMidpointCalibration(float midpoint) {
+  slopeIsOutOfRange = false;
+  EEPROM_TC::instance()->setIgnoreBadPHSlope(false);
   char buffer[16];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,mid,%i.%03i\r"), (int)midpoint, (int)(midpoint * 1000 + 0.5) % 1000);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
   serial(F("PHProbe::setMidpointCalibration(%i.%03i)"), (int)midpoint, (int)(midpoint * 1000) % 1000);
+}
+
+/**
+ * @brief whether the user should be warned about a bad PH calibration
+ *
+ * @return true
+ * @return false
+ */
+bool PHProbe::shouldWarnAboutCalibration() {
+  return (slopeIsOutOfRange && !EEPROM_TC::instance()->getIgnoreBadPHSlope());
 }
 
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)

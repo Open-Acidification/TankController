@@ -19,7 +19,7 @@ GodmodeState *state = GODMODE();
 TankController *tc = TankController::instance();
 TempProbe_TC *tempProbe = TempProbe_TC::instance();
 TemperatureControl *tempControl = TemperatureControl::instance();
-PHProbe *pPHProbe = PHProbe::instance();
+PHProbe *pHProbe = PHProbe::instance();
 PHControl *pPHControl = PHControl::instance();
 SD_TC *sd = SD_TC::instance();
 
@@ -58,7 +58,7 @@ unittest(basicOperation) {
   delay(1000);
   float avgTemp = static_cast<int16_t>((tempProbe->getRunningAverage() * 100.0 + 0.5)) / 100.0;
   assertEqual(16.75, avgTemp);
-  assertEqual(7.125, pPHProbe->getPh());
+  assertEqual(7.125, pHProbe->getPh());
   tc->loop(false);
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_PIN]);  // solenoid off
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_PIN]);    // solenoid off

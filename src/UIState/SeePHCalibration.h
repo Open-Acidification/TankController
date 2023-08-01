@@ -8,9 +8,7 @@
 
 class SeePHCalibration : public UIState {
 public:
-  SeePHCalibration(TankController* tc, bool inCalibration = false) : UIState(tc) {
-    this->inCalibration = inCalibration;
-  }
+  SeePHCalibration(TankController* tc, bool inCalibration = false);
   bool isInCalibration() override {
     return inCalibration;
   }
@@ -24,5 +22,6 @@ public:
   };
 
 private:
+  uint32_t endTime = 0;
   bool inCalibration;
 };

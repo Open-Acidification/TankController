@@ -9,7 +9,7 @@ class NumCollectorState : public UIState {
 public:
   NumCollectorState(TankController* tc) : UIState(tc) {
   }
-  void handleKey(char key);
+  virtual void handleKey(char key);
   virtual void setValue(float value) = 0;
   virtual void start();
 

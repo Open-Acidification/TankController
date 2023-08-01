@@ -45,7 +45,7 @@ INCLUDE=-I$(ARDUINO_CI)/arduino \
   -I$(LIBRARIES)/SdFat/src/iostream
 
 .PHONY : all
-all : $(BIN)/BlinkTest.cpp.bin $(BIN)/DateTimeTest.cpp.bin $(BIN)/EEPROMTest.cpp.bin \
+all : $(BIN)/BadPHCalibrationTest.cpp.bin $(BIN)/BlinkTest.cpp.bin $(BIN)/DateTimeTest.cpp.bin $(BIN)/EEPROMTest.cpp.bin \
   $(BIN)/EnablePIDTest.cpp.bin $(BIN)/EthernetServerTest.cpp.bin $(BIN)/EthernetTest.cpp.bin \
   $(BIN)/GetTimeTest.cpp.bin $(BIN)/JSONBuilderTest.cpp.bin $(BIN)/KeypadTest.cpp.bin \
 	$(BIN)/LiquidCrystalTest.cpp.bin \
@@ -55,7 +55,6 @@ all : $(BIN)/BlinkTest.cpp.bin $(BIN)/DateTimeTest.cpp.bin $(BIN)/EEPROMTest.cpp
   $(BIN)/PHProbeTest.cpp.bin $(BIN)/PIDTest.cpp.bin $(BIN)/PushingBoxTest.cpp.bin $(BIN)/SDTest.cpp.bin \
   $(BIN)/SeeDeviceAddressTest.cpp.bin $(BIN)/SeeDeviceUptimeTest.cpp.bin $(BIN)/SeeFreeMemoryTest.cpp.bin \
   $(BIN)/SeeGoogleMinsTest.cpp.bin $(BIN)/SeeLogFileTest.cpp.bin $(BIN)/SeePHCalibrationTest.cpp.bin \
-	$(BIN)/SeePHSlopeTest.cpp.bin \
   $(BIN)/SeePIDConstantsTest.cpp.bin $(BIN)/SeePhTest.cpp.bin $(BIN)/SeeTankIDTest.cpp.bin \
   $(BIN)/SeeTempCalOffsetTest.cpp.bin $(BIN)/SeeVersionTest.cpp.bin $(BIN)/SerialTest.cpp.bin \
   $(BIN)/SetChillOrHeatTest.cpp.bin $(BIN)/SetGoogleSheetIntervalTest.cpp.bin $(BIN)/SetKDTest.cpp.bin \
@@ -67,6 +66,9 @@ all : $(BIN)/BlinkTest.cpp.bin $(BIN)/DateTimeTest.cpp.bin $(BIN)/EEPROMTest.cpp
   $(BIN)/TemperatureControlTest.cpp.bin $(BIN)
 
 GPP_TEST=g++ $(FLAGS) -L$(BIN) $(INCLUDE)
+
+$(BIN)/BadPHCalibrationTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/BadPHCalibrationTest.cpp
+	$(GPP_TEST) -o $(BIN)/BadPHCalibrationTest.cpp.bin $(TEST)/BadPHCalibrationTest.cpp -larduino
 
 $(BIN)/BlinkTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/BlinkTest.cpp
 	$(GPP_TEST) -o $(BIN)/BlinkTest.cpp.bin $(TEST)/BlinkTest.cpp -larduino
@@ -148,9 +150,6 @@ $(BIN)/SeeLogFileTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SeeLogFileTest.cpp
 
 $(BIN)/SeePHCalibrationTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SeePHCalibrationTest.cpp
 	$(GPP_TEST) -o $(BIN)/SeePHCalibrationTest.cpp.bin $(TEST)/SeePHCalibrationTest.cpp -larduino
-
-$(BIN)/SeePHSlopeTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SeePHSlopeTest.cpp
-	$(GPP_TEST) -o $(BIN)/SeePHSlopeTest.cpp.bin $(TEST)/SeePHSlopeTest.cpp -larduino
 
 $(BIN)/SeePIDConstantsTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SeePIDConstantsTest.cpp
 	$(GPP_TEST) -o $(BIN)/SeePIDConstantsTest.cpp.bin $(TEST)/SeePIDConstantsTest.cpp -larduino
@@ -251,11 +250,11 @@ OBJECTS=$(BIN)/Arduino.o $(BIN)/Godmode.o $(BIN)/stdlib.o $(BIN)/ArduinoUnitTest
 	$(BIN)/JSONBuilder.o \
   $(BIN)/Keypad_TC.o $(BIN)/LiquidCrystal_TC.o $(BIN)/PHControl.o $(BIN)/PHProbe.o \
   $(BIN)/PID_TC.o $(BIN)/PushingBox.o $(BIN)/SD_TC.o $(BIN)/Serial_TC.o $(BIN)/TempProbe_TC.o \
-  $(BIN)/TemperatureControl.o $(BIN)/CalibrationManagement.o $(BIN)/EnablePID.o $(BIN)/MainMenu.o \
+  $(BIN)/TemperatureControl.o $(BIN)/BadPHCalibration.o $(BIN)/CalibrationManagement.o $(BIN)/EnablePID.o $(BIN)/MainMenu.o \
   $(BIN)/NumberCollectorState.o $(BIN)/PHCalibrationHigh.o $(BIN)/PHCalibrationLow.o \
   $(BIN)/PHCalibrationMid.o $(BIN)/PHCalibrationPrompt.o $(BIN)/SeeDeviceAddress.o \
 	$(BIN)/SeeDeviceUptime.o $(BIN)/SeeFreeMemory.o \
-  $(BIN)/SeeGoogleMins.o $(BIN)/SeeLogFile.o $(BIN)/SeePHCalibration.o $(BIN)/SeePHSlope.o \
+  $(BIN)/SeeGoogleMins.o $(BIN)/SeeLogFile.o $(BIN)/SeePHCalibration.o \
 	$(BIN)/SeePIDConstants.o \
   $(BIN)/SeePh.o $(BIN)/SeeTankID.o $(BIN)/SeeTempCalOffset.o $(BIN)/SeeVersion.o \
   $(BIN)/SetChillOrHeat.o $(BIN)/SetGoogleSheetInterval.o $(BIN)/SetKD.o $(BIN)/SetKI.o \
@@ -337,6 +336,9 @@ $(BIN)/TempProbe_TC.o: $(SRC)/Devices/TempProbe_TC.cpp
 $(BIN)/TemperatureControl.o: $(SRC)/Devices/TemperatureControl.cpp
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/TemperatureControl.o $(SRC)/Devices/TemperatureControl.cpp
 
+$(BIN)/BadPHCalibration.o: $(SRC)/UIState/BadPHCalibration.cpp
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/BadPHCalibration.o $(SRC)/UIState/BadPHCalibration.cpp
+
 $(BIN)/CalibrationManagement.o: $(SRC)/UIState/CalibrationManagement.cpp
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/CalibrationManagement.o $(SRC)/UIState/CalibrationManagement.cpp
 
@@ -378,9 +380,6 @@ $(BIN)/SeeLogFile.o: $(SRC)/UIState/SeeLogFile.cpp
 
 $(BIN)/SeePHCalibration.o: $(SRC)/UIState/SeePHCalibration.cpp
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SeePHCalibration.o $(SRC)/UIState/SeePHCalibration.cpp
-
-$(BIN)/SeePHSlope.o: $(SRC)/UIState/SeePHSlope.cpp
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SeePHSlope.o $(SRC)/UIState/SeePHSlope.cpp
 
 $(BIN)/SeePIDConstants.o: $(SRC)/UIState/SeePIDConstants.cpp
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SeePIDConstants.o $(SRC)/UIState/SeePIDConstants.cpp

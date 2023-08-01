@@ -76,6 +76,9 @@ float EEPROM_TC::getGranularity() {
 bool EEPROM_TC::getHeat() {
   return (bool)eepromReadFloat(HEAT_ADDRESS);
 }
+bool EEPROM_TC::getIgnoreBadPHSlope() {
+  return (bool)eepromReadInt(IGNORE_BAD_PH_SLOPE_ADDRESS);
+}
 float EEPROM_TC::getKD() {
   return eepromReadFloat(KD_ADDRESS);
 }
@@ -186,6 +189,9 @@ void EEPROM_TC::setGranularity(float value) {
 }
 void EEPROM_TC::setHeat(bool value) {
   eepromWriteFloat(HEAT_ADDRESS, (float)value);
+}
+void EEPROM_TC::setIgnoreBadPHSlope(bool value) {
+  eepromWriteInt(IGNORE_BAD_PH_SLOPE_ADDRESS, (int)value);
 }
 void EEPROM_TC::setKD(float value) {
   eepromWriteFloat(KD_ADDRESS, value);

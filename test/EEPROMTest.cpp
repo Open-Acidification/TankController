@@ -263,6 +263,15 @@ unittest(TempDelay) {
   assertEqual(23, singleton->getTempDelay());
 }
 
+unittest(IgnoreBadPHSlope) {
+  EEPROM_TC* singleton = EEPROM_TC::instance();
+  assertTrue(singleton->getIgnoreBadPHSlope());  // (bool)(-1)
+  singleton->setIgnoreBadPHSlope(false);
+  assertFalse(singleton->getIgnoreBadPHSlope());
+  singleton->setIgnoreBadPHSlope(true);
+  assertTrue(singleton->getIgnoreBadPHSlope());
+}
+
 unittest(GoogleSheetIntervalMinutes) {
   EEPROM_TC* singleton = EEPROM_TC::instance();
   assertEqual(65535, singleton->getGoogleSheetInterval());

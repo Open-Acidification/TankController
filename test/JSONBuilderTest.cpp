@@ -20,6 +20,7 @@ unittest(currentData) {
   DateTime_TC feb(2022, 2, 22, 20, 50, 00);
   feb.setAsCurrent();
   PHProbe::instance()->setPh(8.125);                            // actual
+  PHProbe::instance()->setPhSlope();                            // actual
   PHControl::instance()->setBaseTargetPh(8.25);                 // target
   TempProbe_TC::instance()->setTemperature(99.99, true);        // actual
   TemperatureControl::instance()->setTargetTemperature(98.88);  // target
@@ -41,7 +42,7 @@ unittest(currentData) {
       "\"FreeMemory\":\"1024 bytes\","
       "\"GoogleSheetInterval\":65535,"
       "\"LogFile\":\"20220222.csv\","
-      "\"PHSlope\":\"\","
+      "\"PHSlope\":\"99.7,100.3,-0.89\","
       "\"Kp\":100001.1,"
       "\"Ki\":100002.2,"
       "\"Kd\":100003.3,"

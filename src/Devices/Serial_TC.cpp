@@ -48,7 +48,6 @@ Serial_TC::Serial_TC() {
  */
 // void Serial_TC::vprintf(const char *format, va_list args) {
 void Serial_TC::vprintf(const __FlashStringHelper *format, va_list args) {
-  char buffer[128];
   vsnprintf_P(buffer, sizeof(buffer), (PGM_P)format, args);
   Serial.println(buffer);
   Serial.flush();

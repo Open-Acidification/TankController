@@ -66,7 +66,7 @@ unittest(SendData) {
   EthernetClient::startMockServer(pPushingBox->getServerDomain(), (uint32_t)0, 80,
                                   (const uint8_t *)"[PushingBox response]\r\n");
   assertFalse(pClient->connected());  // not yet connected!
-  delay(60 * 1000);  // allow for time update
+  delay(60 * 1000);                   // allow for time update
   tc->loop(false);
   state->serialPort[0].dataOut = "";
   delay(10 * 1000);  // allow for PushingBox update

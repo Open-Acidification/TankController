@@ -7,14 +7,6 @@
 
 // instance methods
 
-UIState::UIState(TankController* tc) {
-  if (tc) {
-    this->tc = tc;
-  } else {
-    this->tc = TankController::instance();
-  }
-}
-
 void UIState::handleKey(char key) {
   // use value just to avoid compiler warning
   (void)key;
@@ -32,7 +24,7 @@ void UIState::returnToMainMenu(uint16_t msDelay) {
 }
 
 void UIState::setNextState(UIState* state) {
-  tc->setNextState(state);
+  TankController::instance()->setNextState(state);
 }
 
 void UIState::start() {

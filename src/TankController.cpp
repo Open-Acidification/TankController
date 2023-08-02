@@ -63,7 +63,7 @@ TankController::TankController() {
   TemperatureControl::instance();
   PHProbe::instance();
   PHControl::instance();
-  state = new MainMenu(this);
+  state = new MainMenu();
   pinMode(LED_BUILTIN, OUTPUT);
 }
 

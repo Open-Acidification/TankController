@@ -36,8 +36,7 @@ void DataLogger_TC::loop() {
   if (msNow >= nextSDLogTime) {
     writeToSD();
     nextSDLogTime = (msNow / (unsigned long)SD_LOGGING_INTERVAL + 1) * (unsigned long)SD_LOGGING_INTERVAL;
-  }
-  if (msNow >= nextSerialLogTime) {
+  } else if (msNow >= nextSerialLogTime) {
     writeToSerial();
     nextSerialLogTime = (msNow / (unsigned long)SERIAL_LOGGING_INTERVAL + 1) * (unsigned long)SERIAL_LOGGING_INTERVAL;
   }

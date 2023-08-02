@@ -54,9 +54,7 @@ unittest(NoTankID) {
   state->serialPort[0].dataOut = "";
   delay(40 * 1000);  // allow 70 seconds (30 + 40) for PushingBox update
   tc->loop(false);   // Trigger SD logging and Serial (DataLogger_TC) and PushingBox
-  char expected[] =
-      "15:26 pH=7.000 temp= 0.00\r\n"
-      "Set Tank ID in order to send data to PushingBox\r\n";
+  char expected[] = "Set Tank ID in order to send data to PushingBox\r\n";
   assertEqual(expected, state->serialPort[0].dataOut);
 }
 
@@ -68,8 +66,10 @@ unittest(SendData) {
   EthernetClient::startMockServer(pPushingBox->getServerDomain(), (uint32_t)0, 80,
                                   (const uint8_t *)"[PushingBox response]\r\n");
   assertFalse(pClient->connected());  // not yet connected!
+  delay(60 * 1000);                   // allow for time update
+  tc->loop(false);
   state->serialPort[0].dataOut = "";
-  delay(70 * 1000);  // allow 70 seconds for PushingBox update
+  delay(10 * 1000);  // allow for PushingBox update
   tc->loop(false);
   char expected[] =
       "GET /pushingbox?devid=PushingBoxIdentifier&tankid=99&tempData=20.25&pHdata=7.125 HTTP/1.1\r\n"

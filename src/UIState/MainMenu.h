@@ -44,7 +44,7 @@ public:
     SET_TEMP_WITH_SINE,
     SET_COMMAND_COUNT  // always last
   };
-  MainMenu(TankController* tc);
+  MainMenu();
   void handleKey(char key);
   const __FlashStringHelper* name() {
     return F("MainMenu");

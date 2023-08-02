@@ -8,8 +8,6 @@
 
 class EnablePID : public NumCollectorState {
 public:
-  EnablePID(TankController* tc) : NumCollectorState(tc) {
-  }
   virtual bool isInteger() {
     return true;
   }

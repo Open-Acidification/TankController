@@ -34,7 +34,7 @@
 #include "SetTime.h"
 #include "TemperatureCalibration.h"
 
-MainMenu::MainMenu(TankController *tc) : UIState(tc) {
+MainMenu::MainMenu() : UIState() {
   viewMenus[VIEW_ADDRESS] = F("View IP and MAC");
   viewMenus[VIEW_FREE_MEMORY] = F("View free memory");
   viewMenus[VIEW_GOOGLE_MINS] = F("View Google mins");
@@ -70,10 +70,10 @@ MainMenu::MainMenu(TankController *tc) : UIState(tc) {
 void MainMenu::handleKey(char key) {
   switch (key) {
     case 'A':  // Set pH set_point
-      this->setNextState(new SetPHSetPoint(tc));
+      this->setNextState(new SetPHSetPoint());
       break;
     case 'B':  // Set Temperature set_point
-      this->setNextState(new SetTempSetPoint(tc));
+      this->setNextState(new SetTempSetPoint());
       break;
     case 'D':  // Reset
       level1 = 0;
@@ -145,34 +145,34 @@ void MainMenu::down() {
 void MainMenu::selectView() {
   switch (level2) {
     case VIEW_ADDRESS:
-      this->setNextState(new SeeDeviceAddress(tc));
+      this->setNextState(new SeeDeviceAddress());
       break;
     case VIEW_FREE_MEMORY:
-      this->setNextState(new SeeFreeMemory(tc));
+      this->setNextState(new SeeFreeMemory());
       break;
     case VIEW_GOOGLE_MINS:
-      this->setNextState(new SeeGoogleMins(tc));
+      this->setNextState(new SeeGoogleMins());
       break;
     case VIEW_LOG_FILE:
-      this->setNextState(new SeeLogFile(tc));
+      this->setNextState(new SeeLogFile());
       break;
     case VIEW_PH_SLOPE:
-      this->setNextState(new SeePHCalibration(tc));
+      this->setNextState(new SeePHCalibration());
       break;
     case VIEW_PID:
-      this->setNextState(new SeePIDConstants(tc));
+      this->setNextState(new SeePIDConstants());
       break;
     case VIEW_TANK_ID:
-      this->setNextState(new SeeTankID(tc));
+      this->setNextState(new SeeTankID());
       break;
     case VIEW_TEMP_CAL_OFFSET:
-      this->setNextState(new SeeTempCalOffset(tc));
+      this->setNextState(new SeeTempCalOffset());
       break;
     case VIEW_TIME:
-      this->setNextState(new SeeDeviceUptime(tc));
+      this->setNextState(new SeeDeviceUptime());
       break;
     case VIEW_VERSION:
-      this->setNextState(new SeeVersion(tc));
+      this->setNextState(new SeeVersion());
       break;
     default:
       break;
@@ -182,52 +182,52 @@ void MainMenu::selectView() {
 void MainMenu::selectSet() {
   switch (level2) {
     case SET_CALIBRATION:
-      this->setNextState(new PHCalibrationPrompt(tc));
+      this->setNextState(new PHCalibrationPrompt());
       break;
     case SET_PH_CALIBRATION_CLEAR:
-      this->setNextState(new SetPHCalibClear(tc));
+      this->setNextState(new SetPHCalibClear());
       break;
     case SET_TEMP_CALIBRATION_CLEAR:
-      this->setNextState(new SetTempCalibClear(tc));
+      this->setNextState(new SetTempCalibClear());
       break;
     case SET_CHILL_OR_HEAT:
-      this->setNextState(new SetChillOrHeat(tc));
+      this->setNextState(new SetChillOrHeat());
       break;
     case SET_GOOGLE_MINS:
-      this->setNextState(new SetGoogleSheetInterval(tc));
+      this->setNextState(new SetGoogleSheetInterval());
       break;
     case SET_KD:
-      this->setNextState(new SetKD(tc));
+      this->setNextState(new SetKD());
       break;
     case SET_KI:
-      this->setNextState(new SetKI(tc));
+      this->setNextState(new SetKI());
       break;
     case SET_KP:
-      this->setNextState(new SetKP(tc));
+      this->setNextState(new SetKP());
       break;
     case SET_PH:
-      this->setNextState(new SetPHSetPoint(tc));
+      this->setNextState(new SetPHSetPoint());
       break;
     case SET_PH_WITH_SINE:
-      this->setNextState(new SetPHWithSine(tc));
+      this->setNextState(new SetPHWithSine());
       break;
     case SET_TEMP_WITH_SINE:
-      this->setNextState(new SetTempWithSine(tc));
+      this->setNextState(new SetTempWithSine());
       break;
     case SET_PID_ON_OFF:
-      this->setNextState(new EnablePID(tc));
+      this->setNextState(new EnablePID());
       break;
     case SET_TANK_ID:
-      this->setNextState(new SetTankID(tc));
+      this->setNextState(new SetTankID());
       break;
     case SET_TEMP_CALIBRATION:
-      this->setNextState(new TemperatureCalibration(tc));
+      this->setNextState(new TemperatureCalibration());
       break;
     case SET_TEMPERATURE:
-      this->setNextState(new SetTempSetPoint(tc));
+      this->setNextState(new SetTempSetPoint());
       break;
     case SET_TIME:
-      this->setNextState(new SetTime(tc));
+      this->setNextState(new SetTime());
       break;
     default:
       break;
@@ -238,7 +238,7 @@ void MainMenu::selectSet() {
 // T=12.25 H 12.75
 void MainMenu::idle() {
   if (PHProbe::instance()->shouldWarnAboutCalibration()) {
-    this->setNextState(new BadPHCalibration(tc));
+    this->setNextState(new BadPHCalibration());
     return;
   }
   char buffer[6];

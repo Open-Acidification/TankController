@@ -9,7 +9,7 @@
 
 unittest(IgnoreInvalidCharacter) {
   TankController* tc = TankController::instance();
-  EnablePID* test = new EnablePID(tc);
+  EnablePID* test = new EnablePID();
   tc->setNextState(test, true);
   assertEqual("EnablePID", tc->stateName());
   assertTrue(PHControl::instance()->getUsePID());
@@ -20,7 +20,7 @@ unittest(IgnoreInvalidCharacter) {
 
 unittest(DisablePID) {
   TankController* tc = TankController::instance();
-  EnablePID* test = new EnablePID(tc);
+  EnablePID* test = new EnablePID();
   tc->setNextState(test, true);
   assertEqual("EnablePID", tc->stateName());
   test->setValue(9.0);
@@ -36,7 +36,7 @@ unittest(DisablePID) {
 
 unittest(EnablePID) {
   TankController* tc = TankController::instance();
-  EnablePID* test = new EnablePID(tc);
+  EnablePID* test = new EnablePID();
   tc->setNextState(test, true);
   assertEqual("EnablePID", tc->stateName());
   test->setValue(1.0);

@@ -11,7 +11,7 @@ unittest(testOutput) {
   TankController* tc = TankController::instance();
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
   assertEqual("MainMenu", tc->stateName());
-  SeeDeviceAddress* test = new SeeDeviceAddress(tc);
+  SeeDeviceAddress* test = new SeeDeviceAddress();
   tc->setNextState(test, true);
   assertEqual("SeeDeviceAddress", tc->stateName());
 

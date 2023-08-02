@@ -13,8 +13,6 @@
  */
 class PHCalibrationLow : public PHCalibration {
 public:
-  PHCalibrationLow(TankController* tc) : PHCalibration(tc) {
-  }
   const __FlashStringHelper* name() override {
     return F("PHCalibrationLow");
   }
@@ -30,8 +28,6 @@ public:
  */
 class PHCalibrationLower : public PHCalibration {
 public:
-  PHCalibrationLower(TankController* tc) : PHCalibration(tc) {
-  }
   const __FlashStringHelper* name() override {
     return F("PHCalibrationLower");
   }

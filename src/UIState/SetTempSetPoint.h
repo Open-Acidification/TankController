@@ -9,7 +9,7 @@
 
 class SetTempSetPoint : public NumCollectorState {
 public:
-  SetTempSetPoint(TankController* tc);
+  SetTempSetPoint();
   const __FlashStringHelper* name() {
     return F("SetTempSetPoint");
   }

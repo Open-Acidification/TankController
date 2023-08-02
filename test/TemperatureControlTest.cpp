@@ -29,12 +29,12 @@ TemperatureControl* control;
 unittest_setup() {
   state->resetClock();
   tempProbe->setTemperature(20, true);
-  tc->setNextState(new MainMenu(tc), true);
+  tc->setNextState(new MainMenu(), true);
   state->serialPort[0].dataOut = "";  // the history of data written
 }
 
 unittest_teardown() {
-  tc->setNextState(new MainMenu(tc), true);
+  tc->setNextState(new MainMenu(), true);
 }
 
 // Chiller
@@ -114,7 +114,7 @@ unittest(disableChillerDuringCalibration) {
   control->setTargetTemperature(20);
   control->updateControl(20);
   assertFalse(tc->isInCalibration());
-  PHCalibrationMid* test = new PHCalibrationMid(tc);
+  PHCalibrationMid* test = new PHCalibrationMid();
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
   // chiller is initially off and stays off during calibration
@@ -171,7 +171,7 @@ unittest(disableHeaterDuringCalibration) {
   TemperatureControl::enableHeater(true);
   control = TemperatureControl::instance();
   assertFalse(tc->isInCalibration());
-  PHCalibrationMid* test = new PHCalibrationMid(tc);
+  PHCalibrationMid* test = new PHCalibrationMid();
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
   // heater is initially off, and stays off due to calibration

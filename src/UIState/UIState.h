@@ -7,13 +7,8 @@
 
 #include <Arduino.h>
 
-class TankController;  // Forward reference
 class UIState {
 public:
-  // constructor that captures the owning TankController
-  UIState(TankController* tc) {
-    this->tc = tc;
-  }
   // virtual destructor so subclass destructor is called
   virtual ~UIState() {
   }
@@ -37,5 +32,4 @@ public:
 protected:
   void setNextState(UIState* state);
   void returnToMainMenu(uint16_t msDelay = 0);
-  TankController* tc = nullptr;
 };

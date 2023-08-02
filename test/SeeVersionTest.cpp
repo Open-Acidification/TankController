@@ -11,7 +11,7 @@ unittest(testOutput) {
   TankController* tc = TankController::instance();
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
   assertEqual("MainMenu", tc->stateName());
-  SeeVersion* test = new SeeVersion(tc);
+  SeeVersion* test = new SeeVersion();
   tc->setNextState(test, true);
   assertEqual("SeeVersion", tc->stateName());
 

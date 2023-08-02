@@ -8,8 +8,6 @@
 
 class TemperatureCalibration : public NumCollectorState {
 public:
-  TemperatureCalibration(TankController* tc) : NumCollectorState(tc) {
-  }
   bool isInCalibration() {
     return true;
   }

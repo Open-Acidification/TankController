@@ -8,8 +8,6 @@
 
 class SeeDeviceAddress : public UIState {
 public:
-  SeeDeviceAddress(TankController* tc) : UIState(tc) {
-  }
   void start() override;
   void handleKey(char key) override;
   const __FlashStringHelper* name() override {

@@ -12,7 +12,7 @@ unittest(testOutput) {
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
   DateTime_TC now = DateTime_TC::now();
   assertEqual("MainMenu", tc->stateName());
-  SeeLogFile* test = new SeeLogFile(tc);
+  SeeLogFile* test = new SeeLogFile();
   tc->setNextState(test, true);
   assertEqual("SeeLogFile", tc->stateName());
 

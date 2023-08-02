@@ -17,14 +17,14 @@ void UIState::handleKey(char key) {
 
 void UIState::returnToMainMenu(uint16_t msDelay) {
   if (msDelay) {
-    this->setNextState(new Wait(tc, msDelay));
+    this->setNextState(new Wait(msDelay));
   } else {
-    this->setNextState(new MainMenu(tc));
+    this->setNextState(new MainMenu());
   }
 }
 
 void UIState::setNextState(UIState* state) {
-  tc->setNextState(state);
+  TankController::instance()->setNextState(state);
 }
 
 void UIState::start() {

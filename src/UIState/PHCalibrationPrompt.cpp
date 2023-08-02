@@ -15,18 +15,18 @@ void PHCalibrationPrompt::setValue(float value) {
   if (value == 1) {
     strscpy_P(buffer, F("1-pt pH calib..."), sizeof(buffer));
     LiquidCrystal_TC::instance()->writeLine(buffer, 1);
-    this->setNextState(new Wait(tc, 2000, new PHCalibrationOnly(tc)));
+    this->setNextState(new Wait(2000, new PHCalibrationOnly()));
   } else if (value == 2) {
     strscpy_P(buffer, F("2-pt pH calib..."), sizeof(buffer));
     LiquidCrystal_TC::instance()->writeLine(buffer, 1);
-    this->setNextState(new Wait(tc, 2000, new PHCalibrationHigher(tc)));
+    this->setNextState(new Wait(2000, new PHCalibrationHigher()));
   } else if (value == 3) {
     strscpy_P(buffer, F("3-pt pH calib..."), sizeof(buffer));
     LiquidCrystal_TC::instance()->writeLine(buffer, 1);
-    this->setNextState(new Wait(tc, 2000, new PHCalibrationMid(tc)));
+    this->setNextState(new Wait(2000, new PHCalibrationMid()));
   } else {
     strscpy_P(buffer, F("Invalid entry"), sizeof(buffer));
     LiquidCrystal_TC::instance()->writeLine(buffer, 1);
-    this->setNextState(new Wait(tc, 3000));
+    this->setNextState(new Wait(3000));
   }
 }

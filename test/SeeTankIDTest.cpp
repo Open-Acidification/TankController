@@ -13,7 +13,7 @@ unittest(testOutput) {
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
   EEPROM_TC::instance()->setTankID(12);
   assertEqual("MainMenu", tc->stateName());
-  SeeTankID* test = new SeeTankID(tc);
+  SeeTankID* test = new SeeTankID();
   tc->setNextState(test, true);
   assertEqual("SeeTankID", tc->stateName());
 

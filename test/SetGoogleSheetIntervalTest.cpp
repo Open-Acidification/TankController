@@ -8,7 +8,7 @@
 
 unittest(test) {
   TankController* tc = TankController::instance();
-  SetGoogleSheetInterval* test = new SetGoogleSheetInterval(tc);
+  SetGoogleSheetInterval* test = new SetGoogleSheetInterval();
   tc->setNextState(test, true);
 
   // getCurrentValue (default)

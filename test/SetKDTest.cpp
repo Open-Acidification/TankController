@@ -9,7 +9,7 @@
 
 unittest(test) {
   TankController* tc = TankController::instance();
-  SetKD* test = new SetKD(tc);
+  SetKD* test = new SetKD();
   tc->setNextState(test, true);
   EEPROM_TC::instance()->setKD(9);
   // getCurrentValue

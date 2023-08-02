@@ -18,7 +18,7 @@ unittest(test) {
   TankController* tc = TankController::instance();  // instantiate after setting eeprom stuff
   assertEqual(8.125, EEPROM_TC::instance()->getPh());
   assertEqual(8.125, PHControl::instance()->getBaseTargetPh());
-  SetPHWithSine* test = new SetPHWithSine(tc);
+  SetPHWithSine* test = new SetPHWithSine();
   tc->setNextState(test, true);
 
   assertEqual(EEPROM_TC::instance()->getPhSetType(), PHControl::instance()->phSetTypeTypes::FLAT_TYPE);

@@ -15,8 +15,6 @@ public:
     SINE_TYPE,
   };
 
-  SeePh(TankController *tc) : UIState(tc) {
-  }
   void loop();
   const __FlashStringHelper *name() {
     return F("SeePh");

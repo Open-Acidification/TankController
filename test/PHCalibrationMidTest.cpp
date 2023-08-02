@@ -15,7 +15,7 @@ unittest(onePointMid) {
   assertEqual(7.125, pH);
 
   std::vector<String> lines;
-  PHCalibrationOnly *test = new PHCalibrationOnly(tc);
+  PHCalibrationOnly *test = new PHCalibrationOnly();
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
   lines = LiquidCrystal_TC::instance()->getLines();
@@ -52,7 +52,7 @@ unittest(twoPointMid) {
   assertEqual(7.125, pH);
 
   std::vector<String> lines;
-  PHCalibrationHigher *test = new PHCalibrationHigher(tc);
+  PHCalibrationHigher *test = new PHCalibrationHigher();
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
   lines = LiquidCrystal_TC::instance()->getLines();
@@ -89,7 +89,7 @@ unittest(threePointMid) {
   assertEqual(7.125, pH);
 
   std::vector<String> lines;
-  PHCalibrationMid *test = new PHCalibrationMid(tc);
+  PHCalibrationMid *test = new PHCalibrationMid();
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
   lines = LiquidCrystal_TC::instance()->getLines();
@@ -127,7 +127,7 @@ unittest(keyEntry) {
   float pH = pHProbe->getPh();
   assertEqual(7.125, pH);
 
-  PHCalibrationMid *test = new PHCalibrationMid(tc);
+  PHCalibrationMid *test = new PHCalibrationMid();
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
   assertEqual("              0 ", lc->getLines().at(1));

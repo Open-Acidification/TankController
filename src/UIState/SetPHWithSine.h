@@ -8,7 +8,7 @@
 
 class SetPHWithSine : public NumCollectorState {
 public:
-  SetPHWithSine(TankController* tc);
+  SetPHWithSine();
   const __FlashStringHelper* name() {
     return F("SetPHWithSine");
   }

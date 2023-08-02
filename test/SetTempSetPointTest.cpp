@@ -21,7 +21,7 @@ unittest(test) {
   assertEqual(0, EEPROM_TC::instance()->getTempRampTimeEnd());
   assertEqual(0, EEPROM_TC::instance()->getTempRampTimeStart());
   assertEqual("MainMenu", tc->stateName());
-  SetTempSetPoint* test = new SetTempSetPoint(tc);
+  SetTempSetPoint* test = new SetTempSetPoint();
   tc->setNextState(test, true);
 
   // get currently displayed lines

@@ -11,7 +11,7 @@ unittest(testOutput) {
   TankController* tc = TankController::instance();
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
   assertEqual("MainMenu", tc->stateName());
-  SeeTempCalOffset* test = new SeeTempCalOffset(tc);
+  SeeTempCalOffset* test = new SeeTempCalOffset();
   tc->setNextState(test, true);
   assertEqual("SeeTempCalOffset", tc->stateName());
 

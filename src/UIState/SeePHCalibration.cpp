@@ -11,7 +11,7 @@
 #include "UIState/BadPHCalibration.h"
 #include "UIState/MainMenu.h"
 
-SeePHCalibration::SeePHCalibration(TankController* tc, bool inCalibration) : UIState(tc) {
+SeePHCalibration::SeePHCalibration(bool inCalibration) : UIState() {
   endTime = millis() + 60000;
   this->inCalibration = inCalibration;
 }
@@ -24,9 +24,9 @@ void SeePHCalibration::loop() {
   LiquidCrystal_TC::instance()->writeLine(pointsBuffer, 0);
   LiquidCrystal_TC::instance()->writeLine(slopeBuffer, 1);
   if (PHProbe::instance()->slopeIsBad()) {
-    this->setNextState(new BadPHCalibration(tc));
+    this->setNextState(new BadPHCalibration());
   } else if (endTime <= millis()) {
-    this->setNextState(new MainMenu(tc));
+    this->setNextState(new MainMenu());
   }
 }
 

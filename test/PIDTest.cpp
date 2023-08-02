@@ -60,7 +60,7 @@ unittest(compute) {
 unittest(computeDuringCalibration) {
   // set UI to one of the calibration states
   TankController *tc = TankController::instance();
-  tc->setNextState(new PHCalibrationHigh(tc), true);
+  tc->setNextState(new PHCalibrationHigh(), true);
 
   PID_TC *pPID = PID_TC::instance();
   pPID->setTunings(2, 5, 1);

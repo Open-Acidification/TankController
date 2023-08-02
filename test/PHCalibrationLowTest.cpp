@@ -7,7 +7,7 @@
 
 unittest(twoPointLow) {
   TankController* tc = TankController::instance();
-  PHCalibrationLower* test = new PHCalibrationLower(tc);
+  PHCalibrationLower* test = new PHCalibrationLower();
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
   // setValue
@@ -29,7 +29,7 @@ unittest(twoPointLow) {
 
 unittest(threePointLow) {
   TankController* tc = TankController::instance();
-  PHCalibrationLow* test = new PHCalibrationLow(tc);
+  PHCalibrationLow* test = new PHCalibrationLow();
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
   // setValue

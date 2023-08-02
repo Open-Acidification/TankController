@@ -8,7 +8,7 @@
 
 class SeePHCalibration : public UIState {
 public:
-  SeePHCalibration(TankController* tc, bool inCalibration = false);
+  SeePHCalibration(bool inCalibration = false);
   bool isInCalibration() override {
     return inCalibration;
   }

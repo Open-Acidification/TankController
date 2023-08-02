@@ -8,7 +8,7 @@
 
 class SetTempWithSine : public NumCollectorState {
 public:
-  SetTempWithSine(TankController* tc);
+  SetTempWithSine();
   const __FlashStringHelper* name() {
     return F("SetTempWithSine");
   }

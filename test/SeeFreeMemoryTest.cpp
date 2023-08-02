@@ -12,7 +12,7 @@ unittest(testOutput) {
   TankController* tc = TankController::instance();
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
   assertEqual("MainMenu", tc->stateName());
-  SeeFreeMemory* test = new SeeFreeMemory(tc);
+  SeeFreeMemory* test = new SeeFreeMemory();
   tc->setNextState(test, true);
   assertEqual("SeeFreeMemory", tc->stateName());
 

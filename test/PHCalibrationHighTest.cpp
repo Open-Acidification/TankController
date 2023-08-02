@@ -8,7 +8,7 @@
 
 unittest(test) {
   TankController* tc = TankController::instance();
-  PHCalibrationHigh* test = new PHCalibrationHigh(tc);
+  PHCalibrationHigh* test = new PHCalibrationHigh();
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
   // setValue

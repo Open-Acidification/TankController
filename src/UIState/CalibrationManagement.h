@@ -8,8 +8,6 @@
 
 class CalibrationManagement : public UIState {
 public:
-  CalibrationManagement(TankController* tc) : UIState(tc) {
-  }
   void handleKey(char key);
   const __FlashStringHelper* name() {
     return F("CalibrationManagement");

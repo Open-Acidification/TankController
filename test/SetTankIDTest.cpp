@@ -8,7 +8,7 @@
 
 unittest(test) {
   TankController* tc = TankController::instance();
-  SetTankID* test = new SetTankID(tc);
+  SetTankID* test = new SetTankID();
   tc->setNextState(test, true);
 
   // getCurrentValue

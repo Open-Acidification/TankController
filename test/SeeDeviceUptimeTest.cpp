@@ -13,7 +13,7 @@ unittest(testWaitState) {
   assertEqual("MainMenu", tc->stateName());
   GODMODE()->resetClock();
   delay(((((1 * 24 + 2) * 60) + 3) * 60 + 4) * 1000);  // 1 day, 2 hours, 3 minutes, 4 seconds
-  SeeDeviceUptime* test = new SeeDeviceUptime(tc);
+  SeeDeviceUptime* test = new SeeDeviceUptime();
   tc->setNextState(test, true);  // MainMenu -> SeeDeviceUptime nextState: Wait
   tc->loop(false);
   assertEqual("SeeDeviceUptime", tc->stateName());

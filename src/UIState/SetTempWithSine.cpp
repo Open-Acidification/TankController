@@ -7,7 +7,7 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/TemperatureControl.h"
 
-SetTempWithSine::SetTempWithSine(TankController* tc) : NumCollectorState(tc) {
+SetTempWithSine::SetTempWithSine() : NumCollectorState() {
   prompts[0] = F("Set T Set Point");
   prompts[1] = F("Set Amplitude:");
   prompts[2] = F("Set Period hrs:");

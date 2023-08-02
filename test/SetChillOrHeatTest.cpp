@@ -8,7 +8,7 @@
 
 unittest(ignoreInvalidValues) {
   TankController* tc = TankController::instance();
-  SetChillOrHeat* test = new SetChillOrHeat(tc);
+  SetChillOrHeat* test = new SetChillOrHeat();
   tc->setNextState(test, true);
   assertTrue(EEPROM_TC::instance()->getHeat());
   test->setValue(2.0);
@@ -23,7 +23,7 @@ unittest(ignoreInvalidValues) {
 
 unittest(switchToHeat) {
   TankController* tc = TankController::instance();
-  SetChillOrHeat* test = new SetChillOrHeat(tc);
+  SetChillOrHeat* test = new SetChillOrHeat();
   tc->setNextState(test, true);
   EEPROM_TC::instance()->setHeat(false);
   assertEqual(1, test->getCurrentValue());
@@ -39,7 +39,7 @@ unittest(switchToHeat) {
 
 unittest(switchToChill) {
   TankController* tc = TankController::instance();
-  SetChillOrHeat* test = new SetChillOrHeat(tc);
+  SetChillOrHeat* test = new SetChillOrHeat();
   tc->setNextState(test, true);
   EEPROM_TC::instance()->setHeat(true);
   assertEqual(9, test->getCurrentValue());

@@ -25,7 +25,7 @@ unittest(test) {
   // set UI to TemperatureCalibration state
   TankController* tc = TankController::instance();
   assertFalse(tc->isInCalibration());
-  TemperatureCalibration* test = new TemperatureCalibration(tc);
+  TemperatureCalibration* test = new TemperatureCalibration();
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
 
@@ -55,7 +55,7 @@ unittest(test) {
   // test for https://github.com/Open-Acidification/TankController/issues/174
   tc->loop(false);
   tc->loop(false);  // second loop needed to set the next state
-  test = new TemperatureCalibration(tc);
+  test = new TemperatureCalibration();
   tc->setNextState(test, true);
   test->setValue(16.0);
   for (size_t i = 0; i < 100; ++i) {

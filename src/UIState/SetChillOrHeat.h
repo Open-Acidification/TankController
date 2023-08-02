@@ -8,8 +8,6 @@
 
 class SetChillOrHeat : public NumCollectorState {
 public:
-  SetChillOrHeat(TankController* tc) : NumCollectorState(tc) {
-  }
   virtual bool isInteger() {
     return true;
   }

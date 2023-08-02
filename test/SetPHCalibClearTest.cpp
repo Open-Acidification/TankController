@@ -18,7 +18,7 @@ void enterKey(char key) {
 }
 
 unittest(test) {
-  SetPHCalibClear* test = new SetPHCalibClear(tc);
+  SetPHCalibClear* test = new SetPHCalibClear();
   tc->setNextState(test, true);
   assertEqual("A: Clear pH Cali", lc->getLines().at(0));
   enterKey('A');

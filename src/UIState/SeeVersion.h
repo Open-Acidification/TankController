@@ -8,8 +8,6 @@
 
 class SeeVersion : public UIState {
 public:
-  SeeVersion() : UIState() {
-  }
   void start() override;
   const __FlashStringHelper* name() override {
     return F("SeeVersion");

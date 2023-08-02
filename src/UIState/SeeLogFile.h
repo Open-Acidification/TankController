@@ -8,8 +8,6 @@
 
 class SeeLogFile : public UIState {
 public:
-  SeeLogFile() : UIState() {
-  }
   void start() override;
   const __FlashStringHelper* name() override {
     return F("SeeLogFile");

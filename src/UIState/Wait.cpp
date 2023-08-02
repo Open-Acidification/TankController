@@ -10,7 +10,7 @@
  * @param msDelay
  * @param nextState
  */
-Wait::Wait(TankController *tc, uint16_t msDelay, UIState *nextState) : UIState() {
+Wait::Wait(uint16_t msDelay, UIState *nextState) : UIState() {
   endTime = millis() + msDelay;
   if (nextState) {
     COUT(nextState->name());

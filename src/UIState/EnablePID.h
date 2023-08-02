@@ -8,8 +8,6 @@
 
 class EnablePID : public NumCollectorState {
 public:
-  EnablePID() : NumCollectorState() {
-  }
   virtual bool isInteger() {
     return true;
   }

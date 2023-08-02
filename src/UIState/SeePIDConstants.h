@@ -9,8 +9,6 @@
 
 class SeePIDConstants : public UIState {
 public:
-  SeePIDConstants() : UIState() {
-  }
   void loop() override;
   const __FlashStringHelper* name() override {
     return F("SeePIDConstants");

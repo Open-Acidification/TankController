@@ -8,8 +8,6 @@
 
 class SeeTempCalOffset : public UIState {
 public:
-  SeeTempCalOffset() : UIState() {
-  }
   void start() override;
   const __FlashStringHelper* name() override {
     return F("SeeTempCalOffset");

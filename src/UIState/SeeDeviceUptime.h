@@ -8,8 +8,6 @@
 
 class SeeDeviceUptime : public UIState {
 public:
-  SeeDeviceUptime() : UIState() {
-  }
   void loop() override;
   const __FlashStringHelper* name() override {
     return F("SeeDeviceUptime");

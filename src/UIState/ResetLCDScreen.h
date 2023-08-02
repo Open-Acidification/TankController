@@ -8,8 +8,6 @@
 
 class ResetLCDScreen : public UIState {
 public:
-  ResetLCDScreen() : UIState() {
-  }
   void handleKey(char key);
   const __FlashStringHelper* name() {
     return F("ResetLCDScreen");

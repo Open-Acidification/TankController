@@ -8,8 +8,6 @@
 
 class SeeDeviceAddress : public UIState {
 public:
-  SeeDeviceAddress() : UIState() {
-  }
   void start() override;
   void handleKey(char key) override;
   const __FlashStringHelper* name() override {

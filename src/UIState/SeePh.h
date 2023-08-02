@@ -15,8 +15,6 @@ public:
     SINE_TYPE,
   };
 
-  SeePh() : UIState() {
-  }
   void loop();
   const __FlashStringHelper *name() {
     return F("SeePh");

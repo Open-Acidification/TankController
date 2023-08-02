@@ -9,8 +9,6 @@
 
 class SetGoogleSheetInterval : public NumCollectorState {
 public:
-  SetGoogleSheetInterval() : NumCollectorState() {
-  }
   virtual bool isInteger() {
     return true;
   }

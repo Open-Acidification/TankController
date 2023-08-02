@@ -13,8 +13,6 @@
  */
 class PHCalibrationMid : public PHCalibration {
 public:
-  PHCalibrationMid() : PHCalibration() {
-  }
   const __FlashStringHelper* name() override {
     return F("PHCalibrationMid");
   }
@@ -31,8 +29,6 @@ public:
  */
 class PHCalibrationHigher : public PHCalibration {
 public:
-  PHCalibrationHigher() : PHCalibration() {
-  }
   const __FlashStringHelper* name() override {
     return F("PHCalibrationHigher");
   }
@@ -48,8 +44,6 @@ public:
  */
 class PHCalibrationOnly : public PHCalibration {
 public:
-  PHCalibrationOnly() : PHCalibration() {
-  }
   const __FlashStringHelper* name() override {
     return F("PHCalibrationOnly");
   }

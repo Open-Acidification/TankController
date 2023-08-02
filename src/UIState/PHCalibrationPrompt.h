@@ -9,8 +9,6 @@
 
 class PHCalibrationPrompt : public PHCalibration {
 public:
-  PHCalibrationPrompt() : PHCalibration() {
-  }
   const __FlashStringHelper* name() override {
     return F("PHCalibrationPrompt");
   }

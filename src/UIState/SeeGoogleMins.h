@@ -8,8 +8,6 @@
 
 class SeeGoogleMins : public UIState {
 public:
-  SeeGoogleMins() : UIState() {
-  }
   void start() override;
   const __FlashStringHelper* name() override {
     return F("SeeGoogleMins");

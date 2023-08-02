@@ -9,8 +9,6 @@
 
 class SetKP : public NumCollectorState {
 public:
-  SetKP() : NumCollectorState() {
-  }
   const __FlashStringHelper* name() {
     return F("SetKP");
   }

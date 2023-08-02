@@ -5,8 +5,6 @@
 
 class PHCalibration : public NumCollectorState {
 public:
-  PHCalibration() : NumCollectorState() {
-  }
   bool isInCalibration() override {
     return true;  // disable controls during calibration
   }

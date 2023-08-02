@@ -13,8 +13,6 @@
  */
 class PHCalibrationHigh : public PHCalibration {
 public:
-  PHCalibrationHigh() : PHCalibration() {
-  }
   const __FlashStringHelper* name() override {
     return F("PHCalibrationHigh");
   }

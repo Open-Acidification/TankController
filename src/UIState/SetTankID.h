@@ -9,8 +9,6 @@
 
 class SetTankID : public NumCollectorState {
 public:
-  SetTankID() : NumCollectorState() {
-  }
   virtual bool isInteger() {
     return true;
   }

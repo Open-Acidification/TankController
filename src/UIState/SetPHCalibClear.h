@@ -8,8 +8,6 @@
 
 class SetPHCalibClear : public UIState {
 public:
-  SetPHCalibClear() : UIState() {
-  }
   void handleKey(char key);
   const __FlashStringHelper* name() {
     return F("SetPHCalibClear");

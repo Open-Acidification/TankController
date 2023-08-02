@@ -8,8 +8,6 @@
 
 class TemperatureCalibration : public NumCollectorState {
 public:
-  TemperatureCalibration() : NumCollectorState() {
-  }
   bool isInCalibration() {
     return true;
   }

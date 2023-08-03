@@ -6,7 +6,7 @@
 #pragma once
 #include "NumberCollectorState.h"
 
-class SetPHSetPoint : public NumCollectorState {
+class SetPHSetPoint : public NumberCollectorState {
 public:
   SetPHSetPoint();
   const __FlashStringHelper* name() {

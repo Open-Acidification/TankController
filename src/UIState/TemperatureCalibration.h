@@ -6,7 +6,7 @@
 #pragma once
 #include "NumberCollectorState.h"
 
-class TemperatureCalibration : public NumCollectorState {
+class TemperatureCalibration : public NumberCollectorState {
 public:
   bool isInCalibration() {
     return true;

@@ -8,14 +8,14 @@
 // useful for future debugging
 #include "TC_util.h"
 
-void NumCollectorState::clear() {
+void NumberCollectorState::clear() {
   hasDecimal = false;
   numDigits = 0;
   value = 0;
   factor = 10;
 }
 
-void NumCollectorState::handleKey(char key) {
+void NumberCollectorState::handleKey(char key) {
   if (key >= '0' && key <= '9') {  // a digit
     numDigits++;
     handleDigit(key - '0');
@@ -34,7 +34,7 @@ void NumCollectorState::handleKey(char key) {
   printValue();
 }
 
-void NumCollectorState::handleDigit(uint16_t digit) {
+void NumberCollectorState::handleDigit(uint16_t digit) {
   if (hasDecimal) {
     value = value + (float)digit / factor;
     factor = factor * 10;
@@ -43,7 +43,7 @@ void NumCollectorState::handleDigit(uint16_t digit) {
   }
 }
 
-void NumCollectorState::backSpace() {
+void NumberCollectorState::backSpace() {
   if (hasDecimal && factor == 10) {
     hasDecimal = false;
   } else if (hasDecimal) {
@@ -57,7 +57,7 @@ void NumCollectorState::backSpace() {
   }
 }
 
-void NumCollectorState::printValue() {
+void NumberCollectorState::printValue() {
   char format[20], strValue[20];
   // The Arduino does not support variable widths, so we construct the format string at runtime!
   char buffer[8];
@@ -87,7 +87,7 @@ void NumCollectorState::printValue() {
   LiquidCrystal_TC::instance()->writeLine(strValue, 1);
 }
 
-void NumCollectorState::start() {
+void NumberCollectorState::start() {
   UIState::start();
   printValue();
 }

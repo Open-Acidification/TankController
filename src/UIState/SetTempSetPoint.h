@@ -7,7 +7,7 @@
 #include "Devices/EEPROM_TC.h"
 #include "NumberCollectorState.h"
 
-class SetTempSetPoint : public NumCollectorState {
+class SetTempSetPoint : public NumberCollectorState {
 public:
   SetTempSetPoint();
   const __FlashStringHelper* name() {

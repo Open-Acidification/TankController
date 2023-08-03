@@ -6,7 +6,7 @@
 #pragma once
 #include "NumberCollectorState.h"
 
-class SetTempWithSine : public NumCollectorState {
+class SetTempWithSine : public NumberCollectorState {
 public:
   SetTempWithSine();
   const __FlashStringHelper* name() {

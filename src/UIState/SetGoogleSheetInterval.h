@@ -7,7 +7,7 @@
 #include "Devices/EEPROM_TC.h"
 #include "NumberCollectorState.h"
 
-class SetGoogleSheetInterval : public NumCollectorState {
+class SetGoogleSheetInterval : public NumberCollectorState {
 public:
   virtual bool isInteger() {
     return true;

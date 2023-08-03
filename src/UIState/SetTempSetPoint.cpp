@@ -6,7 +6,7 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/TemperatureControl.h"
 
-SetTempSetPoint::SetTempSetPoint() : NumCollectorState() {
+SetTempSetPoint::SetTempSetPoint() : NumberCollectorState() {
   prompts[0] = F("Set Temperature");
   prompts[1] = F("Set ramp hours:");
 }

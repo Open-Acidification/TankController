@@ -7,7 +7,7 @@
 #include "Devices/EEPROM_TC.h"
 #include "NumberCollectorState.h"
 
-class SetKP : public NumCollectorState {
+class SetKP : public NumberCollectorState {
 public:
   const __FlashStringHelper* name() {
     return F("SetKP");

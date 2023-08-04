@@ -5,10 +5,10 @@
 #include "TemperatureCalibration.h"
 
 #include "Devices/LiquidCrystal_TC.h"
-#include "Devices/TempProbe_TC.h"
+#include "Devices/ThermalProbe_TC.h"
 
 void TemperatureCalibration::setValue(float value) {
-  TempProbe_TC *pProbe = TempProbe_TC::instance();
+  ThermalProbe_TC *pProbe = ThermalProbe_TC::instance();
   float uncorrectedAverage = pProbe->getUncorrectedRunningAverage();
   pProbe->setCorrection(value - uncorrectedAverage);
   char output[17];

@@ -17,7 +17,7 @@
 #include "Devices/PushingBox.h"
 #include "Devices/SD_TC.h"
 #include "Devices/Serial_TC.h"
-#include "Devices/TempProbe_TC.h"
+#include "Devices/ThermalProbe_TC.h"
 #include "Devices/TemperatureControl.h"
 #include "TC_util.h"
 #include "UIState/MainMenu.h"
@@ -59,7 +59,7 @@ TankController::TankController() {
   DataLogger_TC::instance();
   DateTime_TC::rtc();
   Ethernet_TC::instance();
-  TempProbe_TC::instance();
+  ThermalProbe_TC::instance();
   TemperatureControl::instance();
   PHProbe::instance();
   PHControl::instance();
@@ -217,7 +217,7 @@ const __FlashStringHelper *TankController::stateName() {
  */
 void TankController::updateControls() {
   // update TemperatureControl
-  TemperatureControl::instance()->updateControl(TempProbe_TC::instance()->getRunningAverage());
+  TemperatureControl::instance()->updateControl(ThermalProbe_TC::instance()->getRunningAverage());
   // update PHControl
   PHControl::instance()->updateControl(PHProbe::instance()->getPh());
 }

@@ -3,15 +3,15 @@
 
 #include "EEPROM_TC.h"
 #include "TC_util.h"
-#include "TempProbe_TC.h"
+#include "ThermalProbe_TC.h"
 
 unittest_setup() {
-  TempProbe_TC::reset();
+  ThermalProbe_TC::reset();
 }
 
 unittest(readFromEepromOnStartup) {
   EEPROM_TC::instance()->setCorrectedTemp(-1);
-  TempProbe_TC* tempProbe = TempProbe_TC::instance();
+  ThermalProbe_TC* tempProbe = ThermalProbe_TC::instance();
   tempProbe->setTemperature(11.0, false);
   for (size_t i = 0; i < 100; ++i) {
     delay(1000);
@@ -23,14 +23,14 @@ unittest(readFromEepromOnStartup) {
 }
 
 unittest(writeToEepromWhenCorrectionChanged) {
-  TempProbe_TC* tempProbe = TempProbe_TC::instance();
+  ThermalProbe_TC* tempProbe = ThermalProbe_TC::instance();
   tempProbe->setCorrection(0.5);
   assertEqual(0.5, EEPROM_TC::instance()->getCorrectedTemp());
 }
 
 unittest(TempProbe_Test) {
   // Instance
-  TempProbe_TC* tempProbe = TempProbe_TC::instance();
+  ThermalProbe_TC* tempProbe = ThermalProbe_TC::instance();
 
   // Test getResistance()
   uint16_t testRTD = tempProbe->getResistance();
@@ -73,7 +73,7 @@ unittest(TempProbe_Test) {
 }
 
 unittest(adjustment) {
-  TempProbe_TC* tempProbe = TempProbe_TC::instance();
+  ThermalProbe_TC* tempProbe = ThermalProbe_TC::instance();
   tempProbe->setTemperature(10.0, false);
   tempProbe->setCorrection(0.5);
   delay(1000);
@@ -82,7 +82,7 @@ unittest(adjustment) {
 }
 
 unittest(runningAverage) {
-  TempProbe_TC* tempProbe = TempProbe_TC::instance();
+  ThermalProbe_TC* tempProbe = ThermalProbe_TC::instance();
   tempProbe->setTemperature(10.0, true);
   for (size_t i = 0; i < 100; ++i) {
     delay(1000);

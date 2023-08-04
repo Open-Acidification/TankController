@@ -28,7 +28,7 @@
 #include "Serial_TC.h"
 #include "TC_util.h"
 #include "TankController.h"
-#include "TempProbe_TC.h"
+#include "ThermalProbe_TC.h"
 #include "UIState.h"
 #include "pybind11/pybind11.h"
 
@@ -117,7 +117,7 @@ const char *lcd(uint16_t index) {
 }
 
 float getTemperature() {
-  TempProbe_TC *tempProbe = TempProbe_TC::instance();
+  ThermalProbe_TC *tempProbe = ThermalProbe_TC::instance();
   return tempProbe->getRunningAverage();
 }
 
@@ -168,7 +168,7 @@ string sdNextValue() {
 }
 
 void setTemperature(float value) {
-  TempProbe_TC *tempProbe = TempProbe_TC::instance();
+  ThermalProbe_TC *tempProbe = ThermalProbe_TC::instance();
   tempProbe->setTemperature(value);
 }
 

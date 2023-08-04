@@ -6,7 +6,7 @@
 #include "Devices/EthernetServer_TC.h"
 #include "Devices/PHControl.h"
 #include "Devices/PushingBox.h"
-#include "Devices/TempProbe_TC.h"
+#include "Devices/ThermalProbe_TC.h"
 #include "Devices/TemperatureControl.h"
 #include "TankController.h"
 #include "UIState/PHCalibrationMid.h"
@@ -15,7 +15,7 @@ EthernetClient *pClient;
 GodmodeState *state = GODMODE();
 PushingBox *pPushingBox;
 TankController *tc;
-TempProbe_TC *tempProbe;
+ThermalProbe_TC *tempProbe;
 PHControl *controlSolenoid;
 
 unittest_setup() {
@@ -27,7 +27,7 @@ unittest_setup() {
   pPushingBox->setDeviceID("PushingBoxIdentifier");
   pPushingBox->resetNextSendTime();
   pClient = pPushingBox->getClient();
-  tempProbe = TempProbe_TC::instance();
+  tempProbe = ThermalProbe_TC::instance();
   controlSolenoid = PHControl::instance();
   DateTime_TC now(2021, 6, 8, 15, 25, 15);
   now.setAsCurrent();

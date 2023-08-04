@@ -2,7 +2,7 @@
 
 #include "Devices/DateTime_TC.h"
 #include "Devices/EEPROM_TC.h"
-#include "Devices/TempProbe_TC.h"
+#include "Devices/ThermalProbe_TC.h"
 #include "Serial_TC.h"
 #include "TankController.h"
 
@@ -102,7 +102,7 @@ void TemperatureControl::setRampDuration(float newTempRampDuration) {
     serial(F("change ramp time from %s to %s"), buffer1, buffer2);
     rampTimeStart = DateTime_TC::now().secondstime();
     rampTimeEnd = rampTimeStart + (uint32_t)(newTempRampDuration * 3600);
-    rampStartingTemp = TempProbe_TC::instance()->getRunningAverage();
+    rampStartingTemp = ThermalProbe_TC::instance()->getRunningAverage();
     tempSetType = tempSetTypeTypes::RAMP_TYPE;
     EEPROM_TC::instance()->setTempSetType(tempSetType);
     EEPROM_TC::instance()->setTempRampTimeStart(rampTimeStart);

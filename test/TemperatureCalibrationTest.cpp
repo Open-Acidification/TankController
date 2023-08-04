@@ -5,13 +5,13 @@
 #include "EEPROM_TC.h"
 #include "TC_util.h"
 #include "TankController.h"
-#include "TempProbe_TC.h"
+#include "ThermalProbe_TC.h"
 #include "TemperatureCalibration.h"
 
 unittest(test) {
   GodmodeState* state = GODMODE();
   // with no correction, we have a temperature of 10.0
-  TempProbe_TC* tempProbe = TempProbe_TC::instance();
+  ThermalProbe_TC* tempProbe = ThermalProbe_TC::instance();
   tempProbe->setTemperature(10.0, true, false);
   assertEqual(0.0, EEPROM_TC::instance()->getCorrectedTemp());
   for (size_t i = 0; i < 100; ++i) {

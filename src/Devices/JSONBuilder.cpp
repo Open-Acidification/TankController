@@ -7,7 +7,7 @@
 #include "Devices/PHProbe.h"
 #include "Devices/PID_TC.h"
 #include "Devices/SD_TC.h"
-#include "Devices/TempProbe_TC.h"
+#include "Devices/ThermalProbe_TC.h"
 #include "Devices/TemperatureControl.h"
 #include "TC_util.h"
 #include "TankController.h"
@@ -24,7 +24,7 @@ int JSONBuilder::buildCurrentValues() {
   while (target_pH_f && target_pH_f % 10 == 0) {
     target_pH_f /= 10;
   }
-  float temp = TempProbe_TC::instance()->getRunningAverage();
+  float temp = ThermalProbe_TC::instance()->getRunningAverage();
   // https://github.com/Open-Acidification/TankController/issues/331
   int temp_f = (temp - (int)temp) * 1000 + 0.5;
   while (temp_f && temp_f % 10 == 0) {

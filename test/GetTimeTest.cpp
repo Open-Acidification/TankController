@@ -6,7 +6,7 @@
 #include "Devices/EthernetServer_TC.h"
 #include "Devices/GetTime.h"
 #include "Devices/PHControl.h"
-#include "Devices/TempProbe_TC.h"
+#include "Devices/ThermalProbe_TC.h"
 #include "Devices/TemperatureControl.h"
 #include "TankController.h"
 
@@ -14,7 +14,7 @@ EthernetClient *pClient;
 GodmodeState *state = GODMODE();
 GetTime *pGetTime;
 TankController *tc;
-TempProbe_TC *tempProbe;
+ThermalProbe_TC *tempProbe;
 PHControl *controlSolenoid;
 
 unittest_setup() {

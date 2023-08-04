@@ -5,7 +5,7 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHControl.h"
 #include "Devices/PHProbe.h"
-#include "Devices/TempProbe_TC.h"
+#include "Devices/ThermalProbe_TC.h"
 #include "Devices/TemperatureControl.h"
 #include "EnablePID.h"
 #include "PHCalibrationPrompt.h"
@@ -266,7 +266,7 @@ void MainMenu::idle() {
   memcpy(output + 11, buffer, sizeof(buffer));
   LiquidCrystal_TC::instance()->writeLine(output, 0);
   TemperatureControl *tempControl = TemperatureControl::instance();
-  TempProbe_TC *tempProbe = TempProbe_TC::instance();
+  ThermalProbe_TC *tempProbe = ThermalProbe_TC::instance();
   float temp = tempProbe->getRunningAverage();
   char status = tempControl->isHeater() ? 'h' : 'c';
   if (tempControl->isOn()) {

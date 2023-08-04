@@ -10,7 +10,7 @@
 #include "MainMenu.h"
 #include "PHCalibrationPrompt.h"
 #include "TankController.h"
-#include "TempProbe_TC.h"
+#include "ThermalProbe_TC.h"
 
 // globals for the singletons used in every test
 TankController* tc = TankController::instance();
@@ -29,7 +29,7 @@ unittest_setup() {
   tc->setNextState(new MainMenu(), true);
   TemperatureControl::enableHeater(true);
   TemperatureControl::instance()->setTargetTemperature(15.75);
-  TempProbe_TC::instance()->setTemperature(12.25, true);
+  ThermalProbe_TC::instance()->setTemperature(12.25, true);
   tc->loop(false);  // recognize and apply the targets
   enterKey('D');
 }

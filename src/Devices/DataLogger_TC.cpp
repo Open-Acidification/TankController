@@ -7,7 +7,7 @@
 #include "Devices/PID_TC.h"
 #include "Devices/SD_TC.h"
 #include "Devices/Serial_TC.h"
-#include "Devices/TempProbe_TC.h"
+#include "Devices/ThermalProbe_TC.h"
 #include "Devices/TemperatureControl.h"
 #include "TankController.h"
 
@@ -53,7 +53,7 @@ void DataLogger_TC::writeToSD() {
     strscpy_P(currentTemperatureString, F("C"), sizeof(currentTemperatureString));
     strscpy_P(currentPhString, F("C"), sizeof(currentPhString));
   } else {
-    floattostrf((float)TempProbe_TC::instance()->getRunningAverage(), 4, 2, currentTemperatureString,
+    floattostrf((float)ThermalProbe_TC::instance()->getRunningAverage(), 4, 2, currentTemperatureString,
                 sizeof(currentTemperatureString));
     floattostrf((float)PHProbe::instance()->getPh(), 5, 3, currentPhString, sizeof(currentPhString));
   }
@@ -99,7 +99,7 @@ void DataLogger_TC::writeToSerial() {
     strscpy_P(bufferTemperature, F("C"), sizeof(bufferTemperature));
   } else {
     floattostrf((float)PHProbe::instance()->getPh(), 5, 3, bufferPh, sizeof(bufferPh));
-    floattostrf((float)TempProbe_TC::instance()->getRunningAverage(), 5, 2, bufferTemperature,
+    floattostrf((float)ThermalProbe_TC::instance()->getRunningAverage(), 5, 2, bufferTemperature,
                 sizeof(bufferTemperature));
   }
   serial(F("%02d:%02d pH=%s temp=%s"), (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(), bufferPh, bufferTemperature);

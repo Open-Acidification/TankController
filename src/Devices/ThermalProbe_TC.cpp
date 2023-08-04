@@ -1,4 +1,4 @@
-#include "Devices/TempProbe_TC.h"
+#include "Devices/ThermalProbe_TC.h"
 
 #include "DateTime_TC.h"
 #include "EEPROM_TC.h"
@@ -9,20 +9,20 @@
 /**
  * static variable for singleton
  */
-TempProbe_TC* TempProbe_TC::_instance = nullptr;
+ThermalProbe_TC* ThermalProbe_TC::_instance = nullptr;
 
 //  class methods
 /**
  * static member function to return singleton
  */
-TempProbe_TC* TempProbe_TC::instance() {
+ThermalProbe_TC* ThermalProbe_TC::instance() {
   if (!_instance) {
-    _instance = new TempProbe_TC();
+    _instance = new ThermalProbe_TC();
   }
   return _instance;
 }
 
-void TempProbe_TC::reset() {
+void ThermalProbe_TC::reset() {
   if (_instance) {
     delete _instance;
     _instance = nullptr;
@@ -33,7 +33,7 @@ void TempProbe_TC::reset() {
 /**
  * constructor (private so clients use the singleton)
  */
-TempProbe_TC::TempProbe_TC() {
+ThermalProbe_TC::ThermalProbe_TC() {
   // Start pt100 temperature probe with 3 wire configuration
   thermo.begin(MAX31865_3WIRE);
 
@@ -53,7 +53,7 @@ TempProbe_TC::TempProbe_TC() {
  *
  * Return the corrected running average within the range of 00.00-99.99
  */
-float TempProbe_TC::getRunningAverage() {
+float ThermalProbe_TC::getRunningAverage() {
   float temp = getUncorrectedRunningAverage() + correction;
   if (temp < 0.0) {
     temp = 0.0;
@@ -69,7 +69,7 @@ float TempProbe_TC::getRunningAverage() {
  * Read the current temperature and return a running average.
  * Do this only once per second since device is unreliable beyond that.
  */
-float TempProbe_TC::getUncorrectedRunningAverage() {
+float ThermalProbe_TC::getUncorrectedRunningAverage() {
   uint32_t currentTime = millis();
   if (firstTime || lastTime + 1000 <= currentTime) {
     float temp = this->getRawTemperature();
@@ -95,7 +95,7 @@ float TempProbe_TC::getUncorrectedRunningAverage() {
  *
  * Set a new value for the correction offset
  */
-void TempProbe_TC::setCorrection(float value) {
+void ThermalProbe_TC::setCorrection(float value) {
   COUT("old = " << correction << "; new = " << value);
   if (value != correction) {
     correction = value;
@@ -109,7 +109,7 @@ void TempProbe_TC::setCorrection(float value) {
  *
  * Sets the correction offset back to 0
  */
-void TempProbe_TC::clearCorrection() {
+void ThermalProbe_TC::clearCorrection() {
   COUT("old = " << correction);
   if (correction != 0) {
     correction = 0.0;
@@ -120,7 +120,7 @@ void TempProbe_TC::clearCorrection() {
 
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
 // set a temperature in the mock
-void TempProbe_TC::setTemperature(float newTemp, bool clearCorrection, bool setHistory) {
+void ThermalProbe_TC::setTemperature(float newTemp, bool clearCorrection, bool setHistory) {
   if (setHistory) {
     for (size_t i = 0; i < HISTORY_SIZE; ++i) {
       history[i] = newTemp;

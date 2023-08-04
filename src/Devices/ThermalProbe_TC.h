@@ -68,8 +68,8 @@
  * you can check for a fault, use the data accordingly, and then clear the fault
  * before reading again.
  *
- * How to use this TempProbe_TC class:
- * Call the constructor TempProbe_TC tempProbe = TempProbe_TC();
+ * How to use this ThermalProbe_TC class:
+ * Call the constructor ThermalProbe_TC tempProbe = ThermalProbe_TC();
  * Since this class is build for Tank Controller class, it will automatically
  * set the device to a three wire thermocouple, set the pins that the tank
  * controller has delegated for it, and it has values for RTDnominal, and the
@@ -89,9 +89,9 @@
 #include <Adafruit_MAX31865.h>
 #endif
 
-class TempProbe_TC {
+class ThermalProbe_TC {
 public:
-  static TempProbe_TC* instance();
+  static ThermalProbe_TC* instance();
   static void reset();
 
   inline uint16_t getResistance() {
@@ -126,7 +126,7 @@ public:
 
 private:
   //  Class variable
-  static TempProbe_TC* _instance;
+  static ThermalProbe_TC* _instance;
 
   //  Instance variables
   static const uint16_t RTDnominal = 100;
@@ -140,5 +140,5 @@ private:
   uint32_t lastTime = 0;
 
   // Methods
-  TempProbe_TC();
+  ThermalProbe_TC();
 };

@@ -9,7 +9,7 @@
 #include "PHCalibrationMid.h"
 #include "Serial_TC.h"
 #include "TankController.h"
-#include "TempProbe_TC.h"
+#include "ThermalProbe_TC.h"
 #include "TemperatureControl.h"
 /**
  * These tests test the UpdateControl virtual function for the heater and chiller subclass and
@@ -23,7 +23,7 @@ DataLogger_TC* dataLog = DataLogger_TC::instance();
 GodmodeState* state = GODMODE();
 TankController* tc = TankController::instance();
 LiquidCrystal_TC* lc = LiquidCrystal_TC::instance();
-TempProbe_TC* tempProbe = TempProbe_TC::instance();
+ThermalProbe_TC* tempProbe = ThermalProbe_TC::instance();
 TemperatureControl* control;
 
 unittest_setup() {

@@ -19,7 +19,7 @@ protected:
   uint32_t lastSwitchMS = 0;
   float baseThermalTarget;     // base target temperature
   float currentThermalTarget;  // current target (ramp, sine, arbitrary path)
-  float rampStartingTemp;
+  float rampInitialValue;
   uint32_t rampTimeStart;
   uint32_t rampTimeEnd;
   float amplitude;

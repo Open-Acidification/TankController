@@ -13,7 +13,7 @@ private:
   const uint16_t SOLENOID_OPENING_TIME = 100;
   float baseTargetPh;     // base target
   float currentTargetPh;  // current target (ramp, sine, arbitrary)
-  float rampStartingPh;
+  float rampInitialValue;
   uint32_t rampTimeStart;
   uint32_t rampTimeEnd;
   float amplitude;

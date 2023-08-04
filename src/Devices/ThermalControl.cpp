@@ -72,7 +72,7 @@ ThermalControl::ThermalControl() {
         EEPROM_TC::instance()->setThermalRampTimeStart(rampTimeStart);
       } else {
         rampTimeStart = EEPROM_TC::instance()->getThermalRampTimeStart();
-        rampStartingTemp = EEPROM_TC::instance()->getThermalRampInitialValue();
+        rampInitialValue = EEPROM_TC::instance()->getThermalRampInitialValue();
       }
       break;
     case SINE_TYPE:
@@ -102,12 +102,12 @@ void ThermalControl::setRampDuration(float newThermalRampDuration) {
     serial(F("change ramp time from %s to %s"), buffer1, buffer2);
     rampTimeStart = DateTime_TC::now().secondstime();
     rampTimeEnd = rampTimeStart + (uint32_t)(newThermalRampDuration * 3600);
-    rampStartingTemp = ThermalProbe_TC::instance()->getRunningAverage();
+    rampInitialValue = ThermalProbe_TC::instance()->getRunningAverage();
     thermalFunctionType = thermalFunctionTypes::RAMP_TYPE;
     EEPROM_TC::instance()->setThermalFunctionType(thermalFunctionType);
     EEPROM_TC::instance()->setThermalRampTimeStart(rampTimeStart);
     EEPROM_TC::instance()->setThermalRampTimeEnd(rampTimeEnd);
-    EEPROM_TC::instance()->setRampStartingTemp(rampStartingTemp);
+    EEPROM_TC::instance()->setRampStartingTemp(rampInitialValue);
   } else {
     rampTimeEnd = 0;
     thermalFunctionType = thermalFunctionTypes::FLAT_TYPE;
@@ -166,8 +166,8 @@ void Chiller::updateControl(float currentTemperature) {
     case RAMP_TYPE: {
       if (currentTime < rampTimeEnd) {
         currentThermalTarget =
-            rampStartingTemp +
-            ((currentTime - rampTimeStart) * (baseThermalTarget - rampStartingTemp) / (rampTimeEnd - rampTimeStart));
+            rampInitialValue +
+            ((currentTime - rampTimeStart) * (baseThermalTarget - rampInitialValue) / (rampTimeEnd - rampTimeStart));
       } else {
         currentThermalTarget = baseThermalTarget;
       }
@@ -239,8 +239,8 @@ void Heater::updateControl(float currentTemperature) {
     case RAMP_TYPE: {
       if (currentTime < rampTimeEnd) {
         currentThermalTarget =
-            rampStartingTemp +
-            ((currentTime - rampTimeStart) * (baseThermalTarget - rampStartingTemp) / (rampTimeEnd - rampTimeStart));
+            rampInitialValue +
+            ((currentTime - rampTimeStart) * (baseThermalTarget - rampInitialValue) / (rampTimeEnd - rampTimeStart));
       } else {
         currentThermalTarget = baseThermalTarget;
       }

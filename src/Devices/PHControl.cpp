@@ -59,7 +59,7 @@ PHControl::PHControl() {
         EEPROM_TC::instance()->setPhRampTimeStart(rampTimeStart);
       } else {
         rampTimeStart = EEPROM_TC::instance()->getPhRampTimeStart();
-        rampStartingPh = EEPROM_TC::instance()->getRampStartingPh();
+        rampInitialValue = EEPROM_TC::instance()->getRampStartingPh();
       }
       break;
     case SINE_TYPE:
@@ -97,12 +97,12 @@ void PHControl::setRampDuration(float newPhRampDuration) {
     serial(F("change ramp time from %s to %s"), buffer1, buffer2);
     rampTimeStart = DateTime_TC::now().secondstime();
     rampTimeEnd = rampTimeStart + (uint32_t)(newPhRampDuration * 3600);
-    rampStartingPh = PHProbe::instance()->getPh();
+    rampInitialValue = PHProbe::instance()->getPh();
     pHFunctionType = pHFunctionTypes::RAMP_TYPE;
     EEPROM_TC::instance()->setPHFunctionType(pHFunctionType);
     EEPROM_TC::instance()->setPhRampTimeStart(rampTimeStart);
     EEPROM_TC::instance()->setPhRampTimeEnd(rampTimeEnd);
-    EEPROM_TC::instance()->setRampStartingPh(rampStartingPh);
+    EEPROM_TC::instance()->setRampStartingPh(rampInitialValue);
   } else {
     rampTimeEnd = 0;
     pHFunctionType = pHFunctionTypes::FLAT_TYPE;
@@ -145,7 +145,7 @@ void PHControl::updateControl(float pH) {
     }
     case RAMP_TYPE: {
       if (currentTime < rampTimeEnd) {
-        currentTargetPh = rampStartingPh + ((currentTime - rampTimeStart) * (baseTargetPh - rampStartingPh) /
+        currentTargetPh = rampInitialValue + ((currentTime - rampTimeStart) * (baseTargetPh - rampInitialValue) /
                                             (rampTimeEnd - rampTimeStart));
       } else {
         currentTargetPh = baseTargetPh;

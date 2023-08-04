@@ -112,13 +112,13 @@ float EEPROM_TC::getPhSeriesSize() {
   return eepromReadFloat(PH_SERIES_SIZE_ADDRESS);
 }
 uint32_t EEPROM_TC::getPhRampTimeStart() {
-  return eepromReadInt(RAMP_TIME_START_PH_ADDRESS);
+  return eepromReadInt(PH_RAMP_TIME_START_ADDRESS);
 }
 uint32_t EEPROM_TC::getPhRampTimeEnd() {
-  return eepromReadInt(RAMP_TIME_END_PH_ADDRESS);
+  return eepromReadInt(PH_RAMP_TIME_END_ADDRESS);
 }
 float EEPROM_TC::getRampStartingPh() {
-  return eepromReadFloat(RAMP_STARTING_PH_ADDRESS);
+  return eepromReadFloat(PH_RAMP_STARTING_ADDRESS);
 }
 uint32_t EEPROM_TC::getPhSineStartTime() {
   return eepromReadInt(PH_SINE_START_TIME_ADDRESS);
@@ -226,13 +226,13 @@ void EEPROM_TC::setPhSeriesSize(float value) {
   eepromWriteFloat(PH_SERIES_SIZE_ADDRESS, value);
 }
 void EEPROM_TC::setPhRampTimeStart(uint32_t value) {
-  eepromWriteInt(RAMP_TIME_START_PH_ADDRESS, value);
+  eepromWriteInt(PH_RAMP_TIME_START_ADDRESS, value);
 }
 void EEPROM_TC::setPhRampTimeEnd(uint32_t value) {
-  eepromWriteInt(RAMP_TIME_END_PH_ADDRESS, value);
+  eepromWriteInt(PH_RAMP_TIME_END_ADDRESS, value);
 }
 void EEPROM_TC::setRampStartingPh(float value) {
-  eepromWriteFloat(RAMP_STARTING_PH_ADDRESS, value);
+  eepromWriteFloat(PH_RAMP_STARTING_ADDRESS, value);
 }
 void EEPROM_TC::setPhSineStartTime(uint32_t value) {
   eepromWriteInt(PH_SINE_START_TIME_ADDRESS, value);

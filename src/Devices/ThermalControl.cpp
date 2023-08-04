@@ -83,8 +83,8 @@ ThermalControl::ThermalControl() {
     default:
       break;
   }
-  pinMode(TEMP_CONTROL_PIN, OUTPUT);
-  digitalWrite(TEMP_CONTROL_PIN, TURN_SOLENOID_OFF);
+  pinMode(THERMAL_CONTROL_PIN, OUTPUT);
+  digitalWrite(THERMAL_CONTROL_PIN, TURN_SOLENOID_OFF);
   char buffer1[8];
   char buffer2[10];
   strscpy_P(buffer1, (this->isHeater() ? F("Heater") : F("Chiller")), sizeof(buffer1));
@@ -136,7 +136,7 @@ bool ThermalControl::isHeater() {
 }
 
 bool ThermalControl::isOn() {
-  return digitalRead(TEMP_CONTROL_PIN) == TURN_SOLENOID_ON;
+  return digitalRead(THERMAL_CONTROL_PIN) == TURN_SOLENOID_ON;
 }
 
 /**
@@ -199,7 +199,7 @@ void Chiller::updateControl(float currentTemperature) {
   if (currentMillis - previousMillis < TIME_INTERVAL) {
     COUT("Chiller update at " << currentMillis << " ignored due to update at " << previousMillis);
   } else {
-    bool oldValue = digitalRead(TEMP_CONTROL_PIN);
+    bool oldValue = digitalRead(THERMAL_CONTROL_PIN);
     bool newValue;
     previousMillis = currentMillis;
     // if in calibration, turn unit off
@@ -223,7 +223,7 @@ void Chiller::updateControl(float currentTemperature) {
       uint32_t currentMS = millis();
       serial(F("chiller turned %s at %lu after %lu ms"), newValue ? "off" : "on", currentMS, currentMS - lastSwitchMS);
       lastSwitchMS = currentMS;
-      digitalWrite(TEMP_CONTROL_PIN, newValue);
+      digitalWrite(THERMAL_CONTROL_PIN, newValue);
     }
   }
 }
@@ -264,7 +264,7 @@ void Heater::updateControl(float currentTemperature) {
       break;
   }
   COUT("Heater::updateControl(" << currentTemperature);
-  bool oldValue = digitalRead(TEMP_CONTROL_PIN);
+  bool oldValue = digitalRead(THERMAL_CONTROL_PIN);
   bool newValue;
   // if in calibration, turn unit off
   if (TankController::instance()->isInCalibration()) {
@@ -285,6 +285,6 @@ void Heater::updateControl(float currentTemperature) {
     uint32_t currentMS = millis();
     serial(F("heater turned %s at %lu after %lu ms"), newValue ? "off" : "on", currentMS, currentMS - lastSwitchMS);
     lastSwitchMS = currentMS;
-    digitalWrite(TEMP_CONTROL_PIN, newValue);
+    digitalWrite(THERMAL_CONTROL_PIN, newValue);
   }
 }

@@ -14,7 +14,7 @@ private:
   static ThermalControl* _instance;
 
 protected:
-  const uint16_t TEMP_CONTROL_PIN = 47;
+  const uint16_t THERMAL_CONTROL_PIN = 47;
   const float DELTA = 0.05;
   uint32_t lastSwitchMS = 0;
   float baseThermalTarget;     // base target temperature

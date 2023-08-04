@@ -18,7 +18,7 @@
  * bundle exec arduino_ci.rb --skip-examples-compilation --testfile-select=ThermalControlTest.cpp
  */
 
-const uint16_t TEMP_CONTROL_PIN = 47;
+const uint16_t THERMAL_CONTROL_PIN = 47;
 DataLogger_TC* dataLog = DataLogger_TC::instance();
 GodmodeState* state = GODMODE();
 TankController* tc = TankController::instance();
@@ -43,9 +43,9 @@ unittest(BeforeIntervalAndWithinDelta) {
   control = ThermalControl::instance();
   control->setThermalTarget(20);
   control->updateControl(20);
-  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[THERMAL_CONTROL_PIN]);
   control->updateControl(20.04);
-  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[THERMAL_CONTROL_PIN]);
 }
 
 // Chiller
@@ -54,9 +54,9 @@ unittest(BeforeIntervalAndOutsideDelta) {
   control = ThermalControl::instance();
   control->setThermalTarget(20);
   control->updateControl(20);
-  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[THERMAL_CONTROL_PIN]);
   control->updateControl(20.05);
-  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[THERMAL_CONTROL_PIN]);
 }
 
 // Chiller
@@ -65,10 +65,10 @@ unittest(AfterIntervalAndWithinDelta) {
   control = ThermalControl::instance();
   control->setThermalTarget(20);
   control->updateControl(20);
-  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[THERMAL_CONTROL_PIN]);
   delay(31000);
   control->updateControl(20.04);
-  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[THERMAL_CONTROL_PIN]);
 }
 
 /**
@@ -84,13 +84,13 @@ unittest(AfterIntervalAndOutsideDelta) {
   january.setAsCurrent();
   state->serialPort[0].dataOut = "";  // the history of data written
   // chiller is initially off and goes on when needed
-  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[THERMAL_CONTROL_PIN]);
   assertEqual(0, millis());
   delay(31006);
   assertEqual(31006, millis());
   control->updateControl(20.05);
   assertTrue(control->isOn());
-  assertEqual(TURN_SOLENOID_ON, state->digitalPin[TEMP_CONTROL_PIN]);
+  assertEqual(TURN_SOLENOID_ON, state->digitalPin[THERMAL_CONTROL_PIN]);
   assertEqual("chiller turned on at 31006 after 31006 ms\r\n", state->serialPort[0].dataOut);
   tc->loop(false);
   assertEqual("T=20.02 C 20.00 ", lc->getLines().at(1));
@@ -98,7 +98,7 @@ unittest(AfterIntervalAndOutsideDelta) {
   delay(31012);
   control->updateControl(19.95);
   assertFalse(control->isOn());
-  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[THERMAL_CONTROL_PIN]);
   assertEqual("chiller turned off at 62024 after 31018 ms\r\n", state->serialPort[0].dataOut);
   tc->loop(false);
   assertEqual("T 20.02 c 20.00 ", lc->getLines().at(1));
@@ -119,10 +119,10 @@ unittest(disableChillerDuringCalibration) {
   assertTrue(tc->isInCalibration());
   // chiller is initially off and stays off during calibration
   // (test is same as above)
-  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[THERMAL_CONTROL_PIN]);
   delay(31000);
   control->updateControl(20.05);
-  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[THERMAL_CONTROL_PIN]);
 }
 
 // Heater
@@ -131,9 +131,9 @@ unittest(WithinDelta) {
   control = ThermalControl::instance();
   control->setThermalTarget(20);
   control->updateControl(20);
-  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[THERMAL_CONTROL_PIN]);
   control->updateControl(19.96);
-  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[THERMAL_CONTROL_PIN]);
 }
 
 /**
@@ -146,10 +146,10 @@ unittest(OutsideDelta) {
   control->setThermalTarget(20);
   control->updateControl(20);
   // heater is initially off, then turns on
-  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[THERMAL_CONTROL_PIN]);
   control->updateControl(19.95);
   assertTrue(control->isOn());
-  assertEqual(TURN_SOLENOID_ON, state->digitalPin[TEMP_CONTROL_PIN]);
+  assertEqual(TURN_SOLENOID_ON, state->digitalPin[THERMAL_CONTROL_PIN]);
   assertEqual("heater turned on at 0 after 0 ms\r\n", state->serialPort[0].dataOut);
   tc->loop(false);
   assertEqual("T 20.00 H 20.00 ", lc->getLines().at(1));
@@ -157,7 +157,7 @@ unittest(OutsideDelta) {
   delay(300);
   control->updateControl(20.05);
   assertFalse(control->isOn());
-  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[THERMAL_CONTROL_PIN]);
   assertEqual("heater turned off at 306 after 306 ms\r\n", state->serialPort[0].dataOut);
   tc->loop(false);
   assertEqual("T 20.00 h 20.00 ", lc->getLines().at(1));
@@ -176,10 +176,10 @@ unittest(disableHeaterDuringCalibration) {
   assertTrue(tc->isInCalibration());
   // heater is initially off, and stays off due to calibration
   // (test is same as above)
-  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[THERMAL_CONTROL_PIN]);
   control->setThermalTarget(20);
   control->updateControl(19.95);
-  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
+  assertEqual(TURN_SOLENOID_OFF, state->digitalPin[THERMAL_CONTROL_PIN]);
 }
 
 unittest(RampGreaterThanZero) {

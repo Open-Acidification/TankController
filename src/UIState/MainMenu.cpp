@@ -28,7 +28,7 @@
 #include "SetPHSetPoint.h"
 #include "SetPHWithSine.h"
 #include "SetTankID.h"
-#include "SetTempCalibClear.h"
+#include "ResetThermalCalibration.h"
 #include "SetThermalSineWave.h"
 #include "SetThermalTarget.h"
 #include "SetTime.h"
@@ -188,7 +188,7 @@ void MainMenu::selectSet() {
       this->setNextState(new SetPHCalibClear());
       break;
     case SET_TEMP_CALIBRATION_CLEAR:
-      this->setNextState(new SetTempCalibClear());
+      this->setNextState(new ResetThermalCalibration());
       break;
     case SET_CHILL_OR_HEAT:
       this->setNextState(new SetChillOrHeat());

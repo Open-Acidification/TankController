@@ -3,7 +3,7 @@
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "Keypad_TC.h"
-#include "SetTempCalibClear.h"
+#include "ResetThermalCalibration.h"
 #include "TankController.h"
 
 // globals for the singletons used in every test
@@ -18,8 +18,7 @@ void enterKey(char key) {
 }
 
 unittest(test) {
-  SetTempCalibClear* test = new SetTempCalibClear();
-  tc->setNextState(test, true);
+  tc->setNextState(new ResetThermalCalibration(), true);
   enterKey('A');
   std::vector<String> lines2 = lc->getLines();
   assertEqual("A: Clear TempCal", lines2[0]);

@@ -1,12 +1,12 @@
 /**
  * SetCalibrationClear.cpp
  */
-#include "SetTempCalibClear.h"
+#include "ResetThermalCalibration.h"
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/ThermalProbe_TC.h"
 
-void SetTempCalibClear::handleKey(char key) {
+void ResetThermalCalibration::handleKey(char key) {
   switch (key) {
     case 'A':  // Save (clear calibration)
       ThermalProbe_TC::instance()->clearCorrection();

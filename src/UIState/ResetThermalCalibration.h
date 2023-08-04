@@ -1,16 +1,16 @@
 /**
- * SetTempCalibClear.h
+ * ResetThermalCalibration.h
  *
  * Clear Temperature Calibration
  */
 #pragma once
 #include "UIState.h"
 
-class SetTempCalibClear : public UIState {
+class ResetThermalCalibration : public UIState {
 public:
   void handleKey(char key);
   const __FlashStringHelper* name() {
-    return F("SetTempCalibClear");
+    return F("ResetThermalCalibration");
   }
   const __FlashStringHelper* prompt() {
     return F("A: Clear TempCal");

@@ -53,9 +53,9 @@ unittest(RampTimeStart) {
   assertEqual(0xFFFFFFFF, singleton->getPhRampTimeStart());
   singleton->setPhRampTimeStart(123456789);
   assertEqual(123456789, singleton->getPhRampTimeStart());
-  assertEqual(0xFFFFFFFF, singleton->getTempRampTimeStart());
-  singleton->setTempRampTimeStart(123456789);
-  assertEqual(123456789, singleton->getTempRampTimeStart());
+  assertEqual(0xFFFFFFFF, singleton->getThermalRampTimeStart());
+  singleton->setThermalRampTimeStart(123456789);
+  assertEqual(123456789, singleton->getThermalRampTimeStart());
 }
 
 unittest(RampTimeEnd) {
@@ -63,9 +63,9 @@ unittest(RampTimeEnd) {
   assertEqual(0xFFFFFFFF, singleton->getPhRampTimeEnd());
   singleton->setPhRampTimeEnd(987654321);
   assertEqual(987654321, singleton->getPhRampTimeEnd());
-  assertEqual(0xFFFFFFFF, singleton->getTempRampTimeEnd());
-  singleton->setTempRampTimeEnd(987654321);
-  assertEqual(987654321, singleton->getTempRampTimeEnd());
+  assertEqual(0xFFFFFFFF, singleton->getThermalRampTimeEnd());
+  singleton->setThermalRampTimeEnd(987654321);
+  assertEqual(987654321, singleton->getThermalRampTimeEnd());
 }
 
 unittest(Temp) {

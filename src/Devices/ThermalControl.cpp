@@ -64,14 +64,14 @@ ThermalControl::ThermalControl() {
   }
   switch (thermalFunctionType) {
     case RAMP_TYPE:
-      rampTimeEnd = EEPROM_TC::instance()->getTempRampTimeEnd();
+      rampTimeEnd = EEPROM_TC::instance()->getThermalRampTimeEnd();
       if (rampTimeEnd == 0xFFFFFFFF || rampTimeEnd == 0) {
         rampTimeEnd = 0;
-        EEPROM_TC::instance()->setTempRampTimeEnd(rampTimeEnd);
+        EEPROM_TC::instance()->setThermalRampTimeEnd(rampTimeEnd);
         rampTimeStart = 0;
-        EEPROM_TC::instance()->setTempRampTimeStart(rampTimeStart);
+        EEPROM_TC::instance()->setThermalRampTimeStart(rampTimeStart);
       } else {
-        rampTimeStart = EEPROM_TC::instance()->getTempRampTimeStart();
+        rampTimeStart = EEPROM_TC::instance()->getThermalRampTimeStart();
         rampStartingTemp = EEPROM_TC::instance()->getRampStartingTemp();
       }
       break;
@@ -92,27 +92,27 @@ ThermalControl::ThermalControl() {
   serial(F("%s starts with solenoid off with target temperature of %s C"), buffer1, buffer2);
 }
 
-void ThermalControl::setRampDuration(float newTempRampDuration) {
-  if (newTempRampDuration > 0) {
+void ThermalControl::setRampDuration(float newThermalRampDuration) {
+  if (newThermalRampDuration > 0) {
     float currentRampTime = rampTimeEnd - rampTimeStart;
     char buffer1[10];
     char buffer2[10];
     floattostrf(currentRampTime, 5, 3, buffer1, sizeof(buffer1));
-    floattostrf(newTempRampDuration, 5, 3, buffer2, sizeof(buffer2));
+    floattostrf(newThermalRampDuration, 5, 3, buffer2, sizeof(buffer2));
     serial(F("change ramp time from %s to %s"), buffer1, buffer2);
     rampTimeStart = DateTime_TC::now().secondstime();
-    rampTimeEnd = rampTimeStart + (uint32_t)(newTempRampDuration * 3600);
+    rampTimeEnd = rampTimeStart + (uint32_t)(newThermalRampDuration * 3600);
     rampStartingTemp = ThermalProbe_TC::instance()->getRunningAverage();
     thermalFunctionType = thermalFunctionTypes::RAMP_TYPE;
     EEPROM_TC::instance()->setThermalFunctionType(thermalFunctionType);
-    EEPROM_TC::instance()->setTempRampTimeStart(rampTimeStart);
-    EEPROM_TC::instance()->setTempRampTimeEnd(rampTimeEnd);
+    EEPROM_TC::instance()->setThermalRampTimeStart(rampTimeStart);
+    EEPROM_TC::instance()->setThermalRampTimeEnd(rampTimeEnd);
     EEPROM_TC::instance()->setRampStartingTemp(rampStartingTemp);
   } else {
     rampTimeEnd = 0;
     thermalFunctionType = thermalFunctionTypes::FLAT_TYPE;
     EEPROM_TC::instance()->setThermalFunctionType(thermalFunctionType);
-    EEPROM_TC::instance()->setTempRampTimeEnd(rampTimeEnd);
+    EEPROM_TC::instance()->setThermalRampTimeEnd(rampTimeEnd);
     serial("set ramp time to 0");
   }
 }

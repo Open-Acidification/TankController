@@ -32,8 +32,8 @@ public:
   uint32_t getPhSineStartTime();
   uint32_t getPhSinePeriod();
   float getPhSineAmplitude();
-  uint32_t getTempRampTimeStart();
-  uint32_t getTempRampTimeEnd();
+  uint32_t getThermalRampTimeStart();
+  uint32_t getThermalRampTimeEnd();
   float getRampStartingTemp();
   float getPhDelay();          // not used
   float getPhInterval();       // not used
@@ -71,8 +71,8 @@ public:
   void setPhSineStartTime(uint32_t value);
   void setPhSinePeriod(uint32_t value);
   void setPhSineAmplitude(float value);
-  void setTempRampTimeStart(uint32_t value);
-  void setTempRampTimeEnd(uint32_t value);
+  void setThermalRampTimeStart(uint32_t value);
+  void setThermalRampTimeEnd(uint32_t value);
   void setRampStartingTemp(float value);
   void setPhDelay(float value);
   void setPhInterval(float value);

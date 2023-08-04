@@ -63,7 +63,7 @@ public:
   virtual bool isHeater();
   bool isOn();
   void setTargetTemperature(float newTemperature);
-  void setRampDuration(float newTempRampDuration);
+  void setRampDuration(float newThermalRampDuration);
   void setSine(float sineAmplitude, float sinePeriodInHours);
   virtual void updateControl(float currentTemperature) = 0;
 };

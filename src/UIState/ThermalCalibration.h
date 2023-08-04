@@ -1,7 +1,7 @@
 /**
  * ThermalCalibration.h
  *
- * Calibrate the temperature
+ * Calibrate the thermal probe
  */
 #pragma once
 #include "NumberCollectorState.h"

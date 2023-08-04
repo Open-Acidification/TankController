@@ -54,13 +54,13 @@ ThermalProbe_TC::ThermalProbe_TC() {
  * Return the corrected running average within the range of 00.00-99.99
  */
 float ThermalProbe_TC::getRunningAverage() {
-  float temp = getUncorrectedRunningAverage() + correction;
-  if (temp < 0.0) {
-    temp = 0.0;
-  } else if (99.99 < temp) {
-    temp = 99.99;
+  float temperature = getUncorrectedRunningAverage() + correction;
+  if (temperature < 0.0) {
+    temperature = 0.0;
+  } else if (99.99 < temperature) {
+    temperature = 99.99;
   }
-  return temp;
+  return temperature;
 }
 
 /**
@@ -72,15 +72,15 @@ float ThermalProbe_TC::getRunningAverage() {
 float ThermalProbe_TC::getUncorrectedRunningAverage() {
   uint32_t currentTime = millis();
   if (firstTime || lastTime + 1000 <= currentTime) {
-    float temp = this->getRawTemperature();
+    float temperature = this->getRawTemperature();
     if (firstTime) {
       for (size_t i = 0; i < HISTORY_SIZE; ++i) {
-        history[i] = temp;
+        history[i] = temperature;
       }
       firstTime = false;
     }
     historyIndex = (historyIndex + 1) % HISTORY_SIZE;
-    history[historyIndex] = temp;
+    history[historyIndex] = temperature;
     lastTime = currentTime;
   }
   float sum = 0.0;

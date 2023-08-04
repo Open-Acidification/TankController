@@ -60,13 +60,13 @@ void DataLogger_TC::writeToSD() {
   DateTime_TC dtNow = DateTime_TC::now();
   PID_TC* pPID = PID_TC::instance();
   uint16_t tankId = EEPROM_TC::instance()->getTankID();
-  char targetTemp[10];
-  char targetPh[10];
+  char thermalTarget[10];
+  char pHTarget[10];
   char kp[12];
   char ki[12];
   char kd[12];
-  floattostrf(ThermalControl::instance()->getCurrentThermalTarget(), 4, 2, targetTemp, sizeof(targetTemp));
-  floattostrf(PHControl::instance()->getCurrentTargetPh(), 5, 3, targetPh, sizeof(targetPh));
+  floattostrf(ThermalControl::instance()->getCurrentThermalTarget(), 4, 2, thermalTarget, sizeof(thermalTarget));
+  floattostrf(PHControl::instance()->getCurrentTargetPh(), 5, 3, pHTarget, sizeof(pHTarget));
   floattostrf(pPID->getKp(), 8, 1, kp, sizeof(kp));
   floattostrf(pPID->getKi(), 8, 1, ki, sizeof(ki));
   floattostrf(pPID->getKd(), 8, 1, kd, sizeof(kd));
@@ -77,8 +77,8 @@ void DataLogger_TC::writeToSD() {
   int length;
   length = snprintf_P(buffer, sizeof(buffer), (PGM_P)format, (uint16_t)dtNow.month(), (uint16_t)dtNow.day(),
                       (uint16_t)dtNow.year(), (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(),
-                      (uint16_t)dtNow.second(), (uint16_t)tankId, currentTemperatureString, targetTemp, currentPhString,
-                      targetPh, (unsigned long)(millis() / 1000), kp, ki, kd);
+                      (uint16_t)dtNow.second(), (uint16_t)tankId, currentTemperatureString, thermalTarget,
+                      currentPhString, pHTarget, (unsigned long)(millis() / 1000), kp, ki, kd);
   if ((length > sizeof(buffer)) || (length < 0)) {
     // TODO: Log a warning that string was truncated
     serial(F("WARNING! String was truncated to \"%s\""), buffer);
@@ -92,15 +92,15 @@ void DataLogger_TC::writeToSD() {
  */
 void DataLogger_TC::writeToSerial() {
   DateTime_TC dtNow = DateTime_TC::now();
-  char bufferPh[12];
-  char bufferTemperature[11];
+  char phString[12];
+  char temperatureString[11];
   if (TankController::instance()->isInCalibration()) {
-    strscpy_P(bufferPh, F("C"), sizeof(bufferPh));
-    strscpy_P(bufferTemperature, F("C"), sizeof(bufferTemperature));
+    strscpy_P(phString, F("C"), sizeof(phString));
+    strscpy_P(temperatureString, F("C"), sizeof(temperatureString));
   } else {
-    floattostrf((float)PHProbe::instance()->getPh(), 5, 3, bufferPh, sizeof(bufferPh));
-    floattostrf((float)ThermalProbe_TC::instance()->getRunningAverage(), 5, 2, bufferTemperature,
-                sizeof(bufferTemperature));
+    floattostrf((float)PHProbe::instance()->getPh(), 5, 3, phString, sizeof(phString));
+    floattostrf((float)ThermalProbe_TC::instance()->getRunningAverage(), 5, 2, temperatureString,
+                sizeof(temperatureString));
   }
-  serial(F("%02d:%02d pH=%s temp=%s"), (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(), bufferPh, bufferTemperature);
+  serial(F("%02d:%02d pH=%s temp=%s"), (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(), phString, temperatureString);
 }

@@ -1,6 +1,5 @@
 #include "MainMenu.h"
 
-#include "PHCalibrationWarning.h"
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHControl.h"
 #include "Devices/PHProbe.h"
@@ -8,6 +7,7 @@
 #include "Devices/ThermalProbe_TC.h"
 #include "EnablePID.h"
 #include "PHCalibrationPrompt.h"
+#include "PHCalibrationWarning.h"
 #include "ResetPHCalibration.h"
 #include "ResetThermalCalibration.h"
 #include "SeeDeviceAddress.h"
@@ -25,8 +25,8 @@
 #include "SetKD.h"
 #include "SetKI.h"
 #include "SetKP.h"
-#include "SetPHTarget.h"
 #include "SetPHSineWave.h"
+#include "SetPHTarget.h"
 #include "SetTankID.h"
 #include "SetThermalSineWave.h"
 #include "SetThermalTarget.h"
@@ -265,14 +265,14 @@ void MainMenu::idle() {
   memcpy(output + 11, buffer, sizeof(buffer));
   LiquidCrystal_TC::instance()->writeLine(output, 0);
   ThermalControl *thermalControl = ThermalControl::instance();
-  float temp = ThermalProbe_TC::instance()->getRunningAverage();
+  float temperature = ThermalProbe_TC::instance()->getRunningAverage();
   char status = thermalControl->isHeater() ? 'h' : 'c';
   if (thermalControl->isOn()) {
     status = toupper(status);
   }
   output[0] = 'T';
   output[1] = millis() / 1000 % 2 ? '=' : ' ';
-  floattostrf(temp, 5, 2, buffer, sizeof(buffer));
+  floattostrf(temperature, 5, 2, buffer, sizeof(buffer));
   memcpy(output + 2, buffer, sizeof(buffer));
   output[7] = ' ';
   output[8] = status;

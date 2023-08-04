@@ -33,7 +33,7 @@ unittest_setup() {
   thermalProbe->setTemperature(16.75, true);
 
   // set target temperature
-  thermalControl->setTargetTemperature(16.25);
+  thermalControl->setThermalTarget(16.25);
 
   // set pH
   PHProbe::instance()->setPh(7.125);
@@ -64,7 +64,7 @@ unittest(basicOperation) {
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_PIN]);    // solenoid off
 
   // change targets
-  thermalControl->setTargetTemperature(17.25);
+  thermalControl->setThermalTarget(17.25);
   pPHControl->setBaseTargetPh(6.875);
 
   // verify that solonoids are on
@@ -76,7 +76,7 @@ unittest(basicOperation) {
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_PIN]);    // solenoid on
 
   // reset targets
-  thermalControl->setTargetTemperature(16.25);
+  thermalControl->setThermalTarget(16.25);
   pPHControl->setBaseTargetPh(7.375);
 
   // verify that solonoids are off

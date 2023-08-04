@@ -23,7 +23,7 @@ unittest(currentData) {
   PHProbe::instance()->setPhSlope();                            // actual
   PHControl::instance()->setBaseTargetPh(8.25);                 // target
   ThermalProbe_TC::instance()->setTemperature(99.99, true);        // actual
-  ThermalControl::instance()->setTargetTemperature(98.88);  // target
+  ThermalControl::instance()->setThermalTarget(98.88);  // target
   PID_TC::instance()->setTunings(100001.1, 100002.2, 100003.3);
   TankController::instance()->loop(false);  // recognize and apply the targets
   JSONBuilder builder;

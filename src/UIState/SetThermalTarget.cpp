@@ -27,7 +27,7 @@ void SetThermalTarget::setValue(float value) {
     clear();
     start();
   } else {
-    ThermalControl::instance()->setTargetTemperature(values[0]);
+    ThermalControl::instance()->setThermalTarget(values[0]);
     ThermalControl::instance()->setRampDuration(values[1]);
     char output0[17];
     char output1[17];

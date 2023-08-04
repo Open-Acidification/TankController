@@ -41,7 +41,7 @@ unittest_teardown() {
 unittest(BeforeIntervalAndWithinDelta) {
   ThermalControl::enableHeater(false);
   control = ThermalControl::instance();
-  control->setTargetTemperature(20);
+  control->setThermalTarget(20);
   control->updateControl(20);
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
   control->updateControl(20.04);
@@ -52,7 +52,7 @@ unittest(BeforeIntervalAndWithinDelta) {
 unittest(BeforeIntervalAndOutsideDelta) {
   ThermalControl::enableHeater(false);
   control = ThermalControl::instance();
-  control->setTargetTemperature(20);
+  control->setThermalTarget(20);
   control->updateControl(20);
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
   control->updateControl(20.05);
@@ -63,7 +63,7 @@ unittest(BeforeIntervalAndOutsideDelta) {
 unittest(AfterIntervalAndWithinDelta) {
   ThermalControl::enableHeater(false);
   control = ThermalControl::instance();
-  control->setTargetTemperature(20);
+  control->setThermalTarget(20);
   control->updateControl(20);
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
   delay(31000);
@@ -78,7 +78,7 @@ unittest(AfterIntervalAndWithinDelta) {
 unittest(AfterIntervalAndOutsideDelta) {
   ThermalControl::enableHeater(false);
   control = ThermalControl::instance();
-  control->setTargetTemperature(20);
+  control->setThermalTarget(20);
   control->updateControl(20);
   DateTime_TC january(2021, 1, 15, 1, 48, 24);
   january.setAsCurrent();
@@ -111,7 +111,7 @@ unittest(AfterIntervalAndOutsideDelta) {
 unittest(disableChillerDuringCalibration) {
   ThermalControl::enableHeater(false);
   control = ThermalControl::instance();
-  control->setTargetTemperature(20);
+  control->setThermalTarget(20);
   control->updateControl(20);
   assertFalse(tc->isInCalibration());
   PHCalibrationMid* test = new PHCalibrationMid();
@@ -129,7 +129,7 @@ unittest(disableChillerDuringCalibration) {
 unittest(WithinDelta) {
   ThermalControl::enableHeater(true);
   control = ThermalControl::instance();
-  control->setTargetTemperature(20);
+  control->setThermalTarget(20);
   control->updateControl(20);
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
   control->updateControl(19.96);
@@ -143,7 +143,7 @@ unittest(WithinDelta) {
 unittest(OutsideDelta) {
   ThermalControl::enableHeater(true);
   control = ThermalControl::instance();
-  control->setTargetTemperature(20);
+  control->setThermalTarget(20);
   control->updateControl(20);
   // heater is initially off, then turns on
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
@@ -177,7 +177,7 @@ unittest(disableHeaterDuringCalibration) {
   // heater is initially off, and stays off due to calibration
   // (test is same as above)
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
-  control->setTargetTemperature(20);
+  control->setThermalTarget(20);
   control->updateControl(19.95);
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
 }
@@ -187,7 +187,7 @@ unittest(RampGreaterThanZero) {
   ThermalControl::enableHeater(false);
   control = ThermalControl::instance();
   assertFalse(control->isOn());
-  control->setTargetTemperature(10);
+  control->setThermalTarget(10);
   control->setRampDuration(1.5);
   assertEqual(ThermalControl::thermalFunctionTypes::RAMP_TYPE, control->getThermalFunctionType());
   tc->loop(false);
@@ -240,7 +240,7 @@ unittest(RampGreaterThanZero) {
   ThermalControl::enableHeater(true);
   control = ThermalControl::instance();
   assertFalse(control->isOn());
-  control->setTargetTemperature(30);
+  control->setThermalTarget(30);
   control->setRampDuration(1.5);
   control->updateControl(thermalProbe->getRunningAverage());
   tc->loop(false);
@@ -289,7 +289,7 @@ unittest(ChangeRampToZero) {
   ThermalControl::enableHeater(false);
   control = ThermalControl::instance();
   assertFalse(control->isOn());
-  control->setTargetTemperature(10);
+  control->setThermalTarget(10);
   control->setRampDuration(1.5);
   tc->loop(false);
   assertTrue(20 <= control->getCurrentThermalTarget() && control->getCurrentThermalTarget() <= 20.03);
@@ -299,7 +299,7 @@ unittest(ChangeRampToZero) {
   ThermalControl::enableHeater(true);
   control = ThermalControl::instance();
   assertFalse(control->isOn());
-  control->setTargetTemperature(30);
+  control->setThermalTarget(30);
   control->setRampDuration(1.5);
   tc->loop(false);
   assertTrue(20 <= control->getCurrentThermalTarget() && control->getCurrentThermalTarget() <= 20.03);
@@ -315,7 +315,7 @@ unittest(sineTest) {
   ThermalControl::enableHeater(false);
   control = ThermalControl::instance();
   assertFalse(control->isOn());
-  control->setTargetTemperature(10);
+  control->setThermalTarget(10);
   control->setSine(1.5, 2);
   assertEqual(ThermalControl::thermalFunctionTypes::SINE_TYPE, control->getThermalFunctionType());
   tc->loop(false);
@@ -351,7 +351,7 @@ unittest(sineTest) {
   ThermalControl::enableHeater(true);
   control = ThermalControl::instance();
   assertFalse(control->isOn());
-  control->setTargetTemperature(30);
+  control->setThermalTarget(30);
   control->setSine(1.5, 2);
   assertEqual(ThermalControl::thermalFunctionTypes::SINE_TYPE, control->getThermalFunctionType());
   tc->loop(false);

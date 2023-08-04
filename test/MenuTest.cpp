@@ -28,7 +28,7 @@ unittest_setup() {
   EEPROM_TC::instance()->setPh(8.100);
   tc->setNextState(new MainMenu(), true);
   ThermalControl::enableHeater(true);
-  ThermalControl::instance()->setTargetTemperature(15.75);
+  ThermalControl::instance()->setThermalTarget(15.75);
   ThermalProbe_TC::instance()->setTemperature(12.25, true);
   tc->loop(false);  // recognize and apply the targets
   enterKey('D');

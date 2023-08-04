@@ -157,7 +157,7 @@ unittest(currentData) {
   PHProbe::instance()->setPhSlope();                            // actual
   PHControl::instance()->setBaseTargetPh(8.25);                 // target
   ThermalProbe_TC::instance()->setTemperature(21.25, true);        // actual
-  ThermalControl::instance()->setTargetTemperature(21.75);  // target
+  ThermalControl::instance()->setThermalTarget(21.75);  // target
   TankController::instance()->loop(false);                      // for targets to take effect
   PID_TC::instance()->setTunings(5000.5, 1234.46, 987.44);
 

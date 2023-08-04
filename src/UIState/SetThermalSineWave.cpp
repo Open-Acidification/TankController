@@ -39,7 +39,7 @@ void SetThermalSineWave::setValue(float value) {
     clear();
     start();
   } else {
-    ThermalControl::instance()->setTargetTemperature(values[0]);
+    ThermalControl::instance()->setThermalTarget(values[0]);
     ThermalControl::instance()->setSine(values[1], values[2]);
     char output0[17];
     char temp1[8];

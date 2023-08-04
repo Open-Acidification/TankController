@@ -142,7 +142,7 @@ bool ThermalControl::isOn() {
 /**
  * set target temperature and save in EEPROM
  */
-void ThermalControl::setTargetTemperature(float newTemperature) {
+void ThermalControl::setThermalTarget(float newTemperature) {
   if (baseThermalTarget != newTemperature) {
     char buffer1[10];
     char buffer2[10];

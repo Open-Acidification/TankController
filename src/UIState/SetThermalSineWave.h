@@ -1,16 +1,16 @@
 /**
- * SetTempWithSine.h
+ * SetThermalSineWave.h
  *
- * Set the target Temperature
+ * Set a temperature sine wave
  */
 #pragma once
 #include "NumberCollectorState.h"
 
-class SetTempWithSine : public NumberCollectorState {
+class SetThermalSineWave : public NumberCollectorState {
 public:
-  SetTempWithSine();
+  SetThermalSineWave();
   const __FlashStringHelper* name() {
-    return F("SetTempWithSine");
+    return F("SetThermalSineWave");
   }
   float getCurrentValue();
   uint16_t getCurrentValuePrecision() {

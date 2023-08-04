@@ -1,19 +1,19 @@
 /**
- * SetTempWithSine.cpp
+ * SetThermalSineWave.cpp
  */
 
-#include "SetTempWithSine.h"
+#include "SetThermalSineWave.h"
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/ThermalControl.h"
 
-SetTempWithSine::SetTempWithSine() : NumberCollectorState() {
+SetThermalSineWave::SetThermalSineWave() : NumberCollectorState() {
   prompts[0] = F("Set T Set Point");
   prompts[1] = F("Set Amplitude:");
   prompts[2] = F("Set Period hrs:");
 }
 
-float SetTempWithSine::getCurrentValue() {
+float SetThermalSineWave::getCurrentValue() {
   if (subState == 0) {
     return ThermalControl::instance()->getBaseThermalTarget();
   } else if (subState == 1) {
@@ -33,7 +33,7 @@ float SetTempWithSine::getCurrentValue() {
   }
 }
 
-void SetTempWithSine::setValue(float value) {
+void SetThermalSineWave::setValue(float value) {
   values[subState++] = value;
   if (subState < NUM_VALUES) {
     clear();

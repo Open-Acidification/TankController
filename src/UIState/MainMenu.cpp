@@ -29,7 +29,7 @@
 #include "SetPHWithSine.h"
 #include "SetTankID.h"
 #include "SetTempCalibClear.h"
-#include "SetTempWithSine.h"
+#include "SetThermalSineWave.h"
 #include "SetThermalTarget.h"
 #include "SetTime.h"
 #include "ThermalCalibration.h"
@@ -212,7 +212,7 @@ void MainMenu::selectSet() {
       this->setNextState(new SetPHWithSine());
       break;
     case SET_TEMP_WITH_SINE:
-      this->setNextState(new SetTempWithSine());
+      this->setNextState(new SetThermalSineWave());
       break;
     case SET_PID_ON_OFF:
       this->setNextState(new EnablePID());

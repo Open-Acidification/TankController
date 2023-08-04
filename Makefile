@@ -47,7 +47,7 @@ INCLUDE=-I$(ARDUINO_CI)/arduino \
 HEADERS=$(wildcard src/*.h) $(wildcard src/Devices/*) $(wildcard src/UIState/*)
 
 .PHONY : all
-all : $(BIN)/BadPHCalibrationTest.cpp.bin $(BIN)/BlinkTest.cpp.bin $(BIN)/DateTimeTest.cpp.bin $(BIN)/EEPROMTest.cpp.bin \
+all : $(BIN)/PHCalibrationWarningTest.cpp.bin $(BIN)/BlinkTest.cpp.bin $(BIN)/DateTimeTest.cpp.bin $(BIN)/EEPROMTest.cpp.bin \
   $(BIN)/EnablePIDTest.cpp.bin $(BIN)/EthernetServerTest.cpp.bin $(BIN)/EthernetTest.cpp.bin \
   $(BIN)/GetTimeTest.cpp.bin $(BIN)/JSONBuilderTest.cpp.bin $(BIN)/KeypadTest.cpp.bin \
 	$(BIN)/LiquidCrystalTest.cpp.bin \
@@ -69,8 +69,8 @@ all : $(BIN)/BadPHCalibrationTest.cpp.bin $(BIN)/BlinkTest.cpp.bin $(BIN)/DateTi
 
 GPP_TEST=g++ $(FLAGS) -L$(BIN) $(INCLUDE)
 
-$(BIN)/BadPHCalibrationTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/BadPHCalibrationTest.cpp $(HEADERS)
-	$(GPP_TEST) -o $(BIN)/BadPHCalibrationTest.cpp.bin $(TEST)/BadPHCalibrationTest.cpp -larduino
+$(BIN)/PHCalibrationWarningTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/PHCalibrationWarningTest.cpp $(HEADERS)
+	$(GPP_TEST) -o $(BIN)/PHCalibrationWarningTest.cpp.bin $(TEST)/PHCalibrationWarningTest.cpp -larduino
 
 $(BIN)/BlinkTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/BlinkTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/BlinkTest.cpp.bin $(TEST)/BlinkTest.cpp -larduino
@@ -252,7 +252,7 @@ OBJECTS=$(BIN)/Arduino.o $(BIN)/Godmode.o $(BIN)/stdlib.o $(BIN)/ArduinoUnitTest
 	$(BIN)/JSONBuilder.o \
   $(BIN)/Keypad_TC.o $(BIN)/LiquidCrystal_TC.o $(BIN)/PHControl.o $(BIN)/PHProbe.o \
   $(BIN)/PID_TC.o $(BIN)/PushingBox.o $(BIN)/SD_TC.o $(BIN)/Serial_TC.o $(BIN)/ThermalProbe_TC.o \
-  $(BIN)/ThermalControl.o $(BIN)/BadPHCalibration.o $(BIN)/EnablePID.o $(BIN)/MainMenu.o \
+  $(BIN)/ThermalControl.o $(BIN)/PHCalibrationWarning.o $(BIN)/EnablePID.o $(BIN)/MainMenu.o \
   $(BIN)/NumberCollectorState.o $(BIN)/PHCalibrationHigh.o $(BIN)/PHCalibrationLow.o \
   $(BIN)/PHCalibrationMid.o $(BIN)/PHCalibrationPrompt.o $(BIN)/SeeDeviceAddress.o \
 	$(BIN)/SeeDeviceUptime.o $(BIN)/SeeFreeMemory.o \
@@ -338,8 +338,8 @@ $(BIN)/ThermalProbe_TC.o: $(SRC)/Devices/ThermalProbe_TC.cpp $(HEADERS)
 $(BIN)/ThermalControl.o: $(SRC)/Devices/ThermalControl.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/ThermalControl.o $(SRC)/Devices/ThermalControl.cpp
 
-$(BIN)/BadPHCalibration.o: $(SRC)/UIState/BadPHCalibration.cpp  $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/BadPHCalibration.o $(SRC)/UIState/BadPHCalibration.cpp
+$(BIN)/PHCalibrationWarning.o: $(SRC)/UIState/PHCalibrationWarning.cpp  $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/PHCalibrationWarning.o $(SRC)/UIState/PHCalibrationWarning.cpp
 
 $(BIN)/EnablePID.o: $(SRC)/UIState/EnablePID.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/EnablePID.o $(SRC)/UIState/EnablePID.cpp

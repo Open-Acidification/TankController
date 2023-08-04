@@ -6,7 +6,7 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHProbe.h"
 #include "TankController.h"
-#include "UIState/BadPHCalibration.h"
+#include "UIState/PHCalibrationWarning.h"
 #include "UIState/MainMenu.h"
 
 unittest(Display) {
@@ -17,8 +17,8 @@ unittest(Display) {
   pHProbe->setPhSlope();
 
   assertEqual("MainMenu", tc->stateName());
-  tc->setNextState(new BadPHCalibration(), true);
-  assertEqual("BadPHCalibration", tc->stateName());
+  tc->setNextState(new PHCalibrationWarning(), true);
+  assertEqual("PHCalibrationWarning", tc->stateName());
   assertTrue(tc->isInCalibration());
 
   // Test the display
@@ -51,15 +51,15 @@ unittest(Accept) {
   PHProbe* pHProbe = PHProbe::instance();
   pHProbe->setPhSlope();
 
-  tc->setNextState(new BadPHCalibration(), true);
-  assertEqual("BadPHCalibration", tc->stateName());
+  tc->setNextState(new PHCalibrationWarning(), true);
+  assertEqual("PHCalibrationWarning", tc->stateName());
   assertTrue(tc->isInCalibration());
   assertEqual("", GODMODE()->serialPort[1].dataOut);
 
   // Type 'D'
   Keypad_TC::instance()->_getPuppet()->push_back('D');
   tc->loop(false);
-  assertEqual("BadPHCalibration", tc->stateName());
+  assertEqual("PHCalibrationWarning", tc->stateName());
 
   // Type 'A'
   Keypad_TC::instance()->_getPuppet()->push_back('A');
@@ -78,14 +78,14 @@ unittest(Clear) {
   PHProbe* pHProbe = PHProbe::instance();
   pHProbe->setPhSlope();
 
-  tc->setNextState(new BadPHCalibration(), true);
-  assertEqual("BadPHCalibration", tc->stateName());
+  tc->setNextState(new PHCalibrationWarning(), true);
+  assertEqual("PHCalibrationWarning", tc->stateName());
   assertTrue(tc->isInCalibration());
 
   // Type 'B'
   Keypad_TC::instance()->_getPuppet()->push_back('B');
   tc->loop(false);
-  assertEqual("BadPHCalibration", tc->stateName());
+  assertEqual("PHCalibrationWarning", tc->stateName());
 
   // Type 'C'
   assertEqual("", GODMODE()->serialPort[1].dataOut);
@@ -115,7 +115,7 @@ unittest(CatchBadCalibration) {
   assertEqual("MainMenu", tc->stateName());
   tc->loop(false);  // catch flag and queue next state
   tc->loop(false);  // make new state active
-  assertEqual("BadPHCalibration", tc->stateName());
+  assertEqual("PHCalibrationWarning", tc->stateName());
 }
 
 unittest(IgnoreBadCalibration) {

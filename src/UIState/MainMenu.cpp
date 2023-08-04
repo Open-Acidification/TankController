@@ -1,6 +1,6 @@
 #include "MainMenu.h"
 
-#include "BadPHCalibration.h"
+#include "PHCalibrationWarning.h"
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHControl.h"
 #include "Devices/PHProbe.h"
@@ -237,7 +237,7 @@ void MainMenu::selectSet() {
 // T=12.25 H 12.75
 void MainMenu::idle() {
   if (PHProbe::instance()->shouldWarnAboutCalibration()) {
-    this->setNextState(new BadPHCalibration());
+    this->setNextState(new PHCalibrationWarning());
     return;
   }
   char buffer[6];

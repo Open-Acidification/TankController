@@ -1,19 +1,19 @@
 /**
- * SetPHWithSine.cpp
+ * SetPHSineWave.cpp
  */
 
-#include "SetPHWithSine.h"
+#include "SetPHSineWave.h"
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHControl.h"
 
-SetPHWithSine::SetPHWithSine() : NumberCollectorState() {
+SetPHSineWave::SetPHSineWave() : NumberCollectorState() {
   prompts[0] = F("Set pH Mean:");
   prompts[1] = F("Set Amplitude:");
   prompts[2] = F("Set Period hrs:");
 }
 
-float SetPHWithSine::getCurrentValue() {
+float SetPHSineWave::getCurrentValue() {
   if (subState == 0) {
     return PHControl::instance()->getBaseTargetPh();
   } else if (subState == 1) {
@@ -31,7 +31,7 @@ float SetPHWithSine::getCurrentValue() {
   }
 }
 
-void SetPHWithSine::setValue(float value) {
+void SetPHSineWave::setValue(float value) {
   values[subState++] = value;
   if (subState < NUM_VALUES) {
     clear();

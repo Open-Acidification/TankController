@@ -4,7 +4,7 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHControl.h"
 #include "EEPROM_TC.h"
-#include "SetPHWithSine.h"
+#include "SetPHSineWave.h"
 #include "TC_util.h"
 #include "TankController.h"
 
@@ -18,7 +18,7 @@ unittest(test) {
   TankController* tc = TankController::instance();  // instantiate after setting eeprom stuff
   assertEqual(8.125, EEPROM_TC::instance()->getPh());
   assertEqual(8.125, PHControl::instance()->getBaseTargetPh());
-  SetPHWithSine* test = new SetPHWithSine();
+  SetPHSineWave* test = new SetPHSineWave();
   tc->setNextState(test, true);
 
   assertEqual(EEPROM_TC::instance()->getPHFunctionType(), PHControl::instance()->pHFunctionTypes::FLAT_TYPE);
@@ -55,7 +55,7 @@ unittest(test) {
 
   assertEqual("New pH=7.125    ", lines[0]);
   assertEqual("A=2.125 P=1.500 ", lines[1]);
-  assertEqual("SetPHWithSine", tc->stateName());
+  assertEqual("SetPHSineWave", tc->stateName());
   tc->loop(false);  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(3000);

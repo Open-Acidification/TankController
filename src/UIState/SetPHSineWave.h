@@ -1,16 +1,16 @@
 /**
- * SetPHWithSine.h
+ * SetPHSineWave.h
  *
  * Set the target pH
  */
 #pragma once
 #include "NumberCollectorState.h"
 
-class SetPHWithSine : public NumberCollectorState {
+class SetPHSineWave : public NumberCollectorState {
 public:
-  SetPHWithSine();
+  SetPHSineWave();
   const __FlashStringHelper* name() {
-    return F("SetPHWithSine");
+    return F("SetPHSineWave");
   }
   float getCurrentValue();
   uint16_t getCurrentValuePrecision() {

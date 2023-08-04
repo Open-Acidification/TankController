@@ -26,7 +26,7 @@
 #include "SetKI.h"
 #include "SetKP.h"
 #include "SetPHSetPoint.h"
-#include "SetPHWithSine.h"
+#include "SetPHSineWave.h"
 #include "SetTankID.h"
 #include "SetThermalSineWave.h"
 #include "SetThermalTarget.h"
@@ -208,7 +208,7 @@ void MainMenu::selectSet() {
       this->setNextState(new SetPHSetPoint());
       break;
     case SET_PH_WITH_SINE:
-      this->setNextState(new SetPHWithSine());
+      this->setNextState(new SetPHSineWave());
       break;
     case SET_TEMP_WITH_SINE:
       this->setNextState(new SetThermalSineWave());

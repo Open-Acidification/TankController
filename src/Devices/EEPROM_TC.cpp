@@ -156,8 +156,8 @@ uint16_t EEPROM_TC::getThermalFunctionType() {
 uint16_t EEPROM_TC::getTankID() {
   return static_cast<uint16_t>(eepromReadFloat(TANK_ID_ADDRESS));
 }
-float EEPROM_TC::getTemp() {
-  return eepromReadFloat(TEMP_ADDRESS);
+float EEPROM_TC::getThermalTarget() {
+  return eepromReadFloat(THERMAL_TARGET_ADDRESS);
 }
 float EEPROM_TC::getTempDelay() {
   return eepromReadFloat(TEMP_DELAY_ADDRESS);
@@ -249,7 +249,7 @@ void EEPROM_TC::setThermalRampTimeStart(uint32_t value) {
 void EEPROM_TC::setThermalRampTimeEnd(uint32_t value) {
   eepromWriteInt(THERMAL_RAMP_TIME_END_ADDRESS, value);
 }
-void EEPROM_TC::setRampStartingTemp(float value) {
+void EEPROM_TC::setThermalRampInitialValue(float value) {
   eepromWriteFloat(THERMAL_RAMP_INITIAL_VALUE_ADDRESS, value);
 }
 void EEPROM_TC::setThermalSineStartTime(uint32_t value) {
@@ -271,7 +271,7 @@ void EEPROM_TC::setTankID(uint16_t value) {
   eepromWriteFloat(TANK_ID_ADDRESS, (float)value);
 }
 void EEPROM_TC::setTemp(float value) {
-  eepromWriteFloat(TEMP_ADDRESS, value);
+  eepromWriteFloat(THERMAL_TARGET_ADDRESS, value);
 }
 void EEPROM_TC::setTempDelay(float value) {
   eepromWriteFloat(TEMP_DELAY_ADDRESS, value);

@@ -16,7 +16,7 @@ unittest(test) {
   LiquidCrystal_TC* lcd = LiquidCrystal_TC::instance();
   EEPROM_TC::instance()->setTemp(20.00);
   TankController* tc = TankController::instance();  // instantiate after setting eeprom stuff
-  assertEqual(20.00, EEPROM_TC::instance()->getTemp());
+  assertEqual(20.00, EEPROM_TC::instance()->getThermalTarget());
   assertEqual(20.00, ThermalControl::instance()->getBaseThermalTarget());
   SetThermalSineWave* test = new SetThermalSineWave();
   tc->setNextState(test, true);
@@ -51,7 +51,7 @@ unittest(test) {
   // during the delay we showed the new value
   lines = lcd->getLines();
   assertEqual(25, ThermalControl::instance()->getBaseThermalTarget());
-  assertEqual(25, EEPROM_TC::instance()->getTemp());
+  assertEqual(25, EEPROM_TC::instance()->getThermalTarget());
   assertEqual(ThermalControl::instance()->thermalFunctionTypes::SINE_TYPE,
               EEPROM_TC::instance()->getThermalFunctionType());
 

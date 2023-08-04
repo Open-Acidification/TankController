@@ -44,7 +44,7 @@ unittest(RampStartingPh) {
   singleton->setRampStartingPh(4.125);
   assertEqual(4.125, singleton->getRampStartingPh());
   assertNAN(singleton->getThermalRampInitialValue());
-  singleton->setRampStartingTemp(4.125);
+  singleton->setThermalRampInitialValue(4.125);
   assertEqual(4.125, singleton->getThermalRampInitialValue());
 }
 
@@ -70,9 +70,9 @@ unittest(RampTimeEnd) {
 
 unittest(Temp) {
   EEPROM_TC* singleton = EEPROM_TC::instance();
-  assertNAN(singleton->getTemp());
+  assertNAN(singleton->getThermalTarget());
   singleton->setTemp(4);
-  assertEqual(4, singleton->getTemp());
+  assertEqual(4, singleton->getThermalTarget());
 }
 
 unittest(PHFunctionType) {

@@ -15,8 +15,8 @@ unittest(test) {
   TankController* tc = TankController::instance();  // instantiate after setting eeprom stuff
   assertEqual(ThermalControl::instance()->thermalFunctionTypes::FLAT_TYPE,
               ThermalControl::instance()->getThermalFunctionType());
-  assertEqual(20.00, EEPROM_TC::instance()->getTemp());
-  assertEqual(0, 20.00 - EEPROM_TC::instance()->getTemp());
+  assertEqual(20.00, EEPROM_TC::instance()->getThermalTarget());
+  assertEqual(0, 20.00 - EEPROM_TC::instance()->getThermalTarget());
   assertEqual(20.00, ThermalControl::instance()->getBaseThermalTarget());
   assertEqual(0, EEPROM_TC::instance()->getThermalRampTimeEnd());
   assertEqual(0, EEPROM_TC::instance()->getThermalRampTimeStart());
@@ -48,7 +48,7 @@ unittest(test) {
   assertEqual(50.25, ThermalControl::instance()->getBaseThermalTarget());
   assertEqual(ThermalControl::instance()->thermalFunctionTypes::RAMP_TYPE,
               ThermalControl::instance()->getThermalFunctionType());
-  assertEqual(50.25, EEPROM_TC::instance()->getTemp());
+  assertEqual(50.25, EEPROM_TC::instance()->getThermalTarget());
 
   // during the delay we showed the new value
   assertEqual("New Temp=50.25  ", lines[0]);

@@ -45,7 +45,7 @@ public:
   uint32_t getThermalSineStartTime();
   uint32_t getThermalSinePeriod();
   float getThermalSineAmplitude();
-  float getTemp();               // target temperature
+  float getThermalTarget();      // target temperature
   float getTempDelay();          // not used
   float getTempInterval();       // not used
   float getTempSeriesPointer();  // not used
@@ -73,7 +73,7 @@ public:
   void setPhSineAmplitude(float value);
   void setThermalRampTimeStart(uint32_t value);
   void setThermalRampTimeEnd(uint32_t value);
-  void setRampStartingTemp(float value);
+  void setThermalRampInitialValue(float value);
   void setPhDelay(float value);
   void setPhInterval(float value);
   void setPhSeriesPointer(float value);
@@ -95,7 +95,7 @@ public:
 private:
   // instance variables from v0.197
   const uint16_t PH_ADDRESS = 0;                   // 9.999
-  const uint16_t TEMP_ADDRESS = 4;                 // 99.99
+  const uint16_t THERMAL_TARGET_ADDRESS = 4;       // 99.99
   const uint16_t TANK_ID_ADDRESS = 8;              // 999
   const uint16_t THERMAL_CORRECTION_ADDRESS = 12;  // 99.99
   const uint16_t KP_ADDRESS = 20;                  // float

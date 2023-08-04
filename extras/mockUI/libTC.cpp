@@ -51,7 +51,7 @@ float eeprom(uint8_t index) {
     case 0:
       return EEPROM_TC::instance()->getPh();
     case 1:
-      return EEPROM_TC::instance()->getTemp();
+      return EEPROM_TC::instance()->getThermalTarget();
     case 2:
       return EEPROM_TC::instance()->getTankID();
     case 3:

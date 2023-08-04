@@ -52,7 +52,7 @@ void ThermalControl::enableHeater(bool flag) {
  */
 ThermalControl::ThermalControl() {
   COUT("ThermalControl()");
-  baseThermalTarget = EEPROM_TC::instance()->getTemp();
+  baseThermalTarget = EEPROM_TC::instance()->getThermalTarget();
   if (isnan(baseThermalTarget)) {
     baseThermalTarget = DEFAULT_TEMPERATURE;
     EEPROM_TC::instance()->setTemp(baseThermalTarget);
@@ -107,7 +107,7 @@ void ThermalControl::setRampDuration(float newThermalRampDuration) {
     EEPROM_TC::instance()->setThermalFunctionType(thermalFunctionType);
     EEPROM_TC::instance()->setThermalRampTimeStart(rampTimeStart);
     EEPROM_TC::instance()->setThermalRampTimeEnd(rampTimeEnd);
-    EEPROM_TC::instance()->setRampStartingTemp(rampInitialValue);
+    EEPROM_TC::instance()->setThermalRampInitialValue(rampInitialValue);
   } else {
     rampTimeEnd = 0;
     thermalFunctionType = thermalFunctionTypes::FLAT_TYPE;

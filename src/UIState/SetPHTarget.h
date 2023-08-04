@@ -1,16 +1,16 @@
 /**
- * SetPHSetPoint.h
+ * SetPHTarget.h
  *
  * Set the target pH
  */
 #pragma once
 #include "NumberCollectorState.h"
 
-class SetPHSetPoint : public NumberCollectorState {
+class SetPHTarget : public NumberCollectorState {
 public:
-  SetPHSetPoint();
+  SetPHTarget();
   const __FlashStringHelper* name() {
-    return F("SetPHSetPoint");
+    return F("SetPHTarget");
   }
   float getCurrentValue();
   uint16_t getCurrentValuePrecision() {

@@ -90,7 +90,7 @@ unittest(ViewSettings) {
   assertEqual("T=12.25 H 15.75 ", lc->getLines().at(1));
 }
 
-unittest(SetPHSetPoint) {
+unittest(SetPHTarget) {
   enterKey('A');
   assertEqual("Set pH Set Point", lc->getLines().at(0));
   enterKey('D');

@@ -4,7 +4,7 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHControl.h"
 #include "EEPROM_TC.h"
-#include "SetPHSetPoint.h"
+#include "SetPHTarget.h"
 #include "TC_util.h"
 #include "TankController.h"
 
@@ -24,7 +24,7 @@ unittest(test_target_of_7_125_with_ramp_of_4_125) {
   assertEqual(8.125, PHControl::instance()->getBaseTargetPh());
   assertEqual(0, EEPROM_TC::instance()->getPhRampTimeEnd());
   assertEqual(0, EEPROM_TC::instance()->getPhRampTimeStart());
-  SetPHSetPoint* test = new SetPHSetPoint();
+  SetPHTarget* test = new SetPHTarget();
   tc->setNextState(test, true);
 
   // get currently displayed lines
@@ -52,7 +52,7 @@ unittest(test_target_of_7_125_with_ramp_of_4_125) {
 
   assertEqual("New pH=7.125    ", lines[0]);
   assertEqual("New ramp=4.125  ", lines[1]);
-  assertEqual("SetPHSetPoint", tc->stateName());
+  assertEqual("SetPHTarget", tc->stateName());
   tc->loop(false);  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(3000);
@@ -65,7 +65,7 @@ unittest(test_target_of_7_125_with_ramp_of_4_125) {
 unittest(test_target_of_14_with_ramp_of_0) {
   TankController* tc = TankController::instance();
   LiquidCrystal_TC* lcd = LiquidCrystal_TC::instance();
-  SetPHSetPoint* test = new SetPHSetPoint();
+  SetPHTarget* test = new SetPHTarget();
   tc->setNextState(test, true);
 
   // setValue
@@ -81,7 +81,7 @@ unittest(test_target_of_14_with_ramp_of_0) {
   assertEqual("New ramp=0.000  ", lines[1]);
 
   // complete cycle back to main menu
-  assertEqual("SetPHSetPoint", tc->stateName());
+  assertEqual("SetPHTarget", tc->stateName());
   tc->loop(false);  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(3000);

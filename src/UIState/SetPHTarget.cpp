@@ -1,18 +1,18 @@
 /**
- * SetPHSetPoint.cpp
+ * SetPHTarget.cpp
  */
 
-#include "SetPHSetPoint.h"
+#include "SetPHTarget.h"
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHControl.h"
 
-SetPHSetPoint::SetPHSetPoint() : NumberCollectorState() {
+SetPHTarget::SetPHTarget() : NumberCollectorState() {
   prompts[0] = F("Set pH Set Point");
   prompts[1] = F("Set ramp hours:");
 }
 
-float SetPHSetPoint::getCurrentValue() {
+float SetPHTarget::getCurrentValue() {
   if (subState == 0) {
     return PHControl::instance()->getBaseTargetPh();
   } else {
@@ -22,7 +22,7 @@ float SetPHSetPoint::getCurrentValue() {
   }
 }
 
-void SetPHSetPoint::setValue(float value) {
+void SetPHTarget::setValue(float value) {
   values[subState++] = value;
   if (subState < NUM_VALUES) {
     clear();

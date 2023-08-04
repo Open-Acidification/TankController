@@ -25,7 +25,7 @@
 #include "SetKD.h"
 #include "SetKI.h"
 #include "SetKP.h"
-#include "SetPHSetPoint.h"
+#include "SetPHTarget.h"
 #include "SetPHSineWave.h"
 #include "SetTankID.h"
 #include "SetThermalSineWave.h"
@@ -69,7 +69,7 @@ MainMenu::MainMenu() : UIState() {
 void MainMenu::handleKey(char key) {
   switch (key) {
     case 'A':  // Set pH set_point
-      this->setNextState(new SetPHSetPoint());
+      this->setNextState(new SetPHTarget());
       break;
     case 'B':  // Set Temperature set_point
       this->setNextState(new SetThermalTarget());
@@ -205,7 +205,7 @@ void MainMenu::selectSet() {
       this->setNextState(new SetKP());
       break;
     case SET_PH:
-      this->setNextState(new SetPHSetPoint());
+      this->setNextState(new SetPHTarget());
       break;
     case SET_PH_WITH_SINE:
       this->setNextState(new SetPHSineWave());

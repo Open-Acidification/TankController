@@ -9,8 +9,8 @@
 #include "SD_TC.h"
 #include "TC_util.h"
 #include "TankController.h"
-#include "ThermalProbe_TC.h"
 #include "ThermalControl.h"
+#include "ThermalProbe_TC.h"
 
 const uint16_t TEMP_PIN = 47;
 const uint16_t PH_PIN = 49;
@@ -18,7 +18,7 @@ const uint16_t PH_PIN = 49;
 GodmodeState *state = GODMODE();
 TankController *tc = TankController::instance();
 ThermalProbe_TC *thermalProbe = ThermalProbe_TC::instance();
-ThermalControl *tempControl = ThermalControl::instance();
+ThermalControl *thermalControl = ThermalControl::instance();
 PHProbe *pHProbe = PHProbe::instance();
 PHControl *pPHControl = PHControl::instance();
 SD_TC *sd = SD_TC::instance();
@@ -33,7 +33,7 @@ unittest_setup() {
   thermalProbe->setTemperature(16.75, true);
 
   // set target temperature
-  tempControl->setTargetTemperature(16.25);
+  thermalControl->setTargetTemperature(16.25);
 
   // set pH
   PHProbe::instance()->setPh(7.125);
@@ -64,7 +64,7 @@ unittest(basicOperation) {
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_PIN]);    // solenoid off
 
   // change targets
-  tempControl->setTargetTemperature(17.25);
+  thermalControl->setTargetTemperature(17.25);
   pPHControl->setBaseTargetPh(6.875);
 
   // verify that solonoids are on
@@ -76,7 +76,7 @@ unittest(basicOperation) {
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_PIN]);    // solenoid on
 
   // reset targets
-  tempControl->setTargetTemperature(16.25);
+  thermalControl->setTargetTemperature(16.25);
   pPHControl->setBaseTargetPh(7.375);
 
   // verify that solonoids are off

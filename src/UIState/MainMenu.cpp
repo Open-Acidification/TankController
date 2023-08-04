@@ -265,10 +265,10 @@ void MainMenu::idle() {
   }
   memcpy(output + 11, buffer, sizeof(buffer));
   LiquidCrystal_TC::instance()->writeLine(output, 0);
-  ThermalControl *tempControl = ThermalControl::instance();
+  ThermalControl *thermalControl = ThermalControl::instance();
   float temp = ThermalProbe_TC::instance()->getRunningAverage();
-  char status = tempControl->isHeater() ? 'h' : 'c';
-  if (tempControl->isOn()) {
+  char status = thermalControl->isHeater() ? 'h' : 'c';
+  if (thermalControl->isOn()) {
     status = toupper(status);
   }
   output[0] = 'T';
@@ -278,7 +278,7 @@ void MainMenu::idle() {
   output[7] = ' ';
   output[8] = status;
   output[9] = ' ';
-  floattostrf(tempControl->getCurrentThermalTarget(), 5, 2, buffer, sizeof(buffer));
+  floattostrf(thermalControl->getCurrentThermalTarget(), 5, 2, buffer, sizeof(buffer));
   memcpy(output + 10, buffer, sizeof(buffer));
   LiquidCrystal_TC::instance()->writeLine(output, 1);
 }

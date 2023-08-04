@@ -57,12 +57,12 @@ ThermalControl::ThermalControl() {
     baseThermalTarget = DEFAULT_TEMPERATURE;
     EEPROM_TC::instance()->setTemp(baseThermalTarget);
   }
-  tempSetType = EEPROM_TC::instance()->getTempSetType();
-  if (tempSetType == 0xFFFFFFFF) {
-    tempSetType = FLAT_TYPE;
-    EEPROM_TC::instance()->setTempSetType(tempSetType);
+  thermalFunctionType = EEPROM_TC::instance()->getThermalFunctionType();
+  if (thermalFunctionType == 0xFFFFFFFF) {
+    thermalFunctionType = FLAT_TYPE;
+    EEPROM_TC::instance()->setThermalFunctionType(thermalFunctionType);
   }
-  switch (tempSetType) {
+  switch (thermalFunctionType) {
     case RAMP_TYPE:
       rampTimeEnd = EEPROM_TC::instance()->getTempRampTimeEnd();
       if (rampTimeEnd == 0xFFFFFFFF || rampTimeEnd == 0) {
@@ -103,15 +103,15 @@ void ThermalControl::setRampDuration(float newTempRampDuration) {
     rampTimeStart = DateTime_TC::now().secondstime();
     rampTimeEnd = rampTimeStart + (uint32_t)(newTempRampDuration * 3600);
     rampStartingTemp = ThermalProbe_TC::instance()->getRunningAverage();
-    tempSetType = tempSetTypeTypes::RAMP_TYPE;
-    EEPROM_TC::instance()->setTempSetType(tempSetType);
+    thermalFunctionType = thermalFunctionTypes::RAMP_TYPE;
+    EEPROM_TC::instance()->setThermalFunctionType(thermalFunctionType);
     EEPROM_TC::instance()->setTempRampTimeStart(rampTimeStart);
     EEPROM_TC::instance()->setTempRampTimeEnd(rampTimeEnd);
     EEPROM_TC::instance()->setRampStartingTemp(rampStartingTemp);
   } else {
     rampTimeEnd = 0;
-    tempSetType = tempSetTypeTypes::FLAT_TYPE;
-    EEPROM_TC::instance()->setTempSetType(tempSetType);
+    thermalFunctionType = thermalFunctionTypes::FLAT_TYPE;
+    EEPROM_TC::instance()->setThermalFunctionType(thermalFunctionType);
     EEPROM_TC::instance()->setTempRampTimeEnd(rampTimeEnd);
     serial("set ramp time to 0");
   }
@@ -120,9 +120,9 @@ void ThermalControl::setRampDuration(float newTempRampDuration) {
 void ThermalControl::setSine(float sineAmplitude, float sinePeriodInHours) {
   period = (sinePeriodInHours * 3600);
   amplitude = sineAmplitude;
-  tempSetType = tempSetTypeTypes::SINE_TYPE;
+  thermalFunctionType = thermalFunctionTypes::SINE_TYPE;
   sineStartTime = DateTime_TC::now().secondstime();
-  EEPROM_TC::instance()->setTempSetType(tempSetType);
+  EEPROM_TC::instance()->setThermalFunctionType(thermalFunctionType);
   EEPROM_TC::instance()->setTempSinePeriod(period);
   EEPROM_TC::instance()->setTempSineAmplitude(amplitude);
   EEPROM_TC::instance()->setTempSineStartTime(sineStartTime);
@@ -158,7 +158,7 @@ void Chiller::updateControl(float currentTemperature) {
   // called each loop()
   uint32_t currentMillis = millis();
   uint32_t currentTime = DateTime_TC::now().secondstime();
-  switch (tempSetType) {
+  switch (thermalFunctionType) {
     case FLAT_TYPE: {
       currentThermalTarget = baseThermalTarget;
       break;
@@ -231,7 +231,7 @@ void Chiller::updateControl(float currentTemperature) {
 void Heater::updateControl(float currentTemperature) {
   // called each loop()
   uint32_t currentTime = DateTime_TC::now().secondstime();
-  switch (tempSetType) {
+  switch (thermalFunctionType) {
     case FLAT_TYPE: {
       currentThermalTarget = baseThermalTarget;
       break;

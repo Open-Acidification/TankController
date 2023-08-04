@@ -150,8 +150,8 @@ float EEPROM_TC::getTempSineAmplitude() {
 uint16_t EEPROM_TC::getPhSetType() {
   return static_cast<uint16_t>(eepromReadFloat(PH_SET_TYPE_ADDRESS));
 }
-uint16_t EEPROM_TC::getTempSetType() {
-  return static_cast<uint16_t>(eepromReadFloat(TEMP_SET_TYPE_ADDRESS));
+uint16_t EEPROM_TC::getThermalFunctionType() {
+  return static_cast<uint16_t>(eepromReadFloat(THERMAL_FUNCTION_TYPE_ADDRESS));
 }
 uint16_t EEPROM_TC::getTankID() {
   return static_cast<uint16_t>(eepromReadFloat(TANK_ID_ADDRESS));
@@ -264,8 +264,8 @@ void EEPROM_TC::setTempSineAmplitude(float value) {
 void EEPROM_TC::setPhSetType(uint16_t value) {
   eepromWriteFloat(PH_SET_TYPE_ADDRESS, (float)value);
 }
-void EEPROM_TC::setTempSetType(uint16_t value) {
-  eepromWriteFloat(TEMP_SET_TYPE_ADDRESS, (float)value);
+void EEPROM_TC::setThermalFunctionType(uint16_t value) {
+  eepromWriteFloat(THERMAL_FUNCTION_TYPE_ADDRESS, (float)value);
 }
 void EEPROM_TC::setTankID(uint16_t value) {
   eepromWriteFloat(TANK_ID_ADDRESS, (float)value);

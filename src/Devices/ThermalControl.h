@@ -17,7 +17,7 @@ protected:
   const uint16_t TEMP_CONTROL_PIN = 47;
   const float DELTA = 0.05;
   uint32_t lastSwitchMS = 0;
-  float baseThermalTarget;     // base target
+  float baseThermalTarget;     // base target temperature
   float currentThermalTarget;  // current target (ramp, sine, arbitrary path)
   float rampStartingTemp;
   uint32_t rampTimeStart;
@@ -25,11 +25,11 @@ protected:
   float amplitude;
   uint32_t period;
   uint32_t sineStartTime;
-  int tempSetType = FLAT_TYPE;
+  int thermalFunctionType = FLAT_TYPE;
   ThermalControl();
 
 public:
-  enum tempSetTypeTypes {
+  enum thermalFunctionTypes {
     FLAT_TYPE,
     RAMP_TYPE,
     SINE_TYPE,
@@ -45,17 +45,17 @@ public:
   float getCurrentThermalTarget() {
     return currentThermalTarget;
   }
-  int getTempSetType() {
-    return tempSetType;
+  int getThermalFunctionType() {
+    return thermalFunctionType;
   }
   float getAmplitude() {
     return amplitude;
   }
   uint32_t getRampTimeStart() {
-    return tempSetType == FLAT_TYPE ? 0 : rampTimeStart;
+    return thermalFunctionType == FLAT_TYPE ? 0 : rampTimeStart;
   }
   uint32_t getRampTimeEnd() {
-    return tempSetType == FLAT_TYPE ? 0 : rampTimeEnd;
+    return thermalFunctionType == FLAT_TYPE ? 0 : rampTimeEnd;
   }
   uint32_t getPeriod() {
     return period;

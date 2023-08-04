@@ -189,7 +189,7 @@ unittest(RampGreaterThanZero) {
   assertFalse(control->isOn());
   control->setTargetTemperature(10);
   control->setRampDuration(1.5);
-  assertEqual(ThermalControl::tempSetTypeTypes::RAMP_TYPE, control->getTempSetType());
+  assertEqual(ThermalControl::thermalFunctionTypes::RAMP_TYPE, control->getThermalFunctionType());
   tc->loop(false);
   control->updateControl(thermalProbe->getRunningAverage());
   tc->loop(false);
@@ -304,7 +304,7 @@ unittest(ChangeRampToZero) {
   tc->loop(false);
   assertTrue(20 <= control->getCurrentThermalTarget() && control->getCurrentThermalTarget() <= 20.03);
   control->setRampDuration(0);
-  assertEqual(ThermalControl::tempSetTypeTypes::FLAT_TYPE, control->getTempSetType());
+  assertEqual(ThermalControl::thermalFunctionTypes::FLAT_TYPE, control->getThermalFunctionType());
   tc->loop(false);
   assertEqual(30, control->getCurrentThermalTarget());
   tc->loop(false);
@@ -317,7 +317,7 @@ unittest(sineTest) {
   assertFalse(control->isOn());
   control->setTargetTemperature(10);
   control->setSine(1.5, 2);
-  assertEqual(ThermalControl::tempSetTypeTypes::SINE_TYPE, control->getTempSetType());
+  assertEqual(ThermalControl::thermalFunctionTypes::SINE_TYPE, control->getThermalFunctionType());
   tc->loop(false);
   assertEqual(10, control->getCurrentThermalTarget());
   // mock arduino restarting
@@ -353,7 +353,7 @@ unittest(sineTest) {
   assertFalse(control->isOn());
   control->setTargetTemperature(30);
   control->setSine(1.5, 2);
-  assertEqual(ThermalControl::tempSetTypeTypes::SINE_TYPE, control->getTempSetType());
+  assertEqual(ThermalControl::thermalFunctionTypes::SINE_TYPE, control->getThermalFunctionType());
   tc->loop(false);
   assertEqual(30, control->getCurrentThermalTarget());
   // mock arduino restarting

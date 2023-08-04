@@ -17,15 +17,15 @@ float SetTempWithSine::getCurrentValue() {
   if (subState == 0) {
     return ThermalControl::instance()->getBaseThermalTarget();
   } else if (subState == 1) {
-    if (ThermalControl::instance()->getTempSetType() ==
-        ThermalControl::instance()->tempSetTypeTypes::SINE_TYPE) {
+    if (ThermalControl::instance()->getThermalFunctionType() ==
+        ThermalControl::instance()->thermalFunctionTypes::SINE_TYPE) {
       return ThermalControl::instance()->getAmplitude();
     } else {
       return 0.000;
     }
   } else {
-    if (ThermalControl::instance()->getTempSetType() ==
-        ThermalControl::instance()->tempSetTypeTypes::SINE_TYPE) {
+    if (ThermalControl::instance()->getThermalFunctionType() ==
+        ThermalControl::instance()->thermalFunctionTypes::SINE_TYPE) {
       return ThermalControl::instance()->getPeriod() / 3600;
     } else {
       return 0.0;

@@ -21,7 +21,7 @@ unittest(test) {
   SetTempWithSine* test = new SetTempWithSine();
   tc->setNextState(test, true);
 
-  assertEqual(EEPROM_TC::instance()->getTempSetType(), ThermalControl::instance()->tempSetTypeTypes::FLAT_TYPE);
+  assertEqual(EEPROM_TC::instance()->getThermalFunctionType(), ThermalControl::instance()->thermalFunctionTypes::FLAT_TYPE);
   assertEqual(20, ThermalControl::instance()->getBaseThermalTarget());
 
   // get currently displayed lines
@@ -51,7 +51,7 @@ unittest(test) {
   lines = lcd->getLines();
   assertEqual(25, ThermalControl::instance()->getBaseThermalTarget());
   assertEqual(25, EEPROM_TC::instance()->getTemp());
-  assertEqual(ThermalControl::instance()->tempSetTypeTypes::SINE_TYPE, EEPROM_TC::instance()->getTempSetType());
+  assertEqual(ThermalControl::instance()->thermalFunctionTypes::SINE_TYPE, EEPROM_TC::instance()->getThermalFunctionType());
 
   assertEqual("New Temp=25.00  ", lines[0]);
   assertEqual("A=2.12 P=1.500  ", lines[1]);

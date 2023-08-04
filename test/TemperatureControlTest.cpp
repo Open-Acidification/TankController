@@ -23,12 +23,12 @@ DataLogger_TC* dataLog = DataLogger_TC::instance();
 GodmodeState* state = GODMODE();
 TankController* tc = TankController::instance();
 LiquidCrystal_TC* lc = LiquidCrystal_TC::instance();
-ThermalProbe_TC* tempProbe = ThermalProbe_TC::instance();
+ThermalProbe_TC* thermalProbe = ThermalProbe_TC::instance();
 TemperatureControl* control;
 
 unittest_setup() {
   state->resetClock();
-  tempProbe->setTemperature(20, true);
+  thermalProbe->setTemperature(20, true);
   tc->setNextState(new MainMenu(), true);
   state->serialPort[0].dataOut = "";  // the history of data written
 }
@@ -191,7 +191,7 @@ unittest(RampGreaterThanZero) {
   control->setRampDuration(1.5);
   assertEqual(TemperatureControl::tempSetTypeTypes::RAMP_TYPE, control->getTempSetType());
   tc->loop(false);
-  control->updateControl(tempProbe->getRunningAverage());
+  control->updateControl(thermalProbe->getRunningAverage());
   tc->loop(false);
   tc->loop(false);
   target = control->getCurrentTemperatureTarget();
@@ -242,7 +242,7 @@ unittest(RampGreaterThanZero) {
   assertFalse(control->isOn());
   control->setTargetTemperature(30);
   control->setRampDuration(1.5);
-  control->updateControl(tempProbe->getRunningAverage());
+  control->updateControl(thermalProbe->getRunningAverage());
   tc->loop(false);
   tc->loop(false);
   target = control->getCurrentTemperatureTarget();

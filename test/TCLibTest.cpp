@@ -17,7 +17,7 @@ const uint16_t PH_PIN = 49;
 
 GodmodeState *state = GODMODE();
 TankController *tc = TankController::instance();
-ThermalProbe_TC *tempProbe = ThermalProbe_TC::instance();
+ThermalProbe_TC *thermalProbe = ThermalProbe_TC::instance();
 TemperatureControl *tempControl = TemperatureControl::instance();
 PHProbe *pHProbe = PHProbe::instance();
 PHControl *pPHControl = PHControl::instance();
@@ -30,7 +30,7 @@ unittest_setup() {
   EEPROM_TC::instance()->setTankID(42);
 
   // set temperature
-  tempProbe->setTemperature(16.75, true);
+  thermalProbe->setTemperature(16.75, true);
 
   // set target temperature
   tempControl->setTargetTemperature(16.25);
@@ -56,7 +56,7 @@ unittest_teardown() {
 unittest(basicOperation) {
   // verify startup state, including that solonoids are off
   delay(1000);
-  float avgTemp = static_cast<int16_t>((tempProbe->getRunningAverage() * 100.0 + 0.5)) / 100.0;
+  float avgTemp = static_cast<int16_t>((thermalProbe->getRunningAverage() * 100.0 + 0.5)) / 100.0;
   assertEqual(16.75, avgTemp);
   assertEqual(7.125, pHProbe->getPh());
   tc->loop(false);

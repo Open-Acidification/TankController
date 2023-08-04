@@ -11,15 +11,15 @@
 unittest(test) {
   GodmodeState* state = GODMODE();
   // with no correction, we have a temperature of 10.0
-  ThermalProbe_TC* tempProbe = ThermalProbe_TC::instance();
-  tempProbe->setTemperature(10.0, true, false);
+  ThermalProbe_TC* thermalProbe = ThermalProbe_TC::instance();
+  thermalProbe->setTemperature(10.0, true, false);
   assertEqual(0.0, EEPROM_TC::instance()->getCorrectedTemp());
   for (size_t i = 0; i < 100; ++i) {
     delay(1000);
-    tempProbe->getRunningAverage();
+    thermalProbe->getRunningAverage();
   }
   delay(1000);
-  float temp = tempProbe->getRunningAverage();
+  float temp = thermalProbe->getRunningAverage();
   assertTrue(9.9 <= temp && temp <= 10.1);
 
   // set UI to TemperatureCalibration state
@@ -35,19 +35,19 @@ unittest(test) {
   assertEqual("Set temperature correction to 0.50\r\n", state->serialPort[0].dataOut);
 
   // The new temperature should be 10.5
-  temp = tempProbe->getRawTemperature();
+  temp = thermalProbe->getRawTemperature();
   assertTrue(9.9 <= temp && temp <= 10.1);
-  temp = tempProbe->getRunningAverage();
+  temp = thermalProbe->getRunningAverage();
   assertTrue(10.49 <= temp && temp <= 10.51);
 
   // A new measured temperature should also be adjusted
-  tempProbe->setTemperature(15.5, false, false);
+  thermalProbe->setTemperature(15.5, false, false);
   for (size_t i = 0; i < 100; ++i) {
     delay(1000);
-    tempProbe->getRunningAverage();
+    thermalProbe->getRunningAverage();
   }
   delay(1000);
-  temp = tempProbe->getRunningAverage();
+  temp = thermalProbe->getRunningAverage();
   assertTrue(15.9 <= temp && temp <= 16.1);
   temp = EEPROM_TC::instance()->getCorrectedTemp();
   assertTrue(0.49 < temp && temp < 0.51);
@@ -60,10 +60,10 @@ unittest(test) {
   test->setValue(16.0);
   for (size_t i = 0; i < 100; ++i) {
     delay(1000);
-    tempProbe->getRunningAverage();
+    thermalProbe->getRunningAverage();
   }
   delay(1000);
-  temp = tempProbe->getRunningAverage();
+  temp = thermalProbe->getRunningAverage();
   assertEqual(16.0, temp);
 }
 

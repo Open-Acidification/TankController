@@ -69,7 +69,7 @@
  * before reading again.
  *
  * How to use this ThermalProbe_TC class:
- * Call the constructor ThermalProbe_TC tempProbe = ThermalProbe_TC();
+ * Call the constructor ThermalProbe_TC thermalProbe = ThermalProbe_TC();
  * Since this class is build for Tank Controller class, it will automatically
  * set the device to a three wire thermocouple, set the pins that the tank
  * controller has delegated for it, and it has values for RTDnominal, and the

@@ -5,7 +5,7 @@
 #include "SetTempWithSine.h"
 
 #include "Devices/LiquidCrystal_TC.h"
-#include "Devices/TemperatureControl.h"
+#include "Devices/ThermalControl.h"
 
 SetTempWithSine::SetTempWithSine() : NumberCollectorState() {
   prompts[0] = F("Set T Set Point");
@@ -15,18 +15,18 @@ SetTempWithSine::SetTempWithSine() : NumberCollectorState() {
 
 float SetTempWithSine::getCurrentValue() {
   if (subState == 0) {
-    return TemperatureControl::instance()->getBaseTargetTemperature();
+    return ThermalControl::instance()->getBaseTargetTemperature();
   } else if (subState == 1) {
-    if (TemperatureControl::instance()->getTempSetType() ==
-        TemperatureControl::instance()->tempSetTypeTypes::SINE_TYPE) {
-      return TemperatureControl::instance()->getAmplitude();
+    if (ThermalControl::instance()->getTempSetType() ==
+        ThermalControl::instance()->tempSetTypeTypes::SINE_TYPE) {
+      return ThermalControl::instance()->getAmplitude();
     } else {
       return 0.000;
     }
   } else {
-    if (TemperatureControl::instance()->getTempSetType() ==
-        TemperatureControl::instance()->tempSetTypeTypes::SINE_TYPE) {
-      return TemperatureControl::instance()->getPeriod() / 3600;
+    if (ThermalControl::instance()->getTempSetType() ==
+        ThermalControl::instance()->tempSetTypeTypes::SINE_TYPE) {
+      return ThermalControl::instance()->getPeriod() / 3600;
     } else {
       return 0.0;
     }
@@ -39,8 +39,8 @@ void SetTempWithSine::setValue(float value) {
     clear();
     start();
   } else {
-    TemperatureControl::instance()->setTargetTemperature(values[0]);
-    TemperatureControl::instance()->setSine(values[1], values[2]);
+    ThermalControl::instance()->setTargetTemperature(values[0]);
+    ThermalControl::instance()->setSine(values[1], values[2]);
     char output0[17];
     char temp1[8];
     char temp2[9];

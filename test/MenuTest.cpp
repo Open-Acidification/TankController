@@ -4,7 +4,7 @@
 #include "DateTime_TC.h"
 #include "Devices/EEPROM_TC.h"
 #include "Devices/PHControl.h"
-#include "Devices/TemperatureControl.h"
+#include "Devices/ThermalControl.h"
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
 #include "MainMenu.h"
@@ -27,8 +27,8 @@ unittest_setup() {
   PHControl::instance()->setBaseTargetPh(8.100);
   EEPROM_TC::instance()->setPh(8.100);
   tc->setNextState(new MainMenu(), true);
-  TemperatureControl::enableHeater(true);
-  TemperatureControl::instance()->setTargetTemperature(15.75);
+  ThermalControl::enableHeater(true);
+  ThermalControl::instance()->setTargetTemperature(15.75);
   ThermalProbe_TC::instance()->setTemperature(12.25, true);
   tc->loop(false);  // recognize and apply the targets
   enterKey('D');

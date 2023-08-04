@@ -4,7 +4,7 @@
 #include "SetTempSetPoint.h"
 
 #include "Devices/LiquidCrystal_TC.h"
-#include "Devices/TemperatureControl.h"
+#include "Devices/ThermalControl.h"
 
 SetTempSetPoint::SetTempSetPoint() : NumberCollectorState() {
   prompts[0] = F("Set Temperature");
@@ -13,10 +13,10 @@ SetTempSetPoint::SetTempSetPoint() : NumberCollectorState() {
 
 float SetTempSetPoint::getCurrentValue() {
   if (subState == 0) {
-    return TemperatureControl::instance()->getBaseTargetTemperature();
+    return ThermalControl::instance()->getBaseTargetTemperature();
   } else {
-    uint32_t rampTimeStart = TemperatureControl::instance()->getRampTimeStart();
-    uint32_t rampTimeEnd = TemperatureControl::instance()->getRampTimeEnd();
+    uint32_t rampTimeStart = ThermalControl::instance()->getRampTimeStart();
+    uint32_t rampTimeEnd = ThermalControl::instance()->getRampTimeEnd();
     return (rampTimeEnd - rampTimeStart) / 3600;
   }
 }
@@ -27,8 +27,8 @@ void SetTempSetPoint::setValue(float value) {
     clear();
     start();
   } else {
-    TemperatureControl::instance()->setTargetTemperature(values[0]);
-    TemperatureControl::instance()->setRampDuration(values[1]);
+    ThermalControl::instance()->setTargetTemperature(values[0]);
+    ThermalControl::instance()->setRampDuration(values[1]);
     char output0[17];
     char output1[17];
     snprintf_P(output0, sizeof(output0), (PGM_P)F("New Temp=%i.%02i"), (int)values[0],

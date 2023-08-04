@@ -1,4 +1,4 @@
-#include "TemperatureControl.h"
+#include "ThermalControl.h"
 
 #include "Devices/DateTime_TC.h"
 #include "Devices/EEPROM_TC.h"
@@ -12,13 +12,13 @@ const float DEFAULT_TEMPERATURE = 20.0;
 /**
  * static variable for singleton
  */
-TemperatureControl *TemperatureControl::_instance = nullptr;
+ThermalControl *ThermalControl::_instance = nullptr;
 
 //  class methods
 /**
  * static member function to return singleton
  */
-TemperatureControl *TemperatureControl::instance() {
+ThermalControl *ThermalControl::instance() {
   if (!_instance) {
     if (EEPROM_TC::instance()->getHeat()) {
       _instance = new Heater();
@@ -29,29 +29,29 @@ TemperatureControl *TemperatureControl::instance() {
   return _instance;
 }
 
-void TemperatureControl::clearInstance() {
+void ThermalControl::clearInstance() {
   if (_instance) {
     delete _instance;
     _instance = nullptr;
   }
 }
 
-void TemperatureControl::enableHeater(bool flag) {
+void ThermalControl::enableHeater(bool flag) {
   EEPROM_TC::instance()->setHeat(flag);
   if (_instance && (_instance->isHeater() != flag)) {
     delete _instance;
     _instance = nullptr;
     char buffer[7];
     strscpy_P(buffer, (flag ? F("true)") : F("false)")), sizeof(buffer));
-    serial(F("TemperatureControl::enableHeater(%s"), buffer);
+    serial(F("ThermalControl::enableHeater(%s"), buffer);
   }
 }
 
 /**
  * protected constructor
  */
-TemperatureControl::TemperatureControl() {
-  COUT("TemperatureControl()");
+ThermalControl::ThermalControl() {
+  COUT("ThermalControl()");
   baseTargetTemperature = EEPROM_TC::instance()->getTemp();
   if (isnan(baseTargetTemperature)) {
     baseTargetTemperature = DEFAULT_TEMPERATURE;
@@ -92,7 +92,7 @@ TemperatureControl::TemperatureControl() {
   serial(F("%s starts with solenoid off with target temperature of %s C"), buffer1, buffer2);
 }
 
-void TemperatureControl::setRampDuration(float newTempRampDuration) {
+void ThermalControl::setRampDuration(float newTempRampDuration) {
   if (newTempRampDuration > 0) {
     float currentRampTime = rampTimeEnd - rampTimeStart;
     char buffer1[10];
@@ -117,7 +117,7 @@ void TemperatureControl::setRampDuration(float newTempRampDuration) {
   }
 }
 
-void TemperatureControl::setSine(float sineAmplitude, float sinePeriodInHours) {
+void ThermalControl::setSine(float sineAmplitude, float sinePeriodInHours) {
   period = (sinePeriodInHours * 3600);
   amplitude = sineAmplitude;
   tempSetType = tempSetTypeTypes::SINE_TYPE;
@@ -131,18 +131,18 @@ void TemperatureControl::setSine(float sineAmplitude, float sinePeriodInHours) {
 /**
  * is heater
  */
-bool TemperatureControl::isHeater() {
+bool ThermalControl::isHeater() {
   return true;
 }
 
-bool TemperatureControl::isOn() {
+bool ThermalControl::isOn() {
   return digitalRead(TEMP_CONTROL_PIN) == TURN_SOLENOID_ON;
 }
 
 /**
  * set target temperature and save in EEPROM
  */
-void TemperatureControl::setTargetTemperature(float newTemperature) {
+void ThermalControl::setTargetTemperature(float newTemperature) {
   if (baseTargetTemperature != newTemperature) {
     char buffer1[10];
     char buffer2[10];

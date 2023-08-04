@@ -2,7 +2,7 @@
 #include <ArduinoUnitTests.h>
 
 #include "Devices/LiquidCrystal_TC.h"
-#include "Devices/TemperatureControl.h"
+#include "Devices/ThermalControl.h"
 #include "EEPROM_TC.h"
 #include "SetTempWithSine.h"
 #include "TC_util.h"
@@ -17,12 +17,12 @@ unittest(test) {
   EEPROM_TC::instance()->setTemp(20.00);
   TankController* tc = TankController::instance();  // instantiate after setting eeprom stuff
   assertEqual(20.00, EEPROM_TC::instance()->getTemp());
-  assertEqual(20.00, TemperatureControl::instance()->getBaseTargetTemperature());
+  assertEqual(20.00, ThermalControl::instance()->getBaseTargetTemperature());
   SetTempWithSine* test = new SetTempWithSine();
   tc->setNextState(test, true);
 
-  assertEqual(EEPROM_TC::instance()->getTempSetType(), TemperatureControl::instance()->tempSetTypeTypes::FLAT_TYPE);
-  assertEqual(20, TemperatureControl::instance()->getBaseTargetTemperature());
+  assertEqual(EEPROM_TC::instance()->getTempSetType(), ThermalControl::instance()->tempSetTypeTypes::FLAT_TYPE);
+  assertEqual(20, ThermalControl::instance()->getBaseTargetTemperature());
 
   // get currently displayed lines
   std::vector<String> lines = lcd->getLines();
@@ -49,9 +49,9 @@ unittest(test) {
 
   // during the delay we showed the new value
   lines = lcd->getLines();
-  assertEqual(25, TemperatureControl::instance()->getBaseTargetTemperature());
+  assertEqual(25, ThermalControl::instance()->getBaseTargetTemperature());
   assertEqual(25, EEPROM_TC::instance()->getTemp());
-  assertEqual(TemperatureControl::instance()->tempSetTypeTypes::SINE_TYPE, EEPROM_TC::instance()->getTempSetType());
+  assertEqual(ThermalControl::instance()->tempSetTypeTypes::SINE_TYPE, EEPROM_TC::instance()->getTempSetType());
 
   assertEqual("New Temp=25.00  ", lines[0]);
   assertEqual("A=2.12 P=1.500  ", lines[1]);

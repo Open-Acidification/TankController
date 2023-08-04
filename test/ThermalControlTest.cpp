@@ -9,13 +9,13 @@
 #include "PHCalibrationMid.h"
 #include "Serial_TC.h"
 #include "TankController.h"
+#include "ThermalControl.h"
 #include "ThermalProbe_TC.h"
-#include "TemperatureControl.h"
 /**
  * These tests test the UpdateControl virtual function for the heater and chiller subclass and
  * checks to see whether the heater or chiller should be in an on state or an off state.
  * The following command lets you skip all the other tests and only run these tests
- * bundle exec arduino_ci.rb --skip-examples-compilation --testfile-select=TemperatureControlTest.cpp
+ * bundle exec arduino_ci.rb --skip-examples-compilation --testfile-select=ThermalControlTest.cpp
  */
 
 const uint16_t TEMP_CONTROL_PIN = 47;
@@ -24,7 +24,7 @@ GodmodeState* state = GODMODE();
 TankController* tc = TankController::instance();
 LiquidCrystal_TC* lc = LiquidCrystal_TC::instance();
 ThermalProbe_TC* thermalProbe = ThermalProbe_TC::instance();
-TemperatureControl* control;
+ThermalControl* control;
 
 unittest_setup() {
   state->resetClock();
@@ -39,8 +39,8 @@ unittest_teardown() {
 
 // Chiller
 unittest(BeforeIntervalAndWithinDelta) {
-  TemperatureControl::enableHeater(false);
-  control = TemperatureControl::instance();
+  ThermalControl::enableHeater(false);
+  control = ThermalControl::instance();
   control->setTargetTemperature(20);
   control->updateControl(20);
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
@@ -50,8 +50,8 @@ unittest(BeforeIntervalAndWithinDelta) {
 
 // Chiller
 unittest(BeforeIntervalAndOutsideDelta) {
-  TemperatureControl::enableHeater(false);
-  control = TemperatureControl::instance();
+  ThermalControl::enableHeater(false);
+  control = ThermalControl::instance();
   control->setTargetTemperature(20);
   control->updateControl(20);
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
@@ -61,8 +61,8 @@ unittest(BeforeIntervalAndOutsideDelta) {
 
 // Chiller
 unittest(AfterIntervalAndWithinDelta) {
-  TemperatureControl::enableHeater(false);
-  control = TemperatureControl::instance();
+  ThermalControl::enableHeater(false);
+  control = ThermalControl::instance();
   control->setTargetTemperature(20);
   control->updateControl(20);
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
@@ -76,8 +76,8 @@ unittest(AfterIntervalAndWithinDelta) {
  * \see unittest(disableChillerDuringCalibration)
  */
 unittest(AfterIntervalAndOutsideDelta) {
-  TemperatureControl::enableHeater(false);
-  control = TemperatureControl::instance();
+  ThermalControl::enableHeater(false);
+  control = ThermalControl::instance();
   control->setTargetTemperature(20);
   control->updateControl(20);
   DateTime_TC january(2021, 1, 15, 1, 48, 24);
@@ -109,8 +109,8 @@ unittest(AfterIntervalAndOutsideDelta) {
  * \see unittest(AfterIntervalAndOutsideDelta)
  */
 unittest(disableChillerDuringCalibration) {
-  TemperatureControl::enableHeater(false);
-  control = TemperatureControl::instance();
+  ThermalControl::enableHeater(false);
+  control = ThermalControl::instance();
   control->setTargetTemperature(20);
   control->updateControl(20);
   assertFalse(tc->isInCalibration());
@@ -127,8 +127,8 @@ unittest(disableChillerDuringCalibration) {
 
 // Heater
 unittest(WithinDelta) {
-  TemperatureControl::enableHeater(true);
-  control = TemperatureControl::instance();
+  ThermalControl::enableHeater(true);
+  control = ThermalControl::instance();
   control->setTargetTemperature(20);
   control->updateControl(20);
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_CONTROL_PIN]);
@@ -141,8 +141,8 @@ unittest(WithinDelta) {
  * \see unittest(disableHeaterDuringCalibration)
  */
 unittest(OutsideDelta) {
-  TemperatureControl::enableHeater(true);
-  control = TemperatureControl::instance();
+  ThermalControl::enableHeater(true);
+  control = ThermalControl::instance();
   control->setTargetTemperature(20);
   control->updateControl(20);
   // heater is initially off, then turns on
@@ -168,8 +168,8 @@ unittest(OutsideDelta) {
  * \see unittest(OutsideDelta)
  */
 unittest(disableHeaterDuringCalibration) {
-  TemperatureControl::enableHeater(true);
-  control = TemperatureControl::instance();
+  ThermalControl::enableHeater(true);
+  control = ThermalControl::instance();
   assertFalse(tc->isInCalibration());
   PHCalibrationMid* test = new PHCalibrationMid();
   tc->setNextState(test, true);
@@ -184,12 +184,12 @@ unittest(disableHeaterDuringCalibration) {
 
 unittest(RampGreaterThanZero) {
   float target = 0.0;
-  TemperatureControl::enableHeater(false);
-  control = TemperatureControl::instance();
+  ThermalControl::enableHeater(false);
+  control = ThermalControl::instance();
   assertFalse(control->isOn());
   control->setTargetTemperature(10);
   control->setRampDuration(1.5);
-  assertEqual(TemperatureControl::tempSetTypeTypes::RAMP_TYPE, control->getTempSetType());
+  assertEqual(ThermalControl::tempSetTypeTypes::RAMP_TYPE, control->getTempSetType());
   tc->loop(false);
   control->updateControl(thermalProbe->getRunningAverage());
   tc->loop(false);
@@ -201,8 +201,8 @@ unittest(RampGreaterThanZero) {
               dataLog->buffer);
   delay(31000);
   // mock arduino restarting
-  TemperatureControl::clearInstance();
-  control = TemperatureControl::instance();
+  ThermalControl::clearInstance();
+  control = ThermalControl::instance();
   // takes 1.5 hours to get to Temp of 7
   delay(1800000);  // delay 30 minutes
   tc->loop(false);
@@ -237,8 +237,8 @@ unittest(RampGreaterThanZero) {
   assertEqual("01/15/2021 04:18:55,   0, 20.01, 10.00, 0.000, 8.100, 9031, 100000.0,      0.0,      0.0",
               dataLog->buffer);
   delay(31000);
-  TemperatureControl::enableHeater(true);
-  control = TemperatureControl::instance();
+  ThermalControl::enableHeater(true);
+  control = ThermalControl::instance();
   assertFalse(control->isOn());
   control->setTargetTemperature(30);
   control->setRampDuration(1.5);
@@ -251,8 +251,8 @@ unittest(RampGreaterThanZero) {
   assertEqual("01/15/2021 04:19:26,   0, 20.01, 20.01, 0.000, 8.100, 9062, 100000.0,      0.0,      0.0",
               dataLog->buffer);
   // mock arduino restarting
-  TemperatureControl::clearInstance();
-  control = TemperatureControl::instance();
+  ThermalControl::clearInstance();
+  control = ThermalControl::instance();
   // takes 1.5 hours to get to Temp of 7
   delay(1800000);  // delay 30 minutes
   tc->loop(false);
@@ -286,8 +286,8 @@ unittest(RampGreaterThanZero) {
 }
 
 unittest(ChangeRampToZero) {
-  TemperatureControl::enableHeater(false);
-  control = TemperatureControl::instance();
+  ThermalControl::enableHeater(false);
+  control = ThermalControl::instance();
   assertFalse(control->isOn());
   control->setTargetTemperature(10);
   control->setRampDuration(1.5);
@@ -296,15 +296,15 @@ unittest(ChangeRampToZero) {
   control->setRampDuration(0);
   tc->loop(false);
   assertEqual(10, control->getCurrentTemperatureTarget());
-  TemperatureControl::enableHeater(true);
-  control = TemperatureControl::instance();
+  ThermalControl::enableHeater(true);
+  control = ThermalControl::instance();
   assertFalse(control->isOn());
   control->setTargetTemperature(30);
   control->setRampDuration(1.5);
   tc->loop(false);
   assertTrue(20 <= control->getCurrentTemperatureTarget() && control->getCurrentTemperatureTarget() <= 20.03);
   control->setRampDuration(0);
-  assertEqual(TemperatureControl::tempSetTypeTypes::FLAT_TYPE, control->getTempSetType());
+  assertEqual(ThermalControl::tempSetTypeTypes::FLAT_TYPE, control->getTempSetType());
   tc->loop(false);
   assertEqual(30, control->getCurrentTemperatureTarget());
   tc->loop(false);
@@ -312,17 +312,17 @@ unittest(ChangeRampToZero) {
 }
 
 unittest(sineTest) {
-  TemperatureControl::enableHeater(false);
-  control = TemperatureControl::instance();
+  ThermalControl::enableHeater(false);
+  control = ThermalControl::instance();
   assertFalse(control->isOn());
   control->setTargetTemperature(10);
   control->setSine(1.5, 2);
-  assertEqual(TemperatureControl::tempSetTypeTypes::SINE_TYPE, control->getTempSetType());
+  assertEqual(ThermalControl::tempSetTypeTypes::SINE_TYPE, control->getTempSetType());
   tc->loop(false);
   assertEqual(10, control->getCurrentTemperatureTarget());
   // mock arduino restarting
-  TemperatureControl::clearInstance();
-  control = TemperatureControl::instance();
+  ThermalControl::clearInstance();
+  control = ThermalControl::instance();
   delay(1800000);  // delay 30 minutes
   tc->loop(false);
   assertEqual(11.5, control->getCurrentTemperatureTarget());
@@ -348,17 +348,17 @@ unittest(sineTest) {
   delay(1800000);  // delay 30 minutes
   tc->loop(false);
   assertEqual(10, control->getCurrentTemperatureTarget());
-  TemperatureControl::enableHeater(true);
-  control = TemperatureControl::instance();
+  ThermalControl::enableHeater(true);
+  control = ThermalControl::instance();
   assertFalse(control->isOn());
   control->setTargetTemperature(30);
   control->setSine(1.5, 2);
-  assertEqual(TemperatureControl::tempSetTypeTypes::SINE_TYPE, control->getTempSetType());
+  assertEqual(ThermalControl::tempSetTypeTypes::SINE_TYPE, control->getTempSetType());
   tc->loop(false);
   assertEqual(30, control->getCurrentTemperatureTarget());
   // mock arduino restarting
-  TemperatureControl::clearInstance();
-  control = TemperatureControl::instance();
+  ThermalControl::clearInstance();
+  control = ThermalControl::instance();
   delay(1800000);  // delay 30 minutes
   tc->loop(false);
   assertEqual(31.5, control->getCurrentTemperatureTarget());

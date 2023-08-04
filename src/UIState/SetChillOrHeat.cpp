@@ -6,7 +6,7 @@
 
 #include "Devices/EEPROM_TC.h"
 #include "Devices/LiquidCrystal_TC.h"
-#include "Devices/TemperatureControl.h"
+#include "Devices/ThermalControl.h"
 
 float SetChillOrHeat::getCurrentValue() {
   return EEPROM_TC::instance()->getHeat() ? 9 : 1;
@@ -17,7 +17,7 @@ void SetChillOrHeat::setValue(float value) {
     LiquidCrystal_TC::instance()->writeLine(F("Invalid entry!"), 1);
   } else {
     bool isHeat = (uint16_t)value == 9;
-    TemperatureControl::instance()->enableHeater(isHeat);
+    ThermalControl::instance()->enableHeater(isHeat);
     if (isHeat) {
       LiquidCrystal_TC::instance()->writeLine(F("Use heater"), 1);
     } else {

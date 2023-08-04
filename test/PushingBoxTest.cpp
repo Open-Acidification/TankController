@@ -7,7 +7,7 @@
 #include "Devices/PHControl.h"
 #include "Devices/PushingBox.h"
 #include "Devices/ThermalProbe_TC.h"
-#include "Devices/TemperatureControl.h"
+#include "Devices/ThermalControl.h"
 #include "TankController.h"
 #include "UIState/PHCalibrationMid.h"
 
@@ -60,7 +60,7 @@ unittest(NoTankID) {
 
 unittest(SendData) {
   EEPROM_TC::instance()->setTankID(99);
-  TemperatureControl::instance()->setTargetTemperature(20.25);
+  ThermalControl::instance()->setTargetTemperature(20.25);
   thermalProbe->setTemperature(20.25, true);
   PHProbe::instance()->setPh(7.125);
   EthernetClient::startMockServer(pPushingBox->getServerDomain(), (uint32_t)0, 80,

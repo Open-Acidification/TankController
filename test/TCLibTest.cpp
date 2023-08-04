@@ -10,7 +10,7 @@
 #include "TC_util.h"
 #include "TankController.h"
 #include "ThermalProbe_TC.h"
-#include "TemperatureControl.h"
+#include "ThermalControl.h"
 
 const uint16_t TEMP_PIN = 47;
 const uint16_t PH_PIN = 49;
@@ -18,7 +18,7 @@ const uint16_t PH_PIN = 49;
 GodmodeState *state = GODMODE();
 TankController *tc = TankController::instance();
 ThermalProbe_TC *thermalProbe = ThermalProbe_TC::instance();
-TemperatureControl *tempControl = TemperatureControl::instance();
+ThermalControl *tempControl = ThermalControl::instance();
 PHProbe *pHProbe = PHProbe::instance();
 PHControl *pPHControl = PHControl::instance();
 SD_TC *sd = SD_TC::instance();

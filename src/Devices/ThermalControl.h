@@ -9,9 +9,9 @@
  * designated pins on the Arduino.
  */
 
-class TemperatureControl {
+class ThermalControl {
 private:
-  static TemperatureControl* _instance;
+  static ThermalControl* _instance;
 
 protected:
   const uint16_t TEMP_CONTROL_PIN = 47;
@@ -26,7 +26,7 @@ protected:
   uint32_t period;
   uint32_t sineStartTime;
   int tempSetType = FLAT_TYPE;
-  TemperatureControl();
+  ThermalControl();
 
 public:
   enum tempSetTypeTypes {
@@ -34,9 +34,9 @@ public:
     RAMP_TYPE,
     SINE_TYPE,
   };
-  virtual ~TemperatureControl() {
+  virtual ~ThermalControl() {
   }
-  static TemperatureControl* instance();
+  static ThermalControl* instance();
   static void clearInstance();
   static void enableHeater(bool flag);
   float getBaseTargetTemperature() {
@@ -68,22 +68,22 @@ public:
   virtual void updateControl(float currentTemperature) = 0;
 };
 
-class Heater : public TemperatureControl {
+class Heater : public ThermalControl {
 public:
-  Heater() : TemperatureControl(){};
+  Heater() : ThermalControl(){};
   bool isHeater() {
     return true;
   }
   void updateControl(float currentTemperature);
 };
 
-class Chiller : public TemperatureControl {
+class Chiller : public ThermalControl {
 private:
   const uint32_t TIME_INTERVAL = 30 * 1000UL;  // interval at which to change chiller state
   uint32_t previousMillis = 0;                 // will store last time chiller state was checked
 
 public:
-  Chiller() : TemperatureControl(){};
+  Chiller() : ThermalControl(){};
   bool isHeater() {
     return false;
   }

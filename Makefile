@@ -65,7 +65,7 @@ all : $(BIN)/BadPHCalibrationTest.cpp.bin $(BIN)/BlinkTest.cpp.bin $(BIN)/DateTi
   $(BIN)/SetTempCalibClearTest.cpp.bin $(BIN)/SetTempSetPointTest.cpp.bin $(BIN)/SetTempWithSineTest.cpp.bin \
   $(BIN)/SetTimeTest.cpp.bin $(BIN)/StringsTest.cpp.bin $(BIN)/TCLibTest.cpp.bin \
   $(BIN)/ThermalProbe_TCTest.cpp.bin $(BIN)/TemperatureCalibrationTest.cpp.bin \
-  $(BIN)/TemperatureControlTest.cpp.bin $(BIN)
+  $(BIN)/ThermalControlTest.cpp.bin $(BIN)
 
 GPP_TEST=g++ $(FLAGS) -L$(BIN) $(INCLUDE)
 
@@ -222,8 +222,8 @@ $(BIN)/ThermalProbe_TCTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/ThermalProbe_TC
 $(BIN)/TemperatureCalibrationTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/TemperatureCalibrationTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/TemperatureCalibrationTest.cpp.bin $(TEST)/TemperatureCalibrationTest.cpp -larduino
 
-$(BIN)/TemperatureControlTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/TemperatureControlTest.cpp $(HEADERS)
-	$(GPP_TEST) -o $(BIN)/TemperatureControlTest.cpp.bin $(TEST)/TemperatureControlTest.cpp -larduino
+$(BIN)/ThermalControlTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/ThermalControlTest.cpp $(HEADERS)
+	$(GPP_TEST) -o $(BIN)/ThermalControlTest.cpp.bin $(TEST)/ThermalControlTest.cpp -larduino
 
 BUSIO=$(BIN)/BusIO.o $(BIN)/I2CDevice.o $(BIN)/SPIDevice.o
 ETHERNET=$(BIN)/Dhcp.o $(BIN)/Dns.o $(BIN)/Ethernet.o $(BIN)/EthernetClient.o $(BIN)/EthernetClient_CI.o \
@@ -252,7 +252,7 @@ OBJECTS=$(BIN)/Arduino.o $(BIN)/Godmode.o $(BIN)/stdlib.o $(BIN)/ArduinoUnitTest
 	$(BIN)/JSONBuilder.o \
   $(BIN)/Keypad_TC.o $(BIN)/LiquidCrystal_TC.o $(BIN)/PHControl.o $(BIN)/PHProbe.o \
   $(BIN)/PID_TC.o $(BIN)/PushingBox.o $(BIN)/SD_TC.o $(BIN)/Serial_TC.o $(BIN)/ThermalProbe_TC.o \
-  $(BIN)/TemperatureControl.o $(BIN)/BadPHCalibration.o $(BIN)/CalibrationManagement.o $(BIN)/EnablePID.o $(BIN)/MainMenu.o \
+  $(BIN)/ThermalControl.o $(BIN)/BadPHCalibration.o $(BIN)/CalibrationManagement.o $(BIN)/EnablePID.o $(BIN)/MainMenu.o \
   $(BIN)/NumberCollectorState.o $(BIN)/PHCalibrationHigh.o $(BIN)/PHCalibrationLow.o \
   $(BIN)/PHCalibrationMid.o $(BIN)/PHCalibrationPrompt.o $(BIN)/SeeDeviceAddress.o \
 	$(BIN)/SeeDeviceUptime.o $(BIN)/SeeFreeMemory.o \
@@ -335,8 +335,8 @@ $(BIN)/Serial_TC.o: $(SRC)/Devices/Serial_TC.cpp $(HEADERS)
 $(BIN)/ThermalProbe_TC.o: $(SRC)/Devices/ThermalProbe_TC.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/ThermalProbe_TC.o $(SRC)/Devices/ThermalProbe_TC.cpp
 
-$(BIN)/TemperatureControl.o: $(SRC)/Devices/TemperatureControl.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/TemperatureControl.o $(SRC)/Devices/TemperatureControl.cpp
+$(BIN)/ThermalControl.o: $(SRC)/Devices/ThermalControl.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/ThermalControl.o $(SRC)/Devices/ThermalControl.cpp
 
 $(BIN)/BadPHCalibration.o: $(SRC)/UIState/BadPHCalibration.cpp  $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/BadPHCalibration.o $(SRC)/UIState/BadPHCalibration.cpp

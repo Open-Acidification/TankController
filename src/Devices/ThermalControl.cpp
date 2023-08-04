@@ -72,7 +72,7 @@ ThermalControl::ThermalControl() {
         EEPROM_TC::instance()->setThermalRampTimeStart(rampTimeStart);
       } else {
         rampTimeStart = EEPROM_TC::instance()->getThermalRampTimeStart();
-        rampStartingTemp = EEPROM_TC::instance()->getRampStartingTemp();
+        rampStartingTemp = EEPROM_TC::instance()->getThermalRampInitialValue();
       }
       break;
     case SINE_TYPE:

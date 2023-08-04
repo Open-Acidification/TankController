@@ -43,9 +43,9 @@ unittest(RampStartingPh) {
   assertNAN(singleton->getRampStartingPh());
   singleton->setRampStartingPh(4.125);
   assertEqual(4.125, singleton->getRampStartingPh());
-  assertNAN(singleton->getRampStartingTemp());
+  assertNAN(singleton->getThermalRampInitialValue());
   singleton->setRampStartingTemp(4.125);
-  assertEqual(4.125, singleton->getRampStartingTemp());
+  assertEqual(4.125, singleton->getThermalRampInitialValue());
 }
 
 unittest(RampTimeStart) {

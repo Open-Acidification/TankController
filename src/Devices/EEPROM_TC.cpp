@@ -130,13 +130,13 @@ float EEPROM_TC::getPhSineAmplitude() {
   return eepromReadFloat(PH_SINE_PERIOD_ADDRESS);
 }
 uint32_t EEPROM_TC::getThermalRampTimeStart() {
-  return eepromReadInt(RAMP_TIME_START_ADDRESS);
+  return eepromReadInt(THERMAL_RAMP_TIME_START_ADDRESS);
 }
 uint32_t EEPROM_TC::getThermalRampTimeEnd() {
-  return eepromReadInt(RAMP_TIME_END_ADDRESS);
+  return eepromReadInt(THERMAL_RAMP_TIME_END_ADDRESS);
 }
-float EEPROM_TC::getRampStartingTemp() {
-  return eepromReadFloat(RAMP_STARTING_TEMP_ADDRESS);
+float EEPROM_TC::getThermalRampInitialValue() {
+  return eepromReadFloat(THERMAL_RAMP_INITIAL_VALUE_ADDRESS);
 }
 uint32_t EEPROM_TC::getThermalSineStartTime() {
   return eepromReadInt(THERMAL_SINE_START_TIME_ADDRESS);
@@ -244,13 +244,13 @@ void EEPROM_TC::setPhSineAmplitude(float value) {
   eepromWriteFloat(PH_SINE_PERIOD_ADDRESS, value);
 }
 void EEPROM_TC::setThermalRampTimeStart(uint32_t value) {
-  eepromWriteInt(RAMP_TIME_START_ADDRESS, value);
+  eepromWriteInt(THERMAL_RAMP_TIME_START_ADDRESS, value);
 }
 void EEPROM_TC::setThermalRampTimeEnd(uint32_t value) {
-  eepromWriteInt(RAMP_TIME_END_ADDRESS, value);
+  eepromWriteInt(THERMAL_RAMP_TIME_END_ADDRESS, value);
 }
 void EEPROM_TC::setRampStartingTemp(float value) {
-  eepromWriteFloat(RAMP_STARTING_TEMP_ADDRESS, value);
+  eepromWriteFloat(THERMAL_RAMP_INITIAL_VALUE_ADDRESS, value);
 }
 void EEPROM_TC::setThermalSineStartTime(uint32_t value) {
   eepromWriteInt(THERMAL_SINE_START_TIME_ADDRESS, value);

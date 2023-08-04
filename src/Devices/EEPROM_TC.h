@@ -34,7 +34,7 @@ public:
   float getPhSineAmplitude();
   uint32_t getThermalRampTimeStart();
   uint32_t getThermalRampTimeEnd();
-  float getRampStartingTemp();
+  float getThermalRampInitialValue();
   float getPhDelay();          // not used
   float getPhInterval();       // not used
   float getPhSeriesPointer();  // not used
@@ -124,11 +124,11 @@ private:
   const uint16_t PH_SINE_START_TIME_ADDRESS = 116;
   const uint16_t RAMP_TIME_END_PH_ADDRESS = 120;
   const uint16_t PH_SINE_PERIOD_ADDRESS = 120;
-  const uint16_t RAMP_STARTING_TEMP_ADDRESS = 124;
+  const uint16_t THERMAL_RAMP_INITIAL_VALUE_ADDRESS = 124;
   const uint16_t THERMAL_SINE_AMPLITUDE_ADDRESS = 124;
-  const uint16_t RAMP_TIME_START_ADDRESS = 128;
+  const uint16_t THERMAL_RAMP_TIME_START_ADDRESS = 128;
   const uint16_t THERMAL_SINE_START_TIME_ADDRESS = 128;
-  const uint16_t RAMP_TIME_END_ADDRESS = 132;
+  const uint16_t THERMAL_RAMP_TIME_END_ADDRESS = 132;
   const uint16_t THERMAL_SINE_PERIOD_ADDRESS = 132;
   const uint16_t PH_FUNCTION_TYPE_ADDRESS = 136;
   const uint16_t THERMAL_FUNCTION_TYPE_ADDRESS = 140;

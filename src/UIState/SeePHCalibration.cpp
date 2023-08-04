@@ -8,8 +8,8 @@
 #include "Devices/PHProbe.h"
 #include "Devices/Serial_TC.h"
 #include "TC_util.h"
-#include "UIState/PHCalibrationWarning.h"
 #include "UIState/MainMenu.h"
+#include "UIState/PHCalibrationWarning.h"
 
 SeePHCalibration::SeePHCalibration(bool inCalibration) : UIState() {
   endTime = millis() + 60000;

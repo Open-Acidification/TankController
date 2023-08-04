@@ -6,8 +6,8 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHProbe.h"
 #include "TankController.h"
-#include "UIState/PHCalibrationWarning.h"
 #include "UIState/MainMenu.h"
+#include "UIState/PHCalibrationWarning.h"
 
 unittest(Display) {
   // Set up

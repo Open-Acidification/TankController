@@ -6,8 +6,8 @@
 #include "Devices/EthernetServer_TC.h"
 #include "Devices/PHControl.h"
 #include "Devices/PushingBox.h"
-#include "Devices/ThermalProbe_TC.h"
 #include "Devices/ThermalControl.h"
+#include "Devices/ThermalProbe_TC.h"
 #include "TankController.h"
 #include "UIState/PHCalibrationMid.h"
 

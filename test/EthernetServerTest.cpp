@@ -7,8 +7,8 @@
 #include "Devices/PHControl.h"
 #include "Devices/PHProbe.h"
 #include "Devices/PID_TC.h"
-#include "Devices/ThermalProbe_TC.h"
 #include "Devices/ThermalControl.h"
+#include "Devices/ThermalProbe_TC.h"
 #include "SetTime.h"
 #include "TankController.h"
 #include "Version.h"
@@ -153,12 +153,12 @@ unittest(currentData) {
   // Fake DateTime
   DateTime_TC feb(2022, 2, 22, 20, 50, 00);
   feb.setAsCurrent();
-  PHProbe::instance()->setPh(8.125);                            // actual
-  PHProbe::instance()->setPhSlope();                            // actual
-  PHControl::instance()->setBaseTargetPh(8.25);                 // target
-  ThermalProbe_TC::instance()->setTemperature(21.25, true);        // actual
-  ThermalControl::instance()->setThermalTarget(21.75);  // target
-  TankController::instance()->loop(false);                      // for targets to take effect
+  PHProbe::instance()->setPh(8.125);                         // actual
+  PHProbe::instance()->setPhSlope();                         // actual
+  PHControl::instance()->setBaseTargetPh(8.25);              // target
+  ThermalProbe_TC::instance()->setTemperature(21.25, true);  // actual
+  ThermalControl::instance()->setThermalTarget(21.75);       // target
+  TankController::instance()->loop(false);                   // for targets to take effect
   PID_TC::instance()->setTunings(5000.5, 1234.46, 987.44);
 
   EthernetServer_TC* server = EthernetServer_TC::instance();

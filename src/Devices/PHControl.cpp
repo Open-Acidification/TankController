@@ -146,7 +146,7 @@ void PHControl::updateControl(float pH) {
     case RAMP_TYPE: {
       if (currentTime < rampTimeEnd) {
         currentTargetPh = rampInitialValue + ((currentTime - rampTimeStart) * (baseTargetPh - rampInitialValue) /
-                                            (rampTimeEnd - rampTimeStart));
+                                              (rampTimeEnd - rampTimeStart));
       } else {
         currentTargetPh = baseTargetPh;
       }

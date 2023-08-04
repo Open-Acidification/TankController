@@ -7,8 +7,8 @@
 #include "Devices/PHProbe.h"
 #include "Devices/PID_TC.h"
 #include "Devices/SD_TC.h"
-#include "Devices/ThermalProbe_TC.h"
 #include "Devices/ThermalControl.h"
+#include "Devices/ThermalProbe_TC.h"
 #include "TC_util.h"
 #include "TankController.h"
 
@@ -30,7 +30,7 @@ int JSONBuilder::buildCurrentValues() {
   while (temp_f && temp_f % 10 == 0) {
     temp_f /= 10;
   }
-  float target_temp = ThermalControl::instance()->getCurrentTemperatureTarget();
+  float target_temp = ThermalControl::instance()->getCurrentThermalTarget();
   int target_temp_f = (target_temp - (int)target_temp) * 1000 + 0.5;
   while (target_temp_f && target_temp_f % 10 == 0) {
     target_temp_f /= 10;

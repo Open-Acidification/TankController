@@ -4,7 +4,7 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/ThermalControl.h"
 #include "EEPROM_TC.h"
-#include "SetTempSetPoint.h"
+#include "SetThermalTarget.h"
 #include "TankController.h"
 
 unittest(test) {
@@ -13,15 +13,14 @@ unittest(test) {
   EEPROM_TC::instance()->setTempRampTimeEnd(0);
   EEPROM_TC::instance()->setTempRampTimeStart(0);
   TankController* tc = TankController::instance();  // instantiate after setting eeprom stuff
-  assertEqual(ThermalControl::instance()->tempSetTypeTypes::FLAT_TYPE,
-              ThermalControl::instance()->getTempSetType());
+  assertEqual(ThermalControl::instance()->tempSetTypeTypes::FLAT_TYPE, ThermalControl::instance()->getTempSetType());
   assertEqual(20.00, EEPROM_TC::instance()->getTemp());
   assertEqual(0, 20.00 - EEPROM_TC::instance()->getTemp());
-  assertEqual(20.00, ThermalControl::instance()->getBaseTargetTemperature());
+  assertEqual(20.00, ThermalControl::instance()->getBaseThermalTarget());
   assertEqual(0, EEPROM_TC::instance()->getTempRampTimeEnd());
   assertEqual(0, EEPROM_TC::instance()->getTempRampTimeStart());
   assertEqual("MainMenu", tc->stateName());
-  SetTempSetPoint* test = new SetTempSetPoint();
+  SetThermalTarget* test = new SetThermalTarget();
   tc->setNextState(test, true);
 
   // get currently displayed lines
@@ -45,15 +44,14 @@ unittest(test) {
 
   // during the delay we showed the new value
   lines = lcd->getLines();
-  assertEqual(50.25, ThermalControl::instance()->getBaseTargetTemperature());
-  assertEqual(ThermalControl::instance()->tempSetTypeTypes::RAMP_TYPE,
-              ThermalControl::instance()->getTempSetType());
+  assertEqual(50.25, ThermalControl::instance()->getBaseThermalTarget());
+  assertEqual(ThermalControl::instance()->tempSetTypeTypes::RAMP_TYPE, ThermalControl::instance()->getTempSetType());
   assertEqual(50.25, EEPROM_TC::instance()->getTemp());
 
   // during the delay we showed the new value
   assertEqual("New Temp=50.25  ", lines[0]);
   assertEqual("New ramp=4.125  ", lines[1]);
-  assertEqual("SetTempSetPoint", tc->stateName());
+  assertEqual("SetThermalTarget", tc->stateName());
   tc->loop(false);  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(3000);

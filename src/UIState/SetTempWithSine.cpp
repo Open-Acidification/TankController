@@ -15,7 +15,7 @@ SetTempWithSine::SetTempWithSine() : NumberCollectorState() {
 
 float SetTempWithSine::getCurrentValue() {
   if (subState == 0) {
-    return ThermalControl::instance()->getBaseTargetTemperature();
+    return ThermalControl::instance()->getBaseThermalTarget();
   } else if (subState == 1) {
     if (ThermalControl::instance()->getTempSetType() ==
         ThermalControl::instance()->tempSetTypeTypes::SINE_TYPE) {

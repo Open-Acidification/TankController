@@ -1,19 +1,19 @@
 /**
  * SetTemperatureSetPoint.cpp
  */
-#include "SetTempSetPoint.h"
+#include "SetThermalTarget.h"
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/ThermalControl.h"
 
-SetTempSetPoint::SetTempSetPoint() : NumberCollectorState() {
+SetThermalTarget::SetThermalTarget() : NumberCollectorState() {
   prompts[0] = F("Set Temperature");
   prompts[1] = F("Set ramp hours:");
 }
 
-float SetTempSetPoint::getCurrentValue() {
+float SetThermalTarget::getCurrentValue() {
   if (subState == 0) {
-    return ThermalControl::instance()->getBaseTargetTemperature();
+    return ThermalControl::instance()->getBaseThermalTarget();
   } else {
     uint32_t rampTimeStart = ThermalControl::instance()->getRampTimeStart();
     uint32_t rampTimeEnd = ThermalControl::instance()->getRampTimeEnd();
@@ -21,7 +21,7 @@ float SetTempSetPoint::getCurrentValue() {
   }
 }
 
-void SetTempSetPoint::setValue(float value) {
+void SetThermalTarget::setValue(float value) {
   values[subState++] = value;
   if (subState < NUM_VALUES) {
     clear();

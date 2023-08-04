@@ -1,5 +1,5 @@
 /**
- * SetTempSetPoint.h
+ * SetThermalTarget.h
  *
  * Set the target Temperature
  */
@@ -7,11 +7,11 @@
 #include "Devices/EEPROM_TC.h"
 #include "NumberCollectorState.h"
 
-class SetTempSetPoint : public NumberCollectorState {
+class SetThermalTarget : public NumberCollectorState {
 public:
-  SetTempSetPoint();
+  SetThermalTarget();
   const __FlashStringHelper* name() {
-    return F("SetTempSetPoint");
+    return F("SetThermalTarget");
   }
   float getCurrentValue();
   uint16_t getCurrentValuePrecision() {

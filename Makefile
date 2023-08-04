@@ -62,7 +62,7 @@ all : $(BIN)/BadPHCalibrationTest.cpp.bin $(BIN)/BlinkTest.cpp.bin $(BIN)/DateTi
   $(BIN)/SetChillOrHeatTest.cpp.bin $(BIN)/SetGoogleSheetIntervalTest.cpp.bin $(BIN)/SetKDTest.cpp.bin \
   $(BIN)/SetKITest.cpp.bin $(BIN)/SetKPTest.cpp.bin $(BIN)/SetPHCalibClearTest.cpp.bin \
   $(BIN)/SetPHSetPointTest.cpp.bin $(BIN)/SetPHWithSineTest.cpp.bin $(BIN)/SetTankIDTest.cpp.bin \
-  $(BIN)/SetTempCalibClearTest.cpp.bin $(BIN)/SetTempSetPointTest.cpp.bin $(BIN)/SetTempWithSineTest.cpp.bin \
+  $(BIN)/SetTempCalibClearTest.cpp.bin $(BIN)/SetThermalTargetTest.cpp.bin $(BIN)/SetTempWithSineTest.cpp.bin \
   $(BIN)/SetTimeTest.cpp.bin $(BIN)/StringsTest.cpp.bin $(BIN)/TCLibTest.cpp.bin \
   $(BIN)/ThermalProbe_TCTest.cpp.bin $(BIN)/ThermalCalibrationTest.cpp.bin \
   $(BIN)/ThermalControlTest.cpp.bin $(BIN)
@@ -201,8 +201,8 @@ $(BIN)/SetTankIDTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SetTankIDTest.cpp $(H
 $(BIN)/SetTempCalibClearTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SetTempCalibClearTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/SetTempCalibClearTest.cpp.bin $(TEST)/SetTempCalibClearTest.cpp -larduino
 
-$(BIN)/SetTempSetPointTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SetTempSetPointTest.cpp $(HEADERS)
-	$(GPP_TEST) -o $(BIN)/SetTempSetPointTest.cpp.bin $(TEST)/SetTempSetPointTest.cpp -larduino
+$(BIN)/SetThermalTargetTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SetThermalTargetTest.cpp $(HEADERS)
+	$(GPP_TEST) -o $(BIN)/SetThermalTargetTest.cpp.bin $(TEST)/SetThermalTargetTest.cpp -larduino
 
 $(BIN)/SetTempWithSineTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SetTempWithSineTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/SetTempWithSineTest.cpp.bin $(TEST)/SetTempWithSineTest.cpp -larduino
@@ -261,7 +261,7 @@ OBJECTS=$(BIN)/Arduino.o $(BIN)/Godmode.o $(BIN)/stdlib.o $(BIN)/ArduinoUnitTest
   $(BIN)/SeePh.o $(BIN)/SeeTankID.o $(BIN)/SeeThermalCorrection.o $(BIN)/SeeVersion.o \
   $(BIN)/SetChillOrHeat.o $(BIN)/SetGoogleSheetInterval.o $(BIN)/SetKD.o $(BIN)/SetKI.o \
   $(BIN)/SetKP.o $(BIN)/SetPHCalibClear.o $(BIN)/SetPHSetPoint.o $(BIN)/SetPHWithSine.o \
-  $(BIN)/SetTankID.o $(BIN)/SetTempCalibClear.o $(BIN)/SetTempSetPoint.o $(BIN)/SetTempWithSine.o \
+  $(BIN)/SetTankID.o $(BIN)/SetTempCalibClear.o $(BIN)/SetThermalTarget.o $(BIN)/SetTempWithSine.o \
   $(BIN)/SetTime.o $(BIN)/ThermalCalibration.o $(BIN)/UIState.o $(BIN)/Wait.o \
 	$(BUSIO) $(LCD) $(MAX31865) $(BIN)/PID.o $(ETHERNET) $(RTC) $(KEYPAD) $(SDFAT)
 
@@ -428,8 +428,8 @@ $(BIN)/SetTankID.o: $(SRC)/UIState/SetTankID.cpp $(HEADERS)
 $(BIN)/SetTempCalibClear.o: $(SRC)/UIState/SetTempCalibClear.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SetTempCalibClear.o $(SRC)/UIState/SetTempCalibClear.cpp
 
-$(BIN)/SetTempSetPoint.o: $(SRC)/UIState/SetTempSetPoint.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SetTempSetPoint.o $(SRC)/UIState/SetTempSetPoint.cpp
+$(BIN)/SetThermalTarget.o: $(SRC)/UIState/SetThermalTarget.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SetThermalTarget.o $(SRC)/UIState/SetThermalTarget.cpp
 
 $(BIN)/SetTempWithSine.o: $(SRC)/UIState/SetTempWithSine.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SetTempWithSine.o $(SRC)/UIState/SetTempWithSine.cpp

@@ -52,10 +52,10 @@ void ThermalControl::enableHeater(bool flag) {
  */
 ThermalControl::ThermalControl() {
   COUT("ThermalControl()");
-  baseTargetTemperature = EEPROM_TC::instance()->getTemp();
-  if (isnan(baseTargetTemperature)) {
-    baseTargetTemperature = DEFAULT_TEMPERATURE;
-    EEPROM_TC::instance()->setTemp(baseTargetTemperature);
+  baseThermalTarget = EEPROM_TC::instance()->getTemp();
+  if (isnan(baseThermalTarget)) {
+    baseThermalTarget = DEFAULT_TEMPERATURE;
+    EEPROM_TC::instance()->setTemp(baseThermalTarget);
   }
   tempSetType = EEPROM_TC::instance()->getTempSetType();
   if (tempSetType == 0xFFFFFFFF) {
@@ -88,7 +88,7 @@ ThermalControl::ThermalControl() {
   char buffer1[8];
   char buffer2[10];
   strscpy_P(buffer1, (this->isHeater() ? F("Heater") : F("Chiller")), sizeof(buffer1));
-  floattostrf(baseTargetTemperature, 5, 2, buffer2, sizeof(buffer2));
+  floattostrf(baseThermalTarget, 5, 2, buffer2, sizeof(buffer2));
   serial(F("%s starts with solenoid off with target temperature of %s C"), buffer1, buffer2);
 }
 
@@ -143,14 +143,14 @@ bool ThermalControl::isOn() {
  * set target temperature and save in EEPROM
  */
 void ThermalControl::setTargetTemperature(float newTemperature) {
-  if (baseTargetTemperature != newTemperature) {
+  if (baseThermalTarget != newTemperature) {
     char buffer1[10];
     char buffer2[10];
-    floattostrf(baseTargetTemperature, 5, 2, buffer1, sizeof(buffer1));
+    floattostrf(baseThermalTarget, 5, 2, buffer1, sizeof(buffer1));
     floattostrf(newTemperature, 5, 2, buffer2, sizeof(buffer2));
     serial(F("change target temperature from %s to %s"), buffer1, buffer2);
     EEPROM_TC::instance()->setTemp(newTemperature);
-    baseTargetTemperature = newTemperature;
+    baseThermalTarget = newTemperature;
   }
 }
 
@@ -160,16 +160,16 @@ void Chiller::updateControl(float currentTemperature) {
   uint32_t currentTime = DateTime_TC::now().secondstime();
   switch (tempSetType) {
     case FLAT_TYPE: {
-      currentTemperatureTarget = baseTargetTemperature;
+      currentThermalTarget = baseThermalTarget;
       break;
     }
     case RAMP_TYPE: {
       if (currentTime < rampTimeEnd) {
-        currentTemperatureTarget =
-            rampStartingTemp + ((currentTime - rampTimeStart) * (baseTargetTemperature - rampStartingTemp) /
-                                (rampTimeEnd - rampTimeStart));
+        currentThermalTarget =
+            rampStartingTemp +
+            ((currentTime - rampTimeStart) * (baseThermalTarget - rampStartingTemp) / (rampTimeEnd - rampTimeStart));
       } else {
-        currentTemperatureTarget = baseTargetTemperature;
+        currentThermalTarget = baseThermalTarget;
       }
       break;
     }
@@ -183,8 +183,8 @@ void Chiller::updateControl(float currentTemperature) {
       float timeLeftTillPeriodEnd = sineEndTime - currentTime;
       float percentNOTThroughPeriod = timeLeftTillPeriodEnd / period;
       float percentThroughPeriod = 1 - percentNOTThroughPeriod;
-      float x = percentThroughPeriod * (2 * PI);                              // the x position for our sine wave
-      currentTemperatureTarget = amplitude * sin(x) + baseTargetTemperature;  // y position in our sine wave
+      float x = percentThroughPeriod * (2 * PI);                      // the x position for our sine wave
+      currentThermalTarget = amplitude * sin(x) + baseThermalTarget;  // y position in our sine wave
       break;
     }
     default:
@@ -208,12 +208,12 @@ void Chiller::updateControl(float currentTemperature) {
       COUT("Chiller should be off");
     }
     // if the observed temperature is above the set-point range turn on the chiller
-    else if (currentTemperature >= currentTemperatureTarget + DELTA) {
+    else if (currentTemperature >= currentThermalTarget + DELTA) {
       newValue = TURN_SOLENOID_ON;
       COUT("Chiller should be on");
     }
     // if the observed temperature is below the set-point range turn off the chiller
-    else if (currentTemperature <= currentTemperatureTarget - DELTA) {
+    else if (currentTemperature <= currentThermalTarget - DELTA) {
       newValue = TURN_SOLENOID_OFF;
       COUT("Chiller should be off");
     } else {
@@ -233,16 +233,16 @@ void Heater::updateControl(float currentTemperature) {
   uint32_t currentTime = DateTime_TC::now().secondstime();
   switch (tempSetType) {
     case FLAT_TYPE: {
-      currentTemperatureTarget = baseTargetTemperature;
+      currentThermalTarget = baseThermalTarget;
       break;
     }
     case RAMP_TYPE: {
       if (currentTime < rampTimeEnd) {
-        currentTemperatureTarget =
-            rampStartingTemp + ((currentTime - rampTimeStart) * (baseTargetTemperature - rampStartingTemp) /
-                                (rampTimeEnd - rampTimeStart));
+        currentThermalTarget =
+            rampStartingTemp +
+            ((currentTime - rampTimeStart) * (baseThermalTarget - rampStartingTemp) / (rampTimeEnd - rampTimeStart));
       } else {
-        currentTemperatureTarget = baseTargetTemperature;
+        currentThermalTarget = baseThermalTarget;
       }
       break;
     }
@@ -256,8 +256,8 @@ void Heater::updateControl(float currentTemperature) {
       float timeLeftTillPeriodEnd = sineEndTime - currentTime;
       float percentNOTThroughPeriod = timeLeftTillPeriodEnd / period;
       float percentThroughPeriod = 1 - percentNOTThroughPeriod;
-      float x = percentThroughPeriod * (2 * PI);                              // the x position for our sine wave
-      currentTemperatureTarget = amplitude * sin(x) + baseTargetTemperature;  // y position in our sine wave
+      float x = percentThroughPeriod * (2 * PI);                      // the x position for our sine wave
+      currentThermalTarget = amplitude * sin(x) + baseThermalTarget;  // y position in our sine wave
       break;
     }
     default:
@@ -271,11 +271,11 @@ void Heater::updateControl(float currentTemperature) {
     newValue = TURN_SOLENOID_OFF;
   }
   // if the observed temperature is below the temperature set-point range turn on the heater
-  else if (currentTemperature <= currentTemperatureTarget - DELTA) {
+  else if (currentTemperature <= currentThermalTarget - DELTA) {
     newValue = TURN_SOLENOID_ON;
   }
   // if the observed temperature is above the temperature set-point range turn off the heater
-  else if (currentTemperature >= currentTemperatureTarget + DELTA) {
+  else if (currentTemperature >= currentThermalTarget + DELTA) {
     newValue = TURN_SOLENOID_OFF;
   } else {
     newValue = oldValue;

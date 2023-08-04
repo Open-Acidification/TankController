@@ -29,8 +29,8 @@
 #include "SetPHWithSine.h"
 #include "SetTankID.h"
 #include "SetTempCalibClear.h"
-#include "SetTempSetPoint.h"
 #include "SetTempWithSine.h"
+#include "SetThermalTarget.h"
 #include "SetTime.h"
 #include "ThermalCalibration.h"
 
@@ -73,7 +73,7 @@ void MainMenu::handleKey(char key) {
       this->setNextState(new SetPHSetPoint());
       break;
     case 'B':  // Set Temperature set_point
-      this->setNextState(new SetTempSetPoint());
+      this->setNextState(new SetThermalTarget());
       break;
     case 'D':  // Reset
       level1 = 0;
@@ -224,7 +224,7 @@ void MainMenu::selectSet() {
       this->setNextState(new ThermalCalibration());
       break;
     case SET_TEMPERATURE:
-      this->setNextState(new SetTempSetPoint());
+      this->setNextState(new SetThermalTarget());
       break;
     case SET_TIME:
       this->setNextState(new SetTime());
@@ -278,7 +278,7 @@ void MainMenu::idle() {
   output[7] = ' ';
   output[8] = status;
   output[9] = ' ';
-  floattostrf(tempControl->getCurrentTemperatureTarget(), 5, 2, buffer, sizeof(buffer));
+  floattostrf(tempControl->getCurrentThermalTarget(), 5, 2, buffer, sizeof(buffer));
   memcpy(output + 10, buffer, sizeof(buffer));
   LiquidCrystal_TC::instance()->writeLine(output, 1);
 }

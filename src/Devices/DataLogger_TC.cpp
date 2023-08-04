@@ -7,8 +7,8 @@
 #include "Devices/PID_TC.h"
 #include "Devices/SD_TC.h"
 #include "Devices/Serial_TC.h"
-#include "Devices/ThermalProbe_TC.h"
 #include "Devices/ThermalControl.h"
+#include "Devices/ThermalProbe_TC.h"
 #include "TankController.h"
 
 // class variables
@@ -65,7 +65,7 @@ void DataLogger_TC::writeToSD() {
   char kp[12];
   char ki[12];
   char kd[12];
-  floattostrf(ThermalControl::instance()->getCurrentTemperatureTarget(), 4, 2, targetTemp, sizeof(targetTemp));
+  floattostrf(ThermalControl::instance()->getCurrentThermalTarget(), 4, 2, targetTemp, sizeof(targetTemp));
   floattostrf(PHControl::instance()->getCurrentTargetPh(), 5, 3, targetPh, sizeof(targetPh));
   floattostrf(pPID->getKp(), 8, 1, kp, sizeof(kp));
   floattostrf(pPID->getKi(), 8, 1, ki, sizeof(ki));

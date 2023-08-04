@@ -17,8 +17,8 @@ protected:
   const uint16_t TEMP_CONTROL_PIN = 47;
   const float DELTA = 0.05;
   uint32_t lastSwitchMS = 0;
-  float baseTargetTemperature;     // base target
-  float currentTemperatureTarget;  // current target (ramp, sine, arbitrary path)
+  float baseThermalTarget;     // base target
+  float currentThermalTarget;  // current target (ramp, sine, arbitrary path)
   float rampStartingTemp;
   uint32_t rampTimeStart;
   uint32_t rampTimeEnd;
@@ -39,11 +39,11 @@ public:
   static ThermalControl* instance();
   static void clearInstance();
   static void enableHeater(bool flag);
-  float getBaseTargetTemperature() {
-    return baseTargetTemperature;
+  float getBaseThermalTarget() {
+    return baseThermalTarget;
   }
-  float getCurrentTemperatureTarget() {
-    return currentTemperatureTarget;
+  float getCurrentThermalTarget() {
+    return currentThermalTarget;
   }
   int getTempSetType() {
     return tempSetType;

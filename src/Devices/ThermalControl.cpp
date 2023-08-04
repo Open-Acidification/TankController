@@ -76,9 +76,9 @@ ThermalControl::ThermalControl() {
       }
       break;
     case SINE_TYPE:
-      period = EEPROM_TC::instance()->getTempSinePeriod();
-      amplitude = EEPROM_TC::instance()->getTempSineAmplitude();
-      sineStartTime = EEPROM_TC::instance()->getTempSineStartTime();
+      period = EEPROM_TC::instance()->getThermalSinePeriod();
+      amplitude = EEPROM_TC::instance()->getThermalSineAmplitude();
+      sineStartTime = EEPROM_TC::instance()->getThermalSineStartTime();
       break;
     default:
       break;
@@ -123,9 +123,9 @@ void ThermalControl::setSine(float sineAmplitude, float sinePeriodInHours) {
   thermalFunctionType = thermalFunctionTypes::SINE_TYPE;
   sineStartTime = DateTime_TC::now().secondstime();
   EEPROM_TC::instance()->setThermalFunctionType(thermalFunctionType);
-  EEPROM_TC::instance()->setTempSinePeriod(period);
-  EEPROM_TC::instance()->setTempSineAmplitude(amplitude);
-  EEPROM_TC::instance()->setTempSineStartTime(sineStartTime);
+  EEPROM_TC::instance()->setThermalSinePeriod(period);
+  EEPROM_TC::instance()->setThermalSineAmplitude(amplitude);
+  EEPROM_TC::instance()->setThermalSineStartTime(sineStartTime);
 }
 
 /**
@@ -178,7 +178,7 @@ void Chiller::updateControl(float currentTemperature) {
       if (currentTime >= sineEndTime) {
         sineStartTime = DateTime_TC::now().secondstime();
         sineEndTime = sineStartTime + period;
-        EEPROM_TC::instance()->setTempSineStartTime(sineStartTime);
+        EEPROM_TC::instance()->setThermalSineStartTime(sineStartTime);
       }
       float timeLeftTillPeriodEnd = sineEndTime - currentTime;
       float percentNOTThroughPeriod = timeLeftTillPeriodEnd / period;
@@ -251,7 +251,7 @@ void Heater::updateControl(float currentTemperature) {
       if (currentTime >= sineEndTime) {
         sineStartTime = DateTime_TC::now().secondstime();
         sineEndTime = sineStartTime + period;
-        EEPROM_TC::instance()->setTempSineStartTime(sineStartTime);
+        EEPROM_TC::instance()->setThermalSineStartTime(sineStartTime);
       }
       float timeLeftTillPeriodEnd = sineEndTime - currentTime;
       float percentNOTThroughPeriod = timeLeftTillPeriodEnd / period;

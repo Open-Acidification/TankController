@@ -92,18 +92,18 @@ unittest(SineAmplitude) {
   assertNAN(singleton->getPhSineAmplitude());
   singleton->setPhSineAmplitude(4);
   assertEqual(4, singleton->getPhSineAmplitude());
-  assertNAN(singleton->getTempSineAmplitude());
-  singleton->setTempSineAmplitude(4);
-  assertEqual(4, singleton->getTempSineAmplitude());
+  assertNAN(singleton->getThermalSineAmplitude());
+  singleton->setThermalSineAmplitude(4);
+  assertEqual(4, singleton->getThermalSineAmplitude());
 }
 unittest(SineStartTime) {
   EEPROM_TC* singleton = EEPROM_TC::instance();
   assertEqual(0xFFFFFFFF, singleton->getPhSineStartTime());
   singleton->setPhSineStartTime(123456789);
   assertEqual(123456789, singleton->getPhSineStartTime());
-  assertEqual(0xFFFFFFFF, singleton->getTempSineStartTime());
-  singleton->setTempSineStartTime(123456789);
-  assertEqual(123456789, singleton->getTempSineStartTime());
+  assertEqual(0xFFFFFFFF, singleton->getThermalSineStartTime());
+  singleton->setThermalSineStartTime(123456789);
+  assertEqual(123456789, singleton->getThermalSineStartTime());
 }
 
 unittest(SinePeriod) {
@@ -111,9 +111,9 @@ unittest(SinePeriod) {
   assertEqual(0xFFFFFFFF, singleton->getPhSinePeriod());
   singleton->setPhSinePeriod(987654321);
   assertEqual(987654321, singleton->getPhSinePeriod());
-  assertEqual(0xFFFFFFFF, singleton->getTempSinePeriod());
-  singleton->setTempSinePeriod(987654321);
-  assertEqual(987654321, singleton->getTempSinePeriod());
+  assertEqual(0xFFFFFFFF, singleton->getThermalSinePeriod());
+  singleton->setThermalSinePeriod(987654321);
+  assertEqual(987654321, singleton->getThermalSinePeriod());
 }
 unittest(TankID) {
   EEPROM_TC* singleton = EEPROM_TC::instance();

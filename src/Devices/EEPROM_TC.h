@@ -42,9 +42,9 @@ public:
   uint16_t getPHFunctionType();
   uint16_t getThermalFunctionType();
   uint16_t getTankID();  // unique tank identifier for reporting
-  uint32_t getTempSineStartTime();
-  uint32_t getTempSinePeriod();
-  float getTempSineAmplitude();
+  uint32_t getThermalSineStartTime();
+  uint32_t getThermalSinePeriod();
+  float getThermalSineAmplitude();
   float getTemp();               // target temperature
   float getTempDelay();          // not used
   float getTempInterval();       // not used
@@ -81,9 +81,9 @@ public:
   void setPHFunctionType(uint16_t value);
   void setThermalFunctionType(uint16_t value);
   void setTankID(uint16_t value);
-  void setTempSineStartTime(uint32_t value);
-  void setTempSinePeriod(uint32_t value);
-  void setTempSineAmplitude(float value);
+  void setThermalSineStartTime(uint32_t value);
+  void setThermalSinePeriod(uint32_t value);
+  void setThermalSineAmplitude(float value);
   void setTemp(float value);
   void setTempDelay(float value);
   void setTempInterval(float value);
@@ -125,11 +125,11 @@ private:
   const uint16_t RAMP_TIME_END_PH_ADDRESS = 120;
   const uint16_t PH_SINE_PERIOD_ADDRESS = 120;
   const uint16_t RAMP_STARTING_TEMP_ADDRESS = 124;
-  const uint16_t TEMP_SINE_AMPLITUDE_ADDRESS = 124;
+  const uint16_t THERMAL_SINE_AMPLITUDE_ADDRESS = 124;
   const uint16_t RAMP_TIME_START_ADDRESS = 128;
-  const uint16_t TEMP_SINE_START_TIME_ADDRESS = 128;
+  const uint16_t THERMAL_SINE_START_TIME_ADDRESS = 128;
   const uint16_t RAMP_TIME_END_ADDRESS = 132;
-  const uint16_t TEMP_SINE_PERIOD_ADDRESS = 132;
+  const uint16_t THERMAL_SINE_PERIOD_ADDRESS = 132;
   const uint16_t PH_FUNCTION_TYPE_ADDRESS = 136;
   const uint16_t THERMAL_FUNCTION_TYPE_ADDRESS = 140;
   // new with v23.8.1

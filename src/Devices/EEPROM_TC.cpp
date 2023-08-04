@@ -147,8 +147,8 @@ uint32_t EEPROM_TC::getTempSinePeriod() {
 float EEPROM_TC::getTempSineAmplitude() {
   return eepromReadFloat(TEMP_SINE_PERIOD_ADDRESS);
 }
-uint16_t EEPROM_TC::getPhSetType() {
-  return static_cast<uint16_t>(eepromReadFloat(PH_SET_TYPE_ADDRESS));
+uint16_t EEPROM_TC::getPHFunctionType() {
+  return static_cast<uint16_t>(eepromReadFloat(PH_FUNCTION_TYPE_ADDRESS));
 }
 uint16_t EEPROM_TC::getThermalFunctionType() {
   return static_cast<uint16_t>(eepromReadFloat(THERMAL_FUNCTION_TYPE_ADDRESS));
@@ -261,8 +261,8 @@ void EEPROM_TC::setTempSinePeriod(uint32_t value) {
 void EEPROM_TC::setTempSineAmplitude(float value) {
   eepromWriteFloat(TEMP_SINE_PERIOD_ADDRESS, value);
 }
-void EEPROM_TC::setPhSetType(uint16_t value) {
-  eepromWriteFloat(PH_SET_TYPE_ADDRESS, (float)value);
+void EEPROM_TC::setPHFunctionType(uint16_t value) {
+  eepromWriteFloat(PH_FUNCTION_TYPE_ADDRESS, (float)value);
 }
 void EEPROM_TC::setThermalFunctionType(uint16_t value) {
   eepromWriteFloat(THERMAL_FUNCTION_TYPE_ADDRESS, (float)value);

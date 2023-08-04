@@ -17,13 +17,13 @@ float SetPHWithSine::getCurrentValue() {
   if (subState == 0) {
     return PHControl::instance()->getBaseTargetPh();
   } else if (subState == 1) {
-    if (PHControl::instance()->getPhSetType() == PHControl::instance()->phSetTypeTypes::SINE_TYPE) {
+    if (PHControl::instance()->getPHFunctionType() == PHControl::instance()->pHFunctionTypes::SINE_TYPE) {
       return PHControl::instance()->getAmplitude();
     } else {
       return 0.000;
     }
   } else {
-    if (PHControl::instance()->getPhSetType() == PHControl::instance()->phSetTypeTypes::SINE_TYPE) {
+    if (PHControl::instance()->getPHFunctionType() == PHControl::instance()->pHFunctionTypes::SINE_TYPE) {
       return PHControl::instance()->getPeriod() / 3600;
     } else {
       return 0.0;

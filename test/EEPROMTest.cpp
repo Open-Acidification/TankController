@@ -75,11 +75,11 @@ unittest(Temp) {
   assertEqual(4, singleton->getTemp());
 }
 
-unittest(PhSetType) {
+unittest(PHFunctionType) {
   EEPROM_TC* singleton = EEPROM_TC::instance();
-  assertEqual(0, singleton->getPhSetType());
-  singleton->setPhSetType(5);
-  assertEqual(5, singleton->getPhSetType());
+  assertEqual(0, singleton->getPHFunctionType());
+  singleton->setPHFunctionType(5);
+  assertEqual(5, singleton->getPHFunctionType());
 }
 unittest(ThermalFunctionType) {
   EEPROM_TC* singleton = EEPROM_TC::instance();

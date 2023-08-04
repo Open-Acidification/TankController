@@ -39,7 +39,7 @@ public:
   float getPhInterval();       // not used
   float getPhSeriesPointer();  // not used
   float getPhSeriesSize();     // not used
-  uint16_t getPhSetType();
+  uint16_t getPHFunctionType();
   uint16_t getThermalFunctionType();
   uint16_t getTankID();  // unique tank identifier for reporting
   uint32_t getTempSineStartTime();
@@ -78,7 +78,7 @@ public:
   void setPhInterval(float value);
   void setPhSeriesPointer(float value);
   void setPhSeriesSize(float value);
-  void setPhSetType(uint16_t value);
+  void setPHFunctionType(uint16_t value);
   void setThermalFunctionType(uint16_t value);
   void setTankID(uint16_t value);
   void setTempSineStartTime(uint32_t value);
@@ -130,7 +130,7 @@ private:
   const uint16_t TEMP_SINE_START_TIME_ADDRESS = 128;
   const uint16_t RAMP_TIME_END_ADDRESS = 132;
   const uint16_t TEMP_SINE_PERIOD_ADDRESS = 132;
-  const uint16_t PH_SET_TYPE_ADDRESS = 136;
+  const uint16_t PH_FUNCTION_TYPE_ADDRESS = 136;
   const uint16_t THERMAL_FUNCTION_TYPE_ADDRESS = 140;
   // new with v23.8.1
   const uint16_t IGNORE_BAD_PH_SLOPE_ADDRESS = 144;

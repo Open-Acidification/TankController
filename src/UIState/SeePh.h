@@ -9,7 +9,7 @@
 
 class SeePh : public UIState {
 public:
-  enum phSetTypeTypes {
+  enum pHFunctionTypes {
     FLAT_TYPE,
     RAMP_TYPE,
     SINE_TYPE,
@@ -25,7 +25,7 @@ public:
 
 private:
   void loadHeader(uint16_t line);
-  void loadPhSetType(uint16_t line);
+  void loadPHFunctionType(uint16_t line);
   void loadTypeVariables(uint16_t line);
   void loadValues(uint16_t line);
 

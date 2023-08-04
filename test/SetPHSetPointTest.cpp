@@ -18,7 +18,7 @@ unittest(test_target_of_7_125_with_ramp_of_4_125) {
   EEPROM_TC::instance()->setPhRampTimeEnd(0);
   EEPROM_TC::instance()->setPhRampTimeStart(0);
   TankController* tc = TankController::instance();  // instantiate after setting eeprom stuff
-  assertEqual(PHControl::instance()->phSetTypeTypes::FLAT_TYPE, PHControl::instance()->getPhSetType());
+  assertEqual(PHControl::instance()->pHFunctionTypes::FLAT_TYPE, PHControl::instance()->getPHFunctionType());
   assertEqual(8.125, EEPROM_TC::instance()->getPh());
   assertEqual(0, 8.125 - EEPROM_TC::instance()->getPh());
   assertEqual(8.125, PHControl::instance()->getBaseTargetPh());
@@ -48,7 +48,7 @@ unittest(test_target_of_7_125_with_ramp_of_4_125) {
   lines = lcd->getLines();
   assertEqual(7.125, PHControl::instance()->getBaseTargetPh());
   assertEqual(7.125, EEPROM_TC::instance()->getPh());
-  assertEqual(PHControl::instance()->phSetTypeTypes::RAMP_TYPE, EEPROM_TC::instance()->getPhSetType());
+  assertEqual(PHControl::instance()->pHFunctionTypes::RAMP_TYPE, EEPROM_TC::instance()->getPHFunctionType());
 
   assertEqual("New pH=7.125    ", lines[0]);
   assertEqual("New ramp=4.125  ", lines[1]);
@@ -75,7 +75,7 @@ unittest(test_target_of_14_with_ramp_of_0) {
   // during the delay we showed the new value
   assertEqual(14, PHControl::instance()->getBaseTargetPh());
   assertEqual(14, EEPROM_TC::instance()->getPh());
-  assertEqual(PHControl::instance()->phSetTypeTypes::FLAT_TYPE, EEPROM_TC::instance()->getPhSetType());
+  assertEqual(PHControl::instance()->pHFunctionTypes::FLAT_TYPE, EEPROM_TC::instance()->getPHFunctionType());
   std::vector<String> lines = lcd->getLines();
   assertEqual("New pH=14.000   ", lines[0]);
   assertEqual("New ramp=0.000  ", lines[1]);

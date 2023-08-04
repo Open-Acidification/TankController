@@ -21,7 +21,7 @@ unittest(test) {
   SetPHWithSine* test = new SetPHWithSine();
   tc->setNextState(test, true);
 
-  assertEqual(EEPROM_TC::instance()->getPhSetType(), PHControl::instance()->phSetTypeTypes::FLAT_TYPE);
+  assertEqual(EEPROM_TC::instance()->getPHFunctionType(), PHControl::instance()->pHFunctionTypes::FLAT_TYPE);
   assertEqual(8.125, PHControl::instance()->getBaseTargetPh());
 
   // get currently displayed lines
@@ -51,7 +51,7 @@ unittest(test) {
   lines = lcd->getLines();
   assertEqual(7.125, PHControl::instance()->getBaseTargetPh());
   assertEqual(7.125, EEPROM_TC::instance()->getPh());
-  assertEqual(PHControl::instance()->phSetTypeTypes::SINE_TYPE, EEPROM_TC::instance()->getPhSetType());
+  assertEqual(PHControl::instance()->pHFunctionTypes::SINE_TYPE, EEPROM_TC::instance()->getPHFunctionType());
 
   assertEqual("New pH=7.125    ", lines[0]);
   assertEqual("A=2.125 P=1.500 ", lines[1]);

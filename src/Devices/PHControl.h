@@ -21,11 +21,11 @@ private:
   uint32_t sineStartTime;
   const uint16_t WINDOW_SIZE = 10000;  // 10 second Proportional output window (for PID)
   bool usePID = true;
-  int pHSetType = FLAT_TYPE;
+  int pHFunctionType = FLAT_TYPE;
   PHControl();
 
 public:
-  enum phSetTypeTypes {
+  enum pHFunctionTypes {
     FLAT_TYPE,
     RAMP_TYPE,
     SINE_TYPE,
@@ -38,17 +38,17 @@ public:
   float getCurrentTargetPh() {
     return currentTargetPh;
   }
-  int getPhSetType() {
-    return pHSetType;
+  int getPHFunctionType() {
+    return pHFunctionType;
   }
   float getAmplitude() {
     return amplitude;
   }
   uint32_t getPhRampTimeStart() {
-    return pHSetType == FLAT_TYPE ? 0 : rampTimeStart;
+    return pHFunctionType == FLAT_TYPE ? 0 : rampTimeStart;
   }
   uint32_t getPhRampTimeEnd() {
-    return pHSetType == FLAT_TYPE ? 0 : rampTimeEnd;
+    return pHFunctionType == FLAT_TYPE ? 0 : rampTimeEnd;
   }
   uint32_t getPeriod() {
     return period;

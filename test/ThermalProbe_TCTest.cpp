@@ -10,7 +10,7 @@ unittest_setup() {
 }
 
 unittest(readFromEepromOnStartup) {
-  EEPROM_TC::instance()->setCorrectedTemp(-1);
+  EEPROM_TC::instance()->setThermalCorrection(-1);
   ThermalProbe_TC* thermalProbe = ThermalProbe_TC::instance();
   thermalProbe->setTemperature(11.0, false);
   for (size_t i = 0; i < 100; ++i) {
@@ -24,7 +24,7 @@ unittest(readFromEepromOnStartup) {
 
 unittest(writeToEepromWhenCorrectionChanged) {
   ThermalProbe_TC::instance()->setCorrection(0.5);
-  assertEqual(0.5, EEPROM_TC::instance()->getCorrectedTemp());
+  assertEqual(0.5, EEPROM_TC::instance()->getThermalCorrection());
 }
 
 unittest(TempProbe_Test) {

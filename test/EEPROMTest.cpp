@@ -122,11 +122,11 @@ unittest(TankID) {
   assertEqual(5, singleton->getTankID());
 }
 
-unittest(CorrectedTemp) {
+unittest(ThermalCorrection) {
   EEPROM_TC* singleton = EEPROM_TC::instance();
-  assertNAN(singleton->getCorrectedTemp());
-  singleton->setCorrectedTemp(6);
-  assertEqual(6, singleton->getCorrectedTemp());
+  assertNAN(singleton->getThermalCorrection());
+  singleton->setThermalCorrection(6);
+  assertEqual(6, singleton->getThermalCorrection());
 }
 
 unittest(KP) {

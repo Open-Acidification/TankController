@@ -55,7 +55,7 @@ float eeprom(uint8_t index) {
     case 2:
       return EEPROM_TC::instance()->getTankID();
     case 3:
-      return EEPROM_TC::instance()->getCorrectedTemp();
+      return EEPROM_TC::instance()->getThermalCorrection();
     case 4:
       return EEPROM_TC::instance()->getKP();
     case 5:

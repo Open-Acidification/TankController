@@ -38,10 +38,10 @@ ThermalProbe_TC::ThermalProbe_TC() {
   thermo.begin(MAX31865_3WIRE);
 
   // load offset from EEPROM
-  correction = EEPROM_TC::instance()->getCorrectedTemp();
+  correction = EEPROM_TC::instance()->getThermalCorrection();
   if (isnan(correction)) {
     correction = 0;
-    EEPROM_TC::instance()->setCorrectedTemp(correction);
+    EEPROM_TC::instance()->setThermalCorrection(correction);
   }
   char buffer[10];
   floattostrf(correction, 5, 2, buffer, sizeof(buffer));
@@ -99,7 +99,7 @@ void ThermalProbe_TC::setCorrection(float value) {
   COUT("old = " << correction << "; new = " << value);
   if (value != correction) {
     correction = value;
-    EEPROM_TC::instance()->setCorrectedTemp(correction);
+    EEPROM_TC::instance()->setThermalCorrection(correction);
     serial(F("Set temperature correction to %i.%02i"), (int)correction, (int)(correction * 100 + 0.5) % 100);
   }
 }
@@ -113,7 +113,7 @@ void ThermalProbe_TC::clearCorrection() {
   COUT("old = " << correction);
   if (correction != 0) {
     correction = 0.0;
-    EEPROM_TC::instance()->setCorrectedTemp(correction);
+    EEPROM_TC::instance()->setThermalCorrection(correction);
     serial(F("Set temperature correction to %i.%02i"), (int)correction, (int)(correction * 100 + 0.5) % 100);
   }
 }

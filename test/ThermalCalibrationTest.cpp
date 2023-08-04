@@ -13,7 +13,7 @@ unittest(test) {
   // with no correction, we have a temperature of 10.0
   ThermalProbe_TC* thermalProbe = ThermalProbe_TC::instance();
   thermalProbe->setTemperature(10.0, true, false);
-  assertEqual(0.0, EEPROM_TC::instance()->getCorrectedTemp());
+  assertEqual(0.0, EEPROM_TC::instance()->getThermalCorrection());
   for (size_t i = 0; i < 100; ++i) {
     delay(1000);
     thermalProbe->getRunningAverage();
@@ -49,7 +49,7 @@ unittest(test) {
   delay(1000);
   temperature = thermalProbe->getRunningAverage();
   assertTrue(15.9 <= temperature && temperature <= 16.1);
-  temperature = EEPROM_TC::instance()->getCorrectedTemp();
+  temperature = EEPROM_TC::instance()->getThermalCorrection();
   assertTrue(0.49 < temperature && temperature < 0.51);
 
   // test for https://github.com/Open-Acidification/TankController/issues/174

@@ -61,8 +61,8 @@ void EEPROM_TC::eepromWriteInt(uint16_t address, int32_t value) {
 float EEPROM_TC::getAmplitude() {
   return eepromReadFloat(AMPLITUDE_ADDRESS);
 }
-float EEPROM_TC::getCorrectedTemp() {
-  return eepromReadFloat(TEMP_CORR_ADDRESS);
+float EEPROM_TC::getThermalCorrection() {
+  return eepromReadFloat(THERMAL_CORRECTION_ADDRESS);
 }
 float EEPROM_TC::getFrequency() {
   return eepromReadFloat(FREQUENCY_ADDRESS);
@@ -175,8 +175,8 @@ float EEPROM_TC::getTempSeriesSize() {
 void EEPROM_TC::setAmplitude(float value) {
   eepromWriteFloat(AMPLITUDE_ADDRESS, value);
 }
-void EEPROM_TC::setCorrectedTemp(float value) {
-  eepromWriteFloat(TEMP_CORR_ADDRESS, value);
+void EEPROM_TC::setThermalCorrection(float value) {
+  eepromWriteFloat(THERMAL_CORRECTION_ADDRESS, value);
 }
 void EEPROM_TC::setFrequency(float value) {
   eepromWriteFloat(FREQUENCY_ADDRESS, value);

@@ -14,7 +14,7 @@ public:
 
   // accessor methods
   float getAmplitude();               // not used
-  float getCorrectedTemp();           // adjustment to temperature probe
+  float getThermalCorrection();       // adjustment to temperature probe
   float getFrequency();               // not used
   uint16_t getGoogleSheetInterval();  // how often to send data using PushingBox
   float getGranularity();             // not used
@@ -53,7 +53,7 @@ public:
 
   // setter methods
   void setAmplitude(float value);
-  void setCorrectedTemp(float value);
+  void setThermalCorrection(float value);
   void setFrequency(float value);
   void setGoogleSheetInterval(uint16_t value);
   void setGranularity(float value);
@@ -94,15 +94,15 @@ public:
 
 private:
   // instance variables from v0.197
-  const uint16_t PH_ADDRESS = 0;          // 9.999
-  const uint16_t TEMP_ADDRESS = 4;        // 99.99
-  const uint16_t TANK_ID_ADDRESS = 8;     // 999
-  const uint16_t TEMP_CORR_ADDRESS = 12;  // 99.99
-  const uint16_t KP_ADDRESS = 20;         // float
-  const uint16_t KI_ADDRESS = 28;         // float
-  const uint16_t KD_ADDRESS = 36;         // float
-  const uint16_t MAC_ADDRESS = 44;        // 8 byte
-  const uint16_t HEAT_ADDRESS = 52;       // bool
+  const uint16_t PH_ADDRESS = 0;                   // 9.999
+  const uint16_t TEMP_ADDRESS = 4;                 // 99.99
+  const uint16_t TANK_ID_ADDRESS = 8;              // 999
+  const uint16_t THERMAL_CORRECTION_ADDRESS = 12;  // 99.99
+  const uint16_t KP_ADDRESS = 20;                  // float
+  const uint16_t KI_ADDRESS = 28;                  // float
+  const uint16_t KD_ADDRESS = 36;                  // float
+  const uint16_t MAC_ADDRESS = 44;                 // 8 byte
+  const uint16_t HEAT_ADDRESS = 52;                // bool
   // new with v0.2
   const uint16_t AMPLITUDE_ADDRESS = 56;
   const uint16_t FREQUENCY_ADDRESS = 60;

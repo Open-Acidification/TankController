@@ -252,7 +252,7 @@ OBJECTS=$(BIN)/Arduino.o $(BIN)/Godmode.o $(BIN)/stdlib.o $(BIN)/ArduinoUnitTest
 	$(BIN)/JSONBuilder.o \
   $(BIN)/Keypad_TC.o $(BIN)/LiquidCrystal_TC.o $(BIN)/PHControl.o $(BIN)/PHProbe.o \
   $(BIN)/PID_TC.o $(BIN)/PushingBox.o $(BIN)/SD_TC.o $(BIN)/Serial_TC.o $(BIN)/ThermalProbe_TC.o \
-  $(BIN)/ThermalControl.o $(BIN)/BadPHCalibration.o $(BIN)/CalibrationManagement.o $(BIN)/EnablePID.o $(BIN)/MainMenu.o \
+  $(BIN)/ThermalControl.o $(BIN)/BadPHCalibration.o $(BIN)/EnablePID.o $(BIN)/MainMenu.o \
   $(BIN)/NumberCollectorState.o $(BIN)/PHCalibrationHigh.o $(BIN)/PHCalibrationLow.o \
   $(BIN)/PHCalibrationMid.o $(BIN)/PHCalibrationPrompt.o $(BIN)/SeeDeviceAddress.o \
 	$(BIN)/SeeDeviceUptime.o $(BIN)/SeeFreeMemory.o \
@@ -340,9 +340,6 @@ $(BIN)/ThermalControl.o: $(SRC)/Devices/ThermalControl.cpp $(HEADERS)
 
 $(BIN)/BadPHCalibration.o: $(SRC)/UIState/BadPHCalibration.cpp  $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/BadPHCalibration.o $(SRC)/UIState/BadPHCalibration.cpp
-
-$(BIN)/CalibrationManagement.o: $(SRC)/UIState/CalibrationManagement.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/CalibrationManagement.o $(SRC)/UIState/CalibrationManagement.cpp
 
 $(BIN)/EnablePID.o: $(SRC)/UIState/EnablePID.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/EnablePID.o $(SRC)/UIState/EnablePID.cpp

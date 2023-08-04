@@ -1,15 +1,15 @@
 /**
- * SeeTempCalOffset.cpp
+ * SeeThermalCorrection.cpp
  */
 
-#include "SeeTempCalOffset.h"
+#include "SeeThermalCorrection.h"
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/ThermalProbe_TC.h"
 #include "TC_util.h"
 #include "TemperatureCalibration.h"
 
-void SeeTempCalOffset::start() {
+void SeeThermalCorrection::start() {
   // First line: prompt
   LiquidCrystal_TC::instance()->writeLine(prompt(), 0);
   // Second line: the offset (5 digits of precision)

@@ -58,7 +58,7 @@ all : $(BIN)/BadPHCalibrationTest.cpp.bin $(BIN)/BlinkTest.cpp.bin $(BIN)/DateTi
   $(BIN)/SeeDeviceAddressTest.cpp.bin $(BIN)/SeeDeviceUptimeTest.cpp.bin $(BIN)/SeeFreeMemoryTest.cpp.bin \
   $(BIN)/SeeGoogleMinsTest.cpp.bin $(BIN)/SeeLogFileTest.cpp.bin $(BIN)/SeePHCalibrationTest.cpp.bin \
   $(BIN)/SeePIDConstantsTest.cpp.bin $(BIN)/SeePhTest.cpp.bin $(BIN)/SeeTankIDTest.cpp.bin \
-  $(BIN)/SeeTempCalOffsetTest.cpp.bin $(BIN)/SeeVersionTest.cpp.bin $(BIN)/SerialTest.cpp.bin \
+  $(BIN)/SeeThermalCorrectionTest.cpp.bin $(BIN)/SeeVersionTest.cpp.bin $(BIN)/SerialTest.cpp.bin \
   $(BIN)/SetChillOrHeatTest.cpp.bin $(BIN)/SetGoogleSheetIntervalTest.cpp.bin $(BIN)/SetKDTest.cpp.bin \
   $(BIN)/SetKITest.cpp.bin $(BIN)/SetKPTest.cpp.bin $(BIN)/SetPHCalibClearTest.cpp.bin \
   $(BIN)/SetPHSetPointTest.cpp.bin $(BIN)/SetPHWithSineTest.cpp.bin $(BIN)/SetTankIDTest.cpp.bin \
@@ -162,8 +162,8 @@ $(BIN)/SeePhTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SeePhTest.cpp $(HEADERS)
 $(BIN)/SeeTankIDTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SeeTankIDTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/SeeTankIDTest.cpp.bin $(TEST)/SeeTankIDTest.cpp -larduino
 
-$(BIN)/SeeTempCalOffsetTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SeeTempCalOffsetTest.cpp $(HEADERS)
-	$(GPP_TEST) -o $(BIN)/SeeTempCalOffsetTest.cpp.bin $(TEST)/SeeTempCalOffsetTest.cpp -larduino
+$(BIN)/SeeThermalCorrectionTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SeeThermalCorrectionTest.cpp $(HEADERS)
+	$(GPP_TEST) -o $(BIN)/SeeThermalCorrectionTest.cpp.bin $(TEST)/SeeThermalCorrectionTest.cpp -larduino
 
 $(BIN)/SeeVersionTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SeeVersionTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/SeeVersionTest.cpp.bin $(TEST)/SeeVersionTest.cpp -larduino
@@ -258,7 +258,7 @@ OBJECTS=$(BIN)/Arduino.o $(BIN)/Godmode.o $(BIN)/stdlib.o $(BIN)/ArduinoUnitTest
 	$(BIN)/SeeDeviceUptime.o $(BIN)/SeeFreeMemory.o \
   $(BIN)/SeeGoogleMins.o $(BIN)/SeeLogFile.o $(BIN)/SeePHCalibration.o \
 	$(BIN)/SeePIDConstants.o \
-  $(BIN)/SeePh.o $(BIN)/SeeTankID.o $(BIN)/SeeTempCalOffset.o $(BIN)/SeeVersion.o \
+  $(BIN)/SeePh.o $(BIN)/SeeTankID.o $(BIN)/SeeThermalCorrection.o $(BIN)/SeeVersion.o \
   $(BIN)/SetChillOrHeat.o $(BIN)/SetGoogleSheetInterval.o $(BIN)/SetKD.o $(BIN)/SetKI.o \
   $(BIN)/SetKP.o $(BIN)/SetPHCalibClear.o $(BIN)/SetPHSetPoint.o $(BIN)/SetPHWithSine.o \
   $(BIN)/SetTankID.o $(BIN)/SetTempCalibClear.o $(BIN)/SetTempSetPoint.o $(BIN)/SetTempWithSine.o \
@@ -392,8 +392,8 @@ $(BIN)/SeePh.o: $(SRC)/UIState/SeePh.cpp $(HEADERS)
 $(BIN)/SeeTankID.o: $(SRC)/UIState/SeeTankID.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SeeTankID.o $(SRC)/UIState/SeeTankID.cpp
 
-$(BIN)/SeeTempCalOffset.o: $(SRC)/UIState/SeeTempCalOffset.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SeeTempCalOffset.o $(SRC)/UIState/SeeTempCalOffset.cpp
+$(BIN)/SeeThermalCorrection.o: $(SRC)/UIState/SeeThermalCorrection.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SeeThermalCorrection.o $(SRC)/UIState/SeeThermalCorrection.cpp
 
 $(BIN)/SeeVersion.o: $(SRC)/UIState/SeeVersion.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SeeVersion.o $(SRC)/UIState/SeeVersion.cpp

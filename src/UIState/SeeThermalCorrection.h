@@ -1,16 +1,16 @@
 /**
- * SeeTempCalOffset.h
+ * SeeThermalCorrection.h
  *
  * Display the calibration offset for temperature
  */
 #pragma once
 #include "UIState.h"
 
-class SeeTempCalOffset : public UIState {
+class SeeThermalCorrection : public UIState {
 public:
   void start() override;
   const __FlashStringHelper* name() override {
-    return F("SeeTempCalOffset");
+    return F("SeeThermalCorrection");
   }
   const __FlashStringHelper* prompt() override {
     return F("Temp Cal Offset:");

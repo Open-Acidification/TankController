@@ -117,8 +117,7 @@ const char *lcd(uint16_t index) {
 }
 
 float getTemperature() {
-  ThermalProbe_TC *tempProbe = ThermalProbe_TC::instance();
-  return tempProbe->getRunningAverage();
+  return ThermalProbe_TC::instance()->getRunningAverage();
 }
 
 void loop() {
@@ -168,8 +167,7 @@ string sdNextValue() {
 }
 
 void setTemperature(float value) {
-  ThermalProbe_TC *tempProbe = ThermalProbe_TC::instance();
-  tempProbe->setTemperature(value);
+  ThermalProbe_TC::instance()->setTemperature(value);
 }
 
 void setTime() {

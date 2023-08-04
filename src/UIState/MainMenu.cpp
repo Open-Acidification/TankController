@@ -17,7 +17,7 @@
 #include "SeePHCalibration.h"
 #include "SeePIDConstants.h"
 #include "SeeTankID.h"
-#include "SeeTempCalOffset.h"
+#include "SeeThermalCorrection.h"
 #include "SeeVersion.h"
 #include "SetChillOrHeat.h"
 #include "SetGoogleSheetInterval.h"
@@ -42,7 +42,7 @@ MainMenu::MainMenu() : UIState() {
   viewMenus[VIEW_PH_SLOPE] = F("View pH slope");
   viewMenus[VIEW_PID] = F("View PID");
   viewMenus[VIEW_TANK_ID] = F("View tank ID");
-  viewMenus[VIEW_TEMP_CAL_OFFSET] = F("View temp cal");
+  viewMenus[VIEW_THERMAL_CORRECTION] = F("View temp cal");
   viewMenus[VIEW_TIME] = F("View time");
   viewMenus[VIEW_VERSION] = F("View version");
 
@@ -165,8 +165,8 @@ void MainMenu::selectView() {
     case VIEW_TANK_ID:
       this->setNextState(new SeeTankID());
       break;
-    case VIEW_TEMP_CAL_OFFSET:
-      this->setNextState(new SeeTempCalOffset());
+    case VIEW_THERMAL_CORRECTION:
+      this->setNextState(new SeeThermalCorrection());
       break;
     case VIEW_TIME:
       this->setNextState(new SeeDeviceUptime());

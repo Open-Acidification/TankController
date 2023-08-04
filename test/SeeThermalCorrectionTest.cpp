@@ -3,7 +3,7 @@
 
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
-#include "SeeTempCalOffset.h"
+#include "SeeThermalCorrection.h"
 #include "TankController.h"
 
 unittest(testOutput) {
@@ -11,9 +11,9 @@ unittest(testOutput) {
   TankController* tc = TankController::instance();
   LiquidCrystal_TC* display = LiquidCrystal_TC::instance();
   assertEqual("MainMenu", tc->stateName());
-  SeeTempCalOffset* test = new SeeTempCalOffset();
+  SeeThermalCorrection* test = new SeeThermalCorrection();
   tc->setNextState(test, true);
-  assertEqual("SeeTempCalOffset", tc->stateName());
+  assertEqual("SeeThermalCorrection", tc->stateName());
 
   // Test the prompt
   assertEqual("Temp Cal Offset:", display->getLines().at(0));

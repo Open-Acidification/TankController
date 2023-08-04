@@ -24,7 +24,7 @@
 #include "SetKD.h"
 #include "SetKI.h"
 #include "SetKP.h"
-#include "SetPHCalibClear.h"
+#include "ResetPHCalibration.h"
 #include "SetPHSetPoint.h"
 #include "SetPHWithSine.h"
 #include "SetTankID.h"
@@ -185,7 +185,7 @@ void MainMenu::selectSet() {
       this->setNextState(new PHCalibrationPrompt());
       break;
     case SET_PH_CALIBRATION_CLEAR:
-      this->setNextState(new SetPHCalibClear());
+      this->setNextState(new ResetPHCalibration());
       break;
     case SET_TEMP_CALIBRATION_CLEAR:
       this->setNextState(new ResetThermalCalibration());

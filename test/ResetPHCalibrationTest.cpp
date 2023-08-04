@@ -3,7 +3,7 @@
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "Keypad_TC.h"
-#include "SetPHCalibClear.h"
+#include "ResetPHCalibration.h"
 #include "TankController.h"
 
 // globals for the singletons used in every test
@@ -18,7 +18,7 @@ void enterKey(char key) {
 }
 
 unittest(test) {
-  SetPHCalibClear* test = new SetPHCalibClear();
+  ResetPHCalibration* test = new ResetPHCalibration();
   tc->setNextState(test, true);
   assertEqual("A: Clear pH Cali", lc->getLines().at(0));
   enterKey('A');

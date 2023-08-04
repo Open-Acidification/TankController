@@ -1,13 +1,13 @@
 /**
- * TemperatureCalibration.cpp
+ * ThermalCalibration.cpp
  */
 
-#include "TemperatureCalibration.h"
+#include "ThermalCalibration.h"
 
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/ThermalProbe_TC.h"
 
-void TemperatureCalibration::setValue(float value) {
+void ThermalCalibration::setValue(float value) {
   ThermalProbe_TC *pProbe = ThermalProbe_TC::instance();
   float uncorrectedAverage = pProbe->getUncorrectedRunningAverage();
   pProbe->setCorrection(value - uncorrectedAverage);

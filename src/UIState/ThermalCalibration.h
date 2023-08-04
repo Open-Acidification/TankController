@@ -1,18 +1,18 @@
 /**
- * TemperatureCalibration.h
+ * ThermalCalibration.h
  *
  * Calibrate the temperature
  */
 #pragma once
 #include "NumberCollectorState.h"
 
-class TemperatureCalibration : public NumberCollectorState {
+class ThermalCalibration : public NumberCollectorState {
 public:
   bool isInCalibration() {
     return true;
   }
   const __FlashStringHelper* name() {
-    return F("TemperatureCalibration");
+    return F("ThermalCalibration");
   }
   float getCurrentValue() {
     return 0;

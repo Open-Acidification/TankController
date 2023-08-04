@@ -64,7 +64,7 @@ all : $(BIN)/BadPHCalibrationTest.cpp.bin $(BIN)/BlinkTest.cpp.bin $(BIN)/DateTi
   $(BIN)/SetPHSetPointTest.cpp.bin $(BIN)/SetPHWithSineTest.cpp.bin $(BIN)/SetTankIDTest.cpp.bin \
   $(BIN)/SetTempCalibClearTest.cpp.bin $(BIN)/SetTempSetPointTest.cpp.bin $(BIN)/SetTempWithSineTest.cpp.bin \
   $(BIN)/SetTimeTest.cpp.bin $(BIN)/StringsTest.cpp.bin $(BIN)/TCLibTest.cpp.bin \
-  $(BIN)/ThermalProbe_TCTest.cpp.bin $(BIN)/TemperatureCalibrationTest.cpp.bin \
+  $(BIN)/ThermalProbe_TCTest.cpp.bin $(BIN)/ThermalCalibrationTest.cpp.bin \
   $(BIN)/ThermalControlTest.cpp.bin $(BIN)
 
 GPP_TEST=g++ $(FLAGS) -L$(BIN) $(INCLUDE)
@@ -219,8 +219,8 @@ $(BIN)/TCLibTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/TCLibTest.cpp $(HEADERS)
 $(BIN)/ThermalProbe_TCTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/ThermalProbe_TCTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/ThermalProbe_TCTest.cpp.bin $(TEST)/ThermalProbe_TCTest.cpp -larduino
 
-$(BIN)/TemperatureCalibrationTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/TemperatureCalibrationTest.cpp $(HEADERS)
-	$(GPP_TEST) -o $(BIN)/TemperatureCalibrationTest.cpp.bin $(TEST)/TemperatureCalibrationTest.cpp -larduino
+$(BIN)/ThermalCalibrationTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/ThermalCalibrationTest.cpp $(HEADERS)
+	$(GPP_TEST) -o $(BIN)/ThermalCalibrationTest.cpp.bin $(TEST)/ThermalCalibrationTest.cpp -larduino
 
 $(BIN)/ThermalControlTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/ThermalControlTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/ThermalControlTest.cpp.bin $(TEST)/ThermalControlTest.cpp -larduino
@@ -262,7 +262,7 @@ OBJECTS=$(BIN)/Arduino.o $(BIN)/Godmode.o $(BIN)/stdlib.o $(BIN)/ArduinoUnitTest
   $(BIN)/SetChillOrHeat.o $(BIN)/SetGoogleSheetInterval.o $(BIN)/SetKD.o $(BIN)/SetKI.o \
   $(BIN)/SetKP.o $(BIN)/SetPHCalibClear.o $(BIN)/SetPHSetPoint.o $(BIN)/SetPHWithSine.o \
   $(BIN)/SetTankID.o $(BIN)/SetTempCalibClear.o $(BIN)/SetTempSetPoint.o $(BIN)/SetTempWithSine.o \
-  $(BIN)/SetTime.o $(BIN)/TemperatureCalibration.o $(BIN)/UIState.o $(BIN)/Wait.o \
+  $(BIN)/SetTime.o $(BIN)/ThermalCalibration.o $(BIN)/UIState.o $(BIN)/Wait.o \
 	$(BUSIO) $(LCD) $(MAX31865) $(BIN)/PID.o $(ETHERNET) $(RTC) $(KEYPAD) $(SDFAT)
 
 $(BIN)/libarduino.so: $(OBJECTS)
@@ -437,8 +437,8 @@ $(BIN)/SetTempWithSine.o: $(SRC)/UIState/SetTempWithSine.cpp $(HEADERS)
 $(BIN)/SetTime.o: $(SRC)/UIState/SetTime.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SetTime.o $(SRC)/UIState/SetTime.cpp
 
-$(BIN)/TemperatureCalibration.o: $(SRC)/UIState/TemperatureCalibration.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/TemperatureCalibration.o $(SRC)/UIState/TemperatureCalibration.cpp
+$(BIN)/ThermalCalibration.o: $(SRC)/UIState/ThermalCalibration.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/ThermalCalibration.o $(SRC)/UIState/ThermalCalibration.cpp
 
 $(BIN)/UIState.o: $(SRC)/UIState/UIState.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/UIState.o $(SRC)/UIState/UIState.cpp

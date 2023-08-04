@@ -32,7 +32,7 @@
 #include "SetTempSetPoint.h"
 #include "SetTempWithSine.h"
 #include "SetTime.h"
-#include "TemperatureCalibration.h"
+#include "ThermalCalibration.h"
 
 MainMenu::MainMenu() : UIState() {
   viewMenus[VIEW_ADDRESS] = F("View IP and MAC");
@@ -221,7 +221,7 @@ void MainMenu::selectSet() {
       this->setNextState(new SetTankID());
       break;
     case SET_TEMP_CALIBRATION:
-      this->setNextState(new TemperatureCalibration());
+      this->setNextState(new ThermalCalibration());
       break;
     case SET_TEMPERATURE:
       this->setNextState(new SetTempSetPoint());

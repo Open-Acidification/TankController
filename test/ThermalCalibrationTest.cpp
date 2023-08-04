@@ -5,8 +5,8 @@
 #include "EEPROM_TC.h"
 #include "TC_util.h"
 #include "TankController.h"
+#include "ThermalCalibration.h"
 #include "ThermalProbe_TC.h"
-#include "TemperatureCalibration.h"
 
 unittest(test) {
   GodmodeState* state = GODMODE();
@@ -19,13 +19,13 @@ unittest(test) {
     thermalProbe->getRunningAverage();
   }
   delay(1000);
-  float temp = thermalProbe->getRunningAverage();
-  assertTrue(9.9 <= temp && temp <= 10.1);
+  float temperature = thermalProbe->getRunningAverage();
+  assertTrue(9.9 <= temperature && temperature <= 10.1);
 
-  // set UI to TemperatureCalibration state
+  // set UI to ThermalCalibration state
   TankController* tc = TankController::instance();
   assertFalse(tc->isInCalibration());
-  TemperatureCalibration* test = new TemperatureCalibration();
+  ThermalCalibration* test = new ThermalCalibration();
   tc->setNextState(test, true);
   assertTrue(tc->isInCalibration());
 
@@ -35,10 +35,10 @@ unittest(test) {
   assertEqual("Set temperature correction to 0.50\r\n", state->serialPort[0].dataOut);
 
   // The new temperature should be 10.5
-  temp = thermalProbe->getRawTemperature();
-  assertTrue(9.9 <= temp && temp <= 10.1);
-  temp = thermalProbe->getRunningAverage();
-  assertTrue(10.49 <= temp && temp <= 10.51);
+  temperature = thermalProbe->getRawTemperature();
+  assertTrue(9.9 <= temperature && temperature <= 10.1);
+  temperature = thermalProbe->getRunningAverage();
+  assertTrue(10.49 <= temperature && temperature <= 10.51);
 
   // A new measured temperature should also be adjusted
   thermalProbe->setTemperature(15.5, false, false);
@@ -47,15 +47,15 @@ unittest(test) {
     thermalProbe->getRunningAverage();
   }
   delay(1000);
-  temp = thermalProbe->getRunningAverage();
-  assertTrue(15.9 <= temp && temp <= 16.1);
-  temp = EEPROM_TC::instance()->getCorrectedTemp();
-  assertTrue(0.49 < temp && temp < 0.51);
+  temperature = thermalProbe->getRunningAverage();
+  assertTrue(15.9 <= temperature && temperature <= 16.1);
+  temperature = EEPROM_TC::instance()->getCorrectedTemp();
+  assertTrue(0.49 < temperature && temperature < 0.51);
 
   // test for https://github.com/Open-Acidification/TankController/issues/174
   tc->loop(false);
   tc->loop(false);  // second loop needed to set the next state
-  test = new TemperatureCalibration();
+  test = new ThermalCalibration();
   tc->setNextState(test, true);
   test->setValue(16.0);
   for (size_t i = 0; i < 100; ++i) {
@@ -63,8 +63,8 @@ unittest(test) {
     thermalProbe->getRunningAverage();
   }
   delay(1000);
-  temp = thermalProbe->getRunningAverage();
-  assertEqual(16.0, temp);
+  temperature = thermalProbe->getRunningAverage();
+  assertEqual(16.0, temperature);
 }
 
 unittest_main()

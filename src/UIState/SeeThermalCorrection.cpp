@@ -7,7 +7,7 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/ThermalProbe_TC.h"
 #include "TC_util.h"
-#include "TemperatureCalibration.h"
+#include "ThermalCalibration.h"
 
 void SeeThermalCorrection::start() {
   // First line: prompt

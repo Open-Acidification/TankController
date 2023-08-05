@@ -1,14 +1,15 @@
 #include "MainMenu.h"
 
-#include "BadPHCalibration.h"
-#include "CalibrationManagement.h"
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/PHControl.h"
 #include "Devices/PHProbe.h"
-#include "Devices/TempProbe_TC.h"
-#include "Devices/TemperatureControl.h"
+#include "Devices/ThermalControl.h"
+#include "Devices/ThermalProbe_TC.h"
 #include "EnablePID.h"
 #include "PHCalibrationPrompt.h"
+#include "PHCalibrationWarning.h"
+#include "ResetPHCalibration.h"
+#include "ResetThermalCalibration.h"
 #include "SeeDeviceAddress.h"
 #include "SeeDeviceUptime.h"
 #include "SeeFreeMemory.h"
@@ -17,22 +18,20 @@
 #include "SeePHCalibration.h"
 #include "SeePIDConstants.h"
 #include "SeeTankID.h"
-#include "SeeTempCalOffset.h"
+#include "SeeThermalCorrection.h"
 #include "SeeVersion.h"
 #include "SetChillOrHeat.h"
 #include "SetGoogleSheetInterval.h"
 #include "SetKD.h"
 #include "SetKI.h"
 #include "SetKP.h"
-#include "SetPHCalibClear.h"
-#include "SetPHSetPoint.h"
-#include "SetPHWithSine.h"
+#include "SetPHSineWave.h"
+#include "SetPHTarget.h"
 #include "SetTankID.h"
-#include "SetTempCalibClear.h"
-#include "SetTempSetPoint.h"
-#include "SetTempWithSine.h"
+#include "SetThermalSineWave.h"
+#include "SetThermalTarget.h"
 #include "SetTime.h"
-#include "TemperatureCalibration.h"
+#include "ThermalCalibration.h"
 
 MainMenu::MainMenu() : UIState() {
   viewMenus[VIEW_ADDRESS] = F("View IP and MAC");
@@ -42,7 +41,7 @@ MainMenu::MainMenu() : UIState() {
   viewMenus[VIEW_PH_SLOPE] = F("View pH slope");
   viewMenus[VIEW_PID] = F("View PID");
   viewMenus[VIEW_TANK_ID] = F("View tank ID");
-  viewMenus[VIEW_TEMP_CAL_OFFSET] = F("View temp cal");
+  viewMenus[VIEW_THERMAL_CORRECTION] = F("View temp cal");
   viewMenus[VIEW_TIME] = F("View time");
   viewMenus[VIEW_VERSION] = F("View version");
 
@@ -70,10 +69,10 @@ MainMenu::MainMenu() : UIState() {
 void MainMenu::handleKey(char key) {
   switch (key) {
     case 'A':  // Set pH set_point
-      this->setNextState(new SetPHSetPoint());
+      this->setNextState(new SetPHTarget());
       break;
     case 'B':  // Set Temperature set_point
-      this->setNextState(new SetTempSetPoint());
+      this->setNextState(new SetThermalTarget());
       break;
     case 'D':  // Reset
       level1 = 0;
@@ -165,8 +164,8 @@ void MainMenu::selectView() {
     case VIEW_TANK_ID:
       this->setNextState(new SeeTankID());
       break;
-    case VIEW_TEMP_CAL_OFFSET:
-      this->setNextState(new SeeTempCalOffset());
+    case VIEW_THERMAL_CORRECTION:
+      this->setNextState(new SeeThermalCorrection());
       break;
     case VIEW_TIME:
       this->setNextState(new SeeDeviceUptime());
@@ -185,10 +184,10 @@ void MainMenu::selectSet() {
       this->setNextState(new PHCalibrationPrompt());
       break;
     case SET_PH_CALIBRATION_CLEAR:
-      this->setNextState(new SetPHCalibClear());
+      this->setNextState(new ResetPHCalibration());
       break;
     case SET_TEMP_CALIBRATION_CLEAR:
-      this->setNextState(new SetTempCalibClear());
+      this->setNextState(new ResetThermalCalibration());
       break;
     case SET_CHILL_OR_HEAT:
       this->setNextState(new SetChillOrHeat());
@@ -206,13 +205,13 @@ void MainMenu::selectSet() {
       this->setNextState(new SetKP());
       break;
     case SET_PH:
-      this->setNextState(new SetPHSetPoint());
+      this->setNextState(new SetPHTarget());
       break;
     case SET_PH_WITH_SINE:
-      this->setNextState(new SetPHWithSine());
+      this->setNextState(new SetPHSineWave());
       break;
     case SET_TEMP_WITH_SINE:
-      this->setNextState(new SetTempWithSine());
+      this->setNextState(new SetThermalSineWave());
       break;
     case SET_PID_ON_OFF:
       this->setNextState(new EnablePID());
@@ -221,10 +220,10 @@ void MainMenu::selectSet() {
       this->setNextState(new SetTankID());
       break;
     case SET_TEMP_CALIBRATION:
-      this->setNextState(new TemperatureCalibration());
+      this->setNextState(new ThermalCalibration());
       break;
     case SET_TEMPERATURE:
-      this->setNextState(new SetTempSetPoint());
+      this->setNextState(new SetThermalTarget());
       break;
     case SET_TIME:
       this->setNextState(new SetTime());
@@ -238,7 +237,7 @@ void MainMenu::selectSet() {
 // T=12.25 H 12.75
 void MainMenu::idle() {
   if (PHProbe::instance()->shouldWarnAboutCalibration()) {
-    this->setNextState(new BadPHCalibration());
+    this->setNextState(new PHCalibrationWarning());
     return;
   }
   char buffer[6];
@@ -265,21 +264,20 @@ void MainMenu::idle() {
   }
   memcpy(output + 11, buffer, sizeof(buffer));
   LiquidCrystal_TC::instance()->writeLine(output, 0);
-  TemperatureControl *tempControl = TemperatureControl::instance();
-  TempProbe_TC *tempProbe = TempProbe_TC::instance();
-  float temp = tempProbe->getRunningAverage();
-  char status = tempControl->isHeater() ? 'h' : 'c';
-  if (tempControl->isOn()) {
+  ThermalControl *thermalControl = ThermalControl::instance();
+  float temperature = ThermalProbe_TC::instance()->getRunningAverage();
+  char status = thermalControl->isHeater() ? 'h' : 'c';
+  if (thermalControl->isOn()) {
     status = toupper(status);
   }
   output[0] = 'T';
   output[1] = millis() / 1000 % 2 ? '=' : ' ';
-  floattostrf(temp, 5, 2, buffer, sizeof(buffer));
+  floattostrf(temperature, 5, 2, buffer, sizeof(buffer));
   memcpy(output + 2, buffer, sizeof(buffer));
   output[7] = ' ';
   output[8] = status;
   output[9] = ' ';
-  floattostrf(tempControl->getCurrentTemperatureTarget(), 5, 2, buffer, sizeof(buffer));
+  floattostrf(thermalControl->getCurrentThermalTarget(), 5, 2, buffer, sizeof(buffer));
   memcpy(output + 10, buffer, sizeof(buffer));
   LiquidCrystal_TC::instance()->writeLine(output, 1);
 }

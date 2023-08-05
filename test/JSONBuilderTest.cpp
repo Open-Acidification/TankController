@@ -6,8 +6,8 @@
 #include "Devices/PHControl.h"
 #include "Devices/PHProbe.h"
 #include "Devices/PID_TC.h"
-#include "Devices/TempProbe_TC.h"
-#include "Devices/TemperatureControl.h"
+#include "Devices/ThermalControl.h"
+#include "Devices/ThermalProbe_TC.h"
 #include "TankController.h"
 #include "Version.h"
 
@@ -19,11 +19,11 @@ unittest(currentData) {
   // Fake DateTime
   DateTime_TC feb(2022, 2, 22, 20, 50, 00);
   feb.setAsCurrent();
-  PHProbe::instance()->setPh(8.125);                            // actual
-  PHProbe::instance()->setPhSlope();                            // actual
-  PHControl::instance()->setBaseTargetPh(8.25);                 // target
-  TempProbe_TC::instance()->setTemperature(99.99, true);        // actual
-  TemperatureControl::instance()->setTargetTemperature(98.88);  // target
+  PHProbe::instance()->setPh(8.125);                         // actual
+  PHProbe::instance()->setPhSlope();                         // actual
+  PHControl::instance()->setBaseTargetPh(8.25);              // target
+  ThermalProbe_TC::instance()->setTemperature(99.99, true);  // actual
+  ThermalControl::instance()->setThermalTarget(98.88);       // target
   PID_TC::instance()->setTunings(100001.1, 100002.2, 100003.3);
   TankController::instance()->loop(false);  // recognize and apply the targets
   JSONBuilder builder;

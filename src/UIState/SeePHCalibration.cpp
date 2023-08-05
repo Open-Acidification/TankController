@@ -8,8 +8,8 @@
 #include "Devices/PHProbe.h"
 #include "Devices/Serial_TC.h"
 #include "TC_util.h"
-#include "UIState/BadPHCalibration.h"
 #include "UIState/MainMenu.h"
+#include "UIState/PHCalibrationWarning.h"
 
 SeePHCalibration::SeePHCalibration(bool inCalibration) : UIState() {
   endTime = millis() + 60000;
@@ -24,7 +24,7 @@ void SeePHCalibration::loop() {
   LiquidCrystal_TC::instance()->writeLine(pointsBuffer, 0);
   LiquidCrystal_TC::instance()->writeLine(slopeBuffer, 1);
   if (PHProbe::instance()->slopeIsBad()) {
-    this->setNextState(new BadPHCalibration());
+    this->setNextState(new PHCalibrationWarning());
   } else if (endTime <= millis()) {
     this->setNextState(new MainMenu());
   }

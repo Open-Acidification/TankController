@@ -9,7 +9,7 @@
 #include "Devices/LiquidCrystal_TC.h"
 #include "Devices/Serial_TC.h"
 
-SetTime::SetTime() : NumCollectorState() {
+SetTime::SetTime() : NumberCollectorState() {
   prompts[0] = F("Set Year (YYYY):");
   prompts[1] = F("Month (1-12):");
   prompts[2] = F("Day (1-31):");

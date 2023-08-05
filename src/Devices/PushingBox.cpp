@@ -4,7 +4,7 @@
 #include "Devices/Ethernet_TC.h"
 #include "Devices/PHProbe.h"
 #include "Devices/Serial_TC.h"
-#include "Devices/TempProbe_TC.h"
+#include "Devices/ThermalProbe_TC.h"
 #include "TC_util.h"
 #include "TankController.h"
 
@@ -88,7 +88,7 @@ void PushingBox::sendData() {
         "Connection: close\r\n"
         "\r\n";
     // look up tankid, temperature, ph
-    float temperature = TempProbe_TC::instance()->getRunningAverage();
+    float temperature = ThermalProbe_TC::instance()->getRunningAverage();
     float pH = PHProbe::instance()->getPh();
     snprintf_P(buffer, sizeof(buffer), (PGM_P)format, deviceID, tankID, (int)temperature,
                (int)(temperature * 100 + 0.5) % 100, (int)pH, (int)(pH * 1000) % 1000);

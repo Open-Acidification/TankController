@@ -193,7 +193,7 @@ unittest(RampGreaterThanZero) {
   pHProbe->setPh(8.5);
   controlSolenoid->setBaseTargetPh(7.00);
   controlSolenoid->setRampDuration(1.5);  // 90 minutes
-  assertEqual(PHControl::RAMP_TYPE, controlSolenoid->getPhSetType());
+  assertEqual(PHControl::RAMP_TYPE, controlSolenoid->getPHFunctionType());
   tc->loop(false);
   assertEqual(8.5, controlSolenoid->getCurrentTargetPh());
   assertEqual("pH=8.500   8.500", lc->getLines().at(0));
@@ -238,11 +238,11 @@ unittest(ChangeRampToZero) {
   tc->loop(false);  // update the controls based on the current readings
   controlSolenoid->setBaseTargetPh(7.00);
   controlSolenoid->setRampDuration(1.5);
-  assertEqual(PHControl::RAMP_TYPE, controlSolenoid->getPhSetType());
+  assertEqual(PHControl::RAMP_TYPE, controlSolenoid->getPHFunctionType());
   tc->loop(false);
   assertEqual(8.5, controlSolenoid->getCurrentTargetPh());
   controlSolenoid->setRampDuration(0);
-  assertEqual(PHControl::FLAT_TYPE, controlSolenoid->getPhSetType());
+  assertEqual(PHControl::FLAT_TYPE, controlSolenoid->getPHFunctionType());
   tc->loop(false);
   assertEqual(7, controlSolenoid->getCurrentTargetPh());
 }
@@ -254,7 +254,7 @@ unittest(sineTest) {
   tc->loop(false);  // update the controls based on the current readings
   controlSolenoid->setBaseTargetPh(7.00);
   controlSolenoid->setSine(1.5, 2);
-  assertEqual(PHControl::SINE_TYPE, controlSolenoid->getPhSetType());
+  assertEqual(PHControl::SINE_TYPE, controlSolenoid->getPHFunctionType());
   tc->loop(false);
   assertEqual(7, controlSolenoid->getCurrentTargetPh());
   // mock arduino restarting

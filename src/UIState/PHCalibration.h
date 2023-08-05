@@ -3,7 +3,7 @@
 #include "NumberCollectorState.h"
 #include "SeePHCalibration.h"
 
-class PHCalibration : public NumCollectorState {
+class PHCalibration : public NumberCollectorState {
 public:
   bool isInCalibration() override {
     return true;  // disable controls during calibration
@@ -15,7 +15,7 @@ public:
     if (key == 'D') {  // cancel but show calibration status
       this->setNextState(new SeePHCalibration(true));
     } else {
-      NumCollectorState::handleKey(key);
+      NumberCollectorState::handleKey(key);
     }
   }
   void loop() override {

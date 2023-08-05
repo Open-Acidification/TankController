@@ -6,8 +6,8 @@
 #include "Devices/EthernetServer_TC.h"
 #include "Devices/PHControl.h"
 #include "Devices/PushingBox.h"
-#include "Devices/TempProbe_TC.h"
-#include "Devices/TemperatureControl.h"
+#include "Devices/ThermalControl.h"
+#include "Devices/ThermalProbe_TC.h"
 #include "TankController.h"
 #include "UIState/PHCalibrationMid.h"
 
@@ -15,7 +15,7 @@ EthernetClient *pClient;
 GodmodeState *state = GODMODE();
 PushingBox *pPushingBox;
 TankController *tc;
-TempProbe_TC *tempProbe;
+ThermalProbe_TC *thermalProbe;
 PHControl *controlSolenoid;
 
 unittest_setup() {
@@ -27,7 +27,7 @@ unittest_setup() {
   pPushingBox->setDeviceID("PushingBoxIdentifier");
   pPushingBox->resetNextSendTime();
   pClient = pPushingBox->getClient();
-  tempProbe = TempProbe_TC::instance();
+  thermalProbe = ThermalProbe_TC::instance();
   controlSolenoid = PHControl::instance();
   DateTime_TC now(2021, 6, 8, 15, 25, 15);
   now.setAsCurrent();
@@ -60,8 +60,8 @@ unittest(NoTankID) {
 
 unittest(SendData) {
   EEPROM_TC::instance()->setTankID(99);
-  TemperatureControl::instance()->setTargetTemperature(20.25);
-  tempProbe->setTemperature(20.25, true);
+  ThermalControl::instance()->setThermalTarget(20.25);
+  thermalProbe->setTemperature(20.25, true);
   PHProbe::instance()->setPh(7.125);
   EthernetClient::startMockServer(pPushingBox->getServerDomain(), (uint32_t)0, 80,
                                   (const uint8_t *)"[PushingBox response]\r\n");

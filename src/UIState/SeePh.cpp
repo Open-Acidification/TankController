@@ -18,16 +18,16 @@ void SeePh::loop() {
       loadValues(1);
       break;
     case 1:
-      loadPhSetType(0);
+      loadPHFunctionType(0);
       loadTypeVariables(1);
       break;
   }
 }
 
-void SeePh::loadPhSetType(uint16_t line) {
+void SeePh::loadPHFunctionType(uint16_t line) {
   char buffer[17];
   char *type;
-  switch (PHControl::instance()->getPhSetType()) {
+  switch (PHControl::instance()->getPHFunctionType()) {
     case FLAT_TYPE: {
       type = (char *)"flat";
       break;
@@ -51,7 +51,7 @@ void SeePh::loadPhSetType(uint16_t line) {
 
 void SeePh::loadTypeVariables(uint16_t line) {
   char buffer[17];
-  switch (PHControl::instance()->getPhSetType()) {
+  switch (PHControl::instance()->getPHFunctionType()) {
     case FLAT_TYPE: {
       break;
     }

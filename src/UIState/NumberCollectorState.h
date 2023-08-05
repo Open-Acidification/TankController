@@ -5,7 +5,7 @@
 #pragma once
 #include "UIState.h"
 
-class NumCollectorState : public UIState {
+class NumberCollectorState : public UIState {
 public:
   virtual void handleKey(char key);
   virtual void setValue(float value) = 0;
@@ -35,14 +35,14 @@ protected:
 };
 
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
-class TestNumCollectorState : public NumCollectorState {
+class TestNumberCollectorState : public NumberCollectorState {
 public:
   // Implementation
   void setValue(float value) {
     storedValue = value;
   }
   const __FlashStringHelper* name() {
-    return F("TestNumCollectorState");
+    return F("TestNumberCollectorState");
   }
   float getCurrentValue() {
     return priorValue;
@@ -74,14 +74,14 @@ private:
   uint16_t priorValuePrecision = 0;
 };
 
-class TestIntNumCollectorState : public TestNumCollectorState {
+class TestIntNumberCollectorState : public TestNumberCollectorState {
 public:
   virtual bool isInteger() {
     return true;
   }
 };
 
-class TestNumCollectorStateWithNoCurrentValue : public TestNumCollectorState {
+class TestNumberCollectorStateWithNoCurrentValue : public TestNumberCollectorState {
 public:
   bool showCurrentValue() {
     return false;

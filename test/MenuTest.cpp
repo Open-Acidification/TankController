@@ -4,13 +4,13 @@
 #include "DateTime_TC.h"
 #include "Devices/EEPROM_TC.h"
 #include "Devices/PHControl.h"
-#include "Devices/TemperatureControl.h"
+#include "Devices/ThermalControl.h"
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
 #include "MainMenu.h"
 #include "PHCalibrationPrompt.h"
 #include "TankController.h"
-#include "TempProbe_TC.h"
+#include "ThermalProbe_TC.h"
 
 // globals for the singletons used in every test
 TankController* tc = TankController::instance();
@@ -27,9 +27,9 @@ unittest_setup() {
   PHControl::instance()->setBaseTargetPh(8.100);
   EEPROM_TC::instance()->setPh(8.100);
   tc->setNextState(new MainMenu(), true);
-  TemperatureControl::enableHeater(true);
-  TemperatureControl::instance()->setTargetTemperature(15.75);
-  TempProbe_TC::instance()->setTemperature(12.25, true);
+  ThermalControl::enableHeater(true);
+  ThermalControl::instance()->setThermalTarget(15.75);
+  ThermalProbe_TC::instance()->setTemperature(12.25, true);
   tc->loop(false);  // recognize and apply the targets
   enterKey('D');
 }
@@ -90,7 +90,7 @@ unittest(ViewSettings) {
   assertEqual("T=12.25 H 15.75 ", lc->getLines().at(1));
 }
 
-unittest(SetPHSetPoint) {
+unittest(SetPHTarget) {
   enterKey('A');
   assertEqual("Set pH Set Point", lc->getLines().at(0));
   enterKey('D');

@@ -6,7 +6,7 @@
 #pragma once
 #include "NumberCollectorState.h"
 
-class SetChillOrHeat : public NumCollectorState {
+class SetChillOrHeat : public NumberCollectorState {
 public:
   virtual bool isInteger() {
     return true;

@@ -6,7 +6,7 @@
 #pragma once
 #include "NumberCollectorState.h"
 
-class EnablePID : public NumCollectorState {
+class EnablePID : public NumberCollectorState {
 public:
   virtual bool isInteger() {
     return true;

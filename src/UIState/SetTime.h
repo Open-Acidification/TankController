@@ -6,7 +6,7 @@
 #pragma once
 #include "NumberCollectorState.h"
 
-class SetTime : public NumCollectorState {
+class SetTime : public NumberCollectorState {
 public:
   SetTime();
   virtual bool isInteger() {

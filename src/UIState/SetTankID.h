@@ -7,7 +7,7 @@
 #include "Devices/EEPROM_TC.h"
 #include "NumberCollectorState.h"
 
-class SetTankID : public NumCollectorState {
+class SetTankID : public NumberCollectorState {
 public:
   virtual bool isInteger() {
     return true;

@@ -28,7 +28,7 @@
 #include "Serial_TC.h"
 #include "TC_util.h"
 #include "TankController.h"
-#include "TempProbe_TC.h"
+#include "ThermalProbe_TC.h"
 #include "UIState.h"
 #include "pybind11/pybind11.h"
 
@@ -51,11 +51,11 @@ float eeprom(uint8_t index) {
     case 0:
       return EEPROM_TC::instance()->getPh();
     case 1:
-      return EEPROM_TC::instance()->getTemp();
+      return EEPROM_TC::instance()->getThermalTarget();
     case 2:
       return EEPROM_TC::instance()->getTankID();
     case 3:
-      return EEPROM_TC::instance()->getCorrectedTemp();
+      return EEPROM_TC::instance()->getThermalCorrection();
     case 4:
       return EEPROM_TC::instance()->getKP();
     case 5:
@@ -117,8 +117,7 @@ const char *lcd(uint16_t index) {
 }
 
 float getTemperature() {
-  TempProbe_TC *tempProbe = TempProbe_TC::instance();
-  return tempProbe->getRunningAverage();
+  return ThermalProbe_TC::instance()->getRunningAverage();
 }
 
 void loop() {
@@ -168,8 +167,7 @@ string sdNextValue() {
 }
 
 void setTemperature(float value) {
-  TempProbe_TC *tempProbe = TempProbe_TC::instance();
-  tempProbe->setTemperature(value);
+  ThermalProbe_TC::instance()->setTemperature(value);
 }
 
 void setTime() {

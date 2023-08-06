@@ -1,8 +1,8 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/ThermalControl.h"
+#include "LiquidCrystal_TC.h"
+#include "ThermalControl.h"
 #include "EEPROM_TC.h"
 #include "SetThermalTarget.h"
 #include "TankController.h"

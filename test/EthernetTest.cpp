@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#include "Devices/EEPROM_TC.h"
+#include "EEPROM_TC.h"
 #include "Ethernet_TC.h"
 
 const int PIN = 4;

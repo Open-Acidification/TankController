@@ -1,10 +1,10 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#include "Devices/Keypad_TC.h"
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/PHProbe.h"
-#include "Devices/Serial_TC.h"
+#include "Keypad_TC.h"
+#include "LiquidCrystal_TC.h"
+#include "PHProbe.h"
+#include "Serial_TC.h"
 #include "TankController.h"
 #include "UIState/SeePHCalibration.h"
 

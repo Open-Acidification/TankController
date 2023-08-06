@@ -2,9 +2,9 @@
 #include <ArduinoUnitTests.h>
 #include <ci/ObservableDataStream.h>
 
-#include "Devices/DataLogger_TC.h"
-#include "Devices/DateTime_TC.h"
-#include "Devices/PHProbe.h"
+#include "DataLogger_TC.h"
+#include "DateTime_TC.h"
+#include "PHProbe.h"
 #include "LiquidCrystal_TC.h"
 #include "MainMenu.h"
 #include "PHCalibrationMid.h"

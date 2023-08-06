@@ -2,9 +2,9 @@
 #include <ArduinoUnitTests.h>
 
 #include "DateTime_TC.h"
-#include "Devices/EEPROM_TC.h"
-#include "Devices/PHControl.h"
-#include "Devices/ThermalControl.h"
+#include "EEPROM_TC.h"
+#include "PHControl.h"
+#include "ThermalControl.h"
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
 #include "MainMenu.h"

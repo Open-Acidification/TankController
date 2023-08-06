@@ -3,7 +3,7 @@
 #include <ci/ObservableDataStream.h>
 
 #include "DateTime_TC.h"
-#include "Devices/DataLogger_TC.h"
+#include "DataLogger_TC.h"
 #include "LiquidCrystal_TC.h"
 #include "MainMenu.h"
 #include "PHCalibrationMid.h"

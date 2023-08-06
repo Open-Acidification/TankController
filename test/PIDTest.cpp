@@ -2,9 +2,9 @@
 #include <ArduinoUnitTests.h>
 #include <PID_v1.h>
 
-#include "Devices/DateTime_TC.h"
-#include "Devices/PID_TC.h"
-#include "Devices/Serial_TC.h"
+#include "DateTime_TC.h"
+#include "PID_TC.h"
+#include "Serial_TC.h"
 #include "PHCalibrationHigh.h"
 #include "TC_util.h"
 #include "TankController.h"

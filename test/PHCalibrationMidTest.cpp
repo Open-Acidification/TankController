@@ -1,8 +1,8 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/PHProbe.h"
+#include "LiquidCrystal_TC.h"
+#include "PHProbe.h"
 #include "PHCalibrationMid.h"
 #include "TankController.h"
 

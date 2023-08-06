@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "Devices/LiquidCrystal_TC.h"
+#include "LiquidCrystal_TC.h"
 #include "TankController.h"
 #include "Version.h"
 

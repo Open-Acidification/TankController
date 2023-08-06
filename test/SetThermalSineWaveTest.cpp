@@ -1,12 +1,12 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/ThermalControl.h"
 #include "EEPROM_TC.h"
+#include "LiquidCrystal_TC.h"
 #include "SetThermalSineWave.h"
 #include "TC_util.h"
 #include "TankController.h"
+#include "ThermalControl.h"
 
 unittest_setup() {
   GODMODE()->resetEEPROM();

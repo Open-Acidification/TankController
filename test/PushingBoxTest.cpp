@@ -1,14 +1,14 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#include "Devices/DateTime_TC.h"
-#include "Devices/EEPROM_TC.h"
-#include "Devices/EthernetServer_TC.h"
-#include "Devices/PHControl.h"
-#include "Devices/PushingBox.h"
-#include "Devices/ThermalControl.h"
-#include "Devices/ThermalProbe_TC.h"
+#include "DateTime_TC.h"
+#include "EEPROM_TC.h"
+#include "EthernetServer_TC.h"
+#include "PHControl.h"
+#include "PushingBox.h"
 #include "TankController.h"
+#include "ThermalControl.h"
+#include "ThermalProbe_TC.h"
 #include "UIState/PHCalibrationMid.h"
 
 EthernetClient *pClient;

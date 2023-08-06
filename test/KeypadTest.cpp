@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#include "Devices/Keypad_TC.h"
+#include "Keypad_TC.h"
 
 unittest(constructor) {
   // Test singleton

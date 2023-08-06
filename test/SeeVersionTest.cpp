@@ -1,10 +1,10 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#include "../src/Devices/Keypad_TC.h"
-#include "../src/Devices/LiquidCrystal_TC.h"
-#include "../src/TankController.h"
-#include "../src/UIState/SeeVersion.h"
+#include "Keypad_TC.h"
+#include "LiquidCrystal_TC.h"
+#include "SeeVersion.h"
+#include "TankController.h"
 #include "Version.h"
 
 unittest(testOutput) {

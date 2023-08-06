@@ -1,9 +1,9 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/PHProbe.h"
+#include "LiquidCrystal_TC.h"
 #include "PHCalibrationMid.h"
+#include "PHProbe.h"
 #include "TankController.h"
 
 unittest(onePointMid) {

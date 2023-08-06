@@ -1,9 +1,9 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#include "Devices/EEPROM_TC.h"
-#include "Devices/PHProbe.h"
-#include "Devices/Serial_TC.h"
+#include "EEPROM_TC.h"
+#include "PHProbe.h"
+#include "Serial_TC.h"
 #include "TC_util.h"
 #include "TankController.h"
 

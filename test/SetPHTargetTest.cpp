@@ -1,9 +1,9 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/PHControl.h"
 #include "EEPROM_TC.h"
+#include "LiquidCrystal_TC.h"
+#include "PHControl.h"
 #include "SetPHTarget.h"
 #include "TC_util.h"
 #include "TankController.h"

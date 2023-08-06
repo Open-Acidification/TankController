@@ -2,15 +2,15 @@
 #include <ArduinoUnitTests.h>
 
 #include "DateTime_TC.h"
-#include "Devices/EthernetServer_TC.h"
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/PHControl.h"
-#include "Devices/PHProbe.h"
-#include "Devices/PID_TC.h"
-#include "Devices/ThermalControl.h"
-#include "Devices/ThermalProbe_TC.h"
+#include "EthernetServer_TC.h"
+#include "LiquidCrystal_TC.h"
+#include "PHControl.h"
+#include "PHProbe.h"
+#include "PID_TC.h"
 #include "SetTime.h"
 #include "TankController.h"
+#include "ThermalControl.h"
+#include "ThermalProbe_TC.h"
 #include "Version.h"
 
 unittest_setup() {

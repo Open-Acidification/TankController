@@ -7,10 +7,10 @@
 #include "PHControl.h"
 #include "PHProbe.h"
 #include "PID_TC.h"
-#include "ThermalControl.h"
-#include "ThermalProbe_TC.h"
 #include "SetTime.h"
 #include "TankController.h"
+#include "ThermalControl.h"
+#include "ThermalProbe_TC.h"
 #include "Version.h"
 
 unittest_setup() {

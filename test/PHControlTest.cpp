@@ -4,11 +4,11 @@
 
 #include "DataLogger_TC.h"
 #include "DateTime_TC.h"
-#include "PHProbe.h"
 #include "LiquidCrystal_TC.h"
 #include "MainMenu.h"
 #include "PHCalibrationMid.h"
 #include "PHControl.h"
+#include "PHProbe.h"
 #include "TankController.h"
 
 const uint16_t PH_CONTROL_PIN = 49;

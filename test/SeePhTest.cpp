@@ -2,11 +2,11 @@
 #include <ArduinoUnitTests.h>
 
 #include "DateTime_TC.h"
-#include "PHProbe.h"
 #include "EEPROM_TC.h"
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
 #include "PHControl.h"
+#include "PHProbe.h"
 #include "SeePh.h"
 #include "TankController.h"
 #include "UIState/UIState.h"

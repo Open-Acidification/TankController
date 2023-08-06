@@ -3,13 +3,13 @@
 
 #include "DateTime_TC.h"
 #include "EEPROM_TC.h"
-#include "PHControl.h"
-#include "ThermalControl.h"
 #include "Keypad_TC.h"
 #include "LiquidCrystal_TC.h"
 #include "MainMenu.h"
 #include "PHCalibrationPrompt.h"
+#include "PHControl.h"
 #include "TankController.h"
+#include "ThermalControl.h"
 #include "ThermalProbe_TC.h"
 
 // globals for the singletons used in every test

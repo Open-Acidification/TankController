@@ -1,10 +1,10 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
+#include "EnablePID.h"
 #include "LiquidCrystal_TC.h"
 #include "PHControl.h"
 #include "PHProbe.h"
-#include "EnablePID.h"
 #include "TankController.h"
 
 unittest(IgnoreInvalidCharacter) {

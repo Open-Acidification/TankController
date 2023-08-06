@@ -6,9 +6,9 @@
 #include "EthernetServer_TC.h"
 #include "GetTime.h"
 #include "PHControl.h"
+#include "TankController.h"
 #include "ThermalControl.h"
 #include "ThermalProbe_TC.h"
-#include "TankController.h"
 
 EthernetClient *pClient;
 GodmodeState *state = GODMODE();

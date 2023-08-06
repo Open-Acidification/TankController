@@ -1,8 +1,8 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#include "LiquidCrystal_TC.h"
 #include "EEPROM_TC.h"
+#include "LiquidCrystal_TC.h"
 #include "SetChillOrHeat.h"
 #include "TankController.h"
 

@@ -1,27 +1,27 @@
-#include "DataLogger_TC.h"
+#include "model/DataLogger.h"
 
-#include "Devices/DateTime_TC.h"
-#include "Devices/EEPROM_TC.h"
-#include "Devices/PHControl.h"
-#include "Devices/PHProbe.h"
-#include "Devices/PID_TC.h"
-#include "Devices/SD_TC.h"
-#include "Devices/Serial_TC.h"
-#include "Devices/ThermalControl.h"
-#include "Devices/ThermalProbe_TC.h"
 #include "TankController.h"
+#include "model/PHControl.h"
+#include "model/PHProbe.h"
+#include "model/ThermalControl.h"
+#include "wrappers/DateTime_TC.h"
+#include "wrappers/EEPROM_TC.h"
+#include "wrappers/PID_TC.h"
+#include "wrappers/SD_TC.h"
+#include "wrappers/Serial_TC.h"
+#include "wrappers/ThermalProbe_TC.h"
 
 // class variables
-DataLogger_TC* DataLogger_TC::_instance = nullptr;
+DataLogger* DataLogger::_instance = nullptr;
 
 // class methods
 /**
  * @brief accessor for singleton
  *
  */
-DataLogger_TC* DataLogger_TC::instance() {
+DataLogger* DataLogger::instance() {
   if (!_instance) {
-    _instance = new DataLogger_TC();
+    _instance = new DataLogger();
   }
   return _instance;
 }
@@ -31,7 +31,7 @@ DataLogger_TC* DataLogger_TC::instance() {
  * @brief check timers for logs that should be written
  *
  */
-void DataLogger_TC::loop() {
+void DataLogger::loop() {
   unsigned long msNow = millis();
   if (msNow >= nextSDLogTime) {
     writeToSD();
@@ -46,7 +46,7 @@ void DataLogger_TC::loop() {
  * @brief write the current data to the log file on the SD
  *
  */
-void DataLogger_TC::writeToSD() {
+void DataLogger::writeToSD() {
   char currentTemperatureString[10];
   char currentPhString[10];
   if (TankController::instance()->isInCalibration()) {
@@ -90,7 +90,7 @@ void DataLogger_TC::writeToSD() {
  * @brief write the current data to the serial port
  *
  */
-void DataLogger_TC::writeToSerial() {
+void DataLogger::writeToSerial() {
   DateTime_TC dtNow = DateTime_TC::now();
   char phString[12];
   char temperatureString[11];

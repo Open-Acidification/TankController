@@ -3,8 +3,8 @@
  */
 #include "SetKP.h"
 
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/PID_TC.h"
+#include "wrappers/LiquidCrystal_TC.h"
+#include "wrappers/PID_TC.h"
 
 void SetKP::setValue(float value) {
   PID_TC::instance()->setKp(value);

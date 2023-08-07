@@ -1,10 +1,10 @@
-#include "Ethernet_TC.h"
+#include "wrappers/Ethernet_TC.h"
 
 #include <avr/wdt.h>
 
-#include "Devices/EEPROM_TC.h"
-#include "Devices/Keypad_TC.h"
-#include "Serial_TC.h"
+#include "wrappers/EEPROM_TC.h"
+#include "wrappers/Keypad_TC.h"
+#include "wrappers/Serial_TC.h"
 
 Ethernet_TC *Ethernet_TC::_instance = nullptr;
 

@@ -4,12 +4,12 @@
 
 #include "SeePHCalibration.h"
 
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/PHProbe.h"
-#include "Devices/Serial_TC.h"
-#include "TC_util.h"
 #include "UIState/MainMenu.h"
 #include "UIState/PHCalibrationWarning.h"
+#include "model/PHProbe.h"
+#include "model/TC_util.h"
+#include "wrappers/LiquidCrystal_TC.h"
+#include "wrappers/Serial_TC.h"
 
 SeePHCalibration::SeePHCalibration(bool inCalibration) : UIState() {
   endTime = millis() + 60000;

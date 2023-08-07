@@ -4,9 +4,9 @@
  * Set a temperature sine wave
  */
 #pragma once
-#include "NumberCollectorState.h"
+#include "NumberCollector.h"
 
-class SetThermalSineWave : public NumberCollectorState {
+class SetThermalSineWave : public NumberCollector {
 public:
   SetThermalSineWave();
   const __FlashStringHelper* name() {

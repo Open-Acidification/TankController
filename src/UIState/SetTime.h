@@ -4,9 +4,9 @@
  * Manually set the Arduino date and time
  */
 #pragma once
-#include "NumberCollectorState.h"
+#include "NumberCollector.h"
 
-class SetTime : public NumberCollectorState {
+class SetTime : public NumberCollector {
 public:
   SetTime();
   virtual bool isInteger() {

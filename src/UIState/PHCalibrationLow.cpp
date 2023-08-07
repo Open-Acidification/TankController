@@ -3,11 +3,11 @@
  */
 #include "PHCalibrationLow.h"
 
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/PHProbe.h"
 #include "SeePHCalibration.h"
 #include "UIState.h"
 #include "Wait.h"
+#include "model/PHProbe.h"
+#include "wrappers/LiquidCrystal_TC.h"
 
 void PHCalibrationLow::setValue(float value) {
   PHProbe::instance()->setLowpointCalibration(value);

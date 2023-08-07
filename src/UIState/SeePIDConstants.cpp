@@ -4,11 +4,11 @@
 
 #include "SeePIDConstants.h"
 
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/PHControl.h"
-#include "Devices/PHProbe.h"
-#include "Devices/PID_TC.h"
-#include "TC_util.h"
+#include "model/PHControl.h"
+#include "model/PHProbe.h"
+#include "model/TC_util.h"
+#include "wrappers/LiquidCrystal_TC.h"
+#include "wrappers/PID_TC.h"
 
 void SeePIDConstants::loop() {
   int32_t elapsedSeconds = ((millis() - startTime) / 3000) % 2;

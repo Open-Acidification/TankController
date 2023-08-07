@@ -53,7 +53,7 @@ unittest(NoTankID) {
   tc->loop(false);
   state->serialPort[0].dataOut = "";
   delay(40 * 1000);  // allow 70 seconds (30 + 40) for PushingBox update
-  tc->loop(false);   // Trigger SD logging and Serial (DataLogger_TC) and PushingBox
+  tc->loop(false);   // Trigger SD logging and Serial (DataLogger) and PushingBox
   char expected[] = "Set Tank ID in order to send data to PushingBox\r\n";
   assertEqual(expected, state->serialPort[0].dataOut);
 }

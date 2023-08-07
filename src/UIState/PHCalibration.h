@@ -1,9 +1,9 @@
 #pragma once
-#include "Devices/PHProbe.h"
-#include "NumberCollectorState.h"
+#include "NumberCollector.h"
 #include "SeePHCalibration.h"
+#include "model/PHProbe.h"
 
-class PHCalibration : public NumberCollectorState {
+class PHCalibration : public NumberCollector {
 public:
   bool isInCalibration() override {
     return true;  // disable controls during calibration
@@ -15,7 +15,7 @@ public:
     if (key == 'D') {  // cancel but show calibration status
       this->setNextState(new SeePHCalibration(true));
     } else {
-      NumberCollectorState::handleKey(key);
+      NumberCollector::handleKey(key);
     }
   }
   void loop() override {

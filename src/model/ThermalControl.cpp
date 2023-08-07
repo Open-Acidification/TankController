@@ -1,10 +1,10 @@
-#include "ThermalControl.h"
+#include "model/ThermalControl.h"
 
-#include "Devices/DateTime_TC.h"
-#include "Devices/EEPROM_TC.h"
-#include "Devices/ThermalProbe_TC.h"
-#include "Serial_TC.h"
 #include "TankController.h"
+#include "wrappers/DateTime_TC.h"
+#include "wrappers/EEPROM_TC.h"
+#include "wrappers/Serial_TC.h"
+#include "wrappers/ThermalProbe_TC.h"
 
 const float DEFAULT_TEMPERATURE = 20.0;
 

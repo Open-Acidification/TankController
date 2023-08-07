@@ -1,11 +1,11 @@
-#include "GetTime.h"
+#include "model/GetTime.h"
 
-#include "DateTime_TC.h"
-#include "Devices/EEPROM_TC.h"
-#include "Devices/Ethernet_TC.h"
-#include "Devices/Serial_TC.h"
-#include "TC_util.h"
 #include "TankController.h"
+#include "model/TC_util.h"
+#include "wrappers/DateTime_TC.h"
+#include "wrappers/EEPROM_TC.h"
+#include "wrappers/Ethernet_TC.h"
+#include "wrappers/Serial_TC.h"
 
 //  class variables
 GetTime* GetTime::_instance = nullptr;

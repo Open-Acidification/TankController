@@ -4,9 +4,9 @@
 
 #include "SeeLogFile.h"
 
-#include "../TC_util.h"
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/SD_TC.h"
+#include "model/TC_util.h"
+#include "wrappers/LiquidCrystal_TC.h"
+#include "wrappers/SD_TC.h"
 
 void SeeLogFile::start() {
   LiquidCrystal_TC::instance()->writeLine(prompt(), 0);

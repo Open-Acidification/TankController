@@ -1,12 +1,12 @@
-#include "PushingBox.h"
+#include "model/PushingBox.h"
 
-#include "Devices/EEPROM_TC.h"
-#include "Devices/Ethernet_TC.h"
-#include "Devices/PHProbe.h"
-#include "Devices/Serial_TC.h"
-#include "Devices/ThermalProbe_TC.h"
-#include "TC_util.h"
 #include "TankController.h"
+#include "model/PHProbe.h"
+#include "model/TC_util.h"
+#include "wrappers/EEPROM_TC.h"
+#include "wrappers/Ethernet_TC.h"
+#include "wrappers/Serial_TC.h"
+#include "wrappers/ThermalProbe_TC.h"
 
 //  class variables
 PushingBox* PushingBox::_instance = nullptr;

@@ -4,9 +4,9 @@
  * Set the target pH
  */
 #pragma once
-#include "NumberCollectorState.h"
+#include "NumberCollector.h"
 
-class SetPHTarget : public NumberCollectorState {
+class SetPHTarget : public NumberCollector {
 public:
   SetPHTarget();
   const __FlashStringHelper* name() {

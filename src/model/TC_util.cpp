@@ -1,9 +1,9 @@
-#include "TC_util.h"
+#include "model/TC_util.h"
 
 #include <string.h>
 
-#include "Devices/Serial_TC.h"
 #include "TankController.h"
+#include "wrappers/Serial_TC.h"
 
 // Example: strscpy(buffer, source, sizeof(buffer));
 int strscpy(char *destination, const char *source, unsigned long sizeOfDestination) {

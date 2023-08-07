@@ -3,10 +3,10 @@
  */
 #include "SetThermalTarget.h"
 
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/ThermalControl.h"
+#include "model/ThermalControl.h"
+#include "wrappers/LiquidCrystal_TC.h"
 
-SetThermalTarget::SetThermalTarget() : NumberCollectorState() {
+SetThermalTarget::SetThermalTarget() : NumberCollector() {
   prompts[0] = F("Set Temperature");
   prompts[1] = F("Set ramp hours:");
 }

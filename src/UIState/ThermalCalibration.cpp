@@ -4,8 +4,8 @@
 
 #include "ThermalCalibration.h"
 
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/ThermalProbe_TC.h"
+#include "wrappers/LiquidCrystal_TC.h"
+#include "wrappers/ThermalProbe_TC.h"
 
 void ThermalCalibration::setValue(float value) {
   ThermalProbe_TC *pProbe = ThermalProbe_TC::instance();

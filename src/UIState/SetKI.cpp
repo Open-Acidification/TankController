@@ -3,8 +3,8 @@
  */
 #include "SetKI.h"
 
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/PID_TC.h"
+#include "wrappers/LiquidCrystal_TC.h"
+#include "wrappers/PID_TC.h"
 
 void SetKI::setValue(float value) {
   PID_TC::instance()->setKi(value);

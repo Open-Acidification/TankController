@@ -4,12 +4,12 @@
 
 #include "PHCalibrationWarning.h"
 
-#include "Devices/EEPROM_TC.h"
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/PHProbe.h"
 #include "TankController.h"
 #include "UIState/MainMenu.h"
 #include "UIState/SeePHCalibration.h"
+#include "model/PHProbe.h"
+#include "wrappers/EEPROM_TC.h"
+#include "wrappers/LiquidCrystal_TC.h"
 
 PHCalibrationWarning::PHCalibrationWarning() : UIState() {
   startTime = millis();

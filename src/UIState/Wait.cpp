@@ -1,7 +1,7 @@
 #include "Wait.h"
 
 #include "MainMenu.h"
-#include "TC_util.h"
+#include "model/TC_util.h"
 
 /**
  * @brief Construct a new Wait:: Wait object

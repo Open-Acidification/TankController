@@ -4,9 +4,9 @@
  * Set the target pH
  */
 #pragma once
-#include "NumberCollectorState.h"
+#include "NumberCollector.h"
 
-class SetPHSineWave : public NumberCollectorState {
+class SetPHSineWave : public NumberCollector {
 public:
   SetPHSineWave();
   const __FlashStringHelper* name() {

@@ -4,9 +4,9 @@
  * Set if the chiller or heater is used
  */
 #pragma once
-#include "NumberCollectorState.h"
+#include "NumberCollector.h"
 
-class SetChillOrHeat : public NumberCollectorState {
+class SetChillOrHeat : public NumberCollector {
 public:
   virtual bool isInteger() {
     return true;

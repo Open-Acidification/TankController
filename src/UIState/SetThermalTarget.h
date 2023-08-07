@@ -4,10 +4,10 @@
  * Set the target Temperature
  */
 #pragma once
-#include "Devices/EEPROM_TC.h"
-#include "NumberCollectorState.h"
+#include "NumberCollector.h"
+#include "wrappers/EEPROM_TC.h"
 
-class SetThermalTarget : public NumberCollectorState {
+class SetThermalTarget : public NumberCollector {
 public:
   SetThermalTarget();
   const __FlashStringHelper* name() {

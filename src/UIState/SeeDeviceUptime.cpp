@@ -4,9 +4,9 @@
 
 #include "SeeDeviceUptime.h"
 
-#include "Devices/DateTime_TC.h"
-#include "Devices/LiquidCrystal_TC.h"
-#include "TC_util.h"
+#include "model/TC_util.h"
+#include "wrappers/DateTime_TC.h"
+#include "wrappers/LiquidCrystal_TC.h"
 
 void SeeDeviceUptime::loop() {
   LiquidCrystal_TC::instance()->writeLine(DateTime_TC::now().as16CharacterString(), 0);

@@ -2,7 +2,7 @@
 #include <ArduinoUnitTests.h>
 #include <ci/ObservableDataStream.h>
 
-#include "DataLogger_TC.h"
+#include "DataLogger.h"
 #include "DateTime_TC.h"
 #include "LiquidCrystal_TC.h"
 #include "MainMenu.h"
@@ -19,7 +19,7 @@
  */
 
 const uint16_t THERMAL_CONTROL_PIN = 47;
-DataLogger_TC* dataLog = DataLogger_TC::instance();
+DataLogger* dataLog = DataLogger::instance();
 GodmodeState* state = GODMODE();
 TankController* tc = TankController::instance();
 LiquidCrystal_TC* lc = LiquidCrystal_TC::instance();

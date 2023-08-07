@@ -1,10 +1,10 @@
-#include "Devices/LiquidCrystal_TC.h"
+#include "wrappers/LiquidCrystal_TC.h"
 
-#include "Devices/Serial_TC.h"
 #include "TankController.h"
+#include "wrappers/Serial_TC.h"
 
 // useful for future debugging
-#include "TC_util.h"
+#include "model/TC_util.h"
 
 // pins used for our LiquidDisplay
 const uint16_t RS = 24, EN = 22, D4 = 26, D5 = 28, D6 = 30, D7 = 32;

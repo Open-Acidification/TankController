@@ -4,8 +4,8 @@
 
 #include "EnablePID.h"
 
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/PHControl.h"
+#include "model/PHControl.h"
+#include "wrappers/LiquidCrystal_TC.h"
 
 float EnablePID::getCurrentValue() {
   return PHControl::instance()->getUsePID() ? 1 : 9;

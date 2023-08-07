@@ -19,18 +19,18 @@
 #include <thread>
 #include <vector>
 
+#include "TankController.h"
+#include "UIState/UIState.h"
+#include "model/PhProbe.h"
+#include "model/TC_util.h"
+#include "pybind11/pybind11.h"
 #include "wrappers/DateTime_TC.h"
 #include "wrappers/EEPROM_TC.h"
 #include "wrappers/Keypad_TC.h"
 #include "wrappers/LiquidCrystal_TC.h"
-#include "PhProbe.h"
 #include "wrappers/SD_TC.h"
 #include "wrappers/Serial_TC.h"
-#include "model/TC_util.h"
-#include "TankController.h"
 #include "wrappers/ThermalProbe_TC.h"
-#include "UIState.h"
-#include "pybind11/pybind11.h"
 
 #define LED_PIN 13
 

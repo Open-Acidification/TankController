@@ -4,10 +4,10 @@
  * Set the KD for the PID
  */
 #pragma once
-#include "NumberCollectorState.h"
+#include "NumberCollector.h"
 #include "wrappers/EEPROM_TC.h"
 
-class SetKD : public NumberCollectorState {
+class SetKD : public NumberCollector {
 public:
   const __FlashStringHelper* name() {
     return F("SetKD");

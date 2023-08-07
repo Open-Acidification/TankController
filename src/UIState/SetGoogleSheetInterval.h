@@ -4,10 +4,10 @@
  * Change Google Sheet Interval
  */
 #pragma once
-#include "NumberCollectorState.h"
+#include "NumberCollector.h"
 #include "wrappers/EEPROM_TC.h"
 
-class SetGoogleSheetInterval : public NumberCollectorState {
+class SetGoogleSheetInterval : public NumberCollector {
 public:
   virtual bool isInteger() {
     return true;

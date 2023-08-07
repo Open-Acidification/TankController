@@ -4,9 +4,9 @@
  * Calibrate the thermal probe
  */
 #pragma once
-#include "NumberCollectorState.h"
+#include "NumberCollector.h"
 
-class ThermalCalibration : public NumberCollectorState {
+class ThermalCalibration : public NumberCollector {
 public:
   bool isInCalibration() {
     return true;

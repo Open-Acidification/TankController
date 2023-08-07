@@ -7,7 +7,7 @@
 #include "model/PHControl.h"
 #include "wrappers/LiquidCrystal_TC.h"
 
-SetPHTarget::SetPHTarget() : NumberCollectorState() {
+SetPHTarget::SetPHTarget() : NumberCollector() {
   prompts[0] = F("Set pH Set Point");
   prompts[1] = F("Set ramp hours:");
 }

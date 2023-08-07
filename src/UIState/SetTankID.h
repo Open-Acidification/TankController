@@ -4,10 +4,10 @@
  * Change Tank ID
  */
 #pragma once
-#include "NumberCollectorState.h"
+#include "NumberCollector.h"
 #include "wrappers/EEPROM_TC.h"
 
-class SetTankID : public NumberCollectorState {
+class SetTankID : public NumberCollector {
 public:
   virtual bool isInteger() {
     return true;

@@ -117,7 +117,7 @@ unittest(threePointMid) {
   assertTrue(tc->isInCalibration());
 }
 
-// Test when keys are passed to superclass NumberCollectorState or intercepted
+// Test when keys are passed to superclass NumberCollector or intercepted
 unittest(keyEntry) {
   TankController *tc = TankController::instance();
   PHProbe *pHProbe = PHProbe::instance();

@@ -52,7 +52,7 @@ all : $(BIN)/PHCalibrationWarningTest.cpp.bin $(BIN)/BlinkTest.cpp.bin $(BIN)/Da
   $(BIN)/EnablePIDTest.cpp.bin $(BIN)/EthernetServerTest.cpp.bin $(BIN)/EthernetTest.cpp.bin \
   $(BIN)/GetTimeTest.cpp.bin $(BIN)/JSONBuilderTest.cpp.bin $(BIN)/KeypadTest.cpp.bin \
 	$(BIN)/LiquidCrystalTest.cpp.bin \
-  $(BIN)/MenuTest.cpp.bin $(BIN)/NumberCollectorStateTest.cpp.bin $(BIN)/PHCalibrationHighTest.cpp.bin \
+  $(BIN)/MenuTest.cpp.bin $(BIN)/NumberCollectorTest.cpp.bin $(BIN)/PHCalibrationHighTest.cpp.bin \
   $(BIN)/PHCalibrationLowTest.cpp.bin $(BIN)/PHCalibrationMidTest.cpp.bin \
 	$(BIN)/PHCalibrationPromptTest.cpp.bin $(BIN)/PHControlTest.cpp.bin \
   $(BIN)/PHProbeTest.cpp.bin $(BIN)/PIDTest.cpp.bin $(BIN)/PushingBoxTest.cpp.bin $(BIN)/SDTest.cpp.bin \
@@ -106,8 +106,8 @@ $(BIN)/LiquidCrystalTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/LiquidCrystalTest
 $(BIN)/MenuTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/MenuTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/MenuTest.cpp.bin $(TEST)/MenuTest.cpp -larduino
 
-$(BIN)/NumberCollectorStateTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/NumberCollectorStateTest.cpp $(HEADERS)
-	$(GPP_TEST) -o $(BIN)/NumberCollectorStateTest.cpp.bin $(TEST)/NumberCollectorStateTest.cpp -larduino
+$(BIN)/NumberCollectorTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/NumberCollectorTest.cpp $(HEADERS)
+	$(GPP_TEST) -o $(BIN)/NumberCollectorTest.cpp.bin $(TEST)/NumberCollectorTest.cpp -larduino
 
 $(BIN)/PHCalibrationHighTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/PHCalibrationHighTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/PHCalibrationHighTest.cpp.bin $(TEST)/PHCalibrationHighTest.cpp -larduino
@@ -254,7 +254,7 @@ OBJECTS=$(BIN)/Arduino.o $(BIN)/Godmode.o $(BIN)/stdlib.o $(BIN)/ArduinoUnitTest
   $(BIN)/Keypad_TC.o $(BIN)/LiquidCrystal_TC.o $(BIN)/PHControl.o $(BIN)/PHProbe.o \
   $(BIN)/PID_TC.o $(BIN)/PushingBox.o $(BIN)/SD_TC.o $(BIN)/Serial_TC.o $(BIN)/ThermalProbe_TC.o \
   $(BIN)/ThermalControl.o $(BIN)/PHCalibrationWarning.o $(BIN)/EnablePID.o $(BIN)/MainMenu.o \
-  $(BIN)/NumberCollectorState.o $(BIN)/PHCalibrationHigh.o $(BIN)/PHCalibrationLow.o \
+  $(BIN)/NumberCollector.o $(BIN)/PHCalibrationHigh.o $(BIN)/PHCalibrationLow.o \
   $(BIN)/PHCalibrationMid.o $(BIN)/PHCalibrationPrompt.o $(BIN)/SeeDeviceAddress.o \
 	$(BIN)/SeeDeviceUptime.o $(BIN)/SeeFreeMemory.o \
   $(BIN)/SeeGoogleMins.o $(BIN)/SeeLogFile.o $(BIN)/SeePHCalibration.o \
@@ -348,8 +348,8 @@ $(BIN)/EnablePID.o: $(SRC)/UIState/EnablePID.cpp $(HEADERS)
 $(BIN)/MainMenu.o: $(SRC)/UIState/MainMenu.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/MainMenu.o $(SRC)/UIState/MainMenu.cpp
 
-$(BIN)/NumberCollectorState.o: $(SRC)/UIState/NumberCollectorState.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/NumberCollectorState.o $(SRC)/UIState/NumberCollectorState.cpp
+$(BIN)/NumberCollector.o: $(SRC)/UIState/NumberCollector.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/NumberCollector.o $(SRC)/UIState/NumberCollector.cpp
 
 $(BIN)/PHCalibrationHigh.o: $(SRC)/UIState/PHCalibrationHigh.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/PHCalibrationHigh.o $(SRC)/UIState/PHCalibrationHigh.cpp

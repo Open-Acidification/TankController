@@ -7,7 +7,7 @@
 #include "model/ThermalControl.h"
 #include "wrappers/LiquidCrystal_TC.h"
 
-SetThermalSineWave::SetThermalSineWave() : NumberCollectorState() {
+SetThermalSineWave::SetThermalSineWave() : NumberCollector() {
   prompts[0] = F("Set T Set Point");
   prompts[1] = F("Set Amplitude:");
   prompts[2] = F("Set Period hrs:");

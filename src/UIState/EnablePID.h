@@ -4,9 +4,9 @@
  * Enable PID Controller
  */
 #pragma once
-#include "NumberCollectorState.h"
+#include "NumberCollector.h"
 
-class EnablePID : public NumberCollectorState {
+class EnablePID : public NumberCollector {
 public:
   virtual bool isInteger() {
     return true;

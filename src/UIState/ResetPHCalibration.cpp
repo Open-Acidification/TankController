@@ -3,10 +3,10 @@
  */
 #include "ResetPHCalibration.h"
 
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/PHProbe.h"
 #include "SeePHCalibration.h"
 #include "Wait.h"
+#include "model/PHProbe.h"
+#include "wrappers/LiquidCrystal_TC.h"
 
 void ResetPHCalibration::handleKey(char key) {
   switch (key) {

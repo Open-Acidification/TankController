@@ -5,7 +5,7 @@
  */
 #pragma once
 #include "PHCalibration.h"
-#include "TC_util.h"  // For strnlen
+#include "model/TC_util.h"  // For strnlen
 
 /**
  * @brief Set low/acidic buffer pH value as part of a 3-point calibration

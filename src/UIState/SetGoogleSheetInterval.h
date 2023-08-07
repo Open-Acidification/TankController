@@ -4,8 +4,8 @@
  * Change Google Sheet Interval
  */
 #pragma once
-#include "Devices/EEPROM_TC.h"
 #include "NumberCollectorState.h"
+#include "wrappers/EEPROM_TC.h"
 
 class SetGoogleSheetInterval : public NumberCollectorState {
 public:

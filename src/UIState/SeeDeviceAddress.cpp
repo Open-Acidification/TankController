@@ -6,9 +6,9 @@
 
 #include <avr/wdt.h>
 
-#include "Devices/Ethernet_TC.h"
-#include "Devices/LiquidCrystal_TC.h"
 #include "Ethernet.h"
+#include "wrappers/Ethernet_TC.h"
+#include "wrappers/LiquidCrystal_TC.h"
 
 void SeeDeviceAddress::handleKey(char key) {
   switch (key) {

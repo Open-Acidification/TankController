@@ -1,10 +1,5 @@
 #include "MainMenu.h"
 
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/PHControl.h"
-#include "Devices/PHProbe.h"
-#include "Devices/ThermalControl.h"
-#include "Devices/ThermalProbe_TC.h"
 #include "EnablePID.h"
 #include "PHCalibrationPrompt.h"
 #include "PHCalibrationWarning.h"
@@ -32,6 +27,11 @@
 #include "SetThermalTarget.h"
 #include "SetTime.h"
 #include "ThermalCalibration.h"
+#include "model/PHControl.h"
+#include "model/PHProbe.h"
+#include "model/ThermalControl.h"
+#include "wrappers/LiquidCrystal_TC.h"
+#include "wrappers/ThermalProbe_TC.h"
 
 MainMenu::MainMenu() : UIState() {
   viewMenus[VIEW_ADDRESS] = F("View IP and MAC");

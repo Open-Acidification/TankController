@@ -4,9 +4,9 @@
 
 #include "SetChillOrHeat.h"
 
-#include "Devices/EEPROM_TC.h"
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/ThermalControl.h"
+#include "model/ThermalControl.h"
+#include "wrappers/EEPROM_TC.h"
+#include "wrappers/LiquidCrystal_TC.h"
 
 float SetChillOrHeat::getCurrentValue() {
   return EEPROM_TC::instance()->getHeat() ? 9 : 1;

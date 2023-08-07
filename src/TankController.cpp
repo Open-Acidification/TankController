@@ -3,26 +3,26 @@
 #include <avr/wdt.h>
 #include <stdlib.h>
 
-#include "Devices/DataLogger_TC.h"
-#include "Devices/DateTime_TC.h"
-#include "Devices/EEPROM_TC.h"
-#include "Devices/EthernetServer_TC.h"
-#include "Devices/Ethernet_TC.h"
-#include "Devices/GetTime.h"
-#include "Devices/Keypad_TC.h"
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/PHControl.h"
-#include "Devices/PHProbe.h"
-#include "Devices/PID_TC.h"
-#include "Devices/PushingBox.h"
-#include "Devices/SD_TC.h"
-#include "Devices/Serial_TC.h"
-#include "Devices/ThermalControl.h"
-#include "Devices/ThermalProbe_TC.h"
-#include "TC_util.h"
 #include "UIState/MainMenu.h"
 #include "UIState/UIState.h"
 #include "Version.h"
+#include "model/DataLogger.h"
+#include "model/GetTime.h"
+#include "model/PHControl.h"
+#include "model/PHProbe.h"
+#include "model/PushingBox.h"
+#include "model/TC_util.h"
+#include "model/ThermalControl.h"
+#include "wrappers/DateTime_TC.h"
+#include "wrappers/EEPROM_TC.h"
+#include "wrappers/EthernetServer_TC.h"
+#include "wrappers/Ethernet_TC.h"
+#include "wrappers/Keypad_TC.h"
+#include "wrappers/LiquidCrystal_TC.h"
+#include "wrappers/PID_TC.h"
+#include "wrappers/SD_TC.h"
+#include "wrappers/Serial_TC.h"
+#include "wrappers/ThermalProbe_TC.h"
 
 const char TANK_CONTROLLER_VERSION[] = VERSION;
 
@@ -56,7 +56,7 @@ TankController::TankController() {
   EEPROM_TC::instance();
   Keypad_TC::instance();
   LiquidCrystal_TC::instance(TANK_CONTROLLER_VERSION);
-  DataLogger_TC::instance();
+  DataLogger::instance();
   DateTime_TC::rtc();
   Ethernet_TC::instance();
   ThermalProbe_TC::instance();
@@ -160,7 +160,7 @@ void TankController::loop(bool report_loop_delay) {
   blink();                                // blink the on-board LED to show that we are running
   updateControls();                       // turn CO2 and temperature controls on or off
   handleUI();                             // look at keypad, update LCD (~90ms)
-  DataLogger_TC::instance()->loop();      // record current data to SD and serial
+  DataLogger::instance()->loop();         // record current data to SD and serial
   GetTime::instance()->loop();            // update the time
   PushingBox::instance()->loop();         // write data to Google Sheets (~1130ms every report)
   Ethernet_TC::instance()->loop();        // renew DHCP lease

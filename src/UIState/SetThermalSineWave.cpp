@@ -4,8 +4,8 @@
 
 #include "SetThermalSineWave.h"
 
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/ThermalControl.h"
+#include "model/ThermalControl.h"
+#include "wrappers/LiquidCrystal_TC.h"
 
 SetThermalSineWave::SetThermalSineWave() : NumberCollectorState() {
   prompts[0] = F("Set T Set Point");

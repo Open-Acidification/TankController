@@ -1,9 +1,9 @@
-#include "Devices/ThermalProbe_TC.h"
+#include "wrappers/ThermalProbe_TC.h"
 
-#include "DateTime_TC.h"
-#include "EEPROM_TC.h"
-#include "Serial_TC.h"
-#include "TC_util.h"
+#include "model/TC_util.h"
+#include "wrappers/DateTime_TC.h"
+#include "wrappers/EEPROM_TC.h"
+#include "wrappers/Serial_TC.h"
 
 //  class instance variables
 /**

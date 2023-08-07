@@ -5,10 +5,10 @@
 #define SD_LOGGING_INTERVAL 1000
 #define SERIAL_LOGGING_INTERVAL 60000
 
-class DataLogger_TC {
+class DataLogger {
 public:
   // class methods
-  static DataLogger_TC *instance();
+  static DataLogger *instance();
 
   // instance methods
   void loop();
@@ -18,7 +18,7 @@ public:
 
 private:
   // class variables
-  static DataLogger_TC *_instance;
+  static DataLogger *_instance;
 
   // instance variables
   uint32_t nextSDLogTime = 0;

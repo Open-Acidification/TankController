@@ -4,8 +4,8 @@
 
 #include "SetPHSineWave.h"
 
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/PHControl.h"
+#include "model/PHControl.h"
+#include "wrappers/LiquidCrystal_TC.h"
 
 SetPHSineWave::SetPHSineWave() : NumberCollectorState() {
   prompts[0] = F("Set pH Mean:");

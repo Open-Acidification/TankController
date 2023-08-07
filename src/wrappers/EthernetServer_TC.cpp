@@ -1,15 +1,15 @@
-#include "Devices/EthernetServer_TC.h"
+#include "wrappers/EthernetServer_TC.h"
 
 #include <avr/wdt.h>
 
-#include "DateTime_TC.h"
-#include "Devices/Ethernet_TC.h"
-#include "Devices/JSONBuilder.h"
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/PID_TC.h"
-#include "Devices/favicon.h"
-#include "Serial_TC.h"
 #include "TankController.h"
+#include "favicon.h"
+#include "model/JSONBuilder.h"
+#include "wrappers/DateTime_TC.h"
+#include "wrappers/Ethernet_TC.h"
+#include "wrappers/LiquidCrystal_TC.h"
+#include "wrappers/PID_TC.h"
+#include "wrappers/Serial_TC.h"
 
 #define BUFFER_SIZE 200
 

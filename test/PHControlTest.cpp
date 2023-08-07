@@ -2,7 +2,7 @@
 #include <ArduinoUnitTests.h>
 #include <ci/ObservableDataStream.h>
 
-#include "DataLogger_TC.h"
+#include "DataLogger.h"
 #include "DateTime_TC.h"
 #include "LiquidCrystal_TC.h"
 #include "MainMenu.h"
@@ -18,7 +18,7 @@ TankController* tc = TankController::instance();
 PHControl* controlSolenoid = PHControl::instance();
 PHProbe* pHProbe = PHProbe::instance();
 LiquidCrystal_TC* lc = LiquidCrystal_TC::instance();
-DataLogger_TC* dataLog = DataLogger_TC::instance();
+DataLogger* dataLog = DataLogger::instance();
 
 /**
  * cycle the control through to a point of being off
@@ -208,8 +208,8 @@ unittest(RampGreaterThanZero) {
   assertEqual("01/15/2021 02:18:35,   0, 0.00, 20.00, 8.500, 8.000, 1811, 100000.0,      0.0,      0.0",
               dataLog->buffer);
   delay(1800000);  // delay 30 minutes
-  // First loop triggers SD logging (DataLogger_TC) and PushingBox
-  // Second loop triggers Serial logging (DataLogger_TC)
+  // First loop triggers SD logging (DataLogger) and PushingBox
+  // Second loop triggers Serial logging (DataLogger)
   tc->loop(false);
   assertTrue(7.5 <= controlSolenoid->getCurrentTargetPh() && controlSolenoid->getCurrentTargetPh() <= 7.51);
   assertEqual("pH=8.500 B 7.500", lc->getLines().at(0));

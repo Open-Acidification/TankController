@@ -4,7 +4,7 @@
 #endif
 #include <Arduino.h>
 
-#include "TC_util.h"
+#include "model/TC_util.h"
 
 #define TURN_SOLENOID_OFF HIGH
 #define TURN_SOLENOID_ON LOW

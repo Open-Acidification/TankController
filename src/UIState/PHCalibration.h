@@ -1,7 +1,7 @@
 #pragma once
-#include "Devices/PHProbe.h"
 #include "NumberCollectorState.h"
 #include "SeePHCalibration.h"
+#include "model/PHProbe.h"
 
 class PHCalibration : public NumberCollectorState {
 public:

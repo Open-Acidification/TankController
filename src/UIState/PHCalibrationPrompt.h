@@ -5,7 +5,7 @@
  */
 #pragma once
 #include "PHCalibration.h"
-#include "TC_util.h"  // For strnlen
+#include "model/TC_util.h"  // For strnlen
 
 class PHCalibrationPrompt : public PHCalibration {
 public:

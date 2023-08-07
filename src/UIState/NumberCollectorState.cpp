@@ -2,11 +2,11 @@
 
 #include <math.h>
 
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/Serial_TC.h"
 #include "MainMenu.h"
+#include "wrappers/LiquidCrystal_TC.h"
+#include "wrappers/Serial_TC.h"
 // useful for future debugging
-#include "TC_util.h"
+#include "model/TC_util.h"
 
 void NumberCollectorState::clear() {
   hasDecimal = false;

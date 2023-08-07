@@ -4,8 +4,8 @@
  * Change Tank ID
  */
 #pragma once
-#include "Devices/EEPROM_TC.h"
 #include "NumberCollectorState.h"
+#include "wrappers/EEPROM_TC.h"
 
 class SetTankID : public NumberCollectorState {
 public:

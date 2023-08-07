@@ -1,16 +1,16 @@
-#include "JSONBuilder.h"
+#include "model/JSONBuilder.h"
 
 // Include all relevant classes
-#include "Devices/EEPROM_TC.h"
-#include "Devices/Ethernet_TC.h"
-#include "Devices/PHControl.h"
-#include "Devices/PHProbe.h"
-#include "Devices/PID_TC.h"
-#include "Devices/SD_TC.h"
-#include "Devices/ThermalControl.h"
-#include "Devices/ThermalProbe_TC.h"
-#include "TC_util.h"
 #include "TankController.h"
+#include "model/PHControl.h"
+#include "model/PHProbe.h"
+#include "model/TC_util.h"
+#include "model/ThermalControl.h"
+#include "wrappers/EEPROM_TC.h"
+#include "wrappers/Ethernet_TC.h"
+#include "wrappers/PID_TC.h"
+#include "wrappers/SD_TC.h"
+#include "wrappers/ThermalProbe_TC.h"
 
 int JSONBuilder::buildCurrentValues() {
   // Grab all necessary pieces

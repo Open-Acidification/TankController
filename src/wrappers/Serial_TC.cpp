@@ -1,8 +1,8 @@
-#include "Devices/Serial_TC.h"
+#include "wrappers/Serial_TC.h"
 
-#include "DateTime_TC.h"
-#include "SD_TC.h"
-#include "TC_util.h"
+#include "model/TC_util.h"
+#include "wrappers/DateTime_TC.h"
+#include "wrappers/SD_TC.h"
 
 /**
  * global serial() functions

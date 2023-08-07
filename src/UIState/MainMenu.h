@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include "../TC_util.h"
 #include "UIState.h"
+#include "model/TC_util.h"
 
 class TankController;  // forward reference
 class MainMenu : public UIState {

@@ -1,9 +1,9 @@
-#include "Devices/EEPROM_TC.h"
+#include "wrappers/EEPROM_TC.h"
 
 #include <EEPROM.h>
 
-#include "Devices/Serial_TC.h"
-#include "TC_util.h"
+#include "model/TC_util.h"
+#include "wrappers/Serial_TC.h"
 //  class variables
 EEPROM_TC* EEPROM_TC::_instance = nullptr;
 

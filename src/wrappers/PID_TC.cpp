@@ -1,9 +1,9 @@
-#include "Devices/PID_TC.h"
+#include "wrappers/PID_TC.h"
 
-#include "Devices/EEPROM_TC.h"
-#include "Devices/Serial_TC.h"
-#include "TC_util.h"
 #include "TankController.h"
+#include "model/TC_util.h"
+#include "wrappers/EEPROM_TC.h"
+#include "wrappers/Serial_TC.h"
 
 // class variable
 PID_TC *PID_TC::_instance = nullptr;

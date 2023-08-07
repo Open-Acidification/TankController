@@ -4,10 +4,10 @@
 
 #include "SetTime.h"
 
-#include "Devices/DateTime_TC.h"
-#include "Devices/EEPROM_TC.h"
-#include "Devices/LiquidCrystal_TC.h"
-#include "Devices/Serial_TC.h"
+#include "wrappers/DateTime_TC.h"
+#include "wrappers/EEPROM_TC.h"
+#include "wrappers/LiquidCrystal_TC.h"
+#include "wrappers/Serial_TC.h"
 
 SetTime::SetTime() : NumberCollectorState() {
   prompts[0] = F("Set Year (YYYY):");

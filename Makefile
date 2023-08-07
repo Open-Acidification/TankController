@@ -22,8 +22,9 @@ FLAGS=-std=c++0x \
 INCLUDE=-I$(ARDUINO_CI)/arduino \
   -I$(ARDUINO_CI)/unittest \
   -I$(LIBRARIES)/TankController/src \
-  -I$(LIBRARIES)/TankController/src/Devices \
+  -I$(LIBRARIES)/TankController/src/model \
   -I$(LIBRARIES)/TankController/src/UIState \
+  -I$(LIBRARIES)/TankController/src/wrappers \
   -I$(LIBRARIES)/Adafruit_BusIO/src \
   -I$(LIBRARIES)/Adafruit_MAX31865_library/src \
   -I$(LIBRARIES)/PID/src \
@@ -44,7 +45,7 @@ INCLUDE=-I$(ARDUINO_CI)/arduino \
   -I$(LIBRARIES)/SdFat/src/common \
   -I$(LIBRARIES)/SdFat/src/iostream
 
-HEADERS=$(wildcard src/*.h) $(wildcard src/Devices/*) $(wildcard src/UIState/*)
+HEADERS=$(wildcard src/*.h) $(wildcard src/wrappers/*) $(wildcard src/UIState/*)
 
 .PHONY : all
 all : $(BIN)/PHCalibrationWarningTest.cpp.bin $(BIN)/BlinkTest.cpp.bin $(BIN)/DateTimeTest.cpp.bin $(BIN)/EEPROMTest.cpp.bin \
@@ -247,7 +248,7 @@ SDFAT=$(BIN)/FreeStack.o $(BIN)/MinimumSerial.o $(BIN)/File_CI.o $(BIN)/SD_CI.o 
   $(BIN)/istream.o $(BIN)/ostream.o
 
 OBJECTS=$(BIN)/Arduino.o $(BIN)/Godmode.o $(BIN)/stdlib.o $(BIN)/ArduinoUnitTests.o \
-  $(BIN)/TC_util.o $(BIN)/TankController.o $(BIN)/DataLogger_TC.o $(BIN)/DateTime_TC.o \
+  $(BIN)/TC_util.o $(BIN)/TankController.o $(BIN)/DataLogger.o $(BIN)/DateTime_TC.o \
   $(BIN)/EEPROM_TC.o $(BIN)/EthernetServer_TC.o $(BIN)/Ethernet_TC.o $(BIN)/GetTime.o \
 	$(BIN)/JSONBuilder.o \
   $(BIN)/Keypad_TC.o $(BIN)/LiquidCrystal_TC.o $(BIN)/PHControl.o $(BIN)/PHProbe.o \
@@ -281,62 +282,62 @@ $(BIN)/stdlib.o: $(ARDUINO_CI)/arduino/stdlib.cpp $(HEADERS)
 $(BIN)/ArduinoUnitTests.o: $(ARDUINO_CI)/unittest/ArduinoUnitTests.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/ArduinoUnitTests.o $(ARDUINO_CI)/unittest/ArduinoUnitTests.cpp
 
-$(BIN)/TC_util.o: $(SRC)/TC_util.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/TC_util.o $(SRC)/TC_util.cpp
+$(BIN)/TC_util.o: $(SRC)/model/TC_util.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/TC_util.o $(SRC)/model/TC_util.cpp
 
 $(BIN)/TankController.o: $(SRC)/TankController.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/TankController.o $(SRC)/TankController.cpp
 
-$(BIN)/DataLogger_TC.o: $(SRC)/Devices/DataLogger_TC.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/DataLogger_TC.o $(SRC)/Devices/DataLogger_TC.cpp
+$(BIN)/DataLogger.o: $(SRC)/model/DataLogger.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/DataLogger.o $(SRC)/model/DataLogger.cpp
 
-$(BIN)/DateTime_TC.o: $(SRC)/Devices/DateTime_TC.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/DateTime_TC.o $(SRC)/Devices/DateTime_TC.cpp
+$(BIN)/DateTime_TC.o: $(SRC)/wrappers/DateTime_TC.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/DateTime_TC.o $(SRC)/wrappers/DateTime_TC.cpp
 
-$(BIN)/EEPROM_TC.o: $(SRC)/Devices/EEPROM_TC.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/EEPROM_TC.o $(SRC)/Devices/EEPROM_TC.cpp
+$(BIN)/EEPROM_TC.o: $(SRC)/wrappers/EEPROM_TC.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/EEPROM_TC.o $(SRC)/wrappers/EEPROM_TC.cpp
 
-$(BIN)/EthernetServer_TC.o: $(SRC)/Devices/EthernetServer_TC.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/EthernetServer_TC.o $(SRC)/Devices/EthernetServer_TC.cpp
+$(BIN)/EthernetServer_TC.o: $(SRC)/wrappers/EthernetServer_TC.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/EthernetServer_TC.o $(SRC)/wrappers/EthernetServer_TC.cpp
 
-$(BIN)/Ethernet_TC.o: $(SRC)/Devices/Ethernet_TC.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/Ethernet_TC.o $(SRC)/Devices/Ethernet_TC.cpp
+$(BIN)/Ethernet_TC.o: $(SRC)/wrappers/Ethernet_TC.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/Ethernet_TC.o $(SRC)/wrappers/Ethernet_TC.cpp
 
-$(BIN)/JSONBuilder.o: $(SRC)/Devices/JSONBuilder.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/JSONBuilder.o $(SRC)/Devices/JSONBuilder.cpp
+$(BIN)/JSONBuilder.o: $(SRC)/model/JSONBuilder.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/JSONBuilder.o $(SRC)/model/JSONBuilder.cpp
 
-$(BIN)/GetTime.o: $(SRC)/Devices/GetTime.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/GetTime.o $(SRC)/Devices/GetTime.cpp
+$(BIN)/GetTime.o: $(SRC)/model/GetTime.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/GetTime.o $(SRC)/model/GetTime.cpp
 
-$(BIN)/Keypad_TC.o: $(SRC)/Devices/Keypad_TC.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/Keypad_TC.o $(SRC)/Devices/Keypad_TC.cpp
+$(BIN)/Keypad_TC.o: $(SRC)/wrappers/Keypad_TC.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/Keypad_TC.o $(SRC)/wrappers/Keypad_TC.cpp
 
-$(BIN)/LiquidCrystal_TC.o: $(SRC)/Devices/LiquidCrystal_TC.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/LiquidCrystal_TC.o $(SRC)/Devices/LiquidCrystal_TC.cpp
+$(BIN)/LiquidCrystal_TC.o: $(SRC)/wrappers/LiquidCrystal_TC.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/LiquidCrystal_TC.o $(SRC)/wrappers/LiquidCrystal_TC.cpp
 
-$(BIN)/PHControl.o: $(SRC)/Devices/PHControl.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/PHControl.o $(SRC)/Devices/PHControl.cpp
+$(BIN)/PHControl.o: $(SRC)/model/PHControl.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/PHControl.o $(SRC)/model/PHControl.cpp
 
-$(BIN)/PHProbe.o: $(SRC)/Devices/PHProbe.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/PHProbe.o $(SRC)/Devices/PHProbe.cpp
+$(BIN)/PHProbe.o: $(SRC)/model/PHProbe.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/PHProbe.o $(SRC)/model/PHProbe.cpp
 
-$(BIN)/PID_TC.o: $(SRC)/Devices/PID_TC.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/PID_TC.o $(SRC)/Devices/PID_TC.cpp
+$(BIN)/PID_TC.o: $(SRC)/wrappers/PID_TC.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/PID_TC.o $(SRC)/wrappers/PID_TC.cpp
 
-$(BIN)/PushingBox.o: $(SRC)/Devices/PushingBox.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/PushingBox.o $(SRC)/Devices/PushingBox.cpp
+$(BIN)/PushingBox.o: $(SRC)/model/PushingBox.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/PushingBox.o $(SRC)/model/PushingBox.cpp
 
-$(BIN)/SD_TC.o: $(SRC)/Devices/SD_TC.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SD_TC.o $(SRC)/Devices/SD_TC.cpp
+$(BIN)/SD_TC.o: $(SRC)/wrappers/SD_TC.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SD_TC.o $(SRC)/wrappers/SD_TC.cpp
 
-$(BIN)/Serial_TC.o: $(SRC)/Devices/Serial_TC.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/Serial_TC.o $(SRC)/Devices/Serial_TC.cpp
+$(BIN)/Serial_TC.o: $(SRC)/wrappers/Serial_TC.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/Serial_TC.o $(SRC)/wrappers/Serial_TC.cpp
 
-$(BIN)/ThermalProbe_TC.o: $(SRC)/Devices/ThermalProbe_TC.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/ThermalProbe_TC.o $(SRC)/Devices/ThermalProbe_TC.cpp
+$(BIN)/ThermalProbe_TC.o: $(SRC)/wrappers/ThermalProbe_TC.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/ThermalProbe_TC.o $(SRC)/wrappers/ThermalProbe_TC.cpp
 
-$(BIN)/ThermalControl.o: $(SRC)/Devices/ThermalControl.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/ThermalControl.o $(SRC)/Devices/ThermalControl.cpp
+$(BIN)/ThermalControl.o: $(SRC)/model/ThermalControl.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/ThermalControl.o $(SRC)/model/ThermalControl.cpp
 
 $(BIN)/PHCalibrationWarning.o: $(SRC)/UIState/PHCalibrationWarning.cpp  $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/PHCalibrationWarning.o $(SRC)/UIState/PHCalibrationWarning.cpp

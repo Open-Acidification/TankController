@@ -1,6 +1,6 @@
-#include "Devices/Keypad_TC.h"
+#include "wrappers/Keypad_TC.h"
 
-#include "Devices/Serial_TC.h"
+#include "wrappers/Serial_TC.h"
 
 const byte ROWS = 4;
 const byte COLS = 4;

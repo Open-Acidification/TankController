@@ -1,7 +1,7 @@
 #pragma once
 #include <Arduino.h>
 
-#include "Ethernet_TC.h"
+#include "wrappers/Ethernet_TC.h"
 
 class GetTime {
 public:

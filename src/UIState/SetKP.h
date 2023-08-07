@@ -4,8 +4,8 @@
  * Set the KP for the PID
  */
 #pragma once
-#include "Devices/EEPROM_TC.h"
 #include "NumberCollectorState.h"
+#include "wrappers/EEPROM_TC.h"
 
 class SetKP : public NumberCollectorState {
 public:

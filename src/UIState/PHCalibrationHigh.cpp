@@ -3,10 +3,10 @@
  */
 #include "PHCalibrationHigh.h"
 
-#include "wrappers/LiquidCrystal_TC.h"
-#include "model/PHProbe.h"
 #include "PHCalibrationLow.h"
 #include "Wait.h"
+#include "model/PHProbe.h"
+#include "wrappers/LiquidCrystal_TC.h"
 
 void PHCalibrationHigh::setValue(float value) {
   PHProbe::instance()->setHighpointCalibration(value);

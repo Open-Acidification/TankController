@@ -2,8 +2,8 @@
 
 #include <string.h>
 
-#include "wrappers/Serial_TC.h"
 #include "model/TC_util.h"
+#include "wrappers/Serial_TC.h"
 
 RTC_PCF8523 *DateTime_TC::_rtc = nullptr;
 

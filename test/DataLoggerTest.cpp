@@ -39,7 +39,7 @@ unittest(loop) {
   tc->loop(false);  // write info to log file
   char infoString[512] = "";
   snprintf(infoString, sizeof(infoString), "%s\t%s", VERSION,
-           "0\t08/15/2023 00:01:00\t0.00\t20.00\t0.000\t8.100\t60\t100000.0\t0.0\t0.0");
+           "0\tI\t2023-08-15 00:01:00\t0.00\t20.00\t0.000\t8.100\t100000.0\t0.0\t0.0");
   assertEqual(infoString, sd->mostRecentInfo);
   assertEqual("New info written to log", serialPort->getBuffer());
 }

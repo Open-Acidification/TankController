@@ -71,12 +71,12 @@ void DataLogger::writeInfoToLog() {
   floattostrf(pPID->getKi(), 1, 1, ki, sizeof(ki));
   floattostrf(pPID->getKd(), 1, 1, kd, sizeof(kd));
   // version,tankid,time,thermal value,thermal target,pH,pH target,uptime in seconds,Kp,Ki,Kd
-  const __FlashStringHelper* format = F("%s\t%i\t%02i/%02i/%4i %02i:%02i:%02i\t%s\t%s\t%s\t%s\t%lu\t%s\t%s\t%s");
+  const __FlashStringHelper* format = F("%s\t%i\tI\t%04i-%02i-%2i %02i:%02i:%02i\t%s\t%s\t%s\t%s\t%s\t%s\t%s");
   int length;
-  length = snprintf_P(buffer, sizeof(buffer), (PGM_P)format, VERSION, (uint16_t)tankId, (uint16_t)dtNow.month(),
-                      (uint16_t)dtNow.day(), (uint16_t)dtNow.year(), (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(),
-                      (uint16_t)dtNow.second(), currentTemperatureString, thermalTarget, currentPhString, pHTarget,
-                      (unsigned long)(millis() / 1000), kp, ki, kd);
+  length = snprintf_P(buffer, sizeof(buffer), (PGM_P)format, VERSION, (uint16_t)tankId, (uint16_t)dtNow.year(),
+                      (uint16_t)dtNow.month(), (uint16_t)dtNow.day(), (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(),
+                      (uint16_t)dtNow.second(), currentTemperatureString, thermalTarget, currentPhString, pHTarget, kp,
+                      ki, kd);
   if ((length > sizeof(buffer)) || (length < 0)) {
     // TODO: Log a warning that string was truncated
     serial(F("WARNING! String was truncated to \"%s\""), buffer);

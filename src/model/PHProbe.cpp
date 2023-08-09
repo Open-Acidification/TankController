@@ -85,12 +85,13 @@ void PHProbe::serialEvent1() {
         if (string.length() > 7 && memcmp_P(string.c_str(), F("?SLOPE,"), 7) == 0) {
           // for example "?SLOPE,16.1,100.0"
           strscpy(slopeResponse, string.c_str() + 7, sizeof(slopeResponse));
-          char acidSlopePercent[7];
-          char baseSlopePercent[7];
-          char millivoltOffset[7];
-          sscanf_P(slopeResponse, PSTR(" %[^,] , %[^,] , %s"), acidSlopePercent, baseSlopePercent, millivoltOffset);
-          if ((95.0 <= strtofloat(acidSlopePercent)) && (strtofloat(acidSlopePercent) <= 105.0) &&
-              (95.0 <= strtofloat(baseSlopePercent)) && (strtofloat(baseSlopePercent) <= 105.0)) {
+          char acidSlopePercentString[7];
+          char baseSlopePercentString[7];
+          char millivoltOffsetString[7];
+          sscanf_P(slopeResponse, PSTR(" %[^,] , %[^,] , %s"), acidSlopePercentString, baseSlopePercentString,
+                   millivoltOffsetString);
+          if ((95.0 <= strtofloat(acidSlopePercentString)) && (strtofloat(acidSlopePercentString) <= 105.0) &&
+              (95.0 <= strtofloat(baseSlopePercentString)) && (strtofloat(baseSlopePercentString) <= 105.0)) {
             slopeIsOutOfRange = false;
             EEPROM_TC::instance()->setIgnoreBadPHSlope(false);
             serial(F("pH slopes are within 5%% of ideal"));

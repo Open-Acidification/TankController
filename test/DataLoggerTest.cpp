@@ -38,19 +38,33 @@ unittest(loop) {
   delay(1000);
   tc->loop(false);  // write info to log file
   char infoString[512] = "";
-  snprintf(infoString, sizeof(infoString), "%s\t%s", VERSION,
-           "0\tI\t2023-08-15 00:01:00\t0.00\t20.00\t0.000\t8.100\t100000.0\t0.0\t0.0");
-  assertEqual(infoString, sd->mostRecentInfo);
+  snprintf(infoString, sizeof(infoString), "%s\t%s", VERSION, "0\tI\t2023-08-15 00:01:00\t0.00\t20.00\t0.000\t8.100");
+  assertEqual(infoString, sd->mostRecentStatusEntry);
   assertEqual("New info written to log", serialPort->getBuffer());
 }
 
-unittest(writeToSDTest) {
+unittest(writeToSD) {
   // TODO: This is tested in SDTest.cpp but should be moved here so that those tests are not dependent on DataLogger's
   // loop structure
 }
 
-unittest(writeToSerialTest) {
+unittest(writeToSerial) {
   // TODO
+}
+
+unittest(writeWarningToLog) {
+  DataLogger* dl = DataLogger::instance();
+  assertFalse(dl->getShouldWriteWarning());
+  dl->writeWarningSoon();
+  assertTrue(dl->getShouldWriteWarning());
+  delay(19000);
+  tc->loop(false);  // write the warning
+  char warningString[512] = "";
+  snprintf(warningString, sizeof(warningString), "%s\t%s", VERSION,
+           "0\tW\t2023-08-15 00:00:19\t19\t90:A2:DA:80:7B:76\tRequesting...");
+  assertEqual(warningString, sd->mostRecentStatusEntry);
+  assertEqual("New warning written to log", serialPort->getBuffer());
+  assertFalse(dl->getShouldWriteWarning());
 }
 
 unittest_main()

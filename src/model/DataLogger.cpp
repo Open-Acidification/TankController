@@ -7,6 +7,7 @@
 #include "model/ThermalControl.h"
 #include "wrappers/DateTime_TC.h"
 #include "wrappers/EEPROM_TC.h"
+#include "wrappers/Ethernet_TC.h"
 #include "wrappers/PID_TC.h"
 #include "wrappers/SD_TC.h"
 #include "wrappers/Serial_TC.h"
@@ -34,7 +35,10 @@ DataLogger* DataLogger::instance() {
  */
 void DataLogger::loop() {
   unsigned long msNow = millis();
-  if (msNow >= nextInfoLogTime) {
+  if (shouldWriteWarning) {
+    writeWarningToLog();
+    shouldWriteWarning = false;
+  } else if (msNow >= nextInfoLogTime) {
     writeInfoToLog();
     nextInfoLogTime = (msNow / (unsigned long)INFO_LOGGING_INTERVAL + 1) * (unsigned long)INFO_LOGGING_INTERVAL;
   } else if (msNow >= nextSDLogTime) {
@@ -46,6 +50,29 @@ void DataLogger::loop() {
   }
 }
 
+/**
+ * @brief writes first four fields of status prefix to instance's buffer string
+ *
+ * @param severity 'D' for debug, 'I' for info, 'W' for warning, 'E' for error, 'F' for fatal
+ */
+void DataLogger::writePrefixToBuffer(const char severity) {
+  // version \t tankid \t severity \t timestamp
+  const __FlashStringHelper* format = F("%s\t%i\t%c\t%04i-%02i-%2i %02i:%02i:%02i");
+  DateTime_TC dtNow = DateTime_TC::now();
+  uint16_t tankId = EEPROM_TC::instance()->getTankID();
+  int length = snprintf_P(buffer, sizeof(buffer), (PGM_P)format, VERSION, (uint16_t)tankId, severity,
+                          (uint16_t)dtNow.year(), (uint16_t)dtNow.month(), (uint16_t)dtNow.day(),
+                          (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(), (uint16_t)dtNow.second());
+  if ((length > sizeof(buffer)) || (length < 0)) {
+    // TODO: Log a warning that string was truncated
+    serial(F("WARNING! String was truncated to \"%s\""), buffer);
+  }
+}
+
+/**
+ * @brief writes current values and targets for both temperature and pH to the status log
+ *
+ */
 void DataLogger::writeInfoToLog() {
   char currentTemperatureString[10];
   char currentPhString[10];
@@ -57,31 +84,23 @@ void DataLogger::writeInfoToLog() {
                 sizeof(currentTemperatureString));
     floattostrf((float)PHProbe::instance()->getPh(), 1, 3, currentPhString, sizeof(currentPhString));
   }
-  DateTime_TC dtNow = DateTime_TC::now();
-  PID_TC* pPID = PID_TC::instance();
-  uint16_t tankId = EEPROM_TC::instance()->getTankID();
   char thermalTarget[10];
   char pHTarget[10];
-  char kp[12];
-  char ki[12];
-  char kd[12];
   floattostrf(ThermalControl::instance()->getCurrentThermalTarget(), 1, 2, thermalTarget, sizeof(thermalTarget));
   floattostrf(PHControl::instance()->getCurrentTargetPh(), 1, 3, pHTarget, sizeof(pHTarget));
-  floattostrf(pPID->getKp(), 1, 1, kp, sizeof(kp));
-  floattostrf(pPID->getKi(), 1, 1, ki, sizeof(ki));
-  floattostrf(pPID->getKd(), 1, 1, kd, sizeof(kd));
-  // version,tankid,time,thermal value,thermal target,pH,pH target,uptime in seconds,Kp,Ki,Kd
-  const __FlashStringHelper* format = F("%s\t%i\tI\t%04i-%02i-%2i %02i:%02i:%02i\t%s\t%s\t%s\t%s\t%s\t%s\t%s");
-  int length;
-  length = snprintf_P(buffer, sizeof(buffer), (PGM_P)format, VERSION, (uint16_t)tankId, (uint16_t)dtNow.year(),
-                      (uint16_t)dtNow.month(), (uint16_t)dtNow.day(), (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(),
-                      (uint16_t)dtNow.second(), currentTemperatureString, thermalTarget, currentPhString, pHTarget, kp,
-                      ki, kd);
-  if ((length > sizeof(buffer)) || (length < 0)) {
+
+  // write version, tankid, 'I', and timestamp to buffer
+  writePrefixToBuffer('I');
+  int prefixLength = strnlen(buffer, sizeof(buffer));
+  // temperature \t thermaltarget \t pH \t pHtarget
+  const __FlashStringHelper* format = F("\t%s\t%s\t%s\t%s");
+  int additionalLength = snprintf_P(buffer + prefixLength, sizeof(buffer) - prefixLength, (PGM_P)format,
+                                    currentTemperatureString, thermalTarget, currentPhString, pHTarget);
+  if ((prefixLength + additionalLength > sizeof(buffer)) || (additionalLength < 0)) {
     // TODO: Log a warning that string was truncated
     serial(F("WARNING! String was truncated to \"%s\""), buffer);
   }
-  SD_TC::instance()->appendInfo(buffer);
+  SD_TC::instance()->appendToStatusLog(buffer);
   serial(F("New info written to log"));
 }
 
@@ -146,4 +165,27 @@ void DataLogger::writeToSerial() {
                 sizeof(temperatureString));
   }
   serial(F("%02d:%02d pH=%s temp=%s"), (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(), phString, temperatureString);
+}
+
+/**
+ * @brief writes uptime, MAC address, pH slope, and EEPROM data to the status log
+ *
+ */
+void DataLogger::writeWarningToLog() {
+  uint32_t uptime = (unsigned long)(millis() / 1000);
+  byte* mac = Ethernet_TC::instance()->getMac();
+
+  // write version, tankid, 'W', and timestamp to buffer
+  writePrefixToBuffer('W');
+  int prefixLength = strnlen(buffer, sizeof(buffer));
+  // uptime \t MACaddress \t pHslope \t EEPROMdump
+  const __FlashStringHelper* format = F("\t%lu\t%02X:%02X:%02X:%02X:%02X:%02X\t%s");
+  int additionalLength = snprintf_P(buffer + prefixLength, sizeof(buffer) - prefixLength, (PGM_P)format, uptime, mac[0],
+                                    mac[1], mac[2], mac[3], mac[4], mac[5], PHProbe::instance()->getSlopeResponse());
+  if ((prefixLength + additionalLength > sizeof(buffer)) || (additionalLength < 0)) {
+    // TODO: Log a warning that string was truncated
+    serial(F("WARNING! String was truncated to \"%s\""), buffer);
+  }
+  SD_TC::instance()->appendToStatusLog(buffer);
+  serial(F("New warning written to log"));
 }

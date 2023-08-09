@@ -70,9 +70,19 @@ void SD_TC::appendDataToPath(const char* line, const char* path) {
   }
 }
 
-void SD_TC::appendInfo(const char* line) {
+/**
+ * append data to a serial log file
+ */
+void SD_TC::appendToLog(const char* line) {
+  DateTime_TC now = DateTime_TC::now();
+  char path[30];
+  snprintf_P(path, sizeof(path), (PGM_P)F("%4i%02i%02i.log"), now.year(), now.month(), now.day());
+  appendDataToPath(line, path);
+}
+
+void SD_TC::appendToStatusLog(const char* line) {
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
-  strncpy(mostRecentInfo, line, sizeof(mostRecentInfo));
+  strncpy(mostRecentStatusEntry, line, sizeof(mostRecentStatusEntry));
 #endif
   // char path[30];
   // todaysDataFileName(path, sizeof(path));
@@ -82,16 +92,6 @@ void SD_TC::appendInfo(const char* line) {
   // }
   // appendDataToPath(line, path);
   // COUT(line);
-}
-
-/**
- * append data to a serial log file
- */
-void SD_TC::appendToLog(const char* line) {
-  DateTime_TC now = DateTime_TC::now();
-  char path[30];
-  snprintf_P(path, sizeof(path), (PGM_P)F("%4i%02i%02i.log"), now.year(), now.month(), now.day());
-  appendDataToPath(line, path);
 }
 
 bool SD_TC::exists(const char* path) {

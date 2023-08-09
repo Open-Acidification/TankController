@@ -1,6 +1,7 @@
 #include "model/DataLogger.h"
 
 #include "TankController.h"
+#include "Version.h"
 #include "model/PHControl.h"
 #include "model/PHProbe.h"
 #include "model/ThermalControl.h"
@@ -46,6 +47,41 @@ void DataLogger::loop() {
 }
 
 void DataLogger::writeInfoToLog() {
+  char currentTemperatureString[10];
+  char currentPhString[10];
+  if (TankController::instance()->isInCalibration()) {
+    strscpy_P(currentTemperatureString, F("C"), sizeof(currentTemperatureString));
+    strscpy_P(currentPhString, F("C"), sizeof(currentPhString));
+  } else {
+    floattostrf((float)ThermalProbe_TC::instance()->getRunningAverage(), 1, 2, currentTemperatureString,
+                sizeof(currentTemperatureString));
+    floattostrf((float)PHProbe::instance()->getPh(), 1, 3, currentPhString, sizeof(currentPhString));
+  }
+  DateTime_TC dtNow = DateTime_TC::now();
+  PID_TC* pPID = PID_TC::instance();
+  uint16_t tankId = EEPROM_TC::instance()->getTankID();
+  char thermalTarget[10];
+  char pHTarget[10];
+  char kp[12];
+  char ki[12];
+  char kd[12];
+  floattostrf(ThermalControl::instance()->getCurrentThermalTarget(), 1, 2, thermalTarget, sizeof(thermalTarget));
+  floattostrf(PHControl::instance()->getCurrentTargetPh(), 1, 3, pHTarget, sizeof(pHTarget));
+  floattostrf(pPID->getKp(), 1, 1, kp, sizeof(kp));
+  floattostrf(pPID->getKi(), 1, 1, ki, sizeof(ki));
+  floattostrf(pPID->getKd(), 1, 1, kd, sizeof(kd));
+  // version,tankid,time,thermal value,thermal target,pH,pH target,uptime in seconds,Kp,Ki,Kd
+  const __FlashStringHelper* format = F("%s\t%i\t%02i/%02i/%4i %02i:%02i:%02i\t%s\t%s\t%s\t%s\t%lu\t%s\t%s\t%s");
+  int length;
+  length = snprintf_P(buffer, sizeof(buffer), (PGM_P)format, VERSION, (uint16_t)tankId, (uint16_t)dtNow.month(),
+                      (uint16_t)dtNow.day(), (uint16_t)dtNow.year(), (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(),
+                      (uint16_t)dtNow.second(), currentTemperatureString, thermalTarget, currentPhString, pHTarget,
+                      (unsigned long)(millis() / 1000), kp, ki, kd);
+  if ((length > sizeof(buffer)) || (length < 0)) {
+    // TODO: Log a warning that string was truncated
+    serial(F("WARNING! String was truncated to \"%s\""), buffer);
+  }
+  SD_TC::instance()->appendInfo(buffer);
   serial(F("New info written to log"));
 }
 

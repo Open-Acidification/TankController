@@ -70,6 +70,20 @@ void SD_TC::appendDataToPath(const char* line, const char* path) {
   }
 }
 
+void SD_TC::appendInfo(const char* line) {
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  strncpy(mostRecentInfo, line, sizeof(mostRecentInfo));
+#endif
+  // char path[30];
+  // todaysDataFileName(path, sizeof(path));
+  // if (!sd.exists(path)) {
+  //   appendDataToPath(header, path);
+  //   COUT(header);
+  // }
+  // appendDataToPath(line, path);
+  // COUT(line);
+}
+
 /**
  * append data to a serial log file
  */

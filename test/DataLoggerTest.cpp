@@ -2,10 +2,12 @@
 #include <ArduinoUnitTests.h>
 
 #include "DataLogger.h"
+#include "DateTime_TC.h"
 #include "MainMenu.h"
 #include "SD_TC.h"
 #include "Serial_TC.h"
 #include "TankController.h"
+#include "Version.h"
 
 TankController* tc = TankController::instance();
 Serial_TC* serialPort = Serial_TC::instance();
@@ -13,6 +15,8 @@ SD_TC* sd = SD_TC::instance();
 
 unittest_setup() {
   GODMODE()->resetClock();
+  DateTime_TC d1(2023, 8, 15);
+  d1.setAsCurrent();
   tc->setNextState(new MainMenu(), true);
   DataLogger::instance()->clearBuffer();
   serialPort->clearBuffer();
@@ -26,13 +30,17 @@ unittest(loop) {
   assertEqual("", sd->mostRecentLine);
   tc->loop(false);  // write to SD card
   assertEqual("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd", sd->mostRecentHeader);
-  assertEqual("08/08/2023 16:47:13,   0, 0.00, 20.00, 0.000, 8.100,   59, 100000.0,      0.0,      0.0",
+  assertEqual("08/15/2023 00:00:59,   0, 0.00, 20.00, 0.000, 8.100,   59, 100000.0,      0.0,      0.0",
               sd->mostRecentLine);
   assertEqual("", serialPort->getBuffer());
   tc->loop(false);  // write to serial
-  assertEqual("16:47 pH=0.000 temp= 0.00", serialPort->getBuffer());
+  assertEqual("00:00 pH=0.000 temp= 0.00", serialPort->getBuffer());
   delay(1000);
-  tc->loop(false);
+  tc->loop(false);  // write info to log file
+  char infoString[512] = "";
+  snprintf(infoString, sizeof(infoString), "%s\t%s", VERSION,
+           "0\t08/15/2023 00:01:00\t0.00\t20.00\t0.000\t8.100\t60\t100000.0\t0.0\t0.0");
+  assertEqual(infoString, sd->mostRecentInfo);
   assertEqual("New info written to log", serialPort->getBuffer());
 }
 

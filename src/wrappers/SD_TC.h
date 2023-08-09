@@ -21,6 +21,7 @@ public:
 
   // instance methods
   void appendData(const char* header, const char* line);
+  void appendInfo(const char* line);
   void appendToLog(const char* line);
   bool exists(const char* path);
   bool format();
@@ -35,6 +36,7 @@ public:
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   char mostRecentHeader[128] = "";
   char mostRecentLine[128] = "";
+  char mostRecentInfo[128] = "";
 #endif
 
 private:

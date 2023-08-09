@@ -33,13 +33,20 @@ DataLogger* DataLogger::instance() {
  */
 void DataLogger::loop() {
   unsigned long msNow = millis();
-  if (msNow >= nextSDLogTime) {
+  if (msNow >= nextInfoLogTime) {
+    writeInfoToLog();
+    nextInfoLogTime = (msNow / (unsigned long)INFO_LOGGING_INTERVAL + 1) * (unsigned long)INFO_LOGGING_INTERVAL;
+  } else if (msNow >= nextSDLogTime) {
     writeToSD();
     nextSDLogTime = (msNow / (unsigned long)SD_LOGGING_INTERVAL + 1) * (unsigned long)SD_LOGGING_INTERVAL;
   } else if (msNow >= nextSerialLogTime) {
     writeToSerial();
     nextSerialLogTime = (msNow / (unsigned long)SERIAL_LOGGING_INTERVAL + 1) * (unsigned long)SERIAL_LOGGING_INTERVAL;
   }
+}
+
+void DataLogger::writeInfoToLog() {
+  serial(F("New info written to log"));
 }
 
 /**

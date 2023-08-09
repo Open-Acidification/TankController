@@ -29,7 +29,9 @@ unittest(tankControllerLoop) {
   d1.setAsCurrent();
   assertFalse(SD_TC::instance()->exists("20210415.csv"));
   tc->loop(false);
+  tc->loop(false);
   delay(1000);
+  tc->loop(false);
   tc->loop(false);
   assertTrue(SD_TC::instance()->exists("20210415.csv"));
   File file = SD_TC::instance()->open("20210415.csv");

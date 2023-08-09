@@ -35,6 +35,10 @@ SD_TC::SD_TC() {
  * append data to a data log file
  */
 void SD_TC::appendData(const char* header, const char* line) {
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  strncpy(mostRecentHeader, header, sizeof(mostRecentHeader));
+  strncpy(mostRecentLine, line, sizeof(mostRecentLine));
+#endif
   char path[30];
   todaysDataFileName(path, sizeof(path));
   if (!sd.exists(path)) {

@@ -32,6 +32,11 @@ public:
   bool remove(const char* path);
   void todaysDataFileName(char* path, int size);
 
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  char mostRecentHeader[128] = "";
+  char mostRecentLine[128] = "";
+#endif
+
 private:
   // class variables
   static SD_TC* _instance;

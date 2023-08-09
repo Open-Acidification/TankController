@@ -48,8 +48,9 @@ INCLUDE=-I$(ARDUINO_CI)/arduino \
 HEADERS=$(wildcard src/*.h) $(wildcard src/wrappers/*) $(wildcard src/UIState/*)
 
 .PHONY : all
-all : $(BIN)/PHCalibrationWarningTest.cpp.bin $(BIN)/BlinkTest.cpp.bin $(BIN)/DateTimeTest.cpp.bin $(BIN)/EEPROMTest.cpp.bin \
-  $(BIN)/EnablePIDTest.cpp.bin $(BIN)/EthernetServerTest.cpp.bin $(BIN)/EthernetTest.cpp.bin \
+all : $(BIN)/PHCalibrationWarningTest.cpp.bin $(BIN)/BlinkTest.cpp.bin $(BIN)/DataLoggerTest.cpp.bin \
+  $(BIN)/DateTimeTest.cpp.bin $(BIN)/EEPROMTest.cpp.bin $(BIN)/EnablePIDTest.cpp.bin \
+  $(BIN)/EthernetServerTest.cpp.bin $(BIN)/EthernetTest.cpp.bin \
   $(BIN)/GetTimeTest.cpp.bin $(BIN)/JSONBuilderTest.cpp.bin $(BIN)/KeypadTest.cpp.bin \
 	$(BIN)/LiquidCrystalTest.cpp.bin \
   $(BIN)/MenuTest.cpp.bin $(BIN)/NumberCollectorTest.cpp.bin $(BIN)/PHCalibrationHighTest.cpp.bin \
@@ -63,9 +64,9 @@ all : $(BIN)/PHCalibrationWarningTest.cpp.bin $(BIN)/BlinkTest.cpp.bin $(BIN)/Da
   $(BIN)/SetChillOrHeatTest.cpp.bin $(BIN)/SetGoogleSheetIntervalTest.cpp.bin $(BIN)/SetKDTest.cpp.bin \
   $(BIN)/SetKITest.cpp.bin $(BIN)/SetKPTest.cpp.bin $(BIN)/ResetPHCalibrationTest.cpp.bin \
   $(BIN)/SetPHTargetTest.cpp.bin $(BIN)/SetPHSineWaveTest.cpp.bin $(BIN)/SetTankIDTest.cpp.bin \
-  $(BIN)/ResetThermalCalibrationTest.cpp.bin $(BIN)/SetThermalTargetTest.cpp.bin $(BIN)/SetThermalSineWaveTest.cpp.bin \
-  $(BIN)/SetTimeTest.cpp.bin $(BIN)/StringsTest.cpp.bin $(BIN)/TCLibTest.cpp.bin \
-  $(BIN)/ThermalProbe_TCTest.cpp.bin $(BIN)/ThermalCalibrationTest.cpp.bin \
+  $(BIN)/ResetThermalCalibrationTest.cpp.bin $(BIN)/SetThermalTargetTest.cpp.bin \
+  $(BIN)/SetThermalSineWaveTest.cpp.bin $(BIN)/SetTimeTest.cpp.bin $(BIN)/StringsTest.cpp.bin \
+  $(BIN)/TCLibTest.cpp.bin $(BIN)/ThermalProbe_TCTest.cpp.bin $(BIN)/ThermalCalibrationTest.cpp.bin \
   $(BIN)/ThermalControlTest.cpp.bin $(BIN)
 
 GPP_TEST=g++ $(FLAGS) -L$(BIN) $(INCLUDE)
@@ -75,6 +76,9 @@ $(BIN)/PHCalibrationWarningTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/PHCalibrat
 
 $(BIN)/BlinkTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/BlinkTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/BlinkTest.cpp.bin $(TEST)/BlinkTest.cpp -larduino
+
+$(BIN)/DataLoggerTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/DataLoggerTest.cpp $(HEADERS)
+	$(GPP_TEST) -o $(BIN)/DataLoggerTest.cpp.bin $(TEST)/DataLoggerTest.cpp -larduino
 
 $(BIN)/DateTimeTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/DateTimeTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/DateTimeTest.cpp.bin $(TEST)/DateTimeTest.cpp -larduino

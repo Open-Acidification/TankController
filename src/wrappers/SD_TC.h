@@ -36,7 +36,7 @@ public:
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   char mostRecentHeader[128] = "";
   char mostRecentLine[128] = "";
-  char mostRecentStatusEntry[128] = "";
+  char mostRecentStatusEntry[256] = "";
 #endif
 
 private:

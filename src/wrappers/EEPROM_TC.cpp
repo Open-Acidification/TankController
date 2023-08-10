@@ -82,6 +82,9 @@ bool EEPROM_TC::getHeat() {
 bool EEPROM_TC::getIgnoreBadPHSlope() {
   return (bool)eepromReadInt(IGNORE_BAD_PH_SLOPE_ADDRESS);
 }
+bool EEPROM_TC::getIgnoreBadThermalCorrection() {
+  return (bool)eepromReadInt(IGNORE_BAD_THERMAL_CORRECTION_ADDRESS);
+}
 float EEPROM_TC::getKD() {
   return eepromReadFloat(KD_ADDRESS);
 }
@@ -196,6 +199,9 @@ void EEPROM_TC::setHeat(bool value) {
 void EEPROM_TC::setIgnoreBadPHSlope(bool value) {
   eepromWriteInt(IGNORE_BAD_PH_SLOPE_ADDRESS, (int)value);
 }
+void EEPROM_TC::setIgnoreBadThermalCorrection(bool value) {
+  eepromWriteInt(IGNORE_BAD_THERMAL_CORRECTION_ADDRESS, (int)value);
+}
 void EEPROM_TC::setKD(float value) {
   eepromWriteFloat(KD_ADDRESS, value);
 }
@@ -287,4 +293,42 @@ void EEPROM_TC::setTempSeriesPointer(float value) {
 }
 void EEPROM_TC::setTempSeriesSize(float value) {
   eepromWriteFloat(TEMP_SERIES_SIZE_ADDRESS, value);
+}
+
+/**
+ * @brief write settings to a string for logging purposes
+ *
+ * @param destination
+ * @param size size of destination
+ */
+void EEPROM_TC::writeAllToString(char* destination, int size) {
+  float thermalCorrection = getThermalCorrection();
+  float kd = getKD();
+  float ki = getKI();
+  float kp = getKP();
+  float pHTarget = getPh();
+  float rampStartingPh = getRampStartingPh();
+  float pHSineAmplitude = getPhSineAmplitude();
+  float thermalTarget = getThermalTarget();
+  float thermalRampInitialValue = getThermalRampInitialValue();
+  float thermalSineAmplitude = getThermalSineAmplitude();
+
+  int length =
+      snprintf_P(destination, size,
+                 PSTR("%i\t%i.%02i\t%i\t%i\t%i.%02i\t%i.%02i\t%i.%02i\t%i\t%i.%02i\t%i\t%i\t%i.%02i\t%i\t%i\t%i.%02i\t%"
+                      "i\t%i.%02i\t%i\t%i\t%i.%02i\t%i\t%i\t%i.%02i\t%i"),
+                 (int)getIgnoreBadPHSlope(), (int)thermalCorrection, (int)(thermalCorrection * 100 + 0.5) % 100,
+                 (int)getIgnoreBadThermalCorrection(), (int)getHeat(), (int)kd, (int)(kd * 100 + 0.5) % 100, (int)ki,
+                 (int)(ki * 100 + 0.5) % 100, (int)kp, (int)(kp * 100 + 0.5) % 100, getPHFunctionType(), (int)pHTarget,
+                 (int)(pHTarget * 100 + 0.5) % 100, getPhRampTimeStart(), getPhRampTimeEnd(), (int)rampStartingPh,
+                 (int)(rampStartingPh * 100 + 0.5) % 100, getPhSineStartTime(), getPhSinePeriod(), (int)pHSineAmplitude,
+                 (int)(pHSineAmplitude * 100 + 0.5) % 100, getThermalFunctionType(), (int)thermalTarget,
+                 (int)(thermalTarget * 100 + 0.5) % 100, getThermalRampTimeStart(), getThermalRampTimeEnd(),
+                 (int)thermalRampInitialValue, (int)(thermalRampInitialValue * 100 + 0.5) % 100,
+                 getThermalSineStartTime(), getThermalSinePeriod(), (int)thermalSineAmplitude,
+                 (int)(thermalSineAmplitude * 100 + 0.5) % 100, getGoogleSheetInterval());
+  if ((length > size) || (length < 0)) {
+    // TODO: Log a warning that string was truncated
+    serial(F("WARNING! String was truncated to \"%s\""), destination);
+  }
 }

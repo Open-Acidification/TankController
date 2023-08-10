@@ -38,7 +38,7 @@ private:
   static DataLogger *_instance;
 
   // instance variables
-  char buffer[128];
+  char buffer[256];
   uint32_t nextSDLogTime = 0;
   uint32_t nextSerialLogTime = 0;
   uint32_t nextInfoLogTime = 0;

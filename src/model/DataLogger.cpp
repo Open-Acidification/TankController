@@ -178,14 +178,17 @@ void DataLogger::writeWarningToLog() {
   // write version, tankid, 'W', and timestamp to buffer
   writePrefixToBuffer('W');
   int prefixLength = strnlen(buffer, sizeof(buffer));
-  // uptime \t MACaddress \t pHslope \t EEPROMdump
-  const __FlashStringHelper* format = F("\t%lu\t%02X:%02X:%02X:%02X:%02X:%02X\t%s");
+  // uptime \t MACaddress \t pHslope \t
+  const __FlashStringHelper* format = F("\t%lu\t%02X:%02X:%02X:%02X:%02X:%02X\t%s\t");
   int additionalLength = snprintf_P(buffer + prefixLength, sizeof(buffer) - prefixLength, (PGM_P)format, uptime, mac[0],
                                     mac[1], mac[2], mac[3], mac[4], mac[5], PHProbe::instance()->getSlopeResponse());
   if ((prefixLength + additionalLength > sizeof(buffer)) || (additionalLength < 0)) {
     // TODO: Log a warning that string was truncated
     serial(F("WARNING! String was truncated to \"%s\""), buffer);
   }
+  // add EEPROM data
+  EEPROM_TC::instance()->writeAllToString(buffer + prefixLength + additionalLength,
+                                          sizeof(buffer) - prefixLength - additionalLength);
   SD_TC::instance()->appendToStatusLog(buffer);
   // serial(F("New warning written to log"));
 }

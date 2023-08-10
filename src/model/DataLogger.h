@@ -27,6 +27,10 @@ public:
   bool getShouldWriteWarning() {
     return shouldWriteWarning;
   }
+  void reset() {
+    clearBuffer();
+    shouldWriteWarning = false;
+  }
 #endif
 
 private:

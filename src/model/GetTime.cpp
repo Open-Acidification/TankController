@@ -3,7 +3,6 @@
 #include "TankController.h"
 #include "model/TC_util.h"
 #include "wrappers/DateTime_TC.h"
-#include "wrappers/EEPROM_TC.h"
 #include "wrappers/Ethernet_TC.h"
 #include "wrappers/Serial_TC.h"
 

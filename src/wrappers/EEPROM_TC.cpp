@@ -2,6 +2,7 @@
 
 #include <EEPROM.h>
 
+#include "model/DataLogger.h"
 #include "model/TC_util.h"
 #include "wrappers/Serial_TC.h"
 //  class variables
@@ -37,6 +38,7 @@ void EEPROM_TC::eepromWriteFloat(uint16_t address, float value) {
   for (size_t i = 0; i < sizeof(value); i++) {
     EEPROM.update(address++, *p++);
   }
+  DataLogger::instance()->writeWarningSoon();  // log all settings
 }
 
 int32_t EEPROM_TC::eepromReadInt(uint16_t address) {
@@ -55,6 +57,7 @@ void EEPROM_TC::eepromWriteInt(uint16_t address, int32_t value) {
   for (size_t i = 0; i < sizeof(value); i++) {
     EEPROM.update(address++, *p++);
   }
+  DataLogger::instance()->writeWarningSoon();  // log all settings
 }
 
 // getter methods

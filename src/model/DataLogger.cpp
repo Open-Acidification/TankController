@@ -35,10 +35,7 @@ DataLogger* DataLogger::instance() {
  */
 void DataLogger::loop() {
   unsigned long msNow = millis();
-  if (shouldWriteWarning) {
-    writeWarningToLog();
-    shouldWriteWarning = false;
-  } else if (msNow >= nextInfoLogTime) {
+  if (msNow >= nextInfoLogTime) {
     writeInfoToLog();
     nextInfoLogTime = (msNow / (unsigned long)INFO_LOGGING_INTERVAL + 1) * (unsigned long)INFO_LOGGING_INTERVAL;
   } else if (msNow >= nextSDLogTime) {
@@ -47,6 +44,9 @@ void DataLogger::loop() {
   } else if (msNow >= nextSerialLogTime) {
     writeToSerial();
     nextSerialLogTime = (msNow / (unsigned long)SERIAL_LOGGING_INTERVAL + 1) * (unsigned long)SERIAL_LOGGING_INTERVAL;
+  } else if (shouldWriteWarning) {
+    writeWarningToLog();
+    shouldWriteWarning = false;
   }
 }
 
@@ -187,5 +187,5 @@ void DataLogger::writeWarningToLog() {
     serial(F("WARNING! String was truncated to \"%s\""), buffer);
   }
   SD_TC::instance()->appendToStatusLog(buffer);
-  serial(F("New warning written to log"));
+  // serial(F("New warning written to log"));
 }

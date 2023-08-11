@@ -22,7 +22,6 @@ public:
   // instance methods
   void appendData(const char* header, const char* line);
   void appendToLog(const char* line);
-  void appendToStatusLog(const char* line);
   bool exists(const char* path);
   bool format();
   bool listRootToBuffer(void (*callWhenFull)(const char*, bool));
@@ -32,6 +31,7 @@ public:
   void printRootDirectory();
   bool remove(const char* path);
   void todaysDataFileName(char* path, int size);
+  void writeAlert(const char* line);
 
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   char mostRecentHeader[128] = "";

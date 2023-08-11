@@ -80,20 +80,6 @@ void SD_TC::appendToLog(const char* line) {
   appendDataToPath(line, path);
 }
 
-void SD_TC::appendToStatusLog(const char* line) {
-#if defined(ARDUINO_CI_COMPILATION_MOCKS)
-  strncpy(mostRecentStatusEntry, line, sizeof(mostRecentStatusEntry));
-#endif
-  // char path[30];
-  // todaysDataFileName(path, sizeof(path));
-  // if (!sd.exists(path)) {
-  //   appendDataToPath(header, path);
-  //   COUT(header);
-  // }
-  // appendDataToPath(line, path);
-  // COUT(line);
-}
-
 bool SD_TC::exists(const char* path) {
   return sd.exists(path);
 }
@@ -233,4 +219,12 @@ void SD_TC::todaysDataFileName(char* path, int size) {
   DateTime_TC now = DateTime_TC::now();
   snprintf_P(path, size, (PGM_P)F("%4i%02i%02i.csv"), now.year(), now.month(), now.day());
   COUT(path);
+}
+
+void SD_TC::writeAlert(const char* line) {
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  strncpy(mostRecentStatusEntry, line, sizeof(mostRecentStatusEntry));
+#endif
+  appendDataToPath(line, "alerts.log");
+  COUT(line);
 }

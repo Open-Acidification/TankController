@@ -100,7 +100,7 @@ void DataLogger::writeInfoToLog() {
     // TODO: Log a warning that string was truncated
     serial(F("WARNING! String was truncated to \"%s\""), buffer);
   }
-  SD_TC::instance()->appendToStatusLog(buffer);
+  SD_TC::instance()->writeAlert(buffer);
   serial(F("New info written to log"));
 }
 
@@ -189,6 +189,6 @@ void DataLogger::writeWarningToLog() {
   // add EEPROM data
   EEPROM_TC::instance()->writeAllToString(buffer + prefixLength + additionalLength,
                                           sizeof(buffer) - prefixLength - additionalLength);
-  SD_TC::instance()->appendToStatusLog(buffer);
+  SD_TC::instance()->writeAlert(buffer);
   // serial(F("New warning written to log"));
 }

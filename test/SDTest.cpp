@@ -184,4 +184,23 @@ unittest(removeFile) {
   assertFalse(SD_TC::instance()->exists("20220706.log"));
 }
 
+unittest(writeAlert) {
+  char data[80];
+  SD_TC* sd = SD_TC::instance();
+
+  assertFalse(SD_TC::instance()->exists("alerts.log"));
+
+  // write data
+  sd->writeAlert("line 1");
+  sd->writeAlert("line 2");
+  assertTrue(SD_TC::instance()->exists("alerts.log"));
+
+  // verify contents of alerts.log
+  File file = SD_TC::instance()->open("alerts.log");
+  file.read(data, file.size());
+  data[file.size()] = '\0';
+  assertEqual("line 1\nline 2\n", data);
+  file.close();
+}
+
 unittest_main()

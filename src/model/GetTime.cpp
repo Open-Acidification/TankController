@@ -27,7 +27,7 @@ GetTime::GetTime(int tzOffsetHrs) {
 }
 
 void GetTime::loop() {
-  if (!(Ethernet_TC::instance()->getIsUsingDHCP())) {
+  if (!(Ethernet_TC::instance()->isConnectedToNetwork())) {
     return;
   }
   // is it time to send ?

@@ -55,7 +55,7 @@ void DataLogger::loop() {
  *
  * @param severity 'D' for debug, 'I' for info, 'W' for warning, 'E' for error, 'F' for fatal
  */
-void DataLogger::writePrefixToBuffer(const char severity) {
+void DataLogger::writeAlertPrefixToBuffer(const char severity) {
   // version \t tankid \t severity \t timestamp
   const __FlashStringHelper* format = F("%s\t%i\t%c\t%04i-%02i-%2i %02i:%02i:%02i");
   DateTime_TC dtNow = DateTime_TC::now();
@@ -90,7 +90,7 @@ void DataLogger::writeInfoToLog() {
   floattostrf(PHControl::instance()->getCurrentTargetPh(), 1, 3, pHTarget, sizeof(pHTarget));
 
   // write version, tankid, 'I', and timestamp to buffer
-  writePrefixToBuffer('I');
+  writeAlertPrefixToBuffer('I');
   int prefixLength = strnlen(buffer, sizeof(buffer));
   // temperature \t thermaltarget \t pH \t pHtarget
   const __FlashStringHelper* format = F("\t%s\t%s\t%s\t%s");
@@ -176,7 +176,7 @@ void DataLogger::writeWarningToLog() {
   byte* mac = Ethernet_TC::instance()->getMac();
 
   // write version, tankid, 'W', and timestamp to buffer
-  writePrefixToBuffer('W');
+  writeAlertPrefixToBuffer('W');
   int prefixLength = strnlen(buffer, sizeof(buffer));
   // uptime \t MACaddress \t pHslope \t
   const __FlashStringHelper* format = F("\t%lu\t%02X:%02X:%02X:%02X:%02X:%02X\t%s\t");

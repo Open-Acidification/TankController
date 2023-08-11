@@ -45,7 +45,7 @@ private:
   bool shouldWriteWarning = false;
 
   // instance methods
-  void writePrefixToBuffer(const char severity);
+  void writeAlertPrefixToBuffer(const char severity);
   void writeInfoToLog();
   void writeToSD();
   void writeToSerial();

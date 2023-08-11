@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
+#include "DataLogger.h"
 #include "EEPROM_TC.h"
 #include "PHProbe.h"
 #include "Serial_TC.h"
@@ -23,6 +24,10 @@ unittest(constructor) {
 
 // tests getPh() and getSlopeResponse as well
 unittest(serialEvent1) {
+  tc->loop();  // Writes something to EEPROM, triggering a DataLogger warning
+  tc->loop();  // DataLogger writes to SD card
+  DataLogger *dl = DataLogger::instance();
+  dl->reset();
   GodmodeState *state = GODMODE();
   state->reset();
   state->serialPort[0].dataOut = "";
@@ -33,7 +38,13 @@ unittest(serialEvent1) {
   assertEqual("Requesting...", pHProbe->getSlopeResponse());
   pHProbe->setCalibration(2);
   pHProbe->setPh(7.125);
+  assertFalse(dl->getShouldWriteWarning());
+  assertEqual("", dl->getBuffer());
+  // Next line calls serialEvent1 (triggering warning) and tc->loop() (clearing warning)
   pHProbe->setPhSlope();
+  assertFalse(dl->getShouldWriteWarning());  // already false
+  string lastWrittenString(dl->getBuffer());
+  assertTrue(lastWrittenString.find("99.7,100.3,-0.89") > 0);  // warning was sent
   assertEqual("PH Calibra: 2 pt", pHProbe->getCalibrationResponse());
   assertEqual(7.125, pHProbe->getPh());
   assertEqual("99.7,100.3,-0.89", pHProbe->getSlopeResponse());

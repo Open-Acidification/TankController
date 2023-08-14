@@ -2,6 +2,7 @@
 
 #include "model/TC_util.h"
 #include "wrappers/DateTime_TC.h"
+#include "wrappers/Ethernet_TC.h"
 #include "wrappers/Serial_TC.h"
 
 //  class variables
@@ -11,9 +12,9 @@ SD_TC* SD_TC::_instance = nullptr;
 /**
  * accessor for singleton
  */
-SD_TC* SD_TC::instance() {
+SD_TC* SD_TC::instance(const char* alertFileName) {
   if (!_instance) {
-    _instance = new SD_TC();
+    _instance = new SD_TC(alertFileName);
   }
   return _instance;
 }
@@ -23,12 +24,13 @@ SD_TC* SD_TC::instance() {
 /**
  * constructor
  */
-SD_TC::SD_TC() {
+SD_TC::SD_TC(const char* alertFileName) {
   Serial.println(F("SD_TC()"));  // Serial_TC might not be ready yet
   assert(_instance == nullptr);
   if (!sd.begin(SD_SELECT_PIN)) {
     Serial.println(F("SD_TC failed to initialize!"));
   }
+  fileNameForAlerts = alertFileName;
 }
 
 /**
@@ -225,6 +227,18 @@ void SD_TC::writeAlert(const char* line) {
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   strncpy(mostRecentStatusEntry, line, sizeof(mostRecentStatusEntry));
 #endif
-  appendDataToPath(line, "alerts.log");
+  if (fileNameForAlerts == nullptr || strnlen(fileNameForAlerts, maxFileNameSize) == 0) {
+    // file TankController.ino does not specify an alertFileName
+    byte* mac = Ethernet_TC::instance()->getMac();
+    char defaultFileName[17];
+    snprintf_P(defaultFileName, sizeof(defaultFileName), PSTR("%02X%02X%02X%02X%02X%02X.log"), mac[0], mac[1], mac[2],
+               mac[3], mac[4], mac[5]);
+    appendDataToPath(line, defaultFileName);
+  } else {
+    char fileNameWithExtension[maxFileNameSize + 5];
+    snprintf_P(fileNameWithExtension, sizeof(fileNameWithExtension), PSTR("%.*s.log"), maxFileNameSize,
+               fileNameForAlerts);
+    appendDataToPath(line, fileNameWithExtension);
+  }
   COUT(line);
 }

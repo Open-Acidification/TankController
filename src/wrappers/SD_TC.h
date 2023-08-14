@@ -17,7 +17,7 @@ struct listFilesData_t {
 class SD_TC {
 public:
   // class methods
-  static SD_TC* instance();
+  static SD_TC* instance(const char* alertFileName = nullptr);
 
   // instance methods
   void appendData(const char* header, const char* line);
@@ -34,6 +34,13 @@ public:
   void writeAlert(const char* line);
 
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  const char* getFileNameForAlerts() {
+    return fileNameForAlerts;
+  }
+  void setFileNameForAlerts(const char* newFileName) {
+    fileNameForAlerts = newFileName;
+  }
+
   char mostRecentHeader[128] = "";
   char mostRecentLine[128] = "";
   char mostRecentStatusEntry[256] = "";
@@ -47,6 +54,8 @@ private:
   const uint8_t SD_SELECT_PIN = SS;
   bool hasHadError = false;
   SdFat sd;
+  const char* fileNameForAlerts = nullptr;  // passed in from TankController.ino
+  const int maxFileNameSize = 60;
 
   // Max depth of file system search for rootdir()
   // Two is minimum: First for root, second for files
@@ -57,7 +66,7 @@ private:
   bool inProgress = false;
 
   // instance methods
-  SD_TC();
+  SD_TC(const char* alertFileName);
   void appendDataToPath(const char* data, const char* path);
   bool iterateOnFiles(doOnFile functionName, void* userData);
   static bool incrementFileCount(File* myFile, void* pFileCount);

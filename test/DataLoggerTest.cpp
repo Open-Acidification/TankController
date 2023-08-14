@@ -7,6 +7,7 @@
 #include "SD_TC.h"
 #include "Serial_TC.h"
 #include "TankController.h"
+#include "ThermalProbe_TC.h"
 #include "Version.h"
 
 TankController* tc = TankController::instance();
@@ -37,9 +38,12 @@ unittest(loop) {
   tc->loop(false);  // write to serial
   assertEqual("00:00 pH=0.000 temp= 0.00", serialPort->getBuffer());
   delay(1000);
-  tc->loop(false);  // write info to log file
+  assertFalse(0.0 == ThermalProbe_TC::instance()->getSampleMean());  // thermal sample has been collected
+  tc->loop(false);                                                   // write info to log file
+  assertEqual(0.0, ThermalProbe_TC::instance()->getSampleMean());    // thermal sample has been reset
   char infoString[512] = "";
-  snprintf(infoString, sizeof(infoString), "%s\t%s", VERSION, "0\tI\t2023-08-15 00:01:00\t0.00\t20.00\t0.000\t8.100");
+  snprintf(infoString, sizeof(infoString), "%s\t%s", VERSION,
+           "0\tI\t2023-08-15 00:01:00\t\t20.00\t-242.02\t0.000\t8.100\t0.000");
   assertEqual(infoString, sd->mostRecentStatusEntry);
   assertEqual("New info written to log", serialPort->getBuffer());
 }
@@ -62,7 +66,8 @@ unittest(writeWarningToLog) {
   char warningString[512] = "";
   snprintf(warningString, sizeof(warningString), "%s\t%s", VERSION,
            "0\tW\t2023-08-15 "
-           "00:00:19\t19\t90:A2:DA:80:7B:76\tRequesting...\t1\t0.00\t1\t1\t0.00\t0.00\t100000.00\t0\t8.10\t-1\t-1\t0."
+           "00:00:19\t\t\t\t\t\t\t19\t90:A2:DA:80:7B:76\tRequesting...\t1\t0.00\t1\t1\t0.00\t0.00\t100000.00\t0\t8."
+           "10\t-1\t-1\t0."
            "00\t-1\t-1\t0.00\t0\t20.00\t-1\t-1\t0.00\t-1\t-1\t0.00\t65535");
   assertEqual(warningString, sd->mostRecentStatusEntry);
   // assertEqual("New warning written to log", serialPort->getBuffer());

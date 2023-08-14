@@ -37,6 +37,7 @@ void DataLogger::loop() {
   unsigned long msNow = millis();
   if (msNow >= nextInfoLogTime) {
     writeInfoToLog();
+    ThermalProbe_TC::instance()->resetSample();
     nextInfoLogTime = (msNow / (unsigned long)INFO_LOGGING_INTERVAL + 1) * (unsigned long)INFO_LOGGING_INTERVAL;
   } else if (msNow >= nextSDLogTime) {
     writeToSD();
@@ -74,28 +75,34 @@ void DataLogger::writeAlertPrefixToBuffer(const char severity) {
  *
  */
 void DataLogger::writeInfoToLog() {
-  char currentTemperatureString[10];
+  char thermalMeanString[10];
+  char thermalStandardDeviationString[10];
   char currentPhString[10];
   if (TankController::instance()->isInCalibration()) {
-    strscpy_P(currentTemperatureString, F("C"), sizeof(currentTemperatureString));
+    strscpy_P(thermalMeanString, F("C"), sizeof(thermalMeanString));
+    strscpy_P(thermalStandardDeviationString, F("C"), sizeof(thermalStandardDeviationString));
     strscpy_P(currentPhString, F("C"), sizeof(currentPhString));
   } else {
-    floattostrf((float)ThermalProbe_TC::instance()->getRunningAverage(), 1, 2, currentTemperatureString,
-                sizeof(currentTemperatureString));
+    floattostrf((float)ThermalProbe_TC::instance()->getSampleMean(), 1, 2, thermalMeanString,
+                sizeof(thermalMeanString));
+    floattostrf((float)ThermalProbe_TC::instance()->getSampleStandardDeviation(), 1, 3, thermalStandardDeviationString,
+                sizeof(thermalStandardDeviationString));
     floattostrf((float)PHProbe::instance()->getPh(), 1, 3, currentPhString, sizeof(currentPhString));
   }
-  char thermalTarget[10];
-  char pHTarget[10];
-  floattostrf(ThermalControl::instance()->getCurrentThermalTarget(), 1, 2, thermalTarget, sizeof(thermalTarget));
-  floattostrf(PHControl::instance()->getCurrentTargetPh(), 1, 3, pHTarget, sizeof(pHTarget));
+  char thermalTargetString[10];
+  char pHTargetString[10];
+  floattostrf(ThermalControl::instance()->getCurrentThermalTarget(), 1, 2, thermalTargetString,
+              sizeof(thermalTargetString));
+  floattostrf(PHControl::instance()->getCurrentTargetPh(), 1, 3, pHTargetString, sizeof(pHTargetString));
 
   // write version, tankid, 'I', and timestamp to buffer
   writeAlertPrefixToBuffer('I');
   int prefixLength = strnlen(buffer, sizeof(buffer));
   // temperature \t thermaltarget \t pH \t pHtarget
-  const __FlashStringHelper* format = F("\t%s\t%s\t%s\t%s");
-  int additionalLength = snprintf_P(buffer + prefixLength, sizeof(buffer) - prefixLength, (PGM_P)format,
-                                    currentTemperatureString, thermalTarget, currentPhString, pHTarget);
+  const __FlashStringHelper* format = F("\t\t%s\t%s\t%s\t%s\t%s");
+  int additionalLength =
+      snprintf_P(buffer + prefixLength, sizeof(buffer) - prefixLength, (PGM_P)format, thermalTargetString,
+                 thermalMeanString, thermalStandardDeviationString, pHTargetString, currentPhString);
   if ((prefixLength + additionalLength > sizeof(buffer)) || (additionalLength < 0)) {
     // TODO: Log a warning that string was truncated
     serial(F("WARNING! String was truncated to \"%s\""), buffer);
@@ -179,7 +186,7 @@ void DataLogger::writeWarningToLog() {
   writeAlertPrefixToBuffer('W');
   int prefixLength = strnlen(buffer, sizeof(buffer));
   // uptime \t MACaddress \t pHslope \t
-  const __FlashStringHelper* format = F("\t%lu\t%02X:%02X:%02X:%02X:%02X:%02X\t%s\t");
+  const __FlashStringHelper* format = F("\t\t\t\t\t\t\t%lu\t%02X:%02X:%02X:%02X:%02X:%02X\t%s\t");
   int additionalLength = snprintf_P(buffer + prefixLength, sizeof(buffer) - prefixLength, (PGM_P)format, uptime, mac[0],
                                     mac[1], mac[2], mac[3], mac[4], mac[5], PHProbe::instance()->getSlopeResponse());
   if ((prefixLength + additionalLength > sizeof(buffer)) || (additionalLength < 0)) {

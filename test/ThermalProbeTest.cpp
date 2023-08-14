@@ -123,4 +123,56 @@ unittest(runningAverage) {
   assertTrue(19.9 <= temperature && temperature <= 20.1);
 }
 
+unittest(meanAndStdDev1) {
+  // a big jump from 10 to 20
+  ThermalProbe_TC* thermalProbe = ThermalProbe_TC::instance();
+  thermalProbe->resetSample();
+  assertEqual(0.0, thermalProbe->getSampleMean());
+  assertEqual(0.0, thermalProbe->getSampleStandardDeviation());
+  thermalProbe->setTemperature(10.0, true);  // raw temp will be about 10.0047
+  for (uint8_t i = 0; i < 10; ++i) {
+    delay(1000);
+    thermalProbe->getRunningAverage();
+  }
+  assertTrue((9.99 < thermalProbe->getSampleMean()) && (thermalProbe->getSampleMean() < 10.01));
+  assertTrue((-0.01 < thermalProbe->getSampleStandardDeviation()) &&
+             (thermalProbe->getSampleStandardDeviation() < 0.01));
+  thermalProbe->setTemperature(20.0, true);  // raw temp will be about 20.0212
+  for (uint8_t i = 10; i < 60; ++i) {
+    delay(1000);
+    thermalProbe->getRunningAverage();
+  }
+  assertTrue(abs(thermalProbe->getSampleMean() - 18.3517833) < 0.00005);
+  assertTrue(abs(thermalProbe->getSampleStandardDeviation() - 3.76443122) < 0.00005);
+
+  thermalProbe->resetSample();
+  assertEqual(0.0, thermalProbe->getSampleMean());
+  assertEqual(0.0, thermalProbe->getSampleStandardDeviation());
+}
+
+unittest(meanAndStdDev2) {
+  // a small jump from 10 to 10.1
+  ThermalProbe_TC* thermalProbe = ThermalProbe_TC::instance();
+  thermalProbe->resetSample();
+  assertEqual(0.0, thermalProbe->getSampleMean());
+  assertEqual(0.0, thermalProbe->getSampleStandardDeviation());
+  thermalProbe->setTemperature(10.0, true);  // raw temp will be about 10.0047
+  for (uint8_t i = 0; i < 10; ++i) {
+    delay(1000);
+    thermalProbe->getRunningAverage();
+  }
+  assertTrue((9.99 < thermalProbe->getSampleMean()) && (thermalProbe->getSampleMean() < 10.01));
+  assertTrue((-0.01 < thermalProbe->getSampleStandardDeviation()) &&
+             (thermalProbe->getSampleStandardDeviation() < 0.01));
+  thermalProbe->setTemperature(10.1, true);  // raw temp will be about 10.072
+  for (uint8_t i = 10; i < 60; ++i) {
+    delay(1000);
+    thermalProbe->getRunningAverage();
+  }
+  assertTrue((10.060771 - 0.00005 < thermalProbe->getSampleMean()) &&
+             (thermalProbe->getSampleMean() < 10.060771 + 0.00005));
+  assertTrue((0.025 - 0.003 < thermalProbe->getSampleStandardDeviation()) &&
+             (thermalProbe->getSampleStandardDeviation() < 0.025 + 0.003));
+}
+
 unittest_main()

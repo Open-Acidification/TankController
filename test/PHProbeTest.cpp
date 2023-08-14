@@ -40,9 +40,9 @@ unittest(serialEvent1) {
   pHProbe->setPh(7.125);
   assertFalse(dl->getShouldWriteWarning());
   assertEqual("", dl->getBuffer());
-  // Next line calls serialEvent1 (triggering warning) and tc->loop() (clearing warning)
+  // Next line calls serialEvent1 (triggering warning) and tc->loop() (sending warning)
   pHProbe->setPhSlope();
-  assertFalse(dl->getShouldWriteWarning());  // already false
+  assertFalse(dl->getShouldWriteWarning());  // already false again
   string lastWrittenString(dl->getBuffer());
   assertTrue(lastWrittenString.find("99.7,100.3,-0.89") > 0);  // warning was sent
   assertEqual("PH Calibra: 2 pt", pHProbe->getCalibrationResponse());

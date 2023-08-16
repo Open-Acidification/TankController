@@ -252,7 +252,7 @@ SDFAT=$(BIN)/FreeStack.o $(BIN)/MinimumSerial.o $(BIN)/File_CI.o $(BIN)/SD_CI.o 
   $(BIN)/istream.o $(BIN)/ostream.o
 
 OBJECTS=$(BIN)/Arduino.o $(BIN)/Godmode.o $(BIN)/stdlib.o $(BIN)/ArduinoUnitTests.o \
-  $(BIN)/TC_util.o $(BIN)/TankController.o $(BIN)/DataLogger.o $(BIN)/DateTime_TC.o \
+  $(BIN)/TC_util.o $(BIN)/TankController.o $(BIN)/AlertPusher.o $(BIN)/DataLogger.o $(BIN)/DateTime_TC.o \
   $(BIN)/EEPROM_TC.o $(BIN)/EthernetServer_TC.o $(BIN)/Ethernet_TC.o $(BIN)/GetTime.o \
 	$(BIN)/JSONBuilder.o \
   $(BIN)/Keypad_TC.o $(BIN)/LiquidCrystal_TC.o $(BIN)/PHControl.o $(BIN)/PHProbe.o \
@@ -292,6 +292,9 @@ $(BIN)/TC_util.o: $(SRC)/model/TC_util.cpp $(HEADERS)
 $(BIN)/TankController.o: $(SRC)/TankController.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/TankController.o $(SRC)/TankController.cpp
 
+$(BIN)/AlertPusher.o: $(SRC)/model/AlertPusher.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/AlertPusher.o $(SRC)/model/AlertPusher.cpp
+
 $(BIN)/DataLogger.o: $(SRC)/model/DataLogger.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/DataLogger.o $(SRC)/model/DataLogger.cpp
 
@@ -307,11 +310,11 @@ $(BIN)/EthernetServer_TC.o: $(SRC)/wrappers/EthernetServer_TC.cpp $(HEADERS)
 $(BIN)/Ethernet_TC.o: $(SRC)/wrappers/Ethernet_TC.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/Ethernet_TC.o $(SRC)/wrappers/Ethernet_TC.cpp
 
-$(BIN)/JSONBuilder.o: $(SRC)/model/JSONBuilder.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/JSONBuilder.o $(SRC)/model/JSONBuilder.cpp
-
 $(BIN)/GetTime.o: $(SRC)/model/GetTime.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/GetTime.o $(SRC)/model/GetTime.cpp
+
+$(BIN)/JSONBuilder.o: $(SRC)/model/JSONBuilder.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/JSONBuilder.o $(SRC)/model/JSONBuilder.cpp
 
 $(BIN)/Keypad_TC.o: $(SRC)/wrappers/Keypad_TC.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/Keypad_TC.o $(SRC)/wrappers/Keypad_TC.cpp

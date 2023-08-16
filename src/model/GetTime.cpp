@@ -45,7 +45,7 @@ void GetTime::loop() {
         if (next) {
           if (next == '\r') {
             buffer[index] = '\0';
-            if (index > 6 && memcmp("Date: ", buffer, 6) == 0) {
+            if (index > 6 && memcmp_P(F("Date: "), buffer, 6) == 0) {
               // "Date: Wed, 19 Jul 2023 04:18:52 GMT"
               uint8_t day = ((buffer[11] - '0') * 10) + (buffer[12] - '0');
               uint8_t year = ((buffer[20] - '0') * 10) + (buffer[21] - '0');
@@ -84,7 +84,7 @@ void GetTime::loop() {
               newTime.setAsCurrent();
               serial(F("Time updated to %s"), DateTime_TC::now().as16CharacterString());
             }
-          } else if (next == '\n') {
+          } else if (next == '\n' || index == sizeof(buffer)) {
             index = 0;
             buffer[index] = '\0';
           } else {

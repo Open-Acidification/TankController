@@ -13,10 +13,10 @@
 #include "wrappers/Serial_TC.h"
 #include "wrappers/ThermalProbe_TC.h"
 
-// class variables
+//  class variables
 DataLogger* DataLogger::_instance = nullptr;
 
-// class methods
+//  class methods
 /**
  * @brief accessor for singleton
  *
@@ -28,7 +28,7 @@ DataLogger* DataLogger::instance() {
   return _instance;
 }
 
-// instance methods
+//  instance methods
 /**
  * @brief check timers for logs that should be written
  *

@@ -20,12 +20,16 @@ public:
   static SD_TC* instance(const char* alertFileName = nullptr);
 
   // instance methods
+  void alertFileName(char* fileName, int size);
   void appendData(const char* header, const char* line);
   void appendToLog(const char* line);
+  bool countFiles(void (*callWhenFinished)(int));
   bool exists(const char* path);
   bool format();
+  int getAlertFileNameSize() {
+    return maxFileNameSize + 5;
+  }
   bool listRootToBuffer(void (*callWhenFull)(const char*, bool));
-  bool countFiles(void (*callWhenFinished)(int));
   bool mkdir(const char* path);
   File open(const char* path, oflag_t oflag = 0x00);
   void printRootDirectory();

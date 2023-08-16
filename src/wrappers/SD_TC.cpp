@@ -34,6 +34,21 @@ SD_TC::SD_TC(const char* alertFileName) {
 }
 
 /**
+ * @brief returns the name of the file to which alerts are written
+ *
+ * @return char*
+ */
+void SD_TC::alertFileName(char* fileName, int size) {
+  if (fileNameForAlerts == nullptr || strnlen(fileNameForAlerts, maxFileNameSize) == 0) {
+    // file TankController.ino does not specify an alertFileName
+    byte* mac = Ethernet_TC::instance()->getMac();
+    snprintf_P(fileName, size, PSTR("%02X%02X%02X%02X%02X%02X.log"), mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+  } else {
+    snprintf_P(fileName, size, PSTR("%.*s.log"), maxFileNameSize, fileNameForAlerts);
+  }
+}
+
+/**
  * append data to a data log file
  */
 void SD_TC::appendData(const char* header, const char* line) {
@@ -82,6 +97,26 @@ void SD_TC::appendToLog(const char* line) {
   appendDataToPath(line, path);
 }
 
+bool SD_TC::countFiles(void (*callWhenFinished)(int)) {
+  if (!inProgress) {
+    const char path[] PROGMEM = "/";
+    fileStack[0] = SD_TC::instance()->open(path);
+    if (!fileStack[0]) {
+      serial(F("SD_TC open() failed"));
+      return false;  // Function is unsuccessful
+    }
+    fileStack[0].rewind();
+    fileStackSize = 1;
+    fileCount = 0;
+    inProgress = true;
+  }
+  inProgress = iterateOnFiles(incrementFileCount, (void*)&fileCount);
+  if (!inProgress) {
+    callWhenFinished(fileCount);
+  }
+  return true;
+}
+
 bool SD_TC::exists(const char* path) {
   return sd.exists(path);
 }
@@ -126,26 +161,6 @@ bool SD_TC::iterateOnFiles(doOnFile functionName, void* userData) {
 
 bool SD_TC::incrementFileCount(File* myFile, void* pFileCount) {
   return ++(*(int*)pFileCount) % 10 != 0;  // Pause after counting 10 files
-}
-
-bool SD_TC::countFiles(void (*callWhenFinished)(int)) {
-  if (!inProgress) {
-    const char path[] PROGMEM = "/";
-    fileStack[0] = SD_TC::instance()->open(path);
-    if (!fileStack[0]) {
-      serial(F("SD_TC open() failed"));
-      return false;  // Function is unsuccessful
-    }
-    fileStack[0].rewind();
-    fileStackSize = 1;
-    fileCount = 0;
-    inProgress = true;
-  }
-  inProgress = iterateOnFiles(incrementFileCount, (void*)&fileCount);
-  if (!inProgress) {
-    callWhenFinished(fileCount);
-  }
-  return true;
 }
 
 // Issue: This function does not visually display depth for items in subfolders
@@ -209,12 +224,12 @@ File SD_TC::open(const char* path, oflag_t oflag) {
   return sd.open(path, oflag);
 }
 
-bool SD_TC::remove(const char* path) {
-  return sd.remove(path);
-}
-
 void SD_TC::printRootDirectory() {
   sd.ls(LS_DATE | LS_SIZE | LS_R);
+}
+
+bool SD_TC::remove(const char* path) {
+  return sd.remove(path);
 }
 
 void SD_TC::todaysDataFileName(char* path, int size) {
@@ -223,22 +238,17 @@ void SD_TC::todaysDataFileName(char* path, int size) {
   COUT(path);
 }
 
+/**
+ * @brief write an alert to the appropriate file on the SD card
+ *
+ * @param line
+ */
 void SD_TC::writeAlert(const char* line) {
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   strncpy(mostRecentStatusEntry, line, sizeof(mostRecentStatusEntry));
 #endif
-  if (fileNameForAlerts == nullptr || strnlen(fileNameForAlerts, maxFileNameSize) == 0) {
-    // file TankController.ino does not specify an alertFileName
-    byte* mac = Ethernet_TC::instance()->getMac();
-    char defaultFileName[17];
-    snprintf_P(defaultFileName, sizeof(defaultFileName), PSTR("%02X%02X%02X%02X%02X%02X.log"), mac[0], mac[1], mac[2],
-               mac[3], mac[4], mac[5]);
-    appendDataToPath(line, defaultFileName);
-  } else {
-    char fileNameWithExtension[maxFileNameSize + 5];
-    snprintf_P(fileNameWithExtension, sizeof(fileNameWithExtension), PSTR("%.*s.log"), maxFileNameSize,
-               fileNameForAlerts);
-    appendDataToPath(line, fileNameWithExtension);
-  }
+  char fileName[maxFileNameSize + 5];
+  alertFileName(fileName, sizeof(fileName));
+  appendDataToPath(line, fileName);
   COUT(line);
 }

@@ -16,7 +16,7 @@ class TankController {
 public:
   // class methods
   static TankController* instance(const char* pushingBoxID = nullptr, const char* alertFileName = nullptr,
-                                  int tzOffsetHrs = -7);
+                                  int alertFileNameSize = 1, int tzOffsetHrs = -7);
 
   // instance methods
   bool isInCalibration();
@@ -44,7 +44,7 @@ private:
   char nextKey = 0;
 
   // instance methods
-  TankController(const char* alertFileName);
+  TankController(const char* alertFileName, int alertFileNameSize);
   ~TankController();
   void blink();
   void handleUI();

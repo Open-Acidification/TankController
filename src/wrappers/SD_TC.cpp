@@ -12,9 +12,9 @@ SD_TC* SD_TC::_instance = nullptr;
 /**
  * accessor for singleton
  */
-SD_TC* SD_TC::instance(const char* alertFileName) {
+SD_TC* SD_TC::instance(const char* alertFileName, int alertFileNameSize) {
   if (!_instance) {
-    _instance = new SD_TC(alertFileName);
+    _instance = new SD_TC(alertFileName, alertFileNameSize);
   }
   return _instance;
 }
@@ -24,13 +24,14 @@ SD_TC* SD_TC::instance(const char* alertFileName) {
 /**
  * constructor
  */
-SD_TC::SD_TC(const char* alertFileName) {
+SD_TC::SD_TC(const char* alertFileName, int alertFileNameSize) {
   Serial.println(F("SD_TC()"));  // Serial_TC might not be ready yet
   assert(_instance == nullptr);
   if (!sd.begin(SD_SELECT_PIN)) {
     Serial.println(F("SD_TC failed to initialize!"));
   }
   fileNameForAlerts = alertFileName;
+  sizeOfFileNameForAlerts = alertFileNameSize;
 }
 
 /**
@@ -39,12 +40,13 @@ SD_TC::SD_TC(const char* alertFileName) {
  * @return char*
  */
 void SD_TC::alertFileName(char* fileName, int size) {
-  if (fileNameForAlerts == nullptr || strnlen(fileNameForAlerts, maxFileNameSize) == 0) {
+  if (fileNameForAlerts == nullptr || sizeOfFileNameForAlerts <= 1) {
     // file TankController.ino does not specify an alertFileName
+    assert(size >= 17);
     byte* mac = Ethernet_TC::instance()->getMac();
     snprintf_P(fileName, size, PSTR("%02X%02X%02X%02X%02X%02X.log"), mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
   } else {
-    snprintf_P(fileName, size, PSTR("%.*s.log"), maxFileNameSize, fileNameForAlerts);
+    snprintf_P(fileName, size, PSTR("%s.log"), fileNameForAlerts);
   }
 }
 
@@ -123,6 +125,17 @@ bool SD_TC::exists(const char* path) {
 
 bool SD_TC::format() {
   return sd.format();
+}
+
+/**
+ * @brief a size sufficient to store the alert file name
+ *
+ * @return int
+ */
+int SD_TC::getAlertFileNameSize() {
+  // Ensure space for default name (12-character MAC address plus null-terminating byte)
+  // and add 4 for ".log" extension
+  return max(13, sizeOfFileNameForAlerts) + 4;
 }
 
 bool SD_TC::iterateOnFiles(doOnFile functionName, void* userData) {
@@ -247,7 +260,7 @@ void SD_TC::writeAlert(const char* line) {
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   strncpy(mostRecentStatusEntry, line, sizeof(mostRecentStatusEntry));
 #endif
-  char fileName[maxFileNameSize + 5];
+  char fileName[getAlertFileNameSize()];
   alertFileName(fileName, sizeof(fileName));
   appendDataToPath(line, fileName);
   COUT(line);

@@ -206,7 +206,7 @@ unittest(writeAlert) {
 
 unittest(writeAlertNoFileName) {
   SD_TC* sd = SD_TC::instance();
-  sd->setFileNameForAlerts("");
+  sd->setFileNameForAlerts("", sizeof(""));
   assertEqual("", sd->getFileNameForAlerts());
   assertFalse(sd->exists("90A2DA807B76.log"));
   sd->writeAlert("line 1");
@@ -215,21 +215,11 @@ unittest(writeAlertNoFileName) {
 
 unittest(writeAlertWithFileName) {
   SD_TC* sd = SD_TC::instance();
-  sd->setFileNameForAlerts("Tank1");
+  sd->setFileNameForAlerts("Tank1", sizeof("Tank1"));
   assertEqual("Tank1", sd->getFileNameForAlerts());
   assertFalse(sd->exists("Tank1.log"));
   sd->writeAlert("line 1");
   assertTrue(sd->exists("Tank1.log"));
-}
-
-unittest(writeAlertWithTruncatedName) {
-  SD_TC* sd = SD_TC::instance();
-  // file name should be truncated to 60 characters
-  sd->setFileNameForAlerts("123456789012345678901234567890123456789012345678901234567890extra");
-  assertEqual("123456789012345678901234567890123456789012345678901234567890extra", sd->getFileNameForAlerts());
-  assertFalse(sd->exists("123456789012345678901234567890123456789012345678901234567890.log"));
-  sd->writeAlert("line 1");
-  assertTrue(sd->exists("123456789012345678901234567890123456789012345678901234567890.log"));
 }
 
 unittest_main()

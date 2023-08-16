@@ -8,11 +8,10 @@
 // If it remains empty, then no data will be sent.
 const char pushingBoxID[] = "";
 
-// Enter a file name unique to this device. Extension ".log" will be added.
-// If logFileName remains empty, or if its length exceeds maxLogFileNameSize,
-// then the MAC address will be used as the file name.
+// The log file name must be unique to this device.
+// If it remains empty, the MAC address will be used.
+// The extension ".log" will be added automatically.
 const char logFileName[] = "";
-const int maxLogFileNameSize = 28;
 
 // We query a web server for GMT time and then adjust for local time
 const int tzOffsetHrs = -7;
@@ -32,7 +31,7 @@ void serialEvent1() {  // if the hardware serial port_1 receives a char
 void setup() {
   // the install process is followed by a reset and we get two startups
   delay(500);
-  tank = TankController::instance(pushingBoxID, logFileName, maxLogFileNameSize, tzOffsetHrs);
+  tank = TankController::instance(pushingBoxID, logFileName, sizeof(logFileName), tzOffsetHrs);
   tank->setup();
 }
 

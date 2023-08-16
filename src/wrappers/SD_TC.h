@@ -17,7 +17,7 @@ struct listFilesData_t {
 class SD_TC {
 public:
   // class methods
-  static SD_TC* instance(const char* alertFileName = nullptr);
+  static SD_TC* instance(const char* alertFileName = nullptr, int alertFileNameSize = 1);
 
   // instance methods
   void alertFileName(char* fileName, int size);
@@ -26,9 +26,7 @@ public:
   bool countFiles(void (*callWhenFinished)(int));
   bool exists(const char* path);
   bool format();
-  int getAlertFileNameSize() {
-    return maxFileNameSize + 5;
-  }
+  int getAlertFileNameSize();
   bool listRootToBuffer(void (*callWhenFull)(const char*, bool));
   bool mkdir(const char* path);
   File open(const char* path, oflag_t oflag = 0x00);
@@ -41,8 +39,9 @@ public:
   const char* getFileNameForAlerts() {
     return fileNameForAlerts;
   }
-  void setFileNameForAlerts(const char* newFileName) {
+  void setFileNameForAlerts(const char* newFileName, int size) {
     fileNameForAlerts = newFileName;
+    sizeOfFileNameForAlerts = size;
   }
 
   char mostRecentHeader[128] = "";
@@ -59,7 +58,7 @@ private:
   bool hasHadError = false;
   SdFat sd;
   const char* fileNameForAlerts = nullptr;  // passed in from TankController.ino
-  const int maxFileNameSize = 60;
+  int sizeOfFileNameForAlerts = 1;          // passed in from TankController.ino
 
   // Max depth of file system search for rootdir()
   // Two is minimum: First for root, second for files
@@ -70,7 +69,7 @@ private:
   bool inProgress = false;
 
   // instance methods
-  SD_TC(const char* alertFileName);
+  SD_TC(const char* alertFileName, int alertFileNameSize);
   void appendDataToPath(const char* data, const char* path);
   bool iterateOnFiles(doOnFile functionName, void* userData);
   static bool incrementFileCount(File* myFile, void* pFileCount);

@@ -5,16 +5,42 @@ import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
 
+const rootDir = '/var/opt/oap/logs';
+
 // Configure routes.
 final _router = Router()
-  ..head('/logs/<path>', _headPath)
-  ..post('/logs/<path>', _postPath);
+  ..delete('/logs/deleteMe.log', _delete)
+  ..get('/logs/<path>', _get)
+  ..head('/logs/<path>', _head)
+  ..post('/logs/<path>', _post);
 
-Future<Response> _headPath(Request req, String path) async {
-  return Response.ok('', headers: {'content-length': '99'});
+Future<Response> _delete(Request req) async {
+  var file = File('$rootDir/deleteMe.log');
+  if (file.existsSync()) {
+    await file.delete();
+  }
+  return Response.ok(null);
 }
 
-Future<Response> _postPath(Request req, String path) async {
+Future<Response> _get(Request req, String path) async {
+  var file = File('$rootDir/$path');
+  if (!file.existsSync()) {
+    return Response.notFound(null);
+  }
+  var body = file.readAsStringSync();
+  return Response.ok(body);
+}
+
+Future<Response> _head(Request req, String path) async {
+  var file = File('$rootDir/$path');
+  if (!file.existsSync()) {
+    return Response.notFound(null);
+  }
+  var length = file.lengthSync();
+  return Response.ok(null, headers: {'content-length': '$length'});
+}
+
+Future<Response> _post(Request req, String path) async {
   // validate received data
   var mimeType = req.mimeType;
   if (mimeType != 'text/plain') {
@@ -32,18 +58,25 @@ Future<Response> _postPath(Request req, String path) async {
         body: 'Content-Length of $length '
             'did not match body.length of ${body.length}!');
   }
-  print('body = "$body"');
 
-  // get remote address
-  var connectionInfo =
-      req.context['shelf.io.connection_info'] as HttpConnectionInfo;
-  var remoteAddress = connectionInfo.remoteAddress.address;
-  print('remoteAddress = "$remoteAddress" (${remoteAddress.runtimeType})');
+  // // get remote address
+  // var connectionInfo =
+  //     req.context['shelf.io.connection_info'] as HttpConnectionInfo;
+  // var remoteAddress = connectionInfo.remoteAddress.address;
+  // print('remoteAddress = "$remoteAddress" (${remoteAddress.runtimeType})');
 
-  return Response.ok('');
+  var file = File('$rootDir/$path');
+  file.createSync(exclusive: false);
+  file.writeAsStringSync(
+    body,
+    mode: FileMode.writeOnlyAppend,
+  );
+  return Response.ok(null);
 }
 
 void main(List<String> args) async {
+  Directory(rootDir).create(recursive: true);
+
   // Use any available host or container IP (usually `0.0.0.0`).
   final ip = InternetAddress.anyIPv4;
 

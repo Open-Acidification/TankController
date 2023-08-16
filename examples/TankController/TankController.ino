@@ -9,8 +9,8 @@
 const char pushingBoxID[] = "";
 
 // The log file name must be unique to this device.
+// It can be 28 characters maximum, and ".log" will be added.
 // If it remains empty, the MAC address will be used.
-// The extension ".log" will be added automatically.
 const char logFileName[] = "";
 
 // We query a web server for GMT time and then adjust for local time
@@ -31,7 +31,7 @@ void serialEvent1() {  // if the hardware serial port_1 receives a char
 void setup() {
   // the install process is followed by a reset and we get two startups
   delay(500);
-  tank = TankController::instance(pushingBoxID, logFileName, sizeof(logFileName), tzOffsetHrs);
+  tank = TankController::instance(pushingBoxID, logFileName, tzOffsetHrs);
   tank->setup();
 }
 

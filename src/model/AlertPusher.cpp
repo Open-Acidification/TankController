@@ -42,15 +42,17 @@ void AlertPusher::loop() {
               case HEAD_REQUEST:
                 if (index > 16 && memcmp_P(F("content-length: "), buffer, 16) == 0) {
                   serverFileSize = atoi(buffer + 16);
+
                   readyToPost = true;
                 } else if (index > 13 && memcmp_P(F("404 not found"), buffer, 13) == 0) {
+                  // File has not yet been created on server
                   serverFileSize = 0;
                   readyToPost = true;
                 }
                 break;
               case POST_REQUEST:
                 if (index > 6 && memcmp_P(F("200 ok"), buffer, 6) == 0) {
-                  shouldSendHeadRequest = true;  // check whether more should be sent
+                  shouldSendHeadRequest = true;  // determine whether more should be sent
                 }
                 break;
               default:
@@ -95,8 +97,6 @@ void AlertPusher::pushSoon() {
  */
 void AlertPusher::sendHeadRequest() {
   state = HEAD_REQUEST;
-  char alertFileName[SD_TC::instance()->getAlertFileNameSize()];
-  SD_TC::instance()->alertFileName(alertFileName, sizeof(alertFileName));
   static const char format[] PROGMEM =
       "HEAD /logs/%s HTTP/1.1\r\n"
       "Host: %s\r\n"
@@ -104,7 +104,7 @@ void AlertPusher::sendHeadRequest() {
       "Accept: text/plain\r\n"
       "Connection: Keep-Alive\r\n"
       "\r\n";
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)format, alertFileName, serverDomain, VERSION);
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)format, SD_TC::instance()->getAlertFileName(), serverDomain, VERSION);
   if (client.connect(serverDomain, 80) == 1) {
     serial(F("connected to %s"), serverDomain);
     client.write(buffer, strnlen(buffer, sizeof(buffer)));
@@ -118,8 +118,6 @@ void AlertPusher::sendHeadRequest() {
 void AlertPusher::sendPostRequest() {
   // TODO: Check whether serverFileSize is less than local alert filesize
   state = POST_REQUEST;
-  char alertFileName[SD_TC::instance()->getAlertFileNameSize()];
-  SD_TC::instance()->alertFileName(alertFileName, sizeof(alertFileName));
   static const char format[] PROGMEM =
       "POST /logs/%s HTTP/1.1\r\n"
       "Host: %s\r\n"
@@ -127,6 +125,6 @@ void AlertPusher::sendPostRequest() {
       "Accept: text/plain\r\n"
       "Connection: close\r\n"
       "\r\n";
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)format, alertFileName, serverDomain, VERSION);
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)format, SD_TC::instance()->getAlertFileName(), serverDomain, VERSION);
   // TODO: finish method
 }

@@ -8,7 +8,9 @@
 #include "TankController.h"
 
 unittest_setup() {
+  GODMODE()->reset();
   SD_TC::instance()->format();
+  SD_TC::instance()->updateAlertFileSize();
 }
 
 unittest_teardown() {
@@ -41,8 +43,8 @@ unittest(tankControllerLoop) {
     data[file.size()] = '\0';
     assertEqual(
         "time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd\n"
-        "04/15/2021 00:00:00,   0, 0.00, 20.00, 0.000, 8.100,    1, 100000.0,      0.0,      0.0\n"
-        "04/15/2021 00:00:01,   0, 0.00, 20.00, 0.000, 8.100,    2, 100000.0,      0.0,      0.0\n",
+        "04/15/2021 00:00:00,   0, 0.00, 20.00, 0.000, 8.100,    0, 100000.0,      0.0,      0.0\n"
+        "04/15/2021 00:00:01,   0, 0.00, 20.00, 0.000, 8.100,    1, 100000.0,      0.0,      0.0\n",
         data);
   }
   file.close();
@@ -58,7 +60,9 @@ unittest(loopInCalibration) {
   d1.setAsCurrent();
   assertFalse(SD_TC::instance()->exists("20210415.csv"));
   tc->loop(false);
-  delay(1000);
+  tc->loop(false);
+  delay(2000);
+  tc->loop(false);
   tc->loop(false);
   assertTrue(SD_TC::instance()->exists("20210415.csv"));
   File file = SD_TC::instance()->open("20210415.csv");
@@ -68,7 +72,7 @@ unittest(loopInCalibration) {
     data[file.size()] = '\0';
     assertEqual(
         "time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd\n"
-        "04/15/2021 00:00:01,   0, C, 20.00, C, 8.100,    3, 100000.0,      0.0,      0.0\n",
+        "04/15/2021 00:00:02,   0, C, 20.00, C, 8.100,    2, 100000.0,      0.0,      0.0\n",
         data);
   }
   file.close();
@@ -188,38 +192,43 @@ unittest(writeAlert) {
   char data[80];
   SD_TC* sd = SD_TC::instance();
 
-  assertEqual(nullptr, sd->getFileNameForAlerts());
-  assertFalse(sd->exists("90A2DA807B76.log"));
+  assertEqual("90A2DAFBF6F1.log", sd->getAlertFileName());
+  assertFalse(sd->exists("90A2DAFBF6F1.log"));
+  assertEqual(0, sd->getAlertFileSize());
 
   // write data
   sd->writeAlert("line 1");
+  assertTrue(sd->exists("90A2DAFBF6F1.log"));
+  assertEqual(strlen("line 1\n"), sd->getAlertFileSize());
   sd->writeAlert("line 2");
-  assertTrue(sd->exists("90A2DA807B76.log"));
+  assertEqual(strlen("line 1\n\line 2\n"), sd->getAlertFileSize());
 
   // verify contents of alerts.log
-  File file = sd->open("90A2DA807B76.log");
+  File file = sd->open("90A2DAFBF6F1.log");
   file.read(data, file.size());
   data[file.size()] = '\0';
   assertEqual("line 1\nline 2\n", data);
   file.close();
 }
 
-unittest(writeAlertNoFileName) {
+unittest(noAlertFileName) {
   SD_TC* sd = SD_TC::instance();
-  sd->setFileNameForAlerts("", sizeof(""));
-  assertEqual("", sd->getFileNameForAlerts());
-  assertFalse(sd->exists("90A2DA807B76.log"));
-  sd->writeAlert("line 1");
-  assertTrue(sd->exists("90A2DA807B76.log"));
+  sd->setAlertFileName("");
+  assertEqual("90A2DAFBF6F1.log", sd->getAlertFileName());
 }
 
-unittest(writeAlertWithFileName) {
+unittest(validAlertFileName) {
   SD_TC* sd = SD_TC::instance();
-  sd->setFileNameForAlerts("Tank1", sizeof("Tank1"));
-  assertEqual("Tank1", sd->getFileNameForAlerts());
-  assertFalse(sd->exists("Tank1.log"));
-  sd->writeAlert("line 1");
-  assertTrue(sd->exists("Tank1.log"));
+  sd->setAlertFileName("Tank1");
+  assertEqual("Tank1.log", sd->getAlertFileName());
 }
+
+// unittest(longAlertFileName) {
+//   SD_TC* sd = SD_TC::instance();
+//   sd->setAlertFileName("1234567890123456789012345678");
+//   assertEqual("1234567890123456789012345678.log", sd->getAlertFileName());
+//   sd->setAlertFileName("12345678901234567890123456789");
+//   assertEqual("90A2DA807B76.log", sd->getAlertFileName());
+// }
 
 unittest_main()

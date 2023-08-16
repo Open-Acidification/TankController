@@ -3,6 +3,7 @@
 #include <Arduino.h>
 
 #define MAX_DEPTH 2
+#define MAX_FILE_NAME_LENGTH 28
 #define SS 4
 #include <SdFat.h>
 
@@ -17,33 +18,31 @@ struct listFilesData_t {
 class SD_TC {
 public:
   // class methods
-  static SD_TC* instance(const char* alertFileName = nullptr, int alertFileNameSize = 1);
+  static SD_TC* instance(const char* nameForAlertFile = nullptr);
 
   // instance methods
-  void alertFileName(char* fileName, int size);
   void appendData(const char* header, const char* line);
   void appendToLog(const char* line);
   bool countFiles(void (*callWhenFinished)(int));
   bool exists(const char* path);
   bool format();
-  int getAlertFileNameSize();
+  const char* getAlertFileName() {
+    return alertFileName;
+  }
+  uint32_t getAlertFileSize() {
+    return alertFileSize;
+  }
   bool listRootToBuffer(void (*callWhenFull)(const char*, bool));
   bool mkdir(const char* path);
   File open(const char* path, oflag_t oflag = 0x00);
   void printRootDirectory();
   bool remove(const char* path);
+  void setAlertFileName(const char* newFileName);
   void todaysDataFileName(char* path, int size);
+  void updateAlertFileSize();  // public for tests
   void writeAlert(const char* line);
 
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
-  const char* getFileNameForAlerts() {
-    return fileNameForAlerts;
-  }
-  void setFileNameForAlerts(const char* newFileName, int size) {
-    fileNameForAlerts = newFileName;
-    sizeOfFileNameForAlerts = size;
-  }
-
   char mostRecentHeader[128] = "";
   char mostRecentLine[128] = "";
   char mostRecentStatusEntry[256] = "";
@@ -57,8 +56,8 @@ private:
   const uint8_t SD_SELECT_PIN = SS;
   bool hasHadError = false;
   SdFat sd;
-  const char* fileNameForAlerts = nullptr;  // passed in from TankController.ino
-  int sizeOfFileNameForAlerts = 1;          // passed in from TankController.ino
+  char alertFileName[MAX_FILE_NAME_LENGTH + 5];  // add ".log" with null-terminator
+  uint32_t alertFileSize = 0;
 
   // Max depth of file system search for rootdir()
   // Two is minimum: First for root, second for files
@@ -69,7 +68,7 @@ private:
   bool inProgress = false;
 
   // instance methods
-  SD_TC(const char* alertFileName, int alertFileNameSize);
+  SD_TC(const char* alertFileName);
   void appendDataToPath(const char* data, const char* path);
   bool iterateOnFiles(doOnFile functionName, void* userData);
   static bool incrementFileCount(File* myFile, void* pFileCount);

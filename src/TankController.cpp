@@ -35,10 +35,9 @@ TankController *TankController::_instance = nullptr;
 /**
  * static function to return singleton
  */
-TankController *TankController::instance(const char *pushingBoxID, const char *alertFileName, int alertFileNameSize,
-                                         int tzOffsetHrs) {
+TankController *TankController::instance(const char *pushingBoxID, const char *alertFileName, int tzOffsetHrs) {
   if (!_instance) {
-    _instance = new TankController(alertFileName, alertFileNameSize);
+    _instance = new TankController(alertFileName);
     PushingBox::instance(pushingBoxID);
     GetTime::instance(tzOffsetHrs);
   }
@@ -49,11 +48,11 @@ TankController *TankController::instance(const char *pushingBoxID, const char *a
 /**
  * Constructor
  */
-TankController::TankController(const char *alertFileName, int alertFileNameSize) {
+TankController::TankController(const char *alertFileName) {
   serial(F("\r\n#################\r\nTankController::TankController() - version %s"), TANK_CONTROLLER_VERSION);
   assert(!_instance);
   // ensure we have instances
-  SD_TC::instance(alertFileName, alertFileNameSize);
+  SD_TC::instance(alertFileName);
   EEPROM_TC::instance();
   Keypad_TC::instance();
   LiquidCrystal_TC::instance(TANK_CONTROLLER_VERSION);

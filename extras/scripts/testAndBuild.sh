@@ -3,6 +3,6 @@
 cp extras/scripts/p*-commit .git/hooks/
 bundle config set --local path 'vendor/bundle'
 bundle install
-bundle exec arduino_ci.rb --min-free-space=5696 1> >(tee stdout.txt ) 2> >(tee stderr.txt >&2 )
+bundle exec arduino_ci.rb --min-free-space=5668 1> >(tee stdout.txt ) 2> >(tee stderr.txt >&2 )
 result="${PIPESTATUS[0]}"
 exit "$result"

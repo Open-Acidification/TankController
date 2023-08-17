@@ -187,8 +187,10 @@ void DataLogger::writeWarningToLog() {
   int prefixLength = strnlen(buffer, sizeof(buffer));
   // uptime \t MACaddress \t pHslope \t
   const __FlashStringHelper* format = F("\t\t\t\t\t\t\t%lu\t%02X:%02X:%02X:%02X:%02X:%02X\t%s\t");
+  char slope[20];
+  PHProbe::instance()->getSlope(slope, sizeof(slope));
   int additionalLength = snprintf_P(buffer + prefixLength, sizeof(buffer) - prefixLength, (PGM_P)format, uptime, mac[0],
-                                    mac[1], mac[2], mac[3], mac[4], mac[5], PHProbe::instance()->getSlopeResponse());
+                                    mac[1], mac[2], mac[3], mac[4], mac[5], slope);
   if ((prefixLength + additionalLength > sizeof(buffer)) || (additionalLength < 0)) {
     // TODO: Log a warning that string was truncated
     serial(F("WARNING! String was truncated to \"%s\""), buffer);

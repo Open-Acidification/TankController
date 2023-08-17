@@ -24,7 +24,7 @@ private:
   clientState_t state;
   uint32_t delayRequestsUntilTime = 40000;  // wait a bit before first request
   const char *serverDomain = "oap.cs.wallawalla.edu";
-  char buffer[150];
+  char buffer[200];
   uint8_t index = 0;
   uint64_t serverFileSize = 0;
   bool readyToPost = false;

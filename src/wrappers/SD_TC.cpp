@@ -112,6 +112,26 @@ bool SD_TC::format() {
   return sd.format();
 }
 
+void SD_TC::getAlert(char* buffer, int size, uint32_t index) {
+  File file = open(alertFileName, O_RDONLY);
+  if (file) {
+    file.seek(index);
+    int remaining = file.available();
+    if (remaining > 0) {
+      int readSize = file.read(buffer, min(size, remaining) - 1);
+      buffer[size - 1] = '\0';
+      file.close();
+      for (int i = 0; i < size - 1; i++) {
+        if (buffer[i] == '\n') {
+          buffer[i + 1] = '\0';
+          return;
+        }
+      }
+    }
+    file.close();
+  }
+}
+
 bool SD_TC::iterateOnFiles(doOnFile functionName, void* userData) {
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   return false;  // no more files
@@ -237,7 +257,7 @@ void SD_TC::todaysDataFileName(char* path, int size) {
 }
 
 void SD_TC::updateAlertFileSize() {
-  File file = sd.open(alertFileName, O_RDONLY);
+  File file = open(alertFileName, O_RDONLY);
   if (file) {
     alertFileSize = file.size();
     file.close();

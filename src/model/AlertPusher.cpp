@@ -31,7 +31,7 @@ void AlertPusher::loop() {
     return;
   }
   if (client.connected()) {
-    delayRequestsUntilTime = millis();  // connected; no need to delay afterward
+    delayRequestsUntilTime = millis();  // now connected; no need to delay after this loop
     if (client.available()) {           // bytes are remaining in the current packet
       int next;
       while ((next = client.read()) != -1) {  // Flawfinder: ignore
@@ -42,8 +42,9 @@ void AlertPusher::loop() {
               case HEAD_REQUEST:
                 if (index > 16 && memcmp_P(F("content-length: "), buffer, 16) == 0) {
                   serverFileSize = atoi(buffer + 16);
-
-                  readyToPost = true;
+                  if (serverFileSize < SD_TC::instance()->getAlertFileSize()) {
+                    readyToPost = true;
+                  }
                 } else if (index > 13 && memcmp_P(F("404 not found"), buffer, 13) == 0) {
                   // File has not yet been created on server
                   serverFileSize = 0;
@@ -96,6 +97,7 @@ void AlertPusher::pushSoon() {
  *
  */
 void AlertPusher::sendHeadRequest() {
+  serial(F("AlertPusher: sending HEAD request"));
   state = HEAD_REQUEST;
   static const char format[] PROGMEM =
       "HEAD /logs/%s HTTP/1.1\r\n"
@@ -116,15 +118,29 @@ void AlertPusher::sendHeadRequest() {
 }
 
 void AlertPusher::sendPostRequest() {
-  // TODO: Check whether serverFileSize is less than local alert filesize
+  serial(F("AlertPusher: sending POST request"));
   state = POST_REQUEST;
+  char nextAlertString[300];
+  SD_TC::instance()->getAlert(nextAlertString, sizeof(nextAlertString), serverFileSize);
   static const char format[] PROGMEM =
       "POST /logs/%s HTTP/1.1\r\n"
       "Host: %s\r\n"
+      "Content-Type: text/plain\r\n"
       "User-Agent: TankController/%s\r\n"
-      "Accept: text/plain\r\n"
+      "Content-Length: %i\r\n"
       "Connection: close\r\n"
       "\r\n";
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)format, SD_TC::instance()->getAlertFileName(), serverDomain, VERSION);
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)format, SD_TC::instance()->getAlertFileName(), serverDomain, VERSION,
+             strnlen(nextAlertString, sizeof(nextAlertString)));
   // TODO: finish method
+  if (client.connect(serverDomain, 80) == 1) {
+    serial(F("connected to %s"), serverDomain);
+    client.write(buffer, strnlen(buffer, sizeof(buffer)));
+    client.write(nextAlertString, strnlen(nextAlertString, sizeof(nextAlertString)));
+    client.write('\r');
+    client.write('\n');
+  } else {
+    serial(F("connection to %s failed"), serverDomain);
+    shouldSendHeadRequest = true;
+  }
 }

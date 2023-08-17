@@ -48,14 +48,14 @@ INCLUDE=-I$(ARDUINO_CI)/arduino \
 HEADERS=$(wildcard src/*.h) $(wildcard src/wrappers/*) $(wildcard src/UIState/*)
 
 .PHONY : all
-all : $(BIN)/PHCalibrationWarningTest.cpp.bin $(BIN)/BlinkTest.cpp.bin $(BIN)/DataLoggerTest.cpp.bin \
+all : $(BIN)/AlertPusherTest.cpp.bin $(BIN)/BlinkTest.cpp.bin $(BIN)/DataLoggerTest.cpp.bin \
   $(BIN)/DateTimeTest.cpp.bin $(BIN)/EEPROMTest.cpp.bin $(BIN)/EnablePIDTest.cpp.bin \
   $(BIN)/EthernetServerTest.cpp.bin $(BIN)/EthernetTest.cpp.bin \
   $(BIN)/GetTimeTest.cpp.bin $(BIN)/JSONBuilderTest.cpp.bin $(BIN)/KeypadTest.cpp.bin \
 	$(BIN)/LiquidCrystalTest.cpp.bin \
   $(BIN)/MenuTest.cpp.bin $(BIN)/NumberCollectorTest.cpp.bin $(BIN)/PHCalibrationHighTest.cpp.bin \
   $(BIN)/PHCalibrationLowTest.cpp.bin $(BIN)/PHCalibrationMidTest.cpp.bin \
-	$(BIN)/PHCalibrationPromptTest.cpp.bin $(BIN)/PHControlTest.cpp.bin \
+	$(BIN)/PHCalibrationPromptTest.cpp.bin $(BIN)/PHCalibrationWarningTest.cpp.bin $(BIN)/PHControlTest.cpp.bin \
   $(BIN)/PHProbeTest.cpp.bin $(BIN)/PIDTest.cpp.bin $(BIN)/PushingBoxTest.cpp.bin $(BIN)/SDTest.cpp.bin \
   $(BIN)/SeeDeviceAddressTest.cpp.bin $(BIN)/SeeDeviceUptimeTest.cpp.bin $(BIN)/SeeFreeMemoryTest.cpp.bin \
   $(BIN)/SeeGoogleMinsTest.cpp.bin $(BIN)/SeeLogFileTest.cpp.bin $(BIN)/SeePHCalibrationTest.cpp.bin \
@@ -73,6 +73,9 @@ GPP_TEST=g++ $(FLAGS) -L$(BIN) $(INCLUDE)
 
 $(BIN)/PHCalibrationWarningTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/PHCalibrationWarningTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/PHCalibrationWarningTest.cpp.bin $(TEST)/PHCalibrationWarningTest.cpp -larduino
+
+$(BIN)/AlertPusherTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/AlertPusherTest.cpp $(HEADERS)
+	$(GPP_TEST) -o $(BIN)/AlertPusherTest.cpp.bin $(TEST)/AlertPusherTest.cpp -larduino
 
 $(BIN)/BlinkTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/BlinkTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/BlinkTest.cpp.bin $(TEST)/BlinkTest.cpp -larduino

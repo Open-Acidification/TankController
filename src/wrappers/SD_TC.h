@@ -26,6 +26,7 @@ public:
   bool countFiles(void (*callWhenFinished)(int));
   bool exists(const char* path);
   bool format();
+  void getAlert(char* buffer, int size, uint32_t index);
   const char* getAlertFileName() {
     return alertFileName;
   }

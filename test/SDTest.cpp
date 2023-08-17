@@ -211,6 +211,24 @@ unittest(writeAlert) {
   file.close();
 }
 
+unittest(getAlert) {
+  SD_TC* sd = SD_TC::instance();
+
+  // write data
+  sd->setAlertFileName("Tank1");
+  sd->writeAlert("line 1\nand 2\nline 3\n");
+
+  char buffer[20];
+
+  // get alert in line 2
+  sd->getAlert(buffer, sizeof(buffer), strlen("line 1\n"));
+  assertEqual("and 2\n", buffer);
+
+  // get alert in line 3
+  sd->getAlert(buffer, sizeof(buffer), strlen("line 1\nand 2\n"));
+  assertEqual("line 3\n", buffer);
+}
+
 unittest(noAlertFileName) {
   SD_TC* sd = SD_TC::instance();
   sd->setAlertFileName("");
@@ -225,10 +243,10 @@ unittest(validAlertFileName) {
 
 // unittest(longAlertFileName) {
 //   SD_TC* sd = SD_TC::instance();
-//   sd->setAlertFileName("1234567890123456789012345678");
+//   sd->setAlertFileName("1234567890123456789012345678");  // maximum length
 //   assertEqual("1234567890123456789012345678.log", sd->getAlertFileName());
-//   sd->setAlertFileName("12345678901234567890123456789");
-//   assertEqual("90A2DA807B76.log", sd->getAlertFileName());
+//   sd->setAlertFileName("12345678901234567890123456789");  // one character too many
+//   assertEqual("90A2DAFBF6F1.log", sd->getAlertFileName());
 // }
 
 unittest_main()

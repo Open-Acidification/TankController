@@ -6,6 +6,7 @@
 #include "UIState/MainMenu.h"
 #include "UIState/UIState.h"
 #include "Version.h"
+#include "model/AlertPusher.h"
 #include "model/DataLogger.h"
 #include "model/GetTime.h"
 #include "model/PHControl.h"
@@ -162,6 +163,7 @@ void TankController::loop(bool report_loop_delay) {
   handleUI();                             // look at keypad, update LCD (~90ms)
   DataLogger::instance()->loop();         // record current data to SD and serial
   GetTime::instance()->loop();            // update the time
+  AlertPusher::instance()->loop();        // handle requests to cloud server
   PushingBox::instance()->loop();         // write data to Google Sheets (~1130ms every report)
   Ethernet_TC::instance()->loop();        // renew DHCP lease
   EthernetServer_TC::instance()->loop();  // handle any HTTP requests

@@ -1,6 +1,7 @@
 #include "model/AlertPusher.h"
 
 #include "Version.h"
+#include "model/TC_util.h"
 #include "wrappers/Ethernet_TC.h"
 #include "wrappers/SD_TC.h"
 #include "wrappers/Serial_TC.h"
@@ -39,20 +40,22 @@ void AlertPusher::loop() {
           if (next == '\r') {
             buffer[index] = '\0';
             switch (state) {
-              case HEAD_REQUEST:
+              case CLIENT_HEAD_REQUEST:
+                shouldSendHeadRequest = false;
                 if (index > 16 && memcmp_P(F("content-length: "), buffer, 16) == 0) {
                   serverFileSize = atoi(buffer + 16);
                   if (serverFileSize < SD_TC::instance()->getAlertFileSize()) {
                     readyToPost = true;
                   }
-                } else if (index > 13 && memcmp_P(F("404 not found"), buffer, 13) == 0) {
+                } else if (index >= 22 && memcmp_P(F("http/1.1 404 not found"), buffer, 22) == 0) {
                   // File has not yet been created on server
                   serverFileSize = 0;
                   readyToPost = true;
                 }
                 break;
-              case POST_REQUEST:
-                if (index > 6 && memcmp_P(F("200 ok"), buffer, 6) == 0) {
+              case CLIENT_POST_REQUEST:
+                readyToPost = false;
+                if (index >= 15 && memcmp_P(F("http/1.1 200 ok"), buffer, 6) == 0) {
                   shouldSendHeadRequest = true;  // determine whether more should be sent
                 }
                 break;
@@ -74,12 +77,10 @@ void AlertPusher::loop() {
     unsigned long now = millis();
     if (readyToPost && now >= delayRequestsUntilTime) {  // TODO: and bubbler is off?
       delayRequestsUntilTime = now + 5000;
-      sendPostRequest();  // can block for 1 sec?
-      readyToPost = false;
+      sendPostRequest();                                                  // can block for 1 sec?
     } else if (shouldSendHeadRequest && now >= delayRequestsUntilTime) {  // TODO: and bubbler is off?
       delayRequestsUntilTime = now + 5000;
       sendHeadRequest();  // can block for 1 sec?
-      shouldSendHeadRequest = false;
     }
   }
 }
@@ -98,7 +99,7 @@ void AlertPusher::pushSoon() {
  */
 void AlertPusher::sendHeadRequest() {
   serial(F("AlertPusher: sending HEAD request"));
-  state = HEAD_REQUEST;
+  state = CLIENT_HEAD_REQUEST;
   static const char format[] PROGMEM =
       "HEAD /logs/%s HTTP/1.1\r\n"
       "Host: %s\r\n"
@@ -119,7 +120,7 @@ void AlertPusher::sendHeadRequest() {
 
 void AlertPusher::sendPostRequest() {
   serial(F("AlertPusher: sending POST request"));
-  state = POST_REQUEST;
+  state = CLIENT_POST_REQUEST;
   char nextAlertString[300];
   SD_TC::instance()->getAlert(nextAlertString, sizeof(nextAlertString), serverFileSize);
   static const char format[] PROGMEM =

@@ -333,16 +333,18 @@ void EEPROM_TC::writeAllToString(char* destination, int size) {
       snprintf_P(destination, size,
                  PSTR("%i\t%i.%02i\t%i\t%i\t%i.%02i\t%i.%02i\t%i.%02i\t%i\t%i.%02i\t%i\t%i\t%i.%02i\t%i\t%i\t%i.%02i\t%"
                       "i\t%i.%02i\t%i\t%i\t%i.%02i\t%i\t%i\t%i.%02i\t%i"),
-                 (int)getIgnoreBadPHSlope(), (int)thermalCorrection, (int)(thermalCorrection * 100 + 0.5) % 100,
-                 (int)getIgnoreBadThermalCorrection(), (int)getHeat(), (int)kd, (int)(kd * 100 + 0.5) % 100, (int)ki,
-                 (int)(ki * 100 + 0.5) % 100, (int)kp, (int)(kp * 100 + 0.5) % 100, getPHFunctionType(), (int)pHTarget,
-                 (int)(pHTarget * 100 + 0.5) % 100, getPhRampTimeStart(), getPhRampTimeEnd(), (int)rampStartingPh,
-                 (int)(rampStartingPh * 100 + 0.5) % 100, getPhSineStartTime(), getPhSinePeriod(), (int)pHSineAmplitude,
-                 (int)(pHSineAmplitude * 100 + 0.5) % 100, getThermalFunctionType(), (int)thermalTarget,
-                 (int)(thermalTarget * 100 + 0.5) % 100, getThermalRampTimeStart(), getThermalRampTimeEnd(),
-                 (int)thermalRampInitialValue, (int)(thermalRampInitialValue * 100 + 0.5) % 100,
-                 getThermalSineStartTime(), getThermalSinePeriod(), (int)thermalSineAmplitude,
-                 (int)(thermalSineAmplitude * 100 + 0.5) % 100, getGoogleSheetInterval());
+                 (int)getIgnoreBadPHSlope(), (int)thermalCorrection,
+                 (int)((thermalCorrection - (int)thermalCorrection) * 100 + 0.5), (int)getIgnoreBadThermalCorrection(),
+                 (int)getHeat(), (int)kd, (int)(kd * 100 + 0.5) % 100, (int)ki, (int)(ki * 100 + 0.5) % 100, (int)kp,
+                 (int)((kp - (int)kp) * 100 + 0.5), getPHFunctionType(), (int)pHTarget,
+                 (int)((pHTarget - (int)pHTarget) * 100 + 0.5), getPhRampTimeStart(), getPhRampTimeEnd(),
+                 (int)rampStartingPh, (int)((rampStartingPh - (int)rampStartingPh) * 100 + 0.5), getPhSineStartTime(),
+                 getPhSinePeriod(), (int)pHSineAmplitude, (int)((pHSineAmplitude - (int)pHSineAmplitude) * 100 + 0.5),
+                 getThermalFunctionType(), (int)thermalTarget, (int)((thermalTarget - (int)thermalTarget) * 100 + 0.5),
+                 getThermalRampTimeStart(), getThermalRampTimeEnd(), (int)thermalRampInitialValue,
+                 (int)((thermalRampInitialValue - (int)thermalRampInitialValue) * 100 + 0.5), getThermalSineStartTime(),
+                 getThermalSinePeriod(), (int)thermalSineAmplitude,
+                 (int)((thermalSineAmplitude - (int)thermalSineAmplitude) * 100 + 0.5), getGoogleSheetInterval());
   if ((length > size) || (length < 0)) {
     // TODO: Log a warning that string was truncated
     serial(F("WARNING! String was truncated to \"%s\""), destination);

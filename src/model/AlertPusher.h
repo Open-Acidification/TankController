@@ -3,7 +3,7 @@
 
 #include "wrappers/Ethernet_TC.h"
 
-enum clientState_t { HEAD_REQUEST, POST_REQUEST };
+enum clientState_t { CLIENT_HEAD_REQUEST, CLIENT_POST_REQUEST };
 
 class AlertPusher {
 public:
@@ -14,6 +14,21 @@ public:
   AlertPusher();
   void loop();
   void pushSoon();
+
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  EthernetClient *getClient() {
+    return &client;
+  }
+  bool getReadyToPost() {
+    return readyToPost;
+  }
+  const char *getServerDomain() {
+    return serverDomain;
+  }
+  bool getShouldSendHeadRequest() {
+    return shouldSendHeadRequest;
+  }
+#endif
 
 private:
   // class variables

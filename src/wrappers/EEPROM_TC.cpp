@@ -319,15 +319,45 @@ void EEPROM_TC::setTempSeriesSize(float value) {
  */
 void EEPROM_TC::writeAllToString(char* destination, int size) {
   float thermalCorrection = getThermalCorrection();
+  if (isnan(thermalCorrection)) {
+    thermalCorrection = 0.0;
+  }
   float kd = getKD();
+  if (isnan(kd)) {
+    kd = 0.0;
+  }
   float ki = getKI();
+  if (isnan(ki)) {
+    ki = 0.0;
+  }
   float kp = getKP();
+  if (isnan(kp)) {
+    kp = 0.0;
+  }
   float pHTarget = getPh();
+  if (isnan(pHTarget)) {
+    pHTarget = 0.0;
+  }
   float rampStartingPh = getRampStartingPh();
+  if (isnan(rampStartingPh)) {
+    rampStartingPh = 0.0;
+  }
   float pHSineAmplitude = getPhSineAmplitude();
+  if (isnan(pHSineAmplitude)) {
+    pHSineAmplitude = 0.0;
+  }
   float thermalTarget = getThermalTarget();
+  if (isnan(thermalTarget)) {
+    thermalTarget = 0.0;
+  }
   float thermalRampInitialValue = getThermalRampInitialValue();
+  if (isnan(thermalRampInitialValue)) {
+    thermalRampInitialValue = 0.0;
+  }
   float thermalSineAmplitude = getThermalSineAmplitude();
+  if (isnan(thermalSineAmplitude)) {
+    thermalSineAmplitude = 0.0;
+  }
 
   int length =
       snprintf_P(destination, size,

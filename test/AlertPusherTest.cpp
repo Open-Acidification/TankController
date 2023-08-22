@@ -70,7 +70,7 @@ unittest(loopSendsRequests) {
   tc->loop(false);  // HEAD request is sent
   assertFalse(pusher->getReadyToPost());
   SD_TC::instance()->format();                      // wipe alert log file
-  SD_TC::instance()->updateAlertFileSize();         // size to zero
+  SD_TC::instance()->updateAlertFileSizeForTest();  // size to zero
   SD_TC::instance()->writeAlert("some data here");  // and '\n' is added for 15 bytes
   tc->loop(false);                                  // "200 OK" is received
   assertFalse(pusher->getShouldSendHeadRequest());  //

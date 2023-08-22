@@ -38,7 +38,7 @@ unittest(currentData) {
       "\"Temperature\":99.99,"
       "\"TargetTemperature\":98.88,"
       "\"IPAddress\":\"192.168.1.10\","
-      "\"MAC\":\"90:A2:DA:FB:F6:F1\","
+      "\"MAC\":\"90:A2:DA:80:7B:76\","
       "\"FreeMemory\":\"1024 bytes\","
       "\"GoogleSheetInterval\":65535,"
       "\"LogFile\":\"20220222.csv\","

@@ -27,9 +27,7 @@ public:
   bool exists(const char* path);
   bool format();
   void getAlert(char* buffer, int size, uint32_t index);
-  const char* getAlertFileName() {
-    return alertFileName;
-  }
+  const char* getAlertFileName();
   uint32_t getAlertFileSize() {
     return alertFileSize;
   }
@@ -40,13 +38,15 @@ public:
   bool remove(const char* path);
   void setAlertFileName(const char* newFileName);
   void todaysDataFileName(char* path, int size);
-  void updateAlertFileSize();  // public for tests
   void writeAlert(const char* line);
 
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   char mostRecentHeader[128] = "";
   char mostRecentLine[128] = "";
   char mostRecentStatusEntry[256] = "";
+  void updateAlertFileSizeForTest() {
+    updateAlertFileSize();
+  }
 #endif
 
 private:
@@ -59,6 +59,7 @@ private:
   SdFat sd;
   char alertFileName[MAX_FILE_NAME_LENGTH + 5];  // add ".log" with null-terminator
   uint32_t alertFileSize = 0;
+  bool alertFileNameIsReady = false;
 
   // Max depth of file system search for rootdir()
   // Two is minimum: First for root, second for files
@@ -74,4 +75,6 @@ private:
   bool iterateOnFiles(doOnFile functionName, void* userData);
   static bool incrementFileCount(File* myFile, void* pFileCount);
   static bool listFile(File* myFile, void* userData);
+  void prepareAlertFileName();
+  void updateAlertFileSize();
 };

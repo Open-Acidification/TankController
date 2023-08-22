@@ -24,15 +24,13 @@ SD_TC* SD_TC::instance(const char* alertFileName) {
 /**
  * constructor
  */
-SD_TC::SD_TC(const char* nameForAlertFile) {
+SD_TC::SD_TC(const char* alertFileName) {
   Serial.println(F("SD_TC()"));  // Serial_TC might not be ready yet
   assert(_instance == nullptr);
   if (!sd.begin(SD_SELECT_PIN)) {
     Serial.println(F("SD_TC failed to initialize!"));
   }
-  // snprintf(alertFileName, 56, "hello");
-  setAlertFileName(nameForAlertFile);
-  updateAlertFileSize();
+  setAlertFileName(alertFileName);
 }
 
 /**
@@ -113,7 +111,7 @@ bool SD_TC::format() {
 }
 
 void SD_TC::getAlert(char* buffer, int size, uint32_t index) {
-  File file = open(alertFileName, O_RDONLY);
+  File file = open(getAlertFileName(), O_RDONLY);
   if (file) {
     file.seek(index);
     int remaining = file.available();
@@ -130,6 +128,13 @@ void SD_TC::getAlert(char* buffer, int size, uint32_t index) {
     }
     file.close();
   }
+}
+
+const char* SD_TC::getAlertFileName() {
+  if (!alertFileNameIsReady) {
+    prepareAlertFileName();
+  }
+  return alertFileName;
 }
 
 bool SD_TC::iterateOnFiles(doOnFile functionName, void* userData) {
@@ -231,6 +236,16 @@ File SD_TC::open(const char* path, oflag_t oflag) {
   return sd.open(path, oflag);
 }
 
+void SD_TC::prepareAlertFileName() {
+  alertFileNameIsReady = true;
+  if (alertFileName == nullptr || strnlen(alertFileName, MAX_FILE_NAME_LENGTH + 1) == 0) {
+    // not a valid file name so use MAC address
+    byte* mac = Ethernet_TC::instance()->getMac();
+    snprintf_P(alertFileName, 17, PSTR("%02X%02X%02X%02X%02X%02X.log"), mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+  }
+  updateAlertFileSize();
+}
+
 void SD_TC::printRootDirectory() {
   sd.ls(LS_DATE | LS_SIZE | LS_R);
 }
@@ -240,13 +255,17 @@ bool SD_TC::remove(const char* path) {
 }
 
 void SD_TC::setAlertFileName(const char* newFileName) {
-  if (newFileName == nullptr || strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) == 0 ||
-      strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) > MAX_FILE_NAME_LENGTH) {
-    // newFileName is not valid (See TankController.ino) so use default
-    byte* mac = Ethernet_TC::instance()->getMac();
-    snprintf_P(alertFileName, 17, PSTR("%02X%02X%02X%02X%02X%02X.log"), mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
-  } else {
+  if (newFileName != nullptr && strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) > 0 &&
+      strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) <= MAX_FILE_NAME_LENGTH) {
+    // valid file name has been provided (See TankController.ino)
     snprintf_P(alertFileName, MAX_FILE_NAME_LENGTH + 5, PSTR("%s.log"), newFileName);
+  } else {
+    alertFileName[0] = '\0';
+    alertFileNameIsReady = false;
+    // This seems a logical place to set the default file name, but it is too soon. If Ethernet_TC() is not yet
+    // initialized then doing so will cause it to write to serial, which is logged by SD_TC::appendToLog(), which
+    // initializes SD_TC() which calls this very method. So we'll leave the file name empty for now, and leave
+    // alertFileNameIsReady == false
   }
 }
 
@@ -257,6 +276,7 @@ void SD_TC::todaysDataFileName(char* path, int size) {
 }
 
 void SD_TC::updateAlertFileSize() {
+  assert(alertFileNameIsReady);
   File file = open(alertFileName, O_RDONLY);
   if (file) {
     alertFileSize = file.size();
@@ -275,6 +295,9 @@ void SD_TC::writeAlert(const char* line) {
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   strncpy(mostRecentStatusEntry, line, sizeof(mostRecentStatusEntry));
 #endif
+  if (!alertFileNameIsReady) {
+    prepareAlertFileName();
+  }
   appendDataToPath(line, alertFileName);
   updateAlertFileSize();
 }

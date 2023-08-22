@@ -66,7 +66,7 @@ unittest(writeWarningToLog) {
   char warningString[512] = "";
   snprintf(warningString, sizeof(warningString), "%s\t%s", VERSION,
            "0\tW\t2023-08-15 "
-           "00:00:19\t\t\t\t\t\t\t19\t90:A2:DA:FB:F6:F1\tRequesting...\t1\t0.00\t1\t1\t0.00\t0.00\t100000.00\t0\t8."
+           "00:00:19\t\t\t\t\t\t\t19\t90:A2:DA:80:7B:76\tRequesting...\t1\t0.00\t1\t1\t0.00\t0.00\t100000.00\t0\t8."
            "10\t-1\t-1\t0."
            "00\t-1\t-1\t0.00\t0\t20.00\t-1\t-1\t0.00\t-1\t-1\t0.00\t65535");
   assertEqual(warningString, sd->mostRecentStatusEntry);

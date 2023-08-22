@@ -13,7 +13,6 @@ unittest_setup() {
 }
 
 unittest_teardown() {
-  SD_TC::instance()->format();
 }
 
 unittest(singleton) {

@@ -28,6 +28,9 @@ public:
   bool getShouldSendHeadRequest() {
     return shouldSendHeadRequest;
   }
+  void setShouldSentHeadRequest(bool value) {
+    shouldSendHeadRequest = value;
+  }
 #endif
 
 private:

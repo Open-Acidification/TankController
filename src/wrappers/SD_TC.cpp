@@ -1,5 +1,6 @@
 #include "wrappers/SD_TC.h"
 
+#include "model/AlertPusher.h"
 #include "model/TC_util.h"
 #include "wrappers/DateTime_TC.h"
 #include "wrappers/Ethernet_TC.h"
@@ -300,4 +301,5 @@ void SD_TC::writeAlert(const char* line) {
   }
   appendDataToPath(line, alertFileName);
   updateAlertFileSize();
+  AlertPusher::instance()->pushSoon();
 }

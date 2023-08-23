@@ -33,18 +33,25 @@ unittest(loopSendsRequests) {
 
   // Requests are delayed 40 seconds from boot time
   assertFalse(pusher->getShouldSendHeadRequest());
-  tc->loop(false);
-  assertFalse(pusher->getShouldSendHeadRequest());
-  pusher->pushSoon();
+  assertFalse(pusher->getReadyToPost());
+  tc->loop(false);  // something is written to alert file
+  // assertFalse(pusher->getShouldSendHeadRequest());
+  // pusher->pushSoon();
   assertTrue(pusher->getShouldSendHeadRequest());
+  assertFalse(pusher->getReadyToPost());
   tc->loop(false);  // too soon; HEAD request is not sent
 
   // Send HEAD request to server and receive 404 Not Found
-  delay(40000);
+  delay(38000);
+  tc->loop(false);              // write more alerts
+  SD_TC::instance()->format();  // remove alerts that have been written
+  assertTrue(pusher->getShouldSendHeadRequest());
+  assertFalse(pusher->getReadyToPost());
+  delay(2000);
   assertTrue(pusher->getShouldSendHeadRequest());
   tc->loop(false);  // HEAD request is sent
   assertFalse(pusher->getReadyToPost());
-  tc->loop(false);  // "404 Not Found" is received
+  tc->loop(false);  // "HTTP/1.1 404 Not Found" is received
   assertFalse(pusher->getShouldSendHeadRequest());
   assertTrue(pusher->getReadyToPost());
   (AlertPusher::instance()->getClient())->stop();
@@ -54,8 +61,8 @@ unittest(loopSendsRequests) {
   EthernetClient::startMockServer(AlertPusher::instance()->getServerDomain(), (uint32_t)0, 80,
                                   (const uint8_t*)"HTTP/1.1 200 OK\r\n\r\n");
   tc->loop(false);  // POST request is sent
-  assertFalse(pusher->getShouldSendHeadRequest());
-  tc->loop(false);  // "200 OK" is received
+  // assertFalse(pusher->getShouldSendHeadRequest());
+  tc->loop(false);  // "HTTP/1.1 200 OK" is received
   assertTrue(pusher->getShouldSendHeadRequest());
   assertFalse(pusher->getReadyToPost());
   (AlertPusher::instance()->getClient())->stop();

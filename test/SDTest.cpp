@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
+#include "AlertPusher.h"
 #include "DateTime_TC.h"
 #include "PHCalibrationMid.h"
 #include "SD_TC.h"
@@ -190,14 +191,18 @@ unittest(removeFile) {
 unittest(writeAlert) {
   char data[80];
   SD_TC* sd = SD_TC::instance();
+  AlertPusher* pusher = AlertPusher::instance();
 
   assertEqual("90A2DA807B76.log", sd->getAlertFileName());
   sd->updateAlertFileSizeForTest();  // because sd was previously initialized, we have alertFileNameIsReady == true
   assertFalse(sd->exists("90A2DA807B76.log"));
   assertEqual(0, sd->getAlertFileSize());
+  pusher->setShouldSentHeadRequest(false);
+  assertFalse(pusher->getShouldSendHeadRequest());
 
   // write data
   sd->writeAlert("line 1");
+  assertTrue(pusher->getShouldSendHeadRequest());
   assertTrue(sd->exists("90A2DA807B76.log"));
   assertEqual(strlen("line 1\n"), sd->getAlertFileSize());
   sd->writeAlert("line 2");

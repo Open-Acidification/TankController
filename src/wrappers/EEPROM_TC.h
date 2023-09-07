@@ -95,6 +95,7 @@ public:
   }
 
   // other instance methods
+  void putAlertFileHeader(char* buffer, int size, int count);
   void writeAllToString(char* destination, int size);
 
 private:

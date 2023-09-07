@@ -53,7 +53,8 @@ TankController::TankController(const char *alertFileName) {
   serial(F("\r\n#################\r\nTankController::TankController() - version %s"), TANK_CONTROLLER_VERSION);
   assert(!_instance);
   // ensure we have instances
-  SD_TC::instance(alertFileName);
+  SD_TC::instance();
+  SD_TC::instance()->setAlertFileName(alertFileName);
   EEPROM_TC::instance();
   Keypad_TC::instance();
   LiquidCrystal_TC::instance(TANK_CONTROLLER_VERSION);

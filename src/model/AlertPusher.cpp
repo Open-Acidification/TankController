@@ -31,65 +31,66 @@ void AlertPusher::loop() {
   if (!(Ethernet_TC::instance()->isConnectedToNetwork())) {
     return;
   }
+  switch (state) {
+    case CLIENT_NOT_CONNECTED:
+      if (readyToPost && millis() > delayRequestsUntilTime) {  // TODO: and bubbler is off?
+        readyToPost = false;
+        sendPostRequest();
+      } else if (shouldSendHeadRequest && millis() > delayRequestsUntilTime) {  // TODO: and bubbler is off?
+        shouldSendHeadRequest = false;
+        sendHeadRequest();
+      }
+      break;
+    case PROCESS_HEAD_RESPONSE:
+      loopHead();
+      break;
+    case PROCESS_POST_RESPONSE:
+      loopPost();
+      break;
+    default:
+      break;
+  }
+}
+
+void AlertPusher::loopHead() {
   if (client.connected()) {
-    delayRequestsUntilTime = millis();  // now connected; no need to delay after this loop
-    if (client.available()) {           // bytes are remaining in the current packet
+    if (client.available()) {  // bytes are remaining in the current packet
       int next;
-      serial(F("AlertPusher received the following (index %i):"), index);
+      serial(F("AlertPusher: received"));
       while ((next = client.read()) != -1) {  // Flawfinder: ignore
         if (next) {
           if (next == '\r') {
             buffer[index] = '\0';
             serial(F("  %s"), buffer);
-            switch (state) {
-              case CLIENT_HEAD_REQUEST:
-                // serial(F("AlertPusher: Processing response to HEAD; index %i"), index);
-                shouldSendHeadRequest = false;
-                if (index > 16 && memcmp_P(buffer, F("content-length: "), 16) == 0) {
-                  // serial(F("AlertPusher: Found content-length %i"), atoi(buffer + 16));
-                  serial(F("  ..."));
-                  serverFileSize = atoi(buffer + 16);
-                  serial(F("  %i bytes"), serverFileSize);
-                  uint64_t localFileSize = SD_TC::instance()->getAlertFileSize();
-                  serial(F("  %i bytes"), serverFileSize);
-                  serial(F("%i,%i,%i,%i,%i"), 1, 2, 3, localFileSize, serverFileSize);
-                  serial(F("AlertPusher: local %i bytes, cloud %i bytes"), localFileSize, serverFileSize);
-                  if (serverFileSize + 1 < localFileSize) {
-                    readyToPost = true;
-                    serial(F("AlertPusher: Attempting to POST"));
-                    // serial(F("AlertPusher: Ready to append to file via POST"));
-                  } else if (!readyToPost) {  // already got 404?
-                    serial(F("AlertPusher: Cloud file is up-to-date"));
-                  }
-                  index = 0;
-                  client.stop();
-                  return;
-                } else if (index >= 22 && memcmp_P(buffer, F("http/1.1 404 not found"), 22) == 0) {
-                  // File has not yet been created on server
-                  // serial(F("AlertPusher: Found 404 response"));
-                  serial(F("  ..."));
-                  serverFileSize = 0;
-                  readyToPost = true;
-                  buffer[0] = '\0';
-                  serial(F("AlertPusher: Ready to create new file via POST"));
-                  index = 0;
-                  client.stop();
-                  return;
-                }
-                break;
-              case CLIENT_POST_REQUEST:
-                // serial(F("AlertPusher: Processing response to POST"));
-                readyToPost = false;
-                if (index >= 15 && memcmp_P(buffer, F("http/1.1 200 ok"), 6) == 0) {
-                  shouldSendHeadRequest = true;  // determine whether more should be sent
-                }
-                break;
-              default:
-                break;
+            if (index >= 22 && memcmp_P(buffer, F("http/1.1 404 not found"), 22) == 0) {
+              // File has not yet been created on server
+              serverFileSize = (uint32_t)0;
+              buffer[0] = '\0';
+              index = 0;
+              state = SEND_POST_REQUEST;
+              return;
+            } else if (index > 16 && memcmp_P(buffer, F("content-length: "), 16) == 0) {
+              serverFileSize = strtoul(buffer + 16, nullptr, 10);
+              uint32_t localFileSize = SD_TC::instance()->getAlertFileSize();
+              buffer[0] = '\0';
+              index = 0;
+              serial(F("AlertPusher: local %lu bytes, cloud %lu bytes"), (uint32_t)localFileSize,
+                     (uint32_t)serverFileSize);
+              if (serverFileSize < localFileSize) {
+                state = CLIENT_NOT_CONNECTED;
+                client.stop();
+                readyToPost = true;
+                delayRequestsUntilTime = millis() + 3000;
+              } else {
+                state = CLIENT_NOT_CONNECTED;
+                client.stop();
+                delayRequestsUntilTime = millis() + 3000;
+              }
+              return;
             }
           } else if (next == '\n' || index == sizeof(buffer)) {
+            buffer[0] = '\0';
             index = 0;
-            buffer[index] = '\0';
           } else {
             buffer[index++] = tolower(next);
           }
@@ -97,16 +98,45 @@ void AlertPusher::loop() {
       }
     }
   } else {
-    // will this close every 15 ms?
+    state = CLIENT_NOT_CONNECTED;
     client.stop();
-    unsigned long now = millis();
-    if (readyToPost && now >= delayRequestsUntilTime) {  // TODO: and bubbler is off?
-      delayRequestsUntilTime = now + 5000;
-      sendPostRequest();                                                  // can block for 1 sec?
-    } else if (shouldSendHeadRequest && now >= delayRequestsUntilTime) {  // TODO: and bubbler is off?
-      delayRequestsUntilTime = now + 5000;
-      sendHeadRequest();  // can block for 1 sec?
+    delayRequestsUntilTime = millis() + 3000;
+  }
+}
+
+void AlertPusher::loopPost() {
+  if (client.connected()) {
+    if (client.available()) {  // bytes are remaining in the current packet
+      int next;
+      serial(F("AlertPusher: received"));
+      while ((next = client.read()) != -1) {  // Flawfinder: ignore
+        if (next) {
+          if (next == '\r') {
+            buffer[index] = '\0';
+            serial(F("  %s"), buffer);
+            if (index >= 15 && memcmp_P(buffer, F("http/1.1 200 ok"), 15) == 0) {
+              buffer[0] = '\0';
+              index = 0;
+              state = CLIENT_NOT_CONNECTED;
+              client.stop();
+              shouldSendHeadRequest = true;
+              delayRequestsUntilTime = millis() + 3000;
+              return;
+            }
+          }
+        } else if (next == '\n' || index == sizeof(buffer)) {
+          buffer[0] = '\0';
+          index = 0;
+        } else {
+          buffer[index++] = tolower(next);
+        }
+      }
     }
+  } else {
+    state = CLIENT_NOT_CONNECTED;
+    client.stop();
+    shouldSendHeadRequest = true;
+    delayRequestsUntilTime = millis() + 3000;
   }
 }
 
@@ -119,54 +149,52 @@ void AlertPusher::pushSoon() {
 }
 
 /**
- * @brief ask for size of file in the cloud
+ * @brief send request to server for size of alert file
  *
  */
 void AlertPusher::sendHeadRequest() {
-  serial(F("AlertPusher: sending HEAD request"));
-  state = CLIENT_HEAD_REQUEST;
+  serial(F("AlertPusher: attempting HEAD request"));
+  state = PROCESS_HEAD_RESPONSE;
   static const char format[] PROGMEM =
       "HEAD /logs/%s HTTP/1.1\r\n"
       "Host: %s\r\n"
       "User-Agent: TankController/%s\r\n"
       "Accept: text/plain\r\n"
-      "Connection: Keep-Alive\r\n"
+      "Connection: Close\r\n"
       "\r\n";
   snprintf_P(buffer, sizeof(buffer), (PGM_P)format, SD_TC::instance()->getAlertFileName(), serverDomain, VERSION);
-  if (client.connect(serverDomain, PORT) == 1) {
-    serial(F("AlertPusher: HEAD connected to %s"), serverDomain);
+  if (client.connected() || client.connect(serverDomain, PORT) == 1) {  // this is a blocking step
+    serial(F("AlertPusher: connected to %s, sending..."), serverDomain);
     client.write(buffer, strnlen(buffer, sizeof(buffer)));
   } else {
-    serial(F("AlertPusher: HEAD connection to %s failed"), serverDomain);
-    shouldSendHeadRequest = true;
+    serial(F("AlertPusher: connection to %s failed"), serverDomain);
+    // "shouldSendHeadRequest = true;" would retry next loop but we'll try within one minute anyway
   }
   buffer[0] = '\0';
 }
 
 void AlertPusher::sendPostRequest() {
-  serial(F("AlertPusher: sending POST request"));
-  state = CLIENT_POST_REQUEST;
-  char nextAlertString[300];
-  SD_TC::instance()->getAlert(nextAlertString, sizeof(nextAlertString), serverFileSize);
+  serial(F("AlertPusher: attempting POST request"));
+  state = PROCESS_POST_RESPONSE;
+  char data[300];
+  SD_TC::instance()->getAlert(data, sizeof(data), serverFileSize);
   static const char format[] PROGMEM =
       "POST /logs/%s HTTP/1.1\r\n"
       "Host: %s\r\n"
       "Content-Type: text/plain\r\n"
       "User-Agent: TankController/%s\r\n"
       "Content-Length: %i\r\n"
-      "Connection: close\r\n"
+      "Connection: Close\r\n"
       "\r\n";
   snprintf_P(buffer, sizeof(buffer), (PGM_P)format, SD_TC::instance()->getAlertFileName(), serverDomain, VERSION,
-             strnlen(nextAlertString, sizeof(nextAlertString)));
-  // TODO: finish method
-  if (client.connect(serverDomain, PORT) == 1) {
-    serial(F("AlertPusher: POST connected to %s"), serverDomain);
+             strnlen(data, sizeof(data)));
+  if (client.connected() || client.connect(serverDomain, PORT) == 1) {  // this is a blocking step
+    serial(F("AlertPusher: connected to %s, sending..."), serverDomain);
+    serial(data);
     client.write(buffer, strnlen(buffer, sizeof(buffer)));
-    client.write(nextAlertString, strnlen(nextAlertString, sizeof(nextAlertString)));
-    client.write('\r');
-    client.write('\n');
+    client.write(data, strnlen(data, sizeof(data)));
   } else {
-    serial(F("AlertPusher: POST connection to %s failed"), serverDomain);
-    shouldSendHeadRequest = true;
+    serial(F("AlertPusher: connection to %s failed"), serverDomain);
   }
+  buffer[0] = '\0';
 }

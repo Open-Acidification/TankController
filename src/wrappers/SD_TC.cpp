@@ -1,6 +1,7 @@
 #include "wrappers/SD_TC.h"
 
 #include "model/AlertPusher.h"
+#include "model/DataLogger.h"
 #include "model/TC_util.h"
 #include "wrappers/DateTime_TC.h"
 #include "wrappers/Ethernet_TC.h"
@@ -13,9 +14,9 @@ SD_TC* SD_TC::_instance = nullptr;
 /**
  * accessor for singleton
  */
-SD_TC* SD_TC::instance(const char* alertFileName) {
+SD_TC* SD_TC::instance() {
   if (!_instance) {
-    _instance = new SD_TC(alertFileName);
+    _instance = new SD_TC();
   }
   return _instance;
 }
@@ -25,13 +26,13 @@ SD_TC* SD_TC::instance(const char* alertFileName) {
 /**
  * constructor
  */
-SD_TC::SD_TC(const char* alertFileName) {
+SD_TC::SD_TC() {
   Serial.println(F("SD_TC()"));  // Serial_TC might not be ready yet
   assert(_instance == nullptr);
   if (!sd.begin(SD_SELECT_PIN)) {
     Serial.println(F("SD_TC failed to initialize!"));
   }
-  setAlertFileName(alertFileName);
+  setAlertFileName();
 }
 
 /**
@@ -55,12 +56,14 @@ void SD_TC::appendData(const char* header, const char* line) {
 /**
  * append data to a path
  */
-void SD_TC::appendDataToPath(const char* line, const char* path) {
+void SD_TC::appendDataToPath(const char* line, const char* path, bool appendNewline) {
   COUT(path);
   File file = sd.open(path, O_CREAT | O_WRONLY | O_APPEND);
   if (file) {
     file.write(line);
-    file.write("\n", 1);
+    if (appendNewline) {
+      file.write("\n", 1);
+    }
     file.close();
     COUT(file);
   } else {
@@ -117,18 +120,12 @@ void SD_TC::getAlert(char* buffer, int size, uint32_t index) {
     file.seek(index);
     int remaining = file.available();
     if (remaining > 0) {
-      int readSize = file.read(buffer, min(size, remaining) - 1);
-      buffer[size - 1] = '\0';
+      int readSize = file.read(buffer, min(size - 1, remaining));
+      buffer[readSize] = '\0';
       file.close();
-      for (int i = 0; i < size - 1; i++) {
-        if (buffer[i] == '\n') {
-          buffer[i + 1] = '\0';
-          return;
-        }
-      }
     }
-    file.close();
   }
+  file.close();
 }
 
 const char* SD_TC::getAlertFileName() {
@@ -260,13 +257,13 @@ void SD_TC::setAlertFileName(const char* newFileName) {
       strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) <= MAX_FILE_NAME_LENGTH) {
     // valid file name has been provided (See TankController.ino)
     snprintf_P(alertFileName, MAX_FILE_NAME_LENGTH + 5, PSTR("%s.log"), newFileName);
+    alertFileNameIsReady = true;
   } else {
     alertFileName[0] = '\0';
     alertFileNameIsReady = false;
     // This seems a logical place to set the default file name, but it is too soon. If Ethernet_TC() is not yet
     // initialized then doing so will cause it to write to serial, which is logged by SD_TC::appendToLog(), which
-    // initializes SD_TC() which calls this very method. So we'll leave the file name empty for now, and leave
-    // alertFileNameIsReady == false
+    // initializes SD_TC() which calls this very method. So we'll leave the file name empty for now.
   }
 }
 
@@ -298,6 +295,17 @@ void SD_TC::writeAlert(const char* line) {
 #endif
   if (!alertFileNameIsReady) {
     prepareAlertFileName();
+  }
+  if (!sd.exists(alertFileName)) {
+    char buffer[200];
+    DataLogger::instance()->putAlertFileHeader(buffer, sizeof(buffer), 0);
+    appendDataToPath(buffer, alertFileName, false);
+    DataLogger::instance()->putAlertFileHeader(buffer, sizeof(buffer), 1);
+    appendDataToPath(buffer, alertFileName, false);
+    DataLogger::instance()->putAlertFileHeader(buffer, sizeof(buffer), 2);
+    appendDataToPath(buffer, alertFileName, false);
+    DataLogger::instance()->putAlertFileHeader(buffer, sizeof(buffer), 3);
+    appendDataToPath(buffer, alertFileName);
   }
   appendDataToPath(line, alertFileName);
   updateAlertFileSize();

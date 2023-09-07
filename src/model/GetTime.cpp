@@ -107,7 +107,7 @@ void GetTime::sendRequest() {
       "Connection: close\r\n"
       "\r\n";
   snprintf_P(buffer, sizeof(buffer), (PGM_P)format, serverDomain);
-  if (client.connected() || client.connect(serverDomain, PORT)) {
+  if (client.connected() || client.connect(serverDomain, 80)) {
     serial(F("GetTime: connected to %s"), serverDomain);
     client.write(buffer, strnlen(buffer, sizeof(buffer)));
   } else {

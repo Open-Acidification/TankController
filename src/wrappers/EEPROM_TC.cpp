@@ -73,6 +73,7 @@ void EEPROM_TC::eepromWriteInt(uint16_t address, int32_t value) {
       EEPROM.write(address++, *p++);  // EEPROM.update() would perform read check before writing
     }
     DataLogger::instance()->writeWarningSoon();  // log all settings
+    serial(F("DataLogger::writeWarningSoon() from EEPROM_TC::eepromWriteInt()"));
   }
 }
 
@@ -311,6 +312,29 @@ void EEPROM_TC::setTempSeriesSize(float value) {
   eepromWriteFloat(TEMP_SERIES_SIZE_ADDRESS, value);
 }
 
+void EEPROM_TC::putAlertFileHeader(char* buffer, int size, int count) {
+  switch (count) {
+    case 1:
+      snprintf_P(buffer, size,
+                 PSTR("Ignoring Bad pH Calibration\tTemperature Correction\tIgnoring Bad Temperature Calibration\tHeat "
+                      "(1) or Chill (0)\tKD\tKI\tKP\tpH Flat (0) Ramp (1) Sine (2)\tpH Target\t"));
+      break;
+    case 2:
+      snprintf_P(buffer, size,
+                 PSTR("pH Ramp Start Time\tpH Ramp End Time\tpH Ramp Start Value\tpH Sine Start Time\tpH "
+                      "Sine Period\tpH Sine Amplitude\tTemperature Flat (0) Ramp (1) Sine (2)\tTemperature Target\t"));
+      break;
+    case 3:
+      snprintf_P(buffer, size,
+                 PSTR("Temperature Ramp Start Time\tTemperature Ramp End Time\tTemperature Ramp "
+                      "Start Value\tTemperature Sine Start Time\tTemperature Sine Period\tTemperature Sine "
+                      "Amplitude\tGoogle Sheet Interval"));
+      break;
+    default:
+      break;
+  }
+}
+
 /**
  * @brief write settings to a string for logging purposes
  *
@@ -318,63 +342,87 @@ void EEPROM_TC::setTempSeriesSize(float value) {
  * @param size size of destination
  */
 void EEPROM_TC::writeAllToString(char* destination, int size) {
+  char thermalCorrectionString[7];
   float thermalCorrection = getThermalCorrection();
   if (isnan(thermalCorrection)) {
-    thermalCorrection = 0.0;
+    snprintf_P(thermalCorrectionString, sizeof(thermalCorrectionString), PSTR("0.0"));
+  } else {
+    floattostrf(thermalCorrection, 1, 2, thermalCorrectionString, sizeof(thermalCorrectionString));
   }
+  char kdString[9];
   float kd = getKD();
   if (isnan(kd)) {
-    kd = 0.0;
+    snprintf_P(kdString, sizeof(kdString), PSTR("0.0"));
+  } else {
+    floattostrf(kd, 1, 2, kdString, sizeof(kdString));
   }
+  char kiString[9];
   float ki = getKI();
   if (isnan(ki)) {
-    ki = 0.0;
+    snprintf_P(kiString, sizeof(kiString), PSTR("0.0"));
+  } else {
+    floattostrf(ki, 1, 2, kiString, sizeof(kiString));
   }
+  char kpString[10];
   float kp = getKP();
   if (isnan(kp)) {
-    kp = 0.0;
+    snprintf_P(kpString, sizeof(kpString), PSTR("0.0"));
+  } else {
+    floattostrf(kp, 1, 2, kpString, sizeof(kpString));
   }
+  char pHTargetString[7];
   float pHTarget = getPh();
   if (isnan(pHTarget)) {
-    pHTarget = 0.0;
+    snprintf_P(pHTargetString, sizeof(pHTargetString), PSTR("0.0"));
+  } else {
+    floattostrf(pHTarget, 1, 2, pHTargetString, sizeof(pHTargetString));
   }
+  char rampStartingPhString[7];
   float rampStartingPh = getRampStartingPh();
   if (isnan(rampStartingPh)) {
-    rampStartingPh = 0.0;
+    snprintf_P(rampStartingPhString, sizeof(rampStartingPhString), PSTR("0.0"));
+  } else {
+    floattostrf(rampStartingPh, 1, 2, rampStartingPhString, sizeof(rampStartingPhString));
   }
+  char pHSineAmplitudeString[7];
   float pHSineAmplitude = getPhSineAmplitude();
   if (isnan(pHSineAmplitude)) {
-    pHSineAmplitude = 0.0;
+    snprintf_P(pHSineAmplitudeString, sizeof(pHSineAmplitudeString), PSTR("0.0"));
+  } else {
+    floattostrf(pHSineAmplitude, 1, 2, pHSineAmplitudeString, sizeof(pHSineAmplitudeString));
   }
+  char thermalTargetString[7];
   float thermalTarget = getThermalTarget();
   if (isnan(thermalTarget)) {
-    thermalTarget = 0.0;
+    snprintf_P(thermalTargetString, sizeof(thermalTargetString), PSTR("0.0"));
+  } else {
+    floattostrf(thermalTarget, 1, 2, thermalTargetString, sizeof(thermalTargetString));
   }
+  char thermalRampInitialValueString[7];
   float thermalRampInitialValue = getThermalRampInitialValue();
   if (isnan(thermalRampInitialValue)) {
-    thermalRampInitialValue = 0.0;
+    snprintf_P(thermalRampInitialValueString, sizeof(thermalRampInitialValueString), PSTR("0.0"));
+  } else {
+    floattostrf(thermalRampInitialValue, 1, 2, thermalRampInitialValueString, sizeof(thermalRampInitialValueString));
   }
+  char thermalSineAmplitudeString[7];
   float thermalSineAmplitude = getThermalSineAmplitude();
   if (isnan(thermalSineAmplitude)) {
-    thermalSineAmplitude = 0.0;
+    snprintf_P(thermalSineAmplitudeString, sizeof(thermalSineAmplitudeString), PSTR("0.0"));
+  } else {
+    floattostrf(thermalSineAmplitude, 1, 2, thermalSineAmplitudeString, sizeof(thermalSineAmplitudeString));
   }
 
-  int length =
-      snprintf_P(destination, size,
-                 PSTR("%i\t%i.%02i\t%i\t%i\t%i.%02i\t%i.%02i\t%i.%02i\t%i\t%i.%02i\t%i\t%i\t%i.%02i\t%i\t%i\t%i.%02i\t%"
-                      "i\t%i.%02i\t%i\t%i\t%i.%02i\t%i\t%i\t%i.%02i\t%i"),
-                 (int)getIgnoreBadPHSlope(), (int)thermalCorrection,
-                 (int)((thermalCorrection - (int)thermalCorrection) * 100 + 0.5), (int)getIgnoreBadThermalCorrection(),
-                 (int)getHeat(), (int)kd, (int)(kd * 100 + 0.5) % 100, (int)ki, (int)(ki * 100 + 0.5) % 100, (int)kp,
-                 (int)((kp - (int)kp) * 100 + 0.5), getPHFunctionType(), (int)pHTarget,
-                 (int)((pHTarget - (int)pHTarget) * 100 + 0.5), getPhRampTimeStart(), getPhRampTimeEnd(),
-                 (int)rampStartingPh, (int)((rampStartingPh - (int)rampStartingPh) * 100 + 0.5), getPhSineStartTime(),
-                 getPhSinePeriod(), (int)pHSineAmplitude, (int)((pHSineAmplitude - (int)pHSineAmplitude) * 100 + 0.5),
-                 getThermalFunctionType(), (int)thermalTarget, (int)((thermalTarget - (int)thermalTarget) * 100 + 0.5),
-                 getThermalRampTimeStart(), getThermalRampTimeEnd(), (int)thermalRampInitialValue,
-                 (int)((thermalRampInitialValue - (int)thermalRampInitialValue) * 100 + 0.5), getThermalSineStartTime(),
-                 getThermalSinePeriod(), (int)thermalSineAmplitude,
-                 (int)((thermalSineAmplitude - (int)thermalSineAmplitude) * 100 + 0.5), getGoogleSheetInterval());
+  int length = snprintf_P(destination, size,
+                          PSTR("%i\t%s\t%i\t%i\t%s\t%s\t%s\t%i\t%s\t%i\t%i\t%s\t%i\t%i\t%s\t%"
+                               "i\t%s\t%i\t%i\t%s\t%i\t%i\t%s\t%i"),
+                          (int)getIgnoreBadPHSlope(), thermalCorrectionString, (int)getIgnoreBadThermalCorrection(),
+                          (int)getHeat(), kdString, kiString, kpString, (int)getPHFunctionType(), pHTargetString,
+                          (int)getPhRampTimeStart(), (int)getPhRampTimeEnd(), rampStartingPhString,
+                          (int)getPhSineStartTime(), (int)getPhSinePeriod(), pHSineAmplitudeString,
+                          (int)getThermalFunctionType(), thermalTargetString, (int)getThermalRampTimeStart(),
+                          (int)getThermalRampTimeEnd(), thermalRampInitialValueString, (int)getThermalSineStartTime(),
+                          (int)getThermalSinePeriod(), thermalSineAmplitudeString, (int)getGoogleSheetInterval());
   if ((length > size) || (length < 0)) {
     // TODO: Log a warning that string was truncated
     serial(F("WARNING! String was truncated to \"%s\""), destination);

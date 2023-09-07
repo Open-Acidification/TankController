@@ -3,7 +3,13 @@
 
 #include "wrappers/Ethernet_TC.h"
 
-enum clientState_t { CLIENT_HEAD_REQUEST, CLIENT_POST_REQUEST };
+enum clientState_t {
+  CLIENT_NOT_CONNECTED,
+  SEND_HEAD_REQUEST,
+  SEND_POST_REQUEST,
+  PROCESS_HEAD_RESPONSE,
+  PROCESS_POST_RESPONSE
+};
 
 class AlertPusher {
 public:
@@ -19,9 +25,6 @@ public:
   EthernetClient *getClient() {
     return &client;
   }
-  bool getReadyToPost() {
-    return readyToPost;
-  }
   const char *getServerDomain() {
     return serverDomain;
   }
@@ -31,6 +34,9 @@ public:
   void setShouldSentHeadRequest(bool value) {
     shouldSendHeadRequest = value;
   }
+  clientState_t getState() {
+    return state;
+  }
 #endif
 
 private:
@@ -39,16 +45,18 @@ private:
 
   // instance variables
   EthernetClient client;
-  clientState_t state;
+  clientState_t state = CLIENT_NOT_CONNECTED;
   uint32_t delayRequestsUntilTime = 40000;  // wait a bit before first request
   const char *serverDomain = "oap.cs.wallawalla.edu";
-  char buffer[200];
-  uint8_t index = 0;
-  uint64_t serverFileSize = 0;
+  char buffer[300];
+  unsigned int index = 0;
   bool readyToPost = false;
+  uint32_t serverFileSize = 0;
   bool shouldSendHeadRequest = false;
 
   // instance methods
+  void loopHead();
+  void loopPost();
   void sendPostRequest();
   void sendHeadRequest();
 };

@@ -51,14 +51,27 @@ void DataLogger::loop() {
   }
 }
 
+void DataLogger::putAlertFileHeader(char* buffer, int size, int count) {
+  switch (count) {
+    case 0:
+      snprintf_P(buffer, size,
+                 PSTR("Version\tTank ID\tSeverity\tDate Time\tMessage\tTemperature Target\tTemperature "
+                      "Mean\tTemperature Std Dev\tpH Target\tpH\tUptime\tMAC Address\tpH Slope\t"));
+      break;
+    default:
+      EEPROM_TC::instance()->putAlertFileHeader(buffer, size, count);
+      break;
+  }
+}
+
 /**
  * @brief writes first four fields of status prefix to instance's buffer string
  *
  * @param severity 'D' for debug, 'I' for info, 'W' for warning, 'E' for error, 'F' for fatal
  */
-void DataLogger::writeAlertPrefixToBuffer(const char severity) {
+void DataLogger::writeAlertPreambleToBuffer(const char severity) {
   // version \t tankid \t severity \t timestamp
-  const __FlashStringHelper* format = F("%s\t%i\t%c\t%04i-%02i-%2i %02i:%02i:%02i");
+  const __FlashStringHelper* format = F("%s\t%i\t%c\t%04i-%02i-%02i %02i:%02i:%02i");
   DateTime_TC dtNow = DateTime_TC::now();
   uint16_t tankId = EEPROM_TC::instance()->getTankID();
   int length = snprintf_P(buffer, sizeof(buffer), (PGM_P)format, VERSION, (uint16_t)tankId, severity,
@@ -96,14 +109,14 @@ void DataLogger::writeInfoToLog() {
   floattostrf(PHControl::instance()->getCurrentTargetPh(), 1, 3, pHTargetString, sizeof(pHTargetString));
 
   // write version, tankid, 'I', and timestamp to buffer
-  writeAlertPrefixToBuffer('I');
-  int prefixLength = strnlen(buffer, sizeof(buffer));
+  writeAlertPreambleToBuffer('I');
+  int preambleLength = strnlen(buffer, sizeof(buffer));
   // temperature \t thermaltarget \t pH \t pHtarget
   const __FlashStringHelper* format = F("\t\t%s\t%s\t%s\t%s\t%s");
   int additionalLength =
-      snprintf_P(buffer + prefixLength, sizeof(buffer) - prefixLength, (PGM_P)format, thermalTargetString,
+      snprintf_P(buffer + preambleLength, sizeof(buffer) - preambleLength, (PGM_P)format, thermalTargetString,
                  thermalMeanString, thermalStandardDeviationString, pHTargetString, currentPhString);
-  if ((prefixLength + additionalLength > sizeof(buffer)) || (additionalLength < 0)) {
+  if ((preambleLength + additionalLength > sizeof(buffer)) || (additionalLength < 0)) {
     // TODO: Log a warning that string was truncated
     serial(F("WARNING! String was truncated to \"%s\""), buffer);
   }
@@ -179,25 +192,25 @@ void DataLogger::writeToSerial() {
  *
  */
 void DataLogger::writeWarningToLog() {
-  uint32_t uptime = (unsigned long)(millis() / 1000);
+  char uptime[14];
+  ltoa((unsigned long)(millis() / 1000), uptime, 10);
   byte* mac = Ethernet_TC::instance()->getMac();
 
   // write version, tankid, 'W', and timestamp to buffer
-  writeAlertPrefixToBuffer('W');
-  int prefixLength = strnlen(buffer, sizeof(buffer));
+  writeAlertPreambleToBuffer('W');
+  int preambleLength = strnlen(buffer, sizeof(buffer));
   // uptime \t MACaddress \t pHslope \t
-  const __FlashStringHelper* format = F("\t\t\t\t\t\t\t%lu\t%02X:%02X:%02X:%02X:%02X:%02X\t%s\t");
+  const __FlashStringHelper* format = F("\t\t\t\t\t\t\t%s\t%02X:%02X:%02X:%02X:%02X:%02X\t%s\t");
   char slope[20];
   PHProbe::instance()->getSlope(slope, sizeof(slope));
-  int additionalLength = snprintf_P(buffer + prefixLength, sizeof(buffer) - prefixLength, (PGM_P)format, uptime, mac[0],
-                                    mac[1], mac[2], mac[3], mac[4], mac[5], slope);
-  if ((prefixLength + additionalLength > sizeof(buffer)) || (additionalLength < 0)) {
+  int additionalLength = snprintf_P(buffer + preambleLength, sizeof(buffer) - preambleLength, (PGM_P)format, uptime,
+                                    mac[0], mac[1], mac[2], mac[3], mac[4], mac[5], slope);
+  if ((preambleLength + additionalLength > sizeof(buffer)) || (additionalLength < 0)) {
     // TODO: Log a warning that string was truncated
     serial(F("WARNING! String was truncated to \"%s\""), buffer);
   }
   // add EEPROM data
-  EEPROM_TC::instance()->writeAllToString(buffer + prefixLength + additionalLength,
-                                          sizeof(buffer) - prefixLength - additionalLength);
+  EEPROM_TC::instance()->writeAllToString(buffer + preambleLength + additionalLength,
+                                          sizeof(buffer) - preambleLength - additionalLength);
   SD_TC::instance()->writeAlert(buffer);
-  // serial(F("New warning written to log"));
 }

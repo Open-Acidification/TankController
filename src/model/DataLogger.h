@@ -12,6 +12,7 @@ public:
   static DataLogger *instance();
 
   // instance methods
+  void putAlertFileHeader(char *buffer, int size, int count);
   void loop();
   void writeWarningSoon() {
     shouldWriteWarning = true;
@@ -45,7 +46,7 @@ private:
   bool shouldWriteWarning = false;
 
   // instance methods
-  void writeAlertPrefixToBuffer(const char severity);
+  void writeAlertPreambleToBuffer(const char severity);
   void writeInfoToLog();
   void writeToSD();
   void writeToSerial();

@@ -18,7 +18,7 @@ struct listFilesData_t {
 class SD_TC {
 public:
   // class methods
-  static SD_TC* instance(const char* nameForAlertFile = nullptr);
+  static SD_TC* instance();
 
   // instance methods
   void appendData(const char* header, const char* line);
@@ -36,7 +36,7 @@ public:
   File open(const char* path, oflag_t oflag = 0x00);
   void printRootDirectory();
   bool remove(const char* path);
-  void setAlertFileName(const char* newFileName);
+  void setAlertFileName(const char* newFileName = nullptr);
   void todaysDataFileName(char* path, int size);
   void writeAlert(const char* line);
 
@@ -44,6 +44,12 @@ public:
   char mostRecentHeader[128] = "";
   char mostRecentLine[128] = "";
   char mostRecentStatusEntry[256] = "";
+  bool getAlertFileNameIsReady() {
+    return alertFileNameIsReady;
+  }
+  void setAlertFileNameIsReady(bool value) {
+    alertFileNameIsReady = value;
+  }
   void updateAlertFileSizeForTest() {
     updateAlertFileSize();
   }
@@ -70,8 +76,8 @@ private:
   bool inProgress = false;
 
   // instance methods
-  SD_TC(const char* alertFileName);
-  void appendDataToPath(const char* data, const char* path);
+  SD_TC();
+  void appendDataToPath(const char* data, const char* path, bool appendNewline = true);
   bool iterateOnFiles(doOnFile functionName, void* userData);
   static bool incrementFileCount(File* myFile, void* pFileCount);
   static bool listFile(File* myFile, void* userData);

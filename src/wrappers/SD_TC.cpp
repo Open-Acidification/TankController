@@ -1,7 +1,10 @@
 #include "wrappers/SD_TC.h"
 
+#include "model/AlertPusher.h"
+#include "model/DataLogger.h"
 #include "model/TC_util.h"
 #include "wrappers/DateTime_TC.h"
+#include "wrappers/Ethernet_TC.h"
 #include "wrappers/Serial_TC.h"
 
 //  class variables
@@ -29,12 +32,17 @@ SD_TC::SD_TC() {
   if (!sd.begin(SD_SELECT_PIN)) {
     Serial.println(F("SD_TC failed to initialize!"));
   }
+  setAlertFileName();
 }
 
 /**
  * append data to a data log file
  */
 void SD_TC::appendData(const char* header, const char* line) {
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  strncpy(mostRecentHeader, header, sizeof(mostRecentHeader));
+  strncpy(mostRecentLine, line, sizeof(mostRecentLine));
+#endif
   char path[30];
   todaysDataFileName(path, sizeof(path));
   if (!sd.exists(path)) {
@@ -48,12 +56,14 @@ void SD_TC::appendData(const char* header, const char* line) {
 /**
  * append data to a path
  */
-void SD_TC::appendDataToPath(const char* line, const char* path) {
+void SD_TC::appendDataToPath(const char* line, const char* path, bool appendNewline) {
   COUT(path);
   File file = sd.open(path, O_CREAT | O_WRONLY | O_APPEND);
   if (file) {
     file.write(line);
-    file.write("\n", 1);
+    if (appendNewline) {
+      file.write("\n", 1);
+    }
     file.close();
     COUT(file);
   } else {
@@ -76,12 +86,53 @@ void SD_TC::appendToLog(const char* line) {
   appendDataToPath(line, path);
 }
 
+bool SD_TC::countFiles(void (*callWhenFinished)(int)) {
+  if (!inProgress) {
+    const char path[] PROGMEM = "/";
+    fileStack[0] = SD_TC::instance()->open(path);
+    if (!fileStack[0]) {
+      serial(F("SD_TC open() failed"));
+      return false;  // Function is unsuccessful
+    }
+    fileStack[0].rewind();
+    fileStackSize = 1;
+    fileCount = 0;
+    inProgress = true;
+  }
+  inProgress = iterateOnFiles(incrementFileCount, (void*)&fileCount);
+  if (!inProgress) {
+    callWhenFinished(fileCount);
+  }
+  return true;
+}
+
 bool SD_TC::exists(const char* path) {
   return sd.exists(path);
 }
 
 bool SD_TC::format() {
   return sd.format();
+}
+
+void SD_TC::getAlert(char* buffer, int size, uint32_t index) {
+  File file = open(getAlertFileName(), O_RDONLY);
+  if (file) {
+    file.seek(index);
+    int remaining = file.available();
+    if (remaining > 0) {
+      int readSize = file.read(buffer, min(size - 1, remaining));
+      buffer[readSize] = '\0';
+      file.close();
+    }
+  }
+  file.close();
+}
+
+const char* SD_TC::getAlertFileName() {
+  if (!alertFileNameIsReady) {
+    setDefaultAlertFileName();
+  }
+  return alertFileName;
 }
 
 bool SD_TC::iterateOnFiles(doOnFile functionName, void* userData) {
@@ -120,26 +171,6 @@ bool SD_TC::iterateOnFiles(doOnFile functionName, void* userData) {
 
 bool SD_TC::incrementFileCount(File* myFile, void* pFileCount) {
   return ++(*(int*)pFileCount) % 10 != 0;  // Pause after counting 10 files
-}
-
-bool SD_TC::countFiles(void (*callWhenFinished)(int)) {
-  if (!inProgress) {
-    const char path[] PROGMEM = "/";
-    fileStack[0] = SD_TC::instance()->open(path);
-    if (!fileStack[0]) {
-      serial(F("SD_TC open() failed"));
-      return false;  // Function is unsuccessful
-    }
-    fileStack[0].rewind();
-    fileStackSize = 1;
-    fileCount = 0;
-    inProgress = true;
-  }
-  inProgress = iterateOnFiles(incrementFileCount, (void*)&fileCount);
-  if (!inProgress) {
-    callWhenFinished(fileCount);
-  }
-  return true;
 }
 
 // Issue: This function does not visually display depth for items in subfolders
@@ -203,16 +234,81 @@ File SD_TC::open(const char* path, oflag_t oflag) {
   return sd.open(path, oflag);
 }
 
-bool SD_TC::remove(const char* path) {
-  return sd.remove(path);
+void SD_TC::setDefaultAlertFileName() {
+  if (!alertFileNameIsReady) {
+    alertFileNameIsReady = true;
+
+    byte* mac = Ethernet_TC::instance()->getMac();
+    snprintf_P(alertFileName, 17, PSTR("%02X%02X%02X%02X%02X%02X.log"), mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+
+    updateAlertFileSize();
+  }
 }
 
 void SD_TC::printRootDirectory() {
   sd.ls(LS_DATE | LS_SIZE | LS_R);
 }
 
+bool SD_TC::remove(const char* path) {
+  return sd.remove(path);
+}
+
+void SD_TC::setAlertFileName(const char* newFileName) {
+  if (newFileName != nullptr && strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) > 0 &&
+      strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) <= MAX_FILE_NAME_LENGTH) {
+    // valid file name has been provided (See TankController.ino)
+    snprintf_P(alertFileName, MAX_FILE_NAME_LENGTH + 5, PSTR("%s.log"), newFileName);
+    alertFileNameIsReady = true;
+  } else {
+    alertFileName[0] = '\0';
+    alertFileNameIsReady = false;
+    // This seems a logical place to set the default file name, but it is too soon. If Ethernet_TC() is not yet
+    // initialized then doing so will cause it to write to serial, which is logged by SD_TC::appendToLog(), which
+    // initializes SD_TC() which calls this very method. So we'll leave the file name empty for now.
+  }
+}
+
 void SD_TC::todaysDataFileName(char* path, int size) {
   DateTime_TC now = DateTime_TC::now();
   snprintf_P(path, size, (PGM_P)F("%4i%02i%02i.csv"), now.year(), now.month(), now.day());
   COUT(path);
+}
+
+void SD_TC::updateAlertFileSize() {
+  assert(alertFileNameIsReady);
+  File file = open(alertFileName, O_RDONLY);
+  if (file) {
+    alertFileSize = file.size();
+    file.close();
+  } else {
+    alertFileSize = 0;
+  }
+}
+
+/**
+ * @brief write an alert to the appropriate file on the SD card
+ *
+ * @param line
+ */
+void SD_TC::writeAlert(const char* line) {
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  strncpy(mostRecentStatusEntry, line, sizeof(mostRecentStatusEntry));
+#endif
+  if (!alertFileNameIsReady) {
+    setDefaultAlertFileName();
+  }
+  if (!sd.exists(alertFileName)) {
+    char buffer[200];
+    DataLogger::instance()->putAlertFileHeader(buffer, sizeof(buffer), 0);
+    appendDataToPath(buffer, alertFileName, false);
+    DataLogger::instance()->putAlertFileHeader(buffer, sizeof(buffer), 1);
+    appendDataToPath(buffer, alertFileName, false);
+    DataLogger::instance()->putAlertFileHeader(buffer, sizeof(buffer), 2);
+    appendDataToPath(buffer, alertFileName, false);
+    DataLogger::instance()->putAlertFileHeader(buffer, sizeof(buffer), 3);
+    appendDataToPath(buffer, alertFileName);
+  }
+  appendDataToPath(line, alertFileName);
+  updateAlertFileSize();
+  AlertPusher::instance()->pushSoon();
 }

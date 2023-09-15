@@ -82,12 +82,29 @@ float ThermalProbe_TC::getUncorrectedRunningAverage() {
     historyIndex = (historyIndex + 1) % HISTORY_SIZE;
     history[historyIndex] = temperature;
     lastTime = currentTime;
+
+    ++sampleSize;
+    sumOfSampleValues += temperature;
+    sumOfSquaredSampleValues += temperature * temperature;
   }
   float sum = 0.0;
   for (size_t i = 0; i < HISTORY_SIZE; ++i) {
     sum += history[i];
   }
   return sum / HISTORY_SIZE;
+}
+
+/**
+ * @brief reset the thermal correction to zero
+ *
+ */
+void ThermalProbe_TC::clearCorrection() {
+  COUT("old = " << correction);
+  if (correction != 0) {
+    correction = 0.0;
+    EEPROM_TC::instance()->setThermalCorrection(correction);
+    serial(F("Set temperature correction to %i.%02i"), (int)correction, (int)(correction * 100 + 0.5) % 100);
+  }
 }
 
 /**
@@ -105,17 +122,42 @@ void ThermalProbe_TC::setCorrection(float value) {
 }
 
 /**
- * clearCorrection(f)
+ * @brief get the recent average temperature
  *
- * Sets the correction offset back to 0
+ * @return float
  */
-void ThermalProbe_TC::clearCorrection() {
-  COUT("old = " << correction);
-  if (correction != 0) {
-    correction = 0.0;
-    EEPROM_TC::instance()->setThermalCorrection(correction);
-    serial(F("Set temperature correction to %i.%02i"), (int)correction, (int)(correction * 100 + 0.5) % 100);
+float ThermalProbe_TC::getSampleMean() {
+  // This is not used for the Liquid Crystal display, so we don't restrict range to 0 to 99.99
+  if (sampleSize > 0) {
+    return (sumOfSampleValues / sampleSize) + correction;
+  } else {
+    return 0.0;
   }
+}
+
+/**
+ * @brief get the sample standard deviation for recent temperatures
+ *
+ * @return float
+ */
+float ThermalProbe_TC::getSampleStandardDeviation() {
+  if (sampleSize > 1) {
+    float mean = sumOfSampleValues / sampleSize;
+    return sqrt(max(0.0, ((sumOfSquaredSampleValues / sampleSize) - (mean * mean))) *
+                ((float)sampleSize / (sampleSize - 1)));
+  } else {
+    return 0;
+  }
+}
+
+/**
+ * @brief discard the temperature sample to start a new sample
+ *
+ */
+void ThermalProbe_TC::resetSample() {
+  sampleSize = 0;
+  sumOfSampleValues = 0.0;
+  sumOfSquaredSampleValues = 0.0;
 }
 
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)

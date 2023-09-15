@@ -53,22 +53,22 @@ unittest(TempProbe_Test) {
   thermalProbe->setTemperature(0, true);
   assertEqual(7621, thermalProbe->getResistance());
   temperature = thermalProbe->getRawTemperature();
-  assertTrue(-0.1 < temperature && temperature < 0.1);
+  assertTrue(abs(0.0 - temperature) < 0.1);
 
   thermalProbe->setTemperature(10, true);
   assertEqual(7918, thermalProbe->getResistance());
   temperature = thermalProbe->getRawTemperature();
-  assertTrue(9.9 < temperature && temperature < 10.1);
+  assertTrue(abs(10.0 - temperature) < 0.1);
 
   thermalProbe->setTemperature(90, true);
   assertEqual(10266, thermalProbe->getResistance());
   temperature = thermalProbe->getRawTemperature();
-  assertTrue(89.9 < temperature && temperature < 90.1);
+  assertTrue(abs(90.0 - temperature) < 0.1);
 
   thermalProbe->setTemperature(100, true);
   assertEqual(10554, thermalProbe->getResistance());
   temperature = thermalProbe->getRawTemperature();
-  assertTrue(99.9 < temperature && temperature < 100.1);
+  assertTrue(abs(100.0 - temperature) < 0.1);
 }
 
 unittest(adjustment) {
@@ -89,38 +89,86 @@ unittest(runningAverage) {
   }
   delay(1000);
   float temperature = thermalProbe->getRunningAverage();
-  assertTrue(9.9 <= temperature && temperature <= 10.1);
+  assertTrue(abs(10.0 - temperature) < 0.1);
   thermalProbe->setTemperature(20.0, true, false);
   delay(1000);
   temperature = thermalProbe->getRunningAverage();
-  assertTrue(10.9 <= temperature && temperature <= 11.1);
+  assertTrue(abs(11.0 - temperature) < 0.1);
   delay(1000);
   temperature = thermalProbe->getRunningAverage();
-  assertTrue(11.9 <= temperature && temperature <= 12.1);
+  assertTrue(abs(12.0 - temperature) < 0.1);
   delay(1000);
   temperature = thermalProbe->getRunningAverage();
-  assertTrue(12.9 <= temperature && temperature <= 13.1);
+  assertTrue(abs(13.0 - temperature) < 0.1);
   delay(1000);
   temperature = thermalProbe->getRunningAverage();
-  assertTrue(13.9 <= temperature && temperature <= 14.1);
+  assertTrue(abs(14.0 - temperature) < 0.1);
   delay(1000);
   temperature = thermalProbe->getRunningAverage();
-  assertTrue(14.9 <= temperature && temperature <= 15.1);
+  assertTrue(abs(15.0 - temperature) < 0.1);
   delay(1000);
   temperature = thermalProbe->getRunningAverage();
-  assertTrue(15.9 <= temperature && temperature <= 16.1);
+  assertTrue(abs(16.0 - temperature) < 0.1);
   delay(1000);
   temperature = thermalProbe->getRunningAverage();
-  assertTrue(16.9 <= temperature && temperature <= 17.1);
+  assertTrue(abs(17.0 - temperature) < 0.1);
   delay(1000);
   temperature = thermalProbe->getRunningAverage();
-  assertTrue(17.9 <= temperature && temperature <= 18.1);
+  assertTrue(abs(18.0 - temperature) < 0.1);
   delay(1000);
   temperature = thermalProbe->getRunningAverage();
-  assertTrue(18.9 <= temperature && temperature <= 19.1);
+  assertTrue(abs(19.0 - temperature) < 0.1);
   delay(1000);
   temperature = thermalProbe->getRunningAverage();
-  assertTrue(19.9 <= temperature && temperature <= 20.1);
+  assertTrue(abs(20.0 - temperature) < 0.1);
+}
+
+unittest(meanAndStdDev1) {
+  // a big jump from 10 to 20
+  ThermalProbe_TC* thermalProbe = ThermalProbe_TC::instance();
+  thermalProbe->resetSample();
+  assertEqual(0.0, thermalProbe->getSampleMean());
+  assertEqual(0.0, thermalProbe->getSampleStandardDeviation());
+  thermalProbe->setTemperature(10.0, true);  // raw temp will be about 10.0047
+  for (uint8_t i = 0; i < 10; ++i) {
+    delay(1000);
+    thermalProbe->getRunningAverage();
+  }
+  assertTrue(abs(10.00 - thermalProbe->getSampleMean()) < 0.01);
+  assertTrue(abs(0.00 - thermalProbe->getSampleStandardDeviation()) < 0.01);
+  thermalProbe->setTemperature(20.0, true);  // raw temp will be about 20.0212
+  for (uint8_t i = 10; i < 60; ++i) {
+    delay(1000);
+    thermalProbe->getRunningAverage();
+  }
+  assertTrue(abs(18.3517833 - thermalProbe->getSampleMean()) < 0.00005);
+  assertTrue(abs(3.76443122 - thermalProbe->getSampleStandardDeviation()) < 0.00005);
+
+  thermalProbe->resetSample();
+  assertEqual(0.0, thermalProbe->getSampleMean());
+  assertEqual(0.0, thermalProbe->getSampleStandardDeviation());
+}
+
+unittest(meanAndStdDev2) {
+  // a small jump from 10 to 10.1
+  ThermalProbe_TC* thermalProbe = ThermalProbe_TC::instance();
+  thermalProbe->resetSample();
+  assertEqual(0.0, thermalProbe->getSampleMean());
+  assertEqual(0.0, thermalProbe->getSampleStandardDeviation());
+  thermalProbe->setTemperature(10.0, true);  // raw temp will be about 10.0047
+  for (uint8_t i = 0; i < 10; ++i) {
+    delay(1000);
+    thermalProbe->getRunningAverage();
+  }
+  assertTrue(abs(10.00 - thermalProbe->getSampleMean()) < 0.01);
+  assertTrue(abs(0.00 - thermalProbe->getSampleStandardDeviation()) < 0.01);
+  thermalProbe->setTemperature(10.1, true);  // raw temp will be about 10.072
+  for (uint8_t i = 10; i < 60; ++i) {
+    delay(1000);
+    thermalProbe->getRunningAverage();
+  }
+  assertTrue(abs(10.060771 - thermalProbe->getSampleMean()) < 0.00005);
+  assertTrue(abs(0.025 - thermalProbe->getSampleStandardDeviation()) < 0.003);
 }
 
 unittest_main()

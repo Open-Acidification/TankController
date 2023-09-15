@@ -113,11 +113,14 @@ public:
     thermo.clearFault();
   }
 
+  void clearCorrection();
   inline float getCorrection() {
     return correction;
   }
   void setCorrection(float value);
-  void clearCorrection();
+  float getSampleMean();
+  float getSampleStandardDeviation();
+  void resetSample();
 
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   // set a temperature in the mock
@@ -138,6 +141,9 @@ private:
   uint16_t historyIndex = 0;
   float correction = 0.0;
   uint32_t lastTime = 0;
+  uint8_t sampleSize = 0;                // count for sample
+  float sumOfSampleValues = 0.0;         // sum of (uncorrected) recent temperatures
+  float sumOfSquaredSampleValues = 0.0;  // sum of squares of (uncorrected) temperatures
 
   // Methods
   ThermalProbe_TC();

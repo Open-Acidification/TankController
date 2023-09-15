@@ -203,32 +203,36 @@ unittest(RampGreaterThanZero) {
   // takes 1.5 hours to get to pH of 7
   delay(1800000);  // delay 30 minutes
   tc->loop(false);
+  tc->loop(false);
   assertTrue(8.0 <= controlSolenoid->getCurrentTargetPh() && controlSolenoid->getCurrentTargetPh() <= 8.01);
   assertEqual("pH=8.500 B 8.000", lc->getLines().at(0));
   assertEqual("01/15/2021 02:18:35,   0, 0.00, 20.00, 8.500, 8.000, 1811, 100000.0,      0.0,      0.0",
-              dataLog->buffer);
+              dataLog->getBuffer());
   delay(1800000);  // delay 30 minutes
   // First loop triggers SD logging (DataLogger) and PushingBox
   // Second loop triggers Serial logging (DataLogger)
   tc->loop(false);
+  tc->loop(false);
   assertTrue(7.5 <= controlSolenoid->getCurrentTargetPh() && controlSolenoid->getCurrentTargetPh() <= 7.51);
   assertEqual("pH=8.500 B 7.500", lc->getLines().at(0));
   assertEqual("01/15/2021 02:48:35,   0, 0.00, 20.00, 8.500, 7.500, 3611, 100000.0,      0.0,      0.0",
-              dataLog->buffer);
+              dataLog->getBuffer());
   delay(1800000);  // delay 30 minutes
+  tc->loop(false);
   tc->loop(false);
   assertEqual(7, controlSolenoid->getCurrentTargetPh());
   assertEqual("pH=8.500 B 7.000", lc->getLines().at(0));
   assertEqual("01/15/2021 03:18:35,   0, 0.00, 20.00, 8.500, 7.000, 5411, 100000.0,      0.0,      0.0",
-              dataLog->buffer);
+              dataLog->getBuffer());
   // ramp time no longer used after it ends
   delay(1800000);  // delay 30 minutes
   delay(1800000);  // delay 30 minutes
   tc->loop(false);
+  tc->loop(false);
   assertEqual(7, controlSolenoid->getCurrentTargetPh());
   assertEqual("pH=8.500 B 7.000", lc->getLines().at(0));
   assertEqual("01/15/2021 04:18:35,   0, 0.00, 20.00, 8.500, 7.000, 9011, 100000.0,      0.0,      0.0",
-              dataLog->buffer);
+              dataLog->getBuffer());
 }
 
 unittest(ChangeRampToZero) {

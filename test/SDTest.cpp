@@ -1,13 +1,15 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
+#include "AlertPusher.h"
 #include "DateTime_TC.h"
+#include "PHCalibrationMid.h"
 #include "SD_TC.h"
 #include "TC_util.h"
 #include "TankController.h"
-#include "UIState/PHCalibrationMid.h"
 
 unittest_setup() {
+  GODMODE()->reset();
   SD_TC::instance()->format();
 }
 
@@ -29,7 +31,9 @@ unittest(tankControllerLoop) {
   d1.setAsCurrent();
   assertFalse(SD_TC::instance()->exists("20210415.csv"));
   tc->loop(false);
+  tc->loop(false);
   delay(1000);
+  tc->loop(false);
   tc->loop(false);
   assertTrue(SD_TC::instance()->exists("20210415.csv"));
   File file = SD_TC::instance()->open("20210415.csv");
@@ -56,7 +60,9 @@ unittest(loopInCalibration) {
   d1.setAsCurrent();
   assertFalse(SD_TC::instance()->exists("20210415.csv"));
   tc->loop(false);
-  delay(1000);
+  tc->loop(false);
+  delay(3000);
+  tc->loop(false);
   tc->loop(false);
   assertTrue(SD_TC::instance()->exists("20210415.csv"));
   File file = SD_TC::instance()->open("20210415.csv");
@@ -66,7 +72,7 @@ unittest(loopInCalibration) {
     data[file.size()] = '\0';
     assertEqual(
         "time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd\n"
-        "04/15/2021 00:00:01,   0, C, 20.00, C, 8.100,    3, 100000.0,      0.0,      0.0\n",
+        "04/15/2021 00:00:03,   0, C, 20.00, C, 8.100,    3, 100000.0,      0.0,      0.0\n",
         data);
   }
   file.close();
@@ -180,6 +186,78 @@ unittest(removeFile) {
   assertTrue(SD_TC::instance()->exists("20220706.log"));
   sd->remove("20220706.log");
   assertFalse(SD_TC::instance()->exists("20220706.log"));
+}
+
+unittest(writeAlert) {
+  char data[80];
+  SD_TC* sd = SD_TC::instance();
+  AlertPusher* pusher = AlertPusher::instance();
+
+  assertEqual("90A2DA807B76.log", sd->getAlertFileName());
+  sd->updateAlertFileSizeForTest();  // because sd was previously initialized, we have alertFileNameIsReady == true
+  assertFalse(sd->exists("90A2DA807B76.log"));
+  assertEqual(0, sd->getAlertFileSize());
+  pusher->setShouldSentHeadRequest(false);
+  assertFalse(pusher->getShouldSendHeadRequest());
+
+  // write data
+  sd->writeAlert("line 1");
+  assertTrue(pusher->getShouldSendHeadRequest());
+  assertTrue(sd->exists("90A2DA807B76.log"));
+  assertEqual(strlen("line 1\n"), sd->getAlertFileSize());
+  sd->writeAlert("line 2");
+  assertEqual(strlen("line 1\n\line 2\n"), sd->getAlertFileSize());
+
+  // verify contents of alerts.log
+  File file = sd->open("90A2DA807B76.log");
+  file.read(data, file.size());
+  data[file.size()] = '\0';
+  assertEqual("line 1\nline 2\n", data);
+  file.close();
+}
+
+unittest(getAlert) {
+  SD_TC* sd = SD_TC::instance();
+
+  // write data
+  sd->setAlertFileName("Tank1");
+  sd->writeAlert("line 1\nand 2\nline 3\n");
+
+  char buffer[20];
+
+  // get alert in line 2
+  sd->getAlert(buffer, sizeof(buffer), strlen("line 1\n"));
+  assertEqual("and 2\n", buffer);
+
+  // get alert in line 3
+  sd->getAlert(buffer, sizeof(buffer), strlen("line 1\nand 2\n"));
+  assertEqual("line 3\n", buffer);
+}
+
+unittest(noAlertFileName) {
+  SD_TC* sd = SD_TC::instance();
+  sd->setAlertFileNameIsReady(false);
+  sd->setAlertFileName("");
+  assertEqual("90A2DA807B76.log", sd->getAlertFileName());
+  assertTrue(sd->getAlertFileNameIsReady());
+}
+
+unittest(validAlertFileName) {
+  SD_TC* sd = SD_TC::instance();
+  sd->setAlertFileNameIsReady(false);
+  sd->setAlertFileName("Tank1");
+  assertEqual("Tank1.log", sd->getAlertFileName());
+  assertTrue(sd->getAlertFileNameIsReady());
+}
+
+unittest(longAlertFileName) {
+  SD_TC* sd = SD_TC::instance();
+  sd->setAlertFileNameIsReady(false);
+  sd->setAlertFileName("1234567890123456789012345678");  // maximum length
+  assertEqual("1234567890123456789012345678.log", sd->getAlertFileName());
+  sd->setAlertFileName("12345678901234567890123456789");  // one character too many
+  assertEqual("90A2DA807B76.log", sd->getAlertFileName());
+  assertTrue(sd->getAlertFileNameIsReady());
 }
 
 unittest_main()

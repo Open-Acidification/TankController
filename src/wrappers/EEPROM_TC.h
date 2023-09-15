@@ -13,19 +13,20 @@ public:
   void eepromWriteInt(uint16_t address, int32_t value);
 
   // accessor methods
-  float getAmplitude();               // not used
-  float getThermalCorrection();       // adjustment to temperature probe
-  float getFrequency();               // not used
-  uint16_t getGoogleSheetInterval();  // how often to send data using PushingBox
-  float getGranularity();             // not used
-  bool getHeat();                     // boolean for heater (true) or chiller (false)
-  bool getIgnoreBadPHSlope();         // whether to warn about an out-of-range calibration
-  float getKD();                      // constants used for PID to calculate bubbler timer
-  float getKI();                      // constants used for PID to calculate bubbler timer
-  float getKP();                      // constants used for PID to calculate bubbler timer
-  void getMac(uint8_t* bytes);        // used for DHCP request for IP address
-  float getMaxDataAge();              // not used
-  float getPh();                      // target pH
+  float getAmplitude();                  // not used
+  float getThermalCorrection();          // adjustment to temperature probe
+  float getFrequency();                  // not used
+  uint16_t getGoogleSheetInterval();     // how often to send data using PushingBox
+  float getGranularity();                // not used
+  bool getHeat();                        // boolean for heater (true) or chiller (false)
+  bool getIgnoreBadPHSlope();            // whether to warn about an out-of-range calibration
+  bool getIgnoreBadThermalCorrection();  // whether to warn about an out-of-range calibration
+  float getKD();                         // constants used for PID to calculate bubbler timer
+  float getKI();                         // constants used for PID to calculate bubbler timer
+  float getKP();                         // constants used for PID to calculate bubbler timer
+  void getMac(uint8_t* bytes);           // used for DHCP request for IP address
+  float getMaxDataAge();                 // not used
+  float getPh();                         // target pH
   uint32_t getPhRampTimeStart();
   uint32_t getPhRampTimeEnd();
   float getRampStartingPh();
@@ -59,6 +60,7 @@ public:
   void setGranularity(float value);
   void setHeat(bool value);
   void setIgnoreBadPHSlope(bool value);
+  void setIgnoreBadThermalCorrection(bool value);
   void setKD(float value);
   void setKI(float value);
   void setKP(float value);
@@ -91,6 +93,10 @@ public:
   void setTempSeriesSize(float value);
   void setVersion() {  // Nothing to be done here!
   }
+
+  // other instance methods
+  void putAlertFileHeader(char* buffer, int size, int count);
+  void writeAllToString(char* destination, int size);
 
 private:
   // instance variables from v0.197
@@ -134,6 +140,8 @@ private:
   const uint16_t THERMAL_FUNCTION_TYPE_ADDRESS = 140;
   // new with v23.8.1
   const uint16_t IGNORE_BAD_PH_SLOPE_ADDRESS = 144;
+  // new with v23.9.1
+  const uint16_t IGNORE_BAD_THERMAL_CORRECTION_ADDRESS = 148;
 
   // class variables
   static EEPROM_TC* _instance;

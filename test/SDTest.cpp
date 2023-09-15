@@ -236,22 +236,28 @@ unittest(getAlert) {
 
 unittest(noAlertFileName) {
   SD_TC* sd = SD_TC::instance();
+  sd->setAlertFileNameIsReady(false);
   sd->setAlertFileName("");
   assertEqual("90A2DA807B76.log", sd->getAlertFileName());
+  assertTrue(sd->getAlertFileNameIsReady());
 }
 
 unittest(validAlertFileName) {
   SD_TC* sd = SD_TC::instance();
+  sd->setAlertFileNameIsReady(false);
   sd->setAlertFileName("Tank1");
   assertEqual("Tank1.log", sd->getAlertFileName());
+  assertTrue(sd->getAlertFileNameIsReady());
 }
 
 unittest(longAlertFileName) {
   SD_TC* sd = SD_TC::instance();
+  sd->setAlertFileNameIsReady(false);
   sd->setAlertFileName("1234567890123456789012345678");  // maximum length
   assertEqual("1234567890123456789012345678.log", sd->getAlertFileName());
   sd->setAlertFileName("12345678901234567890123456789");  // one character too many
   assertEqual("90A2DA807B76.log", sd->getAlertFileName());
+  assertTrue(sd->getAlertFileNameIsReady());
 }
 
 unittest_main()

@@ -193,7 +193,7 @@ void DataLogger::writeToSerial() {
  */
 void DataLogger::writeWarningToLog() {
   char uptime[14];
-  ltoa((unsigned long)(millis() / 1000), uptime, 10);
+  ultoa((unsigned long)(millis() / 1000), uptime, 10);
   byte* mac = Ethernet_TC::instance()->getMac();
 
   // write version, tankid, 'W', and timestamp to buffer

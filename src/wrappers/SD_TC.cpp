@@ -130,7 +130,7 @@ void SD_TC::getAlert(char* buffer, int size, uint32_t index) {
 
 const char* SD_TC::getAlertFileName() {
   if (!alertFileNameIsReady) {
-    prepareAlertFileName();
+    setDefaultAlertFileName();
   }
   return alertFileName;
 }
@@ -234,14 +234,15 @@ File SD_TC::open(const char* path, oflag_t oflag) {
   return sd.open(path, oflag);
 }
 
-void SD_TC::prepareAlertFileName() {
-  alertFileNameIsReady = true;
-  if (alertFileName == nullptr || strnlen(alertFileName, MAX_FILE_NAME_LENGTH + 1) == 0) {
-    // not a valid file name so use MAC address
+void SD_TC::setDefaultAlertFileName() {
+  if (!alertFileNameIsReady) {
+    alertFileNameIsReady = true;
+
     byte* mac = Ethernet_TC::instance()->getMac();
     snprintf_P(alertFileName, 17, PSTR("%02X%02X%02X%02X%02X%02X.log"), mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+
+    updateAlertFileSize();
   }
-  updateAlertFileSize();
 }
 
 void SD_TC::printRootDirectory() {
@@ -294,7 +295,7 @@ void SD_TC::writeAlert(const char* line) {
   strncpy(mostRecentStatusEntry, line, sizeof(mostRecentStatusEntry));
 #endif
   if (!alertFileNameIsReady) {
-    prepareAlertFileName();
+    setDefaultAlertFileName();
   }
   if (!sd.exists(alertFileName)) {
     char buffer[200];

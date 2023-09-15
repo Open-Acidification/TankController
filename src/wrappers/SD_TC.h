@@ -81,6 +81,6 @@ private:
   bool iterateOnFiles(doOnFile functionName, void* userData);
   static bool incrementFileCount(File* myFile, void* pFileCount);
   static bool listFile(File* myFile, void* userData);
-  void prepareAlertFileName();
+  void setDefaultAlertFileName();
   void updateAlertFileSize();
 };

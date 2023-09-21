@@ -61,7 +61,7 @@ class Files extends StatelessWidget {
                   DataColumn(label: Text('File Size')),
                 ],
                 rows: fileRows,
-              )
+              ),
             ],
           );
         },

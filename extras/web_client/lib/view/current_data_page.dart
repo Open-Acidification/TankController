@@ -169,7 +169,7 @@ class CurrentData extends StatelessWidget {
                           onTap: () async {
                             showEditDialog(appData, context, key, value);
                           },
-                        )
+                        ),
                 ],
               ),
             ),
@@ -217,7 +217,7 @@ class CurrentData extends StatelessWidget {
                   : OutlinedButton(
                       onPressed: () {},
                       child: const Text('Upload file for arbitrary path'),
-                    )
+                    ),
             ],
           );
         },

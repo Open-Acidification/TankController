@@ -1,12 +1,9 @@
-import 'dart:io';
-
 import 'package:http/http.dart';
 import 'package:test/test.dart';
 
 void main() {
   final port = '8080';
   final host = 'http://localhost:$port';
-  late Process p;
 
   // Start the server in a different shell before running tests
 

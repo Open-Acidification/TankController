@@ -33,7 +33,7 @@ void main() {
       '*',
       '0',
       '#',
-      'D'
+      'D',
     ];
 
     // Create a tank

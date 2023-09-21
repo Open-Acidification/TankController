@@ -55,7 +55,9 @@ class AppDrawer extends StatelessWidget {
           try {
             await appData.addTank(newTank);
           } catch (e) {
-            showAlertDialog(e.runtimeType.toString(), context);
+            context.mounted
+                ? showAlertDialog(e.runtimeType.toString(), context)
+                : null;
           }
         },
         tooltip: 'Add Tank',

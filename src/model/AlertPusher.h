@@ -3,13 +3,7 @@
 
 #include "wrappers/Ethernet_TC.h"
 
-enum clientState_t {
-  CLIENT_NOT_CONNECTED,
-  SEND_HEAD_REQUEST,
-  SEND_POST_REQUEST,
-  PROCESS_HEAD_RESPONSE,
-  PROCESS_POST_RESPONSE
-};
+enum clientState_t { CLIENT_NOT_CONNECTED, PROCESS_HEAD_RESPONSE, PROCESS_POST_RESPONSE };
 
 class AlertPusher {
 public:

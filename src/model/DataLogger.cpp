@@ -107,15 +107,17 @@ void DataLogger::writeInfoToLog() {
   floattostrf(ThermalControl::instance()->getCurrentThermalTarget(), 1, 2, thermalTargetString,
               sizeof(thermalTargetString));
   floattostrf(PHControl::instance()->getCurrentTargetPh(), 1, 3, pHTargetString, sizeof(pHTargetString));
+  char uptime[14];
+  snprintf_P(uptime, sizeof(uptime), PSTR("%lu"), (unsigned long)(millis() / 1000));
 
   // write version, tankid, 'I', and timestamp to buffer
   writeAlertPreambleToBuffer('I');
   int preambleLength = strnlen(buffer, sizeof(buffer));
-  // temperature \t thermaltarget \t pH \t pHtarget
-  const __FlashStringHelper* format = F("\t\t%s\t%s\t%s\t%s\t%s");
+  // temperature \t thermaltarget \t pH \t pHtarget \t uptime
+  const __FlashStringHelper* format = F("\t\t%s\t%s\t%s\t%s\t%s\t%s");
   int additionalLength =
       snprintf_P(buffer + preambleLength, sizeof(buffer) - preambleLength, (PGM_P)format, thermalTargetString,
-                 thermalMeanString, thermalStandardDeviationString, pHTargetString, currentPhString);
+                 thermalMeanString, thermalStandardDeviationString, pHTargetString, currentPhString, uptime);
   if ((preambleLength + additionalLength > sizeof(buffer)) || (additionalLength < 0)) {
     // TODO: Log a warning that string was truncated
     serial(F("WARNING! String was truncated to \"%s\""), buffer);
@@ -193,7 +195,7 @@ void DataLogger::writeToSerial() {
  */
 void DataLogger::writeWarningToLog() {
   char uptime[14];
-  ultoa((unsigned long)(millis() / 1000), uptime, 10);
+  snprintf_P(uptime, sizeof(uptime), PSTR("%lu"), (unsigned long)(millis() / 1000));
   byte* mac = Ethernet_TC::instance()->getMac();
 
   // write version, tankid, 'W', and timestamp to buffer

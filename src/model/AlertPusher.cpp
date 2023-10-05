@@ -67,7 +67,10 @@ void AlertPusher::loopHead() {
               serverFileSize = (uint32_t)0;
               buffer[0] = '\0';
               index = 0;
-              state = SEND_POST_REQUEST;
+              state = CLIENT_NOT_CONNECTED;
+              client.stop();
+              readyToPost = true;
+              delayRequestsUntilTime = millis() + 3000;
               return;
             } else if (index > 16 && memcmp_P(buffer, F("content-length: "), 16) == 0) {
               serverFileSize = strtoul(buffer + 16, nullptr, 10);

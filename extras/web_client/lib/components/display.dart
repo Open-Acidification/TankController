@@ -7,8 +7,8 @@ import 'package:tank_manager/model/app_data.dart';
 
 class Display extends StatelessWidget {
   const Display({
-    Key? key,
     required BuildContext context,
+    Key? key,
   }) : super(key: key);
 
   @override

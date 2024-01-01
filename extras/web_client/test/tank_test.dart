@@ -21,7 +21,7 @@ void main() {
 
   test('Tank encode/decode', () {
     dynamic tank = Tank('tank_test', '192.168.0.1');
-    String jsonTank = jsonEncode(tank);
+    final String jsonTank = jsonEncode(tank);
     expect(jsonTank, '{"name":"tank_test","ip":"192.168.0.1"}');
 
     tank = jsonDecode(jsonTank);

@@ -21,7 +21,7 @@ class TcMockInterface extends TcInterface {
   @override
   Future<String> get(String ip, String path, [int timeout = 5]) async {
     if (ip == '127.0.0.1') {
-      throw ('Invalid IP Address in TcMockInterface');
+      throw 'Invalid IP Address in TcMockInterface';
     }
     if (path == 'data') {
       return '{"IPAddress":"172.27.5.150","MAC":"90:A2:DA:0F:45:C0","FreeMemory":"3791 bytes","GoogleSheetInterval":10,"LogFile":"20220722.csv","PHSlope":"22","Kp":9000.4,"Ki":0.0,"Kd":0.0,"PID":"ON","TankID":3,"Uptime":"0d 0h 1m 7s","Version":"22.04.1"}';
@@ -46,23 +46,23 @@ class TcMockInterface extends TcInterface {
 class TcRealInterface extends TcInterface {
   @override
   Future<String> get(String ip, String path, [int timeout = 5]) async {
-    var uri = 'http://$ip/api/1/$path';
-    var future = http.get(Uri.parse(uri));
-    var response = await future.timeout(Duration(seconds: timeout));
+    final uri = 'http://$ip/api/1/$path';
+    final future = http.get(Uri.parse(uri));
+    final response = await future.timeout(Duration(seconds: timeout));
     if (response.statusCode != 200) {
-      throw ('HTTP response not code 200');
+      throw 'HTTP response not code 200';
     }
     final subString = response.body.toString().replaceAll('\r', '');
     return subString;
   }
 
   @override
-  Future<String> post(String ip, var path, [int timeout = 5]) async {
-    var uri = 'http://$ip/api/1/$path';
+  Future<String> post(String ip, String path, [int timeout = 5]) async {
+    final uri = 'http://$ip/api/1/$path';
     final future = http.post(Uri.parse(uri));
-    var response = await future.timeout(Duration(seconds: timeout));
+    final response = await future.timeout(Duration(seconds: timeout));
     if (response.statusCode != 200) {
-      throw ('HTTP response not code 200');
+      throw 'HTTP response not code 200';
     }
     final subString = response.body.toString().replaceAll('\r', '');
     return subString;
@@ -70,11 +70,11 @@ class TcRealInterface extends TcInterface {
 
   @override
   Future<String> put(String ip, String path) async {
-    var uri = 'http://$ip/api/1/$path';
+    final uri = 'http://$ip/api/1/$path';
     final future = http.put(Uri.parse(uri));
-    var response = await future.timeout(const Duration(seconds: 5));
+    final response = await future.timeout(const Duration(seconds: 5));
     if (response.statusCode != 200) {
-      throw ('HTTP response not code 200');
+      throw 'HTTP response not code 200';
     }
     final subString = response.body.toString().replaceAll('\r', '');
     return subString;

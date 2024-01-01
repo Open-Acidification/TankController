@@ -15,9 +15,45 @@ include: package:lints/recommended.yaml
 
 # Uncomment the following section to specify additional rules.
 
-# linter:
-#   rules:
-#     - camel_case_types
+linter:
+  rules:
+    - always_put_control_body_on_new_line
+    - always_put_required_named_parameters_first
+    - always_use_package_imports
+    - avoid_bool_literals_in_conditional_expressions
+    - avoid_final_parameters
+    - avoid_void_async
+    - camel_case_types
+    - combinators_ordering
+    - conditional_uri_does_not_exist
+    - discarded_futures
+    - eol_at_end_of_file
+    - leading_newlines_in_multiline_strings
+    - literal_only_boolean_expressions
+    - matching_super_parameters
+    - no_adjacent_strings_in_list
+    - no_literal_bool_comparisons
+    - no_self_assignments
+    - no_wildcard_variable_uses
+    - parameter_assignments
+    - prefer_final_in_for_each
+    - prefer_final_locals
+    - prefer_single_quotes
+    - require_trailing_commas
+    - sort_constructors_first
+    - sort_pub_dependencies
+    - sort_unnamed_constructors_first
+    - throw_in_finally
+    - type_annotate_public_apis
+    - unawaited_futures
+    - unnecessary_await_in_return
+    - unnecessary_parenthesis
+    - unnecessary_raw_strings
+    - unnecessary_statements
+    - unreachable_from_main
+    - use_colored_box
+    - use_decorated_box
+    - use_enums
 
 # analyzer:
 #   exclude:

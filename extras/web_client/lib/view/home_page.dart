@@ -9,7 +9,7 @@ import 'package:tank_manager/view/current_data_page.dart';
 import 'package:tank_manager/view/files_page.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({required this.title, Key? key}) : super(key: key);
 
   final String title;
 

@@ -5,8 +5,8 @@ import 'package:tank_manager/model/app_data.dart';
 
 class Keypad extends StatelessWidget {
   const Keypad({
-    Key? key,
     required this.context,
+    Key? key,
   }) : super(key: key);
 
   final BuildContext context;
@@ -54,12 +54,12 @@ class Keypad extends StatelessWidget {
   }
 
   Future<void> sendKeypress(String ip, String path) async {
-    String value = await TcInterface.instance().post(ip, path);
+    final String value = await TcInterface.instance().post(ip, path);
     AppData.instance().display = value;
   }
 
-  Widget button(BuildContext context, var label, var color) {
-    var appData = AppData.instance();
+  Widget button(BuildContext context, String label, Color color) {
+    final appData = AppData.instance();
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(

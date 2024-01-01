@@ -13,37 +13,42 @@ import 'package:version/version.dart';
 
 class CurrentData extends StatelessWidget {
   const CurrentData({
-    Key? key,
     required this.context,
+    Key? key,
   }) : super(key: key);
 
   final BuildContext context;
 
-  bool showEdit(var valueString) {
+  bool showEdit(String valueString) {
     return valueString == 'Kp' || valueString == 'Ki' || valueString == 'Kd';
   }
 
   bool canEditCurrentInfo(AppData appData) {
     String v = appData.currentData['Version'].trim();
-    var i = v.indexOf('-');
+    final i = v.indexOf('-');
     if (i != -1) {
       v = v.substring(0, i);
     }
-    Version latestVersion = Version.parse(v);
+    final Version latestVersion = Version.parse(v);
     return latestVersion >= Version.parse('23.6.0');
   }
 
   bool canUploadFile(AppData appData) {
     String v = appData.currentData['Version'].trim();
-    var i = v.indexOf('-');
+    final i = v.indexOf('-');
     if (i != -1) {
       v = v.substring(0, i);
     }
-    Version latestVersion = Version.parse(v);
+    final Version latestVersion = Version.parse(v);
     return latestVersion >= Version.parse('99.9.9'); // not supported yet!
   }
 
-  showEditDialog(var appData, BuildContext context, var key, var value) async {
+  Future<void> showEditDialog(
+    AppData appData,
+    BuildContext context,
+    String key,
+    String value,
+  ) async {
     await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -56,12 +61,12 @@ class CurrentData extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   TextFormField(
-                    initialValue: value.toString(),
+                    initialValue: value,
                     onFieldSubmitted: (val) {
                       TcInterface.instance()
                           .put(
                         '${appData.currentData["IPAddress"]}',
-                        'data?${key.toString()}=$val',
+                        'data?$key=$val',
                       )
                           .then((value) {
                         appData.currentData = json.decode(value);
@@ -82,7 +87,7 @@ class CurrentData extends StatelessWidget {
     );
   }
 
-  showPopupDialog(String titleString, String messageString) async {
+  Future<void> showPopupDialog(String titleString, String messageString) async {
     await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -106,20 +111,19 @@ class CurrentData extends StatelessWidget {
     );
   }
 
-  void sendArbitraryPathString(String arbitraryPath, String ip) async {
-    Uint8List bytes =
+  Future<void> sendArbitraryPathString(String arbitraryPath, String ip) async {
+    final Uint8List bytes =
         const Base64Decoder().convert(arbitraryPath.split(',').last);
     if (bytes.length > 10000) {
-      throw UnsupportedError(
-        showPopupDialog('File too large', 'Your file exceeds 10 KB.'),
-      );
+      await showPopupDialog('File too large', 'Your file exceeds 10 KB.');
+      throw UnsupportedError('File too large');
     }
     await postArbitraryPathAsFile(ip, bytes);
   }
 
   Future<String?> postArbitraryPathAsFile(String ip, Uint8List bytes) async {
-    var uri = Uri.parse(ip);
-    var request = http.MultipartRequest('POST', uri);
+    final uri = Uri.parse(ip);
+    final request = http.MultipartRequest('POST', uri);
     request.files.add(
       http.MultipartFile.fromBytes(
         'file',
@@ -128,12 +132,13 @@ class CurrentData extends StatelessWidget {
         filename: 'arbitraryPath.txt',
       ),
     );
-    var res = await request.send();
+    final res = await request.send();
     return res.reasonPhrase;
   }
 
-  selectFileToUpload(String ip) async {
-    html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
+  Future<void> selectFileToUpload(String ip) async {
+    final html.FileUploadInputElement uploadInput =
+        html.FileUploadInputElement();
     uploadInput.multiple = true;
     uploadInput.draggable = true;
     uploadInput.accept = '.txt,.csv';
@@ -141,7 +146,7 @@ class CurrentData extends StatelessWidget {
     uploadInput.onChange.listen((e) {
       final files = uploadInput.files;
       final file = files![0];
-      dynamic reader = html.FileReader();
+      final dynamic reader = html.FileReader();
       reader.onLoadEnd.listen((e) {
         sendArbitraryPathString(reader.result as String, ip);
       });
@@ -151,11 +156,11 @@ class CurrentData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return ColoredBox(
       color: Colors.white,
       child: Consumer<AppData>(
         builder: (context, appData, child) {
-          var currentDataRows = <DataRow>[];
+          final currentDataRows = <DataRow>[];
           appData.currentData.forEach(
             (key, value) => currentDataRows.add(
               DataRow(
@@ -167,9 +172,14 @@ class CurrentData extends StatelessWidget {
                           Text(value.toString()),
                           showEditIcon: true,
                           onTap: () async {
-                            showEditDialog(appData, context, key, value);
+                            await showEditDialog(
+                              appData,
+                              context,
+                              key,
+                              value.toString(),
+                            );
                           },
-                        )
+                        ),
                 ],
               ),
             ),
@@ -206,8 +216,8 @@ class CurrentData extends StatelessWidget {
                                 ),
                               );
                             }
-                          : () {
-                              showPopupDialog(
+                          : () async {
+                              await showPopupDialog(
                                 'Feature coming soon',
                                 'Your tank controller is not at a version that supports file upload',
                               );
@@ -217,7 +227,7 @@ class CurrentData extends StatelessWidget {
                   : OutlinedButton(
                       onPressed: () {},
                       child: const Text('Upload file for arbitrary path'),
-                    )
+                    ),
             ],
           );
         },

@@ -7,19 +7,19 @@ import 'package:url_launcher/url_launcher.dart';
 
 class Files extends StatelessWidget {
   const Files({
-    Key? key,
     required this.context,
+    Key? key,
   }) : super(key: key);
 
   final BuildContext context;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return ColoredBox(
       color: Colors.white,
       child: Consumer<AppData>(
         builder: (context, appData, child) {
-          List<DataRow> fileRows = <DataRow>[];
+          final List<DataRow> fileRows = <DataRow>[];
           appData.files.forEach(
             (fileName, fileSize) => fileRows.add(
               DataRow(
@@ -27,9 +27,9 @@ class Files extends StatelessWidget {
                   DataCell(
                     GestureDetector(
                       onTap: () {
-                        String ip = appData.currentTank.ip;
-                        String file = fileName.toString();
-                        String loc = 'http://$ip/$file';
+                        final String ip = appData.currentTank.ip;
+                        final String file = fileName.toString();
+                        final String loc = 'http://$ip/$file';
                         unawaited(launchUrl(Uri.parse(loc)));
                       },
                       child: Text(
@@ -61,7 +61,7 @@ class Files extends StatelessWidget {
                   DataColumn(label: Text('File Size')),
                 ],
                 rows: fileRows,
-              )
+              ),
             ],
           );
         },

@@ -7,15 +7,15 @@ import 'package:tank_manager/model/version.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({
-    Key? key,
     required this.context,
+    Key? key,
   }) : super(key: key);
 
   final BuildContext context;
 
-  showAlertDialog(String message, BuildContext context) async {
+  Future<void> showAlertDialog(String message, BuildContext context) async {
     // set up the button
-    Widget okButton = TextButton(
+    final Widget okButton = TextButton(
       child: const Text('OK'),
       onPressed: () {
         Navigator.pop(context);
@@ -23,7 +23,7 @@ class AppDrawer extends StatelessWidget {
     );
 
     // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
+    final AlertDialog alert = AlertDialog(
       title: Text(message),
       content: const Text(
         'Error connecting to Tank Controller. This is likely due to an incorrect IP address.',
@@ -51,11 +51,13 @@ class AppDrawer extends StatelessWidget {
       alignment: Alignment.topRight,
       child: FloatingActionButton(
         onPressed: () async {
-          var newTank = Tank(nameController.text, ipController.text);
+          final newTank = Tank(nameController.text, ipController.text);
           try {
             await appData.addTank(newTank);
           } catch (e) {
-            showAlertDialog(e.runtimeType.toString(), context);
+            if (context.mounted) {
+              await showAlertDialog(e.runtimeType.toString(), context);
+            }
           }
         },
         tooltip: 'Add Tank',
@@ -72,8 +74,8 @@ class AppDrawer extends StatelessWidget {
     return Align(
       alignment: Alignment.topRight,
       child: FloatingActionButton(
-        onPressed: () {
-          appData.removeTank(appData.currentTank);
+        onPressed: () async {
+          await appData.removeTank(appData.currentTank);
           appData.clearTank();
         },
         tooltip: 'Remove Tank',
@@ -84,11 +86,11 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var appData = AppData.instance();
+    final appData = AppData.instance();
     final ipController = TextEditingController();
     final nameController = TextEditingController();
-    List<Widget> tiles = <Widget>[];
-    for (var tank in appData.tankList) {
+    final List<Widget> tiles = <Widget>[];
+    for (final tank in appData.tankList) {
       tiles.add(tile(tank));
     }
     return Drawer(
@@ -118,7 +120,7 @@ class AppDrawer extends StatelessWidget {
   }
 
   Widget drawerHeader(BuildContext context) {
-    return Container(
+    return ColoredBox(
       color: Colors.blue,
       child: DrawerHeader(
         child: Image.asset(
@@ -128,7 +130,7 @@ class AppDrawer extends StatelessWidget {
     );
   }
 
-  Widget field(var controller, var label, var hint) {
+  Widget field(TextEditingController controller, String label, String hint) {
     return TextField(
       controller: controller,
       style: const TextStyle(color: Colors.black),
@@ -143,13 +145,14 @@ class AppDrawer extends StatelessWidget {
   }
 
   Future<void> updateDisplay() async {
-    var appData = AppData.instance();
-    var tcInterface = TcInterface.instance();
-    String value = await tcInterface.get(appData.currentTank.ip, 'display');
+    final appData = AppData.instance();
+    final tcInterface = TcInterface.instance();
+    final String value =
+        await tcInterface.get(appData.currentTank.ip, 'display');
     appData.display = value; // setter notifies listeners of change
   }
 
-  Widget tile(var selected) {
+  Widget tile(Tank selected) {
     return ListTile(
       title: Text(
         selected.name,

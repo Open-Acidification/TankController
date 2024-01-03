@@ -17,7 +17,7 @@ void main() {
   testWidgets('Keypad buttons work as expected', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
-    var buttons = [
+    final buttons = [
       '1',
       '2',
       '3',
@@ -33,18 +33,18 @@ void main() {
       '*',
       '0',
       '#',
-      'D'
+      'D',
     ];
 
     // Create a tank
-    var appData = AppData.instance();
+    final appData = AppData.instance();
     appData.currentTank = Tank('test_tank', '192.168.0.1');
 
     // Force button visibility for tester
     // Verify a buttons exists
     // Verify no button result is already displayed
     // Tap a button and check display
-    for (var b in buttons) {
+    for (final b in buttons) {
       await tester.ensureVisible(find.text(b));
 
       expect(find.text(b), findsOneWidget);
@@ -61,7 +61,7 @@ void main() {
     await tester.pumpWidget(const MyApp());
 
     // Create a tank
-    var appData = AppData.instance();
+    final appData = AppData.instance();
     appData.currentTank = Tank('test_tank', '192.168.0.1');
 
     // Verify Current Data is not displayed
@@ -82,7 +82,7 @@ void main() {
     await tester.pumpWidget(const MyApp());
 
     // Create a tank
-    var appData = AppData.instance();
+    final appData = AppData.instance();
     appData.currentTank = Tank('test_tank', '192.168.0.1');
 
     // Verify files are not displayed

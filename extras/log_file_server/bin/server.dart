@@ -15,7 +15,7 @@ final _router = Router()
   ..post('/logs/<path>', _post);
 
 Future<Response> _delete(Request req) async {
-  var file = File('$rootDir/deleteMe.log');
+  final file = File('$rootDir/deleteMe.log');
   if (file.existsSync()) {
     await file.delete();
   }
@@ -23,26 +23,26 @@ Future<Response> _delete(Request req) async {
 }
 
 Future<Response> _get(Request req, String path) async {
-  var file = File('$rootDir/$path');
+  final file = File('$rootDir/$path');
   if (!file.existsSync()) {
     return Response.notFound(null);
   }
-  var body = file.readAsStringSync();
+  final body = file.readAsStringSync();
   return Response.ok(body);
 }
 
 Future<Response> _head(Request req, String path) async {
-  var file = File('$rootDir/$path');
+  final file = File('$rootDir/$path');
   if (!file.existsSync()) {
     return Response.notFound(null);
   }
-  var length = file.lengthSync();
+  final length = file.lengthSync();
   return Response.ok(null, headers: {'content-length': '$length'});
 }
 
 Future<Response> _post(Request req, String path) async {
   // validate received data
-  var mimeType = req.mimeType;
+  final mimeType = req.mimeType;
   if (mimeType != 'text/plain') {
     return Response.badRequest(body: 'Content-Type must be text/plain!');
   }
@@ -51,12 +51,13 @@ Future<Response> _post(Request req, String path) async {
   }
 
   // get body
-  var length = req.contentLength;
-  var body = await req.readAsString();
+  final length = req.contentLength;
+  final body = await req.readAsString();
   if (length != body.length) {
     return Response.badRequest(
-        body: 'Content-Length of $length '
-            'did not match body.length of ${body.length}!');
+      body: 'Content-Length of $length '
+          'did not match body.length of ${body.length}!',
+    );
   }
 
   // // get remote address
@@ -65,7 +66,7 @@ Future<Response> _post(Request req, String path) async {
   // var remoteAddress = connectionInfo.remoteAddress.address;
   // print('remoteAddress = "$remoteAddress" (${remoteAddress.runtimeType})');
 
-  var file = File('$rootDir/$path');
+  final file = File('$rootDir/$path');
   file.createSync(exclusive: false);
   file.writeAsStringSync(
     body,
@@ -75,7 +76,7 @@ Future<Response> _post(Request req, String path) async {
 }
 
 void main(List<String> args) async {
-  Directory(rootDir).create(recursive: true);
+  await Directory(rootDir).create(recursive: true);
 
   // Use any available host or container IP (usually `0.0.0.0`).
   final ip = InternetAddress.anyIPv4;

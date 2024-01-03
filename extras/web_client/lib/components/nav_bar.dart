@@ -5,8 +5,8 @@ import 'package:tank_manager/model/app_data.dart';
 
 class NavBar extends StatelessWidget {
   const NavBar({
-    Key? key,
     required this.context,
+    Key? key,
   }) : super(key: key);
 
   final BuildContext context;
@@ -32,8 +32,8 @@ class NavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var appData = AppData.instance();
-    int currentIndex = appData.currentIndex;
+    final appData = AppData.instance();
+    final int currentIndex = appData.currentIndex;
     return BottomNavigationBar(
       currentIndex: currentIndex,
       onTap: onTabTapped,
@@ -45,7 +45,7 @@ class NavBar extends StatelessWidget {
   }
 
   void onTabTapped(int index) {
-    var appData = AppData.instance();
+    final appData = AppData.instance();
     appData.currentIndex = index;
     if (items[index].label == 'Keypad') {
       unawaited(appData.refreshDisplay()); // this will notify listeners

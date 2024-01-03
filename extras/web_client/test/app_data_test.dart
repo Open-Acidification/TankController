@@ -9,7 +9,7 @@ import 'package:tank_manager/model/tc_interface.dart';
 void main() async {
   TestWidgetsFlutterBinding.ensureInitialized();
   SharedPreferences.setMockInitialValues({});
-  var appData = AppData.instance();
+  final appData = AppData.instance();
 
   setUp(() {
     TcInterface.useMock();
@@ -32,21 +32,21 @@ void main() async {
     expect(appData.tankList[0], Tank('Tank', '192.168.0.1'));
     appData.currentTank = Tank('Tank', '192.168.0.1');
     expect(appData.currentTank, Tank('Tank', '192.168.0.1'));
-    appData.removeTank(Tank('Tank', '192.168.0.1'));
+    await appData.removeTank(Tank('Tank', '192.168.0.1'));
     expect(appData.tankList, []);
   });
 
   test('App write tank list', () async {
     expect(appData.tankList, []);
-    List<Tank> tankList = [Tank('Tank', '192.168.0.1')];
+    final List<Tank> tankList = [Tank('Tank', '192.168.0.1')];
     await appData.writeTankList(tankList);
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     expect(prefs.getString('obj1'), '[{"name":"Tank","ip":"192.168.0.1"}]');
   });
 
   test('App read tank list', () async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<Tank> tankList = [Tank('Tank', '192.168.0.2')];
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final List<Tank> tankList = [Tank('Tank', '192.168.0.2')];
     await prefs.setString('obj1', jsonEncode(tankList));
     await appData.readTankList();
     expect(appData.tankList, [Tank('Tank', '192.168.0.2')]);

@@ -48,26 +48,6 @@ else
   git clone "${SHALLOW_MASTER[@]}" "$GITHUB/Ethernet.git"
 fi
 
-if [ -d "./LiquidCrystal" ]; then
-  (
-    echo update LiquidCrystal
-    cd LiquidCrystal
-    git pull
-  )
-else
-  git clone "${SHALLOW_MASTER[@]}" "$GITHUB/LiquidCrystal.git"
-fi
-
-if [ -d "./RTClib" ]; then
-  (
-    echo update RTClib
-    cd RTClib
-    git pull
-  )
-else
-  git clone "${SHALLOW_MAIN[@]}" "$GITHUB/RTClib.git"
-fi
-
 if [ -d "./Keypad" ]; then
   (
     echo update Keypad
@@ -78,6 +58,16 @@ else
   git clone "${SHALLOW_MAIN[@]}" "$GITHUB/Keypad.git"
 fi
 
+if [ -d "./LiquidCrystal" ]; then
+  (
+    echo update LiquidCrystal
+    cd LiquidCrystal
+    git pull
+  )
+else
+  git clone "${SHALLOW_MASTER[@]}" "$GITHUB/LiquidCrystal.git"
+fi
+
 if [ -d "./PID" ]; then
   (
     echo update PID
@@ -86,6 +76,16 @@ if [ -d "./PID" ]; then
   )
 else
   git clone "${SHALLOW_MASTER[@]}" "$GITHUB/Arduino-PID-Library.git" "PID"
+fi
+
+if [ -d "./RTClib" ]; then
+  (
+    echo update RTClib
+    cd RTClib
+    git pull
+  )
+else
+  git clone "${SHALLOW_MAIN[@]}" "$GITHUB/RTClib.git"
 fi
 
 if [ -d "./SdFat" ]; then

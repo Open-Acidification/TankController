@@ -6,6 +6,9 @@ import 'package:tank_manager/model/tc_interface.dart';
 import 'dart:async';
 
 class AppData with ChangeNotifier {
+  AppData() {
+    _currentTank = _emptyTank;
+  }
   static AppData? _instance;
 
   static AppData instance() {
@@ -13,12 +16,8 @@ class AppData with ChangeNotifier {
     return _instance!;
   }
 
-  AppData() {
-    _currentTank = _emptyTank;
-  }
-
   final _emptyTank = Tank('', '');
-  dynamic _currentTank;
+  late Tank _currentTank;
   var _display = '';
   Map<String, dynamic> _currentData = <String, dynamic>{};
   Map<String, dynamic> _files = <String, dynamic>{};
@@ -26,24 +25,26 @@ class AppData with ChangeNotifier {
   int _currentIndex = 0;
 
   Future<void> readTankList() async {
-    if (tankList.isNotEmpty) return;
+    if (tankList.isNotEmpty) {
+      return;
+    }
     WidgetsFlutterBinding.ensureInitialized();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey('obj1')) {
-      String obj1 = prefs.getString('obj1')!;
-      var x = jsonDecode(obj1).map((obj1) => Tank.fromJson(obj1));
+      final String obj1 = prefs.getString('obj1')!;
+      final x = jsonDecode(obj1).map((obj1) => Tank.fromJson(obj1));
       _tankList = List<Tank>.from(x);
     }
   }
 
-  Future<void> writeTankList(tankList) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  Future<void> writeTankList(List<Tank> tankList) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('obj1', jsonEncode(tankList));
   }
 
   Future<void> refreshDisplay() async {
     if (currentTank.isNotEmpty()) {
-      var tcInterface = TcInterface.instance();
+      final tcInterface = TcInterface.instance();
       display = await tcInterface.get(currentTank.ip, 'display');
     } else {
       display = '';
@@ -55,8 +56,8 @@ class AppData with ChangeNotifier {
     if (currentTank.isEmpty()) {
       currentData = jsonDecode('{"Error: Choose tank from menu":""}');
     } else {
-      var tcInterface = TcInterface.instance();
-      var value = await tcInterface.get(currentTank.ip, 'data');
+      final tcInterface = TcInterface.instance();
+      final value = await tcInterface.get(currentTank.ip, 'data');
       try {
         currentData = jsonDecode(value);
       } catch (e) {
@@ -70,7 +71,7 @@ class AppData with ChangeNotifier {
       _files = jsonDecode('{"Error: Choose tank from menu":""}');
       return;
     }
-    var tcInterface = TcInterface.instance();
+    final tcInterface = TcInterface.instance();
     var value = '';
     // wait 15 seconds (the default of 5 seconds could be too little)
     try {
@@ -88,7 +89,7 @@ class AppData with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addTank(tank) async {
+  Future<void> addTank(Tank tank) async {
     // make a call to the device to see if it exists
     // ignore result
     await TcInterface.instance().get(tank.ip, 'data');
@@ -98,7 +99,7 @@ class AppData with ChangeNotifier {
     unawaited(writeTankList(tankList));
   }
 
-  void removeTank(tank) async {
+  Future<void> removeTank(Tank tank) async {
     _tankList.remove(tank);
     if (_currentTank == tank) {
       clearTank();
@@ -113,27 +114,27 @@ class AppData with ChangeNotifier {
     notifyListeners();
   }
 
-  set currentIndex(index) {
+  set currentIndex(int index) {
     _currentIndex = index;
     notifyListeners();
   }
 
-  set tankList(tankList) {
+  set tankList(List<Tank> tankList) {
     _tankList = tankList;
     notifyListeners();
   }
 
-  set display(text) {
+  set display(String text) {
     _display = text;
     notifyListeners();
   }
 
-  set currentData(text) {
-    _currentData = text;
+  set currentData(Map<String, dynamic> data) {
+    _currentData = data;
     notifyListeners();
   }
 
-  set currentTank(newTank) {
+  set currentTank(Tank newTank) {
     _currentTank = newTank;
     notifyListeners();
   }
@@ -142,6 +143,6 @@ class AppData with ChangeNotifier {
   Map<String, dynamic> get files => _files;
   int get currentIndex => _currentIndex;
   List<Tank> get tankList => _tankList;
-  dynamic get currentTank => _currentTank;
+  Tank get currentTank => _currentTank;
   String get display => _display;
 }

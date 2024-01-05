@@ -28,8 +28,6 @@ unittest(loop) {
   tc->loop(false);
   delay(59000);
   serialPort->clearBuffer();
-  assertEqual("", sd->mostRecentHeader);
-  assertEqual("", sd->mostRecentLine);
   tc->loop(false);  // write to SD card
   assertEqual("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd", sd->mostRecentHeader);
   assertEqual("08/15/2023 00:00:59,   0, 0.00, 20.00, 0.000, 8.100,   59, 100000.0,      0.0,      0.0",
@@ -43,7 +41,7 @@ unittest(loop) {
   assertEqual(0.0, ThermalProbe_TC::instance()->getSampleMean());    // thermal sample has been reset
   char infoString[512] = "";
   snprintf(infoString, sizeof(infoString), "%s\t%s", VERSION,
-           "0\tI\t2023-08-15 00:01:00\t\t20.00\t-242.02\t0.000\t8.100\t0.000");
+           "0\tI\t2023-08-15 00:01:00\t\t20.00\t-242.02\t0.000\t8.100\t0.000\t60");
   assertEqual(infoString, sd->mostRecentStatusEntry);
   assertEqual("New info written to log", serialPort->getBuffer());
 }

@@ -42,7 +42,7 @@ private:
   char buffer[256];
   uint32_t nextSDLogTime = 0;
   uint32_t nextSerialLogTime = 0;
-  uint32_t nextInfoLogTime = 0;
+  uint32_t nextInfoLogTime = INFO_LOGGING_INTERVAL;
   bool shouldWriteWarning = false;
 
   // instance methods

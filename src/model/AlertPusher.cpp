@@ -64,13 +64,13 @@ void AlertPusher::loopHead() {
             serial(F("  %s"), buffer);
             if (index >= 22 && memcmp_P(buffer, F("http/1.1 404 not found"), 22) == 0) {
               // File has not yet been created on server
-              serverFileSize = (uint32_t)0;
               buffer[0] = '\0';
               index = 0;
-              state = CLIENT_NOT_CONNECTED;
-              client.stop();
+              serverFileSize = (uint32_t)0;
               readyToPost = true;
               delayRequestsUntilTime = millis() + 3000;
+              state = CLIENT_NOT_CONNECTED;
+              client.stop();
               return;
             } else if (index > 16 && memcmp_P(buffer, F("content-length: "), 16) == 0) {
               serverFileSize = strtoul(buffer + 16, nullptr, 10);
@@ -80,15 +80,11 @@ void AlertPusher::loopHead() {
               serial(F("AlertPusher: local %lu bytes, cloud %lu bytes"), (uint32_t)localFileSize,
                      (uint32_t)serverFileSize);
               if (serverFileSize < localFileSize) {
-                state = CLIENT_NOT_CONNECTED;
-                client.stop();
                 readyToPost = true;
-                delayRequestsUntilTime = millis() + 3000;
-              } else {
-                state = CLIENT_NOT_CONNECTED;
-                client.stop();
-                delayRequestsUntilTime = millis() + 3000;
               }
+              delayRequestsUntilTime = millis() + 3000;
+              state = CLIENT_NOT_CONNECTED;
+              client.stop();
               return;
             }
           } else if (next == '\n' || index == sizeof(buffer)) {
@@ -126,12 +122,12 @@ void AlertPusher::loopPost() {
               delayRequestsUntilTime = millis() + 3000;
               return;
             }
+          } else if (next == '\n' || index == sizeof(buffer)) {
+            buffer[0] = '\0';
+            index = 0;
+          } else {
+            buffer[index++] = tolower(next);
           }
-        } else if (next == '\n' || index == sizeof(buffer)) {
-          buffer[0] = '\0';
-          index = 0;
-        } else {
-          buffer[index++] = tolower(next);
         }
       }
     }
@@ -166,7 +162,7 @@ void AlertPusher::sendHeadRequest() {
       "Connection: Close\r\n"
       "\r\n";
   snprintf_P(buffer, sizeof(buffer), (PGM_P)format, SD_TC::instance()->getAlertFileName(), serverDomain, VERSION);
-  if (client.connected() || client.connect(serverDomain, PORT) == 1) {  // this is a blocking step
+  if (client.connected() || client.connect(serverDomain, OAP_SERVER_PORT) == 1) {  // this is a blocking step
     serial(F("AlertPusher: connected to %s, sending..."), serverDomain);
     client.write(buffer, strnlen(buffer, sizeof(buffer)));
   } else {
@@ -191,7 +187,7 @@ void AlertPusher::sendPostRequest() {
       "\r\n";
   snprintf_P(buffer, sizeof(buffer), (PGM_P)format, SD_TC::instance()->getAlertFileName(), serverDomain, VERSION,
              strnlen(data, sizeof(data)));
-  if (client.connected() || client.connect(serverDomain, PORT) == 1) {  // this is a blocking step
+  if (client.connected() || client.connect(serverDomain, OAP_SERVER_PORT) == 1) {  // this is a blocking step
     serial(F("AlertPusher: connected to %s, sending..."), serverDomain);
     serial(data);
     client.write(buffer, strnlen(buffer, sizeof(buffer)));

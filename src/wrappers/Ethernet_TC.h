@@ -8,7 +8,7 @@
 #include <Arduino.h>
 #include <Ethernet.h>
 
-#define PORT 8080
+#define OAP_SERVER_PORT 8080
 
 class Ethernet_TC {
 public:

@@ -22,6 +22,9 @@ public:
   const char *getServerDomain() {
     return serverDomain;
   }
+  bool getReadyToPost() {
+    return readyToPost;
+  }
   bool getShouldSendHeadRequest() {
     return shouldSendHeadRequest;
   }

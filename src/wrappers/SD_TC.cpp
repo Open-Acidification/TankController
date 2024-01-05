@@ -47,17 +47,14 @@ void SD_TC::appendData(const char* header, const char* line) {
   todaysDataFileName(path, sizeof(path));
   if (!sd.exists(path)) {
     appendDataToPath(header, path);
-    COUT(header);
   }
   appendDataToPath(line, path);
-  COUT(line);
 }
 
 /**
  * append data to a path
  */
 void SD_TC::appendDataToPath(const char* line, const char* path, bool appendNewline) {
-  COUT(path);
   File file = sd.open(path, O_CREAT | O_WRONLY | O_APPEND);
   if (file) {
     file.write(line);
@@ -65,7 +62,6 @@ void SD_TC::appendDataToPath(const char* line, const char* path, bool appendNewl
       file.write("\n", 1);
     }
     file.close();
-    COUT(file);
   } else {
     if (!hasHadError) {
       hasHadError = true;
@@ -278,7 +274,6 @@ void SD_TC::setAlertFileName(const char* newFileName) {
 void SD_TC::todaysDataFileName(char* path, int size) {
   DateTime_TC now = DateTime_TC::now();
   snprintf_P(path, size, (PGM_P)F("%4i%02i%02i.csv"), now.year(), now.month(), now.day());
-  COUT(path);
 }
 
 void SD_TC::updateAlertFileSize() {

@@ -113,8 +113,9 @@ unittest(loopSendsRequests) {
   assertFalse(pusher->getReadyToPost());
   SD_TC::instance()->format();                      // wipe alert log file
   SD_TC::instance()->updateAlertFileSizeForTest();  // size to zero
-  SD_TC::instance()->writeAlert("some data here");  // plus '\n' and the header row
-  tc->loop(false);                                  // "200 OK" is received
+  SD_TC::instance()->writeAlert(
+      "some data here");  // plus '\n' and the header row--replace "664" a few lines up when this changes
+  tc->loop(false);        // "200 OK" is received
   // assertFalse(pusher->getShouldSendHeadRequest());  // unless something else triggered a head request during one of
   // these loops
   assertFalse(pusher->getReadyToPost());  // because server has all bytes

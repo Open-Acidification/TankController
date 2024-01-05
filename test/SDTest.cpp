@@ -8,6 +8,21 @@
 #include "TC_util.h"
 #include "TankController.h"
 
+char header[1000] =
+    "Version\tTank ID\tSeverity\tDate Time\tMessage\tTemperature "
+    "Target\tTemperature Mean\tTemperature Std Dev\tpH Target\tpH\t"
+    "Uptime\tMAC Address\tpH Slope\t"
+    "Ignoring Bad pH Calibration\tTemperature Correction\tIgnoring Bad "
+    "Temperature Calibration\tHeat (1) or Chill (0)\tKD\tKI\tKP\t"
+    "pH Flat (0) Ramp (1) Sine (2)\tpH Target\t"
+    "pH Ramp Start Time\tpH Ramp End Time\tpH Ramp Start Value\t"
+    "pH Sine Start Time\tpH Sine Period\tpH Sine Amplitude\t"
+    "Temperature Flat (0) Ramp (1) Sine (2)\tTemperature Target\t"
+    "Temperature Ramp Start Time\tTemperature Ramp End Time\t"
+    "Temperature Ramp Start Value\tTemperature Sine Start Time\t"
+    "Temperature Sine Period\tTemperature Sine Amplitude\t"
+    "Google Sheet Interval\n";
+
 unittest_setup() {
   GODMODE()->reset();
   SD_TC::instance()->format();
@@ -204,17 +219,17 @@ unittest(writeAlert) {
   sd->writeAlert("line 1");
   assertTrue(pusher->getShouldSendHeadRequest());
   assertTrue(sd->exists("90A2DA807B76.log"));
-  int size_with_header = sd->getAlertFileSize();
-  // assertEqual(strlen("line 1\n"), sd->getAlertFileSize());
+  assertEqual(strnlen(header, sizeof(header)) + strlen("line 1\n"), sd->getAlertFileSize());
   sd->writeAlert("line 2");
-  assertEqual(strlen("\line 2\n") + size_with_header, sd->getAlertFileSize());
+  assertEqual(strnlen(header, sizeof(header)) + strlen("line 1\n\line 2\n"), sd->getAlertFileSize());
 
   // verify contents of alerts.log
   File file = sd->open("90A2DA807B76.log");
   file.read(data, file.size());
   data[file.size()] = '\0';
-  string fileContentString(data);
-  assertTrue(fileContentString.find("line 1\nline 2\n") > 0);
+  char fulltext[1020];
+  snprintf(fulltext, sizeof(fulltext), "%s%s", header, "line 1\nline 2\n");
+  assertEqual(fulltext, data);
   file.close();
 }
 
@@ -223,18 +238,16 @@ unittest(getAlert) {
 
   // write data
   sd->setAlertFileName("Tank1");
-  sd->writeAlert("line 1\nand 2\nline 3");
-  sd->getAlertFileSize();
+  sd->writeAlert("something");
 
-  char buffer[20];
+  char buffer[300];
+  char header_copy[2000];
 
-  // get alert in line 2
-  sd->getAlert(buffer, sizeof("and 2\n"), sd->getAlertFileSize() - sizeof("and 2\nline 3"));
-  assertEqual("and 2\n", buffer);
-
-  // read to end of file
-  sd->getAlert(buffer, sizeof(buffer), sd->getAlertFileSize() - sizeof("line 3"));
-  assertEqual("line 3\n", buffer);
+  // get alert starting at character 40
+  sd->getAlert(buffer, sizeof(buffer), 40);
+  strcpy(header_copy, header + 40);
+  header_copy[299] = '\0';
+  assertEqual(header_copy, buffer);
 }
 
 unittest(noAlertFileName) {

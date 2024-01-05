@@ -114,6 +114,13 @@ bool SD_TC::format() {
   return sd.format();
 }
 
+/**
+ * @brief Reads some bytes from the alert file and writes them in buffer
+ *
+ * @param buffer is where the bytes will be written
+ * @param size is the maximum number of bytes to read/write
+ * @param index is where to start reading from the alert file
+ */
 void SD_TC::getAlert(char* buffer, int size, uint32_t index) {
   File file = open(getAlertFileName(), O_RDONLY);
   if (file) {

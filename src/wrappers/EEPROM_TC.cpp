@@ -73,7 +73,6 @@ void EEPROM_TC::eepromWriteInt(uint16_t address, int32_t value) {
       EEPROM.write(address++, *p++);  // EEPROM.update() would perform read check before writing
     }
     DataLogger::instance()->writeWarningSoon();  // log all settings
-    serial(F("DataLogger::writeWarningSoon() from EEPROM_TC::eepromWriteInt()"));
   }
 }
 

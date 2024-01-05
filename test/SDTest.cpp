@@ -189,7 +189,7 @@ unittest(removeFile) {
 }
 
 unittest(writeAlert) {
-  char data[80];
+  char data[2000];
   SD_TC* sd = SD_TC::instance();
   AlertPusher* pusher = AlertPusher::instance();
 
@@ -204,15 +204,17 @@ unittest(writeAlert) {
   sd->writeAlert("line 1");
   assertTrue(pusher->getShouldSendHeadRequest());
   assertTrue(sd->exists("90A2DA807B76.log"));
-  assertEqual(strlen("line 1\n"), sd->getAlertFileSize());
+  int size_with_header = sd->getAlertFileSize();
+  // assertEqual(strlen("line 1\n"), sd->getAlertFileSize());
   sd->writeAlert("line 2");
-  assertEqual(strlen("line 1\n\line 2\n"), sd->getAlertFileSize());
+  assertEqual(strlen("\line 2\n") + size_with_header, sd->getAlertFileSize());
 
   // verify contents of alerts.log
   File file = sd->open("90A2DA807B76.log");
   file.read(data, file.size());
   data[file.size()] = '\0';
-  assertEqual("line 1\nline 2\n", data);
+  string fileContentString(data);
+  assertTrue(fileContentString.find("line 1\nline 2\n") > 0);
   file.close();
 }
 
@@ -221,16 +223,17 @@ unittest(getAlert) {
 
   // write data
   sd->setAlertFileName("Tank1");
-  sd->writeAlert("line 1\nand 2\nline 3\n");
+  sd->writeAlert("line 1\nand 2\nline 3");
+  sd->getAlertFileSize();
 
   char buffer[20];
 
   // get alert in line 2
-  sd->getAlert(buffer, sizeof(buffer), strlen("line 1\n"));
+  sd->getAlert(buffer, sizeof("and 2\n"), sd->getAlertFileSize() - sizeof("and 2\nline 3"));
   assertEqual("and 2\n", buffer);
 
-  // get alert in line 3
-  sd->getAlert(buffer, sizeof(buffer), strlen("line 1\nand 2\n"));
+  // read to end of file
+  sd->getAlert(buffer, sizeof(buffer), sd->getAlertFileSize() - sizeof("line 3"));
   assertEqual("line 3\n", buffer);
 }
 

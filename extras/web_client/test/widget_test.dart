@@ -77,6 +77,21 @@ void main() {
     expect(find.text('FreeMemory'), findsOneWidget);
   });
 
+  testWidgets('Edit dialog is displayed', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(const MyApp());
+
+    // Create a tank
+    final appData = AppData.instance();
+    appData.currentTank = Tank('test_tank', '192.168.0.1');
+
+    // Navigate to Current Data
+    await tester.tap(find.text('Current Data'));
+    await tester.pump();
+
+    expect(find.text('Ki'), findsOneWidget);
+  });
+
   testWidgets('Files are displayed', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());

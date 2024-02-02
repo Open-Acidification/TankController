@@ -2,6 +2,7 @@
 
 #include <avr/wdt.h>
 
+#include "PHControl.h"
 #include "TankController.h"
 #include "favicon.h"
 #include "model/JSONBuilder.h"
@@ -124,13 +125,15 @@ void EthernetServer_TC::post() {
 
 // Handles an HTTP PUT request
 void EthernetServer_TC::put() {
-  enum { Kd, Ki, Kp } var;
+  enum { Kd, Ki, Kp, Target_pH } var;
   if (memcmp_P(buffer + 4, F("/api/1/data?Kd="), 15) == 0) {
     var = Kd;
   } else if (memcmp_P(buffer + 4, F("/api/1/data?Ki="), 15) == 0) {
     var = Ki;
   } else if (memcmp_P(buffer + 4, F("/api/1/data?Kp="), 15) == 0) {
     var = Kp;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?Target_pH="), 15) == 0) {
+    var = Target_pH;
   } else {
     serial(F("put \"%s\" not recognized!"), buffer + 5);
     sendResponse(HTTP_BAD_REQUEST);
@@ -147,6 +150,9 @@ void EthernetServer_TC::put() {
       break;
     case Kp:
       PID_TC::instance()->setKp(value);
+      break;
+    case Target_pH:
+      PHControl::instance()->setBaseTargetPh(value);
       break;
   }
   sendCurrentRedirect();

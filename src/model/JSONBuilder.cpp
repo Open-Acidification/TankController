@@ -15,11 +15,12 @@
 int JSONBuilder::buildCurrentValues() {
   // Grab all necessary pieces
   float pH = PHProbe::instance()->getPh();
+  int target_pH_type = 1;  // Flat 1, Ramp 2, or Sine 3
   int pH_f = (int)(pH * 1000 + 0.5) % 1000;
   while (pH_f && pH_f % 10 == 0) {
     pH_f /= 10;
   }
-  float target_pH = PHControl::instance()->getBaseTargetPh();
+  float target_pH = PHControl::instance()->getBaseTargetPh();  //
   int target_pH_f = (int)(target_pH * 1000 + 0.5) % 1000;
   while (target_pH_f && target_pH_f % 10 == 0) {
     target_pH_f /= 10;
@@ -56,9 +57,21 @@ int JSONBuilder::buildCurrentValues() {
   uint16_t minutes = (ms - (days * 86400000) - (hours * 3600000)) / 60000;
   uint16_t seconds = (ms - (days * 86400000) - (hours * 3600000) - (minutes * 60000)) / 1000;
 
+  /*Target pH
+  Target temperature
+  Google Sheets Interval
+  PID toggle
+  Tank ID
+  Remote restart
+  Clear/reset pH calibration
+  Clear/reset temperature calibration
+  Heat or chill mode
+  Date/time
+  Sine wavelength and amplitude*/
   bytes = snprintf_P(buffer, BUFFER_SIZE,
                      (PGM_P)F("{"
                               "\"pH\":%i.%i,"
+                              "\"Target_pH_type\":%i,"  // Ramp, Sine, or Flat
                               "\"Target_pH\":%i.%i,"
                               "\"Temperature\":%i.%i,"
                               "\"TargetTemperature\":%i.%i,"
@@ -74,14 +87,24 @@ int JSONBuilder::buildCurrentValues() {
                               "\"PID\":\"%s\","
                               "\"TankID\":%i,"
                               "\"Uptime\":\"%id %ih %im %is\","
-                              "\"Version\":\"%s\""
+                              "\"Version\":\"%s\","
+                              "\"EditableFields\":["  // List of editable fields follows
+                              "\"Target_pH\","
+                              "\"Target_pH_type\","
+                              "\"TargetTemperature\","
+                              "\"GoogleSheetInterval\","
+                              "\"PhSlope\","
+                              "\"Kp\","
+                              "\"Ki\","
+                              "\"Kd\","
+                              "]"
                               "}"),
-                     (int)pH, pH_f, (int)target_pH, target_pH_f, (int)temperature, temperature_f, (int)thermal_target,
-                     thermal_target_f, IP[0], IP[1], IP[2], IP[3], mac[0], mac[1], mac[2], mac[3], mac[4], mac[5],
-                     (int)TankController::instance()->freeMemory(), EEPROM_TC::instance()->getGoogleSheetInterval(),
-                     logFilePath, pHSlope, (int)kp, (int)((kp - (int)kp) * 10 + 0.5), (int)ki,
-                     (int)((ki - (int)ki) * 10 + 0.5), (int)kd, (int)((kd - (int)kd) * 10 + 0.5), pidStatus,
-                     EEPROM_TC::instance()->getTankID(), days, hours, minutes, seconds,
-                     TankController::instance()->version());
+                     (int)pH, pH_f, (int)target_pH_type, (int)target_pH, target_pH_f, (int)temperature, temperature_f,
+                     (int)thermal_target, thermal_target_f, IP[0], IP[1], IP[2], IP[3], mac[0], mac[1], mac[2], mac[3],
+                     mac[4], mac[5], (int)TankController::instance()->freeMemory(),
+                     EEPROM_TC::instance()->getGoogleSheetInterval(), logFilePath, pHSlope, (int)kp,
+                     (int)((kp - (int)kp) * 10 + 0.5), (int)ki, (int)((ki - (int)ki) * 10 + 0.5), (int)kd,
+                     (int)((kd - (int)kd) * 10 + 0.5), pidStatus, EEPROM_TC::instance()->getTankID(), days, hours,
+                     minutes, seconds, TankController::instance()->version());
   return bytes;
 }

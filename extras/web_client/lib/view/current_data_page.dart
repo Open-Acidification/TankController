@@ -19,11 +19,11 @@ class CurrentData extends StatelessWidget {
 
   final BuildContext context;
 
-  bool showEdit(String valueString) {
-    return valueString == 'Kp' || valueString == 'Ki' || valueString == 'Kd';
-  }
-
   bool canEditCurrentInfo(AppData appData) {
+    print('appData.currentData = ${appData.currentData}');
+    print(
+        'appData.currentData.runtimeType = ${appData.currentData.runtimeType}');
+    print('appData.currentData["Version"] = ${appData.currentData['Version']}');
     String v = appData.currentData['Version'].trim();
     final i = v.indexOf('-');
     if (i != -1) {
@@ -60,20 +60,50 @@ class CurrentData extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  TextFormField(
-                    initialValue: value,
-                    onFieldSubmitted: (val) {
-                      TcInterface.instance()
-                          .put(
-                        '${appData.currentData["IPAddress"]}',
-                        'data?$key=$val',
-                      )
-                          .then((value) {
-                        appData.currentData = json.decode(value);
-                      });
-                      Navigator.pop(context);
-                    },
-                  ),
+                  if (key == 'Target_pH_type')
+                    DropdownButtonFormField<String>(
+                      value: value,
+                      items: const <DropdownMenuItem<String>>[
+                        DropdownMenuItem(
+                          value: '1',
+                          child: Text('Flat'),
+                        ),
+                        DropdownMenuItem(
+                          value: '2',
+                          child: Text('Ramp'),
+                        ),
+                        DropdownMenuItem(
+                          value: '3',
+                          child: Text('Sine'),
+                        ),
+                      ],
+                      onChanged: (String? newValue) {
+                        TcInterface.instance()
+                            .put(
+                          '${appData.currentData["IPAddress"]}',
+                          'data?$key=$newValue',
+                        )
+                            .then((value) {
+                          appData.currentData = json.decode(value);
+                        });
+                        Navigator.pop(context);
+                      },
+                    )
+                  else
+                    TextFormField(
+                      initialValue: value,
+                      onFieldSubmitted: (val) {
+                        TcInterface.instance()
+                            .put(
+                          '${appData.currentData["IPAddress"]}',
+                          'data?$key=$val',
+                        )
+                            .then((value) {
+                          appData.currentData = json.decode(value);
+                        });
+                        Navigator.pop(context);
+                      },
+                    ),
                   const SizedBox(height: 20),
                   const Text(
                     'Press "Esc" to cancel, or "Enter" to submit',
@@ -156,17 +186,27 @@ class CurrentData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(
+        'CurrentData.build found appData.currentData = ${context.read<AppData>().currentData}');
     return ColoredBox(
       color: Colors.white,
       child: Consumer<AppData>(
         builder: (context, appData, child) {
           final currentDataRows = <DataRow>[];
-          appData.currentData.forEach(
+          final currentData = appData.currentData;
+          // if (currentData.isEmpty) {
+          //   return Container();
+          // }
+          final editableFields = currentData['EditableFields'];
+          print('editableFields = $editableFields');
+          currentData.remove('EditableFields');
+          final canEdit = canEditCurrentInfo(appData);
+          currentData.forEach(
             (key, value) => currentDataRows.add(
               DataRow(
                 cells: <DataCell>[
                   DataCell(Text(key.toString())),
-                  (!showEdit(key.toString()) || !canEditCurrentInfo(appData))
+                  (!editableFields.contains(key.toString()) || !canEdit)
                       ? DataCell(Text(value.toString()))
                       : DataCell(
                           Text(value.toString()),

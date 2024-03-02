@@ -1,9 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tank_manager/model/tank.dart';
 import 'package:tank_manager/model/tc_interface.dart';
-import 'dart:async';
 
 class AppData with ChangeNotifier {
   AppData() {

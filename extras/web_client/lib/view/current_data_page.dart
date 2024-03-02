@@ -1,14 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:tank_manager/view/mock_html.dart'
-    if (dart.library.html) 'dart:html' as html;
+
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tank_manager/model/app_data.dart';
 import 'package:tank_manager/model/tc_interface.dart';
+import 'package:tank_manager/view/mock_html.dart'
+    if (dart.library.html) 'dart:html' as html;
 import 'package:version/version.dart';
 
 class CurrentData extends StatelessWidget {

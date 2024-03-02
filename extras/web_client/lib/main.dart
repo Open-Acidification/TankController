@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tank_manager/view/home_page.dart';
 import 'package:provider/provider.dart';
 import 'package:tank_manager/model/app_data.dart';
+import 'package:tank_manager/view/home_page.dart';
 
 Future<void> main() async {
   await AppData.instance().readTankList();

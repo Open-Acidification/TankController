@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tank_manager/components/app_drawer.dart';
 import 'package:tank_manager/components/display.dart';
-import 'package:tank_manager/components/nav_bar.dart';
-import 'package:provider/provider.dart';
-import 'package:tank_manager/model/app_data.dart';
 import 'package:tank_manager/components/keypad.dart';
+import 'package:tank_manager/components/nav_bar.dart';
+import 'package:tank_manager/model/app_data.dart';
 import 'package:tank_manager/view/current_data_page.dart';
 import 'package:tank_manager/view/files_page.dart';
 

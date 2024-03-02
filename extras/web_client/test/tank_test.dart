@@ -1,6 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tank_manager/model/tank.dart';
-import 'dart:convert';
 
 void main() {
   test('Tank set name/ip', () {

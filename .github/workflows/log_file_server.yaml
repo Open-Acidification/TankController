@@ -55,8 +55,11 @@
             dart pub get # https://github.com/dart-lang/sdk/issues/50422
             dart format --output=none --set-exit-if-changed .
             dart analyze --fatal-infos
-            dart run &
+            echo "start background server for tests"
+            dart run "/tmp/var/opt/oap/logs" &
+            echo "run tests"
             dart test --concurrency=1
+            echo "kill background server"
             jobs
             kill %1
   

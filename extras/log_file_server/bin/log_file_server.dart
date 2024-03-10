@@ -5,7 +5,7 @@ import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
 
-const rootDir = '/var/opt/oap/logs';
+String rootDir = '/var/opt/oap/logs';
 
 // Configure routes.
 final _router = Router()
@@ -76,6 +76,10 @@ Future<Response> _post(Request req, String path) async {
 }
 
 void main(List<String> args) async {
+  // assign rootDir from args
+  if (args.isNotEmpty) {
+    rootDir = args[0];
+  }
   await Directory(rootDir).create(recursive: true);
 
   // Use any available host or container IP (usually `0.0.0.0`).

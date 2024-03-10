@@ -56,7 +56,7 @@
             dart format --output=none --set-exit-if-changed .
             dart analyze --fatal-infos
             echo "start background server for tests"
-            dart run "/tmp/var/opt/oap/logs" &
+            dart run "bin/log_file_server.dart" "/tmp/var/opt/oap/logs" &
             echo "run tests"
             dart test --concurrency=1
             echo "kill background server"

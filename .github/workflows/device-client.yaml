@@ -51,8 +51,12 @@ jobs:
       - name: lint and test
         run: |
           cd extras/device_client
+          echo "Running dart format"
           dart format --output=none --set-exit-if-changed .
+          echo "Running dart analyze"
+          pwd; ls -alF . ./lib
           dart analyze --fatal-infos
+          echo "Running flutter test"
           flutter test --concurrency=1
 
   release:

@@ -22,7 +22,7 @@ jobs:
       - name: build web application
         run: |
           cd extras/device_client
-          flutter --version
+          flutter --version >> /dev/null # avoid welcome message
           flutter build web
           tar -czvf /tmp/device_client.tar.gz build/web
       - name: save web files as an artifact
@@ -56,8 +56,7 @@ jobs:
           dart pub get # https://github.com/dart-lang/sdk/issues/50422
           dart format --output=none --set-exit-if-changed .
           dart analyze --fatal-infos
-          flutter --version
-          echo "Running tests"
+          flutter --version >> /dev/null # avoid welcome message
           flutter test --concurrency=1
 
   release:

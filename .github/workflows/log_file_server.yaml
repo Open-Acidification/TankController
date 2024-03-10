@@ -1,5 +1,5 @@
 ---
-  name: Build, test, and release log_file_client
+  name: Build, test, and release log_file_server
   on: push
   jobs:
     build:
@@ -19,17 +19,15 @@
             key: ${{ runner.os }}-pub-cache-${{ hashFiles('**/pubspec.yaml') }}
             restore-keys: |
               ${{ runner.os }}-pub-cache-
-        - name: build web application
+        - name: build Dart application
           run: |
-            cd extras/log_file_client
-            flutter --version >> /dev/null # avoid welcome message
-            flutter build web
-            tar -czvf /tmp/log_file_client.tar.gz build/web
-        - name: save web files as an artifact
+            cd extras/log_file_server
+            dart compile exe -o /tmp/log_file_server --target-os linux bin/log_file_server.dart
+        - name: save application as an artifact
           uses: actions/upload-artifact@v4
           with:
-            name: log_file_client
-            path: /tmp/log_file_client.tar.gz
+            name: log_file_server
+            path: /tmp/log_file_server
             retention-days: 1
   
     test:
@@ -52,12 +50,11 @@
               ${{ runner.os }}-pub-cache-
         - name: lint and test
           run: |
-            cd extras/log_file_client
+            cd extras/log_file_server
             dart pub get # https://github.com/dart-lang/sdk/issues/50422
             dart format --output=none --set-exit-if-changed .
             dart analyze --fatal-infos
-            flutter --version >> /dev/null # avoid welcome message
-            flutter test --concurrency=1
+            dart test --concurrency=1
   
     release:
       if: startsWith(github.ref, 'refs/tags/v')
@@ -67,8 +64,8 @@
         - name: download web files
           uses: actions/download-artifact@v4
           with:
-            name: log_file_client
+            name: log_file_server
         - name: create release
           uses: softprops/action-gh-release@v2
           with:
-            files: log_file_client.tar.gz
+            files: log_file_server

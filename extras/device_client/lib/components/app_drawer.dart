@@ -9,8 +9,8 @@ import 'package:flutter/material.dart';
 class AppDrawer extends StatelessWidget {
   const AppDrawer({
     required this.context,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final BuildContext context;
 

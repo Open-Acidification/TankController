@@ -1,3 +1,5 @@
+---
+name: Build, test, and release device_controller
 # on: push
 on:
   push:

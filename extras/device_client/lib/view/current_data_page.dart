@@ -15,8 +15,8 @@ import 'package:version/version.dart';
 class CurrentData extends StatelessWidget {
   const CurrentData({
     required this.context,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final BuildContext context;
 

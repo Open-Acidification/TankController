@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 class Graphs extends StatelessWidget {
   const Graphs({
     required this.context,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final BuildContext context;
 

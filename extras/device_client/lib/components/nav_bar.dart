@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 class NavBar extends StatelessWidget {
   const NavBar({
     required this.context,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final BuildContext context;
 

@@ -8,8 +8,8 @@ import 'package:url_launcher/url_launcher.dart';
 class Files extends StatelessWidget {
   const Files({
     required this.context,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final BuildContext context;
 

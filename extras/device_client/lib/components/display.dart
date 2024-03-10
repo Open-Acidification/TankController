@@ -8,8 +8,8 @@ import 'package:provider/provider.dart';
 class Display extends StatelessWidget {
   const Display({
     required BuildContext context,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

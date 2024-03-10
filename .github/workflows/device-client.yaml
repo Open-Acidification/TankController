@@ -24,12 +24,13 @@ jobs:
           cd extras/device_client
           flutter --version
           flutter build web
-          tar -czvf /tmp/device_client.tar.gz build/web
+          tar -czvf device_client.tar.gz build/web
       - name: save web files as an artifact
         uses: actions/upload-artifact@v4
         with:
           name: device_client
-          path: /tmp/device_client.tar.gz
+          path: device_client.tar.gz
+          retention-days: 1
 
   test:
     runs-on: ubuntu-latest
@@ -56,6 +57,7 @@ jobs:
           dart format --output=none --set-exit-if-changed .
           dart analyze --fatal-infos
           flutter --version
+          echo "Running tests"
           flutter test --concurrency=1
 
   release:
@@ -70,4 +72,4 @@ jobs:
       - name: create release
         uses: softprops/action-gh-release@v2
         with:
-          files: /tmp/device_client.tar.gz
+          files: device_client.tar.gz

@@ -22,6 +22,7 @@
         - name: build Dart application
           run: |
             cd extras/log_file_server
+            dart pub get # https://github.com/dart-lang/sdk/issues/50422
             dart compile exe -o /tmp/log_file_server --target-os linux bin/log_file_server.dart
         - name: save application as an artifact
           uses: actions/upload-artifact@v4

@@ -55,11 +55,12 @@
             dart pub get # https://github.com/dart-lang/sdk/issues/50422
             dart format --output=none --set-exit-if-changed .
             dart analyze --fatal-infos
-            echo "start background server for tests"
+            mkdir -p /tmp/var/opt/oap/logs
+            touch /tmp/var/opt/oap/logs/empty.log
+            echo "123456789\n" > /tmp/var/opt/oap/logs/ten.log
+            echo "This is data for line 1\nThis is data for line 2\n" > /tmp/var/opt/oap/logs/deleteMe.log
             dart run "bin/log_file_server.dart" "/tmp/var/opt/oap/logs" &
-            echo "run tests"
             dart test --concurrency=1
-            echo "kill background server"
             jobs
             kill %1
   

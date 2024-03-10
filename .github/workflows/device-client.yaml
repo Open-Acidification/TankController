@@ -1,0 +1,65 @@
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.3'
+          channel: 'stable'
+      - name: use cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/.pub-cache
+          key: ${{ runner.os }}-pub-cache-${{ hashFiles('**/pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-cache-
+      - name: build
+        run: |
+          cd extras/web_client
+          flutter build web
+          tar -czvf /tmp/device_client.tar.gz build/web
+      - name: save artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: device_client
+          path: /tmp/device_client.tar.gz
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.3'
+          channel: 'stable'
+      - name: use cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/.pub-cache
+          key: ${{ runner.os }}-pub-cache-${{ hashFiles('**/pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-cache-
+      - name: Install dependencies
+        run: |
+          cd extras/device_client
+          flutter pub get
+          dart format --output=none --set-exit-if-changed .
+          dart analyze --fatal-infos
+          flutter test --concurrency=1
+
+  release:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: device_client
+      - uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          files: /tmp/device_client.tar.gz

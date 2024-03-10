@@ -1,1 +1,1 @@
-#define VERSION "23.8.1-8-gefda2f"
+#define VERSION "v0.0.1         +"

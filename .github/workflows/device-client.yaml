@@ -24,12 +24,12 @@ jobs:
           cd extras/device_client
           flutter --version
           flutter build web
-          tar -czvf device_client.tar.gz build/web
+          tar -czvf /tmp/device_client.tar.gz build/web
       - name: save web files as an artifact
         uses: actions/upload-artifact@v4
         with:
           name: device_client
-          path: device_client.tar.gz
+          path: /tmp/device_client.tar.gz
           retention-days: 1
 
   test:

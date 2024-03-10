@@ -19,7 +19,7 @@ jobs:
             ${{ runner.os }}-pub-cache-
       - name: build
         run: |
-          cd extras/web_client
+          cd extras/device_client
           flutter build web
           tar -czvf /tmp/device_client.tar.gz build/web
       - name: save artifact

@@ -1,10 +1,6 @@
 ---
 name: Build, test, and release device_controller
-# on: push
-on:
-  push:
-    tags:
-      - 'never-going-to-happen'
+on: push
 jobs:
   lint:
     runs-on: ubuntu-latest

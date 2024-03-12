@@ -1,0 +1,37 @@
+---
+name: Build, test, and release device_controller
+on: push
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: arduino/arduino-lint-action@v1
+        with:
+          library-manager: update
+          compliance: strict
+  spelling:
+    name: Check Spelling
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          # Full git history is needed to get a proper list of changed files within `super-linter`
+          fetch-depth: 0
+      - name: Check Spelling
+        uses: codespell-project/actions-codespell@master
+        with:
+          check_filenames: true
+  arduino_ci:
+    runs-on: ubuntu-latest
+    needs: [lint, spelling]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3
+      - name: Run Arduino-CI Tests
+        run: |
+          extras/scripts/install_libraries.sh
+          extras/scripts/testAndBuild.sh

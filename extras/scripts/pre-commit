@@ -8,5 +8,5 @@ else
   version="${version:0:15}+"
 fi
 echo "#define VERSION \"$version\"" > src/Version.h
-echo "const String gitVersion = '$version';" > extras/web_client/lib/model/version.dart
-git add src/Version.h extras/web_client/lib/model/version.dart
+echo "const String gitVersion = '$version';" > extras/device_client/lib/model/version.dart
+git add src/Version.h extras/device_client/lib/model/version.dart

@@ -1,0 +1,79 @@
+---
+  name: Build, test, and release log_file_server
+  on: push
+  jobs:
+    build:
+      runs-on: ubuntu-latest
+      steps:
+        - name: checkout code
+          uses: actions/checkout@v4
+        - name: install flutter
+          uses: subosito/flutter-action@v2
+          with:
+            flutter-version: '3.19.3'
+            channel: 'stable'
+        - name: use cache
+          uses: actions/cache@v3
+          with:
+            path: /home/runner/.pub-cache
+            key: ${{ runner.os }}-pub-cache-${{ hashFiles('**/pubspec.yaml') }}
+            restore-keys: |
+              ${{ runner.os }}-pub-cache-
+        - name: build Dart application
+          run: |
+            cd extras/log_file_server
+            dart pub get # https://github.com/dart-lang/sdk/issues/50422
+            dart compile exe -o /tmp/log_file_server --target-os linux bin/log_file_server.dart
+        - name: save application as an artifact
+          uses: actions/upload-artifact@v4
+          with:
+            name: log_file_server
+            path: /tmp/log_file_server
+            retention-days: 1
+  
+    test:
+      runs-on: ubuntu-latest
+      needs: build
+      steps:
+        - name: checkout code
+          uses: actions/checkout@v4
+        - name: install flutter
+          uses: subosito/flutter-action@v2
+          with:
+            flutter-version: '3.19.3'
+            channel: 'stable'
+        - name: use cache
+          uses: actions/cache@v3
+          with:
+            path: /home/runner/.pub-cache
+            key: ${{ runner.os }}-pub-cache-${{ hashFiles('**/pubspec.yaml') }}
+            restore-keys: |
+              ${{ runner.os }}-pub-cache-
+        - name: lint and test
+          run: |
+            cd extras/log_file_server
+            dart pub get # https://github.com/dart-lang/sdk/issues/50422
+            dart format --output=none --set-exit-if-changed .
+            dart analyze --fatal-infos
+            mkdir -p /tmp/var/opt/oap/logs
+            touch /tmp/var/opt/oap/logs/empty.log
+            echo "123456789" > /tmp/var/opt/oap/logs/ten.log
+            echo "This is data for line 1\nThis is data for line 2" > /tmp/var/opt/oap/logs/deleteMe.log
+            dart run "bin/log_file_server.dart" "/tmp/var/opt/oap/logs" &
+            dart test --concurrency=1
+            jobs
+            kill %1
+  
+    release:
+      if: startsWith(github.ref, 'refs/tags/v')
+      runs-on: ubuntu-latest
+      needs: test
+      steps:
+        - name: download web files
+          uses: actions/download-artifact@v4
+          with:
+            name: log_file_server
+        - name: create release
+          uses: softprops/action-gh-release@v2
+          with:
+            files: log_file_server

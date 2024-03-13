@@ -199,12 +199,12 @@ unittest(writeAlert) {
   assertFalse(sd->exists("90A2DA807B76.log"));
   assertEqual(0, sd->getAlertFileSize());
   pusher->setShouldSentHeadRequest(false);
-  assertFalse(pusher->getShouldSendHeadRequest());
+  assertFalse(pusher->shouldSendHeadRequest());
 
   // write data
   sd->writeAlert("line 1"); // also writes header row
   int size = sd->getAlertFileSize();
-  assertTrue(pusher->getShouldSendHeadRequest());
+  assertTrue(pusher->shouldSendHeadRequest());
   assertTrue(sd->exists("90A2DA807B76.log"));
   sd->writeAlert("line 2");
   assertEqual(size + strlen("line 2\n"), sd->getAlertFileSize());

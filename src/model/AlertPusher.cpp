@@ -5,6 +5,7 @@
 #include "wrappers/Ethernet_TC.h"
 #include "wrappers/SD_TC.h"
 #include "wrappers/Serial_TC.h"
+#include "PHControl.h"
 
 //  class variables
 AlertPusher* AlertPusher::_instance = nullptr;
@@ -27,17 +28,23 @@ AlertPusher::AlertPusher() {
   this->buffer[0] = '\0';
 }
 
+bool AlertPusher::isReadyToPost() {
+  return _isReadyToPost 
+  && millis() > delayRequestsUntilTime;
+//      && !(PHControl::instance()->isOn());
+}
+
 void AlertPusher::loop() {
   if (!(Ethernet_TC::instance()->isConnectedToNetwork())) {
     return;
   }
   switch (state) {
     case CLIENT_NOT_CONNECTED:
-      if (isReadyToPost && millis() > delayRequestsUntilTime) {  // TODO: and bubbler is off?
-        isReadyToPost = false;
+      if (isReadyToPost()) {
+        _isReadyToPost = false;
         sendPostRequest();
-      } else if (shouldSendHeadRequest && millis() > delayRequestsUntilTime) {  // TODO: and bubbler is off?
-        shouldSendHeadRequest = false;
+      } else if (shouldSendHeadRequest()) {
+        _shouldSendHeadRequest = false;
         sendHeadRequest();
       } else {
         // nothing to do
@@ -68,14 +75,14 @@ void AlertPusher::loopHead() {
             if (index >= 22 && memcmp_P(buffer, F("http/1.1 404 not found"), 22) == 0) {
               // File has not yet been created on server
               serverFileSize = (uint32_t)0;
-              isReadyToPost = true;
+              _isReadyToPost = true;
               isDone = true;
             } else if (index > 16 && memcmp_P(buffer, F("content-length: "), 16) == 0) {
               serverFileSize = strtoul(buffer + 16, nullptr, 10);
               uint32_t localFileSize = SD_TC::instance()->getAlertFileSize();
               serial(F("AlertPusher: local %lu bytes, cloud %lu bytes"), (uint32_t)localFileSize,
                      (uint32_t)serverFileSize);
-              isReadyToPost = serverFileSize < localFileSize;
+              _isReadyToPost = serverFileSize < localFileSize;
               isDone = true;
             }
             if (isDone) {
@@ -118,7 +125,7 @@ void AlertPusher::loopPost() {
               index = 0;
               state = CLIENT_NOT_CONNECTED;
               client.stop();
-              shouldSendHeadRequest = true;
+              _shouldSendHeadRequest = true;
               delayRequestsUntilTime = millis() + 3000;
               return;
             }
@@ -134,7 +141,7 @@ void AlertPusher::loopPost() {
   } else {
     state = CLIENT_NOT_CONNECTED;
     client.stop();
-    shouldSendHeadRequest = true;
+    _shouldSendHeadRequest = true;
     delayRequestsUntilTime = millis() + 3000;
   }
 }
@@ -146,7 +153,7 @@ void AlertPusher::loopPost() {
  * bubbler is turned off.
  */
 void AlertPusher::pushSoon() {
-  shouldSendHeadRequest = true;
+  _shouldSendHeadRequest = true;
 }
 
 /**
@@ -168,7 +175,7 @@ void AlertPusher::sendHeadRequest() {
     client.write(buffer, strnlen(buffer, sizeof(buffer)));
   } else {
     serial(F("AlertPusher: connection to %s failed"), serverDomain);
-    // "shouldSendHeadRequest = true;" would retry next loop but we'll try within one minute anyway
+    // "_shouldSendHeadRequest = true;" would retry next loop but we'll try within one minute anyway
   }
   buffer[0] = '\0';
   state = PROCESS_HEAD_RESPONSE;
@@ -198,4 +205,10 @@ void AlertPusher::sendPostRequest() {
   }
   buffer[0] = '\0';
   state = PROCESS_POST_RESPONSE;
+}
+
+bool AlertPusher::shouldSendHeadRequest() {
+  return _shouldSendHeadRequest 
+    && millis() > delayRequestsUntilTime;
+//      && !(PHControl::instance()->isOn());
 }

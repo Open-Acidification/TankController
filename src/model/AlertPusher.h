@@ -22,19 +22,19 @@
   * with a state machine. 
   * 
   * If the state is CLIENT_NOT_CONNECTED and there is new data (indicated by the 
-  * shouldSendHeadRequest flag), it sends a HEAD request and changes the state to 
+  * _shouldSendHeadRequest flag), it sends a HEAD request and changes the state to 
   * PROCESS_HEAD_RESPONSE.
   * 
   * If the state is PROCESS_HEAD_RESPONSE, it reads the response from the server and if it
-  * is a 404, it transitions to the CLIENT_NOT_CONNECTED state and sets a isReadyToPost flag.
+  * is a 404, it transitions to the CLIENT_NOT_CONNECTED state and sets a _isReadyToPost flag.
   * If the response is a 200, it transitions to the CLIENT_NOT_CONNECTED state and sets a
-  * isReadyToPost flag if the reported file size is less than the file size on the SD card.
+  * _isReadyToPost flag if the reported file size is less than the file size on the SD card.
   * 
-  * If the state is CLIENT_NOT_CONNECTED and there is a isReadyToPost flag, reads from the
+  * If the state is CLIENT_NOT_CONNECTED and there is a _isReadyToPost flag, reads from the
   * SD card and sends a POST request and changes the state to PROCESS_POST_RESPONSE.
   * 
   * If the state is PROCESS_POST_RESPONSE, it reads the response from the server and if it
-  * a 200, it transitions to the CLIENT_NOT_CONNECTED state and sets a shouldSendHeadRequest
+  * a 200, it transitions to the CLIENT_NOT_CONNECTED state and sets a _shouldSendHeadRequest
   * flag to see if there is more that should be sent.
   * 
 */
@@ -52,8 +52,10 @@ public:
 
   // instance methods
   AlertPusher();
+  bool isReadyToPost();
   void loop();
-  void pushSoon();
+  void pushSoon();  
+  bool shouldSendHeadRequest();
 
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   EthernetClient *getClient() {
@@ -62,14 +64,8 @@ public:
   const char *getServerDomain() {
     return serverDomain;
   }
-  bool getShouldSendHeadRequest() {
-    return shouldSendHeadRequest && millis() > delayRequestsUntilTime;
-  }
-  bool getIsReadyToPost() {
-    return isReadyToPost && millis() > delayRequestsUntilTime;
-  }
   void setShouldSentHeadRequest(bool value) {
-    shouldSendHeadRequest = value;
+    _shouldSendHeadRequest = value;
   }
   clientState_t getState() {
     return state;
@@ -87,9 +83,9 @@ private:
   const char *serverDomain = "oap.cs.wallawalla.edu";
   char buffer[300];
   unsigned int index = 0;
-  bool isReadyToPost = false;
+  bool _isReadyToPost = false;
   uint32_t serverFileSize = 0;
-  bool shouldSendHeadRequest = false;
+  bool _shouldSendHeadRequest = false;
 
   // instance methods
   void loopHead();

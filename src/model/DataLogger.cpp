@@ -38,13 +38,13 @@ void DataLogger::loop() {
   if (msNow >= nextInfoLogTime) {
     writeInfoToLog();
     ThermalProbe_TC::instance()->resetSample();
-    nextInfoLogTime = (msNow / (unsigned long)INFO_LOGGING_INTERVAL + 1) * (unsigned long)INFO_LOGGING_INTERVAL;
+    nextInfoLogTime = (msNow / INFO_LOGGING_INTERVAL + 1) * INFO_LOGGING_INTERVAL;
   } else if (msNow >= nextSDLogTime) {
     writeToSD();
-    nextSDLogTime = (msNow / (unsigned long)SD_LOGGING_INTERVAL + 1) * (unsigned long)SD_LOGGING_INTERVAL;
+    nextSDLogTime = (msNow / SD_LOGGING_INTERVAL + 1) * SD_LOGGING_INTERVAL;
   } else if (msNow >= nextSerialLogTime) {
     writeToSerial();
-    nextSerialLogTime = (msNow / (unsigned long)SERIAL_LOGGING_INTERVAL + 1) * (unsigned long)SERIAL_LOGGING_INTERVAL;
+    nextSerialLogTime = (msNow / SERIAL_LOGGING_INTERVAL + 1) * SERIAL_LOGGING_INTERVAL;
   } else if (shouldWriteWarning) {
     writeWarningToLog();
     shouldWriteWarning = false;

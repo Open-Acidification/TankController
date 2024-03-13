@@ -1,10 +1,24 @@
 #pragma once
 #include <Arduino.h>
 
+/*
+  * @brief DataLogger is a singleton that logs data to the SD card and serial port
+  *
+  * The singleton is called from the loop() method of the TankController class.
+  * It is also called from PHProbe if a slope event is received and from EEPROM_TC 
+  * if a value is written (which means that some configuration changed).
+  * 
+  * The singleton logs data to the SD card's data log every second and to 
+  * the serial port and info log every minute. The info log includes periodic data
+  * and warnings/alerts. The SD_TC::instance()->writeAlert() handles notifying the
+  * AlertPusher singleton when there is new data.
+  * 
+*/
+
 // Logging intervals (1 min, 1 sec, 1 min)
-#define INFO_LOGGING_INTERVAL 60000
-#define SD_LOGGING_INTERVAL 1000
-#define SERIAL_LOGGING_INTERVAL 60000
+const unsigned long INFO_LOGGING_INTERVAL = 60000;
+const unsigned long SD_LOGGING_INTERVAL = 1000;
+const unsigned long SERIAL_LOGGING_INTERVAL = 60000;
 
 class DataLogger {
 public:

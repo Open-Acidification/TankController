@@ -115,6 +115,7 @@ bool SD_TC::format() {
 }
 
 void SD_TC::getAlert(char* buffer, int size, uint32_t index) {
+  buffer[0] = '\0';
   File file = open(getAlertFileName(), O_RDONLY);
   if (file) {
     file.seek(index);
@@ -122,10 +123,9 @@ void SD_TC::getAlert(char* buffer, int size, uint32_t index) {
     if (remaining > 0) {
       int readSize = file.read(buffer, min(size - 1, remaining));
       buffer[readSize] = '\0';
-      file.close();
     }
+    file.close();
   }
-  file.close();
 }
 
 const char* SD_TC::getAlertFileName() {

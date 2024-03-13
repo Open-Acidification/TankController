@@ -1,1 +1,1 @@
-#define VERSION "v24.3.2-6-g7ecd+"
+#define VERSION "v24.3.2-7-ga885+"

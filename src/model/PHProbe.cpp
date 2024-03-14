@@ -3,6 +3,7 @@
 #include <avr/wdt.h>
 #include <stdlib.h>
 
+#include "model/DataLogger.h"
 #include "model/TC_util.h"
 #include "wrappers/EEPROM_TC.h"
 #include "wrappers/Serial_TC.h"
@@ -84,13 +85,15 @@ void PHProbe::serialEvent1() {
         serial(F("PHProbe serialEvent1: \"%s\""), string.c_str());
         if (string.length() > 7 && memcmp_P(string.c_str(), F("?SLOPE,"), 7) == 0) {
           // for example "?SLOPE,16.1,100.0"
+          DataLogger::instance()->writeWarningSoon();
           strscpy(slopeResponse, string.c_str() + 7, sizeof(slopeResponse));
-          char acidSlopePercent[7];
-          char baseSlopePercent[7];
-          char millivoltOffset[7];
-          sscanf_P(slopeResponse, PSTR(" %[^,] , %[^,] , %s"), acidSlopePercent, baseSlopePercent, millivoltOffset);
-          if ((95.0 <= strtofloat(acidSlopePercent)) && (strtofloat(acidSlopePercent) <= 105.0) &&
-              (95.0 <= strtofloat(baseSlopePercent)) && (strtofloat(baseSlopePercent) <= 105.0)) {
+          char acidSlopePercentString[7];
+          char baseSlopePercentString[7];
+          char millivoltOffsetString[7];
+          sscanf_P(slopeResponse, PSTR(" %[^,] , %[^,] , %s"), acidSlopePercentString, baseSlopePercentString,
+                   millivoltOffsetString);
+          if ((95.0 <= strtofloat(acidSlopePercentString)) && (strtofloat(acidSlopePercentString) <= 105.0) &&
+              (95.0 <= strtofloat(baseSlopePercentString)) && (strtofloat(baseSlopePercentString) <= 105.0)) {
             slopeIsOutOfRange = false;
             EEPROM_TC::instance()->setIgnoreBadPHSlope(false);
             serial(F("pH slopes are within 5%% of ideal"));
@@ -123,8 +126,8 @@ void PHProbe::setTemperatureCompensation(float temperature) {
 }
 
 void PHProbe::setHighpointCalibration(float highpoint) {
-  slopeIsOutOfRange = false;
-  EEPROM_TC::instance()->setIgnoreBadPHSlope(false);
+  // slopeIsOutOfRange = false;
+  // EEPROM_TC::instance()->setIgnoreBadPHSlope(false);
   char buffer[17];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,High,%i.%03i\r"), (int)highpoint,
              (int)(highpoint * 1000 + 0.5) % 1000);
@@ -133,8 +136,8 @@ void PHProbe::setHighpointCalibration(float highpoint) {
 }
 
 void PHProbe::setLowpointCalibration(float lowpoint) {
-  slopeIsOutOfRange = false;
-  EEPROM_TC::instance()->setIgnoreBadPHSlope(false);
+  // slopeIsOutOfRange = false;
+  // EEPROM_TC::instance()->setIgnoreBadPHSlope(false);
   char buffer[16];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,low,%i.%03i\r"), (int)lowpoint, (int)(lowpoint * 1000 + 0.5) % 1000);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product

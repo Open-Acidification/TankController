@@ -31,6 +31,7 @@ unittest_setup() {
   thermalProbe->setTemperature(20, true);
   tc->setNextState(new MainMenu(), true);
   state->serialPort[0].dataOut = "";  // the history of data written
+  DataLogger::instance()->clearBuffer();
 }
 
 unittest_teardown() {
@@ -91,7 +92,7 @@ unittest(AfterIntervalAndOutsideDelta) {
   control->updateControl(20.05);
   assertTrue(control->isOn());
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[THERMAL_CONTROL_PIN]);
-  assertEqual("chiller turned on at 31006 after 31006 ms\r\n", state->serialPort[0].dataOut);
+  assertEqual("chiller turned on at 31006 after 31006 ms", Serial_TC::instance()->getBuffer());
   tc->loop(false);
   assertEqual("T=20.02 C 20.00 ", lc->getLines().at(1));
   state->serialPort[0].dataOut = "";  // the history of data written
@@ -99,9 +100,12 @@ unittest(AfterIntervalAndOutsideDelta) {
   control->updateControl(19.95);
   assertFalse(control->isOn());
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[THERMAL_CONTROL_PIN]);
-  assertEqual("chiller turned off at 62024 after 31018 ms\r\n", state->serialPort[0].dataOut);
+  assertEqual("chiller turned off at 62024 after 31018 ms", Serial_TC::instance()->getBuffer());
+  tc->loop(false);
   tc->loop(false);
   assertEqual("T 20.02 c 20.00 ", lc->getLines().at(1));
+  assertEqual("01/15/2021 01:49:26,   0, 20.02, 20.00, 0.000, 8.100,   62, 100000.0,      0.0,      0.0",
+              dataLog->getBuffer());
 }
 
 /**
@@ -150,7 +154,7 @@ unittest(OutsideDelta) {
   control->updateControl(19.95);
   assertTrue(control->isOn());
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[THERMAL_CONTROL_PIN]);
-  assertEqual("heater turned on at 0 after 0 ms\r\n", state->serialPort[0].dataOut);
+  assertEqual("heater turned on at 0 after 0 ms", Serial_TC::instance()->getBuffer());
   tc->loop(false);
   assertEqual("T 20.00 H 20.00 ", lc->getLines().at(1));
   state->serialPort[0].dataOut = "";  // the history of data written
@@ -158,7 +162,7 @@ unittest(OutsideDelta) {
   control->updateControl(20.05);
   assertFalse(control->isOn());
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[THERMAL_CONTROL_PIN]);
-  assertEqual("heater turned off at 306 after 306 ms\r\n", state->serialPort[0].dataOut);
+  assertEqual("heater turned off at 306 after 306 ms", Serial_TC::instance()->getBuffer());
   tc->loop(false);
   assertEqual("T 20.00 h 20.00 ", lc->getLines().at(1));
 }
@@ -197,8 +201,6 @@ unittest(RampGreaterThanZero) {
   target = control->getCurrentThermalTarget();
   assertTrue(20 <= target && target <= 20.03);
   assertEqual("T 20.00 c 20.00 ", lc->getLines().at(1));
-  assertEqual("01/15/2021 01:49:26,   0, 20.02, 20.00, 0.000, 8.100,   62, 100000.0,      0.0,      0.0",
-              dataLog->buffer);
   delay(31000);
   // mock arduino restarting
   ThermalControl::clearInstance();
@@ -211,7 +213,7 @@ unittest(RampGreaterThanZero) {
   assertTrue(16.6 <= target && target <= 16.8);
   assertEqual("T=20.00 C 16.61 ", lc->getLines().at(1));
   assertEqual("01/15/2021 02:18:55,   0, 20.00, 16.61, 0.000, 8.100, 1831, 100000.0,      0.0,      0.0",
-              dataLog->buffer);
+              dataLog->getBuffer());
   delay(1800000);  // delay 30 minutes
   tc->loop(false);
   tc->loop(false);
@@ -219,14 +221,14 @@ unittest(RampGreaterThanZero) {
   assertTrue(13.2 <= target && target <= 13.4);
   assertEqual("T=20.00 C 13.28 ", lc->getLines().at(1));
   assertEqual("01/15/2021 02:48:55,   0, 20.00, 13.28, 0.000, 8.100, 3631, 100000.0,      0.0,      0.0",
-              dataLog->buffer);
+              dataLog->getBuffer());
   delay(1800000);  // delay 30 minutes
   tc->loop(false);
   tc->loop(false);
   assertEqual(10, control->getCurrentThermalTarget());
   assertEqual("T=20.01 C 10.00 ", lc->getLines().at(1));
   assertEqual("01/15/2021 03:18:55,   0, 20.01, 10.00, 0.000, 8.100, 5431, 100000.0,      0.0,      0.0",
-              dataLog->buffer);
+              dataLog->getBuffer());
   // ramp time no longer used after it ends
   delay(1800000);  // delay 30 minutes
   delay(1800000);  // delay 30 minutes
@@ -235,7 +237,7 @@ unittest(RampGreaterThanZero) {
   assertEqual(10, control->getCurrentThermalTarget());
   assertEqual("T=20.01 C 10.00 ", lc->getLines().at(1));
   assertEqual("01/15/2021 04:18:55,   0, 20.01, 10.00, 0.000, 8.100, 9031, 100000.0,      0.0,      0.0",
-              dataLog->buffer);
+              dataLog->getBuffer());
   delay(31000);
   ThermalControl::enableHeater(true);
   control = ThermalControl::instance();
@@ -249,7 +251,7 @@ unittest(RampGreaterThanZero) {
   assertTrue(20 <= target && target <= 20.03);
   assertEqual("T 20.01 h 20.01 ", lc->getLines().at(1));
   assertEqual("01/15/2021 04:19:26,   0, 20.01, 20.01, 0.000, 8.100, 9062, 100000.0,      0.0,      0.0",
-              dataLog->buffer);
+              dataLog->getBuffer());
   // mock arduino restarting
   ThermalControl::clearInstance();
   control = ThermalControl::instance();
@@ -261,7 +263,7 @@ unittest(RampGreaterThanZero) {
   assertTrue(23.3 <= target && target <= 23.4);
   assertEqual("T 20.01 H 23.34 ", lc->getLines().at(1));
   assertEqual("01/15/2021 04:49:26,   0, 20.01, 23.34, 0.000, 8.100, 10862, 100000.0,      0.0,      0.0",
-              dataLog->buffer);
+              dataLog->getBuffer());
   delay(1800000);  // delay 30 minutes
   tc->loop(false);
   tc->loop(false);
@@ -269,7 +271,7 @@ unittest(RampGreaterThanZero) {
   assertTrue(26.6 <= target && target <= 26.7);
   assertEqual("T 20.01 H 26.67 ", lc->getLines().at(1));
   assertEqual("01/15/2021 05:19:26,   0, 20.01, 26.67, 0.000, 8.100, 12662, 100000.0,      0.0,      0.0",
-              dataLog->buffer);
+              dataLog->getBuffer());
   delay(1800000);  // delay 30 minutes
   tc->loop(false);
   tc->loop(false);
@@ -282,7 +284,7 @@ unittest(RampGreaterThanZero) {
   assertEqual(30, control->getCurrentThermalTarget());
   assertEqual("T 20.02 H 30.00 ", lc->getLines().at(1));
   assertEqual("01/15/2021 06:49:26,   0, 20.02, 30.00, 0.000, 8.100, 18062, 100000.0,      0.0,      0.0",
-              dataLog->buffer);
+              dataLog->getBuffer());
 }
 
 unittest(ChangeRampToZero) {

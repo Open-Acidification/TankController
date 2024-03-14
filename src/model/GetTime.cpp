@@ -3,7 +3,6 @@
 #include "TankController.h"
 #include "model/TC_util.h"
 #include "wrappers/DateTime_TC.h"
-#include "wrappers/EEPROM_TC.h"
 #include "wrappers/Ethernet_TC.h"
 #include "wrappers/Serial_TC.h"
 
@@ -28,7 +27,7 @@ GetTime::GetTime(int tzOffsetHrs) {
 }
 
 void GetTime::loop() {
-  if (!(Ethernet_TC::instance()->getIsUsingDHCP())) {
+  if (!(Ethernet_TC::instance()->isConnectedToNetwork())) {
     return;
   }
   // is it time to send ?
@@ -46,7 +45,7 @@ void GetTime::loop() {
         if (next) {
           if (next == '\r') {
             buffer[index] = '\0';
-            if (index > 6 && memcmp("Date: ", buffer, 6) == 0) {
+            if (index > 6 && memcmp_P(buffer, F("Date: "), 6) == 0) {
               // "Date: Wed, 19 Jul 2023 04:18:52 GMT"
               uint8_t day = ((buffer[11] - '0') * 10) + (buffer[12] - '0');
               uint8_t year = ((buffer[20] - '0') * 10) + (buffer[21] - '0');
@@ -54,29 +53,29 @@ void GetTime::loop() {
               uint8_t min = ((buffer[26] - '0') * 10) + (buffer[27] - '0');
               uint8_t sec = ((buffer[29] - '0') * 10) + (buffer[30] - '0');
               uint8_t month = 0;
-              if (memcmp_P(F("Jan"), buffer + 14, 3) == 0) {
+              if (memcmp_P(buffer + 14, F("Jan"), 3) == 0) {
                 month = 1;
-              } else if (memcmp_P(F("Feb"), buffer + 14, 3) == 0) {
+              } else if (memcmp_P(buffer + 14, F("Feb"), 3) == 0) {
                 month = 2;
-              } else if (memcmp_P(F("Mar"), buffer + 14, 3) == 0) {
+              } else if (memcmp_P(buffer + 14, F("Mar"), 3) == 0) {
                 month = 3;
-              } else if (memcmp_P(F("Apr"), buffer + 14, 3) == 0) {
+              } else if (memcmp_P(buffer + 14, F("Apr"), 3) == 0) {
                 month = 4;
-              } else if (memcmp_P(F("May"), buffer + 14, 3) == 0) {
+              } else if (memcmp_P(buffer + 14, F("May"), 3) == 0) {
                 month = 5;
-              } else if (memcmp_P(F("Jun"), buffer + 14, 3) == 0) {
+              } else if (memcmp_P(buffer + 14, F("Jun"), 3) == 0) {
                 month = 6;
-              } else if (memcmp_P(F("Jul"), buffer + 14, 3) == 0) {
+              } else if (memcmp_P(buffer + 14, F("Jul"), 3) == 0) {
                 month = 7;
-              } else if (memcmp_P(F("Aug"), buffer + 14, 3) == 0) {
+              } else if (memcmp_P(buffer + 14, F("Aug"), 3) == 0) {
                 month = 8;
-              } else if (memcmp_P(F("Sep"), buffer + 14, 3) == 0) {
+              } else if (memcmp_P(buffer + 14, F("Sep"), 3) == 0) {
                 month = 9;
-              } else if (memcmp_P(F("Oct"), buffer + 14, 3) == 0) {
+              } else if (memcmp_P(buffer + 14, F("Oct"), 3) == 0) {
                 month = 10;
-              } else if (memcmp_P(F("Nov"), buffer + 14, 3) == 0) {
+              } else if (memcmp_P(buffer + 14, F("Nov"), 3) == 0) {
                 month = 11;
-              } else if (memcmp_P(F("Dec"), buffer + 14, 3) == 0) {
+              } else if (memcmp_P(buffer + 14, F("Dec"), 3) == 0) {
                 month = 12;
               }
               DateTime dt = DateTime(year + 2000, month, day, hour, min, sec);
@@ -85,7 +84,7 @@ void GetTime::loop() {
               newTime.setAsCurrent();
               serial(F("Time updated to %s"), DateTime_TC::now().as16CharacterString());
             }
-          } else if (next == '\n') {
+          } else if (next == '\n' || index == sizeof(buffer)) {
             index = 0;
             buffer[index] = '\0';
           } else {
@@ -109,10 +108,10 @@ void GetTime::sendRequest() {
       "\r\n";
   snprintf_P(buffer, sizeof(buffer), (PGM_P)format, serverDomain);
   if (client.connected() || client.connect(serverDomain, 80)) {
-    serial(F("connected to %s"), serverDomain);
+    serial(F("GetTime: connected to %s"), serverDomain);
     client.write(buffer, strnlen(buffer, sizeof(buffer)));
   } else {
-    serial(F("connection to %s failed"), serverDomain);
+    serial(F("GetTime: connection to %s failed"), serverDomain);
   }
   buffer[0] = '\0';
   index = 0;

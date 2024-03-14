@@ -17,13 +17,21 @@ public:
 
   void vprintf(const __FlashStringHelper *format, va_list args);
 
-  char buffer[128];
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  char *getBuffer() {
+    return buffer;
+  }
+  void clearBuffer() {
+    buffer[0] = '\0';
+  }
+#endif
 
 private:
   //  class variable
   static Serial_TC *_instance;
 
   // instance variable
+  char buffer[128];
   bool printIsActive = false;
 
   //  instance methods

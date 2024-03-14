@@ -53,12 +53,12 @@ unittest(main) {
 
 unittest(begin_with_DHCP) {
   Ethernet.mockDHCP(IPAddress(192, 168, 1, 42));
-  assertTrue(Ethernet_TC::instance(true)->getIsUsingDHCP());
+  assertTrue(Ethernet_TC::instance(true)->isConnectedToNetwork());
 }
 
 unittest(begin_without_DHCP) {
   Ethernet.mockDHCP(IPAddress((uint32_t)0));
-  assertFalse(Ethernet_TC::instance(true)->getIsUsingDHCP());
+  assertFalse(Ethernet_TC::instance(true)->isConnectedToNetwork());
 }
 
 unittest_main()

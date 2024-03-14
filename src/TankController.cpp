@@ -6,6 +6,7 @@
 #include "UIState/MainMenu.h"
 #include "UIState/UIState.h"
 #include "Version.h"
+#include "model/AlertPusher.h"
 #include "model/DataLogger.h"
 #include "model/GetTime.h"
 #include "model/PHControl.h"
@@ -35,9 +36,9 @@ TankController *TankController::_instance = nullptr;
 /**
  * static function to return singleton
  */
-TankController *TankController::instance(const char *pushingBoxID, int tzOffsetHrs) {
+TankController *TankController::instance(const char *pushingBoxID, const char *alertFileName, int tzOffsetHrs) {
   if (!_instance) {
-    _instance = new TankController;
+    _instance = new TankController(alertFileName);
     PushingBox::instance(pushingBoxID);
     GetTime::instance(tzOffsetHrs);
   }
@@ -48,11 +49,12 @@ TankController *TankController::instance(const char *pushingBoxID, int tzOffsetH
 /**
  * Constructor
  */
-TankController::TankController() {
+TankController::TankController(const char *alertFileName) {
   serial(F("\r\n#################\r\nTankController::TankController() - version %s"), TANK_CONTROLLER_VERSION);
   assert(!_instance);
   // ensure we have instances
   SD_TC::instance();
+  SD_TC::instance()->setAlertFileName(alertFileName);
   EEPROM_TC::instance();
   Keypad_TC::instance();
   LiquidCrystal_TC::instance(TANK_CONTROLLER_VERSION);
@@ -162,6 +164,7 @@ void TankController::loop(bool report_loop_delay) {
   handleUI();                             // look at keypad, update LCD (~90ms)
   DataLogger::instance()->loop();         // record current data to SD and serial
   GetTime::instance()->loop();            // update the time
+  AlertPusher::instance()->loop();        // handle requests to cloud server
   PushingBox::instance()->loop();         // write data to Google Sheets (~1130ms every report)
   Ethernet_TC::instance()->loop();        // renew DHCP lease
   EthernetServer_TC::instance()->loop();  // handle any HTTP requests

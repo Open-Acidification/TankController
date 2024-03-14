@@ -11,7 +11,6 @@ FLAGS=-std=c++0x \
 	-O1 \
 	-fno-omit-frame-pointer \
 	-fno-optimize-sibling-calls \
-	-fsanitize=address \
 	-Wno-unknown-attributes \
 	-Wno-address-of-packed-member \
 	-D__AVR__ \

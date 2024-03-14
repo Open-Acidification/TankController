@@ -84,7 +84,6 @@ void DataLogger::writeToSD() {
     serial(F("WARNING! String was truncated to \"%s\""), buffer);
   }
   SD_TC::instance()->appendData(header_buffer, buffer);
-  std::cout << "DataLogger::writeToSD() buffer: \"" << buffer << "\"" << std::endl;
 }
 
 /**

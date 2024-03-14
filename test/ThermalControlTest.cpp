@@ -201,8 +201,7 @@ unittest(RampGreaterThanZero) {
   target = control->getCurrentThermalTarget();
   assertTrue(abs(20 - target) < 0.1);
   assertEqual("T 20.00 c 20.00 ", lc->getLines().at(1));
-  assertEqual("01/15/2021 01:49:26,   0, 20.02, 20.00, 0.000, 8.100,   62, 100000.0,      0.0,      0.0",
-              dataLog->getBuffer());
+  assertEqual("", dataLog->getBuffer()); // data left over from previous tests is cleared
   delay(31000);
   // mock arduino restarting
   ThermalControl::clearInstance();

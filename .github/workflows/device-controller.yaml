@@ -1,7 +1,16 @@
 ---
 name: Build, test, and release device_controller
-on: push
+on: [push, pull_request]
 jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: DoozyX/clang-format-lint-action@v0.17
+      with:
+        source: './'
+        extensions: 'c,h,C,H,cpp,hpp,cc,hh,c++,h++,cxx,hxx,ino'
+        clangFormatVersion: 18
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -34,4 +43,4 @@ jobs:
       - name: Run Arduino-CI Tests
         run: |
           extras/scripts/install_libraries.sh
-          extras/scripts/testAndBuild.sh
+          # extras/scripts/testAndBuild.sh

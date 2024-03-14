@@ -22,9 +22,10 @@ class CurrentData extends StatelessWidget {
   bool canEditCurrentInfo(AppData appData) {
     print('appData.currentData = ${appData.currentData}');
     print(
-        'appData.currentData.runtimeType = ${appData.currentData.runtimeType}');
+      'appData.currentData.runtimeType = ${appData.currentData.runtimeType}',
+    );
     print('appData.currentData["Version"] = ${appData.currentData['Version']}');
-    String v = appData.currentData['Version'].trim();
+    String v = appData.currentData['Version']?.trim() ?? '0.0.0';
     final i = v.indexOf('-');
     if (i != -1) {
       v = v.substring(0, i);
@@ -60,21 +61,46 @@ class CurrentData extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  if (key == 'Target_pH_type')
+                  if (key == 'Target_pH_type' || key == 'Target_Therm_type')
                     DropdownButtonFormField<String>(
                       value: value,
                       items: const <DropdownMenuItem<String>>[
                         DropdownMenuItem(
-                          value: '1',
+                          value: '0',
                           child: Text('Flat'),
                         ),
                         DropdownMenuItem(
-                          value: '2',
+                          value: '1',
                           child: Text('Ramp'),
                         ),
                         DropdownMenuItem(
-                          value: '3',
+                          value: '2',
                           child: Text('Sine'),
+                        ),
+                      ],
+                      onChanged: (String? newValue) {
+                        TcInterface.instance()
+                            .put(
+                          '${appData.currentData["IPAddress"]}',
+                          'data?$key=$newValue',
+                        )
+                            .then((value) {
+                          appData.currentData = json.decode(value);
+                        });
+                        Navigator.pop(context);
+                      },
+                    )
+                  else if (key == 'PID')
+                    DropdownButtonFormField<String>(
+                      value: value,
+                      items: const <DropdownMenuItem<String>>[
+                        DropdownMenuItem(
+                          value: 'OFF',
+                          child: Text('OFF'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'ON',
+                          child: Text('ON'),
                         ),
                       ],
                       onChanged: (String? newValue) {
@@ -187,7 +213,8 @@ class CurrentData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print(
-        'CurrentData.build found appData.currentData = ${context.read<AppData>().currentData}');
+      'CurrentData.build found appData.currentData = ${context.read<AppData>().currentData}',
+    );
     return ColoredBox(
       color: Colors.white,
       child: Consumer<AppData>(
@@ -197,7 +224,7 @@ class CurrentData extends StatelessWidget {
           // if (currentData.isEmpty) {
           //   return Container();
           // }
-          final editableFields = currentData['EditableFields'];
+          final editableFields = currentData['EditableFields'] ?? [];
           print('editableFields = $editableFields');
           currentData.remove('EditableFields');
           final canEdit = canEditCurrentInfo(appData);

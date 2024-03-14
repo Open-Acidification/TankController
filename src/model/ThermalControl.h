@@ -45,7 +45,7 @@ public:
   float getCurrentThermalTarget() {
     return currentThermalTarget;
   }
-  int getThermalFunctionType() {
+  thermalFunctionTypes getThermalFunctionType() {
     return thermalFunctionType;
   }
   float getAmplitude() {

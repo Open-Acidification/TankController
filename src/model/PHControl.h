@@ -38,7 +38,7 @@ public:
   float getCurrentTargetPh() {
     return currentTargetPh;
   }
-  int getPHFunctionType() {
+  pHFunctionTypes getPHFunctionType() {
     return pHFunctionType;
   }
   float getAmplitude() {

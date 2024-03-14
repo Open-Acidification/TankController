@@ -2,10 +2,12 @@
 
 #include <avr/wdt.h>
 
-#include "PHControl.h"
+#include "EEPROM_TC.h"
 #include "TankController.h"
 #include "favicon.h"
 #include "model/JSONBuilder.h"
+#include "model/PHControl.h"
+#include "model/ThermalControl.h"
 #include "wrappers/DateTime_TC.h"
 #include "wrappers/Ethernet_TC.h"
 #include "wrappers/LiquidCrystal_TC.h"
@@ -43,13 +45,14 @@ EthernetServer_TC::EthernetServer_TC(uint16_t port) : EthernetServer(port) {
 }
 
 // echo() - Proof of concept for the EthernetServer
+// http://172.27.100.6/echo?abcde="this is a test"
 void EthernetServer_TC::echo() {
   serial(F("echo() - \"%s\""), buffer + 19);
   int i = 19;
   while (buffer[i] != ' ' && buffer[i] != '\0') {
     ++i;
   }
-  serial(F("echo() found space or null at %d"), i);
+  serial(F("echo() found space or null at %d (%d)"), i, (int)buffer[i]);
   if (memcmp_P(buffer + i - 3, F("%22"), 3)) {
     serial(F("bad"));
     state = FINISHED;
@@ -64,6 +67,7 @@ void EthernetServer_TC::echo() {
 
 // Handles an HTTP GET request
 void EthernetServer_TC::get() {
+  serial(F("Ethernet Server received a get request: \"%s\""), buffer + 4);
   if (memcmp_P(buffer + 4, F("/ "), 2) == 0) {
     sendHomeRedirect();
     state = FINISHED;
@@ -125,22 +129,60 @@ void EthernetServer_TC::post() {
 
 // Handles an HTTP PUT request
 void EthernetServer_TC::put() {
-  enum { Kd, Ki, Kp, Target_pH } var;
+  float value;
+  enum {
+    Kd,
+    Ki,
+    Kp,
+    PID,
+    TankID,
+    Target_pH,
+    TargetTemperature,
+    Target_pH_type,
+    Target_Therm_type,
+    GoogleSheetInterval
+  } var;
   if (memcmp_P(buffer + 4, F("/api/1/data?Kd="), 15) == 0) {
     var = Kd;
   } else if (memcmp_P(buffer + 4, F("/api/1/data?Ki="), 15) == 0) {
     var = Ki;
   } else if (memcmp_P(buffer + 4, F("/api/1/data?Kp="), 15) == 0) {
     var = Kp;
-  } else if (memcmp_P(buffer + 4, F("/api/1/data?Target_pH="), 15) == 0) {
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?PID="), 16) == 0) {
+    var = PID;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?TankID="), 19) == 0) {
+    var = TankID;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?Target_pH="), 22) == 0) {
     var = Target_pH;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?Target_pH_type="), 27) == 0) {
+    var = Target_pH_type;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?TargetTemperature="), 30) == 0) {
+    var = TargetTemperature;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?Target_Therm_type="), 30) == 0) {
+    var = Target_Therm_type;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?GoogleSheetInterval="), 32) == 0) {
+    var = GoogleSheetInterval;
   } else {
     serial(F("put \"%s\" not recognized!"), buffer + 5);
     sendResponse(HTTP_BAD_REQUEST);
     state = FINISHED;
     return;
   }
-  float value = strtofloat(buffer + 19);
+  if (var == PID) {
+    value = strtofloat(buffer + 20);
+  } else if (var == TankID) {
+    value = strtofloat(buffer + 23);
+  } else if (var == Target_pH) {
+    value = strtofloat(buffer + 26);
+  } else if (var == Target_pH_type) {
+    value = strtofloat(buffer + 31);
+  } else if (var == TargetTemperature || var == Target_Therm_type) {
+    value = strtofloat(buffer + 34);
+  } else if (var == GoogleSheetInterval) {
+    value = strtofloat(buffer + 36);
+  } else {
+    value = strtofloat(buffer + 19);
+  }
   switch (var) {
     case Kd:
       PID_TC::instance()->setKd(value);
@@ -151,8 +193,25 @@ void EthernetServer_TC::put() {
     case Kp:
       PID_TC::instance()->setKp(value);
       break;
+    case PID:
+      PHControl::instance()->enablePID(value);
+      break;
+    case TankID:
+      EEPROM_TC::instance()->setTankID(value);
+      break;
     case Target_pH:
       PHControl::instance()->setBaseTargetPh(value);
+      break;
+    case TargetTemperature:
+      ThermalControl::instance()->setThermalTarget(value);
+      break;
+    case Target_pH_type:
+      // EEPROM_TC::instance()->setPHFunctionType(int(value));
+      break;
+    case Target_Therm_type:
+      break;
+    case GoogleSheetInterval:
+      EEPROM_TC::instance()->setGoogleSheetInterval(int(value));
       break;
   }
   sendCurrentRedirect();
@@ -195,6 +254,7 @@ void EthernetServer_TC::getApiHandler() {
 
 // Get list of current values
 void EthernetServer_TC::currentData() {
+  // serial(F("EthernetServer_TC::currentData() - 1"));
   JSONBuilder builder;
   int size = builder.buildCurrentValues();
   char *text = builder.bufferPtr();
@@ -429,6 +489,11 @@ void EthernetServer_TC::loop() {
           buffer[bufferContentsSize++] = (char)(next & 0xFF);
           if (bufferContentsSize > 3 && (memcmp_P(buffer + bufferContentsSize - 4, F("\r\n\r\n"), 4) == 0)) {
             buffer[bufferContentsSize] = '\0';
+            for (int i = 0; i < bufferContentsSize; ++i) {
+              if (buffer[i] == '\n') {
+                buffer[i] = '\0';
+              }
+            }
             break;
           }
         }
@@ -438,7 +503,7 @@ void EthernetServer_TC::loop() {
             state = FINISHED;
           }
         } else {
-          // serial(F("HTTP Request: \"%s\""), buffer);
+          serial(F("HTTP Request: \"%s\""), buffer);
           if (memcmp_P(buffer, F("GET "), 4) == 0) {
             state = GET_REQUEST;
             get();

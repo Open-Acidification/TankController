@@ -93,31 +93,28 @@ class ThermalProbe_TC {
 public:
   static ThermalProbe_TC* instance();
   static void reset();
-
   inline uint16_t getResistance() {
     return thermo.readRTD();
   }
-
   inline float getRawTemperature() {
     return thermo.temperature(RTDnominal, refResistor);
   }
-
   float getRunningAverage();
   float getUncorrectedRunningAverage();
-
   inline uint8_t readFault() {
     return thermo.readFault();
   }
-
   inline void clearFault() {
     thermo.clearFault();
   }
-
+  void clearCorrection();
   inline float getCorrection() {
     return correction;
   }
   void setCorrection(float value);
-  void clearCorrection();
+  float getSampleMean();
+  float getSampleStandardDeviation();
+  void resetSample();
 
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   // set a temperature in the mock
@@ -138,6 +135,9 @@ private:
   uint16_t historyIndex = 0;
   float correction = 0.0;
   uint32_t lastTime = 0;
+  uint8_t sampleSize = 0;                // count for sample
+  float sumOfSampleValues = 0.0;         // sum of (uncorrected) recent temperatures
+  float sumOfSquaredSampleValues = 0.0;  // sum of squares of (uncorrected) temperatures
 
   // Methods
   ThermalProbe_TC();

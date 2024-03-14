@@ -51,19 +51,19 @@ unittest(serialEvent1CatchBadSlope) {
   assertTrue(pHProbe->slopeIsBad());
   assertTrue(eeprom->getIgnoreBadPHSlope());
   assertFalse(pHProbe->shouldWarnAboutCalibration());
-  assertEqual("BAD CALIBRATION? pH slopes are more than 5\% from ideal", Serial_TC::instance()->buffer);
+  assertEqual("BAD CALIBRATION? pH slopes are more than 5\% from ideal", Serial_TC::instance()->getBuffer());
 
   // Good slope
   pHProbe->setPhSlope();
   assertFalse(pHProbe->slopeIsBad());
   assertFalse(eeprom->getIgnoreBadPHSlope());
   assertFalse(pHProbe->shouldWarnAboutCalibration());
-  assertEqual("pH slopes are within 5\% of ideal", Serial_TC::instance()->buffer);
+  assertEqual("pH slopes are within 5\% of ideal", Serial_TC::instance()->getBuffer());
 
   // Bad slope
   pHProbe->setPhSlope("?SLOPE,98.7,107.2,-0.89\r");
   assertTrue(pHProbe->slopeIsBad());
-  assertEqual("BAD CALIBRATION? pH slopes are more than 5\% from ideal", Serial_TC::instance()->buffer);
+  assertEqual("BAD CALIBRATION? pH slopes are more than 5\% from ideal", Serial_TC::instance()->getBuffer());
 }
 
 unittest(clearCalibration) {

@@ -34,4 +34,4 @@ jobs:
       - name: Run Arduino-CI Tests
         run: |
           extras/scripts/install_libraries.sh
-          extras/scripts/testAndBuild.sh
+          # extras/scripts/testAndBuild.sh

@@ -121,6 +121,19 @@ unittest(runningAverage) {
   delay(1000);
   temperature = thermalProbe->getRunningAverage();
   assertTrue(19.9 <= temperature && temperature <= 20.1);
+
+  // Test getSampleMean()
+  float testMean = thermalProbe->getSampleMean();
+  assertTrue(abs(10.907 - testMean) < 0.01);
+  // Test getSampleStandardDeviation()
+  float testStdDev = thermalProbe->getSampleStandardDeviation();
+  assertTrue(abs(2.8809 - testStdDev) < 0.01);
+  // Test resetSample()
+  thermalProbe->resetSample();
+  testMean = thermalProbe->getSampleMean();
+  assertEqual(testMean, 0.0);
+  testStdDev = thermalProbe->getSampleStandardDeviation();
+  assertEqual(testStdDev, 0.0);
 }
 
 unittest_main()

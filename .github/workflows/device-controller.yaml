@@ -10,7 +10,7 @@ jobs:
       with:
         source: './'
         extensions: 'c,h,C,H,cpp,hpp,cc,hh,c++,h++,cxx,hxx,ino'
-        clangFormatVersion: 18
+        clangFormatVersion: 17
   lint:
     runs-on: ubuntu-latest
     steps:

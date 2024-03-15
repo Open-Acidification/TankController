@@ -1,6 +1,8 @@
 ---
   name: Build, test, and release log_file_client
-  on: push
+  on: 
+    - push
+    - pull_request
   jobs:
     build:
       runs-on: ubuntu-latest

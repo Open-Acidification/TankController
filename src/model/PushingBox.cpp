@@ -28,7 +28,7 @@ PushingBox::PushingBox(const char* pushingBoxID) {
 }
 
 void PushingBox::loop() {
-  if (!(Ethernet_TC::instance()->getIsUsingDHCP())) {
+  if (!(Ethernet_TC::instance()->isConnectedToNetwork())) {
     return;
   }
   // is it time to send ?

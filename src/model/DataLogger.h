@@ -13,14 +13,21 @@ public:
   // instance methods
   void loop();
 
-  // instance variables
-  char buffer[128];
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  char *getBuffer() {
+    return buffer;
+  }
+  void clearBuffer() {
+    buffer[0] = '\0';
+  }
+#endif
 
 private:
   // class variables
   static DataLogger *_instance;
 
   // instance variables
+  char buffer[256];
   uint32_t nextSDLogTime = 0;
   uint32_t nextSerialLogTime = 0;
 

@@ -107,7 +107,7 @@ unittest(inCalibration) {
 
 unittest(without_DHCP) {
   Ethernet.mockDHCP(IPAddress((uint32_t)0));
-  assertFalse(Ethernet_TC::instance(true)->getIsUsingDHCP());
+  assertFalse(Ethernet_TC::instance(true)->isConnectedToNetwork());
   EthernetClient::startMockServer(pPushingBox->getServerDomain(), (uint32_t)0, 80);
   assertFalse(pClient->connected());
   delay(60 * 20 * 1000);  // wait for 20 minutes to ensure we still do not send

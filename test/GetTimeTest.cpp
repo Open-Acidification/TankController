@@ -37,7 +37,7 @@ unittest_teardown() {
 
 unittest(without_DHCP) {
   Ethernet.mockDHCP(IPAddress((uint32_t)0));
-  assertFalse(Ethernet_TC::instance(true)->getIsUsingDHCP());
+  assertFalse(Ethernet_TC::instance(true)->isConnectedToNetwork());
   EthernetClient::startMockServer(pGetTime->getServerDomain(), (uint32_t)0, 80);
   assertFalse(pClient->connected());
   delay(45 * 1000);  // wait for 45 seconds to ensure we do not send
@@ -47,7 +47,7 @@ unittest(without_DHCP) {
 
 unittest(with_DHCP) {
   Ethernet.mockDHCP(IPAddress(192, 168, 1, 42));
-  assertTrue(Ethernet_TC::instance(true)->getIsUsingDHCP());
+  assertTrue(Ethernet_TC::instance(true)->isConnectedToNetwork());
   EthernetClient::startMockServer(pGetTime->getServerDomain(), (uint32_t)0, 80,
                                   (const uint8_t *)"HTTP/1.1 404 Not Found\r\n"
                                                    "Date: Wed, 19 Jul 2023 04:18:52 GMT\r\n"

@@ -35,24 +35,34 @@ TankController *TankController::_instance = nullptr;
 /**
  * static function to return singleton
  */
-TankController *TankController::instance(const char *pushingBoxID, int tzOffsetHrs) {
+TankController *TankController::instance(const char *eventLogName, const char *pushingBoxID, int tzOffsetHrs) {
   if (!_instance) {
-    _instance = new TankController;
+    _instance = new TankController(eventLogName);
     PushingBox::instance(pushingBoxID);
     GetTime::instance(tzOffsetHrs);
   }
   return _instance;
 }
 
+/**
+ * static function to delete singleton
+ */
+void TankController::deleteInstance() {
+  if (_instance) {
+    delete _instance;
+    _instance = nullptr;
+  }
+}
+
 // ------------ Instance Methods ------------
 /**
  * Constructor
  */
-TankController::TankController() {
+TankController::TankController(const char *eventLogName) {
   serial(F("\r\n#################\r\nTankController::TankController() - version %s"), TANK_CONTROLLER_VERSION);
   assert(!_instance);
   // ensure we have instances
-  SD_TC::instance();
+  SD_TC::instance()->setEventLogName(eventLogName);
   EEPROM_TC::instance();
   Keypad_TC::instance();
   LiquidCrystal_TC::instance(TANK_CONTROLLER_VERSION);

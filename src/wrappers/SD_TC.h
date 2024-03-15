@@ -19,6 +19,7 @@ class SD_TC {
 public:
   // class methods
   static SD_TC* instance();
+  static void deleteInstance();
 
   // instance methods
   void appendData(const char* header, const char* line);

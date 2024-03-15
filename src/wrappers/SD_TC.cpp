@@ -19,6 +19,16 @@ SD_TC* SD_TC::instance() {
   return _instance;
 }
 
+/**
+ * delete singleton
+ */
+void SD_TC::deleteInstance() {
+  if (_instance) {
+    delete _instance;
+    _instance = nullptr;
+  }
+}
+
 //  instance methods
 
 /**
@@ -227,12 +237,6 @@ void SD_TC::setEventLogName(const char* newFileName) {
       strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) <= MAX_FILE_NAME_LENGTH) {
     // valid file name has been provided (See TankController.ino)
     snprintf_P(eventLogName, MAX_FILE_NAME_LENGTH + 5, PSTR("%s.log"), newFileName);
-    //  alertFileNameIsReady = true;
-  } else {
-    //  alertFileNameIsReady = false;
-    // This seems a logical place to set the default file name, but it is too soon. If Ethernet_TC() is not yet
-    // initialized then doing so will cause it to write to serial, which is logged by SD_TC::appendToLog(), which
-    // initializes SD_TC() which calls this very method. So we'll leave the file name empty for now.
   }
 }
 

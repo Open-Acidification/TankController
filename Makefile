@@ -64,7 +64,7 @@ all : $(BIN)/PHCalibrationWarningTest.cpp.bin $(BIN)/BlinkTest.cpp.bin $(BIN)/Da
   $(BIN)/SetPHTargetTest.cpp.bin $(BIN)/SetPHSineWaveTest.cpp.bin $(BIN)/SetTankIDTest.cpp.bin \
   $(BIN)/ResetThermalCalibrationTest.cpp.bin $(BIN)/SetThermalTargetTest.cpp.bin $(BIN)/SetThermalSineWaveTest.cpp.bin \
   $(BIN)/SetTimeTest.cpp.bin $(BIN)/StringsTest.cpp.bin $(BIN)/TCLibTest.cpp.bin \
-  $(BIN)/ThermalProbe_TCTest.cpp.bin $(BIN)/ThermalCalibrationTest.cpp.bin \
+  $(BIN)/ThermalProbeTest.cpp.bin $(BIN)/ThermalCalibrationTest.cpp.bin \
   $(BIN)/ThermalControlTest.cpp.bin $(BIN)
 
 GPP_TEST=g++ $(FLAGS) -L$(BIN) $(INCLUDE)
@@ -216,8 +216,8 @@ $(BIN)/StringsTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/StringsTest.cpp $(HEADE
 $(BIN)/TCLibTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/TCLibTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/TCLibTest.cpp.bin $(TEST)/TCLibTest.cpp -larduino
 
-$(BIN)/ThermalProbe_TCTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/ThermalProbe_TCTest.cpp $(HEADERS)
-	$(GPP_TEST) -o $(BIN)/ThermalProbe_TCTest.cpp.bin $(TEST)/ThermalProbe_TCTest.cpp -larduino
+$(BIN)/ThermalProbeTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/ThermalProbeTest.cpp $(HEADERS)
+	$(GPP_TEST) -o $(BIN)/ThermalProbeTest.cpp.bin $(TEST)/ThermalProbeTest.cpp -larduino
 
 $(BIN)/ThermalCalibrationTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/ThermalCalibrationTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/ThermalCalibrationTest.cpp.bin $(TEST)/ThermalCalibrationTest.cpp -larduino

@@ -4,15 +4,16 @@ on:
   - push
   - pull_request
 jobs:
-  # format:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - uses: actions/checkout@v4
-  #   - uses: DoozyX/clang-format-lint-action@v0.17
-  #     with:
-  #       source: './'
-  #       extensions: 'c,h,C,H,cpp,hpp,cc,hh,c++,h++,cxx,hxx,ino'
-  #       clangFormatVersion: 17
+  format:
+    # find . -name "*.cpp" -o -name "*.h" | grep -v pybind11 | grep -v "vendor/bundle/ruby" | xargs clang-format -i --Werror
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: DoozyX/clang-format-lint-action@v0.17
+      with:
+        source: './'
+        extensions: 'c,h,C,H,cpp,hpp,cc,hh,c++,h++,cxx,hxx,ino'
+        clangFormatVersion: 17
   lint:
     runs-on: ubuntu-latest
     steps:

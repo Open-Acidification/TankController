@@ -15,7 +15,9 @@ class UIState;
 class TankController {
 public:
   // class methods
-  static TankController* instance(const char* pushingBoxID = nullptr, int tzOffsetHrs = -7);
+  static TankController* instance(const char* eventLogName = nullptr, const char* pushingBoxID = nullptr, 
+                                  int tzOffsetHrs = -7);
+  static void deleteInstance();
 
   // instance methods
   bool isInCalibration();
@@ -43,7 +45,7 @@ private:
   char nextKey = 0;
 
   // instance methods
-  TankController();
+  TankController(const char* eventLogName);
   ~TankController();
   void blink();
   void handleUI();

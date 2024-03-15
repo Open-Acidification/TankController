@@ -13,7 +13,7 @@ class UIState;
 class TankController {
 public:
   // class methods
-  static TankController* instance(const char* eventLogName = nullptr, const char* pushingBoxID = nullptr, 
+  static TankController* instance(const char* eventLogName = nullptr, const char* pushingBoxID = nullptr,
                                   int tzOffsetHrs = -7);
   static void deleteInstance();
 

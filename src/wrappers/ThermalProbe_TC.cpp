@@ -130,7 +130,8 @@ float ThermalProbe_TC::getSampleMean() {
   if (sampleSize > 0) {
     return (sumOfSampleValues / sampleSize) + correction;
   } else {
-    return 0.0;  }
+    return 0.0;
+  }
 }
 
 /**
@@ -157,8 +158,8 @@ void ThermalProbe_TC::resetSample() {
   sumOfSampleValues = 0.0;
   sumOfSquaredSampleValues = 0.0;
 }
- 
- #if defined(ARDUINO_CI_COMPILATION_MOCKS)
+
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
 // set a temperature in the mock
 void ThermalProbe_TC::setTemperature(float newTemp, bool clearCorrection, bool setHistory) {
   if (setHistory) {

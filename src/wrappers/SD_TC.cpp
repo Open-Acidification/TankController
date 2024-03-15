@@ -2,6 +2,7 @@
 
 #include "model/TC_util.h"
 #include "wrappers/DateTime_TC.h"
+#include "wrappers/Ethernet_TC.h"
 #include "wrappers/Serial_TC.h"
 
 //  class variables
@@ -29,6 +30,7 @@ SD_TC::SD_TC() {
   if (!sd.begin(SD_SELECT_PIN)) {
     Serial.println(F("SD_TC failed to initialize!"));
   }
+  eventLogName[0] = '\0';
 }
 
 /**
@@ -82,6 +84,19 @@ bool SD_TC::exists(const char* path) {
 
 bool SD_TC::format() {
   return sd.format();
+}
+
+char* SD_TC::getEventLogName() {
+  if (eventLogName[0] == '\0') {
+    byte* mac = Ethernet_TC::instance()->getMac();
+    snprintf_P(
+      eventLogName,
+      sizeof(eventLogName),
+      PSTR("%02X%02X%02X%02X%02X%02X.log"),
+      mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]
+    );
+  }
+  return eventLogName;
 }
 
 bool SD_TC::iterateOnFiles(doOnFile functionName, void* userData) {
@@ -209,6 +224,20 @@ bool SD_TC::remove(const char* path) {
 
 void SD_TC::printRootDirectory() {
   sd.ls(LS_DATE | LS_SIZE | LS_R);
+}
+
+void SD_TC::setEventLogName(const char* newFileName) {
+  if (newFileName != nullptr && strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) > 0 &&
+      strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) <= MAX_FILE_NAME_LENGTH) {
+    // valid file name has been provided (See TankController.ino)
+    snprintf_P(eventLogName, MAX_FILE_NAME_LENGTH + 5, PSTR("%s.log"), newFileName);
+    //  alertFileNameIsReady = true;
+  } else {
+    //  alertFileNameIsReady = false;
+    // This seems a logical place to set the default file name, but it is too soon. If Ethernet_TC() is not yet
+    // initialized then doing so will cause it to write to serial, which is logged by SD_TC::appendToLog(), which
+    // initializes SD_TC() which calls this very method. So we'll leave the file name empty for now.
+  }
 }
 
 void SD_TC::todaysDataFileName(char* path, int size) {

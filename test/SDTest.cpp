@@ -182,4 +182,13 @@ unittest(removeFile) {
   assertFalse(SD_TC::instance()->exists("20220706.log"));
 }
 
+unittest(eventLogName) {
+  SD_TC* sd = SD_TC::instance();
+  char* name = sd->getEventLogName();
+  assertEqual("90A2DA807B76.log", name);
+  sd->setEventLogName("1234567890ab");
+  name = sd->getEventLogName();
+  assertEqual("1234567890ab.log", name);
+} 
+
 unittest_main()

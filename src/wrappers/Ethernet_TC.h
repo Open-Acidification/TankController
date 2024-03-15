@@ -14,7 +14,7 @@ public:
   IPAddress getIP() {
     return IP;
   };
-  bool getIsUsingDHCP() {
+  bool isConnectedToNetwork() {
     return isUsingDHCP;
   }
   byte *getMac() {

@@ -33,20 +33,20 @@ DataLogger* DataLogger::instance() {
  */
 void DataLogger::loop() {
   unsigned long msNow = millis();
-  if (msNow >= nextSDLogTime) {
-    writeToSD();
-    nextSDLogTime = (msNow / (unsigned long)SD_LOGGING_INTERVAL + 1) * (unsigned long)SD_LOGGING_INTERVAL;
+  if (msNow >= nextDataLogTime) {
+    writeToDataLog();
+    nextDataLogTime = (msNow / DATA_LOGGING_INTERVAL + 1) * DATA_LOGGING_INTERVAL;
   } else if (msNow >= nextSerialLogTime) {
-    writeToSerial();
-    nextSerialLogTime = (msNow / (unsigned long)SERIAL_LOGGING_INTERVAL + 1) * (unsigned long)SERIAL_LOGGING_INTERVAL;
+    writeToSerialLog();
+    nextSerialLogTime = (msNow / SERIAL_LOGGING_INTERVAL + 1) * SERIAL_LOGGING_INTERVAL;
   }
 }
 
 /**
- * @brief write the current data to the log file on the SD
+ * @brief write "time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd" to the log file
  *
  */
-void DataLogger::writeToSD() {
+void DataLogger::writeToDataLog() {
   char currentTemperatureString[10];
   char currentPhString[10];
   if (TankController::instance()->isInCalibration()) {
@@ -87,10 +87,10 @@ void DataLogger::writeToSD() {
 }
 
 /**
- * @brief write the current data to the serial port
+ * @brief write "HH:MM, current pH, current temperature" to the serial port and serial log
  *
  */
-void DataLogger::writeToSerial() {
+void DataLogger::writeToSerialLog() {
   DateTime_TC dtNow = DateTime_TC::now();
   char phString[12];
   char temperatureString[11];

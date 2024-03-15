@@ -189,6 +189,6 @@ unittest(eventLogName) {
   sd->setEventLogName("1234567890ab");
   name = sd->getEventLogName();
   assertEqual("1234567890ab.log", name);
-} 
+}
 
 unittest_main()

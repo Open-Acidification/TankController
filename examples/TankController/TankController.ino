@@ -11,7 +11,7 @@ const char pushingBoxID[] = "";
 // events to oap.cs.wallawalla.edu for log_file_client to display.
 // It can be 28 characters maximum, and ".log" will be added.
 // If it remains empty, the MAC address will be used. Keep in mind that
-// the name should be unique across all devices, not just your devices. 
+// the name should be unique across all devices, not just your devices.
 // So "tank-1" is not a good name, but "Onthank-tank-1" is.
 const char eventLogName[] = "";
 

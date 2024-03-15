@@ -89,12 +89,8 @@ bool SD_TC::format() {
 char* SD_TC::getEventLogName() {
   if (eventLogName[0] == '\0') {
     byte* mac = Ethernet_TC::instance()->getMac();
-    snprintf_P(
-      eventLogName,
-      sizeof(eventLogName),
-      PSTR("%02X%02X%02X%02X%02X%02X.log"),
-      mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]
-    );
+    snprintf_P(eventLogName, sizeof(eventLogName), PSTR("%02X%02X%02X%02X%02X%02X.log"), mac[0], mac[1], mac[2], mac[3],
+               mac[4], mac[5]);
   }
   return eventLogName;
 }

@@ -130,36 +130,21 @@ void EthernetServer_TC::post() {
 // Handles an HTTP PUT request
 void EthernetServer_TC::put() {
   float value;
-  enum {
-    Kd,
-    Ki,
-    Kp,
-    PID,
-    TankID,
-    Target_pH,
-    TargetTemperature,
-    Target_pH_type,
-    Target_Therm_type,
-    GoogleSheetInterval
-  } var;
+  enum { Kd, Ki, Kp, TankID, Target_pH, Heat_or_Chill, TargetTemperature, GoogleSheetInterval } var;
   if (memcmp_P(buffer + 4, F("/api/1/data?Kd="), 15) == 0) {
     var = Kd;
   } else if (memcmp_P(buffer + 4, F("/api/1/data?Ki="), 15) == 0) {
     var = Ki;
   } else if (memcmp_P(buffer + 4, F("/api/1/data?Kp="), 15) == 0) {
     var = Kp;
-  } else if (memcmp_P(buffer + 4, F("/api/1/data?PID="), 16) == 0) {
-    var = PID;
   } else if (memcmp_P(buffer + 4, F("/api/1/data?TankID="), 19) == 0) {
     var = TankID;
   } else if (memcmp_P(buffer + 4, F("/api/1/data?Target_pH="), 22) == 0) {
     var = Target_pH;
-  } else if (memcmp_P(buffer + 4, F("/api/1/data?Target_pH_type="), 27) == 0) {
-    var = Target_pH_type;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?Heat_or_Chill="), 26) == 0) {
+    var = Heat_or_Chill;
   } else if (memcmp_P(buffer + 4, F("/api/1/data?TargetTemperature="), 30) == 0) {
     var = TargetTemperature;
-  } else if (memcmp_P(buffer + 4, F("/api/1/data?Target_Therm_type="), 30) == 0) {
-    var = Target_Therm_type;
   } else if (memcmp_P(buffer + 4, F("/api/1/data?GoogleSheetInterval="), 32) == 0) {
     var = GoogleSheetInterval;
   } else {
@@ -168,15 +153,13 @@ void EthernetServer_TC::put() {
     state = FINISHED;
     return;
   }
-  if (var == PID) {
-    value = strtofloat(buffer + 20);
-  } else if (var == TankID) {
+  if (var == TankID) {
     value = strtofloat(buffer + 23);
   } else if (var == Target_pH) {
     value = strtofloat(buffer + 26);
-  } else if (var == Target_pH_type) {
-    value = strtofloat(buffer + 31);
-  } else if (var == TargetTemperature || var == Target_Therm_type) {
+  } else if (var == Heat_or_Chill) {
+    value = strtofloat(buffer + 30);
+  } else if (var == TargetTemperature) {
     value = strtofloat(buffer + 34);
   } else if (var == GoogleSheetInterval) {
     value = strtofloat(buffer + 36);
@@ -193,9 +176,6 @@ void EthernetServer_TC::put() {
     case Kp:
       PID_TC::instance()->setKp(value);
       break;
-    case PID:
-      PHControl::instance()->enablePID(value);
-      break;
     case TankID:
       EEPROM_TC::instance()->setTankID(value);
       break;
@@ -205,10 +185,8 @@ void EthernetServer_TC::put() {
     case TargetTemperature:
       ThermalControl::instance()->setThermalTarget(value);
       break;
-    case Target_pH_type:
-      // EEPROM_TC::instance()->setPHFunctionType(int(value));
-      break;
-    case Target_Therm_type:
+    case Heat_or_Chill:
+      EEPROM_TC::instance()->setHeat(value);
       break;
     case GoogleSheetInterval:
       EEPROM_TC::instance()->setGoogleSheetInterval(int(value));

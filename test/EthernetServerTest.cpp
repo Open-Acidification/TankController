@@ -22,6 +22,7 @@ unittest_setup() {
   PHControl::instance()->updateControl(7.0);
   ThermalControl::instance()->setThermalTarget(22);
   EEPROM_TC::instance()->setTankID(0);
+  EEPROM_TC::instance()->setHeat(0);
   EEPROM_TC::instance()->setGoogleSheetInterval(65535);
 }
 /**
@@ -710,6 +711,40 @@ unittest(PUT_google_sheets_interval) {
   assertEqual(expectedResponse, response);
   assertEqual(FINISHED, server->getState());
   assertEqual(20, EEPROM_TC::instance()->getGoogleSheetInterval());
+}
+
+unittest(PUT_Heat_Mode) {
+  assertEqual(0, EEPROM_TC::instance()->getHeat());
+
+  EthernetServer_TC* server = EthernetServer_TC::instance();
+  server->setHasClientCalling(true);
+  delay(1);
+  server->loop();
+  EthernetClient_CI client = server->getClient();
+  const char request[] =
+      "PUT /api/1/data?Heat_or_Chill=1 HTTP/1.1\r\n"
+      "Host: localhost:80\r\n"
+      "Accept: text/plain;charset=UTF-8\r\n"
+      "Accept-Encoding: identity\r\n"
+      "Accept-Language: en-US\r\n"
+      "\r\n";
+  client.pushToReadBuffer(request);
+  server->loop();
+  deque<uint8_t>* pBuffer = client.writeBuffer();
+  assertEqual(81, pBuffer->size());
+  String response;
+  while (!pBuffer->empty()) {
+    response.concat(pBuffer->front());
+    pBuffer->pop_front();
+  }
+  const char expectedResponse[] =
+      "HTTP/1.1 303 See Other\r\n"
+      "Location: /api/1/data\r\n"
+      "Access-Control-Allow-Origin: *\r\n"
+      "\r\n";
+  assertEqual(expectedResponse, response);
+  assertEqual(FINISHED, server->getState());
+  assertEqual(1, EEPROM_TC::instance()->getHeat());
 }
 
 unittest(home) {

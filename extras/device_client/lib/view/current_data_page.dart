@@ -21,11 +21,6 @@ class CurrentData extends StatelessWidget {
   final BuildContext context;
 
   bool canEditCurrentInfo(AppData appData) {
-    print('appData.currentData = ${appData.currentData}');
-    print(
-      'appData.currentData.runtimeType = ${appData.currentData.runtimeType}',
-    );
-    print('appData.currentData["Version"] = ${appData.currentData['Version']}');
     String v = appData.currentData['Version']?.trim() ?? '0.0.0';
     final i = v.indexOf('-');
     if (i != -1) {
@@ -62,36 +57,7 @@ class CurrentData extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  if (key == 'Target_pH_type' || key == 'Target_Therm_type')
-                    DropdownButtonFormField<String>(
-                      value: value,
-                      items: const <DropdownMenuItem<String>>[
-                        DropdownMenuItem(
-                          value: '0',
-                          child: Text('Flat'),
-                        ),
-                        DropdownMenuItem(
-                          value: '1',
-                          child: Text('Ramp'),
-                        ),
-                        DropdownMenuItem(
-                          value: '2',
-                          child: Text('Sine'),
-                        ),
-                      ],
-                      onChanged: (String? newValue) {
-                        TcInterface.instance()
-                            .put(
-                          '${appData.currentData["IPAddress"]}',
-                          'data?$key=$newValue',
-                        )
-                            .then((value) {
-                          appData.currentData = json.decode(value);
-                        });
-                        Navigator.pop(context);
-                      },
-                    )
-                  else if (key == 'PID')
+                  if (key == 'PID')
                     DropdownButtonFormField<String>(
                       value: value,
                       items: const <DropdownMenuItem<String>>[
@@ -213,20 +179,13 @@ class CurrentData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(
-      'CurrentData.build found appData.currentData = ${context.read<AppData>().currentData}',
-    );
     return ColoredBox(
       color: Colors.white,
       child: Consumer<AppData>(
         builder: (context, appData, child) {
           final currentDataRows = <DataRow>[];
           final currentData = appData.currentData;
-          // if (currentData.isEmpty) {
-          //   return Container();
-          // }
           final editableFields = currentData['EditableFields'] ?? [];
-          print('editableFields = $editableFields');
           currentData.remove('EditableFields');
           final canEdit = canEditCurrentInfo(appData);
           currentData.forEach(

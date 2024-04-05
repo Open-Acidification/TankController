@@ -80,7 +80,6 @@ int JSONBuilder::buildCurrentValues() {
                               "\"Target_pH\","
                               "\"TargetTemperature\","
                               "\"GoogleSheetInterval\","
-                              "\"PHSlope\","
                               "\"Kp\","
                               "\"Ki\","
                               "\"Kd\","

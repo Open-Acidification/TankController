@@ -80,7 +80,7 @@ int JSONBuilder::buildCurrentValues() {
                               "\"Temperature\":%i.%i,"
                               "\"Target_Therm_type\":%i,"  // Ramp, Sine, or Flat
                               "\"TargetTemperature\":%i.%i,"
-                              "\"IPAddress\":\"%d.%d.%d.%d\",
+                              "\"IPAddress\":\"%d.%d.%d.%d\","
                               "\"MAC\":\"%02X:%02X:%02X:%02X:%02X:%02X\","
                               "\"FreeMemory\":\"%i bytes\","
                               "\"GoogleSheetInterval\":%i,"
@@ -100,7 +100,6 @@ int JSONBuilder::buildCurrentValues() {
                               "\"TargetTemperature\","
                               "\"Target_Therm_type\","
                               "\"GoogleSheetInterval\","
-                              "\"PHSlope\","
                               "\"Kp\","
                               "\"Ki\","
                               "\"Kd\","

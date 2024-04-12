@@ -21,7 +21,7 @@ int JSONBuilder::buildCurrentValues() {
   while (pH_f && pH_f % 10 == 0) {
     pH_f /= 10;
   }
-  float target_pH = PHControl::instance()->getBaseTargetPh();  //
+  float target_pH = PHControl::instance()->getBaseTargetPh();
   int target_pH_f = (int)(target_pH * 1000 + 0.5) % 1000;
   while (target_pH_f && target_pH_f % 10 == 0) {
     target_pH_f /= 10;
@@ -43,6 +43,7 @@ int JSONBuilder::buildCurrentValues() {
   char logFilePath[30];
   SD_TC::instance()->todaysDataFileName(logFilePath, sizeof(logFilePath));
   char pHSlope[20];
+  float pHSineAmplitude = EEPROM_TC::instance()->getPhSineAmplitude();
   PHProbe::instance()->getSlope(pHSlope, sizeof(pHSlope));
   float kp = PID_TC::instance()->getKp();
   float ki = PID_TC::instance()->getKi();
@@ -92,12 +93,12 @@ int JSONBuilder::buildCurrentValues() {
                               "\"GoogleSheetInterval\":%i,"
                               "\"LogFile\":\"%s\","
                               "\"PHSlope\":\"%s\","
+                              "\"pH_SineAmplitude\":\"%f\","
                               "\"Kp\":%i.%i,"
                               "\"Ki\":%i.%i,"
                               "\"Kd\":%i.%i,"
                               "\"PID\":\"%s\","
                               "\"pH_RampEndTime\":%i,"
-                              // "\"pH_SineAmplitude\":%f,"
                               "\"TankID\":%i,"
                               "\"Uptime\":\"%id %ih %im %is\","
                               "\"HeatOrChill\":\"%s\","
@@ -122,9 +123,9 @@ int JSONBuilder::buildCurrentValues() {
                      (int)pH, pH_f, (int)target_pH, target_pH_f, (int)temperature, temperature_f, (int)thermal_target,
                      thermal_target_f, IP[0], IP[1], IP[2], IP[3], mac[0], mac[1], mac[2], mac[3], mac[4], mac[5],
                      (int)TankController::instance()->freeMemory(), EEPROM_TC::instance()->getGoogleSheetInterval(),
-                     logFilePath, pHSlope, (int)kp, (int)((kp - (int)kp) * 10 + 0.5), (int)ki,
+                     logFilePath, pHSlope, pHSineAmplitude, (int)kp, (int)((kp - (int)kp) * 10 + 0.5), (int)ki,
                      (int)((ki - (int)ki) * 10 + 0.5), (int)kd, (int)((kd - (int)kd) * 10 + 0.5), pidStatus, pH_RampEnd,
-                     /*EEPROM_TC::instance()->getPhSineAmplitude(),*/ EEPROM_TC::instance()->getTankID(), days, hours,
-                     minutes, seconds, heatStatus, TankController::instance()->version());
+                     EEPROM_TC::instance()->getTankID(), days, hours, minutes, seconds, heatStatus,
+                     TankController::instance()->version());
   return bytes;
 }

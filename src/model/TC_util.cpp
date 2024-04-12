@@ -15,7 +15,7 @@ int strscpy(char *destination, const char *source, unsigned long sizeOfDestinati
   } else {
     // Put a null terminator in the final byte
     *((char *)memcpy(destination, source, sizeOfDestination - 1) + sizeOfDestination - 1) = '\0';
-    // serial(F("WARNING! String \"%s\" was truncated to \"%s\""), source, destination);
+    serial(F("WARNING! String \"%s\" was truncated to \"%s\""), source, destination);
     // TODO: Log a WARNING that a string was truncated
     return 1;
   }

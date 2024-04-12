@@ -279,7 +279,6 @@ void EthernetServer_TC::getApiHandler() {
 
 // Get list of current values
 void EthernetServer_TC::currentData() {
-  // serial(F("EthernetServer_TC::currentData() - 1"));
   JSONBuilder builder;
   int size = builder.buildCurrentValues();
   char *text = builder.bufferPtr();

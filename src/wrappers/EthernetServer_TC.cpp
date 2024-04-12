@@ -135,11 +135,12 @@ void EthernetServer_TC::put() {
     Ki,
     Kp,
     PID,
+    pH_RampEndTime,
+    pH_SineAmplitude,
     TankID,
     Target_pH,
+    HeatOrChill,
     TargetTemperature,
-    Target_pH_type,
-    Target_Therm_type,
     GoogleSheetInterval
   } var;
   if (memcmp_P(buffer + 4, F("/api/1/data?Kd="), 15) == 0) {
@@ -154,12 +155,14 @@ void EthernetServer_TC::put() {
     var = TankID;
   } else if (memcmp_P(buffer + 4, F("/api/1/data?Target_pH="), 22) == 0) {
     var = Target_pH;
-  } else if (memcmp_P(buffer + 4, F("/api/1/data?Target_pH_type="), 27) == 0) {
-    var = Target_pH_type;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?HeatOrChill="), 24) == 0) {
+    var = HeatOrChill;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?pH_RampEndTime="), 29) == 0) {
+    var = pH_RampEndTime;
   } else if (memcmp_P(buffer + 4, F("/api/1/data?TargetTemperature="), 30) == 0) {
     var = TargetTemperature;
-  } else if (memcmp_P(buffer + 4, F("/api/1/data?Target_Therm_type="), 30) == 0) {
-    var = Target_Therm_type;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?pH_SineAmplitude="), 31) == 0) {
+    var = pH_SineAmplitude;
   } else if (memcmp_P(buffer + 4, F("/api/1/data?GoogleSheetInterval="), 32) == 0) {
     var = GoogleSheetInterval;
   } else {
@@ -169,15 +172,27 @@ void EthernetServer_TC::put() {
     return;
   }
   if (var == PID) {
-    value = strtofloat(buffer + 20);
+    if (memcmp_P(buffer + 20, F("OFF"), 3) == 0) {
+      value = 0;
+    } else {
+      value = 1;
+    }
   } else if (var == TankID) {
     value = strtofloat(buffer + 23);
   } else if (var == Target_pH) {
     value = strtofloat(buffer + 26);
-  } else if (var == Target_pH_type) {
-    value = strtofloat(buffer + 31);
-  } else if (var == TargetTemperature || var == Target_Therm_type) {
+  } else if (var == HeatOrChill) {
+    if (memcmp_P(buffer + 28, F("CHILL"), 5) == 0) {
+      value = 0;
+    } else {
+      value = 1;
+    }
+  } else if (var == pH_RampEndTime) {
+    value = strtofloat(buffer + 33);
+  } else if (var == TargetTemperature) {
     value = strtofloat(buffer + 34);
+  } else if (var == pH_SineAmplitude) {
+    value = strtofloat(buffer + 35);
   } else if (var == GoogleSheetInterval) {
     value = strtofloat(buffer + 36);
   } else {
@@ -196,6 +211,18 @@ void EthernetServer_TC::put() {
     case PID:
       PHControl::instance()->enablePID(value);
       break;
+    case pH_RampEndTime:
+      /* or display this as duration. PHControl::instance()->setRampDuration(value);
+      however, I would need to save the value or something in order to display it,
+      since there's no getRampDuration.
+      */
+      EEPROM_TC::instance()->setPhRampTimeEnd(value);
+      break;
+    case pH_SineAmplitude:
+      // take ph ramp end time to act as sine period in hours?? or take in two parameters?
+      // PHControl::instance()->setSine(value, value); is also an option
+      // EEPROM_TC::instance()->setPhSineAmplitude(value);
+      break;
     case TankID:
       EEPROM_TC::instance()->setTankID(value);
       break;
@@ -205,10 +232,8 @@ void EthernetServer_TC::put() {
     case TargetTemperature:
       ThermalControl::instance()->setThermalTarget(value);
       break;
-    case Target_pH_type:
-      // EEPROM_TC::instance()->setPHFunctionType(int(value));
-      break;
-    case Target_Therm_type:
+    case HeatOrChill:
+      EEPROM_TC::instance()->setHeat(value);
       break;
     case GoogleSheetInterval:
       EEPROM_TC::instance()->setGoogleSheetInterval(int(value));

@@ -62,21 +62,17 @@ class CurrentData extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  if (key == 'Target_pH_type' || key == 'Target_Therm_type')
+                  if (key == 'PID')
                     DropdownButtonFormField<String>(
                       value: value,
                       items: const <DropdownMenuItem<String>>[
                         DropdownMenuItem(
-                          value: '0',
-                          child: Text('Flat'),
+                          value: 'OFF',
+                          child: Text('OFF'),
                         ),
                         DropdownMenuItem(
-                          value: '1',
-                          child: Text('Ramp'),
-                        ),
-                        DropdownMenuItem(
-                          value: '2',
-                          child: Text('Sine'),
+                          value: 'ON',
+                          child: Text('ON'),
                         ),
                       ],
                       onChanged: (String? newValue) {
@@ -91,17 +87,17 @@ class CurrentData extends StatelessWidget {
                         Navigator.pop(context);
                       },
                     )
-                  else if (key == 'PID')
+                  else if (key == 'HeatOrChill')
                     DropdownButtonFormField<String>(
                       value: value,
                       items: const <DropdownMenuItem<String>>[
                         DropdownMenuItem(
-                          value: 'OFF',
-                          child: Text('OFF'),
+                          value: 'CHILL',
+                          child: Text('CHILL'),
                         ),
                         DropdownMenuItem(
-                          value: 'ON',
-                          child: Text('ON'),
+                          value: 'HEAT',
+                          child: Text('HEAT'),
                         ),
                       ],
                       onChanged: (String? newValue) {

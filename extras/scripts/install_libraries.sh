@@ -9,14 +9,12 @@ export SHALLOW_MASTER=(--depth 1 --branch master --single-branch)
 # use this if you started with SHALLOW and now want the full repository with history
 # git fetch --unshallow
 
-# if ! [ $(id -u) = 0 ]; then
-#   bundle config set --local path 'vendor/bundle'
-#   bundle install
-#   mkdir -p "$(bundle exec arduino_library_location.rb)"
-#   cd "$(bundle exec arduino_library_location.rb)"
-# fi
-
-cd /c/Users/lydia/OneDrive/Documents/Arduino/libraries/
+if ! [ $(id -u) = 0 ]; then
+  bundle config set --local path 'vendor/bundle'
+  bundle install
+  mkdir -p "$(bundle exec arduino_library_location.rb)"
+  cd "$(bundle exec arduino_library_location.rb)"
+fi
 
 # add missing libraries
 export GITHUB="https://github.com/Arduino-CI"

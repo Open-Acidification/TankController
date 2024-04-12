@@ -19,7 +19,7 @@ int JSONBuilder::buildCurrentValues() {
   while (pH_f && pH_f % 10 == 0) {
     pH_f /= 10;
   }
-  float target_pH = PHControl::instance()->getBaseTargetPh();  //
+  float target_pH = PHControl::instance()->getBaseTargetPh();
   int target_pH_f = (int)(target_pH * 1000 + 0.5) % 1000;
   while (target_pH_f && target_pH_f % 10 == 0) {
     target_pH_f /= 10;

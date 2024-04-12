@@ -48,7 +48,6 @@ void main() {
       "Kd": 0.0,
       "TankID": 3,
       "Uptime": "0d 0h 1m 7s",
-      "Heat_or_Chill": 0,
       "Version": "22.04.1",
       "EditableFields": [
             "Target_pH",
@@ -58,8 +57,7 @@ void main() {
             "Kp",
             "Ki",
             "Kd",
-            "TankID",
-            "Heat_or_Chill"
+            "TankID"
       ]
 }
 ''',

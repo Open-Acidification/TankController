@@ -74,7 +74,6 @@ int JSONBuilder::buildCurrentValues() {
                               "\"PID\":\"%s\","
                               "\"TankID\":%i,"
                               "\"Uptime\":\"%id %ih %im %is\","
-                              "\"Heat_or_Chill\":\"%i\","
                               "\"Version\":\"%s\","
                               "\"EditableFields\":["  // List of editable fields follows
                               "\"Target_pH\","
@@ -83,8 +82,7 @@ int JSONBuilder::buildCurrentValues() {
                               "\"Kp\","
                               "\"Ki\","
                               "\"Kd\","
-                              "\"TankID\","
-                              "\"Heat_or_Chill\""
+                              "\"TankID\""
                               "]"
                               "}"),
                      (int)pH, pH_f, (int)target_pH, target_pH_f, (int)temperature, temperature_f, (int)thermal_target,
@@ -93,6 +91,6 @@ int JSONBuilder::buildCurrentValues() {
                      logFilePath, pHSlope, (int)kp, (int)((kp - (int)kp) * 10 + 0.5), (int)ki,
                      (int)((ki - (int)ki) * 10 + 0.5), (int)kd, (int)((kd - (int)kd) * 10 + 0.5), pidStatus,
                      EEPROM_TC::instance()->getTankID(), days, hours, minutes, seconds,
-                     (int)EEPROM_TC::instance()->getHeat(), TankController::instance()->version());
+                     TankController::instance()->version());
   return bytes;
 }

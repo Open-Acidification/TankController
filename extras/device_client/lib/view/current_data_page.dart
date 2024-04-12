@@ -40,7 +40,7 @@ class CurrentData extends StatelessWidget {
     return latestVersion >= Version.parse('99.9.9'); // not supported yet!
   }
 
-  Future<void> handleNewValue(String newValue, AppData appData) async {
+  Future<void> putNewValue(String newValue, AppData appData) async {
     await TcInterface.instance()
         .put(
       '${appData.currentData["IPAddress"]}',
@@ -85,14 +85,14 @@ class CurrentData extends StatelessWidget {
                         ),
                       ],
                       onChanged: (String? newValue) {
-                        handleNewValue(newValue!, appData);
+                        putNewValue(newValue!, appData);
                       },
                     )
                   else
                     TextFormField(
                       initialValue: value,
                       onFieldSubmitted: (String newValue) {
-                        handleNewValue(newValue, appData);
+                        putNewValue(newValue, appData);
                       },
                     ),
                   const SizedBox(height: 20),

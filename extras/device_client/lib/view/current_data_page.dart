@@ -40,6 +40,20 @@ class CurrentData extends StatelessWidget {
     return latestVersion >= Version.parse('99.9.9'); // not supported yet!
   }
 
+  Future<void> handleNewValue(String newValue, AppData appData) async {
+    await TcInterface.instance()
+        .put(
+      '${appData.currentData["IPAddress"]}',
+      'data?$key=$newValue',
+    )
+        .then((value) {
+      appData.currentData = json.decode(value);
+    });
+    if (context.mounted) {
+      Navigator.pop(context);
+    }
+  }
+
   Future<void> showEditDialog(
     AppData appData,
     BuildContext context,
@@ -71,30 +85,14 @@ class CurrentData extends StatelessWidget {
                         ),
                       ],
                       onChanged: (String? newValue) {
-                        TcInterface.instance()
-                            .put(
-                          '${appData.currentData["IPAddress"]}',
-                          'data?$key=$newValue',
-                        )
-                            .then((value) {
-                          appData.currentData = json.decode(value);
-                        });
-                        Navigator.pop(context);
+                        handleNewValue(newValue!, appData);
                       },
                     )
                   else
                     TextFormField(
                       initialValue: value,
-                      onFieldSubmitted: (val) {
-                        TcInterface.instance()
-                            .put(
-                          '${appData.currentData["IPAddress"]}',
-                          'data?$key=$val',
-                        )
-                            .then((value) {
-                          appData.currentData = json.decode(value);
-                        });
-                        Navigator.pop(context);
+                      onFieldSubmitted: (String newValue) {
+                        handleNewValue(newValue, appData);
                       },
                     ),
                   const SizedBox(height: 20),

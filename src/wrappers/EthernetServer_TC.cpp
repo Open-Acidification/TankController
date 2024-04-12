@@ -157,11 +157,11 @@ void EthernetServer_TC::put() {
     var = Target_pH;
   } else if (memcmp_P(buffer + 4, F("/api/1/data?HeatOrChill="), 24) == 0) {
     var = HeatOrChill;
-  } else if (memcmp_P(buffer + 4, F("/api/1/data?pH_RampEndTime="), 29) == 0) {
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?pH_RampEndTime="), 27) == 0) {
     var = pH_RampEndTime;
   } else if (memcmp_P(buffer + 4, F("/api/1/data?TargetTemperature="), 30) == 0) {
     var = TargetTemperature;
-  } else if (memcmp_P(buffer + 4, F("/api/1/data?pH_SineAmplitude="), 31) == 0) {
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?pH_SineAmplitude="), 29) == 0) {
     var = pH_SineAmplitude;
   } else if (memcmp_P(buffer + 4, F("/api/1/data?GoogleSheetInterval="), 32) == 0) {
     var = GoogleSheetInterval;

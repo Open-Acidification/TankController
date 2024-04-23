@@ -31,18 +31,14 @@ class TankListReaderForApp implements TankListReader {
   Future<List<Tank>> fetchList() async {
     final url = Uri.https('oap.cs.wallawalla.edu', '/logs/index.html');
     final http.Response response = await http.get(url);
-    debugPrint('Response status: ${response.statusCode}');
     if (response.statusCode != 200) {
-      throw response.statusCode;
+      throw response.reasonPhrase!;
     }
-    final htmlString = response.body;
-    final document = parse(htmlString);
+    final document = parse(response.body);
     final listItems = document
         .getElementsByTagName('li')
         .map((e) => e.children[0].innerHtml)
         .toList();
-    debugPrint(listItems.toList().toString());
-    final tankList = listItems.map((name) => Tank(name)).toList();
-    return tankList;
+    return listItems.map((name) => Tank(name)).toList();
   }
 }

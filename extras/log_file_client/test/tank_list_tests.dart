@@ -14,7 +14,7 @@ void main() {
 
   group('Fetching List of logs', () {
     test('fetchList() with test class', () async {
-      final getTankList = GetTankListForTest();
+      final getTankList = TankListReaderForTest();
       final result = await getTankList.fetchList();
 
       expect(result, isList);
@@ -24,7 +24,7 @@ void main() {
       expect(result[2].name, 'test3');
     });
     test('fetchList() from OAP html list', () async {
-      final getTankList = GetTankListForApp();
+      final getTankList = TankListReaderForApp();
       final result = await getTankList.fetchList();
 
       expect(result, isList);

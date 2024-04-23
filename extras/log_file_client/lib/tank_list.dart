@@ -7,19 +7,26 @@ class Tank {
   late String name;
 }
 
-abstract class GetTankList {
+abstract class TankListReader {
   Future<List<Tank>> fetchList();
+  static TankListReader? _current;
+  static TankListReader get current {
+    _current ??= TankListReaderForApp();
+    return _current!;
+  }
+
+  static set current(TankListReader? aTankListReader) =>
+      _current = aTankListReader;
 }
 
-class GetTankListForTest implements GetTankList {
+class TankListReaderForTest implements TankListReader {
   @override
   Future<List<Tank>> fetchList() async {
-    final listItems = [Tank('test1'), Tank('test2'), Tank('test3')];
-    return listItems;
+    return [Tank('test1'), Tank('test2'), Tank('test3')];
   }
 }
 
-class GetTankListForApp implements GetTankList {
+class TankListReaderForApp implements TankListReader {
   @override
   Future<List<Tank>> fetchList() async {
     final url = Uri.https('oap.cs.wallawalla.edu', '/logs/index.html');

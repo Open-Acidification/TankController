@@ -6,16 +6,16 @@
  *
  * The singleton is called from the loop() method of the TankController class.
  * It manages three logs: data, serial, and event.
- * 
+ *
  * The data log is written every second and includes the following:
  * "time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd".
- * 
+ *
  * The serial log is written every minute and includes the following:
  * "HH:MM, current pH, current temperature".
- * 
+ *
  * The event log is written every minute and includes both data and other events.
- * The other events are based on either the PHProbe reporting a new slope or the 
- * EEPROM having a new value written to it. In each case, it means a configuration 
+ * The other events are based on either the PHProbe reporting a new slope or the
+ * EEPROM having a new value written to it. In each case, it means a configuration
  * changed.
  *
  */

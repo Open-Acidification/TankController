@@ -17,11 +17,13 @@
 unittest_setup() {
   GODMODE()->resetClock();
   PID_TC::instance()->setTunings(0.0, 0.0, 0.0);
+  PHControl::instance()->enablePID(0);
   PHControl::instance()->setBaseTargetPh(7.0);
   PHControl::instance()->setRampDuration(0.0);
   PHControl::instance()->updateControl(7.0);
   ThermalControl::instance()->setThermalTarget(22);
   EEPROM_TC::instance()->setTankID(0);
+  EEPROM_TC::instance()->setHeat(0);
   EEPROM_TC::instance()->setGoogleSheetInterval(65535);
 }
 /**
@@ -165,6 +167,7 @@ unittest(currentData) {
   ThermalProbe_TC::instance()->setTemperature(21.25, true);  // actual
   ThermalControl::instance()->setThermalTarget(21.75);       // target
   TankController::instance()->loop(false);                   // for targets to take effect
+  EEPROM_TC::instance()->setHeat(0);
   PID_TC::instance()->setTunings(5000.5, 1234.46, 987.44);
 
   EthernetServer_TC* server = EthernetServer_TC::instance();
@@ -213,8 +216,22 @@ unittest(currentData) {
       "\"PID\":\"ON\","
       "\"TankID\":0,"
       "\"Uptime\":\"0d 0h 0m 1s\","
+      "\"HeatOrChill\":\"CHILL\","
       "\"Version\":\"" VERSION
-      "\""
+      ","
+      "\"EditableFields\":["
+      "\"Target_pH\","
+      "\"TargetTemperature\","
+      "\"GoogleSheetInterval\","
+      "\"Kp\","
+      "\"Ki\","
+      "\"Kd\","
+      "\"pH_HoursOfChange\","
+      "\"pH_SineAmplitude\","
+      "\"TankID\","
+      "\"HeatOrChill\","
+      "\"PID\""
+      "]"
       "}\r\n";
   assertEqual(expectedResponse, response);
   assertEqual(FINISHED, server->getState());
@@ -710,6 +727,120 @@ unittest(PUT_google_sheets_interval) {
   assertEqual(expectedResponse, response);
   assertEqual(FINISHED, server->getState());
   assertEqual(20, EEPROM_TC::instance()->getGoogleSheetInterval());
+}
+
+unittest(PUT_Heat_Mode) {
+  assertEqual(0, EEPROM_TC::instance()->getHeat());
+
+  EthernetServer_TC* server = EthernetServer_TC::instance();
+  server->setHasClientCalling(true);
+  delay(1);
+  server->loop();
+  EthernetClient_CI client = server->getClient();
+  const char request[] =
+      "PUT /api/1/data?HeatOrChill=HEAT HTTP/1.1\r\n"
+      "Host: localhost:80\r\n"
+      "Accept: text/plain;charset=UTF-8\r\n"
+      "Accept-Encoding: identity\r\n"
+      "Accept-Language: en-US\r\n"
+      "\r\n";
+  client.pushToReadBuffer(request);
+  server->loop();
+  deque<uint8_t>* pBuffer = client.writeBuffer();
+  assertEqual(81, pBuffer->size());
+  String response;
+  while (!pBuffer->empty()) {
+    response.concat(pBuffer->front());
+    pBuffer->pop_front();
+  }
+  const char expectedResponse[] =
+      "HTTP/1.1 303 See Other\r\n"
+      "Location: /api/1/data\r\n"
+      "Access-Control-Allow-Origin: *\r\n"
+      "\r\n";
+  assertEqual(expectedResponse, response);
+  assertEqual(FINISHED, server->getState());
+  assertEqual(1, EEPROM_TC::instance()->getHeat());
+
+  server->setHasClientCalling(true);
+  delay(1);
+  server->loop();
+
+  const char newRequest[] =
+      "PUT /api/1/data?HeatOrChill=CHILL HTTP/1.1\r\n"
+      "Host: localhost:80\r\n"
+      "Accept: text/plain;charset=UTF-8\r\n"
+      "Accept-Encoding: identity\r\n"
+      "Accept-Language: en-US\r\n"
+      "\r\n";
+  client.pushToReadBuffer(newRequest);
+  server->loop();
+  assertEqual(81, pBuffer->size());
+  response.remove(0);  // clear the response
+  while (!pBuffer->empty()) {
+    response.concat(pBuffer->front());
+    pBuffer->pop_front();
+  }
+  assertEqual(expectedResponse, response);
+  assertEqual(FINISHED, server->getState());
+  assertEqual(0, EEPROM_TC::instance()->getHeat());
+}
+
+unittest(PUT_PID) {
+  assertEqual(0, PHControl::instance()->getUsePID());
+
+  EthernetServer_TC* server = EthernetServer_TC::instance();
+  server->setHasClientCalling(true);
+  delay(1);
+  server->loop();
+  EthernetClient_CI client = server->getClient();
+  const char request[] =
+      "PUT /api/1/data?PID=ON HTTP/1.1\r\n"
+      "Host: localhost:80\r\n"
+      "Accept: text/plain;charset=UTF-8\r\n"
+      "Accept-Encoding: identity\r\n"
+      "Accept-Language: en-US\r\n"
+      "\r\n";
+  client.pushToReadBuffer(request);
+  server->loop();
+  deque<uint8_t>* pBuffer = client.writeBuffer();
+  assertEqual(81, pBuffer->size());
+  String response;
+  while (!pBuffer->empty()) {
+    response.concat(pBuffer->front());
+    pBuffer->pop_front();
+  }
+  const char expectedResponse[] =
+      "HTTP/1.1 303 See Other\r\n"
+      "Location: /api/1/data\r\n"
+      "Access-Control-Allow-Origin: *\r\n"
+      "\r\n";
+  assertEqual(expectedResponse, response);
+  assertEqual(FINISHED, server->getState());
+  assertEqual(1, PHControl::instance()->getUsePID());
+
+  server->setHasClientCalling(true);
+  delay(1);
+  server->loop();
+
+  const char newRequest[] =
+      "PUT /api/1/data?PID=OFF HTTP/1.1\r\n"
+      "Host: localhost:80\r\n"
+      "Accept: text/plain;charset=UTF-8\r\n"
+      "Accept-Encoding: identity\r\n"
+      "Accept-Language: en-US\r\n"
+      "\r\n";
+  client.pushToReadBuffer(newRequest);
+  server->loop();
+  assertEqual(81, pBuffer->size());
+  response.remove(0);  // clear the response
+  while (!pBuffer->empty()) {
+    response.concat(pBuffer->front());
+    pBuffer->pop_front();
+  }
+  assertEqual(expectedResponse, response);
+  assertEqual(FINISHED, server->getState());
+  assertEqual(0, PHControl::instance()->getUsePID());
 }
 
 unittest(home) {

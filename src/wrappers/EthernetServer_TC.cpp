@@ -135,7 +135,7 @@ void EthernetServer_TC::put() {
     Ki,
     Kp,
     PID,
-    pH_RampEndTime,
+    pH_HoursOfChange,
     pH_SineAmplitude,
     TankID,
     Target_pH,
@@ -157,12 +157,12 @@ void EthernetServer_TC::put() {
     var = Target_pH;
   } else if (memcmp_P(buffer + 4, F("/api/1/data?HeatOrChill="), 24) == 0) {
     var = HeatOrChill;
-  } else if (memcmp_P(buffer + 4, F("/api/1/data?pH_RampEndTime="), 27) == 0) {
-    var = pH_RampEndTime;
-  } else if (memcmp_P(buffer + 4, F("/api/1/data?TargetTemperature="), 30) == 0) {
-    var = TargetTemperature;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?pH_HoursOfChange="), 29) == 0) {
+    var = pH_HoursOfChange;
   } else if (memcmp_P(buffer + 4, F("/api/1/data?pH_SineAmplitude="), 29) == 0) {
     var = pH_SineAmplitude;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?TargetTemperature="), 30) == 0) {
+    var = TargetTemperature;
   } else if (memcmp_P(buffer + 4, F("/api/1/data?GoogleSheetInterval="), 32) == 0) {
     var = GoogleSheetInterval;
   } else {
@@ -187,12 +187,10 @@ void EthernetServer_TC::put() {
     } else {
       value = 1;
     }
-  } else if (var == pH_RampEndTime) {
-    value = strtofloat(buffer + 33);
   } else if (var == TargetTemperature) {
     value = strtofloat(buffer + 34);
-  } else if (var == pH_SineAmplitude) {
-    value = strtofloat(buffer + 35);
+  } else if (var == pH_SineAmplitude || var == pH_HoursOfChange) {
+    value = strtofloat(buffer + 33);
   } else if (var == GoogleSheetInterval) {
     value = strtofloat(buffer + 36);
   } else {
@@ -211,17 +209,16 @@ void EthernetServer_TC::put() {
     case PID:
       PHControl::instance()->enablePID(value);
       break;
-    case pH_RampEndTime:
-      /* or display this as duration. PHControl::instance()->setRampDuration(value);
-      however, I would need to save the value or something in order to display it,
-      since there's no getRampDuration.
-      */
-      EEPROM_TC::instance()->setPhRampTimeEnd(value);
+    case pH_HoursOfChange:
+      PHControl::instance()->setRampDuration(value);
       break;
     case pH_SineAmplitude:
-      // take ph ramp end time to act as sine period in hours?? or take in two parameters?
-      // PHControl::instance()->setSine(value, value); is also an option
-      // EEPROM_TC::instance()->setPhSineAmplitude(value);
+      if (PHControl::instance()->getPhRampTimeEnd() > 0) {
+        PHControl::instance()->setSine(
+            value, ((PHControl::instance()->getPhRampTimeEnd() - PHControl::instance()->getPhRampTimeStart()) / 3600));
+      } else {
+        PHControl::instance()->setSine(value, 0);
+      }
       break;
     case TankID:
       EEPROM_TC::instance()->setTankID(value);

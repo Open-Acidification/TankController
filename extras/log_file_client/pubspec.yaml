@@ -1,7 +1,7 @@
 name: log_file_client
 description: "A new Flutter project."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 24.3.2
+version: 24.4.1
 
 environment:
   sdk: '>=3.3.1 <4.0.0'

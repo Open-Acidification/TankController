@@ -75,12 +75,31 @@ Future<Response> _post(Request req, String path) async {
   return Response.ok(null);
 }
 
+/*
+ * read the root directory and create an index.html file
+ */
+Future<void> _createIndex() async {
+  final sink = File('$rootDir/index.html').openWrite();
+  sink.write('<html><body><ul>');
+  await for (final file in Directory(rootDir).list()) {
+    if (file is File) {
+      sink.write(
+        '<li><a href="${file.path}">${file.path}</a></li>',
+      );
+    }
+  }
+  sink.write('</ul></body></html>');
+  // close the file
+  await sink.close();
+}
+
 void main(List<String> args) async {
   // assign rootDir from args
   if (args.isNotEmpty) {
     rootDir = args[0];
   }
   await Directory(rootDir).create(recursive: true);
+  await _createIndex();
 
   // Use any available host or container IP (usually `0.0.0.0`).
   final ip = InternetAddress.anyIPv4;

@@ -19,7 +19,7 @@ unittest_setup() {
   PID_TC::instance()->setTunings(0.0, 0.0, 0.0);
   PHControl::instance()->enablePID(0);
   PHControl::instance()->setBaseTargetPh(7.0);
-  PHControl::instance()->setRampDuration(0.0);
+  PHControl::instance()->setRampDurationHours(0.0);
   PHControl::instance()->updateControl(7.0);
   ThermalControl::instance()->setThermalTarget(22);
   EEPROM_TC::instance()->setTankID(0);

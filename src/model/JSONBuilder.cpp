@@ -82,21 +82,32 @@ int JSONBuilder::buildCurrentValues() {
   Sine wavelength and amplitude*/
 
   float pH_HoursOfChange = 1;
+  int pH_HoursOfChange_f = 0;
   // if sine amplitude is nonzero, then we are in sine mode and display the sine period
   if (pHSineAmplitude != 0) {
     pH_HoursOfChange = EEPROM_TC::instance()->getPhSinePeriod() / 3600;
+    // if sine amplitude is zero, then we are in ramp mode and display the ramp time
   } else if (PHControl::instance()->getPhRampTimeEnd() > 0) {
-    pH_HoursOfChange = (PHControl::instance()->getPhRampTimeEnd() - PHControl::instance()->getPhRampTimeStart()) / 3600;
+    pH_HoursOfChange =
+        ((PHControl::instance()->getPhRampTimeEnd() - PHControl::instance()->getPhRampTimeStart()) / 3600);
+  } else {
+    pH_HoursOfChange = 0;
   }
-  int pH_HoursOfChange_f = (int)(pH_HoursOfChange * 1000 + 0.5) % 1000;
-  while (pH_HoursOfChange_f && pH_HoursOfChange_f % 10 == 0) {
-    pH_HoursOfChange_f /= 10;
+  if (pH_HoursOfChange > 0) {
+    // stripping off integer part, leaving only the decimal part to avoid overflow
+    float x = pH_HoursOfChange - (int)pH_HoursOfChange;
+    pH_HoursOfChange_f = (int)(x);
+    while (pH_HoursOfChange_f && pH_HoursOfChange_f % 10 == 0) {
+      pH_HoursOfChange_f /= 10;
+    }
   }
 
   bytes = snprintf_P(buffer, BUFFER_SIZE,
                      (PGM_P)F("{"
                               "\"pH\":%i.%i,"
                               "\"Target_pH\":%i.%i,"
+                              "\"pH_HoursOfChange\":%i.%i,"
+                              "\"pH_SineAmplitude\":%i.%i,"
                               "\"Temperature\":%i.%i,"
                               "\"TargetTemperature\":%i.%i,"
                               "\"IPAddress\":\"%d.%d.%d.%d\","
@@ -105,12 +116,10 @@ int JSONBuilder::buildCurrentValues() {
                               "\"GoogleSheetInterval\":%i,"
                               "\"LogFile\":\"%s\","
                               "\"PHSlope\":\"%s\","
-                              "\"pH_SineAmplitude\":%i.%i,"
                               "\"Kp\":%i.%i,"
                               "\"Ki\":%i.%i,"
                               "\"Kd\":%i.%i,"
                               "\"PID\":\"%s\","
-                              "\"pH_HoursOfChange\":%i.%i,"
                               "\"TankID\":%i,"
                               "\"Uptime\":\"%id %ih %im %is\","
                               "\"HeatOrChill\":\"%s\","
@@ -130,12 +139,12 @@ int JSONBuilder::buildCurrentValues() {
                               "\"PID\""
                               "]"
                               "}"),
-                     (int)pH, pH_f, (int)target_pH, target_pH_f, (int)temperature, temperature_f, (int)thermal_target,
+                     (int)pH, pH_f, (int)target_pH, target_pH_f, (int)pH_HoursOfChange, pH_HoursOfChange_f,
+                     (int)pHSineAmplitude, pHSineAmplitude_f, (int)temperature, temperature_f, (int)thermal_target,
                      thermal_target_f, IP[0], IP[1], IP[2], IP[3], mac[0], mac[1], mac[2], mac[3], mac[4], mac[5],
                      (int)TankController::instance()->freeMemory(), EEPROM_TC::instance()->getGoogleSheetInterval(),
-                     logFilePath, pHSlope, (int)pHSineAmplitude, pHSineAmplitude_f, (int)kp,
-                     (int)((kp - (int)kp) * 10 + 0.5), (int)ki, (int)((ki - (int)ki) * 10 + 0.5), (int)kd,
-                     (int)((kd - (int)kd) * 10 + 0.5), pidStatus, (int)pH_HoursOfChange, pH_HoursOfChange_f,
+                     logFilePath, pHSlope, (int)kp, (int)((kp - (int)kp) * 10 + 0.5), (int)ki,
+                     (int)((ki - (int)ki) * 10 + 0.5), (int)kd, (int)((kd - (int)kd) * 10 + 0.5), pidStatus,
                      EEPROM_TC::instance()->getTankID(), days, hours, minutes, seconds, heatStatus,
                      TankController::instance()->version());
   return bytes;

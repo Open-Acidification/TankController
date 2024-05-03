@@ -210,14 +210,30 @@ void EthernetServer_TC::put() {
       PHControl::instance()->enablePID(value);
       break;
     case pH_HoursOfChange:
-      PHControl::instance()->setRampDuration(value);
+      if (PHControl::instance()->getAmplitude() > 0) {
+        serial(F("Sine mode, getAmplitude is > 0"));
+        PHControl::instance()->setSine(PHControl::instance()->getAmplitude(), value);
+      } else {
+        serial(F("Ramp mode, getAmplitude is 0"));
+        PHControl::instance()->setRampDurationHours(value);
+      }
       break;
     case pH_SineAmplitude:
-      if (PHControl::instance()->getPhRampTimeEnd() > 0) {
+      // if (PHControl::instance()->getPhRampTimeEnd() > 0 /* && value != 0 */) {
+      if (!PHControl::instance()->getAmplitude()) {
+        serial(F("---Previous sine amp. is 0, setting sine mode with previous ramp val.---"));
         PHControl::instance()->setSine(
-            value, ((PHControl::instance()->getPhRampTimeEnd() - PHControl::instance()->getPhRampTimeStart()) / 3600));
+            value, (PHControl::instance()->getPhRampTimeEnd() - PHControl::instance()->getPhRampTimeStart()) / 3600);
+        // (PHControl::instance()->getPhRampTimeEnd() - PHControl::instance()->getPhRampTimeStart()) / 3600)
+
+        // } else if (value == 0) {
+        //   serial(F("Setting flat mode, sineAmplitude is changed to 0"));
+        //   PHControl::instance()->setRampDurationHours(0);
+        //   PHControl::instance()->setSine(0, 0);
       } else {
-        PHControl::instance()->setSine(value, 0);
+        serial(F("Setting sine mode, previous amplitude is %f so setting with previous sine period."),
+               PHControl::instance()->getAmplitude());
+        PHControl::instance()->setSine(value, EEPROM_TC::instance()->getPhSinePeriod() / 3600);
       }
       break;
     case TankID:

@@ -87,7 +87,7 @@ void PHControl::setBaseTargetPh(float newPh) {
   }
 }
 
-void PHControl::setRampDuration(float newPhRampDuration) {
+void PHControl::setRampDurationHours(float newPhRampDuration) {
   if (newPhRampDuration > 0) {
     float currentRampTime = rampTimeEnd - rampTimeStart;
     char buffer1[10];

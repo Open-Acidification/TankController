@@ -29,7 +29,7 @@ void SetPHTarget::setValue(float value) {
     start();
   } else {
     PHControl::instance()->setBaseTargetPh(values[0]);
-    PHControl::instance()->setRampDuration(values[1]);
+    PHControl::instance()->setRampDurationHours(values[1]);
     char output0[17];
     char output1[17];
     snprintf_P(output0, sizeof(output0), (PGM_P)F("New pH=%i.%03i"), (int)values[0],

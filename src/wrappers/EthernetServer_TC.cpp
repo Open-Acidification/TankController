@@ -210,30 +210,34 @@ void EthernetServer_TC::put() {
       PHControl::instance()->enablePID(value);
       break;
     case pH_HoursOfChange:
-      if (PHControl::instance()->getAmplitude() > 0) {
-        serial(F("Sine mode, getAmplitude is > 0"));
-        PHControl::instance()->setSine(PHControl::instance()->getAmplitude(), value);
+      if (PHControl::instance()->getAmplitude() > 0 && value != 0) {
+        // serial(F("Sine mode, getAmplitude is > 0"));
+        // add a check to see if value is 0 and if so, set sine amplitude and period with 0 mode, check type?
+        PHControl::instance()->setSineAmplitudeAndHours(PHControl::instance()->getAmplitude(), value);
       } else {
-        serial(F("Ramp mode, getAmplitude is 0"));
+        // serial(F("Ramp mode, getAmplitude is 0"));
+        // serial(F("---Previous sine amp. is 0, setting ramp mode with previous ramp val, %f.---"),
+        //        (PHControl::instance()->getPhRampTimeEnd() - PHControl::instance()->getPhRampTimeStart()) / 3600.0);
         PHControl::instance()->setRampDurationHours(value);
       }
       break;
     case pH_SineAmplitude:
-      // if (PHControl::instance()->getPhRampTimeEnd() > 0 /* && value != 0 */) {
-      if (!PHControl::instance()->getAmplitude()) {
-        serial(F("---Previous sine amp. is 0, setting sine mode with previous ramp val.---"));
-        PHControl::instance()->setSine(
-            value, (PHControl::instance()->getPhRampTimeEnd() - PHControl::instance()->getPhRampTimeStart()) / 3600);
-        // (PHControl::instance()->getPhRampTimeEnd() - PHControl::instance()->getPhRampTimeStart()) / 3600)
-
-        // } else if (value == 0) {
-        //   serial(F("Setting flat mode, sineAmplitude is changed to 0"));
-        //   PHControl::instance()->setRampDurationHours(0);
-        //   PHControl::instance()->setSine(0, 0);
+      if (value == 0) {
+        // if the new amplitude is 0, then we are switching to ramp mode with a placeholder of half the period of the
+        // sine wave
+        PHControl::instance()->setRampDurationHours(PHControl::instance()->getPeriodInSeconds() / 7200.0);
+        PHControl::instance()->setSineAmplitude(value);
+      } else if (PHControl::instance()->getAmplitude()) {
+        // If the previous amplitude was not 0, then we are in sine mode
+        serial(F("Setting sine mode, previous amplitude is %f so setting with previous sine period (%f)."),
+               PHControl::instance()->getAmplitude(), PHControl::instance()->getPeriodInSeconds() / 3600.0);
+        // new method added to change amplitude while retaining old period
+        PHControl::instance()->setSineAmplitude(value);
       } else {
-        serial(F("Setting sine mode, previous amplitude is %f so setting with previous sine period."),
-               PHControl::instance()->getAmplitude());
-        PHControl::instance()->setSine(value, EEPROM_TC::instance()->getPhSinePeriod() / 3600);
+        // If we were previously in ramp mode, change to sine mode using the value 12 hours as the period
+        serial(F("---Previous sine amp. is 0, changing to sine mode with 12"),
+               (PHControl::instance()->getPhRampTimeEnd() - PHControl::instance()->getPhRampTimeStart()) / 3600.0);
+        PHControl::instance()->setSineAmplitudeAndHours(value, 12.0);
       }
       break;
     case TankID:
@@ -496,6 +500,7 @@ bool EthernetServer_TC::fileContinue() {
 // Main loop called by TankController::loop()
 void EthernetServer_TC::loop() {
   if (state == FINISHED) {  // Tear down
+    serial(F("Switching from finished to not connected"));
     state = NOT_CONNECTED;
     memset(buffer, 0, sizeof(buffer));
     bufferContentsSize = 0;
@@ -507,6 +512,7 @@ void EthernetServer_TC::loop() {
     switch (state) {
       case IN_TRANSFER:
         if (fileContinue()) {
+          serial(F("Switching from in transfer to finished"));
           state = FINISHED;
         }
         break;
@@ -517,6 +523,7 @@ void EthernetServer_TC::loop() {
         rootdir();
         break;
       case NOT_CONNECTED:
+        serial(F("Switching from not connected to read request"));
         state = READ_REQUEST;
         connectedAt = millis();        // record start time (so we can do timeout)
         __attribute__((fallthrough));  // Mwahahaha, use switch statement fall-through in a good way!
@@ -537,25 +544,30 @@ void EthernetServer_TC::loop() {
         if (bufferContentsSize == 0) {
           if (millis() - connectedAt > TIMEOUT) {
             sendResponse(HTTP_TIMEOUT);
+            serial(F("Switching from read request to finished"));
             state = FINISHED;
           }
         } else {
           serial(F("HTTP Request: \"%s\""), buffer);
           if (memcmp_P(buffer, F("GET "), 4) == 0) {
+            serial(F("Switching from read request to GET request"));
             state = GET_REQUEST;
             get();
           } else if (memcmp_P(buffer, F("POST "), 5) == 0) {
+            serial(F("Switching from read request to POST request"));
             state = POST_REQUEST;
             post();
           } else if (memcmp_P(buffer, F("PUT "), 4) == 0) {
+            serial(F("Switching from read request to PUT request"));
             state = PUT_REQUEST;
             put();
           } else if (memcmp_P(buffer, F("OPTIONS "), 8) == 0) {
+            serial(F("Switching from read request to OPTIONS request"));
             state = OPTIONS_REQUEST;
             options();
           } else {
             serial(buffer);
-            serial(F("Unsupported request"));
+            serial(F("Unsupported request, switching to finished state"));
             sendResponse(HTTP_NOT_IMPLEMENTED);
             state = FINISHED;
           }
@@ -568,6 +580,7 @@ void EthernetServer_TC::loop() {
         break;
     }
   } else if (state != NOT_CONNECTED) {  // In case client disconnects early
+    serial(F("Switching from unknown to finished"));
     state = FINISHED;
   } else {
     // no client and not recently connected

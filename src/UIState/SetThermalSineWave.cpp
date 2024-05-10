@@ -26,7 +26,7 @@ float SetThermalSineWave::getCurrentValue() {
   } else {
     if (ThermalControl::instance()->getThermalFunctionType() ==
         ThermalControl::instance()->thermalFunctionTypes::SINE_TYPE) {
-      return ThermalControl::instance()->getPeriod() / 3600;
+      return ThermalControl::instance()->getPeriodInSeconds() / 3600.0;
     } else {
       return 0.0;
     }
@@ -40,7 +40,7 @@ void SetThermalSineWave::setValue(float value) {
     start();
   } else {
     ThermalControl::instance()->setThermalTarget(values[0]);
-    ThermalControl::instance()->setSine(values[1], values[2]);
+    ThermalControl::instance()->setSineAmplitudeAndHours(values[1], values[2]);
     char output0[17];
     char temp1[8];
     char temp2[9];

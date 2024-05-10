@@ -319,7 +319,7 @@ unittest(sineTest) {
   control = ThermalControl::instance();
   assertFalse(control->isOn());
   control->setThermalTarget(10);
-  control->setSine(1.5, 2);
+  control->setSineAmplitudeAndHours(1.5, 2);
   assertEqual(ThermalControl::thermalFunctionTypes::SINE_TYPE, control->getThermalFunctionType());
   tc->loop(false);
   assertEqual(10, control->getCurrentThermalTarget());
@@ -355,7 +355,7 @@ unittest(sineTest) {
   control = ThermalControl::instance();
   assertFalse(control->isOn());
   control->setThermalTarget(30);
-  control->setSine(1.5, 2);
+  control->setSineAmplitudeAndHours(1.5, 2);
   assertEqual(ThermalControl::thermalFunctionTypes::SINE_TYPE, control->getThermalFunctionType());
   tc->loop(false);
   assertEqual(30, control->getCurrentThermalTarget());

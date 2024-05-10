@@ -253,7 +253,7 @@ unittest(sineTest) {
   pHProbe->setPh(7.0);
   tc->loop(false);  // update the controls based on the current readings
   controlSolenoid->setBaseTargetPh(7.00);
-  controlSolenoid->setSine(1.5, 2);
+  controlSolenoid->setSineAmplitudeAndHours(1.5, 2);
   assertEqual(PHControl::SINE_TYPE, controlSolenoid->getPHFunctionType());
   tc->loop(false);
   assertEqual(7, controlSolenoid->getCurrentTargetPh());

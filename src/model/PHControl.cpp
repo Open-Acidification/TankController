@@ -51,19 +51,23 @@ PHControl::PHControl() {
   }
   switch (pHFunctionType) {
     case RAMP_TYPE:
-      rampTimeEnd = EEPROM_TC::instance()->getPhRampTimeEnd();
-      if (rampTimeEnd == 0xFFFFFFFF || rampTimeEnd == 0) {
-        rampTimeEnd = 0;
-        EEPROM_TC::instance()->setPhRampTimeEnd(rampTimeEnd);
-        rampTimeStart = 0;
-        EEPROM_TC::instance()->setPhRampTimeStart(rampTimeStart);
+      rampTimeEndSeconds = EEPROM_TC::instance()->getPhRampTimeEnd();
+      if (rampTimeEndSeconds == 0xFFFFFFFF || rampTimeEndSeconds == 0) {
+        rampTimeEndSeconds = 0;
+        EEPROM_TC::instance()->setPhRampTimeEnd(rampTimeEndSeconds);
+        rampTimeStartSeconds = 0;
+        EEPROM_TC::instance()->setPhRampTimeStart(rampTimeStartSeconds);
       } else {
-        rampTimeStart = EEPROM_TC::instance()->getPhRampTimeStart();
+        rampTimeStartSeconds = EEPROM_TC::instance()->getPhRampTimeStart();
         rampInitialValue = EEPROM_TC::instance()->getRampStartingPh();
       }
       break;
     case SINE_TYPE:
-      period = EEPROM_TC::instance()->getPhSinePeriod();
+      periodInSeconds = EEPROM_TC::instance()->getPhSinePeriod();
+      if (periodInSeconds == 0xFFFFFFFF || periodInSeconds == 0) {
+        periodInSeconds = 12 * 60 * 60;  // 12 hours
+        EEPROM_TC::instance()->setPhSinePeriod(periodInSeconds);
+      }
       amplitude = EEPROM_TC::instance()->getPhSineAmplitude();
       sineStartTime = EEPROM_TC::instance()->getPhSineStartTime();
       break;
@@ -89,38 +93,48 @@ void PHControl::setBaseTargetPh(float newPh) {
 
 void PHControl::setRampDurationHours(float newPhRampDuration) {
   if (newPhRampDuration > 0) {
-    float currentRampTime = rampTimeEnd - rampTimeStart;
+    float currentRampTime = rampTimeEndSeconds - rampTimeStartSeconds;
     char buffer1[10];
     char buffer2[10];
     floattostrf(currentRampTime, 5, 3, buffer1, sizeof(buffer1));
     floattostrf(newPhRampDuration, 5, 3, buffer2, sizeof(buffer2));
     serial(F("change ramp time from %s to %s"), buffer1, buffer2);
-    rampTimeStart = DateTime_TC::now().secondstime();
-    rampTimeEnd = rampTimeStart + (uint32_t)(newPhRampDuration * 3600);
+    rampTimeStartSeconds = DateTime_TC::now().secondstime();
+    rampTimeEndSeconds = rampTimeStartSeconds + (uint32_t)(newPhRampDuration * 3600.0);
     rampInitialValue = PHProbe::instance()->getPh();
     pHFunctionType = pHFunctionTypes::RAMP_TYPE;
     EEPROM_TC::instance()->setPHFunctionType(pHFunctionType);
-    EEPROM_TC::instance()->setPhRampTimeStart(rampTimeStart);
-    EEPROM_TC::instance()->setPhRampTimeEnd(rampTimeEnd);
+    EEPROM_TC::instance()->setPhRampTimeStart(rampTimeStartSeconds);
+    EEPROM_TC::instance()->setPhRampTimeEnd(rampTimeEndSeconds);
     EEPROM_TC::instance()->setRampStartingPh(rampInitialValue);
   } else {
-    rampTimeEnd = 0;
+    rampTimeEndSeconds = 0;
     pHFunctionType = pHFunctionTypes::FLAT_TYPE;
     EEPROM_TC::instance()->setPHFunctionType(pHFunctionType);
-    EEPROM_TC::instance()->setPhRampTimeEnd(rampTimeEnd);
+    EEPROM_TC::instance()->setPhRampTimeEnd(rampTimeEndSeconds);
     serial("set ramp time to 0");
   }
 }
 
-void PHControl::setSine(float sineAmplitude, float sinePeriodInHours) {
-  period = (sinePeriodInHours * 3600);
+void PHControl::setSineAmplitudeAndHours(float sineAmplitude, float sinePeriodInHours) {
+  assert(sinePeriodInHours > 0.0 && sineAmplitude > 0.0);
+  periodInSeconds = (sinePeriodInHours * 3600.0);
   amplitude = sineAmplitude;
   pHFunctionType = pHFunctionTypes::SINE_TYPE;
   sineStartTime = DateTime_TC::now().secondstime();
+  // char buffer1[10];
+  // floattostrf(sinePeriodInHours, 5, 3, buffer1, sizeof(buffer1));
+  // serial(F("set sine period time to %s"), sinePeriodInHours);
   EEPROM_TC::instance()->setPHFunctionType(pHFunctionType);
-  EEPROM_TC::instance()->setPhSinePeriod(period);
+  EEPROM_TC::instance()->setPhSinePeriod(periodInSeconds);
   EEPROM_TC::instance()->setPhSineAmplitude(amplitude);
   EEPROM_TC::instance()->setPhSineStartTime(sineStartTime);
+}
+
+void PHControl::setSineAmplitude(float sineAmplitude) {
+  assert(pHFunctionType == pHFunctionTypes::SINE_TYPE);
+  amplitude = sineAmplitude;
+  EEPROM_TC::instance()->setPhSineAmplitude(amplitude);
 }
 
 void PHControl::enablePID(bool flag) {
@@ -144,23 +158,23 @@ void PHControl::updateControl(float pH) {
       break;
     }
     case RAMP_TYPE: {
-      if (currentTime < rampTimeEnd) {
-        currentTargetPh = rampInitialValue + ((currentTime - rampTimeStart) * (baseTargetPh - rampInitialValue) /
-                                              (rampTimeEnd - rampTimeStart));
+      if (currentTime < rampTimeEndSeconds) {
+        currentTargetPh = rampInitialValue + ((currentTime - rampTimeStartSeconds) * (baseTargetPh - rampInitialValue) /
+                                              (rampTimeEndSeconds - rampTimeStartSeconds));
       } else {
         currentTargetPh = baseTargetPh;
       }
       break;
     }
     case SINE_TYPE: {
-      uint32_t sineEndTime = sineStartTime + period;
+      uint32_t sineEndTime = sineStartTime + periodInSeconds;
       if (currentTime >= sineEndTime) {
         sineStartTime = DateTime_TC::now().secondstime();
-        sineEndTime = sineStartTime + period;
+        sineEndTime = sineStartTime + periodInSeconds;
         EEPROM_TC::instance()->setPhSineStartTime(sineStartTime);
       }
       float timeLeftTillPeriodEnd = sineEndTime - currentTime;
-      float percentNOTThroughPeriod = timeLeftTillPeriodEnd / period;
+      float percentNOTThroughPeriod = timeLeftTillPeriodEnd / periodInSeconds;
       float percentThroughPeriod = 1 - percentNOTThroughPeriod;
       float x = percentThroughPeriod * (2 * PI);            // the x position for our sine wave
       currentTargetPh = amplitude * sin(x) + baseTargetPh;  // y position in our sine wave

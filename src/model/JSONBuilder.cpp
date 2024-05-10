@@ -81,15 +81,15 @@ int JSONBuilder::buildCurrentValues() {
   Date/time
   Sine wavelength and amplitude*/
 
-  float pH_HoursOfChange = 1;
+  float pH_HoursOfChange = 0.0;
   int pH_HoursOfChange_f = 0;
   // if sine amplitude is nonzero, then we are in sine mode and display the sine period
   if (pHSineAmplitude != 0) {
-    pH_HoursOfChange = EEPROM_TC::instance()->getPhSinePeriod() / 3600;
-    // if sine amplitude is zero, then we are in ramp mode and display the ramp time
+    pH_HoursOfChange = EEPROM_TC::instance()->getPhSinePeriod() / 3600.0;
+    //  if sine amplitude is zero, then we are in ramp mode and display the ramp time
   } else if (PHControl::instance()->getPhRampTimeEnd() > 0) {
     pH_HoursOfChange =
-        ((PHControl::instance()->getPhRampTimeEnd() - PHControl::instance()->getPhRampTimeStart()) / 3600);
+        ((PHControl::instance()->getPhRampTimeEnd() - PHControl::instance()->getPhRampTimeStart()) / 3600.0);
   } else {
     pH_HoursOfChange = 0;
   }

@@ -14,10 +14,10 @@ private:
   float baseTargetPh;     // base target
   float currentTargetPh;  // current target (ramp, sine, arbitrary)
   float rampInitialValue;
-  uint32_t rampTimeStart;
-  uint32_t rampTimeEnd;
+  uint32_t rampTimeStartSeconds;
+  uint32_t rampTimeEndSeconds;
   float amplitude;
-  uint32_t period;
+  uint32_t periodInSeconds;
   uint32_t sineStartTime;
   const uint16_t WINDOW_SIZE = 10000;  // 10 second Proportional output window (for PID)
   bool usePID = true;
@@ -45,13 +45,13 @@ public:
     return amplitude;
   }
   uint32_t getPhRampTimeStart() {
-    return pHFunctionType == FLAT_TYPE ? 0 : rampTimeStart;
+    return pHFunctionType == FLAT_TYPE ? 0 : rampTimeStartSeconds;
   }
   uint32_t getPhRampTimeEnd() {
-    return pHFunctionType == FLAT_TYPE ? 0 : rampTimeEnd;
+    return pHFunctionType == FLAT_TYPE ? 0 : rampTimeEndSeconds;
   }
-  uint32_t getPeriod() {
-    return period;
+  uint32_t getPeriodInSeconds() {
+    return periodInSeconds;
   }
   bool getUsePID() {
     return usePID;
@@ -59,7 +59,8 @@ public:
   bool isOn();
   void setBaseTargetPh(float newPh);
   void setRampDurationHours(float newPhRampDuration);
-  void setSine(float sineAmplitude, float sinePeriodInHours);
+  void setSineAmplitudeAndHours(float sineAmplitude, float sinePeriodInHours);
+  void setSineAmplitude(float sineAmplitude);
   void enablePID(bool flag);
   void updateControl(float pH);
 };

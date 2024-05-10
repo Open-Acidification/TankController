@@ -16,9 +16,9 @@ float SetPHTarget::getCurrentValue() {
   if (subState == 0) {
     return PHControl::instance()->getBaseTargetPh();
   } else {
-    uint32_t rampTimeStart = PHControl::instance()->getPhRampTimeStart();
-    uint32_t rampTimeEnd = PHControl::instance()->getPhRampTimeEnd();
-    return (rampTimeEnd - rampTimeStart) / 3600;
+    uint32_t rampTimeStartSeconds = PHControl::instance()->getPhRampTimeStart();
+    uint32_t rampTimeEndSeconds = PHControl::instance()->getPhRampTimeEnd();
+    return (rampTimeEndSeconds - rampTimeStartSeconds) / 3600.0;
   }
 }
 

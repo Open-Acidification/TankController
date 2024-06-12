@@ -13,6 +13,13 @@ class ThermalControl {
 private:
   static ThermalControl* _instance;
 
+public:
+  enum thermalFunctionTypes {
+    FLAT_TYPE,
+    RAMP_TYPE,
+    SINE_TYPE,
+  };
+
 protected:
   const uint16_t THERMAL_CONTROL_PIN = 47;
   const float DELTA = 0.05;
@@ -25,15 +32,10 @@ protected:
   float amplitude;
   uint32_t periodInSeconds;
   uint32_t sineStartTime;
-  int thermalFunctionType = FLAT_TYPE;
+  uint16_t thermalFunctionType = FLAT_TYPE;
   ThermalControl();
 
 public:
-  enum thermalFunctionTypes {
-    FLAT_TYPE,
-    RAMP_TYPE,
-    SINE_TYPE,
-  };
   virtual ~ThermalControl() {
   }
   static ThermalControl* instance();
@@ -45,7 +47,7 @@ public:
   float getCurrentThermalTarget() {
     return currentThermalTarget;
   }
-  thermalFunctionTypes getThermalFunctionType() {
+  uint16_t getThermalFunctionType() {
     return thermalFunctionType;
   }
   float getAmplitude() {
@@ -63,8 +65,9 @@ public:
   virtual bool isHeater();
   bool isOn();
   void setThermalTarget(float newTemperature);
-  void setRampDuration(float newThermalRampDuration);
+  void setRampDurationHours(float newThermalRampDuration);
   void setSineAmplitudeAndHours(float sineAmplitude, float sinePeriodInHours);
+  void setSineAmplitude(float sineAmplitude);
   virtual void updateControl(float currentTemperature) = 0;
 };
 

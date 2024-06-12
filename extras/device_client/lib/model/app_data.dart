@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:js';
 
 import 'package:device_client/model/tank.dart';
 import 'package:device_client/model/tc_interface.dart';
@@ -56,6 +57,12 @@ class AppData with ChangeNotifier {
   Future<void> refreshCurrentData() async {
     if (currentTank.isEmpty()) {
       currentData = jsonDecode('{"Error: Choose tank from menu":""}');
+      final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+      scaffoldMessengerKey.currentState?.showSnackBar(
+        const SnackBar(
+          content: Text('Error: Choose tank from menu'),
+        ),
+      );
     } else {
       final tcInterface = TcInterface.instance();
       final value = await tcInterface.get(currentTank.ip, 'data');

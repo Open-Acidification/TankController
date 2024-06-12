@@ -207,6 +207,16 @@ class CurrentData extends StatelessWidget {
     });
   }
 
+  Color _colorfor(String key) {
+    if (key.contains('Therm') || key.contains('Temp')) {
+      return const Color.fromARGB(255, 162, 250, 152);
+    }
+    if (key.contains('pH')) {
+      return const Color.fromARGB(255, 209, 174, 255);
+    }
+    return Colors.white;
+  }
+
   @override
   Widget build(BuildContext context) {
     print(
@@ -218,16 +228,13 @@ class CurrentData extends StatelessWidget {
         builder: (context, appData, child) {
           final currentDataRows = <DataRow>[];
           final currentData = appData.currentData;
-          // if (currentData.isEmpty) {
-          //   return Container();
-          // }
           final editableFields = currentData['EditableFields'] ?? [];
-          print('editableFields = $editableFields');
           currentData.remove('EditableFields');
           final canEdit = canEditCurrentInfo(appData);
           currentData.forEach(
             (key, value) => currentDataRows.add(
               DataRow(
+                color: MaterialStateProperty.all(_colorfor(key.toString())),
                 cells: <DataCell>[
                   DataCell(Text(key.toString())),
                   (!editableFields.contains(key.toString()) || !canEdit)

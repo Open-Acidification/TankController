@@ -43,7 +43,7 @@ int strscpy_P(char *destination, const __FlashStringHelper *source_F, unsigned l
 // Example: floattostrf(number, 6, 2, buffer, sizeof(buffer));
 int floattostrf(double float_value, int min_width, int num_digits_after_decimal, char *buffer,
                 unsigned long buffer_size) {
-  char large_buffer[buffer_size + 10];
+  char large_buffer[buffer_size + 200];
   // TODO: Round to nearest value instead of truncating (See what is done in PushingBox)
   dtostrf(float_value, min_width, num_digits_after_decimal, large_buffer);
   if (strnlen(large_buffer, sizeof(large_buffer)) < buffer_size) {

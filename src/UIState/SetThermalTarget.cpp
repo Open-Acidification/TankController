@@ -28,7 +28,7 @@ void SetThermalTarget::setValue(float value) {
     start();
   } else {
     ThermalControl::instance()->setThermalTarget(values[0]);
-    ThermalControl::instance()->setRampDuration(values[1]);
+    ThermalControl::instance()->setRampDurationHours(values[1]);
     char output0[17];
     char output1[17];
     snprintf_P(output0, sizeof(output0), (PGM_P)F("New Temp=%i.%02i"), (int)values[0],

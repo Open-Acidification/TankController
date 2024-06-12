@@ -92,7 +92,7 @@ ThermalControl::ThermalControl() {
   serial(F("%s starts with solenoid off with target temperature of %s C"), buffer1, buffer2);
 }
 
-void ThermalControl::setRampDuration(float newThermalRampDuration) {
+void ThermalControl::setRampDurationHours(float newThermalRampDuration) {
   if (newThermalRampDuration > 0) {
     float currentRampTime = rampTimeEndSeconds - rampTimeStartSeconds;
     char buffer1[10];
@@ -126,6 +126,12 @@ void ThermalControl::setSineAmplitudeAndHours(float sineAmplitude, float sinePer
   EEPROM_TC::instance()->setThermalSinePeriod(periodInSeconds);
   EEPROM_TC::instance()->setThermalSineAmplitude(amplitude);
   EEPROM_TC::instance()->setThermalSineStartTime(sineStartTime);
+}
+
+void ThermalControl::setSineAmplitude(float sineAmplitude) {
+  assert(thermalFunctionType == thermalFunctionTypes::SINE_TYPE);
+  amplitude = sineAmplitude;
+  EEPROM_TC::instance()->setThermalSineAmplitude(amplitude);
 }
 
 /**

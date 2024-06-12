@@ -31,6 +31,7 @@
 #include "model/PHProbe.h"
 #include "model/ThermalControl.h"
 #include "wrappers/LiquidCrystal_TC.h"
+#include "wrappers/Serial_TC.h"
 #include "wrappers/ThermalProbe_TC.h"
 
 MainMenu::MainMenu() : UIState() {
@@ -236,6 +237,7 @@ void MainMenu::selectSet() {
 // pH=7.325 B 7.125
 // T=12.25 H 12.75
 void MainMenu::idle() {
+  static bool firstTime = true;
   if (PHProbe::instance()->shouldWarnAboutCalibration()) {
     this->setNextState(new PHCalibrationWarning());
     return;
@@ -257,6 +259,14 @@ void MainMenu::idle() {
   output[9] = PHControl::instance()->isOn() ? 'B' : ' ';
   output[10] = ' ';
   pH = PHControl::instance()->getCurrentTargetPh();
+  if (pH > 100 || pH < 0) {
+    serial(F("pH is should not be greater than 100!!!!"));
+  }
+  if (firstTime) {
+    serial(F("First time in idle"));
+    firstTime = false;
+    serial(F("pH is %i"), (int)pH);
+  }
   if (pH < 10.0) {
     floattostrf(pH, 5, 3, buffer, sizeof(buffer));
   } else {

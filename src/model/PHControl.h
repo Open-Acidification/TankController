@@ -63,7 +63,6 @@ public:
   void setBaseTargetPh(float newPh);
   void setRampDurationHours(float newPhRampDuration);
   void setSineAmplitudeAndHours(float sineAmplitude, float sinePeriodInHours);
-  void setSineAmplitude(float sineAmplitude);
   void enablePID(bool flag);
   void updateControl(float pH);
 };

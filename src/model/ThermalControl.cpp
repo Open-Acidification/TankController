@@ -128,12 +128,6 @@ void ThermalControl::setSineAmplitudeAndHours(float sineAmplitude, float sinePer
   EEPROM_TC::instance()->setThermalSineStartTime(sineStartTime);
 }
 
-void ThermalControl::setSineAmplitude(float sineAmplitude) {
-  assert(thermalFunctionType == thermalFunctionTypes::SINE_TYPE);
-  amplitude = sineAmplitude;
-  EEPROM_TC::instance()->setThermalSineAmplitude(amplitude);
-}
-
 /**
  * is heater
  */

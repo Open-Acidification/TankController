@@ -129,7 +129,6 @@ int JSONBuilder::buildCurrentValues() {
 
   float pH_RampHours = 0.0;
   int pH_RampHours_f = 0;
-  // ramp hours could be problematic if ramp time start and end are in the past so think about that..........
   if (PHControl::instance()->getPhRampTimeEnd() > 0 && EEPROM_TC::instance()->getPhSinePeriod() == 0) {
     pH_RampHours = (PHControl::instance()->getPhRampTimeEnd() - PHControl::instance()->getPhRampTimeStart()) / 3600.0;
   }
@@ -158,7 +157,6 @@ int JSONBuilder::buildCurrentValues() {
 
   float therm_rampHours = 0.0;
   int therm_rampHours_f = 0;
-  // ramp hours could be problematic if ramp time start and end are in the past so think about that..........
   if (ThermalControl::instance()->getRampTimeEnd() > 0 && EEPROM_TC::instance()->getThermalSinePeriod() == 0) {
     therm_rampHours =
         (ThermalControl::instance()->getRampTimeEnd() - ThermalControl::instance()->getRampTimeStart()) / 3600.0;
@@ -207,11 +205,7 @@ int JSONBuilder::buildCurrentValues() {
                               "\"Ki\","
                               "\"Kd\","
                               "\"pH_RampHours\","
-                              // "\"pH_SineAmplitude\","
-                              // "\"pH_SinePeriodHours\","
                               "\"Therm_RampHours\","
-                              // "\"Therm_SineAmplitude\","
-                              // "\"Therm_SinePeriodHours\","
                               "\"TankID\","
                               "\"HeatOrChill\","
                               "\"PID\""

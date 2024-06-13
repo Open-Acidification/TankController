@@ -259,8 +259,8 @@ void MainMenu::idle() {
   output[9] = PHControl::instance()->isOn() ? 'B' : ' ';
   output[10] = ' ';
   pH = PHControl::instance()->getCurrentTargetPh();
-  if (pH > 100 || pH < 0) {
-    serial(F("pH is should not be greater than 100!!!!"));
+  if (pH > 15 || pH < 0) {
+    serial(F("pH is out of range!"));
   }
   if (firstTime) {
     serial(F("First time in idle"));

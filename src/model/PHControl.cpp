@@ -45,7 +45,6 @@ PHControl::PHControl() {
     EEPROM_TC::instance()->setPh(baseTargetPh);
   }
   currentTargetPh = baseTargetPh;
-  // serial(F("PHControl::PHControl() - currentTargetPh = %i"), (int)currentTargetPh);
   pHFunctionType = EEPROM_TC::instance()->getPHFunctionType();
   if (pHFunctionType == 0xFFFFFFFF) {
     pHFunctionType = FLAT_TYPE;
@@ -121,24 +120,14 @@ void PHControl::setRampDurationHours(float newPhRampDuration) {
 }
 
 void PHControl::setSineAmplitudeAndHours(float sineAmplitude, float sinePeriodInHours) {
-  // assert(sinePeriodInHours > 0.0 && sineAmplitude > 0.0);
   periodInSeconds = (sinePeriodInHours * 3600.0);
   amplitude = sineAmplitude;
   pHFunctionType = pHFunctionTypes::SINE_TYPE;
   sineStartTime = DateTime_TC::now().secondstime();
-  // char buffer1[10];
-  // floattostrf(sinePeriodInHours, 5, 3, buffer1, sizeof(buffer1));
-  // serial(F("set sine period time to %s"), sinePeriodInHours);
   EEPROM_TC::instance()->setPHFunctionType(pHFunctionType);
   EEPROM_TC::instance()->setPhSinePeriod(periodInSeconds);
   EEPROM_TC::instance()->setPhSineAmplitude(amplitude);
   EEPROM_TC::instance()->setPhSineStartTime(sineStartTime);
-}
-
-void PHControl::setSineAmplitude(float sineAmplitude) {
-  assert(pHFunctionType == pHFunctionTypes::SINE_TYPE);
-  amplitude = sineAmplitude;
-  EEPROM_TC::instance()->setPhSineAmplitude(amplitude);
 }
 
 void PHControl::enablePID(bool flag) {
@@ -159,35 +148,26 @@ void PHControl::updateControl(float pH) {
   switch (pHFunctionType) {
     case FLAT_TYPE: {
       currentTargetPh = baseTargetPh;
-      // serial(F("FLAT_TYPE PHControl::updateControl() - currentTargetPh = %i"), (int)currentTargetPh);
       break;
     }
     case RAMP_TYPE: {
       if (currentTime < rampTimeEndSeconds) {
         currentTargetPh = rampInitialValue + ((currentTime - rampTimeStartSeconds) * (baseTargetPh - rampInitialValue) /
                                               (rampTimeEndSeconds - rampTimeStartSeconds));
-        // serial(F("RAMP_TYPE 1 PHControl::updateControl() - currentTargetPh = %i"), (int)currentTargetPh);
       } else {
         currentTargetPh = baseTargetPh;
-        // serial(F("RAMP_TYPE 2 PHControl::updateControl() - currentTargetPh = %i"), (int)currentTargetPh);
       }
       break;
     }
     case SINE_TYPE: {
       uint32_t sineEndTime = sineStartTime + periodInSeconds;
-      // serial(F("SINE_TYPE PHControl::updateControl() - sineStartTime = %lu"), sineStartTime / 3600);
-      // serial(F("SINE_TYPE PHControl::updateControl() - sineEndTime = %lu"), sineEndTime / 3600);
       if (currentTime >= sineEndTime) {
         sineStartTime = DateTime_TC::now().secondstime();
         sineEndTime = sineStartTime + periodInSeconds;
         EEPROM_TC::instance()->setPhSineStartTime(sineStartTime);
       }
-      // serial(F("SINE_TYPE PHControl::updateControl() - currentTime = %lu"), currentTime / 3600);
       float timeLeftTillPeriodEnd = sineEndTime - currentTime;
-      // serial(F("SINE_TYPE PHControl::updateControl() - timeLeftTillPeriodEnd = %i"), (int)timeLeftTillPeriodEnd /
-      // 3600);
       float percentNOTThroughPeriod = timeLeftTillPeriodEnd / periodInSeconds;
-      // serial(F("SINE_TYPE PHControl::updateControl() - percentNOTThroughPeriod = %i"), (int)percentNOTThroughPeriod);
       float percentThroughPeriod = 1 - percentNOTThroughPeriod;
       float x = percentThroughPeriod * (2 * PI);            // the x position for our sine wave
       currentTargetPh = amplitude * sin(x) + baseTargetPh;  // y position in our sine wave
@@ -195,10 +175,6 @@ void PHControl::updateControl(float pH) {
         serial(F("WARNING: currentTargetPh = %i is out of range"), (int)currentTargetPh);
         currentTargetPh = 8.0;
       }
-      // serial(F("SINE_TYPE PHControl::updateControl() - currentTargetPh = %i"), (int)currentTargetPh);
-      // serial(F("SINE_TYPE PHControl::updateControl() - amplitude = %i"), (int)amplitude);
-      // serial(F("SINE_TYPE PHControl::updateControl() - sin(x) = %i"), (int)sin(x));
-      // serial(F("SINE_TYPE PHControl::updateControl() - baseTargetPh = %i"), (int)baseTargetPh);
       break;
     }
     default:

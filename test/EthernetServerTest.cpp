@@ -169,9 +169,9 @@ unittest(currentData) {
   ThermalControl::instance()->setSineAmplitudeAndHours(0, 0);
   ThermalControl::instance()->setRampDurationHours(0);
   ThermalControl::instance()->setThermalTarget(21.75);  // target
-  TankController::instance()->loop(false);              // for targets to take effect
   EEPROM_TC::instance()->setHeat(0);
   PID_TC::instance()->setTunings(5000.5, 1234.46, 987.44);
+  TankController::instance()->loop(false);  // for targets to take effect
 
   EthernetServer_TC* server = EthernetServer_TC::instance();
   server->setHasClientCalling(true);

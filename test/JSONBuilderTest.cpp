@@ -2,6 +2,7 @@
 #include <ArduinoUnitTests.h>
 
 #include "DateTime_TC.h"
+#include "EEPROM_TC.h"
 #include "JSONBuilder.h"
 #include "PHControl.h"
 #include "PHProbe.h"

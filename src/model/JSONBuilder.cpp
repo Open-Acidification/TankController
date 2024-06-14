@@ -26,7 +26,6 @@ int JSONBuilder::buildCurrentValues() {
     target_pH_f /= 10;
   }
   float temperature = ThermalProbe_TC::instance()->getRunningAverage();
-  // int target_therm_type = ThermalControl::instance()->getThermalFunctionType();  // Flat 0, Ramp 1, or Sine 2
   // https://github.com/Open-Acidification/TankController/issues/331
   int temperature_f = (temperature - (int)temperature) * 1000 + 0.5;
   while (temperature_f && temperature_f % 10 == 0) {
@@ -107,14 +106,9 @@ int JSONBuilder::buildCurrentValues() {
       snprintf_P(Therm_FunctionType, sizeof(Therm_FunctionType), (PGM_P)F("FLAT"));
       break;
   }
-  /* Remote restart
-  Clear/reset pH calibration
-  Clear/reset temperature calibration
-  Sine wavelength and amplitude*/
 
   float pH_SinePeriodHours = 0.0;
   int pH_SinePeriodHours_f = 0;
-  // if sine amplitude is nonzero, then we are in sine mode and display the sine period
   if (pHSineAmplitude != 0) {
     pH_SinePeriodHours = EEPROM_TC::instance()->getPhSinePeriod() / 3600.0;
   }
@@ -142,7 +136,6 @@ int JSONBuilder::buildCurrentValues() {
 
   float therm_SinePeriodHours = 0.0;
   int therm_SinePeriodHours_f = 0;
-  // if sine amplitude is nonzero, then we are in sine mode and display the sine period
   if (thermSineAmplitude != 0) {
     therm_SinePeriodHours = EEPROM_TC::instance()->getThermalSinePeriod() / 3600.0;
   }

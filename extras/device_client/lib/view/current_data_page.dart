@@ -21,11 +21,6 @@ class CurrentData extends StatelessWidget {
   final BuildContext context;
 
   bool canEditCurrentInfo(AppData appData) {
-    print('appData.currentData = ${appData.currentData}');
-    print(
-      'appData.currentData.runtimeType = ${appData.currentData.runtimeType}',
-    );
-    print('appData.currentData["Version"] = ${appData.currentData['Version']}');
     String v = appData.currentData['Version']?.trim() ?? '0.0.0';
     final i = v.indexOf('-');
     if (i != -1) {
@@ -219,9 +214,6 @@ class CurrentData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(
-      'CurrentData.build found appData.currentData = ${context.read<AppData>().currentData}',
-    );
     return ColoredBox(
       color: Colors.white,
       child: Consumer<AppData>(

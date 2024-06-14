@@ -24,12 +24,20 @@ class TcMockInterface extends TcInterface {
       throw 'Invalid IP Address in TcMockInterface';
     }
     if (path == 'data') {
-      // return '{"Target_pH_type":"1","Target_pH":"7.0","Temperature":"20.0","Target_Therm_type":"1","TargetTemperature":"20.0","IPAddress":"172.27.5.150","MAC":"90:A2:DA:0F:45:C0","FreeMemory":"3791 bytes","GoogleSheetInterval":10,"LogFile":"20220722.csv","PHSlope":"22","Kp":9000.4,"Ki":0.0,"Kd":0.0,"PID":"ON","TankID":3,"Uptime":"0d 0h 1m 7s","Version":"22.04.1","EditableFields":["Target_pH","Target_pH_type","TargetTemperature","Target_Therm_type","GoogleSheetInterval","PHSlope","Kp","Ki","Kd","TankID","PID"]}';
       return '''
 {
-      "Target_pH": "7.0",
+      "pH": "8.0",
       "Temperature": "20.0",
-      "TargetTemperature": "20.0",
+      "pH_FunctionType":"FLAT",
+      "Target_pH": "7.0",
+      "pH_RampHours":"0.0",
+      "pH_SinePeriodHours":"0.0",
+      "pH_SineAmplitude":"0.0",
+      "Therm_FunctionType":"FLAT",
+      "TargetTemperature":"21.75",
+      "Therm_RampHours":"0.0",
+      "Therm_SinePeriodHours":"0.0",
+      "Therm_SineAmplitude":"0.0",
       "IPAddress": "172.27.5.150",
       "MAC": "90:A2:DA:0F:45:C0",
       "FreeMemory": "3791 bytes",
@@ -51,6 +59,8 @@ class TcMockInterface extends TcInterface {
             "Kp",
             "Ki",
             "Kd",
+            "pH_RampHours",
+            "Therm_RampHours",
             "TankID",
             "HeatOrChill",
             "PID"

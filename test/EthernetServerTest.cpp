@@ -105,8 +105,8 @@ unittest(display) {
       "Access-Control-Allow-Origin: *\r\n"
       "Content-Length: 36\r\n"
       "\r\n"
-      "pH 0.000   8.100\r\n"
-      "T  0.00 H 20.00 \r\n";
+      "pH 0.000   7.000\r\n"
+      "T  0.00 H 22.00 \r\n";
   assertEqual(expectedResponse, response);
   assertEqual(FINISHED, server->getState());
   server->loop();  // Process finished state
@@ -161,12 +161,15 @@ unittest(currentData) {
   // Fake DateTime
   DateTime_TC feb(2022, 2, 22, 20, 50, 00);
   feb.setAsCurrent();
-  PHProbe::instance()->setPh(8.125);                         // actual
-  PHProbe::instance()->setPhSlope();                         // actual
-  PHControl::instance()->setBaseTargetPh(8.25);              // target
+  PHProbe::instance()->setPh(8.125);             // actual
+  PHProbe::instance()->setPhSlope();             // actual
+  PHControl::instance()->setBaseTargetPh(8.25);  // target
+  PHControl::instance()->enablePID(1);
   ThermalProbe_TC::instance()->setTemperature(21.25, true);  // actual
-  ThermalControl::instance()->setThermalTarget(21.75);       // target
-  TankController::instance()->loop(false);                   // for targets to take effect
+  ThermalControl::instance()->setSineAmplitudeAndHours(0, 0);
+  ThermalControl::instance()->setRampDurationHours(0);
+  ThermalControl::instance()->setThermalTarget(21.75);  // target
+  TankController::instance()->loop(false);              // for targets to take effect
   EEPROM_TC::instance()->setHeat(0);
   PID_TC::instance()->setTunings(5000.5, 1234.46, 987.44);
 
@@ -197,15 +200,23 @@ unittest(currentData) {
       "Content-Encoding: identity\r\n"
       "Content-Language: en-US\r\n"
       "Access-Control-Allow-Origin: *\r\n"
-      "Content-Length: 345\r\n"
+      "Content-Length: 713\r\n"
       "\r\n"
       "{"
       "\"pH\":8.125,"
-      "\"Target_pH\":8.25,"
       "\"Temperature\":21.25,"
+      "\"pH_FunctionType\":\"FLAT\","
+      "\"Target_pH\":8.25,"
+      "\"pH_RampHours\":0.0,"
+      "\"pH_SinePeriodHours\":0.0,"
+      "\"pH_SineAmplitude\":0.0,"
+      "\"Therm_FunctionType\":\"FLAT\","
       "\"TargetTemperature\":21.75,"
+      "\"Therm_RampHours\":0.0,"
+      "\"Therm_SinePeriodHours\":0.0,"
+      "\"Therm_SineAmplitude\":0.0,"
       "\"IPAddress\":\"192.168.1.10\","
-      "\"MAC\":\"90:A2:DA:FB:F6:F1\","
+      "\"MAC\":\"90:A2:DA:80:7B:76\","
       "\"FreeMemory\":\"1024 bytes\","
       "\"GoogleSheetInterval\":65535,"
       "\"LogFile\":\"20220222.csv\","
@@ -218,6 +229,7 @@ unittest(currentData) {
       "\"Uptime\":\"0d 0h 0m 1s\","
       "\"HeatOrChill\":\"CHILL\","
       "\"Version\":\"" VERSION
+      "\""
       ","
       "\"EditableFields\":["
       "\"Target_pH\","
@@ -226,8 +238,8 @@ unittest(currentData) {
       "\"Kp\","
       "\"Ki\","
       "\"Kd\","
-      "\"pH_HoursOfChange\","
-      "\"pH_SineAmplitude\","
+      "\"pH_RampHours\","
+      "\"Therm_RampHours\","
       "\"TankID\","
       "\"HeatOrChill\","
       "\"PID\""

@@ -32,7 +32,7 @@ protected:
   float amplitude;
   uint32_t periodInSeconds;
   uint32_t sineStartTime;
-  uint16_t thermalFunctionType = FLAT_TYPE;
+  thermalFunctionTypes thermalFunctionType = FLAT_TYPE;
   ThermalControl();
 
 public:
@@ -47,7 +47,7 @@ public:
   float getCurrentThermalTarget() {
     return currentThermalTarget;
   }
-  uint16_t getThermalFunctionType() {
+  thermalFunctionTypes getThermalFunctionType() {
     return thermalFunctionType;
   }
   float getAmplitude() {

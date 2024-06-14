@@ -855,6 +855,89 @@ unittest(PUT_PID) {
   assertEqual(0, PHControl::instance()->getUsePID());
 }
 
+unittest(PUT_pH_RampHours) {
+  PHControl::instance()->setRampDurationHours(0.0);
+  float pH_RampHours =
+      (PHControl::instance()->getPhRampTimeEnd() - PHControl::instance()->getPhRampTimeStart()) / 3600.0;
+  assertEqual(0.0, pH_RampHours);
+  assertEqual(PHControl::pHFunctionTypes::FLAT_TYPE, EEPROM_TC::instance()->getPHFunctionType());
+
+  EthernetServer_TC* server = EthernetServer_TC::instance();
+  server->setHasClientCalling(true);
+  delay(1);
+  server->loop();
+  EthernetClient_CI client = server->getClient();
+  const char request[] =
+      "PUT /api/1/data?pH_RampHours=11.5 HTTP/1.1\r\n"
+      "Host: localhost:80\r\n"
+      "Accept: text/plain;charset=UTF-8\r\n"
+      "Accept-Encoding: identity\r\n"
+      "Accept-Language: en-US\r\n"
+      "\r\n";
+  client.pushToReadBuffer(request);
+  server->loop();
+  deque<uint8_t>* pBuffer = client.writeBuffer();
+  assertEqual(81, pBuffer->size());
+  String response;
+  while (!pBuffer->empty()) {
+    response.concat(pBuffer->front());
+    pBuffer->pop_front();
+  }
+  const char expectedResponse[] =
+      "HTTP/1.1 303 See Other\r\n"
+      "Location: /api/1/data\r\n"
+      "Access-Control-Allow-Origin: *\r\n"
+      "\r\n";
+  assertEqual(expectedResponse, response);
+  assertEqual(FINISHED, server->getState());
+
+  pH_RampHours = (PHControl::instance()->getPhRampTimeEnd() - PHControl::instance()->getPhRampTimeStart()) / 3600.0;
+  assertEqual(11.5, pH_RampHours);
+  assertEqual(PHControl::pHFunctionTypes::RAMP_TYPE, EEPROM_TC::instance()->getPHFunctionType());
+}
+
+unittest(PUT_therm_rampHours) {
+  ThermalControl::instance()->setRampDurationHours(0.0);
+  float therm_rampHours =
+      (ThermalControl::instance()->getRampTimeEnd() - ThermalControl::instance()->getRampTimeStart()) / 3600.0;
+  assertEqual(0.0, therm_rampHours);
+  assertEqual(ThermalControl::thermalFunctionTypes::FLAT_TYPE, EEPROM_TC::instance()->getThermalFunctionType());
+
+  EthernetServer_TC* server = EthernetServer_TC::instance();
+  server->setHasClientCalling(true);
+  delay(1);
+  server->loop();
+  EthernetClient_CI client = server->getClient();
+  const char request[] =
+      "PUT /api/1/data?Therm_RampHours=11.5 HTTP/1.1\r\n"
+      "Host: localhost:80\r\n"
+      "Accept: text/plain;charset=UTF-8\r\n"
+      "Accept-Encoding: identity\r\n"
+      "Accept-Language: en-US\r\n"
+      "\r\n";
+  client.pushToReadBuffer(request);
+  server->loop();
+  deque<uint8_t>* pBuffer = client.writeBuffer();
+  assertEqual(81, pBuffer->size());
+  String response;
+  while (!pBuffer->empty()) {
+    response.concat(pBuffer->front());
+    pBuffer->pop_front();
+  }
+  const char expectedResponse[] =
+      "HTTP/1.1 303 See Other\r\n"
+      "Location: /api/1/data\r\n"
+      "Access-Control-Allow-Origin: *\r\n"
+      "\r\n";
+  assertEqual(expectedResponse, response);
+  assertEqual(FINISHED, server->getState());
+
+  therm_rampHours =
+      (ThermalControl::instance()->getRampTimeEnd() - ThermalControl::instance()->getRampTimeStart()) / 3600.0;
+  assertEqual(11.5, therm_rampHours);
+  assertEqual(ThermalControl::thermalFunctionTypes::RAMP_TYPE, EEPROM_TC::instance()->getThermalFunctionType());
+}
+
 unittest(home) {
   EthernetServer_TC* server = EthernetServer_TC::instance();
   server->setHasClientCalling(true);

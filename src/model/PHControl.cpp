@@ -45,7 +45,7 @@ PHControl::PHControl() {
     EEPROM_TC::instance()->setPh(baseTargetPh);
   }
   currentTargetPh = baseTargetPh;
-  pHFunctionType = EEPROM_TC::instance()->getPHFunctionType();
+  pHFunctionType = (pHFunctionTypes)EEPROM_TC::instance()->getPHFunctionType();
   if (pHFunctionType == 0xFFFFFFFF) {
     pHFunctionType = FLAT_TYPE;
     EEPROM_TC::instance()->setPHFunctionType(pHFunctionType);

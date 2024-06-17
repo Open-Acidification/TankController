@@ -17,6 +17,8 @@ Arduino library for the Open Acidification pH Stat Controller
 *   Use [`extras/scripts/install.sh`](extras/scripts/install.sh) to do the initial install.
 *   After that use [`extras/scripts/testAndBuild.sh`](extras/scripts/testAndBuild.sh) to test.
 * *    See [this video](https://youtu.be/ZYNnVE4LnCg) for an install and test example.
+*   Push a tag with 'v' in order to build a release
+* *    Use Ansible to install on [oap.cs.wallawalla.edu](oap.cs.wallawalla.edu).
 *   To build the GUI simulator, see [GUI/build.sh](GUI/build.sh).
 
 ### Install

@@ -43,6 +43,7 @@ class Display extends StatelessWidget {
                 fontSize: 35,
                 color: Colors.white,
                 letterSpacing: 3,
+                height: 1.0,
               ),
             ),
           ),

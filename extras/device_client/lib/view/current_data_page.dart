@@ -228,9 +228,6 @@ class CurrentData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(
-      'CurrentData.build found appData.currentData = ${context.read<AppData>().currentData}',
-    );
     return ColoredBox(
       color: Colors.white,
       child: Consumer<AppData>(

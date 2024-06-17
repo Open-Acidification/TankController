@@ -112,7 +112,7 @@ void EthernetServer_TC::options() {
         "\r\n");
   strscpy_P(buffer, response, sizeof(buffer));
   client.write(buffer);
-
+  serial(F("OPTIONS request handled"));
   state = FINISHED;
 }
 
@@ -129,36 +129,91 @@ void EthernetServer_TC::post() {
 
 // Handles an HTTP PUT request
 void EthernetServer_TC::put() {
+  serial(F("put \"%s\""), buffer + 4);
   float value;
-  enum { Kd, Ki, Kp, TankID, Target_pH, TargetTemperature, GoogleSheetInterval } var;
+  enum {
+    GoogleSheetInterval,
+    HeatOrChill,
+    Kd,
+    Ki,
+    Kp,
+    pH_RampHours,
+    pH_SinePeriodHours,
+    pH_SineAmplitude,
+    PID,
+    TankID,
+    Target_pH,
+    TargetTemperature,
+    Therm_RampHours,
+    Therm_SineAmplitude,
+    Therm_SinePeriodHours
+  } var;
   if (memcmp_P(buffer + 4, F("/api/1/data?Kd="), 15) == 0) {
     var = Kd;
   } else if (memcmp_P(buffer + 4, F("/api/1/data?Ki="), 15) == 0) {
     var = Ki;
   } else if (memcmp_P(buffer + 4, F("/api/1/data?Kp="), 15) == 0) {
     var = Kp;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?PID="), 16) == 0) {
+    var = PID;
   } else if (memcmp_P(buffer + 4, F("/api/1/data?TankID="), 19) == 0) {
     var = TankID;
   } else if (memcmp_P(buffer + 4, F("/api/1/data?Target_pH="), 22) == 0) {
     var = Target_pH;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?HeatOrChill="), 24) == 0) {
+    var = HeatOrChill;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?pH_RampHours="), 25) == 0) {
+    var = pH_RampHours;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?Therm_RampHours="), 28) == 0) {
+    var = Therm_RampHours;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?pH_SineAmplitude="), 29) == 0) {
+    var = pH_SineAmplitude;
   } else if (memcmp_P(buffer + 4, F("/api/1/data?TargetTemperature="), 30) == 0) {
     var = TargetTemperature;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?pH_SinePeriodHours="), 31) == 0) {
+    var = pH_SinePeriodHours;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?Therm_SineAmplitude="), 32) == 0) {
+    var = Therm_SineAmplitude;
   } else if (memcmp_P(buffer + 4, F("/api/1/data?GoogleSheetInterval="), 32) == 0) {
     var = GoogleSheetInterval;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?Therm_SinePeriodHours="), 34) == 0) {
+    var = Therm_SinePeriodHours;
   } else {
     serial(F("put \"%s\" not recognized!"), buffer + 5);
     sendResponse(HTTP_BAD_REQUEST);
     state = FINISHED;
     return;
   }
-  if (var == TankID) {
+  if (var == PID) {
+    if (memcmp_P(buffer + 20, F("OFF"), 3) == 0) {
+      value = 0;
+    } else {
+      value = 1;
+    }
+  } else if (var == TankID) {
     value = strtofloat(buffer + 23);
   } else if (var == Target_pH) {
     value = strtofloat(buffer + 26);
+  } else if (var == HeatOrChill) {
+    if (memcmp_P(buffer + 28, F("CHILL"), 5) == 0) {
+      value = 0;
+    } else {
+      value = 1;
+    }
+  } else if (var == pH_RampHours) {
+    value = strtofloat(buffer + 29);
+  } else if (var == Therm_RampHours) {
+    value = strtofloat(buffer + 32);
+  } else if (var == pH_SineAmplitude) {
+    value = strtofloat(buffer + 33);
   } else if (var == TargetTemperature) {
     value = strtofloat(buffer + 34);
-  } else if (var == GoogleSheetInterval) {
+  } else if (var == pH_SinePeriodHours) {
+    value = strtofloat(buffer + 35);
+  } else if (var == GoogleSheetInterval || var == Therm_SineAmplitude) {
     value = strtofloat(buffer + 36);
+  } else if (var == Therm_SinePeriodHours) {
+    value = strtofloat(buffer + 38);
   } else {
     value = strtofloat(buffer + 19);
   }
@@ -172,6 +227,19 @@ void EthernetServer_TC::put() {
     case Kp:
       PID_TC::instance()->setKp(value);
       break;
+    case PID:
+      PHControl::instance()->enablePID(value);
+      break;
+    case pH_SinePeriodHours:
+      // TODO: Implement
+      break;
+    case pH_RampHours:
+      PHControl::instance()->setSineAmplitudeAndHours(0, 0);
+      PHControl::instance()->setRampDurationHours(value);
+      break;
+    case pH_SineAmplitude:
+      // TODO: Implement
+      break;
     case TankID:
       EEPROM_TC::instance()->setTankID(value);
       break;
@@ -180,6 +248,19 @@ void EthernetServer_TC::put() {
       break;
     case TargetTemperature:
       ThermalControl::instance()->setThermalTarget(value);
+      break;
+    case Therm_SinePeriodHours:
+      // TODO: Implement
+      break;
+    case Therm_RampHours:
+      ThermalControl::instance()->setSineAmplitudeAndHours(0, 0);
+      ThermalControl::instance()->setRampDurationHours(value);
+      break;
+    case Therm_SineAmplitude:
+      // TODO: Implement
+      break;
+    case HeatOrChill:
+      EEPROM_TC::instance()->setHeat(value);
       break;
     case GoogleSheetInterval:
       EEPROM_TC::instance()->setGoogleSheetInterval(int(value));
@@ -429,6 +510,7 @@ bool EthernetServer_TC::fileContinue() {
 // Main loop called by TankController::loop()
 void EthernetServer_TC::loop() {
   if (state == FINISHED) {  // Tear down
+    serial(F("Switching from finished to not connected"));
     state = NOT_CONNECTED;
     memset(buffer, 0, sizeof(buffer));
     bufferContentsSize = 0;
@@ -440,6 +522,7 @@ void EthernetServer_TC::loop() {
     switch (state) {
       case IN_TRANSFER:
         if (fileContinue()) {
+          serial(F("Switching from in transfer to finished"));
           state = FINISHED;
         }
         break;
@@ -450,6 +533,7 @@ void EthernetServer_TC::loop() {
         rootdir();
         break;
       case NOT_CONNECTED:
+        serial(F("Switching from not connected to read request"));
         state = READ_REQUEST;
         connectedAt = millis();        // record start time (so we can do timeout)
         __attribute__((fallthrough));  // Mwahahaha, use switch statement fall-through in a good way!
@@ -471,25 +555,30 @@ void EthernetServer_TC::loop() {
         if (bufferContentsSize == 0) {
           if (millis() - connectedAt > TIMEOUT) {
             sendResponse(HTTP_TIMEOUT);
+            serial(F("Switching from read request to finished"));
             state = FINISHED;
           }
         } else {
           serial(F("HTTP Request: \"%s\""), buffer);
           if (memcmp_P(buffer, F("GET "), 4) == 0) {
+            serial(F("Switching from read request to GET request"));
             state = GET_REQUEST;
             get();
           } else if (memcmp_P(buffer, F("POST "), 5) == 0) {
+            serial(F("Switching from read request to POST request"));
             state = POST_REQUEST;
             post();
           } else if (memcmp_P(buffer, F("PUT "), 4) == 0) {
+            serial(F("Switching from read request to PUT request"));
             state = PUT_REQUEST;
             put();
           } else if (memcmp_P(buffer, F("OPTIONS "), 8) == 0) {
+            serial(F("Switching from read request to OPTIONS request"));
             state = OPTIONS_REQUEST;
             options();
           } else {
             serial(buffer);
-            serial(F("Unsupported request"));
+            serial(F("Unsupported request, switching to finished state"));
             sendResponse(HTTP_NOT_IMPLEMENTED);
             state = FINISHED;
           }
@@ -502,6 +591,7 @@ void EthernetServer_TC::loop() {
         break;
     }
   } else if (state != NOT_CONNECTED) {  // In case client disconnects early
+    serial(F("Switching from unknown to finished"));
     state = FINISHED;
   } else {
     // no client and not recently connected

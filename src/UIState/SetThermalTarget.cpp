@@ -15,9 +15,9 @@ float SetThermalTarget::getCurrentValue() {
   if (subState == 0) {
     return ThermalControl::instance()->getBaseThermalTarget();
   } else {
-    uint32_t rampTimeStart = ThermalControl::instance()->getRampTimeStart();
-    uint32_t rampTimeEnd = ThermalControl::instance()->getRampTimeEnd();
-    return (rampTimeEnd - rampTimeStart) / 3600;
+    uint32_t rampTimeStartSeconds = ThermalControl::instance()->getRampTimeStart();
+    uint32_t rampTimeEndSeconds = ThermalControl::instance()->getRampTimeEnd();
+    return (rampTimeEndSeconds - rampTimeStartSeconds) / 3600.0;
   }
 }
 
@@ -28,7 +28,7 @@ void SetThermalTarget::setValue(float value) {
     start();
   } else {
     ThermalControl::instance()->setThermalTarget(values[0]);
-    ThermalControl::instance()->setRampDuration(values[1]);
+    ThermalControl::instance()->setRampDurationHours(values[1]);
     char output0[17];
     char output1[17];
     snprintf_P(output0, sizeof(output0), (PGM_P)F("New Temp=%i.%02i"), (int)values[0],

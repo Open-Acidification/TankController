@@ -85,14 +85,55 @@ class CurrentData extends StatelessWidget {
                         ),
                       ],
                       onChanged: (String? newValue) {
-                        putNewValue(newValue!, appData);
+                        TcInterface.instance()
+                            .put(
+                          '${appData.currentData["IPAddress"]}',
+                          'data?$key=$newValue',
+                        )
+                            .then((value) {
+                          appData.currentData = json.decode(value);
+                        });
+                        Navigator.pop(context);
+                      },
+                    )
+                  else if (key == 'HeatOrChill')
+                    DropdownButtonFormField<String>(
+                      value: value,
+                      items: const <DropdownMenuItem<String>>[
+                        DropdownMenuItem(
+                          value: 'CHILL',
+                          child: Text('CHILL'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'HEAT',
+                          child: Text('HEAT'),
+                        ),
+                      ],
+                      onChanged: (String? newValue) {
+                        TcInterface.instance()
+                            .put(
+                          '${appData.currentData["IPAddress"]}',
+                          'data?$key=$newValue',
+                        )
+                            .then((value) {
+                          appData.currentData = json.decode(value);
+                        });
+                        Navigator.pop(context);
                       },
                     )
                   else
                     TextFormField(
                       initialValue: value,
-                      onFieldSubmitted: (String newValue) {
-                        putNewValue(newValue, appData);
+                      onFieldSubmitted: (val) {
+                        TcInterface.instance()
+                            .put(
+                          '${appData.currentData["IPAddress"]}',
+                          'data?$key=$val',
+                        )
+                            .then((value) {
+                          appData.currentData = json.decode(value);
+                        });
+                        Navigator.pop(context);
                       },
                     ),
                   const SizedBox(height: 20),
@@ -175,6 +216,16 @@ class CurrentData extends StatelessWidget {
     });
   }
 
+  Color _colorfor(String key) {
+    if (key.contains('Therm') || key.contains('Temp')) {
+      return const Color.fromARGB(255, 162, 250, 152);
+    }
+    if (key.contains('pH')) {
+      return const Color.fromARGB(255, 209, 174, 255);
+    }
+    return Colors.white;
+  }
+
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
@@ -189,6 +240,7 @@ class CurrentData extends StatelessWidget {
           currentData.forEach(
             (key, value) => currentDataRows.add(
               DataRow(
+                color: WidgetStateProperty.all(_colorfor(key.toString())),
                 cells: <DataCell>[
                   DataCell(Text(key.toString())),
                   (!editableFields.contains(key.toString()) || !canEdit)

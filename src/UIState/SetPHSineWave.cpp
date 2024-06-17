@@ -24,7 +24,7 @@ float SetPHSineWave::getCurrentValue() {
     }
   } else {
     if (PHControl::instance()->getPHFunctionType() == PHControl::instance()->pHFunctionTypes::SINE_TYPE) {
-      return PHControl::instance()->getPeriod() / 3600;
+      return PHControl::instance()->getPeriodInSeconds() / 3600.0;
     } else {
       return 0.0;
     }
@@ -38,7 +38,7 @@ void SetPHSineWave::setValue(float value) {
     start();
   } else {
     PHControl::instance()->setBaseTargetPh(values[0]);
-    PHControl::instance()->setSine(values[1], values[2]);
+    PHControl::instance()->setSineAmplitudeAndHours(values[1], values[2]);
     char output0[17];
     char temp1[8];
     char temp2[9];

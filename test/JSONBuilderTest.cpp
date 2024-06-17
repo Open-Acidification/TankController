@@ -2,6 +2,7 @@
 #include <ArduinoUnitTests.h>
 
 #include "DateTime_TC.h"
+#include "EEPROM_TC.h"
 #include "JSONBuilder.h"
 #include "PHControl.h"
 #include "PHProbe.h"
@@ -19,11 +20,15 @@ unittest(currentData) {
   // Fake DateTime
   DateTime_TC feb(2022, 2, 22, 20, 50, 00);
   feb.setAsCurrent();
-  PHProbe::instance()->setPh(8.125);                         // actual
-  PHProbe::instance()->setPhSlope();                         // actual
-  PHControl::instance()->setBaseTargetPh(8.25);              // target
+  PHProbe::instance()->setPh(8.125);             // actual
+  PHProbe::instance()->setPhSlope();             // actual
+  PHControl::instance()->setBaseTargetPh(8.25);  // target
+  PHControl::instance()->enablePID(1);
   ThermalProbe_TC::instance()->setTemperature(99.99, true);  // actual
-  ThermalControl::instance()->setThermalTarget(98.88);       // target
+  ThermalControl::instance()->setSineAmplitudeAndHours(0, 0);
+  ThermalControl::instance()->setRampDurationHours(0);
+  ThermalControl::instance()->setThermalTarget(98.88);  // target
+  EEPROM_TC::instance()->setHeat(0);
   PID_TC::instance()->setTunings(100001.1, 100002.2, 100003.3);
   TankController::instance()->loop(false);  // recognize and apply the targets
   JSONBuilder builder;
@@ -34,9 +39,17 @@ unittest(currentData) {
   const char expected[] =
       "{"
       "\"pH\":8.125,"
-      "\"Target_pH\":8.25,"
       "\"Temperature\":99.99,"
+      "\"pH_FunctionType\":\"FLAT\","
+      "\"Target_pH\":8.25,"
+      "\"pH_RampHours\":0.0,"
+      "\"pH_SinePeriodHours\":0.0,"
+      "\"pH_SineAmplitude\":0.0,"
+      "\"Therm_FunctionType\":\"FLAT\","
       "\"TargetTemperature\":98.88,"
+      "\"Therm_RampHours\":0.0,"
+      "\"Therm_SinePeriodHours\":0.0,"
+      "\"Therm_SineAmplitude\":0.0,"
       "\"IPAddress\":\"192.168.1.10\","
       "\"MAC\":\"90:A2:DA:80:7B:76\","
       "\"FreeMemory\":\"1024 bytes\","
@@ -49,9 +62,23 @@ unittest(currentData) {
       "\"PID\":\"ON\","
       "\"TankID\":0,"
       "\"Uptime\":\"0d 0h 0m 1s\","
+      "\"HeatOrChill\":\"CHILL\","
       "\"Version\":\"" VERSION
-      "\","
-      "\"EditableFields\":[\"Target_pH\",\"TargetTemperature\",\"GoogleSheetInterval\",\"Kp\",\"Ki\",\"Kd\",\"TankID\"]"
+      "\""
+      ","
+      "\"EditableFields\":["
+      "\"Target_pH\","
+      "\"TargetTemperature\","
+      "\"GoogleSheetInterval\","
+      "\"Kp\","
+      "\"Ki\","
+      "\"Kd\","
+      "\"pH_RampHours\","
+      "\"Therm_RampHours\","
+      "\"TankID\","
+      "\"HeatOrChill\","
+      "\"PID\""
+      "]"
       "}";
   assertEqual(expected, text);
 }

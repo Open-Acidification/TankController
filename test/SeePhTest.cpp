@@ -64,7 +64,7 @@ unittest(TestVerticalScrollWithFlatSet) {
 unittest(TestVerticalScrollWithRampSet) {
   pHProbe->setPh(8.50);
   controlSolenoid->setBaseTargetPh(7.00);
-  controlSolenoid->setRampDuration(0.005);  // 18 seconds
+  controlSolenoid->setRampDurationHours(0.005);  // 18 seconds
   SeePh *test = new SeePh();
 
   // Transition states
@@ -120,7 +120,7 @@ unittest(TestVerticalScrollWithRampSet) {
 unittest(TestVerticalScrollWithSineSet) {
   pHProbe->setPh(8.50);
   controlSolenoid->setBaseTargetPh(7.00);
-  controlSolenoid->setSine(1.5, 0.125);
+  controlSolenoid->setSineAmplitudeAndHours(1.5, 0.125);
   SeePh *test = new SeePh();
 
   // Transition states

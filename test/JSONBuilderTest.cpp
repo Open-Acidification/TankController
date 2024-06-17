@@ -79,7 +79,7 @@ unittest(currentData) {
       "\"HeatOrChill\","
       "\"PID\""
       "]"
-      "}\r\n";
+      "}";
   assertEqual(expected, text);
 }
 

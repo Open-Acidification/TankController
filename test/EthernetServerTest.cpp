@@ -214,7 +214,8 @@ unittest(currentData) {
       "\"PID\":\"ON\","
       "\"TankID\":0,"
       "\"Uptime\":\"0d 0h 0m 1s\","
-      "\"Version\":\"" VERSION "\","
+      "\"Version\":\"" VERSION 
+      "\","
       "\"EditableFields\":[\"Target_pH\",\"TargetTemperature\",\"GoogleSheetInterval\",\"Kp\",\"Ki\",\"Kd\",\"TankID\"]"
       "}\r\n";
   assertEqual(expectedResponse, response);

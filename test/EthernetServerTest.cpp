@@ -104,8 +104,8 @@ unittest(display) {
       "Access-Control-Allow-Origin: *\r\n"
       "Content-Length: 36\r\n"
       "\r\n"
-      "pH 0.000   8.100\r\n"
-      "T  0.00 H 20.00 \r\n";
+      "pH 0.000   7.000\r\n"
+      "T  0.00 H 22.00 \r\n";
   assertEqual(expectedResponse, response);
   assertEqual(FINISHED, server->getState());
   server->loop();  // Process finished state
@@ -195,7 +195,7 @@ unittest(currentData) {
       "Content-Encoding: identity\r\n"
       "Content-Language: en-US\r\n"
       "Access-Control-Allow-Origin: *\r\n"
-      "Content-Length: 345\r\n"
+      "Content-Length: 442\r\n"
       "\r\n"
       "{"
       "\"pH\":8.125,"
@@ -203,7 +203,7 @@ unittest(currentData) {
       "\"Temperature\":21.25,"
       "\"TargetTemperature\":21.75,"
       "\"IPAddress\":\"192.168.1.10\","
-      "\"MAC\":\"90:A2:DA:FB:F6:F1\","
+      "\"MAC\":\"90:A2:DA:80:7B:76\","
       "\"FreeMemory\":\"1024 bytes\","
       "\"GoogleSheetInterval\":65535,"
       "\"LogFile\":\"20220222.csv\","
@@ -214,8 +214,8 @@ unittest(currentData) {
       "\"PID\":\"ON\","
       "\"TankID\":0,"
       "\"Uptime\":\"0d 0h 0m 1s\","
-      "\"Version\":\"" VERSION
-      "\""
+      "\"Version\":\"" VERSION "\","
+      "\"EditableFields\":[\"Target_pH\",\"TargetTemperature\",\"GoogleSheetInterval\",\"Kp\",\"Ki\",\"Kd\",\"TankID\"]"
       "}\r\n";
   assertEqual(expectedResponse, response);
   assertEqual(FINISHED, server->getState());

@@ -10,6 +10,13 @@
  */
 
 class ThermalControl {
+public:
+  enum thermalFunctionTypes {
+    FLAT_TYPE,
+    RAMP_TYPE,
+    SINE_TYPE,
+  };
+
 private:
   static ThermalControl* _instance;
 
@@ -25,15 +32,10 @@ protected:
   float amplitude;
   uint32_t period;
   uint32_t sineStartTime;
-  int thermalFunctionType = FLAT_TYPE;
+  thermalFunctionTypes thermalFunctionType = FLAT_TYPE;
   ThermalControl();
 
 public:
-  enum thermalFunctionTypes {
-    FLAT_TYPE,
-    RAMP_TYPE,
-    SINE_TYPE,
-  };
   virtual ~ThermalControl() {
   }
   static ThermalControl* instance();
@@ -45,7 +47,7 @@ public:
   float getCurrentThermalTarget() {
     return currentThermalTarget;
   }
-  int getThermalFunctionType() {
+  thermalFunctionTypes getThermalFunctionType() {
     return thermalFunctionType;
   }
   float getAmplitude() {

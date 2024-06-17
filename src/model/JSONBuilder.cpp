@@ -74,7 +74,16 @@ int JSONBuilder::buildCurrentValues() {
                               "\"PID\":\"%s\","
                               "\"TankID\":%i,"
                               "\"Uptime\":\"%id %ih %im %is\","
-                              "\"Version\":\"%s\""
+                              "\"Version\":\"%s\","
+                              "\"EditableFields\":["  // List of editable fields follows
+                              "\"Target_pH\","
+                              "\"TargetTemperature\","
+                              "\"GoogleSheetInterval\","
+                              "\"Kp\","
+                              "\"Ki\","
+                              "\"Kd\","
+                              "\"TankID\""
+                              "]"
                               "}"),
                      (int)pH, pH_f, (int)target_pH, target_pH_f, (int)temperature, temperature_f, (int)thermal_target,
                      thermal_target_f, IP[0], IP[1], IP[2], IP[3], mac[0], mac[1], mac[2], mac[3], mac[4], mac[5],

@@ -50,7 +50,8 @@ unittest(currentData) {
       "\"TankID\":0,"
       "\"Uptime\":\"0d 0h 0m 1s\","
       "\"Version\":\"" VERSION
-      "\""
+      "\","
+      "\"EditableFields\":[\"Target_pH\",\"TargetTemperature\",\"GoogleSheetInterval\",\"Kp\",\"Ki\",\"Kd\",\"TankID\"]"
       "}";
   assertEqual(expected, text);
 }

@@ -20,13 +20,6 @@ public:
 private:
   static ThermalControl* _instance;
 
-public:
-  enum thermalFunctionTypes {
-    FLAT_TYPE,
-    RAMP_TYPE,
-    SINE_TYPE,
-  };
-
 protected:
   const uint16_t THERMAL_CONTROL_PIN = 47;
   const float DELTA = 0.05;
@@ -73,6 +66,7 @@ public:
   bool isOn();
   void setThermalTarget(float newTemperature);
   void setRampDurationHours(float newThermalRampDuration);
+  void setSineAmplitude(float sineAmplitude);
   void setSineAmplitudeAndHours(float sineAmplitude, float sinePeriodInHours);
   virtual void updateControl(float currentTemperature) = 0;
 };

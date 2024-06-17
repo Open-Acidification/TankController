@@ -10,6 +10,13 @@
  */
 
 class ThermalControl {
+public:
+  enum thermalFunctionTypes {
+    FLAT_TYPE,
+    RAMP_TYPE,
+    SINE_TYPE,
+  };
+
 private:
   static ThermalControl* _instance;
 

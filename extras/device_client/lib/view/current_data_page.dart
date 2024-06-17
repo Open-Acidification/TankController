@@ -40,6 +40,20 @@ class CurrentData extends StatelessWidget {
     return latestVersion >= Version.parse('99.9.9'); // not supported yet!
   }
 
+  Future<void> putNewValue(String newValue, AppData appData) async {
+    await TcInterface.instance()
+        .put(
+      '${appData.currentData["IPAddress"]}',
+      'data?$key=$newValue',
+    )
+        .then((value) {
+      appData.currentData = json.decode(value);
+    });
+    if (context.mounted) {
+      Navigator.pop(context);
+    }
+  }
+
   Future<void> showEditDialog(
     AppData appData,
     BuildContext context,

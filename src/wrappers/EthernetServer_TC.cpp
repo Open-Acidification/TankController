@@ -590,6 +590,7 @@ void EthernetServer_TC::loop() {
             for (int i = 0; i < bufferContentsSize; ++i) {
               if (buffer[i] == '\n') {
                 buffer[i] = '\0';
+                break;
               }
             }
             break;

@@ -21,11 +21,6 @@ class CurrentData extends StatelessWidget {
   final BuildContext context;
 
   bool canEditCurrentInfo(AppData appData) {
-    print('appData.currentData = ${appData.currentData}');
-    print(
-      'appData.currentData.runtimeType = ${appData.currentData.runtimeType}',
-    );
-    print('appData.currentData["Version"] = ${appData.currentData['Version']}');
     String v = appData.currentData['Version']?.trim() ?? '0.0.0';
     final i = v.indexOf('-');
     if (i != -1) {
@@ -43,6 +38,20 @@ class CurrentData extends StatelessWidget {
     }
     final Version latestVersion = Version.parse(v);
     return latestVersion >= Version.parse('99.9.9'); // not supported yet!
+  }
+
+  Future<void> putNewValue(String newValue, AppData appData) async {
+    await TcInterface.instance()
+        .put(
+      '${appData.currentData["IPAddress"]}',
+      'data?$key=$newValue',
+    )
+        .then((value) {
+      appData.currentData = json.decode(value);
+    });
+    if (context.mounted) {
+      Navigator.pop(context);
+    }
   }
 
   Future<void> showEditDialog(
@@ -234,7 +243,7 @@ class CurrentData extends StatelessWidget {
           currentData.forEach(
             (key, value) => currentDataRows.add(
               DataRow(
-                color: MaterialStateProperty.all(_colorfor(key.toString())),
+                color: WidgetStateProperty.all(_colorfor(key.toString())),
                 cells: <DataCell>[
                   DataCell(Text(key.toString())),
                   (!editableFields.contains(key.toString()) || !canEdit)

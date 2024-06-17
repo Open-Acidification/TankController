@@ -107,14 +107,9 @@ int JSONBuilder::buildCurrentValues() {
       snprintf_P(Therm_FunctionType, sizeof(Therm_FunctionType), (PGM_P)F("FLAT"));
       break;
   }
-  /* Remote restart
-  Clear/reset pH calibration
-  Clear/reset temperature calibration
-  Sine wavelength and amplitude*/
 
   float pH_SinePeriodHours = 0.0;
   int pH_SinePeriodHours_f = 0;
-  // if sine amplitude is nonzero, then we are in sine mode and display the sine period
   if (pHSineAmplitude != 0) {
     pH_SinePeriodHours = EEPROM_TC::instance()->getPhSinePeriod() / 3600.0;
   }
@@ -129,7 +124,6 @@ int JSONBuilder::buildCurrentValues() {
 
   float pH_RampHours = 0.0;
   int pH_RampHours_f = 0;
-  // ramp hours could be problematic if ramp time start and end are in the past so think about that..........
   if (PHControl::instance()->getPhRampTimeEnd() > 0 && EEPROM_TC::instance()->getPhSinePeriod() == 0) {
     pH_RampHours = (PHControl::instance()->getPhRampTimeEnd() - PHControl::instance()->getPhRampTimeStart()) / 3600.0;
   }
@@ -143,7 +137,6 @@ int JSONBuilder::buildCurrentValues() {
 
   float therm_SinePeriodHours = 0.0;
   int therm_SinePeriodHours_f = 0;
-  // if sine amplitude is nonzero, then we are in sine mode and display the sine period
   if (thermSineAmplitude != 0) {
     therm_SinePeriodHours = EEPROM_TC::instance()->getThermalSinePeriod() / 3600.0;
   }
@@ -158,7 +151,6 @@ int JSONBuilder::buildCurrentValues() {
 
   float therm_rampHours = 0.0;
   int therm_rampHours_f = 0;
-  // ramp hours could be problematic if ramp time start and end are in the past so think about that..........
   if (ThermalControl::instance()->getRampTimeEnd() > 0 && EEPROM_TC::instance()->getThermalSinePeriod() == 0) {
     therm_rampHours =
         (ThermalControl::instance()->getRampTimeEnd() - ThermalControl::instance()->getRampTimeStart()) / 3600.0;
@@ -207,11 +199,7 @@ int JSONBuilder::buildCurrentValues() {
                               "\"Ki\","
                               "\"Kd\","
                               "\"pH_RampHours\","
-                              // "\"pH_SineAmplitude\","
-                              // "\"pH_SinePeriodHours\","
                               "\"Therm_RampHours\","
-                              // "\"Therm_SineAmplitude\","
-                              // "\"Therm_SinePeriodHours\","
                               "\"TankID\","
                               "\"HeatOrChill\","
                               "\"PID\""

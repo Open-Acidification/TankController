@@ -10,6 +10,13 @@
  */
 
 class ThermalControl {
+public:
+  enum thermalFunctionTypes {
+    FLAT_TYPE,
+    RAMP_TYPE,
+    SINE_TYPE,
+  };
+
 private:
   static ThermalControl* _instance;
 
@@ -32,7 +39,7 @@ protected:
   float amplitude;
   uint32_t periodInSeconds;
   uint32_t sineStartTime;
-  uint16_t thermalFunctionType = FLAT_TYPE;
+  thermalFunctionTypes thermalFunctionType = FLAT_TYPE;
   ThermalControl();
 
 public:
@@ -47,7 +54,7 @@ public:
   float getCurrentThermalTarget() {
     return currentThermalTarget;
   }
-  uint16_t getThermalFunctionType() {
+  thermalFunctionTypes getThermalFunctionType() {
     return thermalFunctionType;
   }
   float getAmplitude() {
@@ -67,7 +74,6 @@ public:
   void setThermalTarget(float newTemperature);
   void setRampDurationHours(float newThermalRampDuration);
   void setSineAmplitudeAndHours(float sineAmplitude, float sinePeriodInHours);
-  void setSineAmplitude(float sineAmplitude);
   virtual void updateControl(float currentTemperature) = 0;
 };
 

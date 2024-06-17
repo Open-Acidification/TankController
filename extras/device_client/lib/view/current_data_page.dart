@@ -226,7 +226,7 @@ class CurrentData extends StatelessWidget {
           currentData.forEach(
             (key, value) => currentDataRows.add(
               DataRow(
-                color: MaterialStateProperty.all(_colorfor(key.toString())),
+                color: WidgetStateProperty.all(_colorfor(key.toString())),
                 cells: <DataCell>[
                   DataCell(Text(key.toString())),
                   (!editableFields.contains(key.toString()) || !canEdit)

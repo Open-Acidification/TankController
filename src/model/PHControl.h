@@ -3,6 +3,13 @@
 #include "TankController.h"
 
 class PHControl {
+public:
+  enum pHFunctionTypes {
+    FLAT_TYPE,
+    RAMP_TYPE,
+    SINE_TYPE,
+  };
+
 private:
   // Class variable
   static PHControl *_instance;
@@ -21,15 +28,10 @@ private:
   uint32_t sineStartTime;
   const uint16_t WINDOW_SIZE = 10000;  // 10 second Proportional output window (for PID)
   bool usePID = true;
-  int pHFunctionType = FLAT_TYPE;
+  pHFunctionTypes pHFunctionType = FLAT_TYPE;
   PHControl();
 
 public:
-  enum pHFunctionTypes {
-    FLAT_TYPE,
-    RAMP_TYPE,
-    SINE_TYPE,
-  };
   static PHControl *instance();
   static void clearInstance();
   float getBaseTargetPh() {

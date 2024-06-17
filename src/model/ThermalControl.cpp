@@ -57,7 +57,7 @@ ThermalControl::ThermalControl() {
     baseThermalTarget = DEFAULT_TEMPERATURE;
     EEPROM_TC::instance()->setTemp(baseThermalTarget);
   }
-  thermalFunctionType = EEPROM_TC::instance()->getThermalFunctionType();
+  thermalFunctionType = (thermalFunctionTypes) EEPROM_TC::instance()->getThermalFunctionType();
   if (thermalFunctionType == 0xFFFFFFFF) {
     thermalFunctionType = FLAT_TYPE;
     EEPROM_TC::instance()->setThermalFunctionType(thermalFunctionType);

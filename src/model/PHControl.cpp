@@ -103,7 +103,7 @@ void PHControl::setRampDurationHours(float newPhRampDuration) {
     floattostrf(newPhRampDuration, 5, 3, buffer2, sizeof(buffer2));
     serial(F("change ramp time from %s to %s"), buffer1, buffer2);
     rampTimeStartSeconds = DateTime_TC::now().secondstime();
-    rampTimeEndSeconds = rampTimeStartSeconds + (uint32_t)(newPhRampDuration * 3600.0);
+    rampTimeEndSeconds = rampTimeStartSeconds + (uint32_t)(newPhRampDuration * 3600);
     rampInitialValue = PHProbe::instance()->getPh();
     pHFunctionType = pHFunctionTypes::RAMP_TYPE;
     EEPROM_TC::instance()->setPHFunctionType(pHFunctionType);

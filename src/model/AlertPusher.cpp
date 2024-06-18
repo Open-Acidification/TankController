@@ -1,11 +1,11 @@
 #include "model/AlertPusher.h"
 
 #include "Version.h"
+#include "model/PHControl.h"
 #include "model/TC_util.h"
 #include "wrappers/Ethernet_TC.h"
 #include "wrappers/SD_TC.h"
 #include "wrappers/Serial_TC.h"
-#include "PHControl.h"
 
 //  class variables
 AlertPusher* AlertPusher::_instance = nullptr;
@@ -29,8 +29,7 @@ AlertPusher::AlertPusher() {
 }
 
 bool AlertPusher::isReadyToPost() {
-  return _isReadyToPost 
-  && millis() > delayRequestsUntilTime;
+  return _isReadyToPost && millis() > delayRequestsUntilTime;
 //      && !(PHControl::instance()->isOn());
 }
 
@@ -208,7 +207,6 @@ void AlertPusher::sendPostRequest() {
 }
 
 bool AlertPusher::shouldSendHeadRequest() {
-  return _shouldSendHeadRequest 
-    && millis() > delayRequestsUntilTime;
+  return _shouldSendHeadRequest && millis() > delayRequestsUntilTime;
 //      && !(PHControl::instance()->isOn());
 }

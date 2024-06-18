@@ -44,7 +44,9 @@ public:
   void clearBuffer() {
     buffer[0] = '\0';
   }
-  void reset() {}
+  void reset() {
+    //
+  }
   bool getShouldWriteWarning() {
     return shouldWriteWarning;
   }

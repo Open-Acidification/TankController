@@ -182,7 +182,6 @@ unittest(noInternetConnectionWhenBubblerIsOn) {
   assertEqual(PROCESS_HEAD_RESPONSE, pusher->getState());
   assertFalse(pusher->shouldSendHeadRequest());
 
-
   // Turn off the bubbler
   delay(7500);
   pHProbe->setPh(7.25);

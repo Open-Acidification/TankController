@@ -203,13 +203,13 @@ int JSONBuilder::buildCurrentValues() {
                               "\"Ki\","
                               "\"Kd\","
                               "\"pH_RampHours\","
-                               // "\"pH_SineAmplitude\","     // Not editable right now
-                               // "\"pH_SinePeriodHours\","
-                               "\"Therm_RampHours\","
-                               // "\"Therm_SineAmplitude\","
-                               // "\"Therm_SinePeriodHours\","
-                               "\"TankID\","
-                                "\"HeatOrChill\","
+                              // "\"pH_SineAmplitude\","     // Not editable right now
+                              // "\"pH_SinePeriodHours\","
+                              "\"Therm_RampHours\","
+                              // "\"Therm_SineAmplitude\","
+                              // "\"Therm_SinePeriodHours\","
+                              "\"TankID\","
+                              "\"HeatOrChill\","
                               "\"PID\""
                               "]"
                               "}"),

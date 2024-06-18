@@ -30,7 +30,7 @@ AlertPusher::AlertPusher() {
 
 bool AlertPusher::isReadyToPost() {
   return _isReadyToPost && millis() > delayRequestsUntilTime;
-//      && !(PHControl::instance()->isOn());
+  //      && !(PHControl::instance()->isOn());
 }
 
 void AlertPusher::loop() {
@@ -208,5 +208,5 @@ void AlertPusher::sendPostRequest() {
 
 bool AlertPusher::shouldSendHeadRequest() {
   return _shouldSendHeadRequest && millis() > delayRequestsUntilTime;
-//      && !(PHControl::instance()->isOn());
+  //      && !(PHControl::instance()->isOn());
 }

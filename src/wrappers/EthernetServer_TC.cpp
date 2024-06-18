@@ -231,14 +231,35 @@ void EthernetServer_TC::put() {
       PHControl::instance()->enablePID(value);
       break;
     case pH_SinePeriodHours:
-      // TODO: Implement
+      if (value == 0) {
+        // if the new period is 0, then we are switching to ramp mode with a placeholder of half the period of the sine
+        PHControl::instance()->setRampDurationHours(PHControl::instance()->getPeriodInSeconds() / 7200.0);
+        break;
+      }
+      if (PHControl::instance()->getAmplitude() > 0) {
+        PHControl::instance()->setSineAmplitudeAndHours(PHControl::instance()->getAmplitude(), value);
+      }
       break;
     case pH_RampHours:
       PHControl::instance()->setSineAmplitudeAndHours(0, 0);
       PHControl::instance()->setRampDurationHours(value);
       break;
     case pH_SineAmplitude:
-      // TODO: Implement
+      if (value == 0) {
+        // if the new amplitude is 0, then we are switching to ramp mode with a placeholder of half the period of the
+        // sine wave, then setting sine amplitude and period to 0.
+        PHControl::instance()->setSineAmplitudeAndHours(value, 0);
+        PHControl::instance()->setRampDurationHours(PHControl::instance()->getPeriodInSeconds() / 7200.0);
+      } else if (PHControl::instance()->getAmplitude() > 0) {
+        serial(F("........previous sine is greater than 0, updating only amplitude... %i"),
+               (int)PHControl::instance()->getAmplitude());
+        // If the previous amplitude was not 0, then we are in sine mode and we can just change the amplitude
+        PHControl::instance()->setSineAmplitude(value);
+      } else {
+        // If we were previously in ramp mode, change to sine mode using the value 12 hours as the period
+        serial(F("---Previous sine amp. is 0, changing to sine mode with 12"));
+        PHControl::instance()->setSineAmplitudeAndHours(value, 12.0);
+      }
       break;
     case TankID:
       EEPROM_TC::instance()->setTankID(value);
@@ -250,14 +271,35 @@ void EthernetServer_TC::put() {
       ThermalControl::instance()->setThermalTarget(value);
       break;
     case Therm_SinePeriodHours:
-      // TODO: Implement
+      if (value == 0) {
+        // if the new period is 0, then we are switching to ramp mode with a placeholder of half the period of the sine
+        ThermalControl::instance()->setRampDurationHours(ThermalControl::instance()->getPeriodInSeconds() / 7200.0);
+        break;
+      }
+      if (ThermalControl::instance()->getAmplitude() > 0) {
+        ThermalControl::instance()->setSineAmplitudeAndHours(ThermalControl::instance()->getAmplitude(), value);
+      }
       break;
     case Therm_RampHours:
       ThermalControl::instance()->setSineAmplitudeAndHours(0, 0);
       ThermalControl::instance()->setRampDurationHours(value);
       break;
     case Therm_SineAmplitude:
-      // TODO: Implement
+      if (value == 0) {
+        // if the new amplitude is 0, then we are switching to ramp mode with a placeholder of half the period of the
+        // sine wave, then setting sine amplitude and period to 0.
+        ThermalControl::instance()->setRampDurationHours(ThermalControl::instance()->getPeriodInSeconds() / 7200.0);
+        ThermalControl::instance()->setSineAmplitudeAndHours(value, 0);
+      } else if (ThermalControl::instance()->getAmplitude() > 0) {
+        serial(F("........previous sine is greater than 0, updating only amplitude... %i"),
+               (int)ThermalControl::instance()->getAmplitude());
+        // If the previous amplitude was not 0, then we are in sine mode and we can just change the amplitude
+        ThermalControl::instance()->setSineAmplitude(value);
+      } else {
+        // If we were previously in ramp mode, change to sine mode using the value 12 hours as the period
+        serial(F("---Previous sine amp. is 0, changing to sine mode with 12"));
+        ThermalControl::instance()->setSineAmplitudeAndHours(value, 12.0);
+      }
       break;
     case HeatOrChill:
       EEPROM_TC::instance()->setHeat(value);

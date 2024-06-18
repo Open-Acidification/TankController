@@ -72,7 +72,6 @@ PHControl::PHControl() {
       amplitude = EEPROM_TC::instance()->getPhSineAmplitude();
       sineStartTime = EEPROM_TC::instance()->getPhSineStartTime();
       serial(F("SINE_TYPE PHControl::PHControl() - sineStartTime = %lu"), sineStartTime / 3600);
-      // sineStartTime = 3 * 3600;  // 3 hours
       break;
     default:
       break;
@@ -128,6 +127,12 @@ void PHControl::setSineAmplitudeAndHours(float sineAmplitude, float sinePeriodIn
   EEPROM_TC::instance()->setPhSinePeriod(periodInSeconds);
   EEPROM_TC::instance()->setPhSineAmplitude(amplitude);
   EEPROM_TC::instance()->setPhSineStartTime(sineStartTime);
+}
+
+void PHControl::setSineAmplitude(float sineAmplitude) {
+  assert(pHFunctionType == pHFunctionTypes::SINE_TYPE);
+  amplitude = sineAmplitude;
+  EEPROM_TC::instance()->setPhSineAmplitude(amplitude);
 }
 
 void PHControl::enablePID(bool flag) {

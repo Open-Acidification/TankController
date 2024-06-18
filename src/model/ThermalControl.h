@@ -66,6 +66,7 @@ public:
   bool isOn();
   void setThermalTarget(float newTemperature);
   void setRampDurationHours(float newThermalRampDuration);
+  void setSineAmplitude(float sineAmplitude);
   void setSineAmplitudeAndHours(float sineAmplitude, float sinePeriodInHours);
   virtual void updateControl(float currentTemperature) = 0;
 };

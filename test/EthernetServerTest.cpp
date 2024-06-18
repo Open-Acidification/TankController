@@ -229,8 +229,7 @@ unittest(currentData) {
       "\"Uptime\":\"0d 0h 0m 1s\","
       "\"HeatOrChill\":\"CHILL\","
       "\"Version\":\"" VERSION
-      "\""
-      ","
+      "\","
       "\"EditableFields\":["
       "\"Target_pH\","
       "\"TargetTemperature\","

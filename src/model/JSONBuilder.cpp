@@ -26,7 +26,7 @@ int JSONBuilder::buildCurrentValues() {
     target_pH_f /= 10;
   }
   float temperature = ThermalProbe_TC::instance()->getRunningAverage();
-  // int target_therm_type = ThermalControl::instance()->getThermalFunctionType();  // Flat 0, Ramp 1, or Sine 2
+
   // https://github.com/Open-Acidification/TankController/issues/331
   int temperature_f = (temperature - (int)temperature) * 1000 + 0.5;
   while (temperature_f && temperature_f % 10 == 0) {
@@ -110,6 +110,7 @@ int JSONBuilder::buildCurrentValues() {
 
   float pH_SinePeriodHours = 0.0;
   int pH_SinePeriodHours_f = 0;
+  // if sine amplitude is nonzero, then we are in sine mode and display the sine period
   if (pHSineAmplitude != 0) {
     pH_SinePeriodHours = EEPROM_TC::instance()->getPhSinePeriod() / 3600.0;
   }
@@ -124,6 +125,7 @@ int JSONBuilder::buildCurrentValues() {
 
   float pH_RampHours = 0.0;
   int pH_RampHours_f = 0;
+  // TODO: ramp hours could be problematic if ramp time start and end are in the past so think about that..........
   if (PHControl::instance()->getPhRampTimeEnd() > 0 && EEPROM_TC::instance()->getPhSinePeriod() == 0) {
     pH_RampHours = (PHControl::instance()->getPhRampTimeEnd() - PHControl::instance()->getPhRampTimeStart()) / 3600.0;
   }
@@ -137,6 +139,7 @@ int JSONBuilder::buildCurrentValues() {
 
   float therm_SinePeriodHours = 0.0;
   int therm_SinePeriodHours_f = 0;
+  // if sine amplitude is nonzero, then we are in sine mode and display the sine period
   if (thermSineAmplitude != 0) {
     therm_SinePeriodHours = EEPROM_TC::instance()->getThermalSinePeriod() / 3600.0;
   }
@@ -151,6 +154,7 @@ int JSONBuilder::buildCurrentValues() {
 
   float therm_rampHours = 0.0;
   int therm_rampHours_f = 0;
+  // TODO: ramp hours could be problematic if ramp time start and end are in the past so think about that..........
   if (ThermalControl::instance()->getRampTimeEnd() > 0 && EEPROM_TC::instance()->getThermalSinePeriod() == 0) {
     therm_rampHours =
         (ThermalControl::instance()->getRampTimeEnd() - ThermalControl::instance()->getRampTimeStart()) / 3600.0;
@@ -199,9 +203,13 @@ int JSONBuilder::buildCurrentValues() {
                               "\"Ki\","
                               "\"Kd\","
                               "\"pH_RampHours\","
-                              "\"Therm_RampHours\","
-                              "\"TankID\","
-                              "\"HeatOrChill\","
+                               // "\"pH_SineAmplitude\","     // Not editable right now
+                               // "\"pH_SinePeriodHours\","
+                               "\"Therm_RampHours\","
+                               // "\"Therm_SineAmplitude\","
+                               // "\"Therm_SinePeriodHours\","
+                               "\"TankID\","
+                                "\"HeatOrChill\","
                               "\"PID\""
                               "]"
                               "}"),
@@ -215,10 +223,5 @@ int JSONBuilder::buildCurrentValues() {
                      (int)((kp - (int)kp) * 10 + 0.5), (int)ki, (int)((ki - (int)ki) * 10 + 0.5), (int)kd,
                      (int)((kd - (int)kd) * 10 + 0.5), pidStatus, EEPROM_TC::instance()->getTankID(), days, hours,
                      minutes, seconds, heatStatus, TankController::instance()->version());
-
-  // if (pH_FunctionType == "SINE") {
-  //   buffer.append("\"pH_SinePeriodHours\",");
-  // }
-
   return bytes;
 }

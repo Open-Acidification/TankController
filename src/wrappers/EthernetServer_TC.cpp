@@ -234,7 +234,6 @@ void EthernetServer_TC::put() {
       if (value == 0) {
         // if the new period is 0, then we are switching to ramp mode with a placeholder of half the period of the sine
         PHControl::instance()->setRampDurationHours(PHControl::instance()->getPeriodInSeconds() / 7200.0);
-        // PHControl::instance()->setSineAmplitudeAndHours(0, 0);
         break;
       }
       if (PHControl::instance()->getAmplitude() > 0) {
@@ -275,7 +274,6 @@ void EthernetServer_TC::put() {
       if (value == 0) {
         // if the new period is 0, then we are switching to ramp mode with a placeholder of half the period of the sine
         ThermalControl::instance()->setRampDurationHours(ThermalControl::instance()->getPeriodInSeconds() / 7200.0);
-        ThermalControl::instance()->setSineAmplitudeAndHours(0, 0);  // wwill cause type of function to be sine
         break;
       }
       if (ThermalControl::instance()->getAmplitude() > 0) {

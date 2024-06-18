@@ -72,7 +72,6 @@ PHControl::PHControl() {
       amplitude = EEPROM_TC::instance()->getPhSineAmplitude();
       sineStartTime = EEPROM_TC::instance()->getPhSineStartTime();
       serial(F("SINE_TYPE PHControl::PHControl() - sineStartTime = %lu"), sineStartTime / 3600);
-      // sineStartTime = 3 * 3600;  // 3 hours
       break;
     default:
       break;
@@ -124,9 +123,6 @@ void PHControl::setSineAmplitudeAndHours(float sineAmplitude, float sinePeriodIn
   amplitude = sineAmplitude;
   pHFunctionType = pHFunctionTypes::SINE_TYPE;
   sineStartTime = DateTime_TC::now().secondstime();
-  // char buffer1[10];
-  // floattostrf(sinePeriodInHours, 5, 3, buffer1, sizeof(buffer1));
-  // serial(F("set sine period time to %s"), sinePeriodInHours);
   EEPROM_TC::instance()->setPHFunctionType(pHFunctionType);
   EEPROM_TC::instance()->setPhSinePeriod(periodInSeconds);
   EEPROM_TC::instance()->setPhSineAmplitude(amplitude);
@@ -157,7 +153,6 @@ void PHControl::updateControl(float pH) {
   switch (pHFunctionType) {
     case FLAT_TYPE: {
       currentTargetPh = baseTargetPh;
-      // serial(F("FLAT_TYPE PHControl::updateControl() - currentTargetPh = %i"), (int)currentTargetPh);
       break;
     }
     case RAMP_TYPE: {
@@ -166,7 +161,6 @@ void PHControl::updateControl(float pH) {
                                               (rampTimeEndSeconds - rampTimeStartSeconds));
       } else {
         currentTargetPh = baseTargetPh;
-        // serial(F("RAMP_TYPE 2 PHControl::updateControl() - currentTargetPh = %i"), (int)currentTargetPh);
       }
       break;
     }
@@ -177,7 +171,6 @@ void PHControl::updateControl(float pH) {
         sineEndTime = sineStartTime + periodInSeconds;
         EEPROM_TC::instance()->setPhSineStartTime(sineStartTime);
       }
-      // serial(F("SINE_TYPE PHControl::updateControl() - currentTime = %lu"), currentTime / 3600);
       float timeLeftTillPeriodEnd = sineEndTime - currentTime;
       float percentNOTThroughPeriod = timeLeftTillPeriodEnd / periodInSeconds;
       float percentThroughPeriod = 1 - percentNOTThroughPeriod;

@@ -2,9 +2,12 @@
 
 #include <avr/wdt.h>
 
+#include "EEPROM_TC.h"
 #include "TankController.h"
 #include "favicon.h"
 #include "model/JSONBuilder.h"
+#include "model/PHControl.h"
+#include "model/ThermalControl.h"
 #include "wrappers/DateTime_TC.h"
 #include "wrappers/Ethernet_TC.h"
 #include "wrappers/LiquidCrystal_TC.h"
@@ -42,13 +45,14 @@ EthernetServer_TC::EthernetServer_TC(uint16_t port) : EthernetServer(port) {
 }
 
 // echo() - Proof of concept for the EthernetServer
+// http://172.27.100.6/echo?abcde="this is a test"
 void EthernetServer_TC::echo() {
   serial(F("echo() - \"%s\""), buffer + 19);
   int i = 19;
   while (buffer[i] != ' ' && buffer[i] != '\0') {
     ++i;
   }
-  serial(F("echo() found space or null at %d"), i);
+  serial(F("echo() found space or null at %d (%d)"), i, (int)buffer[i]);
   if (memcmp_P(buffer + i - 3, F("%22"), 3)) {
     serial(F("bad"));
     state = FINISHED;
@@ -63,6 +67,7 @@ void EthernetServer_TC::echo() {
 
 // Handles an HTTP GET request
 void EthernetServer_TC::get() {
+  serial(F("Ethernet Server received a get request: \"%s\""), buffer + 4);
   if (memcmp_P(buffer + 4, F("/ "), 2) == 0) {
     sendHomeRedirect();
     state = FINISHED;
@@ -107,7 +112,7 @@ void EthernetServer_TC::options() {
         "\r\n");
   strscpy_P(buffer, response, sizeof(buffer));
   client.write(buffer);
-
+  serial(F("OPTIONS request handled"));
   state = FINISHED;
 }
 
@@ -124,20 +129,94 @@ void EthernetServer_TC::post() {
 
 // Handles an HTTP PUT request
 void EthernetServer_TC::put() {
-  enum { Kd, Ki, Kp } var;
+  serial(F("put \"%s\""), buffer + 4);
+  float value;
+  enum {
+    GoogleSheetInterval,
+    HeatOrChill,
+    Kd,
+    Ki,
+    Kp,
+    pH_RampHours,
+    pH_SinePeriodHours,
+    pH_SineAmplitude,
+    PID,
+    TankID,
+    Target_pH,
+    TargetTemperature,
+    Therm_RampHours,
+    Therm_SineAmplitude,
+    Therm_SinePeriodHours
+  } var;
   if (memcmp_P(buffer + 4, F("/api/1/data?Kd="), 15) == 0) {
     var = Kd;
   } else if (memcmp_P(buffer + 4, F("/api/1/data?Ki="), 15) == 0) {
     var = Ki;
   } else if (memcmp_P(buffer + 4, F("/api/1/data?Kp="), 15) == 0) {
     var = Kp;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?PID="), 16) == 0) {
+    var = PID;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?TankID="), 19) == 0) {
+    var = TankID;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?Target_pH="), 22) == 0) {
+    var = Target_pH;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?HeatOrChill="), 24) == 0) {
+    var = HeatOrChill;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?pH_RampHours="), 25) == 0) {
+    var = pH_RampHours;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?Therm_RampHours="), 28) == 0) {
+    var = Therm_RampHours;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?pH_SineAmplitude="), 29) == 0) {
+    var = pH_SineAmplitude;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?TargetTemperature="), 30) == 0) {
+    var = TargetTemperature;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?pH_SinePeriodHours="), 31) == 0) {
+    var = pH_SinePeriodHours;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?Therm_SineAmplitude="), 32) == 0) {
+    var = Therm_SineAmplitude;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?GoogleSheetInterval="), 32) == 0) {
+    var = GoogleSheetInterval;
+  } else if (memcmp_P(buffer + 4, F("/api/1/data?Therm_SinePeriodHours="), 34) == 0) {
+    var = Therm_SinePeriodHours;
   } else {
     serial(F("put \"%s\" not recognized!"), buffer + 5);
     sendResponse(HTTP_BAD_REQUEST);
     state = FINISHED;
     return;
   }
-  float value = strtofloat(buffer + 19);
+  if (var == PID) {
+    if (memcmp_P(buffer + 20, F("OFF"), 3) == 0) {
+      value = 0;
+    } else {
+      value = 1;
+    }
+  } else if (var == TankID) {
+    value = strtofloat(buffer + 23);
+  } else if (var == Target_pH) {
+    value = strtofloat(buffer + 26);
+  } else if (var == HeatOrChill) {
+    if (memcmp_P(buffer + 28, F("CHILL"), 5) == 0) {
+      value = 0;
+    } else {
+      value = 1;
+    }
+  } else if (var == pH_RampHours) {
+    value = strtofloat(buffer + 29);
+  } else if (var == Therm_RampHours) {
+    value = strtofloat(buffer + 32);
+  } else if (var == pH_SineAmplitude) {
+    value = strtofloat(buffer + 33);
+  } else if (var == TargetTemperature) {
+    value = strtofloat(buffer + 34);
+  } else if (var == pH_SinePeriodHours) {
+    value = strtofloat(buffer + 35);
+  } else if (var == GoogleSheetInterval || var == Therm_SineAmplitude) {
+    value = strtofloat(buffer + 36);
+  } else if (var == Therm_SinePeriodHours) {
+    value = strtofloat(buffer + 38);
+  } else {
+    value = strtofloat(buffer + 19);
+  }
   switch (var) {
     case Kd:
       PID_TC::instance()->setKd(value);
@@ -147,6 +226,86 @@ void EthernetServer_TC::put() {
       break;
     case Kp:
       PID_TC::instance()->setKp(value);
+      break;
+    case PID:
+      PHControl::instance()->enablePID(value);
+      break;
+    case pH_SinePeriodHours:
+      if (value == 0) {
+        // if the new period is 0, then we are switching to ramp mode with a placeholder of half the period of the sine
+        PHControl::instance()->setRampDurationHours(PHControl::instance()->getPeriodInSeconds() / 7200.0);
+        break;
+      }
+      if (PHControl::instance()->getAmplitude() > 0) {
+        PHControl::instance()->setSineAmplitudeAndHours(PHControl::instance()->getAmplitude(), value);
+      }
+      break;
+    case pH_RampHours:
+      PHControl::instance()->setSineAmplitudeAndHours(0, 0);
+      PHControl::instance()->setRampDurationHours(value);
+      break;
+    case pH_SineAmplitude:
+      if (value == 0) {
+        // if the new amplitude is 0, then we are switching to ramp mode with a placeholder of half the period of the
+        // sine wave, then setting sine amplitude and period to 0.
+        PHControl::instance()->setSineAmplitudeAndHours(value, 0);
+        PHControl::instance()->setRampDurationHours(PHControl::instance()->getPeriodInSeconds() / 7200.0);
+      } else if (PHControl::instance()->getAmplitude() > 0) {
+        serial(F("........previous sine is greater than 0, updating only amplitude... %i"),
+               (int)PHControl::instance()->getAmplitude());
+        // If the previous amplitude was not 0, then we are in sine mode and we can just change the amplitude
+        PHControl::instance()->setSineAmplitude(value);
+      } else {
+        // If we were previously in ramp mode, change to sine mode using the value 12 hours as the period
+        serial(F("---Previous sine amp. is 0, changing to sine mode with 12"));
+        PHControl::instance()->setSineAmplitudeAndHours(value, 12.0);
+      }
+      break;
+    case TankID:
+      EEPROM_TC::instance()->setTankID(value);
+      break;
+    case Target_pH:
+      PHControl::instance()->setBaseTargetPh(value);
+      break;
+    case TargetTemperature:
+      ThermalControl::instance()->setThermalTarget(value);
+      break;
+    case Therm_SinePeriodHours:
+      if (value == 0) {
+        // if the new period is 0, then we are switching to ramp mode with a placeholder of half the period of the sine
+        ThermalControl::instance()->setRampDurationHours(ThermalControl::instance()->getPeriodInSeconds() / 7200.0);
+        break;
+      }
+      if (ThermalControl::instance()->getAmplitude() > 0) {
+        ThermalControl::instance()->setSineAmplitudeAndHours(ThermalControl::instance()->getAmplitude(), value);
+      }
+      break;
+    case Therm_RampHours:
+      ThermalControl::instance()->setSineAmplitudeAndHours(0, 0);
+      ThermalControl::instance()->setRampDurationHours(value);
+      break;
+    case Therm_SineAmplitude:
+      if (value == 0) {
+        // if the new amplitude is 0, then we are switching to ramp mode with a placeholder of half the period of the
+        // sine wave, then setting sine amplitude and period to 0.
+        ThermalControl::instance()->setRampDurationHours(ThermalControl::instance()->getPeriodInSeconds() / 7200.0);
+        ThermalControl::instance()->setSineAmplitudeAndHours(value, 0);
+      } else if (ThermalControl::instance()->getAmplitude() > 0) {
+        serial(F("........previous sine is greater than 0, updating only amplitude... %i"),
+               (int)ThermalControl::instance()->getAmplitude());
+        // If the previous amplitude was not 0, then we are in sine mode and we can just change the amplitude
+        ThermalControl::instance()->setSineAmplitude(value);
+      } else {
+        // If we were previously in ramp mode, change to sine mode using the value 12 hours as the period
+        serial(F("---Previous sine amp. is 0, changing to sine mode with 12"));
+        ThermalControl::instance()->setSineAmplitudeAndHours(value, 12.0);
+      }
+      break;
+    case HeatOrChill:
+      EEPROM_TC::instance()->setHeat(value);
+      break;
+    case GoogleSheetInterval:
+      EEPROM_TC::instance()->setGoogleSheetInterval(int(value));
       break;
   }
   sendCurrentRedirect();
@@ -393,6 +552,7 @@ bool EthernetServer_TC::fileContinue() {
 // Main loop called by TankController::loop()
 void EthernetServer_TC::loop() {
   if (state == FINISHED) {  // Tear down
+    serial(F("Switching from finished to not connected"));
     state = NOT_CONNECTED;
     memset(buffer, 0, sizeof(buffer));
     bufferContentsSize = 0;
@@ -404,6 +564,7 @@ void EthernetServer_TC::loop() {
     switch (state) {
       case IN_TRANSFER:
         if (fileContinue()) {
+          serial(F("Switching from in transfer to finished"));
           state = FINISHED;
         }
         break;
@@ -414,6 +575,7 @@ void EthernetServer_TC::loop() {
         rootdir();
         break;
       case NOT_CONNECTED:
+        serial(F("Switching from not connected to read request"));
         state = READ_REQUEST;
         connectedAt = millis();        // record start time (so we can do timeout)
         __attribute__((fallthrough));  // Mwahahaha, use switch statement fall-through in a good way!
@@ -423,31 +585,42 @@ void EthernetServer_TC::loop() {
           buffer[bufferContentsSize++] = (char)(next & 0xFF);
           if (bufferContentsSize > 3 && (memcmp_P(buffer + bufferContentsSize - 4, F("\r\n\r\n"), 4) == 0)) {
             buffer[bufferContentsSize] = '\0';
+            for (int i = 0; i < bufferContentsSize; ++i) {
+              if (buffer[i] == '\n') {
+                buffer[i] = '\0';
+                break;
+              }
+            }
             break;
           }
         }
         if (bufferContentsSize == 0) {
           if (millis() - connectedAt > TIMEOUT) {
             sendResponse(HTTP_TIMEOUT);
+            serial(F("Switching from read request to finished"));
             state = FINISHED;
           }
         } else {
-          // serial(F("HTTP Request: \"%s\""), buffer);
+          serial(F("HTTP Request: \"%s\""), buffer);
           if (memcmp_P(buffer, F("GET "), 4) == 0) {
+            serial(F("Switching from read request to GET request"));
             state = GET_REQUEST;
             get();
           } else if (memcmp_P(buffer, F("POST "), 5) == 0) {
+            serial(F("Switching from read request to POST request"));
             state = POST_REQUEST;
             post();
           } else if (memcmp_P(buffer, F("PUT "), 4) == 0) {
+            serial(F("Switching from read request to PUT request"));
             state = PUT_REQUEST;
             put();
           } else if (memcmp_P(buffer, F("OPTIONS "), 8) == 0) {
+            serial(F("Switching from read request to OPTIONS request"));
             state = OPTIONS_REQUEST;
             options();
           } else {
             serial(buffer);
-            serial(F("Unsupported request"));
+            serial(F("Unsupported request, switching to finished state"));
             sendResponse(HTTP_NOT_IMPLEMENTED);
             state = FINISHED;
           }
@@ -460,6 +633,7 @@ void EthernetServer_TC::loop() {
         break;
     }
   } else if (state != NOT_CONNECTED) {  // In case client disconnects early
+    serial(F("Switching from unknown to finished"));
     state = FINISHED;
   } else {
     // no client and not recently connected

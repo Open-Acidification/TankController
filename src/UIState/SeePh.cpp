@@ -68,8 +68,8 @@ void SeePh::loadTypeVariables(uint16_t line) {
       break;
     }
     case SINE_TYPE: {
-      uint32_t period = PHControl::instance()->getPeriod();
-      float periodHours = period / 3600.0;
+      uint32_t periodInSeconds = PHControl::instance()->getPeriodInSeconds();
+      float periodHours = periodInSeconds / 3600.0;
       float amplitude = PHControl::instance()->getAmplitude();
 
       snprintf_P(buffer, sizeof(buffer), (PGM_P)F("p=%i.%03i a=%i.%03i"), (int)periodHours,

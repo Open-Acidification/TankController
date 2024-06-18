@@ -56,7 +56,7 @@ void main() {
     }
   });
 
-  testWidgets('Current Data is displayed', (WidgetTester tester) async {
+  testWidgets('Edit dialog is displayed', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
 
@@ -64,17 +64,12 @@ void main() {
     final appData = AppData.instance();
     appData.currentTank = Tank('test_tank', '192.168.0.1');
 
-    // Verify Current Data is not displayed
     // Navigate to Current Data
-    // Verify Current Data is displayed
-    await tester.ensureVisible(find.text('Current Data'));
-    expect(find.text('Current Data'), findsOneWidget);
-    expect(find.text('90:A2:DA:0F:45:C0'), findsNothing);
-    expect(find.text('FreeMemory'), findsNothing);
     await tester.tap(find.text('Current Data'));
     await tester.pump();
-    expect(find.text('90:A2:DA:0F:45:C0'), findsOneWidget);
-    expect(find.text('FreeMemory'), findsOneWidget);
+
+    await tester.ensureVisible(find.text('Ki'));
+    expect(find.text('Ki'), findsOneWidget);
   });
 
   testWidgets('Files are displayed', (WidgetTester tester) async {

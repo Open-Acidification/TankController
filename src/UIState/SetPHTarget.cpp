@@ -16,9 +16,9 @@ float SetPHTarget::getCurrentValue() {
   if (subState == 0) {
     return PHControl::instance()->getBaseTargetPh();
   } else {
-    uint32_t rampTimeStart = PHControl::instance()->getPhRampTimeStart();
-    uint32_t rampTimeEnd = PHControl::instance()->getPhRampTimeEnd();
-    return (rampTimeEnd - rampTimeStart) / 3600;
+    uint32_t rampTimeStartSeconds = PHControl::instance()->getPhRampTimeStart();
+    uint32_t rampTimeEndSeconds = PHControl::instance()->getPhRampTimeEnd();
+    return (rampTimeEndSeconds - rampTimeStartSeconds) / 3600.0;
   }
 }
 
@@ -29,7 +29,7 @@ void SetPHTarget::setValue(float value) {
     start();
   } else {
     PHControl::instance()->setBaseTargetPh(values[0]);
-    PHControl::instance()->setRampDuration(values[1]);
+    PHControl::instance()->setRampDurationHours(values[1]);
     char output0[17];
     char output1[17];
     snprintf_P(output0, sizeof(output0), (PGM_P)F("New pH=%i.%03i"), (int)values[0],

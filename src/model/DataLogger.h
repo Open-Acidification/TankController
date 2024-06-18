@@ -44,6 +44,10 @@ public:
   void clearBuffer() {
     buffer[0] = '\0';
   }
+  void reset() {}
+  bool getShouldWriteWarning() {
+    return shouldWriteWarning;
+  }
 #endif
 
 private:
@@ -62,4 +66,6 @@ private:
   void writeToDataLog();
   void writeToSerialLog();
   void writeToRemoteLog();
+  void writeAlertPreambleToBuffer(const char severity);
+  void writeInfoToLog();
 };

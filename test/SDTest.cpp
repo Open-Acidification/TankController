@@ -189,7 +189,7 @@ unittest(removeFile) {
 }
 
 unittest(writeAlert) {
-  delay(60000); // alerts don't get written immediately
+  delay(60000);  // alerts don't get written immediately
   char data[20];
   SD_TC* sd = SD_TC::instance();
   AlertPusher* pusher = AlertPusher::instance();
@@ -202,7 +202,7 @@ unittest(writeAlert) {
   assertFalse(pusher->shouldSendHeadRequest());
 
   // write data
-  sd->writeAlert("line 1"); // also writes header row
+  sd->writeAlert("line 1");  // also writes header row
   int size = sd->getAlertFileSize();
   assertTrue(pusher->shouldSendHeadRequest());
   assertTrue(sd->exists("90A2DA807B76.log"));
@@ -256,6 +256,8 @@ unittest(longAlertFileName) {
   sd->setAlertFileName("12345678901234567890123456789");  // one character too many
   assertEqual("90A2DA807B76.log", sd->getAlertFileName());
   assertTrue(sd->getAlertFileNameIsReady());
+}
+
 unittest(remoteLogName) {
   TankController::deleteInstance();
   TankController* tc = TankController::instance("remoteLog");

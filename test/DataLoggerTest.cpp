@@ -43,8 +43,8 @@ unittest(loop) {
   assertEqual(0.0, ThermalProbe_TC::instance()->getSampleMean());    // thermal sample has been reset
   char infoString[512] = "";
   snprintf(infoString, sizeof(infoString), "%s\t%s", VERSION,
-          //  "0\tI\t2023-08-15 00:01:00\t\t20.00\t-242.02\t0.047\t8.100\t0.000\t60");
-          //  the value of the thermal standard deviation is zero on the GitHub Actions build
+           //  "0\tI\t2023-08-15 00:01:00\t\t20.00\t-242.02\t0.047\t8.100\t0.000\t60");
+           //  the value of the thermal standard deviation is zero on the GitHub Actions build
            "0\tI\t2023-08-15 00:01:00\t\t20.00\t-242.02\t0.000\t8.100\t0.000\t60");
   assertEqual(infoString, sd->mostRecentStatusEntry);
   assertEqual("New info written to log", serialPort->getBuffer());

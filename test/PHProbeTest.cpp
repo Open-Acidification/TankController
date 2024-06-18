@@ -155,16 +155,14 @@ unittest(setMidpointCalibration) {
   state->reset();
   eeprom->setIgnoreBadPHSlope(true);
   assertTrue(eeprom->getIgnoreBadPHSlope());
-  assertEqual(
-    "DataLogger::writeWarningSoon() from EEPROM_TC::eepromWriteInt()\r\n", 
-    state->serialPort[0].dataOut);
+  assertEqual("DataLogger::writeWarningSoon() from EEPROM_TC::eepromWriteInt()\r\n", state->serialPort[0].dataOut);
   assertEqual("", state->serialPort[1].dataOut);
   state->serialPort[0].dataOut = "";
   pHProbe->setMidpointCalibration(11.875);
   assertEqual(
-    "DataLogger::writeWarningSoon() from EEPROM_TC::eepromWriteInt()\r\n"
-    "PHProbe::setMidpointCalibration(11.875)\r\n",
-    state->serialPort[0].dataOut);
+      "DataLogger::writeWarningSoon() from EEPROM_TC::eepromWriteInt()\r\n"
+      "PHProbe::setMidpointCalibration(11.875)\r\n",
+      state->serialPort[0].dataOut);
   assertEqual("Cal,mid,11.875\r", state->serialPort[1].dataOut);
   assertFalse(eeprom->getIgnoreBadPHSlope());
 }

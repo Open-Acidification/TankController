@@ -144,6 +144,8 @@ const char* SD_TC::getAlertFileName() {
     setDefaultAlertFileName();
   }
   return alertFileName;
+}
+
 char* SD_TC::getRemoteLogName() {
   if (remoteLogName[0] == '\0') {
     byte* mac = Ethernet_TC::instance()->getMac();
@@ -283,6 +285,9 @@ void SD_TC::setAlertFileName(const char* newFileName) {
     // This seems a logical place to set the default file name, but it is too soon. If Ethernet_TC() is not yet
     // initialized then doing so will cause it to write to serial, which is logged by SD_TC::appendToLog(), which
     // initializes SD_TC() which calls this very method. So we'll leave the file name empty for now.
+  }
+}
+
 void SD_TC::setRemoteLogName(const char* newFileName) {
   if (newFileName != nullptr && strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) > 0 &&
       strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) <= MAX_FILE_NAME_LENGTH) {

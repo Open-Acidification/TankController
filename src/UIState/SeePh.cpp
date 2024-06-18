@@ -28,15 +28,15 @@ void SeePh::loadPHFunctionType(uint16_t line) {
   char buffer[17];
   char *type;
   switch (PHControl::instance()->getPHFunctionType()) {
-    case FLAT_TYPE: {
+    case PHControl::FLAT_TYPE: {
       type = (char *)"flat";
       break;
     }
-    case RAMP_TYPE: {
+    case PHControl::RAMP_TYPE: {
       type = (char *)"ramp";
       break;
     }
-    case SINE_TYPE: {
+    case PHControl::SINE_TYPE: {
       type = (char *)"sine";
       break;
     }
@@ -52,10 +52,10 @@ void SeePh::loadPHFunctionType(uint16_t line) {
 void SeePh::loadTypeVariables(uint16_t line) {
   char buffer[17];
   switch (PHControl::instance()->getPHFunctionType()) {
-    case FLAT_TYPE: {
+    case PHControl::FLAT_TYPE: {
       break;
     }
-    case RAMP_TYPE: {
+    case PHControl::RAMP_TYPE: {
       uint32_t endTime = PHControl::instance()->getPhRampTimeEnd();
       uint32_t currentTime = DateTime_TC::now().secondstime();
       int timeLeft = endTime - currentTime;
@@ -67,7 +67,7 @@ void SeePh::loadTypeVariables(uint16_t line) {
       LiquidCrystal_TC::instance()->writeLine(buffer, line);
       break;
     }
-    case SINE_TYPE: {
+    case PHControl::SINE_TYPE: {
       uint32_t periodInSeconds = PHControl::instance()->getPeriodInSeconds();
       float periodHours = periodInSeconds / 3600.0;
       float amplitude = PHControl::instance()->getAmplitude();

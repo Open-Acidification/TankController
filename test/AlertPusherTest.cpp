@@ -3,11 +3,11 @@
 
 #include "AlertPusher.h"
 #include "DateTime_TC.h"
+#include "PHControl.h"
+#include "PHProbe.h"
 #include "SD_TC.h"
 #include "TC_util.h"
 #include "TankController.h"
-#include "PHControl.h"
-#include "PHProbe.h"
 
 unittest_setup() {
   GODMODE()->reset();
@@ -28,7 +28,7 @@ unittest(singleton) {
 unittest(loopSendsRequests) {
   TankController* tc = TankController::instance();
   AlertPusher* pusher = AlertPusher::instance();
-  EthernetClient *pClient = pusher->getClient();
+  EthernetClient* pClient = pusher->getClient();
 
   assertTrue(Ethernet_TC::instance(true)->isConnectedToNetwork());
   EthernetClient::startMockServer(
@@ -64,13 +64,13 @@ unittest(loopSendsRequests) {
   assertFalse(pusher->isReadyToPost());
   delay(40000);
   assertTrue(pusher->shouldSendHeadRequest());
-  tc->loop(false); // Send HEAD request to server
+  tc->loop(false);  // Send HEAD request to server
   assertTrue(pClient->connected());
   assertEqual(PROCESS_HEAD_RESPONSE, pusher->getState());
   assertFalse(pusher->shouldSendHeadRequest());
 
   // The server responds with a 404 (file not found)
-  tc->loop(false); // handle PROCESS_HEAD_RESPONSE
+  tc->loop(false);  // handle PROCESS_HEAD_RESPONSE
   assertEqual(CLIENT_NOT_CONNECTED, pusher->getState());
   assertFalse(pusher->isReadyToPost());
 
@@ -90,12 +90,12 @@ unittest(loopSendsRequests) {
   // After a brief delay we send the post request
   delay(4000);
   assertTrue(pusher->isReadyToPost());
-  tc->loop(false); // send POST request to server
+  tc->loop(false);  // send POST request to server
   assertFalse(pusher->isReadyToPost());
   assertEqual(PROCESS_POST_RESPONSE, pusher->getState());
 
   // The server should respond with a 200 OK
-  tc->loop(false); // get response to POST
+  tc->loop(false);  // get response to POST
   assertEqual(CLIENT_NOT_CONNECTED, pusher->getState());
   assertFalse(pusher->isReadyToPost());
   assertFalse(pusher->shouldSendHeadRequest());
@@ -124,8 +124,8 @@ unittest(loopSendsRequests) {
   SD_TC::instance()->updateAlertFileSizeForTest();  // size to zero
   SD_TC::instance()->writeAlert("some data here");  // and '\n' is added for 15 bytes
   tc->loop(false);                                  // "200 OK" is received
-  assertFalse(pusher->shouldSendHeadRequest());  //
-  assertFalse(pusher->isReadyToPost());          // because server has all 15 bytes
+  assertFalse(pusher->shouldSendHeadRequest());     //
+  assertFalse(pusher->isReadyToPost());             // because server has all 15 bytes
   assertEqual(CLIENT_NOT_CONNECTED, pusher->getState());
   (pusher->getClient())->stop();
   EthernetClient::stopMockServer(pusher->getServerDomain(), (uint32_t)0, 8080);
@@ -155,7 +155,6 @@ unittest(noInternetConnectionWhenBubblerIsOn) {
       "\r\n"
   );
 
-
   // We start the test with a fresh alert file
   assertFalse(pusher->shouldSendHeadRequest());
   assertFalse(pusher->isReadyToPost());
@@ -179,7 +178,7 @@ unittest(noInternetConnectionWhenBubblerIsOn) {
   assertFalse(pusher->isReadyToPost());
   delay(40000);
   assertTrue(pusher->shouldSendHeadRequest());
-  tc->loop(false); // Send HEAD request to server
+  tc->loop(false);  // Send HEAD request to server
   assertEqual(PROCESS_HEAD_RESPONSE, pusher->getState());
   assertFalse(pusher->shouldSendHeadRequest());
 

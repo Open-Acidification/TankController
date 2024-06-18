@@ -31,8 +31,8 @@ void reset() {
   controlSolenoid->enablePID(false);
   pHProbe->setPh(7.5);
   controlSolenoid->setBaseTargetPh(7.50);
-  controlSolenoid->setRampDuration(0);  // No ramp
-  state->serialPort[0].dataOut = "";    // the history of data written
+  controlSolenoid->setRampDurationHours(0);  // No ramp
+  state->serialPort[0].dataOut = "";         // the history of data written
   tc->loop(false);
 }
 
@@ -192,7 +192,7 @@ unittest(RampGreaterThanZero) {
   delay(11000);
   pHProbe->setPh(8.5);
   controlSolenoid->setBaseTargetPh(7.00);
-  controlSolenoid->setRampDuration(1.5);  // 90 minutes
+  controlSolenoid->setRampDurationHours(1.5);  // 90 minutes
   assertEqual(PHControl::RAMP_TYPE, controlSolenoid->getPHFunctionType());
   tc->loop(false);
   assertEqual(8.5, controlSolenoid->getCurrentTargetPh());
@@ -241,11 +241,11 @@ unittest(ChangeRampToZero) {
   pHProbe->setPh(8.5);
   tc->loop(false);  // update the controls based on the current readings
   controlSolenoid->setBaseTargetPh(7.00);
-  controlSolenoid->setRampDuration(1.5);
+  controlSolenoid->setRampDurationHours(1.5);
   assertEqual(PHControl::RAMP_TYPE, controlSolenoid->getPHFunctionType());
   tc->loop(false);
   assertEqual(8.5, controlSolenoid->getCurrentTargetPh());
-  controlSolenoid->setRampDuration(0);
+  controlSolenoid->setRampDurationHours(0);
   assertEqual(PHControl::FLAT_TYPE, controlSolenoid->getPHFunctionType());
   tc->loop(false);
   assertEqual(7, controlSolenoid->getCurrentTargetPh());
@@ -257,7 +257,7 @@ unittest(sineTest) {
   pHProbe->setPh(7.0);
   tc->loop(false);  // update the controls based on the current readings
   controlSolenoid->setBaseTargetPh(7.00);
-  controlSolenoid->setSine(1.5, 2);
+  controlSolenoid->setSineAmplitudeAndHours(1.5, 2);
   assertEqual(PHControl::SINE_TYPE, controlSolenoid->getPHFunctionType());
   tc->loop(false);
   assertEqual(7, controlSolenoid->getCurrentTargetPh());

@@ -11,7 +11,6 @@ FLAGS=-std=c++0x \
 	-O1 \
 	-fno-omit-frame-pointer \
 	-fno-optimize-sibling-calls \
-	-fsanitize=address \
 	-Wno-unknown-attributes \
 	-Wno-address-of-packed-member \
 	-D__AVR__ \
@@ -64,9 +63,9 @@ all : $(BIN)/AlertPusherTest.cpp.bin $(BIN)/BlinkTest.cpp.bin $(BIN)/DataLoggerT
   $(BIN)/SetChillOrHeatTest.cpp.bin $(BIN)/SetGoogleSheetIntervalTest.cpp.bin $(BIN)/SetKDTest.cpp.bin \
   $(BIN)/SetKITest.cpp.bin $(BIN)/SetKPTest.cpp.bin $(BIN)/ResetPHCalibrationTest.cpp.bin \
   $(BIN)/SetPHTargetTest.cpp.bin $(BIN)/SetPHSineWaveTest.cpp.bin $(BIN)/SetTankIDTest.cpp.bin \
-  $(BIN)/ResetThermalCalibrationTest.cpp.bin $(BIN)/SetThermalTargetTest.cpp.bin \
-  $(BIN)/SetThermalSineWaveTest.cpp.bin $(BIN)/SetTimeTest.cpp.bin $(BIN)/StringsTest.cpp.bin \
-  $(BIN)/TCLibTest.cpp.bin $(BIN)/ThermalProbeTest.cpp.bin $(BIN)/ThermalCalibrationTest.cpp.bin \
+  $(BIN)/ResetThermalCalibrationTest.cpp.bin $(BIN)/SetThermalTargetTest.cpp.bin $(BIN)/SetThermalSineWaveTest.cpp.bin \
+  $(BIN)/SetTimeTest.cpp.bin $(BIN)/StringsTest.cpp.bin $(BIN)/TCLibTest.cpp.bin \
+  $(BIN)/ThermalProbeTest.cpp.bin $(BIN)/ThermalCalibrationTest.cpp.bin \
   $(BIN)/ThermalControlTest.cpp.bin $(BIN)
 
 GPP_TEST=g++ $(FLAGS) -L$(BIN) $(INCLUDE)

@@ -169,6 +169,19 @@ unittest(meanAndStdDev2) {
   }
   assertTrue(abs(10.060771 - thermalProbe->getSampleMean()) < 0.00005);
   assertTrue(abs(0.025 - thermalProbe->getSampleStandardDeviation()) < 0.003);
+
+  // Test getSampleMean()
+  float testMean = thermalProbe->getSampleMean();
+  assertTrue(abs(10.907 - testMean) < 0.01);
+  // Test getSampleStandardDeviation()
+  float testStdDev = thermalProbe->getSampleStandardDeviation();
+  assertTrue(abs(2.8809 - testStdDev) < 0.01);
+  // Test resetSample()
+  thermalProbe->resetSample();
+  testMean = thermalProbe->getSampleMean();
+  assertEqual(testMean, 0.0);
+  testStdDev = thermalProbe->getSampleStandardDeviation();
+  assertEqual(testStdDev, 0.0);
 }
 
 unittest_main()

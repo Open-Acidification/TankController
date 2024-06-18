@@ -82,7 +82,6 @@ float ThermalProbe_TC::getUncorrectedRunningAverage() {
     historyIndex = (historyIndex + 1) % HISTORY_SIZE;
     history[historyIndex] = temperature;
     lastTime = currentTime;
-
     ++sampleSize;
     sumOfSampleValues += temperature;
     sumOfSquaredSampleValues += temperature * temperature;

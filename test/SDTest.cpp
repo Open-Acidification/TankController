@@ -256,6 +256,23 @@ unittest(longAlertFileName) {
   sd->setAlertFileName("12345678901234567890123456789");  // one character too many
   assertEqual("90A2DA807B76.log", sd->getAlertFileName());
   assertTrue(sd->getAlertFileNameIsReady());
+unittest(remoteLogName) {
+  TankController::deleteInstance();
+  TankController* tc = TankController::instance("remoteLog");
+  SD_TC* sd = SD_TC::instance();
+  char* name = sd->getRemoteLogName();
+  assertEqual("remoteLog.log", name);
+
+  TankController::deleteInstance();
+  SD_TC::deleteInstance();
+  tc = TankController::instance();
+  sd = SD_TC::instance();
+  name = sd->getRemoteLogName();
+  assertEqual("90A2DA807B76.log", name);
+
+  sd->setRemoteLogName("newName");
+  name = sd->getRemoteLogName();
+  assertEqual("newName.log", name);
 }
 
 unittest_main()

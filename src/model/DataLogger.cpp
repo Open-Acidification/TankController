@@ -35,19 +35,15 @@ DataLogger* DataLogger::instance() {
  */
 void DataLogger::loop() {
   unsigned long msNow = millis();
-  if (msNow >= nextInfoLogTime) {
-    writeInfoToLog();
-    ThermalProbe_TC::instance()->resetSample();
-    nextInfoLogTime = (msNow / INFO_LOGGING_INTERVAL + 1) * INFO_LOGGING_INTERVAL;
-  } else if (msNow >= nextSDLogTime) {
-    writeToSD();
-    nextSDLogTime = (msNow / SD_LOGGING_INTERVAL + 1) * SD_LOGGING_INTERVAL;
+  if (msNow >= nextDataLogTime) {
+    writeToDataLog();
+    nextDataLogTime = (msNow / DATA_LOGGING_INTERVAL + 1) * DATA_LOGGING_INTERVAL;
   } else if (msNow >= nextSerialLogTime) {
-    writeToSerial();
+    writeToSerialLog();
     nextSerialLogTime = (msNow / SERIAL_LOGGING_INTERVAL + 1) * SERIAL_LOGGING_INTERVAL;
-  } else if (shouldWriteWarning) {
-    writeWarningToLog();
-    shouldWriteWarning = false;
+  } else if (msNow >= nextRemoteLogTime) {
+    writeToRemoteLog();
+    nextRemoteLogTime = (msNow / REMOTE_LOGGING_INTERVAL + 1) * REMOTE_LOGGING_INTERVAL;
   }
 }
 
@@ -127,10 +123,10 @@ void DataLogger::writeInfoToLog() {
 }
 
 /**
- * @brief write the current data to the log file on the SD
+ * @brief write "time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd" to the log file
  *
  */
-void DataLogger::writeToSD() {
+void DataLogger::writeToDataLog() {
   char currentTemperatureString[10];
   char currentPhString[10];
   if (TankController::instance()->isInCalibration()) {
@@ -171,10 +167,10 @@ void DataLogger::writeToSD() {
 }
 
 /**
- * @brief write the current data to the serial port
+ * @brief write "HH:MM, current pH, current temperature" to the serial port and serial log
  *
  */
-void DataLogger::writeToSerial() {
+void DataLogger::writeToSerialLog() {
   DateTime_TC dtNow = DateTime_TC::now();
   char phString[12];
   char temperatureString[11];
@@ -190,29 +186,9 @@ void DataLogger::writeToSerial() {
 }
 
 /**
- * @brief writes uptime, MAC address, pH slope, and EEPROM data to the status log
+ * @brief write to the remote log file
  *
  */
-void DataLogger::writeWarningToLog() {
-  char uptime[14];
-  snprintf_P(uptime, sizeof(uptime), PSTR("%lu"), (unsigned long)(millis() / 1000));
-  byte* mac = Ethernet_TC::instance()->getMac();
-
-  // write version, tankid, 'W', and timestamp to buffer
-  writeAlertPreambleToBuffer('W');
-  int preambleLength = strnlen(buffer, sizeof(buffer));
-  // uptime \t MACaddress \t pHslope \t
-  const __FlashStringHelper* format = F("\t\t\t\t\t\t\t%s\t%02X:%02X:%02X:%02X:%02X:%02X\t%s\t");
-  char slope[20];
-  PHProbe::instance()->getSlope(slope, sizeof(slope));
-  int additionalLength = snprintf_P(buffer + preambleLength, sizeof(buffer) - preambleLength, (PGM_P)format, uptime,
-                                    mac[0], mac[1], mac[2], mac[3], mac[4], mac[5], slope);
-  if ((preambleLength + additionalLength > sizeof(buffer)) || (additionalLength < 0)) {
-    // TODO: Log a warning that string was truncated
-    serial(F("WARNING! String was truncated to \"%s\""), buffer);
-  }
-  // add EEPROM data
-  EEPROM_TC::instance()->writeAllToString(buffer + preambleLength + additionalLength,
-                                          sizeof(buffer) - preambleLength - additionalLength);
-  SD_TC::instance()->writeAlert(buffer);
+void DataLogger::writeToRemoteLog() {
+  //
 }

@@ -20,12 +20,8 @@ class CurrentData extends StatelessWidget {
 
   final BuildContext context;
 
-  bool showEdit(String valueString) {
-    return valueString == 'Kp' || valueString == 'Ki' || valueString == 'Kd';
-  }
-
   bool canEditCurrentInfo(AppData appData) {
-    String v = appData.currentData['Version'].trim();
+    String v = appData.currentData['Version']?.trim() ?? '0.0.0';
     final i = v.indexOf('-');
     if (i != -1) {
       v = v.substring(0, i);
@@ -42,6 +38,20 @@ class CurrentData extends StatelessWidget {
     }
     final Version latestVersion = Version.parse(v);
     return latestVersion >= Version.parse('99.9.9'); // not supported yet!
+  }
+
+  Future<void> putNewValue(String newValue, AppData appData) async {
+    await TcInterface.instance()
+        .put(
+      '${appData.currentData["IPAddress"]}',
+      'data?$key=$newValue',
+    )
+        .then((value) {
+      appData.currentData = json.decode(value);
+    });
+    if (context.mounted) {
+      Navigator.pop(context);
+    }
   }
 
   Future<void> showEditDialog(
@@ -61,20 +71,71 @@ class CurrentData extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  TextFormField(
-                    initialValue: value,
-                    onFieldSubmitted: (val) {
-                      TcInterface.instance()
-                          .put(
-                        '${appData.currentData["IPAddress"]}',
-                        'data?$key=$val',
-                      )
-                          .then((value) {
-                        appData.currentData = json.decode(value);
-                      });
-                      Navigator.pop(context);
-                    },
-                  ),
+                  if (key == 'PID')
+                    DropdownButtonFormField<String>(
+                      value: value,
+                      items: const <DropdownMenuItem<String>>[
+                        DropdownMenuItem(
+                          value: 'OFF',
+                          child: Text('OFF'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'ON',
+                          child: Text('ON'),
+                        ),
+                      ],
+                      onChanged: (String? newValue) {
+                        TcInterface.instance()
+                            .put(
+                          '${appData.currentData["IPAddress"]}',
+                          'data?$key=$newValue',
+                        )
+                            .then((value) {
+                          appData.currentData = json.decode(value);
+                        });
+                        Navigator.pop(context);
+                      },
+                    )
+                  else if (key == 'HeatOrChill')
+                    DropdownButtonFormField<String>(
+                      value: value,
+                      items: const <DropdownMenuItem<String>>[
+                        DropdownMenuItem(
+                          value: 'CHILL',
+                          child: Text('CHILL'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'HEAT',
+                          child: Text('HEAT'),
+                        ),
+                      ],
+                      onChanged: (String? newValue) {
+                        TcInterface.instance()
+                            .put(
+                          '${appData.currentData["IPAddress"]}',
+                          'data?$key=$newValue',
+                        )
+                            .then((value) {
+                          appData.currentData = json.decode(value);
+                        });
+                        Navigator.pop(context);
+                      },
+                    )
+                  else
+                    TextFormField(
+                      initialValue: value,
+                      onFieldSubmitted: (val) {
+                        TcInterface.instance()
+                            .put(
+                          '${appData.currentData["IPAddress"]}',
+                          'data?$key=$val',
+                        )
+                            .then((value) {
+                          appData.currentData = json.decode(value);
+                        });
+                        Navigator.pop(context);
+                      },
+                    ),
                   const SizedBox(height: 20),
                   const Text(
                     'Press "Esc" to cancel, or "Enter" to submit',
@@ -155,6 +216,16 @@ class CurrentData extends StatelessWidget {
     });
   }
 
+  Color _colorfor(String key) {
+    if (key.contains('Therm') || key.contains('Temp')) {
+      return const Color.fromARGB(255, 162, 250, 152);
+    }
+    if (key.contains('pH')) {
+      return const Color.fromARGB(255, 209, 174, 255);
+    }
+    return Colors.white;
+  }
+
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
@@ -162,12 +233,17 @@ class CurrentData extends StatelessWidget {
       child: Consumer<AppData>(
         builder: (context, appData, child) {
           final currentDataRows = <DataRow>[];
-          appData.currentData.forEach(
+          final currentData = appData.currentData;
+          final editableFields = currentData['EditableFields'] ?? [];
+          currentData.remove('EditableFields');
+          final canEdit = canEditCurrentInfo(appData);
+          currentData.forEach(
             (key, value) => currentDataRows.add(
               DataRow(
+                color: WidgetStateProperty.all(_colorfor(key.toString())),
                 cells: <DataCell>[
                   DataCell(Text(key.toString())),
-                  (!showEdit(key.toString()) || !canEditCurrentInfo(appData))
+                  (!editableFields.contains(key.toString()) || !canEdit)
                       ? DataCell(Text(value.toString()))
                       : DataCell(
                           Text(value.toString()),

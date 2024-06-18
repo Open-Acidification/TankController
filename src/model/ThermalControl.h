@@ -10,6 +10,13 @@
  */
 
 class ThermalControl {
+public:
+  enum thermalFunctionTypes {
+    FLAT_TYPE,
+    RAMP_TYPE,
+    SINE_TYPE,
+  };
+
 private:
   static ThermalControl* _instance;
 
@@ -20,20 +27,15 @@ protected:
   float baseThermalTarget;     // base target temperature
   float currentThermalTarget;  // current target (ramp, sine, arbitrary path)
   float rampInitialValue;
-  uint32_t rampTimeStart;
-  uint32_t rampTimeEnd;
+  uint32_t rampTimeStartSeconds;
+  uint32_t rampTimeEndSeconds;
   float amplitude;
-  uint32_t period;
+  uint32_t periodInSeconds;
   uint32_t sineStartTime;
-  int thermalFunctionType = FLAT_TYPE;
+  thermalFunctionTypes thermalFunctionType = FLAT_TYPE;
   ThermalControl();
 
 public:
-  enum thermalFunctionTypes {
-    FLAT_TYPE,
-    RAMP_TYPE,
-    SINE_TYPE,
-  };
   virtual ~ThermalControl() {
   }
   static ThermalControl* instance();
@@ -45,26 +47,27 @@ public:
   float getCurrentThermalTarget() {
     return currentThermalTarget;
   }
-  int getThermalFunctionType() {
+  thermalFunctionTypes getThermalFunctionType() {
     return thermalFunctionType;
   }
   float getAmplitude() {
     return amplitude;
   }
   uint32_t getRampTimeStart() {
-    return thermalFunctionType == FLAT_TYPE ? 0 : rampTimeStart;
+    return thermalFunctionType == FLAT_TYPE ? 0 : rampTimeStartSeconds;
   }
   uint32_t getRampTimeEnd() {
-    return thermalFunctionType == FLAT_TYPE ? 0 : rampTimeEnd;
+    return thermalFunctionType == FLAT_TYPE ? 0 : rampTimeEndSeconds;
   }
-  uint32_t getPeriod() {
-    return period;
+  uint32_t getPeriodInSeconds() {
+    return periodInSeconds;
   }
   virtual bool isHeater();
   bool isOn();
   void setThermalTarget(float newTemperature);
-  void setRampDuration(float newThermalRampDuration);
-  void setSine(float sineAmplitude, float sinePeriodInHours);
+  void setRampDurationHours(float newThermalRampDuration);
+  void setSineAmplitude(float sineAmplitude);
+  void setSineAmplitudeAndHours(float sineAmplitude, float sinePeriodInHours);
   virtual void updateControl(float currentTemperature) = 0;
 };
 

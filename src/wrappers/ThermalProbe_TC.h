@@ -93,26 +93,20 @@ class ThermalProbe_TC {
 public:
   static ThermalProbe_TC* instance();
   static void reset();
-
   inline uint16_t getResistance() {
     return thermo.readRTD();
   }
-
   inline float getRawTemperature() {
     return thermo.temperature(RTDnominal, refResistor);
   }
-
   float getRunningAverage();
   float getUncorrectedRunningAverage();
-
   inline uint8_t readFault() {
     return thermo.readFault();
   }
-
   inline void clearFault() {
     thermo.clearFault();
   }
-
   void clearCorrection();
   inline float getCorrection() {
     return correction;

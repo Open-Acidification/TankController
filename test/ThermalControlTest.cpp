@@ -192,15 +192,16 @@ unittest(RampGreaterThanZero) {
   control = ThermalControl::instance();
   assertFalse(control->isOn());
   control->setThermalTarget(10);
-  control->setRampDuration(1.5);
+  control->setRampDurationHours(1.5);
   assertEqual(ThermalControl::thermalFunctionTypes::RAMP_TYPE, control->getThermalFunctionType());
   tc->loop(false);
   control->updateControl(thermalProbe->getRunningAverage());
   tc->loop(false);
   tc->loop(false);
   target = control->getCurrentThermalTarget();
-  assertTrue(20 <= target && target <= 20.03);
+  assertTrue(abs(20 - target) < 0.1);
   assertEqual("T 20.00 c 20.00 ", lc->getLines().at(1));
+  assertEqual("", dataLog->getBuffer());  // data left over from previous tests is cleared
   delay(31000);
   // mock arduino restarting
   ThermalControl::clearInstance();
@@ -243,7 +244,7 @@ unittest(RampGreaterThanZero) {
   control = ThermalControl::instance();
   assertFalse(control->isOn());
   control->setThermalTarget(30);
-  control->setRampDuration(1.5);
+  control->setRampDurationHours(1.5);
   control->updateControl(thermalProbe->getRunningAverage());
   tc->loop(false);
   tc->loop(false);
@@ -292,20 +293,20 @@ unittest(ChangeRampToZero) {
   control = ThermalControl::instance();
   assertFalse(control->isOn());
   control->setThermalTarget(10);
-  control->setRampDuration(1.5);
+  control->setRampDurationHours(1.5);
   tc->loop(false);
   assertTrue(20 <= control->getCurrentThermalTarget() && control->getCurrentThermalTarget() <= 20.03);
-  control->setRampDuration(0);
+  control->setRampDurationHours(0);
   tc->loop(false);
   assertEqual(10, control->getCurrentThermalTarget());
   ThermalControl::enableHeater(true);
   control = ThermalControl::instance();
   assertFalse(control->isOn());
   control->setThermalTarget(30);
-  control->setRampDuration(1.5);
+  control->setRampDurationHours(1.5);
   tc->loop(false);
   assertTrue(20 <= control->getCurrentThermalTarget() && control->getCurrentThermalTarget() <= 20.03);
-  control->setRampDuration(0);
+  control->setRampDurationHours(0);
   assertEqual(ThermalControl::thermalFunctionTypes::FLAT_TYPE, control->getThermalFunctionType());
   tc->loop(false);
   assertEqual(30, control->getCurrentThermalTarget());
@@ -318,7 +319,7 @@ unittest(sineTest) {
   control = ThermalControl::instance();
   assertFalse(control->isOn());
   control->setThermalTarget(10);
-  control->setSine(1.5, 2);
+  control->setSineAmplitudeAndHours(1.5, 2);
   assertEqual(ThermalControl::thermalFunctionTypes::SINE_TYPE, control->getThermalFunctionType());
   tc->loop(false);
   assertEqual(10, control->getCurrentThermalTarget());
@@ -354,7 +355,7 @@ unittest(sineTest) {
   control = ThermalControl::instance();
   assertFalse(control->isOn());
   control->setThermalTarget(30);
-  control->setSine(1.5, 2);
+  control->setSineAmplitudeAndHours(1.5, 2);
   assertEqual(ThermalControl::thermalFunctionTypes::SINE_TYPE, control->getThermalFunctionType());
   tc->loop(false);
   assertEqual(30, control->getCurrentThermalTarget());

@@ -21,6 +21,16 @@ SD_TC* SD_TC::instance() {
   return _instance;
 }
 
+/**
+ * delete singleton
+ */
+void SD_TC::deleteInstance() {
+  if (_instance) {
+    delete _instance;
+    _instance = nullptr;
+  }
+}
+
 //  instance methods
 
 /**
@@ -33,6 +43,7 @@ SD_TC::SD_TC() {
     Serial.println(F("SD_TC failed to initialize!"));
   }
   setAlertFileName();
+  remoteLogName[0] = '\0';
 }
 
 /**
@@ -133,6 +144,13 @@ const char* SD_TC::getAlertFileName() {
     setDefaultAlertFileName();
   }
   return alertFileName;
+char* SD_TC::getRemoteLogName() {
+  if (remoteLogName[0] == '\0') {
+    byte* mac = Ethernet_TC::instance()->getMac();
+    snprintf_P(remoteLogName, sizeof(remoteLogName), PSTR("%02X%02X%02X%02X%02X%02X.log"), mac[0], mac[1], mac[2],
+               mac[3], mac[4], mac[5]);
+  }
+  return remoteLogName;
 }
 
 bool SD_TC::iterateOnFiles(doOnFile functionName, void* userData) {
@@ -265,6 +283,11 @@ void SD_TC::setAlertFileName(const char* newFileName) {
     // This seems a logical place to set the default file name, but it is too soon. If Ethernet_TC() is not yet
     // initialized then doing so will cause it to write to serial, which is logged by SD_TC::appendToLog(), which
     // initializes SD_TC() which calls this very method. So we'll leave the file name empty for now.
+void SD_TC::setRemoteLogName(const char* newFileName) {
+  if (newFileName != nullptr && strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) > 0 &&
+      strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) <= MAX_FILE_NAME_LENGTH) {
+    // valid file name has been provided (See TankController.ino)
+    snprintf_P(remoteLogName, MAX_FILE_NAME_LENGTH + 5, PSTR("%s.log"), newFileName);
   }
 }
 

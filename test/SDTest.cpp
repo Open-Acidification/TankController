@@ -182,22 +182,22 @@ unittest(removeFile) {
   assertFalse(SD_TC::instance()->exists("20220706.log"));
 }
 
-unittest(eventLogName) {
+unittest(remoteLogName) {
   TankController::deleteInstance();
-  TankController* tc = TankController::instance("eventLog");
+  TankController* tc = TankController::instance("remoteLog");
   SD_TC* sd = SD_TC::instance();
-  char* name = sd->getEventLogName();
-  assertEqual("eventLog.log", name);
+  char* name = sd->getRemoteLogName();
+  assertEqual("remoteLog.log", name);
 
   TankController::deleteInstance();
   SD_TC::deleteInstance();
   tc = TankController::instance();
   sd = SD_TC::instance();
-  name = sd->getEventLogName();
+  name = sd->getRemoteLogName();
   assertEqual("90A2DA807B76.log", name);
 
-  sd->setEventLogName("newName");
-  name = sd->getEventLogName();
+  sd->setRemoteLogName("newName");
+  name = sd->getRemoteLogName();
   assertEqual("newName.log", name);
 }
 

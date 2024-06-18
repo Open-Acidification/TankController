@@ -7,13 +7,13 @@
 // If it remains empty, then no data will be sent.
 const char pushingBoxID[] = "";
 
-// The event log name should be unique to this device if you are uploading
+// The remote log name should be unique to this device if you are uploading
 // events to oap.cs.wallawalla.edu for log_file_client to display.
 // It can be 28 characters maximum, and ".log" will be added.
 // If it remains empty, the MAC address will be used. Keep in mind that
 // the name should be unique across all devices, not just your devices.
 // So "tank-1" is not a good name, but "Onthank-tank-1" is.
-const char eventLogName[] = "";
+const char remoteLogName[] = "";
 
 // We query a web server for GMT time and then adjust for local time
 const int tzOffsetHrs = -7;
@@ -29,7 +29,7 @@ void serialEvent1() {  // if the hardware serial port_1 receives a char
 void setup() {
   // the install process is followed by a reset and we get two startups
   delay(500);
-  tank = TankController::instance(eventLogName, pushingBoxID, tzOffsetHrs);
+  tank = TankController::instance(remoteLogName, pushingBoxID, tzOffsetHrs);
   tank->setup();
 }
 

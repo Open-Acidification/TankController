@@ -39,6 +39,9 @@ void DataLogger::loop() {
   } else if (msNow >= nextSerialLogTime) {
     writeToSerialLog();
     nextSerialLogTime = (msNow / SERIAL_LOGGING_INTERVAL + 1) * SERIAL_LOGGING_INTERVAL;
+  } else if (msNow >= nextRemoteLogTime) {
+    writeToRemoteLog();
+    nextRemoteLogTime = (msNow / REMOTE_LOGGING_INTERVAL + 1) * REMOTE_LOGGING_INTERVAL;
   }
 }
 
@@ -103,4 +106,12 @@ void DataLogger::writeToSerialLog() {
                 sizeof(temperatureString));
   }
   serial(F("%02d:%02d pH=%s temp=%s"), (uint16_t)dtNow.hour(), (uint16_t)dtNow.minute(), phString, temperatureString);
+}
+
+/**
+ * @brief write to the remote log file
+ *
+ */
+void DataLogger::writeToRemoteLog() {
+  //
 }

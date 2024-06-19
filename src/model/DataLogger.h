@@ -32,7 +32,7 @@ public:
 
   // instance methods
   void loop();
-  void putAlertFileHeader(char *buffer, int size, int count);
+  void putRemoteFileHeader(char *buffer, int size, int count);
   void writeWarningSoon() {
     shouldWriteWarning = true;
   }
@@ -68,7 +68,7 @@ private:
   void writeToDataLog();
   void writeToRemoteLog();
   void writeToSerialLog();
-  void writeAlertPreambleToBuffer(const char severity);
+  void writeRemotePreambleToBuffer(const char severity);
   void writeInfoToLog();
   void writeWarningToLog();
 };

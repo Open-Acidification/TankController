@@ -51,7 +51,7 @@ void DataLogger::loop() {
   }
 }
 
-void DataLogger::putAlertFileHeader(char* buffer, int size, int count) {
+void DataLogger::putRemoteFileHeader(char* buffer, int size, int count) {
   switch (count) {
     case 0:
       snprintf_P(buffer, size,
@@ -59,7 +59,7 @@ void DataLogger::putAlertFileHeader(char* buffer, int size, int count) {
                       "Mean\tTemperature Std Dev\tpH Target\tpH\tUptime\tMAC Address\tpH Slope\t"));
       break;
     default:
-      EEPROM_TC::instance()->putAlertFileHeader(buffer, size, count);
+      EEPROM_TC::instance()->putRemoteFileHeader(buffer, size, count);
       break;
   }
 }
@@ -68,7 +68,7 @@ void DataLogger::putAlertFileHeader(char* buffer, int size, int count) {
  *
  * @param severity 'D' for debug, 'I' for info, 'W' for warning, 'E' for error, 'F' for fatal
  */
-void DataLogger::writeAlertPreambleToBuffer(const char severity) {
+void DataLogger::writeRemotePreambleToBuffer(const char severity) {
   // version \t tankid \t severity \t timestamp
   const __FlashStringHelper* format = F("%s\t%i\t%c\t%04i-%02i-%02i %02i:%02i:%02i");
   DateTime_TC dtNow = DateTime_TC::now();
@@ -108,7 +108,7 @@ void DataLogger::writeInfoToLog() {
   floattostrf(PHControl::instance()->getCurrentTargetPh(), 1, 3, pHTargetString, sizeof(pHTargetString));
 
   // write version, tankid, 'I', and timestamp to buffer
-  writeAlertPreambleToBuffer('I');
+  writeRemotePreambleToBuffer('I');
   int preambleLength = strnlen(buffer, sizeof(buffer));
   // temperature \t thermaltarget \t pH \t pHtarget
   const __FlashStringHelper* format = F("\t\t%s\t%s\t%s\t%s\t%s");
@@ -119,7 +119,7 @@ void DataLogger::writeInfoToLog() {
     // TODO: Log a warning that string was truncated
     serial(F("WARNING! String was truncated to \"%s\""), buffer);
   }
-  SD_TC::instance()->writeAlert(buffer);
+  SD_TC::instance()->writeRemote(buffer);
   serial(F("New info written to log"));
 }
 
@@ -133,7 +133,7 @@ void DataLogger::writeWarningToLog() {
   byte* mac = Ethernet_TC::instance()->getMac();
 
   // write version, tankid, 'W', and timestamp to buffer
-  writeAlertPreambleToBuffer('W');
+  writeRemotePreambleToBuffer('W');
   int preambleLength = strnlen(buffer, sizeof(buffer));
   // uptime \t MACaddress \t pHslope \t
   const __FlashStringHelper* format = F("\t\t\t\t\t\t\t%s\t%02X:%02X:%02X:%02X:%02X:%02X\t%s\t");
@@ -148,7 +148,7 @@ void DataLogger::writeWarningToLog() {
   // add EEPROM data
   EEPROM_TC::instance()->writeAllToString(buffer + preambleLength + additionalLength,
                                           sizeof(buffer) - preambleLength - additionalLength);
-  SD_TC::instance()->writeAlert(buffer);
+  SD_TC::instance()->writeRemote(buffer);
 }
 
 /**

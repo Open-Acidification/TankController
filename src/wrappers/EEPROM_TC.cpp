@@ -2,8 +2,10 @@
 
 #include <EEPROM.h>
 
+#include "model/DataLogger.h"
 #include "model/TC_util.h"
 #include "wrappers/Serial_TC.h"
+
 //  class variables
 EEPROM_TC* EEPROM_TC::_instance = nullptr;
 
@@ -31,11 +33,19 @@ float EEPROM_TC::eepromReadFloat(uint16_t address) {
   return value;
 }
 
+ /**
+  * @brief writes the value to the address and triggers an alert in DataLogger
+  *
+  * @param address
+  * @param value
+  */
 void EEPROM_TC::eepromWriteFloat(uint16_t address, float value) {
-  assert(address >= 0);
-  byte* p = (byte*)(void*)&value;
-  for (size_t i = 0; i < sizeof(value); i++) {
-    EEPROM.update(address++, *p++);
+  if (eepromReadFloat(address) != value) {
+    byte* p = (byte*)(void*)&value;
+    for (size_t i = 0; i < sizeof(value); i++) {
+      EEPROM.write(address++, *p++);  // EEPROM.update() would perform read check before writing
+    }
+    DataLogger::instance()->writeWarningSoon();  // log all settings
   }
 }
 
@@ -49,11 +59,20 @@ int32_t EEPROM_TC::eepromReadInt(uint16_t address) {
   return value;
 }
 
+/**
+* @brief writes the value to the address and triggers an alert in DataLogger
+*
+* @param address
+* @param value
+*/
 void EEPROM_TC::eepromWriteInt(uint16_t address, int32_t value) {
   assert(address >= 0);
-  byte* p = (byte*)(void*)&value;
-  for (size_t i = 0; i < sizeof(value); i++) {
-    EEPROM.update(address++, *p++);
+  if (eepromReadInt(address) != value) {
+    byte* p = (byte*)(void*)&value;
+    for (size_t i = 0; i < sizeof(value); i++) {
+      EEPROM.write(address++, *p++);  // EEPROM.update() would perform read check before writing
+    }
+    DataLogger::instance()->writeWarningSoon();  // log all settings
   }
 }
 

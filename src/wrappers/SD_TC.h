@@ -26,14 +26,14 @@ public:
   void appendToLog(const char* line);
   bool exists(const char* path);
   bool format();
-  char* getEventLogName();
+  char* getRemoteLogName();
   bool listRootToBuffer(void (*callWhenFull)(const char*, bool));
   bool countFiles(void (*callWhenFinished)(int));
   bool mkdir(const char* path);
   File open(const char* path, oflag_t oflag = 0x00);
   void printRootDirectory();
   bool remove(const char* path);
-  void setEventLogName(const char* newFileName);
+  void setRemoteLogName(const char* newFileName);
   void todaysDataFileName(char* path, int size);
 
 private:
@@ -44,7 +44,7 @@ private:
   const uint8_t SD_SELECT_PIN = SS;
   bool hasHadError = false;
   SdFat sd;
-  char eventLogName[MAX_FILE_NAME_LENGTH + 5];  // add ".log" with null-terminator
+  char remoteLogName[MAX_FILE_NAME_LENGTH + 5];  // add ".log" with null-terminator
   // Max depth of file system search for rootdir()
   // Two is minimum: First for root, second for files
   // Each is 64 bytes

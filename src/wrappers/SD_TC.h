@@ -66,11 +66,10 @@ private:
   const uint8_t SD_SELECT_PIN = SS;
   bool hasHadError = false;
   SdFat sd;
-  char alertFileName[MAX_FILE_NAME_LENGTH + 5];  // add ".log" with null-terminator
+  char remoteLogName[MAX_FILE_NAME_LENGTH + 5];  // add ".log" with null-terminator
   uint32_t alertFileSize = 0;
   bool alertFileNameIsReady = false;
 
-  char remoteLogName[MAX_FILE_NAME_LENGTH + 5];  // add ".log" with null-terminator
   // Max depth of file system search for rootdir()
   // Two is minimum: First for root, second for files
   // Each is 64 bytes

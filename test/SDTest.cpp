@@ -262,6 +262,10 @@ unittest(remoteLogName) {
   TankController::deleteInstance();
   TankController* tc = TankController::instance("remoteLog");
   SD_TC* sd = SD_TC::instance();
+unittest(remoteLogName) {
+  TankController::deleteInstance();
+  TankController* tc = TankController::instance("remoteLog");
+  SD_TC* sd = SD_TC::instance();
   char* name = sd->getRemoteLogName();
   assertEqual("remoteLog.log", name);
 

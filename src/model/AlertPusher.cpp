@@ -78,7 +78,7 @@ void AlertPusher::loopHead() {
               isDone = true;
             } else if (index > 16 && memcmp_P(buffer, F("content-length: "), 16) == 0) {
               serverFileSize = strtoul(buffer + 16, nullptr, 10);
-              uint32_t localFileSize = SD_TC::instance()->getAlertFileSize();
+              uint32_t localFileSize = SD_TC::instance()->getRemoteFileSize();
               serial(F("AlertPusher: local %lu bytes, cloud %lu bytes"), (uint32_t)localFileSize,
                      (uint32_t)serverFileSize);
               _isReadyToPost = serverFileSize < localFileSize;
@@ -168,7 +168,7 @@ void AlertPusher::sendHeadRequest() {
       "Accept: text/plain\r\n"
       "Connection: Close\r\n"
       "\r\n";
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)format, SD_TC::instance()->getAlertFileName(), serverDomain, VERSION);
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)format, SD_TC::instance()->getRemoteLogName(), serverDomain, VERSION);
   if (client.connected() || client.connect(serverDomain, PORT) == 1) {  // this is a blocking step
     serial(F("AlertPusher: connected to %s, sending..."), serverDomain);
     client.write(buffer, strnlen(buffer, sizeof(buffer)));
@@ -192,7 +192,7 @@ void AlertPusher::sendPostRequest() {
       "Content-Length: %i\r\n"
       "Connection: Close\r\n"
       "\r\n";
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)format, SD_TC::instance()->getAlertFileName(), serverDomain, VERSION,
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)format, SD_TC::instance()->getRemoteLogName(), serverDomain, VERSION,
              strnlen(data, sizeof(data)));
   if (client.connected() || client.connect(serverDomain, PORT) == 1) {  // this is a blocking step
     serial(F("AlertPusher: connected to %s, sending..."), serverDomain);

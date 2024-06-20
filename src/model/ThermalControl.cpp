@@ -57,10 +57,12 @@ ThermalControl::ThermalControl() {
     baseThermalTarget = DEFAULT_TEMPERATURE;
     EEPROM_TC::instance()->setTemp(baseThermalTarget);
   }
-  thermalFunctionType = (thermalFunctionTypes)EEPROM_TC::instance()->getThermalFunctionType();
-  if ((int)thermalFunctionType == 0xFFFFFFFF) {
+  uint16_t thermalFunctionInt = EEPROM_TC::instance()->getThermalFunctionType();
+  if (thermalFunctionInt == 0xFFFF) {
     thermalFunctionType = FLAT_TYPE;
     EEPROM_TC::instance()->setThermalFunctionType(thermalFunctionType);
+  } else {
+    thermalFunctionType = (thermalFunctionTypes)thermalFunctionInt;
   }
   switch (thermalFunctionType) {
     case RAMP_TYPE:

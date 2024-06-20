@@ -31,8 +31,8 @@ public:
   static DataLogger *instance();
 
   // instance methods
-  void putAlertFileHeader(char *buffer, int size, int count);
   void loop();
+  void putRemoteFileHeader(char *buffer, int size, int chunkNumber);
   void writeWarningSoon() {
     shouldWriteWarning = true;
   }
@@ -44,11 +44,12 @@ public:
   void clearBuffer() {
     buffer[0] = '\0';
   }
-  void reset() {
-    //
-  }
   bool getShouldWriteWarning() {
     return shouldWriteWarning;
+  }
+  void reset() {
+    clearBuffer();
+    shouldWriteWarning = false;
   }
 #endif
 
@@ -61,13 +62,12 @@ private:
   uint32_t nextDataLogTime = 0;
   uint32_t nextRemoteLogTime = 0;
   uint32_t nextSerialLogTime = 0;
-  uint32_t nextInfoLogTime = 0;
   bool shouldWriteWarning = false;
 
   // instance methods
   void writeToDataLog();
-  void writeToSerialLog();
   void writeToRemoteLog();
-  void writeAlertPreambleToBuffer(const char severity);
-  void writeInfoToLog();
+  void writeToSerialLog();
+  void writeRemotePreambleToBuffer(const char severity);
+  void writeWarningToLog();
 };

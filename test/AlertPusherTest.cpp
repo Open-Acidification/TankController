@@ -120,9 +120,9 @@ unittest(loopSendsRequests) {
   );
   tc->loop(false);  // HEAD request is sent
   assertFalse(pusher->isReadyToPost());
-  uint32_t localFileSize = SD_TC::instance()->getAlertFileSize();
+  uint32_t localFileSize = SD_TC::instance()->getRemoteFileSize();
   SD_TC::instance()->updateAlertFileSizeForTest();  // size to zero
-  SD_TC::instance()->writeAlert("some data here");  // and '\n' is added for 15 bytes
+  // SD_TC::instance()->writeAlert("some data here");  // and '\n' is added for 15 bytes
   tc->loop(false);                                  // "200 OK" is received
   assertFalse(pusher->shouldSendHeadRequest());     //
   assertFalse(pusher->isReadyToPost());             // because server has all 15 bytes

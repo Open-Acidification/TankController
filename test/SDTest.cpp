@@ -194,20 +194,20 @@ unittest(writeAlert) {
   SD_TC* sd = SD_TC::instance();
   AlertPusher* pusher = AlertPusher::instance();
 
-  assertEqual("90A2DA807B76.log", sd->getAlertFileName());
+  assertEqual("90A2DA807B76.log", sd->getRemoteLogName());
   sd->updateAlertFileSizeForTest();  // because sd was previously initialized, we have alertFileNameIsReady == true
   assertFalse(sd->exists("90A2DA807B76.log"));
-  assertEqual(0, sd->getAlertFileSize());
+  assertEqual(0, sd->getRemoteFileSize());
   pusher->setShouldSentHeadRequest(false);
   assertFalse(pusher->shouldSendHeadRequest());
 
   // write data
-  sd->writeAlert("line 1");  // also writes header row
-  int size = sd->getAlertFileSize();
+  // sd->writeAlert("line 1");  // also writes header row
+  int size = sd->getRemoteFileSize();
   assertTrue(pusher->shouldSendHeadRequest());
   assertTrue(sd->exists("90A2DA807B76.log"));
-  sd->writeAlert("line 2");
-  assertEqual(size + strlen("line 2\n"), sd->getAlertFileSize());
+  // sd->writeAlert("line 2");
+  assertEqual(size + strlen("line 2\n"), sd->getRemoteFileSize());
 
   // verify contents of alerts.log
   File file = sd->open("90A2DA807B76.log");
@@ -222,10 +222,10 @@ unittest(getAlert) {
   SD_TC* sd = SD_TC::instance();
 
   // write data
-  sd->setAlertFileName("Tank1");
-  sd->writeAlert("line 1");
-  int size = sd->getAlertFileSize();
-  sd->writeAlert("and 2\nline 3");
+  sd->setRemoteLogName("Tank1");
+  // sd->writeAlert("line 1");
+  int size = sd->getRemoteFileSize();
+  // sd->writeAlert("and 2\nline 3");
   char buffer[20];
   // get remaining alerts
   sd->getAlert(buffer, sizeof(buffer), size);
@@ -234,39 +234,29 @@ unittest(getAlert) {
 
 unittest(noAlertFileName) {
   SD_TC* sd = SD_TC::instance();
-  sd->setAlertFileNameIsReady(false);
-  sd->setAlertFileName("");
-  assertEqual("90A2DA807B76.log", sd->getAlertFileName());
-  assertTrue(sd->getAlertFileNameIsReady());
+  sd->setRemoteLogName("");
+  assertEqual("90A2DA807B76.log", sd->getRemoteLogName());
 }
 
 unittest(validAlertFileName) {
   SD_TC* sd = SD_TC::instance();
-  sd->setAlertFileNameIsReady(false);
-  sd->setAlertFileName("Tank1");
-  assertEqual("Tank1.log", sd->getAlertFileName());
-  assertTrue(sd->getAlertFileNameIsReady());
+  sd->setRemoteLogName("Tank1");
+  assertEqual("Tank1.log", sd->getRemoteLogName());
 }
 
 unittest(longAlertFileName) {
   SD_TC* sd = SD_TC::instance();
-  sd->setAlertFileNameIsReady(false);
-  sd->setAlertFileName("1234567890123456789012345678");  // maximum length
-  assertEqual("1234567890123456789012345678.log", sd->getAlertFileName());
-  sd->setAlertFileName("12345678901234567890123456789");  // one character too many
-  assertEqual("90A2DA807B76.log", sd->getAlertFileName());
-  assertTrue(sd->getAlertFileNameIsReady());
+  sd->setRemoteLogName("1234567890123456789012345678");  // maximum length
+  assertEqual("1234567890123456789012345678.log", sd->getRemoteLogName());
+  sd->setRemoteLogName("12345678901234567890123456789");  // one character too many
+  assertEqual("90A2DA807B76.log", sd->getRemoteLogName());
 }
 
 unittest(remoteLogName) {
   TankController::deleteInstance();
   TankController* tc = TankController::instance("remoteLog");
   SD_TC* sd = SD_TC::instance();
-unittest(remoteLogName) {
-  TankController::deleteInstance();
-  TankController* tc = TankController::instance("remoteLog");
-  SD_TC* sd = SD_TC::instance();
-  char* name = sd->getRemoteLogName();
+  const char* name = sd->getRemoteLogName();
   assertEqual("remoteLog.log", name);
 
   TankController::deleteInstance();

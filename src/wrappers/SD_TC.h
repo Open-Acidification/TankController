@@ -28,33 +28,25 @@ public:
   bool exists(const char* path);
   bool format();
   void getAlert(char* buffer, int size, uint32_t index);
-  const char* getAlertFileName();
-  uint32_t getAlertFileSize() {
-    return alertFileSize;
+  uint32_t getRemoteFileSize() {
+    return remoteFileSize;
   }
-  char* getRemoteLogName();
+  const char* getRemoteLogName();
   bool listRootToBuffer(void (*callWhenFull)(const char*, bool));
   bool mkdir(const char* path);
   File open(const char* path, oflag_t oflag = 0x00);
   void printRootDirectory();
   bool remove(const char* path);
-  void setAlertFileName(const char* newFileName = nullptr);
-  void setRemoteLogName(const char* newFileName);
+  void setRemoteLogName(const char* newFileName = nullptr);
   void todaysDataFileName(char* path, int size);
-  void writeAlert(const char* line);
+  void writeToRemoteLog(const char* line);
 
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   char mostRecentHeader[128] = "";
   char mostRecentLine[128] = "";
-  char mostRecentStatusEntry[256] = "";
-  bool getAlertFileNameIsReady() {
-    return alertFileNameIsReady;
-  }
-  void setAlertFileNameIsReady(bool value) {
-    alertFileNameIsReady = value;
-  }
+  char mostRecentRemoteEntry[256] = "";
   void updateAlertFileSizeForTest() {
-    updateAlertFileSize();
+    updateRemoteFileSize();
   }
 #endif
 
@@ -67,8 +59,7 @@ private:
   bool hasHadError = false;
   SdFat sd;
   char remoteLogName[MAX_FILE_NAME_LENGTH + 5];  // add ".log" with null-terminator
-  uint32_t alertFileSize = 0;
-  bool alertFileNameIsReady = false;
+  uint32_t remoteFileSize = 0;
 
   // Max depth of file system search for rootdir()
   // Two is minimum: First for root, second for files
@@ -84,6 +75,5 @@ private:
   bool iterateOnFiles(doOnFile functionName, void* userData);
   static bool incrementFileCount(File* myFile, void* pFileCount);
   static bool listFile(File* myFile, void* userData);
-  void setDefaultAlertFileName();
-  void updateAlertFileSize();
+  void updateRemoteFileSize();
 };

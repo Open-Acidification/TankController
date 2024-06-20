@@ -91,11 +91,9 @@ public:
   void setTempInterval(float value);
   void setTempSeriesPointer(float value);
   void setTempSeriesSize(float value);
-  void setVersion() {  // Nothing to be done here!
-  }
 
   // other instance methods
-  void putAlertFileHeader(char* buffer, int size, int count);
+  void putRemoteFileHeader(char* buffer, int size, int chunkNumber);
   void writeAllToString(char* destination, int size);
 
 private:
@@ -140,9 +138,8 @@ private:
   const uint16_t THERMAL_FUNCTION_TYPE_ADDRESS = 140;
   // new with v23.8.1
   const uint16_t IGNORE_BAD_PH_SLOPE_ADDRESS = 144;
-  // new with v23.9.1
+  // new with v24.7.1
   const uint16_t IGNORE_BAD_THERMAL_CORRECTION_ADDRESS = 148;
-
   // class variables
   static EEPROM_TC* _instance;
 };

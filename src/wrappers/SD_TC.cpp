@@ -1,6 +1,5 @@
 #include "wrappers/SD_TC.h"
 
-#include "model/AlertPusher.h"
 #include "model/DataLogger.h"
 #include "model/TC_util.h"
 #include "wrappers/DateTime_TC.h"
@@ -42,7 +41,7 @@ SD_TC::SD_TC() {
   if (!sd.begin(SD_SELECT_PIN)) {
     Serial.println(F("SD_TC failed to initialize!"));
   }
-  setAlertFileName();
+  setRemoteLogName();
   remoteLogName[0] = '\0';
 }
 
@@ -51,8 +50,10 @@ SD_TC::SD_TC() {
  */
 void SD_TC::appendData(const char* header, const char* line) {
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
-  strncpy(mostRecentHeader, header, sizeof(mostRecentHeader));
-  strncpy(mostRecentLine, line, sizeof(mostRecentLine));
+  strncpy(mostRecentHeader, header, sizeof(mostRecentHeader));  // Flawfinder: ignore
+  mostRecentHeader[sizeof(mostRecentHeader) - 1] = '\0';        // Ensure null-terminated string
+  strncpy(mostRecentLine, line, sizeof(mostRecentLine));        // Flawfinder: ignore
+  mostRecentLine[sizeof(mostRecentLine) - 1] = '\0';            // Ensure null-terminated string
 #endif
   char path[30];
   todaysDataFileName(path, sizeof(path));
@@ -127,7 +128,7 @@ bool SD_TC::format() {
 
 void SD_TC::getAlert(char* buffer, int size, uint32_t index) {
   buffer[0] = '\0';
-  File file = open(getAlertFileName(), O_RDONLY);
+  File file = open(getRemoteLogName(), O_RDONLY);
   if (file) {
     file.seek(index);
     int remaining = file.available();
@@ -139,20 +140,7 @@ void SD_TC::getAlert(char* buffer, int size, uint32_t index) {
   }
 }
 
-const char* SD_TC::getAlertFileName() {
-  if (!alertFileNameIsReady) {
-    setDefaultAlertFileName();
-  }
-  return alertFileName;
-}
-
-char* SD_TC::getRemoteLogName() {
-  if (remoteLogName[0] == '\0') {
-    byte* mac = Ethernet_TC::instance()->getMac();
-    snprintf_P(remoteLogName, sizeof(remoteLogName), PSTR("%02X%02X%02X%02X%02X%02X.log"), mac[0], mac[1], mac[2],
-               mac[3], mac[4], mac[5]);
-  }
-char* SD_TC::getRemoteLogName() {
+const char* SD_TC::getRemoteLogName() {
   if (remoteLogName[0] == '\0') {
     byte* mac = Ethernet_TC::instance()->getMac();
     snprintf_P(remoteLogName, sizeof(remoteLogName), PSTR("%02X%02X%02X%02X%02X%02X.log"), mac[0], mac[1], mac[2],
@@ -203,6 +191,7 @@ bool SD_TC::incrementFileCount(File* myFile, void* pFileCount) {
 // With MAX_DEPTH set to 2, no subfolders are traversed
 bool SD_TC::listFile(File* myFile, void* userData) {
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  assert(myFile != nullptr);
   return false;
 #else
   listFilesData_t* pListFileData = static_cast<listFilesData_t*>(userData);
@@ -260,17 +249,6 @@ File SD_TC::open(const char* path, oflag_t oflag) {
   return sd.open(path, oflag);
 }
 
-void SD_TC::setDefaultAlertFileName() {
-  if (!alertFileNameIsReady) {
-    alertFileNameIsReady = true;
-
-    byte* mac = Ethernet_TC::instance()->getMac();
-    snprintf_P(alertFileName, 17, PSTR("%02X%02X%02X%02X%02X%02X.log"), mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
-
-    updateAlertFileSize();
-  }
-}
-
 void SD_TC::printRootDirectory() {
   sd.ls(LS_DATE | LS_SIZE | LS_R);
 }
@@ -279,25 +257,6 @@ bool SD_TC::remove(const char* path) {
   return sd.remove(path);
 }
 
-void SD_TC::setAlertFileName(const char* newFileName) {
-  if (newFileName != nullptr && strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) > 0 &&
-      strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) <= MAX_FILE_NAME_LENGTH) {
-    // valid file name has been provided (See TankController.ino)
-    snprintf_P(alertFileName, MAX_FILE_NAME_LENGTH + 5, PSTR("%s.log"), newFileName);
-    alertFileNameIsReady = true;
-  } else {
-    alertFileName[0] = '\0';
-    alertFileNameIsReady = false;
-    // This seems a logical place to set the default file name, but it is too soon. If Ethernet_TC() is not yet
-    // initialized then doing so will cause it to write to serial, which is logged by SD_TC::appendToLog(), which
-    // initializes SD_TC() which calls this very method. So we'll leave the file name empty for now.
-  }
-}
-
-void SD_TC::setRemoteLogName(const char* newFileName) {
-  if (newFileName != nullptr && strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) > 0 &&
-      strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) <= MAX_FILE_NAME_LENGTH) {
-    // valid file name has been provided (See TankController.ino)
 void SD_TC::setRemoteLogName(const char* newFileName) {
   if (newFileName != nullptr && strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) > 0 &&
       strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) <= MAX_FILE_NAME_LENGTH) {
@@ -312,41 +271,39 @@ void SD_TC::todaysDataFileName(char* path, int size) {
   COUT(path);
 }
 
-void SD_TC::updateAlertFileSize() {
-  assert(alertFileNameIsReady);
-  File file = open(alertFileName, O_RDONLY);
+void SD_TC::updateRemoteFileSize() {
+  File file = open(remoteLogName, O_RDONLY);
   if (file) {
-    alertFileSize = file.size();
+    remoteFileSize = file.size();
     file.close();
   } else {
-    alertFileSize = 0;
+    remoteFileSize = 0;
   }
 }
 
 /**
- * @brief write an alert to the appropriate file on the SD card
+ * @brief write to the appropriate "remote" file on the SD card
  *
  * @param line
  */
-void SD_TC::writeAlert(const char* line) {
+void SD_TC::writeToRemoteLog(const char* line) {
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
-  strncpy(mostRecentStatusEntry, line, sizeof(mostRecentStatusEntry));
+  strncpy(mostRecentRemoteEntry, line, sizeof(mostRecentRemoteEntry));  // Flawfinder: ignore
+  mostRecentRemoteEntry[sizeof(mostRecentRemoteEntry) - 1] = '\0';      // Ensure null-terminated string
 #endif
-  if (!alertFileNameIsReady) {
-    setDefaultAlertFileName();
-  }
-  if (!sd.exists(alertFileName)) {
+  if (!sd.exists(getRemoteLogName())) {
+    // rather than write an entire header line in one buffer, we break it into chunks to save memory
     char buffer[200];
-    DataLogger::instance()->putAlertFileHeader(buffer, sizeof(buffer), 0);
-    appendDataToPath(buffer, alertFileName, false);
-    DataLogger::instance()->putAlertFileHeader(buffer, sizeof(buffer), 1);
-    appendDataToPath(buffer, alertFileName, false);
-    DataLogger::instance()->putAlertFileHeader(buffer, sizeof(buffer), 2);
-    appendDataToPath(buffer, alertFileName, false);
-    DataLogger::instance()->putAlertFileHeader(buffer, sizeof(buffer), 3);
-    appendDataToPath(buffer, alertFileName);
+    DataLogger::instance()->putRemoteFileHeader(buffer, sizeof(buffer), 0);
+    appendDataToPath(buffer, remoteLogName, false);
+    DataLogger::instance()->putRemoteFileHeader(buffer, sizeof(buffer), 1);
+    appendDataToPath(buffer, remoteLogName, false);
+    DataLogger::instance()->putRemoteFileHeader(buffer, sizeof(buffer), 2);
+    appendDataToPath(buffer, remoteLogName, false);
+    DataLogger::instance()->putRemoteFileHeader(buffer, sizeof(buffer), 3);
+    appendDataToPath(buffer, remoteLogName);
   }
-  appendDataToPath(line, alertFileName);
-  updateAlertFileSize();
-  AlertPusher::instance()->pushSoon();
+  appendDataToPath(line, remoteLogName);
+  updateRemoteFileSize();
+  // AlertPusher::instance()->pushSoon();
 }

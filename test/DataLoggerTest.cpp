@@ -46,7 +46,7 @@ unittest(loop) {
            //  "0\tI\t2023-08-15 00:01:00\t\t20.00\t-242.02\t0.047\t8.100\t0.000\t60");
            //  the value of the thermal standard deviation is zero on the GitHub Actions build
            "0\tI\t2023-08-15 00:01:00\t\t20.00\t-242.02\t0.000\t8.100\t0.000\t60");
-  assertEqual(infoString, sd->mostRecentStatusEntry);
+  assertEqual(infoString, sd->mostRecentRemoteEntry);
   assertEqual("New info written to log", serialPort->getBuffer());
 }
 
@@ -70,7 +70,7 @@ unittest(writeWarningToLog) {
            "0\tW\t2023-08-15 "
            "00:00:19\t\t\t\t\t\t\t19\t90:A2:DA:80:7B:76\tRequesting...\t1\t0.00\t1\t1\t0.00\t0.00\t100000.00\t0\t8."
            "10\t-1\t-1\t0.0\t-1\t-1\t0.0\t0\t20.00\t-1\t-1\t0.0\t-1\t-1\t0.0\t65535");
-  assertEqual(warningString, sd->mostRecentStatusEntry);
+  assertEqual(warningString, sd->mostRecentRemoteEntry);
   // assertEqual("New warning written to log", serialPort->getBuffer());
   assertFalse(dl->getShouldWriteWarning());
 }

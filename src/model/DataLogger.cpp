@@ -51,15 +51,15 @@ void DataLogger::loop() {
   }
 }
 
-void DataLogger::putRemoteFileHeader(char* buffer, int size, int count) {
-  switch (count) {
+void DataLogger::putRemoteFileHeader(char* buffer, int size, int chunkNumber) {
+  switch (chunkNumber) {
     case 0:
       snprintf_P(buffer, size,
                  PSTR("Version\tTank ID\tSeverity\tDate Time\tMessage\tTemperature Target\tTemperature "
                       "Mean\tTemperature Std Dev\tpH Target\tpH\tUptime\tMAC Address\tpH Slope\t"));
       break;
     default:
-      EEPROM_TC::instance()->putRemoteFileHeader(buffer, size, count);
+      EEPROM_TC::instance()->putRemoteFileHeader(buffer, size, chunkNumber);
       break;
   }
 }
@@ -119,7 +119,7 @@ void DataLogger::writeInfoToLog() {
     // TODO: Log a warning that string was truncated
     serial(F("WARNING! String was truncated to \"%s\""), buffer);
   }
-  SD_TC::instance()->writeRemote(buffer);
+  SD_TC::instance()->writeToRemoteLog(buffer);
   serial(F("New info written to log"));
 }
 
@@ -129,7 +129,8 @@ void DataLogger::writeInfoToLog() {
  */
 void DataLogger::writeWarningToLog() {
   char uptime[14];
-  ultoa((unsigned long)(millis() / 1000), uptime, 10);
+  int size = snprintf_P(uptime, sizeof(uptime), PSTR("%lu"), (unsigned long)(millis() / 1000));
+  assert(size < sizeof(uptime));
   byte* mac = Ethernet_TC::instance()->getMac();
 
   // write version, tankid, 'W', and timestamp to buffer
@@ -148,7 +149,7 @@ void DataLogger::writeWarningToLog() {
   // add EEPROM data
   EEPROM_TC::instance()->writeAllToString(buffer + preambleLength + additionalLength,
                                           sizeof(buffer) - preambleLength - additionalLength);
-  SD_TC::instance()->writeRemote(buffer);
+  SD_TC::instance()->writeToRemoteLog(buffer);
 }
 
 /**

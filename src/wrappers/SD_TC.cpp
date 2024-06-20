@@ -1,5 +1,6 @@
 #include "wrappers/SD_TC.h"
 
+#include "model/DataLogger.h"
 #include "model/TC_util.h"
 #include "wrappers/DateTime_TC.h"
 #include "wrappers/Ethernet_TC.h"
@@ -47,6 +48,10 @@ SD_TC::SD_TC() {
  * append data to a data log file
  */
 void SD_TC::appendData(const char* header, const char* line) {
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  strncpy(mostRecentHeader, header, sizeof(mostRecentHeader));
+  strncpy(mostRecentLine, line, sizeof(mostRecentLine));
+#endif
   char path[30];
   todaysDataFileName(path, sizeof(path));
   if (!sd.exists(path)) {
@@ -60,12 +65,14 @@ void SD_TC::appendData(const char* header, const char* line) {
 /**
  * append data to a path
  */
-void SD_TC::appendDataToPath(const char* line, const char* path) {
+void SD_TC::appendDataToPath(const char* line, const char* path, bool appendNewline) {
   COUT(path);
   File file = sd.open(path, O_CREAT | O_WRONLY | O_APPEND);
   if (file) {
     file.write(line);
-    file.write("\n", 1);
+    if (appendNewline) {
+      file.write("\n", 1);
+    }
     file.close();
     COUT(file);
   } else {
@@ -244,4 +251,40 @@ void SD_TC::todaysDataFileName(char* path, int size) {
   DateTime_TC now = DateTime_TC::now();
   snprintf_P(path, size, (PGM_P)F("%4i%02i%02i.csv"), now.year(), now.month(), now.day());
   COUT(path);
+}
+
+void SD_TC::updateRemoteFileSize() {
+  File file = open(remoteLogName, O_RDONLY);
+  if (file) {
+    remoteFileSize = file.size();
+    file.close();
+  } else {
+    remoteFileSize = 0;
+  }
+}
+
+
+/**
+* @brief write to the appropriate "remote" file on the SD card
+*
+* @param line
+*/
+void SD_TC::writeToRemoteLog(const char* line) {
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  strncpy(mostRecentRemoteEntry, line, sizeof(mostRecentRemoteEntry));
+#endif
+  if (!sd.exists(getRemoteLogName())) {
+    char buffer[200];
+    DataLogger::instance()->putRemoteFileHeader(buffer, sizeof(buffer), 0);
+    appendDataToPath(buffer, remoteLogName, false);
+    DataLogger::instance()->putRemoteFileHeader(buffer, sizeof(buffer), 1);
+    appendDataToPath(buffer, remoteLogName, false);
+    DataLogger::instance()->putRemoteFileHeader(buffer, sizeof(buffer), 2);
+    appendDataToPath(buffer, remoteLogName, false);
+    DataLogger::instance()->putRemoteFileHeader(buffer, sizeof(buffer), 3);
+    appendDataToPath(buffer, remoteLogName);
+  }
+  appendDataToPath(line, remoteLogName);
+  updateRemoteFileSize();
+  // AlertPusher::instance()->pushSoon();
 }

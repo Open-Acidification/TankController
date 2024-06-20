@@ -46,7 +46,7 @@ PHControl::PHControl() {
   }
   currentTargetPh = baseTargetPh;
   uint16_t pHFunctionInt = EEPROM_TC::instance()->getPHFunctionType();
-  if (pHFunctionInt == 0xFFFFFFFF) {
+  if (pHFunctionInt == 0xFFFF) {
     pHFunctionType = FLAT_TYPE;
     EEPROM_TC::instance()->setPHFunctionType((uint16_t)pHFunctionType);
   } else {

@@ -72,6 +72,7 @@ unittest(SendData) {
   delay(10 * 1000);  // allow for PushingBox update
   tc->loop(false);
   char expected[] =
+      "New info written to remote log\r\n"
       "GET /pushingbox?devid=PushingBoxIdentifier&tankid=99&tempData=20.25&pHdata=7.125 HTTP/1.1\r\n"
       "attempting to connect to PushingBox...\r\n"
       "connected\r\n"

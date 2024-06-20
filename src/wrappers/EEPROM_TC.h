@@ -13,20 +13,20 @@ public:
   void eepromWriteInt(uint16_t address, int32_t value);
 
   // accessor methods
-  float getAmplitude();                   // not used
-  float getThermalCorrection();           // adjustment to temperature probe
-  float getFrequency();                   // not used
-  uint16_t getGoogleSheetInterval();      // how often to send data using PushingBox
-  float getGranularity();                 // not used
-  bool getHeat();                         // boolean for heater (true) or chiller (false)
-  bool getIgnoreBadPHSlope();             // whether to warn about an out-of-range calibration
-  bool getIgnoreBadThermalCorrection();   // whether to warn about an out-of-range calibration
-  float getKD();                          // constants used for PID to calculate bubbler timer
-  float getKI();                          // constants used for PID to calculate bubbler timer
-  float getKP();                          // constants used for PID to calculate bubbler timer
-  void getMac(uint8_t* bytes);            // used for DHCP request for IP address
-  float getMaxDataAge();                  // not used
-  float getPh();                          // target pH
+  float getAmplitude();                  // not used
+  float getThermalCorrection();          // adjustment to temperature probe
+  float getFrequency();                  // not used
+  uint16_t getGoogleSheetInterval();     // how often to send data using PushingBox
+  float getGranularity();                // not used
+  bool getHeat();                        // boolean for heater (true) or chiller (false)
+  bool getIgnoreBadPHSlope();            // whether to warn about an out-of-range calibration
+  bool getIgnoreBadThermalCorrection();  // whether to warn about an out-of-range calibration
+  float getKD();                         // constants used for PID to calculate bubbler timer
+  float getKI();                         // constants used for PID to calculate bubbler timer
+  float getKP();                         // constants used for PID to calculate bubbler timer
+  void getMac(uint8_t* bytes);           // used for DHCP request for IP address
+  float getMaxDataAge();                 // not used
+  float getPh();                         // target pH
   uint32_t getPhRampTimeStart();
   uint32_t getPhRampTimeEnd();
   float getRampStartingPh();
@@ -91,11 +91,9 @@ public:
   void setTempInterval(float value);
   void setTempSeriesPointer(float value);
   void setTempSeriesSize(float value);
-  void setVersion() {
-    // Nothing to be done here!
-  }
+
   // other instance methods
-  void putRemoteFileHeader(char* buffer, int size, int count);
+  void putRemoteFileHeader(char* buffer, int size, int chunkNumber);
   void writeAllToString(char* destination, int size);
 
 private:

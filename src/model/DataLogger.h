@@ -32,7 +32,7 @@ public:
 
   // instance methods
   void loop();
-  void putRemoteFileHeader(char *buffer, int size, int count);
+  void putRemoteFileHeader(char *buffer, int size, int chunkNumber);
   void writeWarningSoon() {
     shouldWriteWarning = true;
   }
@@ -69,6 +69,5 @@ private:
   void writeToRemoteLog();
   void writeToSerialLog();
   void writeRemotePreambleToBuffer(const char severity);
-  void writeInfoToLog();
   void writeWarningToLog();
 };

@@ -263,17 +263,17 @@ void SD_TC::updateRemoteFileSize() {
   }
 }
 
-
 /**
-* @brief write to the appropriate "remote" file on the SD card
-*
-* @param line
-*/
+ * @brief write to the appropriate "remote" file on the SD card
+ *
+ * @param line
+ */
 void SD_TC::writeToRemoteLog(const char* line) {
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   strncpy(mostRecentRemoteEntry, line, sizeof(mostRecentRemoteEntry));
 #endif
   if (!sd.exists(getRemoteLogName())) {
+    // rather than write an entire header line in one buffer, we break it into chunks to save memory
     char buffer[200];
     DataLogger::instance()->putRemoteFileHeader(buffer, sizeof(buffer), 0);
     appendDataToPath(buffer, remoteLogName, false);

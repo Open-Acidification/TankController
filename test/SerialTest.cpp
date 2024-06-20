@@ -36,7 +36,8 @@ unittest(report_loop_delay) {
   tc->loop();                         // for SD log
   tc->loop();                         // for serial log
   assertEqual("", state->serialPort[0].dataIn);
-  assertEqual("", state->serialPort[0].dataOut);
+  assertEqual("New info written to remote log\r\n", state->serialPort[0].dataOut);
+  state->serialPort[0].dataOut = "";  // the history of data written
 
   delay(505);
   tc->loop();

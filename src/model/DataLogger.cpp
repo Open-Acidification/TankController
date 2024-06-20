@@ -46,12 +46,14 @@ void DataLogger::loop() {
     ThermalProbe_TC::instance()->resetSample();
     nextRemoteLogTime = (msNow / REMOTE_LOGGING_INTERVAL + 1) * REMOTE_LOGGING_INTERVAL;
   } else if (shouldWriteWarning) {
+    // a "warning" is a change in configuration (a wrong value could be catastrophic)
     writeWarningToLog();
     shouldWriteWarning = false;
   }
 }
 
 void DataLogger::putRemoteFileHeader(char* buffer, int size, int chunkNumber) {
+  // rather than write an entire header line in one buffer, we break it into chunks to save memory
   switch (chunkNumber) {
     case 0:
       snprintf_P(buffer, size,
@@ -63,6 +65,7 @@ void DataLogger::putRemoteFileHeader(char* buffer, int size, int chunkNumber) {
       break;
   }
 }
+
 /**
  * @brief writes first four fields of status prefix to instance's buffer string
  *
@@ -80,47 +83,6 @@ void DataLogger::writeRemotePreambleToBuffer(const char severity) {
     // TODO: Log a warning that string was truncated
     serial(F("WARNING! String was truncated to \"%s\""), buffer);
   }
-}
-
-/**
- * @brief writes current values and targets for both temperature and pH to the status log
- *
- */
-void DataLogger::writeInfoToLog() {
-  char thermalMeanString[10];
-  char thermalStandardDeviationString[10];
-  char currentPhString[10];
-  if (TankController::instance()->isInCalibration()) {
-    strscpy_P(thermalMeanString, F("C"), sizeof(thermalMeanString));
-    strscpy_P(thermalStandardDeviationString, F("C"), sizeof(thermalStandardDeviationString));
-    strscpy_P(currentPhString, F("C"), sizeof(currentPhString));
-  } else {
-    floattostrf((float)ThermalProbe_TC::instance()->getSampleMean(), 1, 2, thermalMeanString,
-                sizeof(thermalMeanString));
-    floattostrf((float)ThermalProbe_TC::instance()->getSampleStandardDeviation(), 1, 3, thermalStandardDeviationString,
-                sizeof(thermalStandardDeviationString));
-    floattostrf((float)PHProbe::instance()->getPh(), 1, 3, currentPhString, sizeof(currentPhString));
-  }
-  char thermalTargetString[10];
-  char pHTargetString[10];
-  floattostrf(ThermalControl::instance()->getCurrentThermalTarget(), 1, 2, thermalTargetString,
-              sizeof(thermalTargetString));
-  floattostrf(PHControl::instance()->getCurrentTargetPh(), 1, 3, pHTargetString, sizeof(pHTargetString));
-
-  // write version, tankid, 'I', and timestamp to buffer
-  writeRemotePreambleToBuffer('I');
-  int preambleLength = strnlen(buffer, sizeof(buffer));
-  // temperature \t thermaltarget \t pH \t pHtarget
-  const __FlashStringHelper* format = F("\t\t%s\t%s\t%s\t%s\t%s");
-  int additionalLength =
-      snprintf_P(buffer + preambleLength, sizeof(buffer) - preambleLength, (PGM_P)format, thermalTargetString,
-                 thermalMeanString, thermalStandardDeviationString, pHTargetString, currentPhString);
-  if ((preambleLength + additionalLength > sizeof(buffer)) || (additionalLength < 0)) {
-    // TODO: Log a warning that string was truncated
-    serial(F("WARNING! String was truncated to \"%s\""), buffer);
-  }
-  SD_TC::instance()->writeToRemoteLog(buffer);
-  serial(F("New info written to log"));
 }
 
 /**
@@ -220,5 +182,38 @@ void DataLogger::writeToSerialLog() {
  *
  */
 void DataLogger::writeToRemoteLog() {
-  //
+  char thermalMeanString[10];
+  char thermalStandardDeviationString[10];
+  char currentPhString[10];
+  if (TankController::instance()->isInCalibration()) {
+    strscpy_P(thermalMeanString, F("C"), sizeof(thermalMeanString));
+    strscpy_P(thermalStandardDeviationString, F("C"), sizeof(thermalStandardDeviationString));
+    strscpy_P(currentPhString, F("C"), sizeof(currentPhString));
+  } else {
+    floattostrf((float)ThermalProbe_TC::instance()->getSampleMean(), 1, 2, thermalMeanString,
+                sizeof(thermalMeanString));
+    floattostrf((float)ThermalProbe_TC::instance()->getSampleStandardDeviation(), 1, 3, thermalStandardDeviationString,
+                sizeof(thermalStandardDeviationString));
+    floattostrf((float)PHProbe::instance()->getPh(), 1, 3, currentPhString, sizeof(currentPhString));
+  }
+  char thermalTargetString[10];
+  char pHTargetString[10];
+  floattostrf(ThermalControl::instance()->getCurrentThermalTarget(), 1, 2, thermalTargetString,
+              sizeof(thermalTargetString));
+  floattostrf(PHControl::instance()->getCurrentTargetPh(), 1, 3, pHTargetString, sizeof(pHTargetString));
+
+  // write version, tankid, 'I', and timestamp to buffer
+  writeRemotePreambleToBuffer('I');
+  int preambleLength = strnlen(buffer, sizeof(buffer));
+  // temperature \t thermaltarget \t pH \t pHtarget
+  const __FlashStringHelper* format = F("\t\t%s\t%s\t%s\t%s\t%s");
+  int additionalLength =
+      snprintf_P(buffer + preambleLength, sizeof(buffer) - preambleLength, (PGM_P)format, thermalTargetString,
+                 thermalMeanString, thermalStandardDeviationString, pHTargetString, currentPhString);
+  if ((preambleLength + additionalLength > sizeof(buffer)) || (additionalLength < 0)) {
+    // TODO: Log a warning that string was truncated
+    serial(F("WARNING! String was truncated to \"%s\""), buffer);
+  }
+  SD_TC::instance()->writeToRemoteLog(buffer);
+  serial(F("New info written to remote log"));
 }

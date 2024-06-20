@@ -49,10 +49,10 @@ SD_TC::SD_TC() {
  */
 void SD_TC::appendData(const char* header, const char* line) {
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
-  strncpy(mostRecentHeader, header, sizeof(mostRecentHeader));
-  mostRecentHeader[sizeof(mostRecentHeader) - 1] = '\0';  // Ensure null-terminated string
-  strncpy(mostRecentLine, line, sizeof(mostRecentLine));  //
-  mostRecentLine[sizeof(mostRecentLine) - 1] = '\0';      // Ensure null-terminated string
+  strncpy(mostRecentHeader, header, sizeof(mostRecentHeader));  // Flawfinder: ignore
+  mostRecentHeader[sizeof(mostRecentHeader) - 1] = '\0';        // Ensure null-terminated string
+  strncpy(mostRecentLine, line, sizeof(mostRecentLine));        // Flawfinder: ignore
+  mostRecentLine[sizeof(mostRecentLine) - 1] = '\0';            // Ensure null-terminated string
 #endif
   char path[30];
   todaysDataFileName(path, sizeof(path));
@@ -272,8 +272,8 @@ void SD_TC::updateRemoteFileSize() {
  */
 void SD_TC::writeToRemoteLog(const char* line) {
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
-  strncpy(mostRecentRemoteEntry, line, sizeof(mostRecentRemoteEntry));
-  mostRecentRemoteEntry[sizeof(mostRecentRemoteEntry) - 1] = '\0';  // Ensure null-terminated string
+  strncpy(mostRecentRemoteEntry, line, sizeof(mostRecentRemoteEntry));  // Flawfinder: ignore
+  mostRecentRemoteEntry[sizeof(mostRecentRemoteEntry) - 1] = '\0';      // Ensure null-terminated string
 #endif
   if (!sd.exists(getRemoteLogName())) {
     // rather than write an entire header line in one buffer, we break it into chunks to save memory

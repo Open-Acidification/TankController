@@ -24,7 +24,7 @@ EEPROM_TC* EEPROM_TC::instance() {
 
 //  instance methods
 float EEPROM_TC::eepromReadFloat(uint16_t address) {
-  assert(address >= 0);
+  assert(address != 0);
   float value = 0.0;
   byte* p = (byte*)(void*)&value;
   for (size_t i = 0; i < sizeof(value); i++) {
@@ -40,6 +40,7 @@ float EEPROM_TC::eepromReadFloat(uint16_t address) {
  * @param value
  */
 void EEPROM_TC::eepromWriteFloat(uint16_t address, float value) {
+  assert(address != 0);
   if (eepromReadFloat(address) != value) {
     byte* p = (byte*)(void*)&value;
     for (size_t i = 0; i < sizeof(value); i++) {
@@ -50,7 +51,7 @@ void EEPROM_TC::eepromWriteFloat(uint16_t address, float value) {
 }
 
 int32_t EEPROM_TC::eepromReadInt(uint16_t address) {
-  assert(address >= 0);
+  assert(address != 0);
   int32_t value = 0;
   byte* p = (byte*)(void*)&value;
   for (size_t i = 0; i < sizeof(value); i++) {
@@ -66,7 +67,7 @@ int32_t EEPROM_TC::eepromReadInt(uint16_t address) {
  * @param value
  */
 void EEPROM_TC::eepromWriteInt(uint16_t address, int32_t value) {
-  assert(address >= 0);
+  assert(address != 0);
   if (eepromReadInt(address) != value) {
     byte* p = (byte*)(void*)&value;
     for (size_t i = 0; i < sizeof(value); i++) {

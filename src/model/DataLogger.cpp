@@ -13,10 +13,10 @@
 #include "wrappers/Serial_TC.h"
 #include "wrappers/ThermalProbe_TC.h"
 
-// class variables
+//  class variables
 DataLogger* DataLogger::_instance = nullptr;
 
-// class methods
+//  class methods
 /**
  * @brief accessor for singleton
  *
@@ -28,7 +28,7 @@ DataLogger* DataLogger::instance() {
   return _instance;
 }
 
-// instance methods
+//  instance methods
 /**
  * @brief check timers for logs that should be written
  *
@@ -84,6 +84,42 @@ void DataLogger::writeRemotePreambleToBuffer(const char severity) {
     serial(F("WARNING! String was truncated to \"%s\""), buffer);
   }
 }
+
+/**
+ * @brief writes current values and targets for both temperature and pH to the status log
+ *
+ */
+// void DataLogger::writeInfoToLog() {
+//   char thermalMeanString[10];
+//   char thermalStandardDeviationString[10];
+//   char currentPhString[10];
+//   if (TankController::instance()->isInCalibration()) {
+//     strscpy_P(thermalMeanString, F("C"), sizeof(thermalMeanString));
+//     strscpy_P(thermalStandardDeviationString, F("C"), sizeof(thermalStandardDeviationString));
+//     strscpy_P(currentPhString, F("C"), sizeof(currentPhString));
+//   } else {
+//     floattostrf((float)ThermalProbe_TC::instance()->getSampleMean(), 1, 2, thermalMeanString,
+//                 sizeof(thermalMeanString));
+//     floattostrf((float)ThermalProbe_TC::instance()->getSampleStandardDeviation(), 1, 3, thermalStandardDeviationString,
+//                 sizeof(thermalStandardDeviationString));
+//     floattostrf((float)PHProbe::instance()->getPh(), 1, 3, currentPhString, sizeof(currentPhString));
+//   }
+//   char thermalTargetString[10];
+//   char pHTargetString[10];
+//   floattostrf(ThermalControl::instance()->getCurrentThermalTarget(), 1, 2, thermalTargetString,
+//               sizeof(thermalTargetString));
+//   floattostrf(PHControl::instance()->getCurrentTargetPh(), 1, 3, pHTargetString, sizeof(pHTargetString));
+//   char uptime[14];
+//   snprintf_P(uptime, sizeof(uptime), PSTR("%lu"), (unsigned long)(millis() / 1000));
+
+//   // write version, tankid, 'I', and timestamp to buffer
+//   writeAlertPreambleToBuffer('I');
+//   int preambleLength = strnlen(buffer, sizeof(buffer));
+//   // temperature \t thermaltarget \t pH \t pHtarget \t uptime
+//   const __FlashStringHelper* format = F("\t\t%s\t%s\t%s\t%s\t%s\t%s");
+//   int additionalLength =
+//       snprintf_P(buffer + preambleLength, sizeof(buffer) - preambleLength, (PGM_P)format, thermalTargetString,
+//                  thermalMeanString, thermalStandardDeviationString, pHTargetString, currentPhString, uptime);
 
 /**
  * @brief writes uptime, MAC address, pH slope, and EEPROM data to the status log
@@ -142,7 +178,7 @@ void DataLogger::writeToDataLog() {
   floattostrf(pPID->getKp(), 8, 1, kp, sizeof(kp));
   floattostrf(pPID->getKi(), 8, 1, ki, sizeof(ki));
   floattostrf(pPID->getKd(), 8, 1, kd, sizeof(kd));
-  const __FlashStringHelper* header = F("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd");
+  const __FlashStringHelper* header = F("time,tankid,temp,temp setpoint,pH,pH setpoint,uptime,Kp,Ki,Kd");
   const __FlashStringHelper* format = F("%02i/%02i/%4i %02i:%02i:%02i, %3i, %s, %s, %s, %s, %4lu, %s, %s, %s");
   char header_buffer[64];
   strscpy_P(header_buffer, header, sizeof(header_buffer));

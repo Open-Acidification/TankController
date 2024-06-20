@@ -47,13 +47,14 @@ INCLUDE=-I$(ARDUINO_CI)/arduino \
 HEADERS=$(wildcard src/*.h) $(wildcard src/wrappers/*) $(wildcard src/UIState/*)
 
 .PHONY : all
-all : $(BIN)/PHCalibrationWarningTest.cpp.bin $(BIN)/BlinkTest.cpp.bin $(BIN)/DateTimeTest.cpp.bin $(BIN)/EEPROMTest.cpp.bin \
-  $(BIN)/EnablePIDTest.cpp.bin $(BIN)/EthernetServerTest.cpp.bin $(BIN)/EthernetTest.cpp.bin \
+all : $(BIN)/AlertPusherTest.cpp.bin $(BIN)/BlinkTest.cpp.bin $(BIN)/DataLoggerTest.cpp.bin \
+  $(BIN)/DateTimeTest.cpp.bin $(BIN)/EEPROMTest.cpp.bin $(BIN)/EnablePIDTest.cpp.bin \
+  $(BIN)/EthernetServerTest.cpp.bin $(BIN)/EthernetTest.cpp.bin \
   $(BIN)/GetTimeTest.cpp.bin $(BIN)/JSONBuilderTest.cpp.bin $(BIN)/KeypadTest.cpp.bin \
 	$(BIN)/LiquidCrystalTest.cpp.bin \
   $(BIN)/MenuTest.cpp.bin $(BIN)/NumberCollectorTest.cpp.bin $(BIN)/PHCalibrationHighTest.cpp.bin \
   $(BIN)/PHCalibrationLowTest.cpp.bin $(BIN)/PHCalibrationMidTest.cpp.bin \
-	$(BIN)/PHCalibrationPromptTest.cpp.bin $(BIN)/PHControlTest.cpp.bin \
+	$(BIN)/PHCalibrationPromptTest.cpp.bin $(BIN)/PHCalibrationWarningTest.cpp.bin $(BIN)/PHControlTest.cpp.bin \
   $(BIN)/PHProbeTest.cpp.bin $(BIN)/PIDTest.cpp.bin $(BIN)/PushingBoxTest.cpp.bin $(BIN)/SDTest.cpp.bin \
   $(BIN)/SeeDeviceAddressTest.cpp.bin $(BIN)/SeeDeviceUptimeTest.cpp.bin $(BIN)/SeeFreeMemoryTest.cpp.bin \
   $(BIN)/SeeGoogleMinsTest.cpp.bin $(BIN)/SeeLogFileTest.cpp.bin $(BIN)/SeePHCalibrationTest.cpp.bin \
@@ -72,8 +73,14 @@ GPP_TEST=g++ $(FLAGS) -L$(BIN) $(INCLUDE)
 $(BIN)/PHCalibrationWarningTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/PHCalibrationWarningTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/PHCalibrationWarningTest.cpp.bin $(TEST)/PHCalibrationWarningTest.cpp -larduino
 
+$(BIN)/AlertPusherTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/AlertPusherTest.cpp $(HEADERS)
+	$(GPP_TEST) -o $(BIN)/AlertPusherTest.cpp.bin $(TEST)/AlertPusherTest.cpp -larduino
+
 $(BIN)/BlinkTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/BlinkTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/BlinkTest.cpp.bin $(TEST)/BlinkTest.cpp -larduino
+
+$(BIN)/DataLoggerTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/DataLoggerTest.cpp $(HEADERS)
+	$(GPP_TEST) -o $(BIN)/DataLoggerTest.cpp.bin $(TEST)/DataLoggerTest.cpp -larduino
 
 $(BIN)/DateTimeTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/DateTimeTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/DateTimeTest.cpp.bin $(TEST)/DateTimeTest.cpp -larduino
@@ -247,7 +254,7 @@ SDFAT=$(BIN)/FreeStack.o $(BIN)/MinimumSerial.o $(BIN)/File_CI.o $(BIN)/SD_CI.o 
   $(BIN)/istream.o $(BIN)/ostream.o
 
 OBJECTS=$(BIN)/Arduino.o $(BIN)/Godmode.o $(BIN)/stdlib.o $(BIN)/ArduinoUnitTests.o \
-  $(BIN)/TC_util.o $(BIN)/TankController.o $(BIN)/DataLogger.o $(BIN)/DateTime_TC.o \
+  $(BIN)/TC_util.o $(BIN)/TankController.o $(BIN)/AlertPusher.o $(BIN)/DataLogger.o $(BIN)/DateTime_TC.o \
   $(BIN)/EEPROM_TC.o $(BIN)/EthernetServer_TC.o $(BIN)/Ethernet_TC.o $(BIN)/GetTime.o \
 	$(BIN)/JSONBuilder.o \
   $(BIN)/Keypad_TC.o $(BIN)/LiquidCrystal_TC.o $(BIN)/PHControl.o $(BIN)/PHProbe.o \
@@ -287,6 +294,9 @@ $(BIN)/TC_util.o: $(SRC)/model/TC_util.cpp $(HEADERS)
 $(BIN)/TankController.o: $(SRC)/TankController.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/TankController.o $(SRC)/TankController.cpp
 
+$(BIN)/AlertPusher.o: $(SRC)/model/AlertPusher.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/AlertPusher.o $(SRC)/model/AlertPusher.cpp
+
 $(BIN)/DataLogger.o: $(SRC)/model/DataLogger.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/DataLogger.o $(SRC)/model/DataLogger.cpp
 
@@ -302,11 +312,11 @@ $(BIN)/EthernetServer_TC.o: $(SRC)/wrappers/EthernetServer_TC.cpp $(HEADERS)
 $(BIN)/Ethernet_TC.o: $(SRC)/wrappers/Ethernet_TC.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/Ethernet_TC.o $(SRC)/wrappers/Ethernet_TC.cpp
 
-$(BIN)/JSONBuilder.o: $(SRC)/model/JSONBuilder.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/JSONBuilder.o $(SRC)/model/JSONBuilder.cpp
-
 $(BIN)/GetTime.o: $(SRC)/model/GetTime.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/GetTime.o $(SRC)/model/GetTime.cpp
+
+$(BIN)/JSONBuilder.o: $(SRC)/model/JSONBuilder.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/JSONBuilder.o $(SRC)/model/JSONBuilder.cpp
 
 $(BIN)/Keypad_TC.o: $(SRC)/wrappers/Keypad_TC.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/Keypad_TC.o $(SRC)/wrappers/Keypad_TC.cpp

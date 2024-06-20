@@ -29,10 +29,12 @@ unittest(report_loop_delay) {
   state->serialPort[0].dataOut = "";  // the history of data written
 
   // no report if no delay
+  tc->loop();  // for info log
   tc->loop();  // for SD log
   tc->loop();  // for serial log
   delay(450);
   state->serialPort[0].dataOut = "";  // the history of data written
+  tc->loop();                         // for info log
   tc->loop();                         // for SD log
   tc->loop();                         // for serial log
   assertEqual("", state->serialPort[0].dataIn);

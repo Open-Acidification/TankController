@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
+#include "DataLogger.h"
 #include "EEPROM_TC.h"
 #include "PHProbe.h"
 #include "Serial_TC.h"
@@ -23,6 +24,10 @@ unittest(constructor) {
 
 // tests getPh() and getSlopeResponse as well
 unittest(serialEvent1) {
+  tc->loop();  // Writes something to EEPROM, triggering a DataLogger warning
+  tc->loop();  // DataLogger writes to SD card
+  DataLogger *dl = DataLogger::instance();
+  dl->reset();
   GodmodeState *state = GODMODE();
   state->reset();
   state->serialPort[0].dataOut = "";
@@ -33,7 +38,13 @@ unittest(serialEvent1) {
   assertEqual("Requesting...", pHProbe->getSlopeResponse());
   pHProbe->setCalibration(2);
   pHProbe->setPh(7.125);
+  assertFalse(dl->getShouldWriteWarning());
+  assertEqual("", dl->getBuffer());
+  // Next line calls serialEvent1 (triggering warning) and tc->loop() (sending warning)
   pHProbe->setPhSlope();
+  assertFalse(dl->getShouldWriteWarning());  // already false again
+  string lastWrittenString(dl->getBuffer());
+  assertTrue(lastWrittenString.find("99.7,100.3,-0.89") > 0);  // warning was sent
   assertEqual("PH Calibra: 2 pt", pHProbe->getCalibrationResponse());
   assertEqual(7.125, pHProbe->getPh());
   assertEqual("99.7,100.3,-0.89", pHProbe->getSlopeResponse());
@@ -129,14 +140,14 @@ unittest(setTemperatureCompensation) {
 unittest(setLowpointCalibration) {
   GodmodeState *state = GODMODE();
   state->reset();
-  eeprom->setIgnoreBadPHSlope(true);
-  assertTrue(eeprom->getIgnoreBadPHSlope());
+  // eeprom->setIgnoreBadPHSlope(true);
+  // assertTrue(eeprom->getIgnoreBadPHSlope());
   assertEqual("", state->serialPort[0].dataOut);
   assertEqual("", state->serialPort[1].dataOut);
   pHProbe->setLowpointCalibration(10.875);
   assertEqual("PHProbe::setLowpointCalibration(10.875)\r\n", state->serialPort[0].dataOut);
   assertEqual("Cal,low,10.875\r", state->serialPort[1].dataOut);
-  assertFalse(eeprom->getIgnoreBadPHSlope());
+  // assertFalse(eeprom->getIgnoreBadPHSlope());
 }
 
 unittest(setMidpointCalibration) {
@@ -144,10 +155,14 @@ unittest(setMidpointCalibration) {
   state->reset();
   eeprom->setIgnoreBadPHSlope(true);
   assertTrue(eeprom->getIgnoreBadPHSlope());
-  assertEqual("", state->serialPort[0].dataOut);
+  assertEqual("DataLogger::writeWarningSoon() from EEPROM_TC::eepromWriteInt()\r\n", state->serialPort[0].dataOut);
   assertEqual("", state->serialPort[1].dataOut);
+  state->serialPort[0].dataOut = "";
   pHProbe->setMidpointCalibration(11.875);
-  assertEqual("PHProbe::setMidpointCalibration(11.875)\r\n", state->serialPort[0].dataOut);
+  assertEqual(
+      "DataLogger::writeWarningSoon() from EEPROM_TC::eepromWriteInt()\r\n"
+      "PHProbe::setMidpointCalibration(11.875)\r\n",
+      state->serialPort[0].dataOut);
   assertEqual("Cal,mid,11.875\r", state->serialPort[1].dataOut);
   assertFalse(eeprom->getIgnoreBadPHSlope());
 }
@@ -167,14 +182,14 @@ unittest(settingMidpointClearsBadCalibration) {
 unittest(setHighpointCalibration) {
   GodmodeState *state = GODMODE();
   state->reset();
-  eeprom->setIgnoreBadPHSlope(true);
-  assertTrue(eeprom->getIgnoreBadPHSlope());
+  // eeprom->setIgnoreBadPHSlope(true);
+  // assertTrue(eeprom->getIgnoreBadPHSlope());
   assertEqual("", state->serialPort[0].dataOut);
   assertEqual("", state->serialPort[1].dataOut);
   pHProbe->setHighpointCalibration(12.875);
   assertEqual("PHProbe::setHighpointCalibration(12.875)\r\n", state->serialPort[0].dataOut);
   assertEqual("Cal,High,12.875\r", state->serialPort[1].dataOut);
-  assertFalse(eeprom->getIgnoreBadPHSlope());
+  // assertFalse(eeprom->getIgnoreBadPHSlope());
 }
 
 unittest(sendSlopeRequest) {

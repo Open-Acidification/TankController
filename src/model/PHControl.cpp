@@ -45,10 +45,12 @@ PHControl::PHControl() {
     EEPROM_TC::instance()->setPh(baseTargetPh);
   }
   currentTargetPh = baseTargetPh;
-  pHFunctionType = (pHFunctionTypes)EEPROM_TC::instance()->getPHFunctionType();
-  if (pHFunctionType == 0xFFFFFFFF) {
+  uint16_t pHFunctionInt = EEPROM_TC::instance()->getPHFunctionType();
+  if (pHFunctionInt == 0xFFFF) {
     pHFunctionType = FLAT_TYPE;
-    EEPROM_TC::instance()->setPHFunctionType(pHFunctionType);
+    EEPROM_TC::instance()->setPHFunctionType((uint16_t)pHFunctionType);
+  } else {
+    pHFunctionType = (pHFunctionTypes)pHFunctionInt;
   }
   switch (pHFunctionType) {
     case RAMP_TYPE:

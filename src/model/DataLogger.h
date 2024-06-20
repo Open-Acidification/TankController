@@ -32,6 +32,10 @@ public:
 
   // instance methods
   void loop();
+  void putRemoteFileHeader(char *buffer, int size, int chunkNumber);
+  void writeWarningSoon() {
+    shouldWriteWarning = true;
+  }
 
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   char *getBuffer() {
@@ -39,6 +43,13 @@ public:
   }
   void clearBuffer() {
     buffer[0] = '\0';
+  }
+  bool getShouldWriteWarning() {
+    return shouldWriteWarning;
+  }
+  void reset() {
+    clearBuffer();
+    shouldWriteWarning = false;
   }
 #endif
 
@@ -51,9 +62,12 @@ private:
   uint32_t nextDataLogTime = 0;
   uint32_t nextRemoteLogTime = 0;
   uint32_t nextSerialLogTime = 0;
+  bool shouldWriteWarning = false;
 
   // instance methods
   void writeToDataLog();
-  void writeToSerialLog();
   void writeToRemoteLog();
+  void writeToSerialLog();
+  void writeRemotePreambleToBuffer(const char severity);
+  void writeWarningToLog();
 };

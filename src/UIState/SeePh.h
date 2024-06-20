@@ -9,12 +9,6 @@
 
 class SeePh : public UIState {
 public:
-  enum pHFunctionTypes {
-    FLAT_TYPE,
-    RAMP_TYPE,
-    SINE_TYPE,
-  };
-
   void loop();
   const __FlashStringHelper *name() {
     return F("SeePh");

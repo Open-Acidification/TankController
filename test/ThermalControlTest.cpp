@@ -194,7 +194,60 @@ unittest(RampGreaterThanZero) {
   control->setThermalTarget(10);
   control->setRampDurationHours(1.5);
   assertEqual(ThermalControl::thermalFunctionTypes::RAMP_TYPE, control->getThermalFunctionType());
+  assertEqual("", dataLog->getBuffer());  // data left over from previous tests is cleared
   tc->loop(false);
+  char* pBuffer = dataLog->getBuffer();
+  int i = 0;
+  int tabCount = 0;
+  while (pBuffer[i] != '\0') {
+    if (pBuffer[i] == '\t') {
+      tabCount++;
+      if (tabCount == 29) {
+        break;
+      }
+    }
+    i++;
+  }
+  assertEqual(29, tabCount);  // beginning of thermal target ("10.00")
+  ++i;
+  for (int j = 0; j < 5; j++) {
+    assertTrue(pBuffer[i + j] != '\0');
+  }
+  assertEqual('\t', pBuffer[i + 5]);  // end of thermal target
+  ++tabCount;
+  pBuffer[i + 5] = '\0';
+  assertEqual("10.00", &pBuffer[i]);
+  pBuffer[i + 5] = '\t';
+  i += 6;
+  int j = i;  // now at beginning of ramp start time
+  while (pBuffer[j] != '\0') {
+    if (pBuffer[j] == '\t') {
+      tabCount++;
+      break;
+    }
+    j++;
+  }
+  assertEqual(31, tabCount);  // found end of ramp start time
+  pBuffer[j] = '\0';
+  uint64_t rampStart = strtoull(&pBuffer[i], NULL, 10);
+  pBuffer[j] = '\t';
+  i = j + 1;
+  j = i;  // now at beginning of ramp end time
+  while (pBuffer[j] != '\0') {
+    if (pBuffer[j] == '\t') {
+      tabCount++;
+      break;
+    }
+    j++;
+  }
+  assertEqual(32, tabCount);  // found end of ramp end time
+  pBuffer[j] = '\0';
+  uint64_t rampEnd = strtoull(&pBuffer[i], NULL, 10);
+  pBuffer[j] = '\t';
+  uint64_t rampDuration = rampEnd - rampStart;
+  assertEqual(90 * 60, rampDuration);
+  dataLog->clearBuffer();
+  assertEqual("", dataLog->getBuffer());  // data left over from previous tests is cleared
   control->updateControl(thermalProbe->getRunningAverage());
   tc->loop(false);
   tc->loop(false);

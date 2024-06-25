@@ -48,6 +48,7 @@ SD_TC::SD_TC() {
  * append data to a data log file
  */
 void SD_TC::appendData(const char* header, const char* line) {
+  std::cerr << "SD_TC.cpp>>appendData() - 1" << std::endl;
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   strncpy(mostRecentHeader, header, sizeof(mostRecentHeader));  // Flawfinder: ignore
   mostRecentHeader[sizeof(mostRecentHeader) - 1] = '\0';        // Ensure null-terminated string
@@ -97,6 +98,26 @@ void SD_TC::appendToLog(const char* line) {
   appendDataToPath(line, path);
 }
 
+bool SD_TC::countFiles(void (*callWhenFinished)(int)) {
+  if (!inProgress) {
+    const char path[] PROGMEM = "/";
+    fileStack[0] = SD_TC::instance()->open(path);
+    if (!fileStack[0]) {
+      serial(F("SD_TC open() failed"));
+      return false;  // Function is unsuccessful
+    }
+    fileStack[0].rewind();
+    fileStackSize = 1;
+    fileCount = 0;
+    inProgress = true;
+  }
+  inProgress = iterateOnFiles(incrementFileCount, (void*)&fileCount);
+  if (!inProgress) {
+    callWhenFinished(fileCount);
+  }
+  return true;
+}
+
 bool SD_TC::exists(const char* path) {
   return sd.exists(path);
 }
@@ -105,7 +126,7 @@ bool SD_TC::format() {
   return sd.format();
 }
 
-char* SD_TC::getRemoteLogName() {
+const char* SD_TC::getRemoteLogName() {
   if (remoteLogName[0] == '\0') {
     byte* mac = Ethernet_TC::instance()->getMac();
     snprintf_P(remoteLogName, sizeof(remoteLogName), PSTR("%02X%02X%02X%02X%02X%02X.log"), mac[0], mac[1], mac[2],
@@ -152,30 +173,11 @@ bool SD_TC::incrementFileCount(File* myFile, void* pFileCount) {
   return ++(*(int*)pFileCount) % 10 != 0;  // Pause after counting 10 files
 }
 
-bool SD_TC::countFiles(void (*callWhenFinished)(int)) {
-  if (!inProgress) {
-    const char path[] PROGMEM = "/";
-    fileStack[0] = SD_TC::instance()->open(path);
-    if (!fileStack[0]) {
-      serial(F("SD_TC open() failed"));
-      return false;  // Function is unsuccessful
-    }
-    fileStack[0].rewind();
-    fileStackSize = 1;
-    fileCount = 0;
-    inProgress = true;
-  }
-  inProgress = iterateOnFiles(incrementFileCount, (void*)&fileCount);
-  if (!inProgress) {
-    callWhenFinished(fileCount);
-  }
-  return true;
-}
-
 // Issue: This function does not visually display depth for items in subfolders
 // With MAX_DEPTH set to 2, no subfolders are traversed
 bool SD_TC::listFile(File* myFile, void* userData) {
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  assert(myFile != nullptr);
   return false;
 #else
   listFilesData_t* pListFileData = static_cast<listFilesData_t*>(userData);
@@ -233,12 +235,12 @@ File SD_TC::open(const char* path, oflag_t oflag) {
   return sd.open(path, oflag);
 }
 
-bool SD_TC::remove(const char* path) {
-  return sd.remove(path);
-}
-
 void SD_TC::printRootDirectory() {
   sd.ls(LS_DATE | LS_SIZE | LS_R);
+}
+
+bool SD_TC::remove(const char* path) {
+  return sd.remove(path);
 }
 
 void SD_TC::setRemoteLogName(const char* newFileName) {

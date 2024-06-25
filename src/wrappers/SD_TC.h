@@ -24,16 +24,19 @@ public:
   // instance methods
   void appendData(const char* header, const char* line);
   void appendToLog(const char* line);
-  bool exists(const char* path);
-  bool format();
-  char* getRemoteLogName();
-  bool listRootToBuffer(void (*callWhenFull)(const char*, bool));
   bool countFiles(void (*callWhenFinished)(int));
+  bool exists(const char* path);
+  bool format();   
+  uint32_t getRemoteFileSize() {
+    return remoteFileSize;
+  }
+  const char* getRemoteLogName();
+  bool listRootToBuffer(void (*callWhenFull)(const char*, bool));
   bool mkdir(const char* path);
   File open(const char* path, oflag_t oflag = 0x00);
   void printRootDirectory();
   bool remove(const char* path);
-  void setRemoteLogName(const char* newFileName);
+  void setRemoteLogName(const char* newFileName = nullptr);
   void todaysDataFileName(char* path, int size);
   void writeToRemoteLog(const char* line);
 

@@ -66,8 +66,8 @@ private:
 
   // instance methods
   void writeToDataLog();
-  void writeToRemoteLog();
+  void writeDataToRemoteLog();
   void writeToSerialLog();
   void writeRemotePreambleToBuffer(const char severity);
-  void writeWarningToLog();
+  void writeWarningToRemoteLog();
 };

@@ -4,6 +4,7 @@
 #include "DataLogger.h"
 #include "DateTime_TC.h"
 #include "MainMenu.h"
+#include "PID_TC.h"
 #include "SD_TC.h"
 #include "Serial_TC.h"
 #include "TankController.h"
@@ -25,32 +26,50 @@ unittest_setup() {
 }
 
 unittest(loop) {
-  std::cerr << "DataLoggerTest.cpp>>loop - 1" << std::endl;
-  tc->loop(false);
-  std::cerr << "DataLoggerTest.cpp>>loop - 2" << std::endl;
-  delay(59000);
-  serialPort->clearBuffer();
-  std::cerr << "DataLoggerTest.cpp>>loop - 3" << std::endl;
-  assertEqual("", sd->mostRecentHeader);
-  assertEqual("", sd->mostRecentLine);
-  std::cerr << "DataLoggerTest.cpp>>loop - 4" << std::endl;
-  tc->loop(false);  // write to SD card
-  assertEqual("time,tankid,temp,temp setpoint,pH,pH setpoint,uptime,Kp,Ki,Kd", sd->mostRecentHeader);
-  assertEqual("08/15/2023 00:00:59,   0, 0.00, 20.00, 0.000, 8.100,   59, 100000.0,      0.0,      0.0",
-              sd->mostRecentLine);
+  // write to data log every second
+  // write to serial log every minute
+  // write to remote log every minute
+  // write warning to remote log when needed
+
+  assertEqual("", sd->mostRecentDataLogHeader);
+  assertEqual("", sd->mostRecentDataLogLine);
   assertEqual("", serialPort->getBuffer());
-  tc->loop(false);  // write to serial
-  assertEqual("00:00 pH=0.000 temp= 0.00", serialPort->getBuffer());
+  assertEqual("", sd->mostRecentRemoteLogEntry);
+
+  // initial loop
+  tc->loop(false);
+  assertEqual("", sd->mostRecentDataLogHeader);
+  assertEqual("", sd->mostRecentDataLogLine);
+  assertEqual("heater turned on at 6 after 6 ms", serialPort->getBuffer());
+  serialPort->clearBuffer();
+  assertEqual("", sd->mostRecentRemoteLogEntry);
+
+  // data log after one second
   delay(1000);
+  tc->loop(false);  // write to data log
+  tc->loop(false);  // should not write to serial log
+  tc->loop(false);  // should not write data to remote log
+  tc->loop(false);  // should not write warning to remote log
+  assertEqual("time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd", sd->mostRecentDataLogHeader);
+  assertEqual("08/15/2023 00:00:01,   0, 0.00, 20.00, 0.000, 8.100,    1, 100000.0,      0.0,      0.0",
+              sd->mostRecentDataLogLine);
+  assertEqual("", serialPort->getBuffer());
+  assertEqual("", sd->mostRecentRemoteLogEntry);
+
+  // serial log after one minute
+  delay(59000);
+  tc->loop(false);  // write to data log
+  tc->loop(false);  // write to serial log
+  assertEqual("00:01 pH=0.000 temp= 0.00", serialPort->getBuffer());
+
+  // remote log entry after one minute
   assertFalse(0.0 == ThermalProbe_TC::instance()->getSampleMean());  // thermal sample has been collected
-  tc->loop(false);                                                   // write info to log file
+  tc->loop(false);                                                   // write info to remote log
   assertEqual(0.0, ThermalProbe_TC::instance()->getSampleMean());    // thermal sample has been reset
   char infoString[512] = "";
   snprintf(infoString, sizeof(infoString), "%s\t%s", VERSION,
-          //  "0\tI\t2023-08-15 00:01:00\t\t20.00\t-242.02\t0.047\t8.100\t0.000\t60");
-          //  the value of the thermal standard deviation is zero on the GitHub Actions build
-          "0\tI\t2023-08-15 00:01:00\t\t20.00\t-242.02\t0.000\t8.100\t0.000\t60");
-  assertEqual(infoString, sd->mostRecentRemoteEntry);
+           "0\tI\t2023-08-15 00:01:00\t\t20.00\t-242.02\t0.047\t8.100\t0.000\t60");
+  assertEqual(infoString, sd->mostRecentRemoteLogEntry);
   assertEqual("New info written to log", serialPort->getBuffer());
 }
 
@@ -71,10 +90,10 @@ unittest(writeWarningToLog) {
   tc->loop(false);  // write the warning
   char warningString[512] = "";
   snprintf(warningString, sizeof(warningString), "%s\t%s", VERSION,
-          "0\tW\t2023-08-15 "
-          "00:00:19\t\t\t\t\t\t\t19\t90:A2:DA:80:7B:76\tRequesting...\t1\t0.00\t1\t1\t0.00\t0.00\t100000.00\t0\t8."
-          "10\t-1\t-1\t0.0\t-1\t-1\t0.0\t0\t20.00\t-1\t-1\t0.0\t-1\t-1\t0.0\t65535");
-  assertEqual(warningString, sd->mostRecentRemoteEntry);
+           "0\tW\t2023-08-15 "
+           "00:00:19\t\t\t\t\t\t\t19\t90:A2:DA:80:7B:76\tRequesting...\t1\t0.00\t1\t1\t0.00\t0.00\t100000.00\t0\t8."
+           "10\t-1\t-1\t0.0\t-1\t-1\t0.0\t0\t20.00\t-1\t-1\t0.0\t-1\t-1\t0.0\t65535");
+  assertEqual(warningString, sd->mostRecentRemoteLogEntry);
   // assertEqual("New warning written to log", serialPort->getBuffer());
   assertFalse(dl->getShouldWriteWarning());
 }

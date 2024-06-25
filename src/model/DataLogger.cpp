@@ -34,30 +34,25 @@ DataLogger* DataLogger::instance() {
  *
  */
 void DataLogger::loop() {
-  std::cerr << "DataLogger.cpp>>loop() - 1" << std::endl;
   unsigned long msNow = millis();
   if (msNow >= nextDataLogTime) {
-    std::cerr << "DataLogger.cpp>>loop() - 2" << std::endl;
     writeToDataLog();
     nextDataLogTime = (msNow / DATA_LOGGING_INTERVAL + 1) * DATA_LOGGING_INTERVAL;
   } else if (msNow >= nextSerialLogTime) {
-    std::cerr << "DataLogger.cpp>>loop() - 3" << std::endl;
     writeToSerialLog();
     nextSerialLogTime = (msNow / SERIAL_LOGGING_INTERVAL + 1) * SERIAL_LOGGING_INTERVAL;
   } else if (msNow >= nextRemoteLogTime) {
-    std::cerr << "DataLogger.cpp>>loop() - 4" << std::endl;
     writeDataToRemoteLog();
     ThermalProbe_TC::instance()->resetSample();
     nextRemoteLogTime = (msNow / REMOTE_LOGGING_INTERVAL + 1) * REMOTE_LOGGING_INTERVAL;
   } else if (shouldWriteWarning) {
-    std::cerr << "DataLogger.cpp>>loop() - 5" << std::endl;
     // a "warning" is a change in configuration (a wrong value could be catastrophic)
     writeWarningToRemoteLog();
     shouldWriteWarning = false;
   }
 }
 
-void DataLogger::putRemoteFileHeader(char* buffer, int size, int chunkNumber) {
+void DataLogger::writeRemoteFileHeader(char* buffer, int size, int chunkNumber) {
   // rather than write an entire header line in one buffer, we break it into chunks to save memory
   switch (chunkNumber) {
     case 0:
@@ -66,7 +61,7 @@ void DataLogger::putRemoteFileHeader(char* buffer, int size, int chunkNumber) {
                       "Mean\tTemperature Std Dev\tpH Target\tpH\tUptime\tMAC Address\tpH Slope\t"));
       break;
     default:
-      EEPROM_TC::instance()->putRemoteFileHeader(buffer, size, chunkNumber);
+      EEPROM_TC::instance()->writeRemoteFileHeader(buffer, size, chunkNumber);
       break;
   }
 }
@@ -131,7 +126,7 @@ void DataLogger::writeToDataLog() {
     // TODO: Log a warning that string was truncated
     serial(F("WARNING! String was truncated to \"%s\""), buffer);
   }
-  SD_TC::instance()->appendData(header_buffer, buffer);
+  SD_TC::instance()->writeToDataLog(header_buffer, buffer);
 }
 
 /**
@@ -184,7 +179,7 @@ void DataLogger::writeDataToRemoteLog() {
   writeRemotePreambleToBuffer('I');
   int preambleLength = strnlen(buffer, sizeof(buffer));
   // temperature \t thermaltarget \t pH \t pHtarget
-  const __FlashStringHelper* format = F("\t\t%s\t%s\t%s\t%s\t%s");
+  const __FlashStringHelper* format = F("\t\t%s\t%s\t%s\t%s\t%s\t%s");
   int additionalLength =
       snprintf_P(buffer + preambleLength, sizeof(buffer) - preambleLength, (PGM_P)format, thermalTargetString,
                  thermalMeanString, thermalStandardDeviationString, pHTargetString, currentPhString, uptime);

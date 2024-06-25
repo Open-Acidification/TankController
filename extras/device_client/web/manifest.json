@@ -1,6 +1,6 @@
 {
-    "name": "tank_manager",
-    "short_name": "tank_manager",
+    "name": "device_client",
+    "short_name": "device_client",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

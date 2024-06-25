@@ -88,14 +88,14 @@ unittest(appendData) {
 
   // write data for day 15
   d1.setAsCurrent();
-  sd->appendData("time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd", "line 1");
-  sd->appendData("time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd", "line 2");
+  sd->writeToDataLog("time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd", "line 1");
+  sd->writeToDataLog("time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd", "line 2");
   assertTrue(SD_TC::instance()->exists("20210415.csv"));
   assertFalse(SD_TC::instance()->exists("20210416.csv"));
 
   // write data for day 16
   d2.setAsCurrent();
-  sd->appendData("time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd", "line 3");
+  sd->writeToDataLog("time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd", "line 3");
   assertTrue(SD_TC::instance()->exists("20210415.csv"));
   assertTrue(SD_TC::instance()->exists("20210416.csv"));
 

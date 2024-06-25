@@ -262,11 +262,6 @@ void MainMenu::idle() {
   if (pH > 15 || pH < 0) {
     serial(F("pH is out of range!"));
   }
-  if (firstTime) {
-    serial(F("First time in idle"));
-    firstTime = false;
-    serial(F("pH is %i"), (int)pH);
-  }
   if (pH < 10.0) {
     floattostrf(pH, 5, 3, buffer, sizeof(buffer));
   } else {

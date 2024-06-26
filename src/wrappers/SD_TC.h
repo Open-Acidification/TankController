@@ -26,7 +26,7 @@ public:
   void appendToLog(const char* line);
   bool countFiles(void (*callWhenFinished)(int));
   bool exists(const char* path);
-  bool format();   
+  bool format();
   uint32_t getRemoteFileSize() {
     return remoteFileSize;
   }

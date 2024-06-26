@@ -6,7 +6,6 @@
 #define _GLIBCXX_CMATH 1
 #endif
 #include "model/Statistic.h"
-
 #include "model/TC_util.h"
 #include "wrappers/DateTime_TC.h"
 #include "wrappers/EEPROM_TC.h"

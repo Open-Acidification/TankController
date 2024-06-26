@@ -36,9 +36,9 @@ unittest(report_loop_delay) {
   state->serialPort[0].dataIn = "";   // the queue of data waiting to be read
   state->serialPort[0].dataOut = "";  // clear serial output
 
-  tc->loop();   // for data log
-  tc->loop();   // for serial log
-  tc->loop();   // for remote log
+  tc->loop();  // for data log
+  tc->loop();  // for serial log
+  tc->loop();  // for remote log
   assertEqual("heater turned on at 0 after 0 ms\r\n", state->serialPort[0].dataOut);
   state->serialPort[0].dataOut = "";  // clear serial output
   assertEqual(0, millis() / 100);
@@ -50,11 +50,11 @@ unittest(report_loop_delay) {
   assertEqual("", state->serialPort[0].dataOut);
   delay(100);
   assertEqual(600, millis() / 100);
-  tc->loop();   // for data log
-  tc->loop();   // for serial log
+  tc->loop();  // for data log
+  tc->loop();  // for serial log
   assertEqual("00:01 pH=0.000 temp= 0.00\r\n", state->serialPort[0].dataOut);
   state->serialPort[0].dataOut = "";  // clear serial output
-  tc->loop();   // for remote log
+  tc->loop();                         // for remote log
   assertEqual("New info written to remote log\r\n", state->serialPort[0].dataOut);
   state->serialPort[0].dataOut = "";  // clear serial output
 

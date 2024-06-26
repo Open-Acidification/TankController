@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-
 #include "DataLogger.h"
 #include "EEPROM_TC.h"
 
@@ -47,7 +46,8 @@ unittest(eeprom_Read_and_Write_Double) {
   assertFalse(dl->getShouldWriteWarning());
   test->eepromWriteFloat(TEST_ADDRESS, 12.25);
   assertEqual(12.25, test->eepromReadFloat(TEST_ADDRESS));
-  assertFalse(dl->getShouldWriteWarning());}
+  assertFalse(dl->getShouldWriteWarning());
+}
 
 unittest(Ph) {
   EEPROM_TC* singleton = EEPROM_TC::instance();

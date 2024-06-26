@@ -6,6 +6,7 @@
 #include "EthernetServer_TC.h"
 #include "PHControl.h"
 #include "PushingBox.h"
+#include "Serial_TC.h"
 #include "TankController.h"
 #include "ThermalControl.h"
 #include "ThermalProbe_TC.h"
@@ -51,11 +52,12 @@ unittest(NoTankID) {
 
   delay(30 * 1000);  // allow 30 seconds for time update
   tc->loop(false);
+  tc->loop(false);
   state->serialPort[0].dataOut = "";
   delay(40 * 1000);  // allow 70 seconds (30 + 40) for PushingBox update
   tc->loop(false);   // Trigger SD logging and Serial (DataLogger) and PushingBox
-  char expected[] = "Set Tank ID in order to send data to PushingBox\r\n";
-  assertEqual(expected, state->serialPort[0].dataOut);
+  char expected[] = "Set Tank ID in order to send data to PushingBox";
+  assertEqual(expected, Serial_TC::instance()->getBuffer());
 }
 
 unittest(SendData) {

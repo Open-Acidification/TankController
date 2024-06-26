@@ -3,6 +3,7 @@
 #include <avr/wdt.h>
 #include <stdlib.h>
 
+#include "model/DataLogger.h"
 #include "model/TC_util.h"
 #include "wrappers/EEPROM_TC.h"
 #include "wrappers/Serial_TC.h"
@@ -84,6 +85,7 @@ void PHProbe::serialEvent1() {
         serial(F("PHProbe serialEvent1: \"%s\""), string.c_str());
         if (string.length() > 7 && memcmp_P(string.c_str(), F("?SLOPE,"), 7) == 0) {
           // for example "?SLOPE,16.1,100.0"
+          DataLogger::instance()->writeWarningSoon();
           strscpy(slopeResponse, string.c_str() + 7, sizeof(slopeResponse));
           char acidSlopePercentString[7];
           char baseSlopePercentString[7];
@@ -124,6 +126,7 @@ void PHProbe::setTemperatureCompensation(float temperature) {
 }
 
 void PHProbe::setHighpointCalibration(float highpoint) {
+  // TODO: the next two lines were commented out in another branch
   slopeIsOutOfRange = false;
   EEPROM_TC::instance()->setIgnoreBadPHSlope(false);
   char buffer[17];
@@ -134,6 +137,7 @@ void PHProbe::setHighpointCalibration(float highpoint) {
 }
 
 void PHProbe::setLowpointCalibration(float lowpoint) {
+  // TODO: the next two lines were commented out in another branch
   slopeIsOutOfRange = false;
   EEPROM_TC::instance()->setIgnoreBadPHSlope(false);
   char buffer[16];

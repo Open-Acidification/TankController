@@ -98,7 +98,7 @@ unittest(storeDataToSD) {
     tc->loop(false);
   }
   /*
-    time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd
+    time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd
     04/27/2021 14:24:50,  42, 16.75, 16.25, 7.125, 6.825,  110, 123456.7,  12345.6,   1234.5
     04/27/2021 14:24:51,  42, 16.75, 16.25, 7.125, 6.825,  111, 123456.7,  12345.6,   1234.5
   */
@@ -111,7 +111,7 @@ unittest(storeDataToSD) {
   String contents(data), line;
   int16_t i = contents.indexOf('\n');
   line = contents.substring(0, i);
-  assertEqual("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd", line.c_str());
+  assertEqual("time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd", line.c_str());
   contents = contents.substring(i + 1);
   i = contents.indexOf('\n');
   line = contents.substring(0, i);

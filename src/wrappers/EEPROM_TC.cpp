@@ -308,7 +308,7 @@ void EEPROM_TC::setTempSeriesSize(float value) {
   eepromWriteFloat(TEMP_SERIES_SIZE_ADDRESS, value);
 }
 
-void EEPROM_TC::putRemoteFileHeader(char* buffer, int size, int chunkNumber) {
+void EEPROM_TC::writeRemoteFileHeader(char* buffer, int size, int chunkNumber) {
   // rather than write an entire header line in one buffer, we break it into chunks to save memory
   switch (chunkNumber) {
     case 1:

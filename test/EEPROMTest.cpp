@@ -1,10 +1,12 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
+#include "DataLogger.h"
 #include "EEPROM_TC.h"
 
 unittest_setup() {
   GODMODE()->resetEEPROM();
+  DataLogger::instance()->reset();
 }
 
 unittest(singleton) {
@@ -20,15 +22,31 @@ unittest(singleton) {
 
 unittest(eeprom_Read_and_Write_Double) {
   EEPROM_TC* test = EEPROM_TC::instance();
+  DataLogger* dl = DataLogger::instance();
   const uint16_t TEST_ADDRESS = 4000;  // beyond the end of our use
 
-  // integer
+  // write integer; trigger a warning
+  assertFalse(dl->getShouldWriteWarning());
   test->eepromWriteFloat(TEST_ADDRESS, 10);
   assertEqual(10, test->eepromReadFloat(TEST_ADDRESS));
+  assertTrue(dl->getShouldWriteWarning());
+  // rewrite integer; don't trigger a warning
+  dl->reset();
+  assertFalse(dl->getShouldWriteWarning());
+  test->eepromWriteFloat(TEST_ADDRESS, 10);
+  assertEqual(10, test->eepromReadFloat(TEST_ADDRESS));
+  assertFalse(dl->getShouldWriteWarning());
 
-  // float
+  // write float; trigger a warning
   test->eepromWriteFloat(TEST_ADDRESS, 12.25);
   assertEqual(12.25, test->eepromReadFloat(TEST_ADDRESS));
+  assertTrue(dl->getShouldWriteWarning());
+  // rewrite float; don't trigger a warning
+  dl->reset();
+  assertFalse(dl->getShouldWriteWarning());
+  test->eepromWriteFloat(TEST_ADDRESS, 12.25);
+  assertEqual(12.25, test->eepromReadFloat(TEST_ADDRESS));
+  assertFalse(dl->getShouldWriteWarning());
 }
 
 unittest(Ph) {

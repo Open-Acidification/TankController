@@ -47,13 +47,13 @@ INCLUDE=-I$(ARDUINO_CI)/arduino \
 HEADERS=$(wildcard src/*.h) $(wildcard src/wrappers/*) $(wildcard src/UIState/*)
 
 .PHONY : all
-all : $(BIN)/PHCalibrationWarningTest.cpp.bin $(BIN)/BlinkTest.cpp.bin $(BIN)/DateTimeTest.cpp.bin $(BIN)/EEPROMTest.cpp.bin \
+all : $(BIN)/BlinkTest.cpp.bin $(BIN)/DataLoggerTest.cpp.bin $(BIN)/DateTimeTest.cpp.bin $(BIN)/EEPROMTest.cpp.bin \
   $(BIN)/EnablePIDTest.cpp.bin $(BIN)/EthernetServerTest.cpp.bin $(BIN)/EthernetTest.cpp.bin \
   $(BIN)/GetTimeTest.cpp.bin $(BIN)/JSONBuilderTest.cpp.bin $(BIN)/KeypadTest.cpp.bin \
 	$(BIN)/LiquidCrystalTest.cpp.bin \
   $(BIN)/MenuTest.cpp.bin $(BIN)/NumberCollectorTest.cpp.bin $(BIN)/PHCalibrationHighTest.cpp.bin \
   $(BIN)/PHCalibrationLowTest.cpp.bin $(BIN)/PHCalibrationMidTest.cpp.bin \
-	$(BIN)/PHCalibrationPromptTest.cpp.bin $(BIN)/PHControlTest.cpp.bin \
+	$(BIN)/PHCalibrationPromptTest.cpp.bin $(BIN)/PHCalibrationWarningTest.cpp.bin $(BIN)/PHControlTest.cpp.bin \
   $(BIN)/PHProbeTest.cpp.bin $(BIN)/PIDTest.cpp.bin $(BIN)/PushingBoxTest.cpp.bin $(BIN)/SDTest.cpp.bin \
   $(BIN)/SeeDeviceAddressTest.cpp.bin $(BIN)/SeeDeviceUptimeTest.cpp.bin $(BIN)/SeeFreeMemoryTest.cpp.bin \
   $(BIN)/SeeGoogleMinsTest.cpp.bin $(BIN)/SeeLogFileTest.cpp.bin $(BIN)/SeePHCalibrationTest.cpp.bin \
@@ -74,6 +74,9 @@ $(BIN)/PHCalibrationWarningTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/PHCalibrat
 
 $(BIN)/BlinkTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/BlinkTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/BlinkTest.cpp.bin $(TEST)/BlinkTest.cpp -larduino
+
+$(BIN)/DataLoggerTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/DataLoggerTest.cpp $(HEADERS)
+	$(GPP_TEST) -o $(BIN)/DataLoggerTest.cpp.bin $(TEST)/DataLoggerTest.cpp -larduino
 
 $(BIN)/DateTimeTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/DateTimeTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/DateTimeTest.cpp.bin $(TEST)/DateTimeTest.cpp -larduino
@@ -302,11 +305,11 @@ $(BIN)/EthernetServer_TC.o: $(SRC)/wrappers/EthernetServer_TC.cpp $(HEADERS)
 $(BIN)/Ethernet_TC.o: $(SRC)/wrappers/Ethernet_TC.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/Ethernet_TC.o $(SRC)/wrappers/Ethernet_TC.cpp
 
-$(BIN)/JSONBuilder.o: $(SRC)/model/JSONBuilder.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/JSONBuilder.o $(SRC)/model/JSONBuilder.cpp
-
 $(BIN)/GetTime.o: $(SRC)/model/GetTime.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/GetTime.o $(SRC)/model/GetTime.cpp
+
+$(BIN)/JSONBuilder.o: $(SRC)/model/JSONBuilder.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/JSONBuilder.o $(SRC)/model/JSONBuilder.cpp
 
 $(BIN)/Keypad_TC.o: $(SRC)/wrappers/Keypad_TC.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/Keypad_TC.o $(SRC)/wrappers/Keypad_TC.cpp

@@ -93,10 +93,11 @@ public:
   void setTempSeriesSize(float value);
 
   // other instance methods
-  void putRemoteFileHeader(char* buffer, int size, int chunkNumber);
+  void writeRemoteFileHeader(char* buffer, int size, int chunkNumber);
   void writeAllToString(char* destination, int size);
 
 private:
+  // note that while Arduino floats are 4 bytes, we sometimes allow 8 bytes!
   // instance variables from v0.197
   const uint16_t PH_ADDRESS = 0;                   // 9.999
   const uint16_t THERMAL_TARGET_ADDRESS = 4;       // 99.99

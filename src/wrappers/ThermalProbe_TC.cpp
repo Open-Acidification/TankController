@@ -146,7 +146,7 @@ float ThermalProbe_TC::getSampleMean() {
  * @return float
  */
 float ThermalProbe_TC::getSampleStandardDeviation() {
-  return myStats.pop_stdev();
+  return myStats.unbiased_stdev();
 }
 
 /**

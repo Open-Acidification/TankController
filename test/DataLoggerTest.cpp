@@ -26,6 +26,7 @@ unittest_setup() {
 }
 
 unittest(loop) {
+  ThermalProbe_TC* thermalProbe = ThermalProbe_TC::instance();
   // write to data log every second
   // write to serial log every minute
   // write to remote log every minute
@@ -63,14 +64,15 @@ unittest(loop) {
   assertEqual("00:01 pH=0.000 temp= 0.00", serialPort->getBuffer());
 
   // remote log entry after one minute
-  assertFalse(0.0 == ThermalProbe_TC::instance()->getSampleMean());  // thermal sample has been collected
-  tc->loop(false);                                                   // write info to remote log
-  assertEqual(0.0, ThermalProbe_TC::instance()->getSampleMean());    // thermal sample has been reset
+  assertFalse(0.0 == thermalProbe->getSampleMean());
+  tc->loop(false);                                                // write info to remote log
+  assertTrue(isnan(thermalProbe->getSampleMean()));               // thermal sample has been collected
+  assertTrue(isnan(thermalProbe->getSampleStandardDeviation()));  // thermal sample has been reset
   char infoString[512] = "";
   snprintf(infoString, sizeof(infoString), "%s\t%s", VERSION,
-           "0\tI\t2023-08-15 00:01:00\t\t20.00\t-242.02\t0.047\t8.100\t0.000\t60");
+           "0\tI\t2023-08-15 00:01:00\t\t20.00\t-242.02\t0.000\t8.100\t0.000\t60");
   assertEqual(infoString, sd->mostRecentRemoteLogEntry);
-  assertEqual("New info written to log", serialPort->getBuffer());
+  assertEqual("New info written to remote log", serialPort->getBuffer());
 }
 
 unittest(writeToSD) {

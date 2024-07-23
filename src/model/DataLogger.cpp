@@ -42,17 +42,17 @@ void DataLogger::loop() {
     writeToSerialLog();
     nextSerialLogTime = (msNow / SERIAL_LOGGING_INTERVAL + 1) * SERIAL_LOGGING_INTERVAL;
   } else if (msNow >= nextRemoteLogTime) {
-    writeToRemoteLog();
+    writeDataToRemoteLog();
     ThermalProbe_TC::instance()->resetSample();
     nextRemoteLogTime = (msNow / REMOTE_LOGGING_INTERVAL + 1) * REMOTE_LOGGING_INTERVAL;
   } else if (shouldWriteWarning) {
     // a "warning" is a change in configuration (a wrong value could be catastrophic)
-    writeWarningToLog();
+    writeWarningToRemoteLog();
     shouldWriteWarning = false;
   }
 }
 
-void DataLogger::putRemoteFileHeader(char* buffer, int size, int chunkNumber) {
+void DataLogger::writeRemoteFileHeader(char* buffer, int size, int chunkNumber) {
   // rather than write an entire header line in one buffer, we break it into chunks to save memory
   switch (chunkNumber) {
     case 0:
@@ -61,7 +61,7 @@ void DataLogger::putRemoteFileHeader(char* buffer, int size, int chunkNumber) {
                       "Mean\tTemperature Std Dev\tpH Target\tpH\tUptime\tMAC Address\tpH Slope\t"));
       break;
     default:
-      EEPROM_TC::instance()->putRemoteFileHeader(buffer, size, chunkNumber);
+      EEPROM_TC::instance()->writeRemoteFileHeader(buffer, size, chunkNumber);
       break;
   }
 }
@@ -83,35 +83,6 @@ void DataLogger::writeRemotePreambleToBuffer(const char severity) {
     // TODO: Log a warning that string was truncated
     serial(F("WARNING! String was truncated to \"%s\""), buffer);
   }
-}
-
-/**
- * @brief writes uptime, MAC address, pH slope, and EEPROM data to the status log
- *
- */
-void DataLogger::writeWarningToLog() {
-  char uptime[14];
-  int size = snprintf_P(uptime, sizeof(uptime), PSTR("%lu"), (unsigned long)(millis() / 1000));
-  assert(size < sizeof(uptime));
-  byte* mac = Ethernet_TC::instance()->getMac();
-
-  // write version, tankid, 'W', and timestamp to buffer
-  writeRemotePreambleToBuffer('W');
-  int preambleLength = strnlen(buffer, sizeof(buffer));
-  // uptime \t MACaddress \t pHslope \t
-  const __FlashStringHelper* format = F("\t\t\t\t\t\t\t%s\t%02X:%02X:%02X:%02X:%02X:%02X\t%s\t");
-  char slope[20];
-  PHProbe::instance()->getSlope(slope, sizeof(slope));
-  int additionalLength = snprintf_P(buffer + preambleLength, sizeof(buffer) - preambleLength, (PGM_P)format, uptime,
-                                    mac[0], mac[1], mac[2], mac[3], mac[4], mac[5], slope);
-  if ((preambleLength + additionalLength > sizeof(buffer)) || (additionalLength < 0)) {
-    // TODO: Log a warning that string was truncated
-    serial(F("WARNING! String was truncated to \"%s\""), buffer);
-  }
-  // add EEPROM data
-  EEPROM_TC::instance()->writeAllToString(buffer + preambleLength + additionalLength,
-                                          sizeof(buffer) - preambleLength - additionalLength);
-  SD_TC::instance()->writeToRemoteLog(buffer);
 }
 
 /**
@@ -142,7 +113,7 @@ void DataLogger::writeToDataLog() {
   floattostrf(pPID->getKp(), 8, 1, kp, sizeof(kp));
   floattostrf(pPID->getKi(), 8, 1, ki, sizeof(ki));
   floattostrf(pPID->getKd(), 8, 1, kd, sizeof(kd));
-  const __FlashStringHelper* header = F("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd");
+  const __FlashStringHelper* header = F("time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd");
   const __FlashStringHelper* format = F("%02i/%02i/%4i %02i:%02i:%02i, %3i, %s, %s, %s, %s, %4lu, %s, %s, %s");
   char header_buffer[64];
   strscpy_P(header_buffer, header, sizeof(header_buffer));
@@ -155,7 +126,7 @@ void DataLogger::writeToDataLog() {
     // TODO: Log a warning that string was truncated
     serial(F("WARNING! String was truncated to \"%s\""), buffer);
   }
-  SD_TC::instance()->appendData(header_buffer, buffer);
+  SD_TC::instance()->writeToDataLog(header_buffer, buffer);
 }
 
 /**
@@ -181,7 +152,7 @@ void DataLogger::writeToSerialLog() {
  * @brief write to the remote log file
  *
  */
-void DataLogger::writeToRemoteLog() {
+void DataLogger::writeDataToRemoteLog() {
   char thermalMeanString[10];
   char thermalStandardDeviationString[10];
   char currentPhString[10];
@@ -201,19 +172,50 @@ void DataLogger::writeToRemoteLog() {
   floattostrf(ThermalControl::instance()->getCurrentThermalTarget(), 1, 2, thermalTargetString,
               sizeof(thermalTargetString));
   floattostrf(PHControl::instance()->getCurrentTargetPh(), 1, 3, pHTargetString, sizeof(pHTargetString));
+  char uptime[14];
+  snprintf_P(uptime, sizeof(uptime), PSTR("%lu"), (unsigned long)(millis() / 1000));
 
   // write version, tankid, 'I', and timestamp to buffer
   writeRemotePreambleToBuffer('I');
   int preambleLength = strnlen(buffer, sizeof(buffer));
   // temperature \t thermaltarget \t pH \t pHtarget
-  const __FlashStringHelper* format = F("\t\t%s\t%s\t%s\t%s\t%s");
+  const __FlashStringHelper* format = F("\t\t%s\t%s\t%s\t%s\t%s\t%s");
   int additionalLength =
       snprintf_P(buffer + preambleLength, sizeof(buffer) - preambleLength, (PGM_P)format, thermalTargetString,
-                 thermalMeanString, thermalStandardDeviationString, pHTargetString, currentPhString);
+                 thermalMeanString, thermalStandardDeviationString, pHTargetString, currentPhString, uptime);
   if ((preambleLength + additionalLength > sizeof(buffer)) || (additionalLength < 0)) {
     // TODO: Log a warning that string was truncated
     serial(F("WARNING! String was truncated to \"%s\""), buffer);
   }
   SD_TC::instance()->writeToRemoteLog(buffer);
   serial(F("New info written to remote log"));
+}
+
+/**
+ * @brief writes uptime, MAC address, pH slope, and EEPROM data to the status log
+ *
+ */
+void DataLogger::writeWarningToRemoteLog() {
+  char uptime[14];
+  int size = snprintf_P(uptime, sizeof(uptime), PSTR("%lu"), (unsigned long)(millis() / 1000));
+  assert(size < sizeof(uptime));
+  byte* mac = Ethernet_TC::instance()->getMac();
+
+  // write version, tankid, 'W', and timestamp to buffer
+  writeRemotePreambleToBuffer('W');
+  int preambleLength = strnlen(buffer, sizeof(buffer));
+  // uptime \t MACaddress \t pHslope \t
+  const __FlashStringHelper* format = F("\t\t\t\t\t\t\t%s\t%02X:%02X:%02X:%02X:%02X:%02X\t%s\t");
+  char slope[20];
+  PHProbe::instance()->getSlope(slope, sizeof(slope));
+  int additionalLength = snprintf_P(buffer + preambleLength, sizeof(buffer) - preambleLength, (PGM_P)format, uptime,
+                                    mac[0], mac[1], mac[2], mac[3], mac[4], mac[5], slope);
+  if ((preambleLength + additionalLength > sizeof(buffer)) || (additionalLength < 0)) {
+    // TODO: Log a warning that string was truncated
+    serial(F("WARNING! String was truncated to \"%s\""), buffer);
+  }
+  // add EEPROM data
+  EEPROM_TC::instance()->writeAllToString(buffer + preambleLength + additionalLength,
+                                          sizeof(buffer) - preambleLength - additionalLength);
+  SD_TC::instance()->writeToRemoteLog(buffer);
 }

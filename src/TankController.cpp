@@ -69,10 +69,12 @@ TankController::TankController(const char *remoteLogName) {
   DataLogger::instance();
   DateTime_TC::rtc();
   Ethernet_TC::instance();
+  EthernetServer_TC::instance();
   ThermalProbe_TC::instance();
   ThermalControl::instance();
   PHProbe::instance();
   PHControl::instance();
+  PID_TC::instance();
   state = new MainMenu();
   pinMode(LED_BUILTIN, OUTPUT);
 }

@@ -47,27 +47,27 @@ SD_TC::SD_TC() {
 /**
  * append data to a data log file
  */
-void SD_TC::appendData(const char* header, const char* line) {
+void SD_TC::writeToDataLog(const char* header, const char* line) {
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
-  strncpy(mostRecentHeader, header, sizeof(mostRecentHeader));  // Flawfinder: ignore
-  mostRecentHeader[sizeof(mostRecentHeader) - 1] = '\0';        // Ensure null-terminated string
-  strncpy(mostRecentLine, line, sizeof(mostRecentLine));        // Flawfinder: ignore
-  mostRecentLine[sizeof(mostRecentLine) - 1] = '\0';            // Ensure null-terminated string
+  strncpy(mostRecentDataLogHeader, header, sizeof(mostRecentDataLogHeader));  // Flawfinder: ignore
+  mostRecentDataLogHeader[sizeof(mostRecentDataLogHeader) - 1] = '\0';        // Ensure null-terminated string
+  strncpy(mostRecentDataLogLine, line, sizeof(mostRecentDataLogLine));        // Flawfinder: ignore
+  mostRecentDataLogLine[sizeof(mostRecentDataLogLine) - 1] = '\0';            // Ensure null-terminated string
 #endif
   char path[30];
   todaysDataFileName(path, sizeof(path));
   if (!sd.exists(path)) {
-    appendDataToPath(header, path);
+    appendStringToPath(header, path);
     COUT(header);
   }
-  appendDataToPath(line, path);
+  appendStringToPath(line, path);
   COUT(line);
 }
 
 /**
  * append data to a path
  */
-void SD_TC::appendDataToPath(const char* line, const char* path, bool appendNewline) {
+void SD_TC::appendStringToPath(const char* line, const char* path, bool appendNewline) {
   COUT(path);
   File file = sd.open(path, O_CREAT | O_WRONLY | O_APPEND);
   if (file) {
@@ -94,7 +94,27 @@ void SD_TC::appendToLog(const char* line) {
   DateTime_TC now = DateTime_TC::now();
   char path[30];
   snprintf_P(path, sizeof(path), (PGM_P)F("%4i%02i%02i.log"), now.year(), now.month(), now.day());
-  appendDataToPath(line, path);
+  appendStringToPath(line, path);
+}
+
+bool SD_TC::countFiles(void (*callWhenFinished)(int)) {
+  if (!inProgress) {
+    const char path[] PROGMEM = "/";
+    fileStack[0] = SD_TC::instance()->open(path);
+    if (!fileStack[0]) {
+      serial(F("SD_TC open() failed"));
+      return false;  // Function is unsuccessful
+    }
+    fileStack[0].rewind();
+    fileStackSize = 1;
+    fileCount = 0;
+    inProgress = true;
+  }
+  inProgress = iterateOnFiles(incrementFileCount, (void*)&fileCount);
+  if (!inProgress) {
+    callWhenFinished(fileCount);
+  }
+  return true;
 }
 
 bool SD_TC::exists(const char* path) {
@@ -105,7 +125,7 @@ bool SD_TC::format() {
   return sd.format();
 }
 
-char* SD_TC::getRemoteLogName() {
+const char* SD_TC::getRemoteLogName() {
   if (remoteLogName[0] == '\0') {
     byte* mac = Ethernet_TC::instance()->getMac();
     snprintf_P(remoteLogName, sizeof(remoteLogName), PSTR("%02X%02X%02X%02X%02X%02X.log"), mac[0], mac[1], mac[2],
@@ -152,30 +172,11 @@ bool SD_TC::incrementFileCount(File* myFile, void* pFileCount) {
   return ++(*(int*)pFileCount) % 10 != 0;  // Pause after counting 10 files
 }
 
-bool SD_TC::countFiles(void (*callWhenFinished)(int)) {
-  if (!inProgress) {
-    const char path[] PROGMEM = "/";
-    fileStack[0] = SD_TC::instance()->open(path);
-    if (!fileStack[0]) {
-      serial(F("SD_TC open() failed"));
-      return false;  // Function is unsuccessful
-    }
-    fileStack[0].rewind();
-    fileStackSize = 1;
-    fileCount = 0;
-    inProgress = true;
-  }
-  inProgress = iterateOnFiles(incrementFileCount, (void*)&fileCount);
-  if (!inProgress) {
-    callWhenFinished(fileCount);
-  }
-  return true;
-}
-
 // Issue: This function does not visually display depth for items in subfolders
 // With MAX_DEPTH set to 2, no subfolders are traversed
 bool SD_TC::listFile(File* myFile, void* userData) {
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  assert(myFile != nullptr);
   return false;
 #else
   listFilesData_t* pListFileData = static_cast<listFilesData_t*>(userData);
@@ -233,12 +234,12 @@ File SD_TC::open(const char* path, oflag_t oflag) {
   return sd.open(path, oflag);
 }
 
-bool SD_TC::remove(const char* path) {
-  return sd.remove(path);
-}
-
 void SD_TC::printRootDirectory() {
   sd.ls(LS_DATE | LS_SIZE | LS_R);
+}
+
+bool SD_TC::remove(const char* path) {
+  return sd.remove(path);
 }
 
 void SD_TC::setRemoteLogName(const char* newFileName) {
@@ -255,16 +256,6 @@ void SD_TC::todaysDataFileName(char* path, int size) {
   COUT(path);
 }
 
-void SD_TC::updateRemoteFileSize() {
-  File file = open(remoteLogName, O_RDONLY);
-  if (file) {
-    remoteFileSize = file.size();
-    file.close();
-  } else {
-    remoteFileSize = 0;
-  }
-}
-
 /**
  * @brief write to the appropriate "remote" file on the SD card
  *
@@ -272,22 +263,21 @@ void SD_TC::updateRemoteFileSize() {
  */
 void SD_TC::writeToRemoteLog(const char* line) {
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
-  strncpy(mostRecentRemoteEntry, line, sizeof(mostRecentRemoteEntry));  // Flawfinder: ignore
-  mostRecentRemoteEntry[sizeof(mostRecentRemoteEntry) - 1] = '\0';      // Ensure null-terminated string
+  strncpy(mostRecentRemoteLogEntry, line, sizeof(mostRecentRemoteLogEntry));  // Flawfinder: ignore
+  mostRecentRemoteLogEntry[sizeof(mostRecentRemoteLogEntry) - 1] = '\0';      // Ensure null-terminated string
 #endif
   if (!sd.exists(getRemoteLogName())) {
     // rather than write an entire header line in one buffer, we break it into chunks to save memory
     char buffer[200];
-    DataLogger::instance()->putRemoteFileHeader(buffer, sizeof(buffer), 0);
-    appendDataToPath(buffer, remoteLogName, false);
-    DataLogger::instance()->putRemoteFileHeader(buffer, sizeof(buffer), 1);
-    appendDataToPath(buffer, remoteLogName, false);
-    DataLogger::instance()->putRemoteFileHeader(buffer, sizeof(buffer), 2);
-    appendDataToPath(buffer, remoteLogName, false);
-    DataLogger::instance()->putRemoteFileHeader(buffer, sizeof(buffer), 3);
-    appendDataToPath(buffer, remoteLogName);
+    DataLogger::instance()->writeRemoteFileHeader(buffer, sizeof(buffer), 0);
+    appendStringToPath(buffer, remoteLogName, false);
+    DataLogger::instance()->writeRemoteFileHeader(buffer, sizeof(buffer), 1);
+    appendStringToPath(buffer, remoteLogName, false);
+    DataLogger::instance()->writeRemoteFileHeader(buffer, sizeof(buffer), 2);
+    appendStringToPath(buffer, remoteLogName, false);
+    DataLogger::instance()->writeRemoteFileHeader(buffer, sizeof(buffer), 3);
+    appendStringToPath(buffer, remoteLogName);
   }
-  appendDataToPath(line, remoteLogName);
-  updateRemoteFileSize();
+  appendStringToPath(line, remoteLogName);
   // AlertPusher::instance()->pushSoon();
 }

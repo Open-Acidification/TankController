@@ -2,12 +2,14 @@
 #include <ArduinoUnitTests.h>
 
 #include "DateTime_TC.h"
+#include "PHCalibrationMid.h"
 #include "SD_TC.h"
 #include "TC_util.h"
 #include "TankController.h"
 #include "UIState/PHCalibrationMid.h"
 
 unittest_setup() {
+  GODMODE()->reset();
   SD_TC::instance()->format();
 }
 
@@ -29,7 +31,9 @@ unittest(tankControllerLoop) {
   d1.setAsCurrent();
   assertFalse(SD_TC::instance()->exists("20210415.csv"));
   tc->loop(false);
+  tc->loop(false);
   delay(1000);
+  tc->loop(false);
   tc->loop(false);
   assertTrue(SD_TC::instance()->exists("20210415.csv"));
   File file = SD_TC::instance()->open("20210415.csv");
@@ -38,7 +42,7 @@ unittest(tankControllerLoop) {
     file.read(data, file.size());
     data[file.size()] = '\0';
     assertEqual(
-        "time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd\n"
+        "time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd\n"
         "04/15/2021 00:00:00,   0, 0.00, 20.00, 0.000, 8.100,    1, 100000.0,      0.0,      0.0\n"
         "04/15/2021 00:00:01,   0, 0.00, 20.00, 0.000, 8.100,    2, 100000.0,      0.0,      0.0\n",
         data);
@@ -56,7 +60,9 @@ unittest(loopInCalibration) {
   d1.setAsCurrent();
   assertFalse(SD_TC::instance()->exists("20210415.csv"));
   tc->loop(false);
-  delay(1000);
+  tc->loop(false);
+  delay(3000);
+  tc->loop(false);
   tc->loop(false);
   assertTrue(SD_TC::instance()->exists("20210415.csv"));
   File file = SD_TC::instance()->open("20210415.csv");
@@ -65,8 +71,8 @@ unittest(loopInCalibration) {
     file.read(data, file.size());
     data[file.size()] = '\0';
     assertEqual(
-        "time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd\n"
-        "04/15/2021 00:00:01,   0, C, 20.00, C, 8.100,    3, 100000.0,      0.0,      0.0\n",
+        "time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd\n"
+        "04/15/2021 00:00:03,   0, C, 20.00, C, 8.100,    3, 100000.0,      0.0,      0.0\n",
         data);
   }
   file.close();
@@ -82,14 +88,14 @@ unittest(appendData) {
 
   // write data for day 15
   d1.setAsCurrent();
-  sd->appendData("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd", "line 1");
-  sd->appendData("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd", "line 2");
+  sd->writeToDataLog("time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd", "line 1");
+  sd->writeToDataLog("time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd", "line 2");
   assertTrue(SD_TC::instance()->exists("20210415.csv"));
   assertFalse(SD_TC::instance()->exists("20210416.csv"));
 
   // write data for day 16
   d2.setAsCurrent();
-  sd->appendData("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd", "line 3");
+  sd->writeToDataLog("time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd", "line 3");
   assertTrue(SD_TC::instance()->exists("20210415.csv"));
   assertTrue(SD_TC::instance()->exists("20210416.csv"));
 
@@ -97,14 +103,14 @@ unittest(appendData) {
   File file = SD_TC::instance()->open("20210415.csv");
   file.read(data, file.size());
   data[file.size()] = '\0';
-  assertEqual("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd\nline 1\nline 2\n", data);
+  assertEqual("time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd\nline 1\nline 2\n", data);
   file.close();
 
   // verify contents of 16.csv
   file = SD_TC::instance()->open("20210416.csv");
   file.read(data, file.size());
   data[file.size()] = '\0';
-  assertEqual("time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd\nline 3\n", data);
+  assertEqual("time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd\nline 3\n", data);
   file.close();
 }
 
@@ -182,11 +188,31 @@ unittest(removeFile) {
   assertFalse(SD_TC::instance()->exists("20220706.log"));
 }
 
+unittest(noAlertFileName) {
+  SD_TC* sd = SD_TC::instance();
+  sd->setRemoteLogName("");
+  assertEqual("90A2DA807B76.log", sd->getRemoteLogName());
+}
+
+unittest(validAlertFileName) {
+  SD_TC* sd = SD_TC::instance();
+  sd->setRemoteLogName("Tank1");
+  assertEqual("Tank1.log", sd->getRemoteLogName());
+}
+
+unittest(longAlertFileName) {
+  SD_TC* sd = SD_TC::instance();
+  sd->setRemoteLogName("1234567890123456789012345678");  // maximum length
+  assertEqual("1234567890123456789012345678.log", sd->getRemoteLogName());
+  sd->setRemoteLogName("12345678901234567890123456789");  // one character too many
+  assertEqual("1234567890123456789012345678.log", sd->getRemoteLogName());
+}
+
 unittest(remoteLogName) {
   TankController::deleteInstance();
   TankController* tc = TankController::instance("remoteLog");
   SD_TC* sd = SD_TC::instance();
-  char* name = sd->getRemoteLogName();
+  const char* name = sd->getRemoteLogName();
   assertEqual("remoteLog.log", name);
 
   TankController::deleteInstance();

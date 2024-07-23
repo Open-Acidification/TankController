@@ -14,6 +14,8 @@
 #include "wrappers/EEPROM_TC.h"
 #include "wrappers/Serial_TC.h"
 
+Statistic uncorrectedThermalSample;
+
 //  class instance variables
 /**
  * static variable for singleton

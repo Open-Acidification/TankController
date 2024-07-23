@@ -135,7 +135,6 @@ private:
   uint16_t historyIndex = 0;
   float correction = 0.0;
   uint32_t lastTime = 0;
-  Statistic uncorrectedThermalSample;
 
   // Methods
   ThermalProbe_TC();

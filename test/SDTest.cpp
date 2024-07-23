@@ -188,49 +188,6 @@ unittest(removeFile) {
   assertFalse(SD_TC::instance()->exists("20220706.log"));
 }
 
-// unittest(writeAlert) {
-//   delay(60000);  // alerts don't get written immediately
-//   char data[20];
-//   SD_TC* sd = SD_TC::instance();
-//   AlertPusher* pusher = AlertPusher::instance();
-
-//   assertEqual("90A2DA807B76.log", sd->getRemoteLogName());
-//   sd->updateAlertFileSizeForTest();  // because sd was previously initialized, we have alertFileNameIsReady == true
-//   assertFalse(sd->exists("90A2DA807B76.log"));
-//   assertEqual(0, sd->getRemoteFileSize());
-//   pusher->setShouldSentHeadRequest(false);
-//   assertFalse(pusher->shouldSendHeadRequest());
-
-//   // write data
-//   // sd->writeAlert("line 1");  // also writes header row
-//   int size = sd->getRemoteFileSize();
-//   assertTrue(pusher->shouldSendHeadRequest());
-//   assertTrue(sd->exists("90A2DA807B76.log"));
-//   // sd->writeAlert("line 2");
-//   assertEqual(size + strnlen("line 2\n", 10), sd->getRemoteFileSize());
-//   // verify contents of alerts.log
-//   File file = sd->open("90A2DA807B76.log");
-//   file.seek(size);
-//   file.read(data, 7);  // Flawfinder: ignore
-//   file.close();
-//   data[7] = '\0';
-//   assertEqual("line 2\n", data);
-// }
-
-// unittest(getAlert) {
-//   SD_TC* sd = SD_TC::instance();
-
-//   // write data
-//   sd->setRemoteLogName("Tank1");
-//   // sd->writeAlert("line 1");
-//   int size = sd->getRemoteFileSize();
-//   // sd->writeAlert("and 2\nline 3");
-//   char buffer[20];
-//   // get remaining alerts
-//   sd->getAlert(buffer, sizeof(buffer), size);
-//   assertEqual("and 2\nline 3\n", buffer);
-// }
-
 unittest(noAlertFileName) {
   SD_TC* sd = SD_TC::instance();
   sd->setRemoteLogName("");

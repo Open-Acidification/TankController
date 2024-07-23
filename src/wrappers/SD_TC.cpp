@@ -256,16 +256,6 @@ void SD_TC::todaysDataFileName(char* path, int size) {
   COUT(path);
 }
 
-void SD_TC::updateRemoteFileSize() {
-  File file = open(remoteLogName, O_RDONLY);
-  if (file) {
-    remoteFileSize = file.size();
-    file.close();
-  } else {
-    remoteFileSize = 0;
-  }
-}
-
 /**
  * @brief write to the appropriate "remote" file on the SD card
  *
@@ -289,6 +279,5 @@ void SD_TC::writeToRemoteLog(const char* line) {
     appendStringToPath(buffer, remoteLogName);
   }
   appendStringToPath(line, remoteLogName);
-  updateRemoteFileSize();
   // AlertPusher::instance()->pushSoon();
 }

@@ -14,9 +14,6 @@
 #include "wrappers/EEPROM_TC.h"
 #include "wrappers/Serial_TC.h"
 
-//  local statistics
-Statistic myStats;
-
 //  class instance variables
 /**
  * static variable for singleton
@@ -94,7 +91,7 @@ float ThermalProbe_TC::getUncorrectedRunningAverage() {
     historyIndex = (historyIndex + 1) % HISTORY_SIZE;
     history[historyIndex] = temperature;
     lastTime = currentTime;
-    myStats.add(temperature);
+    uncorrectedThermalSample.add(temperature);
   }
   float sum = 0.0;
   for (size_t i = 0; i < HISTORY_SIZE; ++i) {
@@ -137,7 +134,7 @@ void ThermalProbe_TC::setCorrection(float value) {
  */
 float ThermalProbe_TC::getSampleMean() {
   // This is not used for the Liquid Crystal display, so we don't restrict range to 0 to 99.99
-  return myStats.average();
+  return uncorrectedThermalSample.average() + correction;
 }
 
 /**
@@ -146,7 +143,7 @@ float ThermalProbe_TC::getSampleMean() {
  * @return float
  */
 float ThermalProbe_TC::getSampleStandardDeviation() {
-  return myStats.unbiased_stdev();
+  return uncorrectedThermalSample.unbiased_stdev();
 }
 
 /**
@@ -154,7 +151,7 @@ float ThermalProbe_TC::getSampleStandardDeviation() {
  *
  */
 void ThermalProbe_TC::resetSample() {
-  myStats.clear();
+  uncorrectedThermalSample.clear();
 }
 
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)

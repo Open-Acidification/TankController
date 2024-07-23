@@ -126,7 +126,6 @@ void PHProbe::setTemperatureCompensation(float temperature) {
 }
 
 void PHProbe::setHighpointCalibration(float highpoint) {
-  // TODO: the next two lines were commented out in another branch
   slopeIsOutOfRange = false;
   EEPROM_TC::instance()->setIgnoreBadPHSlope(false);
   char buffer[17];
@@ -137,7 +136,6 @@ void PHProbe::setHighpointCalibration(float highpoint) {
 }
 
 void PHProbe::setLowpointCalibration(float lowpoint) {
-  // TODO: the next two lines were commented out in another branch
   slopeIsOutOfRange = false;
   EEPROM_TC::instance()->setIgnoreBadPHSlope(false);
   char buffer[16];

@@ -8,8 +8,6 @@
 #include <Arduino.h>
 #include <Ethernet.h>
 
-#define PORT 8080
-
 class Ethernet_TC {
 public:
   static Ethernet_TC *instance(bool reset = false);

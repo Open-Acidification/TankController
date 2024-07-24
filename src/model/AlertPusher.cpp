@@ -7,6 +7,8 @@
 #include "wrappers/SD_TC.h"
 #include "wrappers/Serial_TC.h"
 
+const uint16_t PORT = 8080;
+
 //  class variables
 AlertPusher* AlertPusher::_instance = nullptr;
 

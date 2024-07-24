@@ -140,14 +140,16 @@ unittest(setTemperatureCompensation) {
 unittest(setLowpointCalibration) {
   GodmodeState *state = GODMODE();
   state->reset();
-  // eeprom->setIgnoreBadPHSlope(true);
-  // assertTrue(eeprom->getIgnoreBadPHSlope());
+  // TODO: the following two lines are commented out in another branch
+  eeprom->setIgnoreBadPHSlope(true);
+  assertTrue(eeprom->getIgnoreBadPHSlope());
   assertEqual("", state->serialPort[0].dataOut);
   assertEqual("", state->serialPort[1].dataOut);
   pHProbe->setLowpointCalibration(10.875);
   assertEqual("PHProbe::setLowpointCalibration(10.875)\r\n", state->serialPort[0].dataOut);
   assertEqual("Cal,low,10.875\r", state->serialPort[1].dataOut);
-  // assertFalse(eeprom->getIgnoreBadPHSlope());
+  // TODO: the following line is commented out in another branch
+  assertFalse(eeprom->getIgnoreBadPHSlope());
 }
 
 unittest(setMidpointCalibration) {
@@ -182,14 +184,16 @@ unittest(settingMidpointClearsBadCalibration) {
 unittest(setHighpointCalibration) {
   GodmodeState *state = GODMODE();
   state->reset();
-  // eeprom->setIgnoreBadPHSlope(true);
-  // assertTrue(eeprom->getIgnoreBadPHSlope());
+  // TODO: the following two lines are commented out in another branch
+  eeprom->setIgnoreBadPHSlope(true);
+  assertTrue(eeprom->getIgnoreBadPHSlope());
   assertEqual("", state->serialPort[0].dataOut);
   assertEqual("", state->serialPort[1].dataOut);
   pHProbe->setHighpointCalibration(12.875);
   assertEqual("PHProbe::setHighpointCalibration(12.875)\r\n", state->serialPort[0].dataOut);
   assertEqual("Cal,High,12.875\r", state->serialPort[1].dataOut);
-  // assertFalse(eeprom->getIgnoreBadPHSlope());
+  // TODO: the following line is commented out in another branch
+  assertFalse(eeprom->getIgnoreBadPHSlope());
 }
 
 unittest(sendSlopeRequest) {

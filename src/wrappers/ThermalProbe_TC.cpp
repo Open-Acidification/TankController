@@ -1,9 +1,20 @@
 #include "wrappers/ThermalProbe_TC.h"
 
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+#define _GLIBCXX_TYPE_TRAITS 1
+#define _GLIBCXX_CMATH 1
+#if __APPLE__
+#define _GLIBCXX_NUMERIC_LIMITS 1
+#endif
+#endif
+
+#include "model/Statistic.h"
 #include "model/TC_util.h"
 #include "wrappers/DateTime_TC.h"
 #include "wrappers/EEPROM_TC.h"
 #include "wrappers/Serial_TC.h"
+
+Statistic uncorrectedThermalSample;
 
 //  class instance variables
 /**
@@ -82,9 +93,7 @@ float ThermalProbe_TC::getUncorrectedRunningAverage() {
     historyIndex = (historyIndex + 1) % HISTORY_SIZE;
     history[historyIndex] = temperature;
     lastTime = currentTime;
-    ++sampleSize;
-    sumOfSampleValues += temperature;
-    sumOfSquaredSampleValues += temperature * temperature;
+    uncorrectedThermalSample.add(temperature);
   }
   float sum = 0.0;
   for (size_t i = 0; i < HISTORY_SIZE; ++i) {
@@ -127,11 +136,7 @@ void ThermalProbe_TC::setCorrection(float value) {
  */
 float ThermalProbe_TC::getSampleMean() {
   // This is not used for the Liquid Crystal display, so we don't restrict range to 0 to 99.99
-  if (sampleSize > 0) {
-    return (sumOfSampleValues / sampleSize) + correction;
-  } else {
-    return 0.0;
-  }
+  return uncorrectedThermalSample.average() + correction;
 }
 
 /**
@@ -140,13 +145,7 @@ float ThermalProbe_TC::getSampleMean() {
  * @return float
  */
 float ThermalProbe_TC::getSampleStandardDeviation() {
-  if (sampleSize > 1) {
-    float mean = sumOfSampleValues / sampleSize;
-    return sqrt(max(0.0, ((sumOfSquaredSampleValues / sampleSize) - (mean * mean))) *
-                ((float)sampleSize / (sampleSize - 1)));
-  } else {
-    return 0;
-  }
+  return uncorrectedThermalSample.unbiased_stdev();
 }
 
 /**
@@ -154,9 +153,7 @@ float ThermalProbe_TC::getSampleStandardDeviation() {
  *
  */
 void ThermalProbe_TC::resetSample() {
-  sampleSize = 0;
-  sumOfSampleValues = 0.0;
-  sumOfSquaredSampleValues = 0.0;
+  uncorrectedThermalSample.clear();
 }
 
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)

@@ -22,7 +22,7 @@ public:
   static void deleteInstance();
 
   // instance methods
-  void appendData(const char* header, const char* line);
+  void writeToDataLog(const char* header, const char* line);
   void appendToLog(const char* line);
   bool countFiles(void (*callWhenFinished)(int));
   bool exists(const char* path);
@@ -42,9 +42,9 @@ public:
   void writeToRemoteLog(const char* line);
 
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
-  char mostRecentHeader[128] = "";
-  char mostRecentLine[128] = "";
-  char mostRecentRemoteEntry[256] = "";
+  char mostRecentDataLogHeader[128] = "";
+  char mostRecentDataLogLine[128] = "";
+  char mostRecentRemoteLogEntry[256] = "";
   void updateAlertFileSizeForTest() {
     updateRemoteFileSize();
   }
@@ -71,7 +71,7 @@ private:
 
   // instance methods
   SD_TC();
-  void appendDataToPath(const char* data, const char* path, bool appendNewline = true);
+  void appendStringToPath(const char* data, const char* path, bool appendNewline = true);
   bool iterateOnFiles(doOnFile functionName, void* userData);
   static bool incrementFileCount(File* myFile, void* pFileCount);
   static bool listFile(File* myFile, void* userData);

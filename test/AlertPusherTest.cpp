@@ -123,9 +123,9 @@ unittest(loopSendsRequests) {
   uint32_t localFileSize = SD_TC::instance()->getRemoteFileSize();
   SD_TC::instance()->updateAlertFileSizeForTest();  // size to zero
   // SD_TC::instance()->writeAlert("some data here");  // and '\n' is added for 15 bytes
-  tc->loop(false);                                  // "200 OK" is received
-  assertFalse(pusher->shouldSendHeadRequest());     //
-  assertFalse(pusher->isReadyToPost());             // because server has all 15 bytes
+  tc->loop(false);                               // "200 OK" is received
+  assertFalse(pusher->shouldSendHeadRequest());  //
+  assertFalse(pusher->isReadyToPost());          // because server has all 15 bytes
   assertEqual(CLIENT_NOT_CONNECTED, pusher->getState());
   (pusher->getClient())->stop();
   EthernetClient::stopMockServer(pusher->getServerDomain(), (uint32_t)0, 8080);

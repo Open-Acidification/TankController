@@ -118,26 +118,6 @@ bool SD_TC::countFiles(void (*callWhenFinished)(int)) {
   return true;
 }
 
-bool SD_TC::countFiles(void (*callWhenFinished)(int)) {
-  if (!inProgress) {
-    const char path[] PROGMEM = "/";
-    fileStack[0] = SD_TC::instance()->open(path);
-    if (!fileStack[0]) {
-      serial(F("SD_TC open() failed"));
-      return false;  // Function is unsuccessful
-    }
-    fileStack[0].rewind();
-    fileStackSize = 1;
-    fileCount = 0;
-    inProgress = true;
-  }
-  inProgress = iterateOnFiles(incrementFileCount, (void*)&fileCount);
-  if (!inProgress) {
-    callWhenFinished(fileCount);
-  }
-  return true;
-}
-
 bool SD_TC::exists(const char* path) {
   return sd.exists(path);
 }

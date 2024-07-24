@@ -127,6 +127,8 @@ void PHProbe::setTemperatureCompensation(float temperature) {
 
 void PHProbe::setHighpointCalibration(float highpoint) {
   char buffer[17];
+  slopeIsOutOfRange = false;
+  EEPROM_TC::instance()->setIgnoreBadPHSlope(false);
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,High,%i.%03i\r"), (int)highpoint,
              (int)(highpoint * 1000 + 0.5) % 1000);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
@@ -134,7 +136,9 @@ void PHProbe::setHighpointCalibration(float highpoint) {
 }
 
 void PHProbe::setLowpointCalibration(float lowpoint) {
-  char buffer[16];
+  char buffer[16];   
+  slopeIsOutOfRange = false;
+  EEPROM_TC::instance()->setIgnoreBadPHSlope(false);
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("Cal,low,%i.%03i\r"), (int)lowpoint, (int)(lowpoint * 1000 + 0.5) % 1000);
   Serial1.print(buffer);  // send that string to the Atlas Scientific product
   serial(F("PHProbe::setLowpointCalibration(%i.%03i)"), (int)lowpoint, (int)(lowpoint * 1000) % 1000);

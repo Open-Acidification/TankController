@@ -1,20 +1,9 @@
 #include "wrappers/ThermalProbe_TC.h"
 
-#if defined(ARDUINO_CI_COMPILATION_MOCKS)
-#define _GLIBCXX_TYPE_TRAITS 1
-#define _GLIBCXX_CMATH 1
-#if __APPLE__
-#define _GLIBCXX_NUMERIC_LIMITS 1
-#endif
-#endif
-
-#include "model/Statistic.h"
 #include "model/TC_util.h"
 #include "wrappers/DateTime_TC.h"
 #include "wrappers/EEPROM_TC.h"
 #include "wrappers/Serial_TC.h"
-
-Statistic uncorrectedThermalSample;
 
 //  class instance variables
 /**

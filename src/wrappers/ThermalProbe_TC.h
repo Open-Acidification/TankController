@@ -81,6 +81,16 @@
 #include <Arduino.h>
 
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
+#define _GLIBCXX_TYPE_TRAITS 1
+#define _GLIBCXX_CMATH 1
+#if __APPLE__
+#define _GLIBCXX_NUMERIC_LIMITS 1
+#endif
+#endif
+
+#include "model/Statistic.h"
+
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
 #ifndef ARDUINO
 #define ARDUINO 100
 #endif
@@ -135,6 +145,7 @@ private:
   uint16_t historyIndex = 0;
   float correction = 0.0;
   uint32_t lastTime = 0;
+  Statistic uncorrectedThermalSample;
 
   // Methods
   ThermalProbe_TC();

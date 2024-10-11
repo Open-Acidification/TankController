@@ -1,4 +1,4 @@
-import 'dart:async' show Future;
+import 'dart:async' show Future, Timer;
 import 'dart:io';
 
 import 'package:shelf/shelf.dart';
@@ -83,9 +83,8 @@ Future<void> _createIndex() async {
   sink.write('<html><body><ul>');
   await for (final file in Directory(rootDir).list()) {
     if (file is File) {
-      sink.write(
-        '<li><a href="${file.path}">${file.path}</a></li>',
-      );
+      final path = file.path.substring(rootDir.length + 1);
+      sink.write('<li><a href="/logs/$path">/logs/$path</a></li>');
     }
   }
   sink.write('</ul></body></html>');
@@ -99,7 +98,9 @@ void main(List<String> args) async {
     rootDir = args[0];
   }
   await Directory(rootDir).create(recursive: true);
-  await _createIndex();
+  Timer.periodic(Duration(hours: 1), (timer) async {
+    await _createIndex();
+  });
 
   // Use any available host or container IP (usually `0.0.0.0`).
   final ip = InternetAddress.anyIPv4;

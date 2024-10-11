@@ -98,6 +98,7 @@ void main(List<String> args) async {
     rootDir = args[0];
   }
   await Directory(rootDir).create(recursive: true);
+  await _createIndex();
   Timer.periodic(Duration(hours: 1), (timer) async {
     await _createIndex();
   });

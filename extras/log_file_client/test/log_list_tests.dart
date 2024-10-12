@@ -33,17 +33,10 @@ void main() {
     final result = await getLogList.fetchList();
 
     expect(result, isList);
-    expect(result.length, 4);
+    expect(result.length, 1);
 
-    expect(result[0].name, '20230121.log');
-    expect(result[1].name, '20230120.csv');
-    expect(result[2].name, '20230120.log');
-    expect(result[3].name, 'index.html');
-
-    expect(result[0].uri, '/logs/20230121.log');
-    expect(result[1].uri, '/logs/20230120.csv');
-    expect(result[2].uri, '/logs/20230120.log');
-    expect(result[3].uri, '/logs/index.html');
+    expect(result[0].name, '20230120.csv');
+    expect(result[0].uri, '/logs/20230120.csv');
 
   });
 }

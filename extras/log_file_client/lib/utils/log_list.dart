@@ -36,13 +36,17 @@ class LogListReaderForApp implements LogListReader {
     }
     final document = parse(response.body);
     final listItems = document
-        .getElementsByTagName('li')
-        .map((e) {
-          final innerHtml = e.children[0].innerHtml;
-          final name = innerHtml.substring(innerHtml.lastIndexOf('/') + 1);
-          return Log(name, e.children[0].attributes['href']! );
-        })
-        .toList();
-    return listItems;
+      .getElementsByTagName('li')
+      .map((e) {
+        final innerHtml = e.children[0].innerHtml;
+        final name = innerHtml.substring(innerHtml.lastIndexOf('/') + 1);
+        if (name.endsWith('.csv')) {
+          return [name, e.children[0].attributes['href']!];
+        }
+      })
+      .where((item) => item != null)
+      .toList();
+    
+    return listItems.map((e) => Log(e![0], e[1])).toList();
   }
 }

@@ -16,7 +16,7 @@ abstract class CsvReader {
       final formattedDateString = '${parts[2]}-${parts[0]}-${parts[1]} ${parts[3]}:${parts[4]}:${parts[5]}';
       return formattedDateString;
     } else {
-      throw Exception('Unable to format date string.');
+      throw Exception('Unable to format date string ${dateString}.');
     }
   }
 
@@ -26,6 +26,11 @@ abstract class CsvReader {
 
       final List<String> rows = data.split('\n');
       for (int i = 0; i < rows.length; i++) {
+
+        if (rows[i].trim().isEmpty) {
+          break;
+        }
+
         final List<String> stringCells = rows[i].replaceAll('\r', '').split(',');
 
         // Convert from strings to useful types
@@ -50,7 +55,6 @@ abstract class CsvReader {
             }
           }
         });
-
         table.add(cells);
       }
 

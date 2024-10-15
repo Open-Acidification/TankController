@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 
@@ -9,14 +10,6 @@ class Log {
 
 abstract class LogListReader {
   Future<List<Log>> fetchList();
-  static LogListReader? _current;
-  static LogListReader get current {
-    _current ??= LogListReaderForApp();
-    return _current!;
-  }
-
-  static set current(LogListReader? aTankListReader) =>
-      _current = aTankListReader;
 }
 
 class LogListReaderForTest implements LogListReader {
@@ -26,7 +19,8 @@ class LogListReaderForTest implements LogListReader {
   }
 }
 
-class LogListReaderForApp implements LogListReader {
+class LogListReaderForAppWeb implements LogListReader {
+  // Fetches data from the https website. Causes CORS issues.
   @override
   Future<List<Log>> fetchList() async {
     final url = Uri.https('oap.cs.wallawalla.edu', '/logs/index.html');
@@ -35,6 +29,28 @@ class LogListReaderForApp implements LogListReader {
       throw response.reasonPhrase!;
     }
     final document = parse(response.body);
+    final listItems = document
+      .getElementsByTagName('li')
+      .map((e) {
+        final innerHtml = e.children[0].innerHtml;
+        final name = innerHtml.substring(innerHtml.lastIndexOf('/') + 1);
+        if (name.endsWith('.csv')) {
+          return [name, e.children[0].attributes['href']!];
+        }
+      })
+      .where((item) => item != null)
+      .toList();
+    
+    return listItems.map((e) => Log(e![0], e[1])).toList();
+  }
+}
+
+class LogListReaderForAppLocal implements LogListReader {
+  // Fetches data from the local file system (logs/). To bypass CORS issue.
+  @override
+  Future<List<Log>> fetchList() async {
+    final html = await rootBundle.loadString('logs/index.html');
+    final document = parse(html);
     final listItems = document
       .getElementsByTagName('li')
       .map((e) {

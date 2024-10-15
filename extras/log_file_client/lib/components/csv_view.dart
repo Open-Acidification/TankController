@@ -13,7 +13,7 @@ class CsvView extends StatefulWidget {
 
 class _CsvViewState extends State<CsvView> {
   Future<List> getCsvTable() async {
-    final reader = CsvReaderForApp(widget.csvPath);
+    final reader = CsvReaderForAppLocal(widget.csvPath);
     final table = await reader.csvTable();
     return table;
   }
@@ -47,7 +47,7 @@ class _CsvViewState extends State<CsvView> {
                 }).toList(),
 
                 // Data
-                rows: csvTable.sublist(1, 1000).map<DataRow>((row) {
+                rows: csvTable.sublist(1, 100).map<DataRow>((row) {
                   return DataRow(
                     cells: row.map<DataCell>((cell) {
                       return DataCell(Text(cell.toString()));

@@ -12,7 +12,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<Log>? _logList;
-  final _logListReader = LogListReaderForApp();
+  final _logListReader = LogListReaderForAppLocal();
   bool _isLoading = true;
 
   int? _openedLogIndex;

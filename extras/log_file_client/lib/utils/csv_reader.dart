@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 abstract class CsvReader {
-  final String filePath;
-
   CsvReader(this.filePath);
+  final String filePath;
 
   Future<String> fetchCsvData();
 
@@ -16,7 +16,7 @@ abstract class CsvReader {
       final formattedDateString = '${parts[2]}-${parts[0]}-${parts[1]} ${parts[3]}:${parts[4]}:${parts[5]}';
       return formattedDateString;
     } else {
-      throw Exception('Unable to format date string ${dateString}.');
+      throw Exception('Unable to format date string $dateString.');
     }
   }
 
@@ -34,7 +34,7 @@ abstract class CsvReader {
         final List<String> stringCells = rows[i].replaceAll('\r', '').split(',');
 
         // Convert from strings to useful types
-        List<dynamic> cells = List.generate(stringCells.length, (int j) {
+        final List<dynamic> cells = List.generate(stringCells.length, (int j) {
           if (i == 0) {
             return stringCells[j];
           } else {
@@ -65,7 +65,7 @@ abstract class CsvReader {
 }
 
 class CsvReaderForTest extends CsvReader {
-  CsvReaderForTest(String filePath) : super(filePath);
+  CsvReaderForTest(super.filePath);
 
   @override
   Future<String> fetchCsvData() async {
@@ -79,8 +79,9 @@ class CsvReaderForTest extends CsvReader {
   }
 }
 
-class CsvReaderForApp extends CsvReader {
-  CsvReaderForApp(String filePath) : super(filePath);
+class CsvReaderForAppWeb extends CsvReader {
+  // Fetches data from the https website. Causes CORS issues.
+  CsvReaderForAppWeb(super.filePath);
 
   @override
   Future<String> fetchCsvData() async {
@@ -92,5 +93,17 @@ class CsvReaderForApp extends CsvReader {
     } else {
       throw Exception('Failed to load CSV data');
     }
+  }
+}
+
+class CsvReaderForAppLocal extends CsvReader {
+  // Fetches data from the local file system (logs/). To bypass CORS issue.
+  CsvReaderForAppLocal(super.filePath);
+
+  @override
+  Future<String> fetchCsvData() async {
+    final correctedFilePath = filePath.startsWith('/') ? filePath.substring(1) : filePath;
+    final csv = await rootBundle.loadString(correctedFilePath);
+    return csv;
   }
 }

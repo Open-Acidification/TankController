@@ -4,28 +4,30 @@ import 'package:log_file_client/components/csv_view.dart';
 import 'package:log_file_client/utils/log_list.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, this.logListReader});
+
+  final LogListReader? logListReader;
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  late final LogListReader logListReader;
   List<Log>? _logList;
-  final _logListReader = LogListReaderForAppLocal();
   bool _isLoading = true;
-
   int? _openedLogIndex;
 
   @override
   void initState() {
     super.initState();
+    logListReader = widget.logListReader ?? LogListReaderForAppLocal();
     _getLogList();
   }
 
   // Fetches the list of csv files avaliable
   _getLogList() async {
-    final result = await _logListReader.fetchList();
+    final result = await logListReader.fetchList();
     setState(() {
       _logList = result;
       _isLoading = false;

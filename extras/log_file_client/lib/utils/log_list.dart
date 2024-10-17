@@ -10,16 +10,35 @@ class Log {
 
 abstract class LogListReader {
   Future<List<Log>> fetchList();
-}
 
-class LogListReaderForTest implements LogListReader {
-  @override
-  Future<List<Log>> fetchList() async {
-    return [Log('test1', '/test1.test'), Log('test2', '/test2.test'), Log('test3','/test3.test')];
+  List<Log> parseHTML(String html) {
+    final document = parse(html);
+    final listItems = document
+      .getElementsByTagName('li')
+      .map((e) {
+        final innerHtml = e.children[0].innerHtml;
+        final name = innerHtml.substring(innerHtml.lastIndexOf('/') + 1);
+        if (e.children[0].attributes['href']!.endsWith('.csv')) {
+          return [name, e.children[0].attributes['href']!];
+        }
+      })
+      .where((item) => item != null)
+      .toList();
+    
+    return listItems.map((e) => Log(e![0], e[1])).toList();
   }
 }
 
-class LogListReaderForAppWeb implements LogListReader {
+class LogListReaderForTest extends LogListReader {
+  final String testHTML = '<html><body><ul><li><a href="/test1.csv">/logs/test1</a></li><li><a href="/test2.csv"">/logs/test2</a></li><li><a href="/test3.csv">/logs/test3</a></li></ul></body></html>';
+
+  @override
+  Future<List<Log>> fetchList() async {
+    return parseHTML(testHTML);
+  }
+}
+
+class LogListReaderForAppWeb extends LogListReader {
   // Fetches data from the https website. Causes CORS issues.
   @override
   Future<List<Log>> fetchList() async {
@@ -28,41 +47,17 @@ class LogListReaderForAppWeb implements LogListReader {
     if (response.statusCode != 200) {
       throw response.reasonPhrase!;
     }
-    final document = parse(response.body);
-    final listItems = document
-      .getElementsByTagName('li')
-      .map((e) {
-        final innerHtml = e.children[0].innerHtml;
-        final name = innerHtml.substring(innerHtml.lastIndexOf('/') + 1);
-        if (name.endsWith('.csv')) {
-          return [name, e.children[0].attributes['href']!];
-        }
-      })
-      .where((item) => item != null)
-      .toList();
-    
-    return listItems.map((e) => Log(e![0], e[1])).toList();
+    final logList = parseHTML(response.body);
+    return logList;
   }
 }
 
-class LogListReaderForAppLocal implements LogListReader {
+class LogListReaderForAppLocal extends LogListReader {
   // Fetches data from the local file system (logs/). To bypass CORS issue.
   @override
   Future<List<Log>> fetchList() async {
     final html = await rootBundle.loadString('logs/index.html');
-    final document = parse(html);
-    final listItems = document
-      .getElementsByTagName('li')
-      .map((e) {
-        final innerHtml = e.children[0].innerHtml;
-        final name = innerHtml.substring(innerHtml.lastIndexOf('/') + 1);
-        if (name.endsWith('.csv')) {
-          return [name, e.children[0].attributes['href']!];
-        }
-      })
-      .where((item) => item != null)
-      .toList();
-    
-    return listItems.map((e) => Log(e![0], e[1])).toList();
+    final logList = parseHTML(html);
+    return logList;
   }
 }

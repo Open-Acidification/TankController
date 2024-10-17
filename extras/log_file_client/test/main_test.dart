@@ -84,7 +84,7 @@ void main() {
   });
 }
 
-class MockLogListReader implements LogListReader {
+class MockLogListReader extends LogListReader {
   MockLogListReader(this.logList);
   final List<Log> logList;
 

@@ -24,9 +24,9 @@ void main() {
     expect(result[0].name, 'test1');
     expect(result[1].name, 'test2');
     expect(result[2].name, 'test3');
-    expect(result[0].uri, '/test1.test');
-    expect(result[1].uri, '/test2.test');
-    expect(result[2].uri, '/test3.test');
+    expect(result[0].uri, '/test1.csv');
+    expect(result[1].uri, '/test2.csv');
+    expect(result[2].uri, '/test3.csv');
   });
 
   // THIS TEST IS COMMENTED OUT BECAUSE test suite uses TestWidgetsFlutterBinding so https requests don't work

@@ -16,7 +16,7 @@ class _HomePageState extends State<HomePage> {
   late final LogListReader logListReader;
   List<Log>? _logList;
   bool _isLoading = true;
-  int? _openedLogIndex;
+  int _openedLogIndex = -1;
 
   @override
   void initState() {
@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
       body: Center(
         child: _isLoading 
           ? const CircularProgressIndicator() 
-          : _openedLogIndex != null ? CsvView(csvPath: _logList![_openedLogIndex!].uri) : null,
+          : _openedLogIndex >= 0 ? CsvView(csvPath: _logList![_openedLogIndex].uri) : null,
       ),
     );
   }

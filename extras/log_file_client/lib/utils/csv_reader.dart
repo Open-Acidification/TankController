@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:csv/csv.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
@@ -20,48 +21,16 @@ abstract class CsvReader {
     }
   }
 
-  Future<List<List>> csvTable() {
-    return fetchCsvData().then((String data) {
-      final List<List> table = [];
+  Future<List<List>> csvTable() async {
+    final data = await fetchCsvData();
+    final List<List<dynamic>> csvTable = CsvToListConverter().convert(data);
 
-      final List<String> rows = data.split('\n');
-      for (int i = 0; i < rows.length; i++) {
+    for (int i = 1; i < csvTable.length; i++) {
+      csvTable[i][0] = DateTime.tryParse(formatDateString(csvTable[i][0].toString())) ?? csvTable[i][0];
+    }
 
-        if (rows[i].trim().isEmpty) {
-          break;
-        }
-
-        final List<String> stringCells = rows[i].replaceAll('\r', '').split(',');
-
-        // Convert from strings to useful types
-        final List<dynamic> cells = List.generate(stringCells.length, (int j) {
-          if (i == 0) {
-            return stringCells[j];
-          } else {
-            switch (j) {
-              case 0:
-                return DateTime.tryParse(formatDateString(stringCells[j])) ?? stringCells[j];
-              case 1:
-              case 6:
-                return int.tryParse(stringCells[j]) ?? stringCells[j];
-              case 2:
-              case 3:
-              case 4:
-              case 5:
-              case 7:
-              case 8:
-              case 9:
-                return double.tryParse(stringCells[j]) ?? stringCells[j];
-            }
-          }
-        });
-        table.add(cells);
-      }
-
-      return table;
-    });
+    return csvTable;
   }
-  
 }
 
 class CsvReaderForTest extends CsvReader {

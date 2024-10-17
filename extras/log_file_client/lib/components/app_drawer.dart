@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:log_file_client/utils/log_list.dart';
 
 class AppDrawer extends StatelessWidget {
-  const AppDrawer({super.key, required this.logList, required this.openLogFile});
+  const AppDrawer(
+      {super.key, required this.logList, required this.openLogFile});
   final List<Log> logList;
   final void Function(Log) openLogFile;
 
@@ -31,9 +32,9 @@ class AppDrawer extends StatelessWidget {
                 );
               },
             ),
-          ), 
+          ),
         ],
-      ), 
+      ),
     );
   }
 }

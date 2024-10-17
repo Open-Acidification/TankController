@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> {
     _getLogList();
   }
 
-  // Fetches the list of csv files avaliable
+  // Fetches the list of csv files available
   _getLogList() async {
     final result = await logListReader.fetchList();
     setState(() {
@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void openLogFile (Log log) {
+  void openLogFile(Log log) {
     setState(() {
       _openedLogIndex = _logList!.indexOf(log); // Open the selected log file
       Navigator.of(context).pop(); // Close the drawer
@@ -48,16 +48,18 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Tank Monitor'),
       ),
-      drawer: _isLoading 
-        ? Drawer() // null drawer
-        : AppDrawer(
-          logList: _logList!,
-          openLogFile: openLogFile,
-        ),
+      drawer: _isLoading
+          ? Drawer() // null drawer
+          : AppDrawer(
+              logList: _logList!,
+              openLogFile: openLogFile,
+            ),
       body: Center(
-        child: _isLoading 
-          ? const CircularProgressIndicator() 
-          : _openedLogIndex >= 0 ? CsvView(csvPath: _logList![_openedLogIndex].uri) : null,
+        child: _isLoading
+            ? const CircularProgressIndicator()
+            : _openedLogIndex >= 0
+                ? CsvView(csvPath: _logList![_openedLogIndex].uri)
+                : null,
       ),
     );
   }

@@ -33,7 +33,7 @@ void main() {
   // But also this class isn't currently being used due to CORS issues
 
   // test_package.test('fetchList() from OAP html list', () async {
-  // // This test is only to pass the current structure of the HTML list. 
+  // // This test is only to pass the current structure of the HTML list.
   // // It will fail when the structure of the HTML list changes.
   //   final getLogList = LogListReaderForAppWeb();
   //   final result = await getLogList.fetchList();
@@ -47,8 +47,8 @@ void main() {
   // });
 
   test_package.test('fetchList() from local html list', () async {
-  // This test is only to pass the current structure of the HTML list. 
-  // It will fail when the structure of the HTML list changes.
+    // This test is only to pass the current structure of the HTML list.
+    // It will fail when the structure of the HTML list changes.
     final getLogList = LogListReaderForAppLocal();
     final result = await getLogList.fetchList();
 
@@ -57,6 +57,5 @@ void main() {
 
     expect(result[0].name, '20230120.csv');
     expect(result[0].uri, '/logs/20230120.csv');
-
   });
 }

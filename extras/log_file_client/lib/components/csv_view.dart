@@ -28,26 +28,27 @@ class CsvView extends StatelessWidget {
           final csvTable = snapshot.data!;
           return Column(
             children: [
-
               // Headers
               Container(
-              padding: EdgeInsets.all(5),
-              decoration: const BoxDecoration(
-                border: Border(bottom: BorderSide(color: Colors.grey)),
-              ),
-              child: Row(
-                children: csvTable[0].asMap().entries.map<Widget>((entry) {
-                  final int idx = entry.key;
-                  final header = entry.value;
-                  return Expanded(
-                    flex: idx == 0 ? 2 : 1, // Allow more space for the first column for the datetimes
-                    child: Text(
-                      header.toString(),
-                      style: const TextStyle(fontStyle: FontStyle.italic),
-                    ),
-                  );
-                }).toList(),
-              ),
+                padding: EdgeInsets.all(5),
+                decoration: const BoxDecoration(
+                  border: Border(bottom: BorderSide(color: Colors.grey)),
+                ),
+                child: Row(
+                  children: csvTable[0].asMap().entries.map<Widget>((entry) {
+                    final int idx = entry.key;
+                    final header = entry.value;
+                    return Expanded(
+                      flex: idx == 0
+                          ? 2
+                          : 1, // Allow more space for the first column for the datetimes
+                      child: Text(
+                        header.toString(),
+                        style: const TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    );
+                  }).toList(),
+                ),
               ),
 
               // Data
@@ -63,11 +64,16 @@ class CsvView extends StatelessWidget {
                         ),
                       ),
                       child: Row(
-                        children: csvTable[index + 1].asMap().entries.map<Widget>((entry) {
+                        children: csvTable[index + 1]
+                            .asMap()
+                            .entries
+                            .map<Widget>((entry) {
                           final int idx = entry.key;
                           final cell = entry.value;
                           return Expanded(
-                            flex: idx == 0 ? 2 : 1, // Allow more space for the first column
+                            flex: idx == 0
+                                ? 2
+                                : 1, // Allow more space for the first column
                             child: Text(cell.toString()),
                           );
                         }).toList(),

@@ -14,23 +14,24 @@ abstract class LogListReader {
   List<Log> parseHTML(String html) {
     final document = parse(html);
     final listItems = document
-      .getElementsByTagName('li')
-      .map((e) {
-        final innerHtml = e.children[0].innerHtml;
-        final name = innerHtml.substring(innerHtml.lastIndexOf('/') + 1);
-        if (e.children[0].attributes['href']!.endsWith('.csv')) {
-          return [name, e.children[0].attributes['href']!];
-        }
-      })
-      .where((item) => item != null)
-      .toList();
-    
+        .getElementsByTagName('li')
+        .map((e) {
+          final innerHtml = e.children[0].innerHtml;
+          final name = innerHtml.substring(innerHtml.lastIndexOf('/') + 1);
+          if (e.children[0].attributes['href']!.endsWith('.csv')) {
+            return [name, e.children[0].attributes['href']!];
+          }
+        })
+        .where((item) => item != null)
+        .toList();
+
     return listItems.map((e) => Log(e![0], e[1])).toList();
   }
 }
 
 class LogListReaderForTest extends LogListReader {
-  final String testHTML = '<html><body><ul><li><a href="/test1.csv">/logs/test1</a></li><li><a href="/test2.csv"">/logs/test2</a></li><li><a href="/test3.csv">/logs/test3</a></li></ul></body></html>';
+  final String testHTML =
+      '<html><body><ul><li><a href="/test1.csv">/logs/test1</a></li><li><a href="/test2.csv"">/logs/test2</a></li><li><a href="/test3.csv">/logs/test3</a></li></ul></body></html>';
 
   @override
   Future<List<Log>> fetchList() async {

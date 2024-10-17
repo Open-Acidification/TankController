@@ -14,7 +14,8 @@ abstract class CsvReader {
   String formatDateString(String dateString) {
     final parts = dateString.split(RegExp('[ /:]'));
     if (parts.length == 6) {
-      final formattedDateString = '${parts[2]}-${parts[0]}-${parts[1]} ${parts[3]}:${parts[4]}:${parts[5]}';
+      final formattedDateString =
+          '${parts[2]}-${parts[0]}-${parts[1]} ${parts[3]}:${parts[4]}:${parts[5]}';
       return formattedDateString;
     } else {
       throw Exception('Unable to format date string $dateString.');
@@ -26,7 +27,9 @@ abstract class CsvReader {
     final List<List<dynamic>> csvTable = CsvToListConverter().convert(data);
 
     for (int i = 1; i < csvTable.length; i++) {
-      csvTable[i][0] = DateTime.tryParse(formatDateString(csvTable[i][0].toString())) ?? csvTable[i][0];
+      csvTable[i][0] =
+          DateTime.tryParse(formatDateString(csvTable[i][0].toString())) ??
+              csvTable[i][0];
     }
 
     return csvTable;
@@ -71,7 +74,8 @@ class CsvReaderForAppLocal extends CsvReader {
 
   @override
   Future<String> fetchCsvData() async {
-    final correctedFilePath = filePath.startsWith('/') ? filePath.substring(1) : filePath;
+    final correctedFilePath =
+        filePath.startsWith('/') ? filePath.substring(1) : filePath;
     final csv = await rootBundle.loadString(correctedFilePath);
     return csv;
   }

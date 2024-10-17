@@ -14,7 +14,8 @@ void main() {
     expect(find.byType(HomePage), findsOneWidget);
   });
 
-    testWidgets('HomePage displays CircularProgressIndicator initially', (WidgetTester tester) async {
+  testWidgets('HomePage displays CircularProgressIndicator initially',
+      (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: const HomePage(),
@@ -24,7 +25,8 @@ void main() {
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });
 
-  testWidgets('Drawer displays log list after loading', (WidgetTester tester) async {
+  testWidgets('Drawer displays log list after loading',
+      (WidgetTester tester) async {
     // Mock the log list
     final logList = [
       Log('log1.csv', '/log1.csv'),
@@ -52,7 +54,8 @@ void main() {
     expect(find.text('log2.csv'), findsOneWidget);
   });
 
-  testWidgets('Drawer opens log file when selected', (WidgetTester tester) async {
+  testWidgets('Drawer opens log file when selected',
+      (WidgetTester tester) async {
     // Mock the log list
     final logList = [
       Log('log1.csv', '/log1.csv'),

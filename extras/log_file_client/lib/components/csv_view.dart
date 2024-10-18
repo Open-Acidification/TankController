@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:log_file_client/utils/csv_reader.dart';
 
 class CsvView extends StatelessWidget {
-  const CsvView({super.key, required this.csvPath});
+  const CsvView({required this.csvPath, super.key});
   final String csvPath;
 
-  Future<List> getCsvTable() async {
+  Future<List<List<dynamic>>> getCsvTable() async {
     final reader = CsvReaderForAppLocal(csvPath);
     final table = await reader.csvTable();
     return table;

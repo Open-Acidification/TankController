@@ -93,7 +93,7 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: CsvView(
-            csvPath: 'csv_test.csv',
+            csvPath: 'sample_short.csv',
           ),
         ),
       ),
@@ -127,7 +127,7 @@ void main() {
 
     // Verify that the table data is displayed
     expect(find.byType(ListView), findsOneWidget);
-    
+
     expect(find.text('2023-01-20 16:18:21.000'), findsOneWidget);
     expect(find.text('2023-01-20 16:18:22.000'), findsOneWidget);
     expect(find.text('2023-01-20 16:18:23.000'), findsOneWidget);

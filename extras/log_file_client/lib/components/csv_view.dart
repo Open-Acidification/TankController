@@ -9,8 +9,8 @@ class CsvView extends StatelessWidget {
   late final Future<List<List<dynamic>>> csvTable = getCsvTable();
 
   Future<List<List<dynamic>>> getCsvTable() async {
-    // final reader = CsvReaderForAppLocal(csvPath);
-    final reader = CsvReaderForAppLocal('csv_test.csv');
+    // final reader = CsvReaderForApp(csvPath);
+    final reader = CsvReaderLocal('sample_short.csv');
     final table = await reader.csvTable();
     return table;
   }
@@ -81,10 +81,10 @@ class CsvView extends StatelessWidget {
                                 : 1, // Allow more space for the first column
                             child: Text(
                               cell is num
-                                ? (idx >= 2 && idx <= 5
-                                  ? cell.toStringAsFixed(3)
-                                  : cell.toStringAsFixed(0))
-                                : cell.toString(),
+                                  ? (idx >= 2 && idx <= 5
+                                      ? cell.toStringAsFixed(3)
+                                      : cell.toStringAsFixed(0))
+                                  : cell.toString(),
                             ),
                           );
                         }).toList(),

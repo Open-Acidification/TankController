@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:csv/csv.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:log_file_client/utils/sample_data.dart';
 
@@ -23,9 +21,10 @@ abstract class CsvReader {
     }
   }
 
-  Future<List<List>> csvTableNew() async {
+  Future<List<List>> csvTable() async {
     final data = await fetchCsvData();
-    final List<List<dynamic>> csvTable = CsvToListConverter().convert(data);
+    final List<List<dynamic>> csvTable =
+        const CsvToListConverter(eol: '\n').convert(data);
 
     for (int i = 1; i < csvTable.length; i++) {
       csvTable[i][0] =
@@ -35,69 +34,11 @@ abstract class CsvReader {
 
     return csvTable;
   }
-
-  Future<List<List>> csvTable() {
-    return fetchCsvData().then((String data) {
-      final List<List> table = [];
-
-      final List<String> rows = data.split('\n');
-      for (int i = 0; i < rows.length; i++) {
-        if (rows[i].trim().isEmpty) {
-          break;
-        }
-
-        final List<String> stringCells =
-            rows[i].replaceAll('\r', '').split(',');
-
-        // Convert from strings to useful types
-        final List<dynamic> cells = List.generate(stringCells.length, (int j) {
-          if (i == 0) {
-            return stringCells[j];
-          } else {
-            switch (j) {
-              case 0:
-                return DateTime.tryParse(formatDateString(stringCells[j])) ??
-                    stringCells[j];
-              case 1:
-              case 6:
-                return int.tryParse(stringCells[j]) ?? stringCells[j];
-              case 2:
-              case 3:
-              case 4:
-              case 5:
-              case 7:
-              case 8:
-              case 9:
-                return double.tryParse(stringCells[j]) ?? stringCells[j];
-            }
-          }
-        });
-        table.add(cells);
-      }
-
-      return table;
-    });
-  }
 }
 
-class CsvReaderForTest extends CsvReader {
-  CsvReaderForTest(super.filePath);
-
-  @override
-  Future<String> fetchCsvData() async {
-    try {
-      final file = File(filePath);
-      final String contents = await file.readAsString();
-      return contents;
-    } catch (e) {
-      throw Exception('Failed to load CSV file: $e');
-    }
-  }
-}
-
-class CsvReaderForAppWeb extends CsvReader {
+class CsvReaderForApp extends CsvReader {
   // Fetches data from the https website. Causes CORS issues.
-  CsvReaderForAppWeb(super.filePath);
+  CsvReaderForApp(super.filePath);
 
   @override
   Future<String> fetchCsvData() async {
@@ -112,13 +53,14 @@ class CsvReaderForAppWeb extends CsvReader {
   }
 }
 
-class CsvReaderForAppLocal extends CsvReader {
-  // Fetches data from the local file system (logs/). To bypass CORS issue.
-  CsvReaderForAppLocal(super.filePath);
+class CsvReaderLocal extends CsvReader {
+  // Fetches data from the hard-coded string (short) or the local Dart file (1000 sample lines).
+  // For testing purposes
+  CsvReaderLocal(super.filePath);
 
   @override
   Future<String> fetchCsvData() async {
-    if (filePath == 'csv_test.csv') {
+    if (filePath == 'sample_short.csv') {
       return '''
 time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd
 01/20/2023 16:18:21,  99, 0.00, 10.00, 0.000, 8.645,    6,    700.0,    100.0,      0.0
@@ -127,18 +69,9 @@ time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd
 01/20/2023 16:18:24,  99, 3.45, 10.00, 5.456, 8.645,   10,    730.0,    130.0,      3.0
 01/20/2023 16:18:25,  99, 4.56, 10.00, 4.123, 8.645,   11,    740.0,    140.0,      4.0''';
     }
-    if (filePath == 'sample.csv') {
+    if (filePath == 'sample_long.csv') {
       return sampleData();
     }
-    // throw Exception('Failed to load CSV file from path $filePath');
-
-    try {
-      final correctedFilePath =
-          filePath.startsWith('/') ? filePath.substring(1) : filePath;
-      final csv = await rootBundle.loadString(correctedFilePath);
-      return csv;
-    } catch (e) {
-      throw Exception('Failed to load CSV file from path $filePath: $e');
-    }
+    throw Exception('Failed to load CSV file from path $filePath');
   }
 }

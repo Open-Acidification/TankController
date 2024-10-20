@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:log_file_client/tank_grid_view.dart';
+import 'package:log_file_client/pages/home_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,14 +19,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const MyHomePage(),
+      home: const HomePage(),
     );
   }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
-
-  @override
-  State<MyHomePage> createState() => TankGridView();
 }

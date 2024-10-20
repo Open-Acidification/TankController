@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:log_file_client/utils/csv_reader.dart';
 
 class CsvView extends StatelessWidget {
-  const CsvView({required this.csvPath, super.key});
+  CsvView({required this.csvPath, super.key});
   final String csvPath;
+  late final Future<List<List<dynamic>>> csvTable = getCsvTable();
 
   Future<List<List<dynamic>>> getCsvTable() async {
-    final reader = CsvReaderForAppLocal(csvPath);
+    // final reader = CsvReaderForAppLocal(csvPath);
+    final reader = CsvReaderForAppLocal('csv_test.csv');
     final table = await reader.csvTable();
     return table;
   }
@@ -16,7 +18,7 @@ class CsvView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List>(
-      future: getCsvTable(),
+      future: csvTable,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -54,7 +56,10 @@ class CsvView extends StatelessWidget {
               // Data
               Expanded(
                 child: ListView.builder(
-                  itemCount: csvTable.sublist(1, 5000).length,
+                  // Cutoff at 5000 lines to avoid long wait times
+                  itemCount: csvTable.length > 5000
+                      ? csvTable.sublist(1, 5000).length
+                      : csvTable.length - 1,
                   itemBuilder: (context, index) {
                     return Container(
                       padding: EdgeInsets.all(5),
@@ -74,7 +79,13 @@ class CsvView extends StatelessWidget {
                             flex: idx == 0
                                 ? 2
                                 : 1, // Allow more space for the first column
-                            child: Text(cell.toString()),
+                            child: Text(
+                              cell is num
+                                ? (idx >= 2 && idx <= 5
+                                  ? cell.toStringAsFixed(3)
+                                  : cell.toStringAsFixed(0))
+                                : cell.toString(),
+                            ),
                           );
                         }).toList(),
                       ),

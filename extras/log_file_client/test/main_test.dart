@@ -85,6 +85,96 @@ void main() {
     // Verify that the CsvView widget is displayed
     expect(find.byType(CsvView), findsOneWidget);
   });
+
+  testWidgets('CsvView displays table with log data from CSV file',
+      (WidgetTester tester) async {
+    // Build the CsvView widget with mock CSV file
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: CsvView(
+            csvPath: 'csv_test.csv',
+          ),
+        ),
+      ),
+    );
+
+    // Check that table is loading
+    expect(find.byType(FutureBuilder<List>), findsOneWidget);
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    await tester.pumpAndSettle();
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+
+    // Verify that there is no error message
+    expect(find.text('Error'), findsNothing);
+    expect(find.text('No data found'), findsNothing);
+
+    // Verify that the Column widget is displayed
+    await tester.pumpAndSettle();
+    expect(find.byType(Column), findsOneWidget);
+
+    // Verify that the table headers are displayed
+    expect(find.text('time'), findsOneWidget);
+    expect(find.text('tankid'), findsOneWidget);
+    expect(find.text('temp'), findsOneWidget);
+    expect(find.text('temp setpoint'), findsOneWidget);
+    expect(find.text('pH'), findsOneWidget);
+    expect(find.text('pH setpoint'), findsOneWidget);
+    expect(find.text('onTime'), findsOneWidget);
+    expect(find.text('Kp'), findsOneWidget);
+    expect(find.text('Ki'), findsOneWidget);
+    expect(find.text('Kd'), findsOneWidget);
+
+    // Verify that the table data is displayed
+    expect(find.byType(ListView), findsOneWidget);
+    
+    expect(find.text('2023-01-20 16:18:21.000'), findsOneWidget);
+    expect(find.text('2023-01-20 16:18:22.000'), findsOneWidget);
+    expect(find.text('2023-01-20 16:18:23.000'), findsOneWidget);
+    expect(find.text('2023-01-20 16:18:24.000'), findsOneWidget);
+    expect(find.text('2023-01-20 16:18:25.000'), findsOneWidget);
+
+    expect(find.text('99'), findsNWidgets(5));
+
+    expect(find.text('0.000'), findsNWidgets(2));
+    expect(find.text('1.230'), findsOneWidget);
+    expect(find.text('2.340'), findsOneWidget);
+    expect(find.text('3.450'), findsOneWidget);
+    expect(find.text('4.560'), findsOneWidget);
+
+    expect(find.text('10.000'), findsNWidgets(5));
+
+    expect(find.text('7.123'), findsOneWidget);
+    expect(find.text('6.789'), findsOneWidget);
+    expect(find.text('5.456'), findsOneWidget);
+    expect(find.text('4.123'), findsOneWidget);
+
+    expect(find.text('8.645'), findsNWidgets(5));
+
+    expect(find.text('6'), findsOneWidget);
+    expect(find.text('8'), findsOneWidget);
+    expect(find.text('9'), findsOneWidget);
+    expect(find.text('10'), findsOneWidget);
+    expect(find.text('11'), findsOneWidget);
+
+    expect(find.text('700'), findsOneWidget);
+    expect(find.text('710'), findsOneWidget);
+    expect(find.text('720'), findsOneWidget);
+    expect(find.text('730'), findsOneWidget);
+    expect(find.text('740'), findsOneWidget);
+
+    expect(find.text('100'), findsOneWidget);
+    expect(find.text('110'), findsOneWidget);
+    expect(find.text('120'), findsOneWidget);
+    expect(find.text('130'), findsOneWidget);
+    expect(find.text('140'), findsOneWidget);
+
+    expect(find.text('0'), findsOneWidget);
+    expect(find.text('1'), findsOneWidget);
+    expect(find.text('2'), findsOneWidget);
+    expect(find.text('3'), findsOneWidget);
+    expect(find.text('4'), findsOneWidget);
+  });
 }
 
 class MockLogListReader extends LogListReader {

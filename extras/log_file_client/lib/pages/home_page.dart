@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:log_file_client/components/app_drawer.dart';
 import 'package:log_file_client/components/csv_view.dart';
@@ -22,11 +24,11 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     logListReader = widget.logListReader ?? LogListReaderForAppLocal();
-    _getLogList();
+    unawaited(_getLogList());
   }
 
   // Fetches the list of csv files available
-  _getLogList() async {
+  Future<void> _getLogList() async {
     final result = await logListReader.fetchList();
     setState(() {
       _logList = result;

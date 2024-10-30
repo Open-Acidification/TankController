@@ -5,7 +5,8 @@ import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
 
-String rootDir = Platform.localHostname == 'oap-vm' ? '/var/opt/oap/logs' : './test/logs';
+String rootDir =
+    Platform.localHostname == 'oap-vm' ? '/var/opt/oap/logs' : './test/logs';
 
 // Configure routes.
 final _router = Router()

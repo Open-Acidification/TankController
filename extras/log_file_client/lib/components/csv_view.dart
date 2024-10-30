@@ -1,17 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:log_file_client/utils/csv_reader.dart';
+import 'package:log_file_client/utils/http_client.dart';
 
 class CsvView extends StatelessWidget {
-  CsvView({required this.csvPath, super.key});
+  CsvView({required this.csvPath, required this.httpClient, super.key});
+
   final String csvPath;
+  final HttpClient httpClient;
   late final Future<List<List<dynamic>>> csvTable = getCsvTable();
 
   Future<List<List<dynamic>>> getCsvTable() async {
-    // final reader = CsvReaderForApp(csvPath);
-    final reader = CsvReaderLocal('sample_short.csv');
-    final table = await reader.csvTable();
+    final table = await httpClient.getCsvTable(csvPath);
     return table;
   }
 

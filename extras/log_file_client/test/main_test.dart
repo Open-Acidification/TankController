@@ -3,13 +3,17 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:log_file_client/components/csv_view.dart';
 import 'package:log_file_client/main.dart';
 import 'package:log_file_client/pages/home_page.dart';
-import 'package:log_file_client/utils/log_list.dart';
+import 'package:log_file_client/utils/http_client.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('MyApp has a title and HomePage', (WidgetTester tester) async {
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(
+      MyApp(
+        httpClient: HttpClientTest(),
+      ),
+    );
     expect(find.text('Tank Monitor'), findsOneWidget);
     expect(find.byType(HomePage), findsOneWidget);
   });
@@ -18,7 +22,9 @@ void main() {
       (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
-        home: const HomePage(),
+        home: HomePage(
+          httpClient: HttpClientTest(),
+        ),
       ),
     );
 
@@ -27,17 +33,11 @@ void main() {
 
   testWidgets('Drawer displays log list after loading',
       (WidgetTester tester) async {
-    // Mock the log list
-    final logList = [
-      Log('log1.csv', '/log1.csv'),
-      Log('log2.csv', '/log2.csv'),
-    ];
-
-    // Build the HomePage widget with a mock LogListReader
+    // Build the HomePage widget
     await tester.pumpWidget(
       MaterialApp(
         home: HomePage(
-          logListReader: MockLogListReader(logList),
+          httpClient: HttpClientTest(),
         ),
       ),
     );
@@ -49,24 +49,22 @@ void main() {
     await tester.tap(find.byTooltip('Open navigation menu'));
     await tester.pumpAndSettle();
 
+    // Verify that the drawer is open
+    expect(find.byType(Drawer), findsOneWidget);
+
     // Verify that the log list is displayed in the drawer
-    expect(find.text('log1.csv'), findsOneWidget);
-    expect(find.text('log2.csv'), findsOneWidget);
+    expect(find.text('test1.csv'), findsOneWidget);
+    expect(find.text('test2.csv'), findsOneWidget);
+    expect(find.text('test3.csv'), findsOneWidget);
   });
 
   testWidgets('Drawer opens log file when selected',
       (WidgetTester tester) async {
-    // Mock the log list
-    final logList = [
-      Log('log1.csv', '/log1.csv'),
-      Log('log2.csv', '/log2.csv'),
-    ];
-
-    // Build the HomePage widget with a mock LogListReader
+    // Build the HomePage widget
     await tester.pumpWidget(
       MaterialApp(
         home: HomePage(
-          logListReader: MockLogListReader(logList),
+          httpClient: HttpClientTest(),
         ),
       ),
     );
@@ -79,7 +77,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Tap on the first log file
-    await tester.tap(find.text('log1.csv'));
+    await tester.tap(find.text('test1.csv'));
     await tester.pumpAndSettle();
 
     // Verify that the CsvView widget is displayed
@@ -88,12 +86,13 @@ void main() {
 
   testWidgets('CsvView displays table with log data from CSV file',
       (WidgetTester tester) async {
-    // Build the CsvView widget with mock CSV file
+    // Build the CsvView widget
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
           body: CsvView(
             csvPath: 'sample_short.csv',
+            httpClient: HttpClientTest(),
           ),
         ),
       ),
@@ -175,14 +174,4 @@ void main() {
     expect(find.text('3'), findsOneWidget);
     expect(find.text('4'), findsOneWidget);
   });
-}
-
-class MockLogListReader extends LogListReader {
-  MockLogListReader(this.logList);
-  final List<Log> logList;
-
-  @override
-  Future<List<Log>> fetchList() async {
-    return logList;
-  }
 }

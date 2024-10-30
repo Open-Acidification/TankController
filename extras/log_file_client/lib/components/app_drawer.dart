@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:log_file_client/utils/log_list.dart';
+import 'package:log_file_client/utils/http_client.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({

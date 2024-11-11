@@ -3,19 +3,19 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:log_file_client/components/app_drawer.dart';
 import 'package:log_file_client/components/csv_view.dart';
-import 'package:log_file_client/utils/log_list.dart';
+import 'package:log_file_client/utils/http_client.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, this.logListReader});
+  const HomePage({super.key, this.httpClient});
 
-  final LogListReader? logListReader;
+  final HttpClient? httpClient;
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  late final LogListReader logListReader;
+  late final HttpClient httpClient;
   List<Log>? _logList;
   bool _isLoading = true;
   int _openedLogIndex = -1;
@@ -23,13 +23,13 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    logListReader = widget.logListReader ?? LogListReaderForAppLocal();
+    httpClient = widget.httpClient ?? HttpClientProd();
     unawaited(_getLogList());
   }
 
   // Fetches the list of csv files available
   Future<void> _getLogList() async {
-    final result = await logListReader.fetchList();
+    final result = await httpClient.getLogList();
     setState(() {
       _logList = result;
       _isLoading = false;
@@ -60,7 +60,10 @@ class _HomePageState extends State<HomePage> {
         child: _isLoading
             ? const CircularProgressIndicator()
             : _openedLogIndex >= 0
-                ? CsvView(csvPath: _logList![_openedLogIndex].uri)
+                ? CsvView(
+                    csvPath: _logList![_openedLogIndex].uri,
+                    httpClient: httpClient,
+                  )
                 : null,
       ),
     );

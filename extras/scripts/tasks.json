@@ -1,0 +1,57 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start Reverse Proxy",
+      "type": "shell",
+      "command": "dart",
+      "args": [
+        "run", 
+        "bin/reverse_proxy.dart"
+      ],
+      "options": {
+        "cwd": "extras/reverse_proxy"
+      },
+      "problemMatcher": [],
+      "detail": "Starts the reverse proxy server on port 8080"
+    },
+    {
+      "label": "Start Log File Server",
+      "type": "shell",
+      "command": "dart",
+      "args": [
+        "run", 
+        "bin/log_file_server.dart"
+      ],
+      "options": {
+        "cwd": "extras/log_file_server"
+      },
+      "problemMatcher": [],
+      "detail": "Starts the log file server on port 8082"
+    },
+    {
+      "label": "Start Flutter Client",
+      "type": "shell",
+      "command": "flutter",
+      "args": ["run", "--web-port=8081"],
+      "options": {
+        "cwd": "extras/log_file_client"
+      },
+      "presentation": {
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Start All Servers",
+      "dependsOn": [
+        "Start Reverse Proxy",
+        "Start Log File Server",
+        "Start Flutter Client"
+      ]
+    }
+  ]
+}
+
+  

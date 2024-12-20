@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:log_file_client/components/app_drawer.dart';
-import 'package:log_file_client/components/csv_view.dart';
+// import 'package:log_file_client/components/csv_view.dart';
+import 'package:log_file_client/components/graph_view.dart';
 import 'package:log_file_client/utils/http_client.dart';
 
 class HomePage extends StatefulWidget {
@@ -60,7 +61,11 @@ class _HomePageState extends State<HomePage> {
         child: _isLoading
             ? const CircularProgressIndicator()
             : _openedLogIndex >= 0
-                ? CsvView(
+                // ? CsvView(
+                //     csvPath: _logList![_openedLogIndex].uri,
+                //     httpClient: httpClient,
+                //   )
+                ? GraphView(
                     csvPath: _logList![_openedLogIndex].uri,
                     httpClient: httpClient,
                   )

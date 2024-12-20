@@ -11,6 +11,71 @@ class Log {
   final String uri;
 }
 
+class LogDataLine {
+  LogDataLine(
+    this.time,
+    this.tankid,
+    this.temp,
+    this.tempSetpoint,
+    this.pH,
+    this.pHSetpoint,
+    this.onTime,
+    this.kp,
+    this.ki,
+    this.kd,
+  );
+  final DateTime time;
+  final int tankid;
+  final double? temp;
+  final double? tempSetpoint;
+  final double? pH;
+  final double? pHSetpoint;
+  final int? onTime;
+  final double? kp;
+  final double? ki;
+  final double? kd;
+
+  @override
+  String toString() {
+    return 'LogDataLine(tankid: $tankid, time: $time, temp: $temp, tempSetpoint: $tempSetpoint, '
+        'pH: $pH, pHSetpoint: $pHSetpoint, onTime: $onTime, kp: $kp, ki: $ki, kd: $kd)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+    if (other is! LogDataLine) {
+      return false;
+    }
+    return time == other.time &&
+        tankid == other.tankid &&
+        temp == other.temp &&
+        tempSetpoint == other.tempSetpoint &&
+        pH == other.pH &&
+        pHSetpoint == other.pHSetpoint &&
+        onTime == other.onTime &&
+        kp == other.kp &&
+        ki == other.ki &&
+        kd == other.kd;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        time,
+        tankid,
+        temp,
+        tempSetpoint,
+        pH,
+        pHSetpoint,
+        onTime,
+        kp,
+        ki,
+        kd,
+      );
+}
+
 abstract class HttpClient {
   HttpClient();
 
@@ -52,18 +117,50 @@ abstract class HttpClient {
     return listItems.map((e) => Log(e![0], e[1])).toList();
   }
 
-  Future<List<List>> getCsvTable(String filePath) async {
+  Future<List<LogDataLine>?> getLogData(String filePath) async {
     final data = await fetchData(filePath);
+
+    if (data.trim().isEmpty) {
+      return null;
+    }
+
     final List<List<dynamic>> csvTable =
         const CsvToListConverter(eol: '\n').convert(data);
 
+    // Parse the date strings in the first column of each row
     for (int i = 1; i < csvTable.length; i++) {
-      csvTable[i][0] =
-          DateTime.tryParse(formatDateString(csvTable[i][0].toString())) ??
-              'InvalidDate';
+      final parsedDate =
+          DateTime.tryParse(formatDateString(csvTable[i][0].toString()));
+
+      if (parsedDate == null) {
+        throw FormatException(
+          'Invalid date format in row ${i + 1}: ${csvTable[i][0].toString()}',
+        );
+      }
+
+      csvTable[i][0] = parsedDate;
     }
 
-    return csvTable;
+    // Convert the list of lists to a list of LogDataLine objects
+    final List<LogDataLine> logData = csvTable
+        .sublist(1)
+        .map(
+          (e) => LogDataLine(
+            e[0],
+            e[1],
+            e[2] is double ? e[2] : (e[2] is int ? e[2].toDouble() : null),
+            e[3] is double ? e[3] : (e[3] is int ? e[3].toDouble() : null),
+            e[4] is double ? e[4] : (e[4] is int ? e[4].toDouble() : null),
+            e[5] is double ? e[5] : (e[5] is int ? e[5].toDouble() : null),
+            e[6] is int ? e[6] : (e[6] is double ? e[6].toInt() : null),
+            e[7] is double ? e[7] : (e[7] is int ? e[7].toDouble() : null),
+            e[8] is double ? e[8] : (e[8] is int ? e[8].toDouble() : null),
+            e[9] is double ? e[9] : (e[9] is int ? e[9].toDouble() : null),
+          ),
+        )
+        .toList();
+
+    return logData;
   }
 }
 
@@ -116,6 +213,11 @@ time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd
       01-20-2023 16:18:21,  99, 0.00, 10.00, 0.000, 8.645,    6,    700.0,    100.0,      0.0
       01/20/2023 16:18:22,  99, 1.23, 10.00, 7.123, 8.645,    8,    710.0,    110.0,      1.0
       ''';
+    } else if (filePath == 'invalid_values.csv') {
+      return '''
+time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd
+01/20/2023 16:49:44,  99, C, 11.00, C, 8.645,  959,    700.0,    100.0,      0.0
+''';
     } else if (filePath == 'empty.csv') {
       return '';
     } else {

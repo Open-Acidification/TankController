@@ -104,31 +104,19 @@ time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd
     });
   });
 
-  group('getCsvTable', () {
+  group('getLogData', () {
     final client = HttpClientTest();
 
-    test('accurately parses a sample csv file', () async {
-      final csvTable = await client.getCsvTable('sample_short.csv');
+    test('accurately parses a sample CSV file', () async {
+      final logTable = await client.getLogData('sample_short.csv');
 
       // Validate structure and date parsing for sample_short.csv
-      expect(csvTable.length, equals(6)); // 5 rows of data + 1 header row
+      expect(logTable!.length, equals(5));
 
       expect(
-        csvTable,
+        logTable,
         [
-          [
-            'time',
-            'tankid',
-            'temp',
-            'temp setpoint',
-            'pH',
-            'pH setpoint',
-            'onTime',
-            'Kp',
-            'Ki',
-            'Kd',
-          ],
-          [
+          LogDataLine(
             DateTime.parse('2023-01-20 16:18:21'),
             99,
             0.00,
@@ -139,8 +127,8 @@ time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd
             700.0,
             100.0,
             0.0,
-          ],
-          [
+          ),
+          LogDataLine(
             DateTime.parse('2023-01-20 16:18:22'),
             99,
             1.23,
@@ -151,8 +139,8 @@ time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd
             710.0,
             110.0,
             1.0,
-          ],
-          [
+          ),
+          LogDataLine(
             DateTime.parse('2023-01-20 16:18:23'),
             99,
             2.34,
@@ -163,8 +151,8 @@ time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd
             720.0,
             120.0,
             2.0,
-          ],
-          [
+          ),
+          LogDataLine(
             DateTime.parse('2023-01-20 16:18:24'),
             99,
             3.45,
@@ -175,8 +163,8 @@ time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd
             730.0,
             130.0,
             3.0,
-          ],
-          [
+          ),
+          LogDataLine(
             DateTime.parse('2023-01-20 16:18:25'),
             99,
             4.56,
@@ -187,23 +175,24 @@ time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd
             740.0,
             140.0,
             4.0,
-          ]
+          ),
         ],
       );
     });
 
-    test('handles CSV with invalid date formats', () async {
-      final csvTable = await client.getCsvTable('invalid_date.csv');
+    test('handles empty CSV file without errors', () async {
+      final logTable = await client.getLogData('empty.csv');
 
-      // First row should have an invalid date format, which remains as a String
-      expect(csvTable[1][0], equals('InvalidDate'));
+      // Expect a null value for an empty CSV file
+      expect(logTable, isNull);
     });
 
-    test('handles empty CSV file without errors', () async {
-      final csvTable = await client.getCsvTable('empty.csv');
+    test('handles CSV with invalid values', () async {
+      final logTable = await client.getLogData('invalid_values.csv');
 
-      // Expect an empty list for an empty CSV file
-      expect(csvTable, isEmpty);
+      // temp and pH values should be null
+      expect(logTable![0].temp, isNull);
+      expect(logTable[0].pH, isNull);
     });
   });
 }

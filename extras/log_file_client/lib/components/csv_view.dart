@@ -39,36 +39,66 @@ class CsvView extends StatelessWidget {
                 child: Row(
                   children: const [
                     Expanded(
-                        flex: 2,
-                        child: Text('time',
-                            style: TextStyle(fontStyle: FontStyle.italic),),),
+                      flex: 2,
+                      child: Text(
+                        'time',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
                     Expanded(
-                        child: Text('tankid',
-                            style: TextStyle(fontStyle: FontStyle.italic),),),
+                      child: Text(
+                        'tankid',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
                     Expanded(
-                        child: Text('temp',
-                            style: TextStyle(fontStyle: FontStyle.italic),),),
+                      child: Text(
+                        'temp',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
                     Expanded(
-                        child: Text('temp setpoint',
-                            style: TextStyle(fontStyle: FontStyle.italic),),),
+                      child: Text(
+                        'temp setpoint',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
                     Expanded(
-                        child: Text('pH',
-                            style: TextStyle(fontStyle: FontStyle.italic),),),
+                      child: Text(
+                        'pH',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
                     Expanded(
-                        child: Text('pH setpoint',
-                            style: TextStyle(fontStyle: FontStyle.italic),),),
+                      child: Text(
+                        'pH setpoint',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
                     Expanded(
-                        child: Text('onTime',
-                            style: TextStyle(fontStyle: FontStyle.italic),),),
+                      child: Text(
+                        'onTime',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
                     Expanded(
-                        child: Text('Kp',
-                            style: TextStyle(fontStyle: FontStyle.italic),),),
+                      child: Text(
+                        'Kp',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
                     Expanded(
-                        child: Text('Ki',
-                            style: TextStyle(fontStyle: FontStyle.italic),),),
+                      child: Text(
+                        'Ki',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
                     Expanded(
-                        child: Text('Kd',
-                            style: TextStyle(fontStyle: FontStyle.italic),),),
+                      child: Text(
+                        'Kd',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -84,7 +114,8 @@ class CsvView extends StatelessWidget {
                       padding: const EdgeInsets.all(5),
                       decoration: BoxDecoration(
                         border: Border(
-                            bottom: BorderSide(color: Colors.grey.shade400),),
+                          bottom: BorderSide(color: Colors.grey.shade400),
+                        ),
                       ),
                       child: Row(
                         children: [

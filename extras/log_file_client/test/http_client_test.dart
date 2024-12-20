@@ -186,7 +186,7 @@ time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd
       // Expect a null value for an empty CSV file
       expect(logTable, isNull);
     });
-  
+
     test('handles CSV with invalid values', () async {
       final logTable = await client.getLogData('invalid_values.csv');
 
@@ -194,7 +194,5 @@ time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd
       expect(logTable![0].temp, isNull);
       expect(logTable[0].pH, isNull);
     });
-
   });
-
 }

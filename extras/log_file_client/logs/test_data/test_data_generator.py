@@ -1,6 +1,5 @@
 import csv
 import random
-import time
 from datetime import datetime, timedelta
 
 # Function to generate a random PID gain
@@ -19,7 +18,7 @@ def generate_mock_data():
     temp_setpoint = 20.0  # Initial temp setpoint
     pH = 7.0  # Initial pH value
     pH_setpoint = 7.0  # Initial pH setpoint
-    
+
     # List to store data rows
     data = []
     

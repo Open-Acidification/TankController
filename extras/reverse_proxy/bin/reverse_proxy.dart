@@ -26,7 +26,7 @@ void main() async {
   // Start the server
   await io.serve(loggedHandler, 'localhost', 8080);
   print(
-    'Proxy server listening on 8080 and forwarding to 8081 (app)'
+    'Proxy server listening on 8080 and forwarding to 8081 (app) '
     'and 8082 (data server).\nChange your web browser to http://localhost:8080/.',
   );
 }

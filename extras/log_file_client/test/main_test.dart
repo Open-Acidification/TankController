@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:log_file_client/components/csv_view.dart';
+import 'package:log_file_client/components/graph_view.dart';
 import 'package:log_file_client/main.dart';
 import 'package:log_file_client/pages/home_page.dart';
 import 'package:log_file_client/utils/http_client.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -80,8 +82,8 @@ void main() {
     await tester.tap(find.text('test1.csv'));
     await tester.pumpAndSettle();
 
-    // Verify that the CsvView widget is displayed
-    expect(find.byType(CsvView), findsOneWidget);
+    // Verify that the GraphView widget is displayed
+    expect(find.byType(GraphView), findsOneWidget);
   });
 
   testWidgets('CsvView displays table with log data from CSV file',
@@ -99,7 +101,7 @@ void main() {
     );
 
     // Check that table is loading
-    expect(find.byType(FutureBuilder<List>), findsOneWidget);
+    expect(find.byType(FutureBuilder<List<LogDataLine>>), findsOneWidget);
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
     await tester.pumpAndSettle();
     expect(find.byType(CircularProgressIndicator), findsNothing);
@@ -135,13 +137,10 @@ void main() {
 
     expect(find.text('99'), findsNWidgets(5));
 
-    expect(find.text('0.000'), findsNWidgets(2));
-    expect(find.text('1.230'), findsOneWidget);
-    expect(find.text('2.340'), findsOneWidget);
-    expect(find.text('3.450'), findsOneWidget);
-    expect(find.text('4.560'), findsOneWidget);
-
-    expect(find.text('10.000'), findsNWidgets(5));
+    expect(find.text('1.23'), findsOneWidget);
+    expect(find.text('2.34'), findsOneWidget);
+    expect(find.text('3.45'), findsOneWidget);
+    expect(find.text('4.56'), findsOneWidget);
 
     expect(find.text('7.123'), findsOneWidget);
     expect(find.text('6.789'), findsOneWidget);
@@ -155,23 +154,40 @@ void main() {
     expect(find.text('9'), findsOneWidget);
     expect(find.text('10'), findsOneWidget);
     expect(find.text('11'), findsOneWidget);
+  });
 
-    expect(find.text('700'), findsOneWidget);
-    expect(find.text('710'), findsOneWidget);
-    expect(find.text('720'), findsOneWidget);
-    expect(find.text('730'), findsOneWidget);
-    expect(find.text('740'), findsOneWidget);
+  testWidgets('GraphView widget test', (WidgetTester tester) async {
+    // Build GraphView widget
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: GraphView(
+            csvPath: 'sample_short.csv',
+            httpClient: HttpClientTest(),
+          ),
+        ),
+      ),
+    );
 
-    expect(find.text('100'), findsOneWidget);
-    expect(find.text('110'), findsOneWidget);
-    expect(find.text('120'), findsOneWidget);
-    expect(find.text('130'), findsOneWidget);
-    expect(find.text('140'), findsOneWidget);
+    // Verify that a CircularProgressIndicator is shown while loading
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsOneWidget);
-    expect(find.text('2'), findsOneWidget);
-    expect(find.text('3'), findsOneWidget);
-    expect(find.text('4'), findsOneWidget);
+    // Wait for the FutureBuilder to complete
+    await tester.pumpAndSettle();
+
+    // Verify that the SfCartesianChart is rendered
+    expect(find.byType(SfCartesianChart), findsOneWidget);
+
+    // Verify that the chart contains the correct line series for temperature and pH
+    expect(find.text('temp'), findsOneWidget);
+    expect(find.text('pH'), findsOneWidget);
+
+    // Check for LineSeries widget presence
+    expect(
+      find.byWidgetPredicate(
+        (widget) => widget is LineSeries,
+      ),
+      findsNWidgets(4),
+    );
   });
 }

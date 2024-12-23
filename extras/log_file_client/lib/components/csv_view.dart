@@ -8,17 +8,17 @@ class CsvView extends StatelessWidget {
 
   final String csvPath;
   final HttpClient httpClient;
-  late final Future<List<List<dynamic>>> csvTable = getCsvTable();
+  late final Future<List<LogDataLine>> logData = getLogData();
 
-  Future<List<List<dynamic>>> getCsvTable() async {
-    final table = await httpClient.getCsvTable(csvPath);
-    return table;
+  Future<List<LogDataLine>> getLogData() async {
+    final table = await httpClient.getLogData(csvPath);
+    return table!;
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List>(
-      future: csvTable,
+    return FutureBuilder<List<LogDataLine>>(
+      future: logData, // Assuming this fetches a List<LogDataLine>
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -27,29 +27,79 @@ class CsvView extends StatelessWidget {
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return const Center(child: Text('No data found'));
         } else {
-          final csvTable = snapshot.data!;
+          final logData = snapshot.data!;
           return Column(
             children: [
               // Headers
               Container(
-                padding: EdgeInsets.all(5),
+                padding: const EdgeInsets.all(5),
                 decoration: const BoxDecoration(
                   border: Border(bottom: BorderSide(color: Colors.grey)),
                 ),
                 child: Row(
-                  children: csvTable[0].asMap().entries.map<Widget>((entry) {
-                    final int idx = entry.key;
-                    final header = entry.value;
-                    return Expanded(
-                      flex: idx == 0
-                          ? 2
-                          : 1, // Allow more space for the first column for the datetimes
+                  children: const [
+                    Expanded(
+                      flex: 2,
                       child: Text(
-                        header.toString(),
-                        style: const TextStyle(fontStyle: FontStyle.italic),
+                        'time',
+                        style: TextStyle(fontStyle: FontStyle.italic),
                       ),
-                    );
-                  }).toList(),
+                    ),
+                    Expanded(
+                      child: Text(
+                        'tankid',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        'temp',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        'temp setpoint',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        'pH',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        'pH setpoint',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        'onTime',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        'Kp',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        'Ki',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        'Kd',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                  ],
                 ),
               ),
 
@@ -57,37 +107,35 @@ class CsvView extends StatelessWidget {
               Expanded(
                 child: ListView.builder(
                   // Cutoff at 5000 lines to avoid long wait times
-                  itemCount: csvTable.length > 5000
-                      ? csvTable.sublist(1, 5000).length
-                      : csvTable.length - 1,
+                  itemCount: logData.length > 5000 ? 5000 : logData.length,
                   itemBuilder: (context, index) {
+                    final row = logData[index];
                     return Container(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                       decoration: BoxDecoration(
                         border: Border(
                           bottom: BorderSide(color: Colors.grey.shade400),
                         ),
                       ),
                       child: Row(
-                        children: csvTable[index + 1]
-                            .asMap()
-                            .entries
-                            .map<Widget>((entry) {
-                          final int idx = entry.key;
-                          final cell = entry.value;
-                          return Expanded(
-                            flex: idx == 0
-                                ? 2
-                                : 1, // Allow more space for the first column
+                        children: [
+                          Expanded(
+                            flex: 2,
                             child: Text(
-                              cell is num
-                                  ? (idx >= 2 && idx <= 5
-                                      ? cell.toStringAsFixed(3)
-                                      : cell.toStringAsFixed(0))
-                                  : cell.toString(),
+                              row.time.toString(),
+                              style: const TextStyle(fontSize: 16),
                             ),
-                          );
-                        }).toList(),
+                          ),
+                          Expanded(child: Text(row.tankid.toString())),
+                          Expanded(child: Text(row.temp.toString())),
+                          Expanded(child: Text(row.tempSetpoint.toString())),
+                          Expanded(child: Text(row.pH.toString())),
+                          Expanded(child: Text(row.pHSetpoint.toString())),
+                          Expanded(child: Text(row.onTime.toString())),
+                          Expanded(child: Text(row.kp.toString())),
+                          Expanded(child: Text(row.ki.toString())),
+                          Expanded(child: Text(row.kd.toString())),
+                        ],
                       ),
                     );
                   },

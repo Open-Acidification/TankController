@@ -12,7 +12,7 @@
         - name: install flutter
           uses: subosito/flutter-action@v2
           with:
-            flutter-version: '3.24.3'
+            flutter-version: '3.27.1'
             channel: 'stable'
         - name: use cache
           uses: actions/cache@v3
@@ -57,11 +57,11 @@
             dart pub get # https://github.com/dart-lang/sdk/issues/50422
             dart format --output=none --set-exit-if-changed .
             dart analyze --fatal-infos
-            mkdir -p /tmp/var/opt/oap/logs
-            touch /tmp/var/opt/oap/logs/empty.log
-            echo "123456789" > /tmp/var/opt/oap/logs/ten.log
-            echo "This is data for line 1\nThis is data for line 2" > /tmp/var/opt/oap/logs/deleteMe.log
-            dart run "bin/log_file_server.dart" "/tmp/var/opt/oap/logs" &
+            mkdir -p test/logs
+            touch test/logs/empty.log
+            echo "123456789" > test/logs/ten.log
+            echo "This is data for line 1\nThis is data for line 2" > test/logs/deleteMe.log
+            dart run "bin/log_file_server.dart" "test/logs" &
             dart test --concurrency=1
             jobs
             kill %1

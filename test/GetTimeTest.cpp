@@ -35,7 +35,7 @@ unittest_teardown() {
   EthernetClient::stopMockServer(pGetTime->getServerDomain(), (uint32_t)0, 80);
 }
 
-unittest(without_DHCP) {
+unittest(GetTimeTest_without_DHCP) {
   Ethernet.mockDHCP(IPAddress((uint32_t)0));
   assertFalse(Ethernet_TC::instance(true)->isConnectedToNetwork());
   EthernetClient::startMockServer(pGetTime->getServerDomain(), (uint32_t)0, 80);

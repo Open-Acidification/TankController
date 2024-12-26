@@ -42,7 +42,7 @@ private:
   char nextKey = 0;
 
   // instance methods
-  TankController(const char* remoteLogName);
+  TankController();
   ~TankController();
   void blink();
   void handleUI();

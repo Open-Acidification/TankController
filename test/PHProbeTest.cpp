@@ -166,8 +166,7 @@ unittest(setMidpointCalibration) {
   state->serialPort[0].dataOut = "";
   pHProbe->setMidpointCalibration(11.875);
   assertTrue(DataLogger::instance()->getShouldWriteWarning());
-  assertEqual(
-      "PHProbe::setMidpointCalibration(11.875)\r\n", state->serialPort[0].dataOut);
+  assertEqual("PHProbe::setMidpointCalibration(11.875)\r\n", state->serialPort[0].dataOut);
   assertEqual("Cal,mid,11.875\r", state->serialPort[1].dataOut);
   assertFalse(eeprom->getIgnoreBadPHSlope());
 }

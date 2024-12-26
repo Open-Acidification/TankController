@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#include "AlertPusher.h"
+#include "RemoteLogPusher.h"
 #include "DateTime_TC.h"
 #include "PHControl.h"
 #include "PHProbe.h"
@@ -12,22 +12,22 @@
 unittest_setup() {
   GODMODE()->reset();
   Ethernet.mockDHCP(IPAddress(192, 168, 1, 42));
-  SD_TC::instance()->format();  // reset the alert file
+  SD_TC::instance()->format();  // reset the remote log file
 }
 
 unittest_teardown() {
 }
 
 unittest(singleton) {
-  AlertPusher* thing1 = AlertPusher::instance();
-  AlertPusher* thing2 = AlertPusher::instance();
+  RemoteLogPusher* thing1 = RemoteLogPusher::instance();
+  RemoteLogPusher* thing2 = RemoteLogPusher::instance();
   assertTrue(thing1 != nullptr);
   assertEqual(thing1, thing2);
 }
 
 unittest(loopSendsRequests) {
   TankController* tc = TankController::instance();
-  AlertPusher* pusher = AlertPusher::instance();
+  RemoteLogPusher* pusher = RemoteLogPusher::instance();
   EthernetClient* pClient = pusher->getClient();
 
   assertTrue(Ethernet_TC::instance(true)->isConnectedToNetwork());
@@ -41,19 +41,19 @@ unittest(loopSendsRequests) {
       "\r\n"
   );
 
-  // We start the test with a fresh alert file
+  // We start the test with a fresh remote log file
   assertFalse(pusher->shouldSendHeadRequest());
   assertFalse(pusher->isReadyToPost());
   assertEqual(CLIENT_NOT_CONNECTED, pusher->getState());
   assertFalse(pClient->connected());
   char buffer[100];
-  SD_TC::instance()->getAlert(buffer, sizeof(buffer), 0);
+  SD_TC::instance()->getRemoteLogContents(buffer, sizeof(buffer), 0);
   assertEqual("", buffer);
 
-  // during a loop we write to the alert file
+  // during a loop we write to the remote log file
   tc->loop(false);
   assertEqual(CLIENT_NOT_CONNECTED, pusher->getState());
-  SD_TC::instance()->getAlert(buffer, sizeof(buffer), 0);
+  SD_TC::instance()->getRemoteLogContents(buffer, sizeof(buffer), 0);
   buffer[7] = '\0';  // truncate the message
   assertEqual("Version", buffer);
 
@@ -121,8 +121,8 @@ unittest(loopSendsRequests) {
   tc->loop(false);  // HEAD request is sent
   assertFalse(pusher->isReadyToPost());
   uint32_t localFileSize = SD_TC::instance()->getRemoteFileSize();
-  SD_TC::instance()->updateAlertFileSizeForTest();  // size to zero
-  // SD_TC::instance()->writeAlert("some data here");  // and '\n' is added for 15 bytes
+  SD_TC::instance()->updateRemoteLogFileSizeForTest();  // size to zero
+  // SD_TC::instance()->writeRemoteLog("some data here");  // and '\n' is added for 15 bytes
   tc->loop(false);                               // "200 OK" is received
   assertFalse(pusher->shouldSendHeadRequest());  //
   assertFalse(pusher->isReadyToPost());          // because server has all 15 bytes
@@ -135,7 +135,7 @@ unittest(noInternetConnectionWhenBubblerIsOn) {
   TankController* tc = TankController::instance();
   PHControl* controlSolenoid = PHControl::instance();
   PHProbe* pHProbe = PHProbe::instance();
-  AlertPusher* pusher = AlertPusher::instance();
+  RemoteLogPusher* pusher = RemoteLogPusher::instance();
 
   // Turn on the bubbler
   controlSolenoid->setBaseTargetPh(7.50);
@@ -155,19 +155,19 @@ unittest(noInternetConnectionWhenBubblerIsOn) {
       "\r\n"
   );
 
-  // We start the test with a fresh alert file
+  // We start the test with a fresh remote log file
   assertFalse(pusher->shouldSendHeadRequest());
   assertFalse(pusher->isReadyToPost());
   assertEqual(CLIENT_NOT_CONNECTED, pusher->getState());
-  SD_TC::instance()->format();  // reset the alert file
+  SD_TC::instance()->format();  // reset the remote log file
   char buffer[100];
-  SD_TC::instance()->getAlert(buffer, sizeof(buffer), 0);
+  SD_TC::instance()->getRemoteLogContents(buffer, sizeof(buffer), 0);
   assertEqual("", buffer);
 
-  // during a loop we write to the alert file
+  // during a loop we write to the remote log file
   tc->loop(false);
   assertEqual(CLIENT_NOT_CONNECTED, pusher->getState());
-  SD_TC::instance()->getAlert(buffer, sizeof(buffer), 0);
+  SD_TC::instance()->getRemoteLogContents(buffer, sizeof(buffer), 0);
   buffer[7] = '\0';  // truncate the message
   assertEqual("Version", buffer);
 

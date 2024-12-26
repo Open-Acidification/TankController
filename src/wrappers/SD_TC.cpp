@@ -5,6 +5,7 @@
 #include "wrappers/DateTime_TC.h"
 #include "wrappers/Ethernet_TC.h"
 #include "wrappers/Serial_TC.h"
+#include <RemoteLogPusher.h>
 
 //  class variables
 SD_TC* SD_TC::_instance = nullptr;
@@ -126,7 +127,7 @@ bool SD_TC::format() {
   return sd.format();
 }
 
-void SD_TC::getAlert(char* buffer, int size, uint32_t index) {
+void SD_TC::getRemoteLogContents(char* buffer, int size, uint32_t index) {
   buffer[0] = '\0';
   File file = open(getRemoteLogName(), O_RDONLY);
   if (file) {
@@ -258,10 +259,13 @@ bool SD_TC::remove(const char* path) {
 }
 
 void SD_TC::setRemoteLogName(const char* newFileName) {
+  // See TankController.ino for the definition of remoteLogName
   if (newFileName != nullptr && strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) > 0 &&
       strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) <= MAX_FILE_NAME_LENGTH) {
-    // valid file name has been provided (See TankController.ino)
     snprintf_P(remoteLogName, MAX_FILE_NAME_LENGTH + 5, PSTR("%s.log"), newFileName);
+  } else {
+    // If it remains empty, the MAC address will be used (see getRemoteLogName() above). 
+    remoteLogName[0] = '\0';
   }
 }
 
@@ -304,5 +308,5 @@ void SD_TC::writeToRemoteLog(const char* line) {
     appendStringToPath(buffer, remoteLogName);
   }
   appendStringToPath(line, remoteLogName);
-  // AlertPusher::instance()->pushSoon();
+  RemoteLogPusher::instance()->pushSoon();
 }

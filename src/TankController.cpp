@@ -6,7 +6,7 @@
 #include "UIState/MainMenu.h"
 #include "UIState/UIState.h"
 #include "Version.h"
-#include "model/AlertPusher.h"
+#include "model/RemoteLogPusher.h"
 #include "model/DataLogger.h"
 #include "model/GetTime.h"
 #include "model/PHControl.h"

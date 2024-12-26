@@ -47,7 +47,7 @@ INCLUDE=-I$(ARDUINO_CI)/arduino \
 HEADERS=$(wildcard src/*.h) $(wildcard src/wrappers/*) $(wildcard src/UIState/*)
 
 .PHONY : all
-all : $(BIN)/AlertPusherTest.cpp.bin $(BIN)/BlinkTest.cpp.bin $(BIN)/DataLoggerTest.cpp.bin \
+all : $(BIN)/RemoteLogPusherTest.cpp.bin $(BIN)/BlinkTest.cpp.bin $(BIN)/DataLoggerTest.cpp.bin \
   $(BIN)/DateTimeTest.cpp.bin $(BIN)/EEPROMTest.cpp.bin $(BIN)/EnablePIDTest.cpp.bin \
   $(BIN)/EthernetServerTest.cpp.bin $(BIN)/EthernetTest.cpp.bin \
   $(BIN)/GetTimeTest.cpp.bin $(BIN)/JSONBuilderTest.cpp.bin $(BIN)/KeypadTest.cpp.bin \
@@ -73,8 +73,8 @@ GPP_TEST=g++ $(FLAGS) -L$(BIN) $(INCLUDE)
 $(BIN)/PHCalibrationWarningTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/PHCalibrationWarningTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/PHCalibrationWarningTest.cpp.bin $(TEST)/PHCalibrationWarningTest.cpp -larduino
 
-$(BIN)/AlertPusherTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/AlertPusherTest.cpp $(HEADERS)
-	$(GPP_TEST) -o $(BIN)/AlertPusherTest.cpp.bin $(TEST)/AlertPusherTest.cpp -larduino
+$(BIN)/RemoteLogPusherTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/RemoteLogPusherTest.cpp $(HEADERS)
+	$(GPP_TEST) -o $(BIN)/RemoteLogPusherTest.cpp.bin $(TEST)/RemoteLogPusherTest.cpp -larduino
 
 $(BIN)/BlinkTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/BlinkTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/BlinkTest.cpp.bin $(TEST)/BlinkTest.cpp -larduino
@@ -254,7 +254,7 @@ SDFAT=$(BIN)/FreeStack.o $(BIN)/MinimumSerial.o $(BIN)/File_CI.o $(BIN)/SD_CI.o 
   $(BIN)/istream.o $(BIN)/ostream.o
 
 OBJECTS=$(BIN)/Arduino.o $(BIN)/Godmode.o $(BIN)/stdlib.o $(BIN)/ArduinoUnitTests.o \
-  $(BIN)/TC_util.o $(BIN)/TankController.o $(BIN)/AlertPusher.o $(BIN)/DataLogger.o $(BIN)/DateTime_TC.o \
+  $(BIN)/TC_util.o $(BIN)/TankController.o $(BIN)/RemoteLogPusher.o $(BIN)/DataLogger.o $(BIN)/DateTime_TC.o \
   $(BIN)/EEPROM_TC.o $(BIN)/EthernetServer_TC.o $(BIN)/Ethernet_TC.o $(BIN)/GetTime.o \
 	$(BIN)/JSONBuilder.o \
   $(BIN)/Keypad_TC.o $(BIN)/LiquidCrystal_TC.o $(BIN)/PHControl.o $(BIN)/PHProbe.o \
@@ -294,8 +294,8 @@ $(BIN)/TC_util.o: $(SRC)/model/TC_util.cpp $(HEADERS)
 $(BIN)/TankController.o: $(SRC)/TankController.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/TankController.o $(SRC)/TankController.cpp
 
-$(BIN)/AlertPusher.o: $(SRC)/model/AlertPusher.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/AlertPusher.o $(SRC)/model/AlertPusher.cpp
+$(BIN)/RemoteLogPusher.o: $(SRC)/model/RemoteLogPusher.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/RemoteLogPusher.o $(SRC)/model/RemoteLogPusher.cpp
 
 $(BIN)/DataLogger.o: $(SRC)/model/DataLogger.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/DataLogger.o $(SRC)/model/DataLogger.cpp

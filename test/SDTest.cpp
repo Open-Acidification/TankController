@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#include "AlertPusher.h"
+#include "RemoteLogPusher.h"
 #include "DateTime_TC.h"
 #include "PHCalibrationMid.h"
 #include "SD_TC.h"
@@ -188,28 +188,30 @@ unittest(removeFile) {
   assertFalse(SD_TC::instance()->exists("20220706.log"));
 }
 
-unittest(writeAlert) {
-  delay(60000);  // alerts don't get written immediately
+unittest(writeRemoteLog) {
+  delay(60000);  // remote logs don't get written immediately
   char data[20];
   SD_TC* sd = SD_TC::instance();
-  AlertPusher* pusher = AlertPusher::instance();
+  RemoteLogPusher* pusher = RemoteLogPusher::instance();
 
   assertEqual("90A2DA807B76.log", sd->getRemoteLogName());
-  sd->updateAlertFileSizeForTest();  // because sd was previously initialized, we have alertFileNameIsReady == true
+  sd->updateRemoteLogFileSizeForTest();  // because sd was previously initialized, we have remoteLogFileNameIsReady == true
   assertFalse(sd->exists("90A2DA807B76.log"));
   assertEqual(0, sd->getRemoteFileSize());
   pusher->setShouldSentHeadRequest(false);
   assertFalse(pusher->shouldSendHeadRequest());
 
   // write data
-  // sd->writeAlert("line 1");  // also writes header row
-  int size = sd->getRemoteFileSize();
+  sd->writeToRemoteLog("line 1");  // also writes header row
+  sd->updateRemoteLogFileSizeForTest();
   assertTrue(pusher->shouldSendHeadRequest());
   assertTrue(sd->exists("90A2DA807B76.log"));
-  // sd->writeAlert("line 2");
+  int size = sd->getRemoteFileSize();
+  sd->writeToRemoteLog("line 2");
+  sd->updateRemoteLogFileSizeForTest();
   assertEqual(size + strlen("line 2\n"), sd->getRemoteFileSize());
 
-  // verify contents of alerts.log
+  // verify contents of remote log
   File file = sd->open("90A2DA807B76.log");
   file.seek(size);
   file.read(data, 7);
@@ -218,38 +220,40 @@ unittest(writeAlert) {
   assertEqual("line 2\n", data);
 }
 
-unittest(getAlert) {
+unittest(getRemoteLogContents) {
   SD_TC* sd = SD_TC::instance();
 
   // write data
   sd->setRemoteLogName("Tank1");
-  // sd->writeAlert("line 1");
+  sd->writeToRemoteLog("line 1");
+  sd->updateRemoteLogFileSizeForTest();
   int size = sd->getRemoteFileSize();
-  // sd->writeAlert("and 2\nline 3");
+  sd->writeToRemoteLog("and 2\nline 3");
+  sd->updateRemoteLogFileSizeForTest();
   char buffer[20];
-  // get remaining alerts
-  sd->getAlert(buffer, sizeof(buffer), size);
+  // get remaining remote log
+  sd->getRemoteLogContents(buffer, sizeof(buffer), size);
   assertEqual("and 2\nline 3\n", buffer);
 }
 
-unittest(noAlertFileName) {
+unittest(noRemoteLogFileName) {
   SD_TC* sd = SD_TC::instance();
   sd->setRemoteLogName("");
   assertEqual("90A2DA807B76.log", sd->getRemoteLogName());
 }
 
-unittest(validAlertFileName) {
+unittest(validRemoteLogFileName) {
   SD_TC* sd = SD_TC::instance();
   sd->setRemoteLogName("Tank1");
   assertEqual("Tank1.log", sd->getRemoteLogName());
 }
 
-unittest(longAlertFileName) {
+unittest(longRemoteLogFileName) {
   SD_TC* sd = SD_TC::instance();
   sd->setRemoteLogName("1234567890123456789012345678");  // maximum length
   assertEqual("1234567890123456789012345678.log", sd->getRemoteLogName());
   sd->setRemoteLogName("12345678901234567890123456789");  // one character too many
-  assertEqual("1234567890123456789012345678.log", sd->getRemoteLogName());
+  assertEqual("90A2DA807B76.log", sd->getRemoteLogName());
 }
 
 unittest(remoteLogName) {

@@ -1,4 +1,4 @@
-#include "model/AlertPusher.h"
+#include "model/RemoteLogPusher.h"
 
 #include "Version.h"
 #include "model/PHControl.h"
@@ -10,32 +10,32 @@
 const uint16_t PORT = 8080;
 
 //  class variables
-AlertPusher* AlertPusher::_instance = nullptr;
+RemoteLogPusher* RemoteLogPusher::_instance = nullptr;
 
 //  class methods
 /**
  * @brief accessor for singleton
  *
- * @return AlertPusher*
+ * @return RemoteLogPusher*
  */
-AlertPusher* AlertPusher::instance() {
+RemoteLogPusher* RemoteLogPusher::instance() {
   if (!_instance) {
-    _instance = new AlertPusher();
+    _instance = new RemoteLogPusher();
   }
   return _instance;
 }
 
 //  instance methods
-AlertPusher::AlertPusher() {
+RemoteLogPusher::RemoteLogPusher() {
   this->buffer[0] = '\0';
 }
 
-bool AlertPusher::isReadyToPost() {
+bool RemoteLogPusher::isReadyToPost() {
   return _isReadyToPost && millis() > delayRequestsUntilTime;
   //      && !(PHControl::instance()->isOn());
 }
 
-void AlertPusher::loop() {
+void RemoteLogPusher::loop() {
   if (!(Ethernet_TC::instance()->isConnectedToNetwork())) {
     return;
   }
@@ -62,11 +62,11 @@ void AlertPusher::loop() {
   }
 }
 
-void AlertPusher::loopHead() {
+void RemoteLogPusher::loopHead() {
   if (client.connected()) {
     if (client.available()) {  // bytes are remaining in the current packet
       int next;
-      serial(F("AlertPusher: received"));
+      serial(F("RemoteLogPusher: received"));
       while ((next = client.read()) != -1) {  // Flawfinder: ignore
         if (next) {
           if (next == '\r') {
@@ -81,7 +81,7 @@ void AlertPusher::loopHead() {
             } else if (index > 16 && memcmp_P(buffer, F("content-length: "), 16) == 0) {
               serverFileSize = strtoul(buffer + 16, nullptr, 10);
               uint32_t localFileSize = SD_TC::instance()->getRemoteFileSize();
-              serial(F("AlertPusher: local %lu bytes, cloud %lu bytes"), (uint32_t)localFileSize,
+              serial(F("RemoteLogPusher: local %lu bytes, cloud %lu bytes"), (uint32_t)localFileSize,
                      (uint32_t)serverFileSize);
               _isReadyToPost = serverFileSize < localFileSize;
               isDone = true;
@@ -111,11 +111,11 @@ void AlertPusher::loopHead() {
   }
 }
 
-void AlertPusher::loopPost() {
+void RemoteLogPusher::loopPost() {
   if (client.connected()) {
     if (client.available()) {  // bytes are remaining in the current packet
       int next;
-      serial(F("AlertPusher: received"));
+      serial(F("RemoteLogPusher: received"));
       while ((next = client.read()) != -1) {  // Flawfinder: ignore
         if (next) {
           if (next == '\r') {
@@ -150,19 +150,19 @@ void AlertPusher::loopPost() {
 /**
  * @brief attempt to push at the next opportunity
  *
- * This method is called when the alert file is written to, and when the
+ * This method is called when the remote log file is written to, and when the
  * bubbler is turned off.
  */
-void AlertPusher::pushSoon() {
+void RemoteLogPusher::pushSoon() {
   _shouldSendHeadRequest = true;
 }
 
 /**
- * @brief send request to server for size of alert file
+ * @brief send request to server for size of remote log file
  *
  */
-void AlertPusher::sendHeadRequest() {
-  serial(F("AlertPusher: attempting HEAD request"));
+void RemoteLogPusher::sendHeadRequest() {
+  serial(F("RemoteLogPusher: attempting HEAD request"));
   static const char format[] PROGMEM =
       "HEAD /logs/%s HTTP/1.1\r\n"
       "Host: %s\r\n"
@@ -172,20 +172,20 @@ void AlertPusher::sendHeadRequest() {
       "\r\n";
   snprintf_P(buffer, sizeof(buffer), (PGM_P)format, SD_TC::instance()->getRemoteLogName(), serverDomain, VERSION);
   if (client.connected() || client.connect(serverDomain, PORT) == 1) {  // this is a blocking step
-    serial(F("AlertPusher: connected to %s, sending..."), serverDomain);
+    serial(F("RemoteLogPusher: connected to %s, sending..."), serverDomain);
     client.write(buffer, strnlen(buffer, sizeof(buffer)));
   } else {
-    serial(F("AlertPusher: connection to %s failed"), serverDomain);
+    serial(F("RemoteLogPusher: connection to %s failed"), serverDomain);
     // "_shouldSendHeadRequest = true;" would retry next loop but we'll try within one minute anyway
   }
   buffer[0] = '\0';
   state = PROCESS_HEAD_RESPONSE;
 }
 
-void AlertPusher::sendPostRequest() {
-  serial(F("AlertPusher: attempting POST request"));
+void RemoteLogPusher::sendPostRequest() {
+  serial(F("RemoteLogPusher: attempting POST request"));
   char data[300];
-  SD_TC::instance()->getAlert(data, sizeof(data), serverFileSize);
+  SD_TC::instance()->getRemoteLogContents(data, sizeof(data), serverFileSize);
   static const char format[] PROGMEM =
       "POST /logs/%s HTTP/1.1\r\n"
       "Host: %s\r\n"
@@ -197,18 +197,18 @@ void AlertPusher::sendPostRequest() {
   snprintf_P(buffer, sizeof(buffer), (PGM_P)format, SD_TC::instance()->getRemoteLogName(), serverDomain, VERSION,
              strnlen(data, sizeof(data)));
   if (client.connected() || client.connect(serverDomain, PORT) == 1) {  // this is a blocking step
-    serial(F("AlertPusher: connected to %s, sending..."), serverDomain);
+    serial(F("RemoteLogPusher: connected to %s, sending..."), serverDomain);
     serial(data);
     client.write(buffer, strnlen(buffer, sizeof(buffer)));
     client.write(data, strnlen(data, sizeof(data)));
   } else {
-    serial(F("AlertPusher: connection to %s failed"), serverDomain);
+    serial(F("RemoteLogPusher: connection to %s failed"), serverDomain);
   }
   buffer[0] = '\0';
   state = PROCESS_POST_RESPONSE;
 }
 
-bool AlertPusher::shouldSendHeadRequest() {
+bool RemoteLogPusher::shouldSendHeadRequest() {
   return _shouldSendHeadRequest && millis() > delayRequestsUntilTime;
   //      && !(PHControl::instance()->isOn());
 }

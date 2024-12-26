@@ -4,14 +4,14 @@
 #include "wrappers/Ethernet_TC.h"
 
 /*
- * @brief AlertPusher is a singleton that sends data records and alerts to the server.
+ * @brief RemoteLogPusher is a singleton that sends data records and remote logs to the server.
  *
  * The server is expected to be running extras/log_file_server.
  * The ideas is that while the device records data to the SD card's 1-second log and
  * 1-minute log, it also sends the 1-minute log records to the server with configuration
  * changes and certain warning and error conditions.
  *
- * Eventually, the server will send alerts to a user's phone.
+ * Eventually, the server will send remote logs to a user's phone.
  *
  * The device tries to keep the server up-to-date on the latest data by comparing the
  * file size reported by the server (in a HEAD request) with the file size on the SD card.
@@ -41,13 +41,13 @@
 
 enum clientState_t { CLIENT_NOT_CONNECTED, PROCESS_HEAD_RESPONSE, PROCESS_POST_RESPONSE };
 
-class AlertPusher {
+class RemoteLogPusher {
 public:
   // class methods
-  static AlertPusher *instance();
+  static RemoteLogPusher *instance();
 
   // instance methods
-  AlertPusher();
+  RemoteLogPusher();
   bool isReadyToPost();
   void loop();
   void pushSoon();
@@ -70,7 +70,7 @@ public:
 
 private:
   // class variables
-  static AlertPusher *_instance;
+  static RemoteLogPusher *_instance;
 
   // instance variables
   EthernetClient client;

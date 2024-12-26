@@ -114,7 +114,7 @@ void DataLogger::writeRemotePreambleToBuffer(const char severity) {
 //   snprintf_P(uptime, sizeof(uptime), PSTR("%lu"), (unsigned long)(millis() / 1000));
 
 //   // write version, tankid, 'I', and timestamp to buffer
-//   writeAlertPreambleToBuffer('I');
+//   writeRemoteLogPreambleToBuffer('I');
 //   int preambleLength = strnlen(buffer, sizeof(buffer));
 //   // temperature \t thermaltarget \t pH \t pHtarget \t uptime
 //   const __FlashStringHelper* format = F("\t\t%s\t%s\t%s\t%s\t%s\t%s");

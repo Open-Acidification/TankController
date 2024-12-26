@@ -16,7 +16,7 @@
  * Test correctness of JSON output from JSONBuilder
  */
 
-unittest(currentData) {
+unittest(JSONBuilderTest_currentData) {
   // Fake DateTime
   DateTime_TC feb(2022, 2, 22, 20, 50, 00);
   feb.setAsCurrent();

@@ -7,7 +7,7 @@
 #include "TankController.h"
 #include "Version.h"
 
-unittest(loop) {
+unittest(LiquidCrystalTest_loop) {
   TankController* tank = TankController::instance();
   LiquidCrystal_TC* lcd = LiquidCrystal_TC::instance();
   assertTrue(tank != nullptr);

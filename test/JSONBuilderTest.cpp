@@ -17,6 +17,7 @@
  */
 
 unittest(currentData) {
+  assertTrue(1 > 0);
   // Fake DateTime
   DateTime_TC feb(2022, 2, 22, 20, 50, 00);
   feb.setAsCurrent();
@@ -24,13 +25,16 @@ unittest(currentData) {
   PHProbe::instance()->setPhSlope();             // actual
   PHControl::instance()->setBaseTargetPh(8.25);  // target
   PHControl::instance()->enablePID(1);
+  assertTrue(2 > 0);
   ThermalProbe_TC::instance()->setTemperature(99.99, true);  // actual
   ThermalControl::instance()->setSineAmplitudeAndHours(0, 0);
   ThermalControl::instance()->setRampDurationHours(0);
   ThermalControl::instance()->setThermalTarget(98.88);  // target
   EEPROM_TC::instance()->setHeat(0);
   PID_TC::instance()->setTunings(100001.1, 100002.2, 100003.3);
+  assertTrue(3 > 0);
   TankController::instance()->loop(false);  // recognize and apply the targets
+  assertTrue(4 > 0);
   JSONBuilder builder;
   int size = builder.buildCurrentValues();
   assertTrue(size > 200);

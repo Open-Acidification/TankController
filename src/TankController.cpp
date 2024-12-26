@@ -38,9 +38,29 @@ TankController *TankController::_instance = nullptr;
  */
 TankController *TankController::instance(const char *remoteLogName, const char *pushingBoxID, int tzOffsetHrs) {
   if (!_instance) {
-    _instance = new TankController(remoteLogName);
+    serial(F("\r\n##############\r\nTankController %s"), TANK_CONTROLLER_VERSION);
+    _instance = new TankController();
+    unsigned long start = millis();
+    SD_TC::instance()->setRemoteLogName(remoteLogName);
+    EEPROM_TC::instance();
+    Keypad_TC::instance();
+    LiquidCrystal_TC::instance(TANK_CONTROLLER_VERSION);
+    DataLogger::instance();
+    DateTime_TC::rtc();
+    Ethernet_TC::instance();
+    EthernetServer_TC::instance();
+    ThermalProbe_TC::instance();
+    ThermalControl::instance();
+    PHProbe::instance();
+    PHControl::instance();
+    PID_TC::instance();
+    pinMode(LED_BUILTIN, OUTPUT);
+    _instance->state = new MainMenu();
     PushingBox::instance(pushingBoxID);
     GetTime::instance(tzOffsetHrs);
+    serial(F("Free memory = %i"), _instance->freeMemory());
+    wdt_enable(WDTO_8S);
+    serial(F("TankController::instance() - took %lu ms"), millis() - start);
   }
   return _instance;
 }
@@ -59,25 +79,8 @@ void TankController::deleteInstance() {
 /**
  * Constructor
  */
-TankController::TankController(const char *remoteLogName) {
-  serial(F("\r\n#################\r\nTankController::TankController() - version %s"), TANK_CONTROLLER_VERSION);
+TankController::TankController() {
   assert(!_instance);
-  // ensure we have instances
-  SD_TC::instance()->setRemoteLogName(remoteLogName);
-  EEPROM_TC::instance();
-  Keypad_TC::instance();
-  LiquidCrystal_TC::instance(TANK_CONTROLLER_VERSION);
-  DataLogger::instance();
-  DateTime_TC::rtc();
-  Ethernet_TC::instance();
-  EthernetServer_TC::instance();
-  ThermalProbe_TC::instance();
-  ThermalControl::instance();
-  PHProbe::instance();
-  PHControl::instance();
-  PID_TC::instance();
-  state = new MainMenu();
-  pinMode(LED_BUILTIN, OUTPUT);
 }
 
 /**
@@ -159,26 +162,31 @@ void TankController::handleUI() {
 /**
  * This is one of two public instance functions.
  * It is called repeatedly while the board is on.
- * (It appears to be called about once every 15 ms.)
  */
 void TankController::loop(bool report_loop_delay) {
   static unsigned long lastTime = 0;
   unsigned long thisTime = millis();
   if (report_loop_delay && lastTime && thisTime - lastTime > 500) {
-    // report unusual delay
     serial(F("unexpected delay of %i ms"), thisTime - lastTime);
   }
-  lastTime = thisTime;
+  unsigned long start = millis();
   wdt_reset();
-  blink();                                // blink the on-board LED to show that we are running
-  updateControls();                       // turn CO2 and temperature controls on or off
-  handleUI();                             // look at keypad, update LCD (~90ms)
-  DataLogger::instance()->loop();         // record current data to SD and serial
-  GetTime::instance()->loop();            // update the time
-  AlertPusher::instance()->loop();        // handle requests to cloud server
-  PushingBox::instance()->loop();         // write data to Google Sheets (~1130ms every report)
-  Ethernet_TC::instance()->loop();        // renew DHCP lease
-  EthernetServer_TC::instance()->loop();  // handle any HTTP requests
+  blink();                                // blink the on-board LED to show that we are running (0ms)
+  updateControls();                       // turn CO2 and temperature controls on or off (~90ms)
+  handleUI();                             // look at keypad, update LCD (~10ms)
+  DataLogger::instance()->loop();         // record current data to SD and serial (~80ms)
+  GetTime::instance()->loop();            // update the time (~0ms)
+  PushingBox::instance()->loop();         // write data to Google Sheets (~0ms; ~1130ms every report)
+  Ethernet_TC::instance()->loop();        // renew DHCP lease (~0ms)
+  EthernetServer_TC::instance()->loop();  // handle any HTTP requests (~0ms)
+  if (report_loop_delay) {
+    static long int count = 0;
+    unsigned long loopTime = millis() - start;
+    if (+count % 10000 == 1 || loopTime > 200) {  // first time through and periodically thereafter
+      serial(F("TankController::loop() - took %lu ms (at %lu sec uptime)"), loopTime, start / 1000);
+    }
+    lastTime = millis();
+  }
 }
 
 /**
@@ -213,9 +221,7 @@ void TankController::setNextState(UIState *newState, bool update) {
  * Here we do any one-time startup initialization.
  */
 void TankController::setup() {
-  serial(F("TankController::setup()"));
-  serial(F("Free memory = %i"), freeMemory());
-  wdt_enable(WDTO_8S);
+  // all the setup happens in the instance() function
 }
 
 /**

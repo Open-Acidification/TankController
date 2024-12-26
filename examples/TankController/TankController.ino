@@ -27,8 +27,8 @@ void serialEvent1() {  // if the hardware serial port_1 receives a char
   tank->serialEvent1();
 }
 void setup() {
-  // the install process is followed by a reset and we get two startups
-  delay(500);
+  // the install process is followed by a reset and we can get two startups
+  delay(2000);
   tank = TankController::instance(remoteLogName, pushingBoxID, tzOffsetHrs);
   tank->setup();
 }

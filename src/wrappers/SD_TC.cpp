@@ -36,7 +36,7 @@ void SD_TC::deleteInstance() {
  * constructor
  */
 SD_TC::SD_TC() {
-  Serial.println(F("SD_TC()"));  // Serial_TC might not be ready yet
+  Serial.println(F("SD_TC"));  // Serial_TC might not be ready yet
   assert(_instance == nullptr);
   if (!sd.begin(SD_SELECT_PIN)) {
     Serial.println(F("SD_TC failed to initialize!"));

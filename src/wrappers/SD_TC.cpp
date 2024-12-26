@@ -1,11 +1,11 @@
 #include "wrappers/SD_TC.h"
 
 #include "model/DataLogger.h"
+#include "model/RemoteLogPusher.h"
 #include "model/TC_util.h"
 #include "wrappers/DateTime_TC.h"
 #include "wrappers/Ethernet_TC.h"
 #include "wrappers/Serial_TC.h"
-#include <RemoteLogPusher.h>
 
 //  class variables
 SD_TC* SD_TC::_instance = nullptr;
@@ -264,7 +264,7 @@ void SD_TC::setRemoteLogName(const char* newFileName) {
       strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) <= MAX_FILE_NAME_LENGTH) {
     snprintf_P(remoteLogName, MAX_FILE_NAME_LENGTH + 5, PSTR("%s.log"), newFileName);
   } else {
-    // If it remains empty, the MAC address will be used (see getRemoteLogName() above). 
+    // If it remains empty, the MAC address will be used (see getRemoteLogName() above).
     remoteLogName[0] = '\0';
   }
 }

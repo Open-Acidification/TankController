@@ -1,9 +1,9 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
-#include "RemoteLogPusher.h"
 #include "DateTime_TC.h"
 #include "PHCalibrationMid.h"
+#include "RemoteLogPusher.h"
 #include "SD_TC.h"
 #include "TC_util.h"
 #include "TankController.h"
@@ -195,7 +195,8 @@ unittest(writeRemoteLog) {
   RemoteLogPusher* pusher = RemoteLogPusher::instance();
 
   assertEqual("90A2DA807B76.log", sd->getRemoteLogName());
-  sd->updateRemoteLogFileSizeForTest();  // because sd was previously initialized, we have remoteLogFileNameIsReady == true
+  sd->updateRemoteLogFileSizeForTest();  // because sd was previously initialized, we have remoteLogFileNameIsReady ==
+                                         // true
   assertFalse(sd->exists("90A2DA807B76.log"));
   assertEqual(0, sd->getRemoteFileSize());
   pusher->setShouldSentHeadRequest(false);

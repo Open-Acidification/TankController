@@ -2,7 +2,7 @@
 #include <ArduinoUnitTests.h>
 
 #include "DateTime_TC.h"
-#include <Serial_TC.h>
+#include "Serial_TC.h"
 
 /**
  * year has to be range: 2000-2099

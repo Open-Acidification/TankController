@@ -21,7 +21,7 @@ unittest(testOutput) {
   assertEqual("0.00000         ", display->getLines().at(1));
   // Return to mainMenu
   Keypad_TC::instance()->_getPuppet()->push_back('D');
-  tc->loop(false);
+  tc->loop();
   assertEqual("MainMenu", tc->stateName());
 }
 

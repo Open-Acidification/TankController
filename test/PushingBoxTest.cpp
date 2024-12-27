@@ -55,18 +55,18 @@ unittest(NoTankID) {
   EEPROM_TC::instance()->setTankID(0);
 
   delay(30 * 1000);  // allow 30 seconds for time update
-  tc->loop(false);
+  tc->loop();
   auto expected2 = "GetTime: connected to oap.cs.wallawalla.edu";
   assertEqual(expected2, Serial_TC::instance()->getBuffer());
   Serial_TC::instance()->clearBuffer();
-  tc->loop(false);
+  tc->loop();
   delay(20 * 1000);  // allow 50 seconds (30 + 40) for RemoteLogPusher update
-  tc->loop(false);   // Trigger SD logging and Serial (DataLogger)
+  tc->loop();        // Trigger SD logging and Serial (DataLogger)
   auto expected3 = "RemoteLogPusher: connection to oap.cs.wallawalla.edu failed";
   assertEqual(expected3, Serial_TC::instance()->getBuffer());
   Serial_TC::instance()->clearBuffer();
   delay(20 * 1000);  // allow 70 seconds (30 + 20 + 20) for PushingBox update
-  tc->loop(false);   // Trigger PushingBox
+  tc->loop();        // Trigger PushingBox
   auto expected4 = "Set Tank ID in order to send data to PushingBox";
   assertEqual(expected4, Serial_TC::instance()->getBuffer());
   Serial_TC::instance()->clearBuffer();
@@ -81,10 +81,10 @@ unittest(SendData) {
                                   (const uint8_t *)"[PushingBox response]\r\n");
   assertFalse(pClient->connected());  // not yet connected!
   delay(60 * 1000);                   // allow for time update
-  tc->loop(false);
+  tc->loop();
   state->serialPort[0].dataOut = "";
   delay(10 * 1000);  // allow for PushingBox update
-  tc->loop(false);
+  tc->loop();
   char expected[] =
       "New info written to remote log\r\n"
       "GET /pushingbox?devid=PushingBoxIdentifier&tankid=99&tempData=20.25&pHdata=7.125 HTTP/1.1\r\n"
@@ -104,7 +104,7 @@ unittest(inCalibration) {
   EthernetClient::startMockServer(pPushingBox->getServerDomain(), (uint32_t)0, 80);
   assertFalse(pClient->connected());
   delay(60 * 20 * 1000);  // wait for 20 minutes to ensure we send again
-  tc->loop(false);
+  tc->loop();
   assertTrue(pClient->connected());
   assertNotNull(pClient->writeBuffer());
   deque<uint8_t> buffer = *(pClient->writeBuffer());
@@ -126,7 +126,7 @@ unittest(without_DHCP) {
   EthernetClient::startMockServer(pPushingBox->getServerDomain(), (uint32_t)0, 80);
   assertFalse(pClient->connected());
   delay(60 * 20 * 1000);  // wait for 20 minutes to ensure we still do not send
-  tc->loop(false);
+  tc->loop();
   assertFalse(pClient->connected());
 }
 
@@ -135,7 +135,7 @@ unittest(NoDeviceID) {
   EthernetClient::startMockServer(pPushingBox->getServerDomain(), (uint32_t)0, 80);
   assertFalse(pClient->connected());
   delay(60 * 20 * 1000);  // wait for 20 minutes to ensure we still do not send
-  tc->loop(false);
+  tc->loop();
   assertFalse(pClient->connected());
 }
 

@@ -125,7 +125,7 @@ void loop() {
   if (msBehind) {
     delay(msBehind);
   }
-  TankController::instance()->loop();
+  TankController::instance()->loop(true);
 }
 
 uint32_t millisecondsSinceEpoch() {

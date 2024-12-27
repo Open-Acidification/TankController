@@ -21,7 +21,7 @@ unittest(testOutput) {
   assertFalse(tc->isInCalibration());
 
   // Test the output
-  tc->loop(false);
+  tc->loop();
   assertEqual("PH Calibration  ", display->getLines().at(0));
   assertEqual("Requesting...   ", display->getLines().at(1));
   pHProbe->setCalibration(2);
@@ -30,7 +30,7 @@ unittest(testOutput) {
   assertEqual("99.7,100.3,-0.89", display->getLines().at(1));
   // Return to mainMenu
   Keypad_TC::instance()->_getPuppet()->push_back('D');
-  tc->loop(false);
+  tc->loop();
   assertEqual("MainMenu", tc->stateName());
 }
 
@@ -47,12 +47,12 @@ unittest(testTimeout) {
 
   pHProbe->setCalibration(2);
   delay(55000);
-  tc->loop(false);
+  tc->loop();
   assertTrue(tc->isInCalibration());
   assertEqual("SeePHCalibration", tc->stateName());
   delay(5000);
-  tc->loop(false);  // Set next state
-  tc->loop(false);  // Loop again to switch states
+  tc->loop();  // Set next state
+  tc->loop();  // Loop again to switch states
   assertEqual("MainMenu", tc->stateName());
   assertFalse(tc->isInCalibration());
 }

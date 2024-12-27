@@ -53,8 +53,8 @@ unittest(test) {
   assertTrue(0.49 < temperature && temperature < 0.51);
 
   // test for https://github.com/Open-Acidification/TankController/issues/174
-  tc->loop(false);
-  tc->loop(false);  // second loop needed to set the next state
+  tc->loop();
+  tc->loop();  // second loop needed to set the next state
   test = new ThermalCalibration();
   tc->setNextState(test, true);
   test->setValue(16.0);

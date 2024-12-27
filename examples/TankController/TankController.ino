@@ -34,5 +34,5 @@ void setup() {
 }
 
 void loop() {
-  tank->loop();
+  tank->loop(true);
 }

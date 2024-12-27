@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <ArduinoUnitTests.h>
 
+#include "DataLogger.h"
 #include "DateTime_TC.h"
 #include "PHControl.h"
 #include "PHProbe.h"
@@ -8,7 +9,6 @@
 #include "SD_TC.h"
 #include "TC_util.h"
 #include "TankController.h"
-#include "DataLogger.h"
 
 unittest_setup() {
   GODMODE()->reset();
@@ -176,8 +176,8 @@ unittest(noInternetConnectionWhenBubblerIsOn) {
   assertFalse(pClient->connected());
   char buffer[100];
   SD_TC::instance()->getRemoteLogContents(buffer, sizeof(buffer), 0);
-  buffer[7] = '\0';  // truncate the message
-  assertEqual("Version", buffer); // We have data to send to the server
+  buffer[7] = '\0';                // truncate the message
+  assertEqual("Version", buffer);  // We have data to send to the server
 
   // Allow start-up delay to pass; we should not send a HEAD request
   tc->loop(false);
@@ -187,7 +187,7 @@ unittest(noInternetConnectionWhenBubblerIsOn) {
   assertFalse(pusher->isReadyToPost());
   delay(40000);
   assertTrue(pusher->basicShouldSendHeadRequest());
-  assertFalse(pusher->shouldSendHeadRequest()); // because bubbler is on
+  assertFalse(pusher->shouldSendHeadRequest());  // because bubbler is on
   tc->loop(false);
   assertEqual(CLIENT_NOT_CONNECTED, pusher->getState());
   assertTrue(pusher->basicShouldSendHeadRequest());
@@ -197,7 +197,7 @@ unittest(noInternetConnectionWhenBubblerIsOn) {
   delay(7500);
   assertFalse(pClient->connected());
   assertTrue(pusher->basicShouldSendHeadRequest());
-  pHProbe->setPh(7.25); // this also does a loop() call
+  pHProbe->setPh(7.25);  // this also does a loop() call
   assertFalse(pusher->basicShouldSendHeadRequest());
   assertTrue(pClient->connected());
   assertEqual(PROCESS_HEAD_RESPONSE, pusher->getState());

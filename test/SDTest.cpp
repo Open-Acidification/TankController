@@ -41,11 +41,11 @@ unittest(tankControllerLoop) {
   if (file.size() < sizeof(data)) {
     file.read(data, file.size());
     data[file.size()] = '\0';
-    assertEqual(
+    auto expected =
         "time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd\n"
         "04/15/2021 00:00:00,   0, 0.00, 20.00, 0.000, 8.100,    1, 100000.0,      0.0,      0.0\n"
-        "04/15/2021 00:00:01,   0, 0.00, 20.00, 0.000, 8.100,    2, 100000.0,      0.0,      0.0\n",
-        data);
+        "04/15/2021 00:00:01,   0, 0.00, 20.00, 0.000, 8.100,    2, 100000.0,      0.0,      0.0\n";
+    assertEqual(expected, data);
   }
   file.close();
 }
@@ -70,10 +70,10 @@ unittest(loopInCalibration) {
   if (file.size() < sizeof(data)) {
     file.read(data, file.size());
     data[file.size()] = '\0';
-    assertEqual(
+    auto expected =
         "time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd\n"
-        "04/15/2021 00:00:03,   0, C, 20.00, C, 8.100,    3, 100000.0,      0.0,      0.0\n",
-        data);
+        "04/15/2021 00:00:03,   0, C, 20.00, C, 8.100,    3, 100000.0,      0.0,      0.0\n";
+    assertEqual(expected, data);
   }
   file.close();
 }
@@ -103,14 +103,16 @@ unittest(appendData) {
   File file = SD_TC::instance()->open("20210415.csv");
   file.read(data, file.size());
   data[file.size()] = '\0';
-  assertEqual("time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd\nline 1\nline 2\n", data);
+  auto expected1 = "time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd\nline 1\nline 2\n";
+  assertEqual(expected1, data);
   file.close();
 
   // verify contents of 16.csv
   file = SD_TC::instance()->open("20210416.csv");
   file.read(data, file.size());
   data[file.size()] = '\0';
-  assertEqual("time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd\nline 3\n", data);
+  auto expected2 = "time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd\nline 3\n";
+  assertEqual(expected2, data);
   file.close();
 }
 
@@ -195,8 +197,8 @@ unittest(writeRemoteLog) {
   RemoteLogPusher* pusher = RemoteLogPusher::instance();
 
   assertEqual("90A2DA807B76.log", sd->getRemoteLogName());
-  sd->updateRemoteLogFileSizeForTest();  // because sd was previously initialized, we have remoteLogFileNameIsReady ==
-                                         // true
+  // because sd was previously initialized, we have remoteLogFileNameIsReady == true
+  sd->updateRemoteLogFileSizeForTest();
   assertFalse(sd->exists("90A2DA807B76.log"));
   assertEqual(0, sd->getRemoteFileSize());
   pusher->setShouldSentHeadRequest(false);
@@ -205,7 +207,7 @@ unittest(writeRemoteLog) {
   // write data
   sd->writeToRemoteLog("line 1");  // also writes header row
   sd->updateRemoteLogFileSizeForTest();
-  assertTrue(pusher->shouldSendHeadRequest());
+  assertTrue(pusher->basicShouldSendHeadRequest());
   assertTrue(sd->exists("90A2DA807B76.log"));
   int size = sd->getRemoteFileSize();
   sd->writeToRemoteLog("line 2");

@@ -47,17 +47,29 @@ unittest_teardown() {
 }
 
 unittest(NoTankID) {
+  // auto expected1 = "RemoteLogPusher: connection to oap.cs.wallawalla.edu failed";
+  auto expected1 = "heater turned on at 1813 after 1813 ms";
+  assertEqual(expected1, Serial_TC::instance()->getBuffer());
+  Serial_TC::instance()->clearBuffer();
   // set tank id to 0, set time interval to 1 minute
   EEPROM_TC::instance()->setTankID(0);
 
   delay(30 * 1000);  // allow 30 seconds for time update
   tc->loop(false);
+  auto expected2 = "GetTime: connected to oap.cs.wallawalla.edu";
+  assertEqual(expected2, Serial_TC::instance()->getBuffer());
+  Serial_TC::instance()->clearBuffer();
   tc->loop(false);
-  state->serialPort[0].dataOut = "";
-  delay(40 * 1000);  // allow 70 seconds (30 + 40) for PushingBox update
-  tc->loop(false);   // Trigger SD logging and Serial (DataLogger) and PushingBox
-  char expected[] = "Set Tank ID in order to send data to PushingBox";
-  assertEqual(expected, Serial_TC::instance()->getBuffer());
+  delay(20 * 1000);  // allow 50 seconds (30 + 40) for RemoteLogPusher update
+  tc->loop(false);   // Trigger SD logging and Serial (DataLogger)
+  auto expected3 = "RemoteLogPusher: connection to oap.cs.wallawalla.edu failed";
+  assertEqual(expected3, Serial_TC::instance()->getBuffer());
+  Serial_TC::instance()->clearBuffer();
+  delay(20 * 1000);  // allow 70 seconds (30 + 20 + 20) for PushingBox update
+  tc->loop(false);   // Trigger PushingBox
+  auto expected4 = "Set Tank ID in order to send data to PushingBox";
+  assertEqual(expected4, Serial_TC::instance()->getBuffer());
+  Serial_TC::instance()->clearBuffer();
 }
 
 unittest(SendData) {

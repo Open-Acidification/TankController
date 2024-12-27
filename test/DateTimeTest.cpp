@@ -2,6 +2,7 @@
 #include <ArduinoUnitTests.h>
 
 #include "DateTime_TC.h"
+#include <Serial_TC.h>
 
 /**
  * year has to be range: 2000-2099
@@ -67,9 +68,9 @@ unittest(printToSerial) {
   GodmodeState *state = GODMODE();
   DateTime_TC january(2021, 1, 15, 1, 48, 24);
   january.setAsCurrent();
-  state->serialPort[0].dataOut = "";  // the history of data written
+  Serial_TC::instance()->clearBuffer();
   DateTime_TC::now().printToSerial();
-  assertEqual("2021-01-15 01:48:24\r\n", state->serialPort[0].dataOut);
+  assertEqual("2021-01-15 01:48:24", Serial_TC::instance()->getBuffer());
 }
 
 // Remaining test deals with simulated delays

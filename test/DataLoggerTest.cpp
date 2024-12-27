@@ -65,7 +65,7 @@ unittest(loop) {
 
   // remote log entry after one minute
   assertFalse(0.0 == thermalProbe->getSampleMean());
-  tc->loop();                                                // write info to remote log
+  tc->loop();                                                     // write info to remote log
   assertTrue(isnan(thermalProbe->getSampleMean()));               // thermal sample has been collected
   assertTrue(isnan(thermalProbe->getSampleStandardDeviation()));  // thermal sample has been reset
   char infoString[512] = "";

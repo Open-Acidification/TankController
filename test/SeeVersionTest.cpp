@@ -16,12 +16,12 @@ unittest(testOutput) {
   assertEqual("SeeVersion", tc->stateName());
 
   // Test the output
-  tc->loop(false);
+  tc->loop();
   assertEqual("Software Version", display->getLines().at(0));
   assertEqual(VERSION, display->getLines().at(1));
   // Return to mainMenu
   Keypad_TC::instance()->_getPuppet()->push_back('D');
-  tc->loop(false);
+  tc->loop();
   assertEqual("MainMenu", tc->stateName());
 }
 

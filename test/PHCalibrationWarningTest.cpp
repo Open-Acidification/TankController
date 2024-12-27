@@ -22,23 +22,23 @@ unittest(Display) {
   assertTrue(tc->isInCalibration());
 
   // Test the display
-  tc->loop(false);
+  tc->loop();
   assertEqual("BAD CALIBRATION?", display->getLines().at(0));
   assertEqual("99.7,100.3,-0.89", display->getLines().at(1));
   delay(700);
-  tc->loop(false);
+  tc->loop();
   assertEqual("                ", display->getLines().at(0));
   assertEqual("99.7,100.3,-0.89", display->getLines().at(1));
   delay(300);
-  tc->loop(false);
+  tc->loop();
   assertEqual("BAD CALIBRATION?", display->getLines().at(0));
   assertEqual("99.7,100.3,-0.89", display->getLines().at(1));
   delay(4000);
-  tc->loop(false);
+  tc->loop();
   assertEqual("A: Accept/ignore", display->getLines().at(0));
   assertEqual("C: Clear calibra", display->getLines().at(1));
   delay(3000);
-  tc->loop(false);
+  tc->loop();
   assertEqual("BAD CALIBRATION?", display->getLines().at(0));
   assertEqual("99.7,100.3,-0.89", display->getLines().at(1));
 }
@@ -58,13 +58,13 @@ unittest(Accept) {
 
   // Type 'D'
   Keypad_TC::instance()->_getPuppet()->push_back('D');
-  tc->loop(false);
+  tc->loop();
   assertEqual("PHCalibrationWarning", tc->stateName());
 
   // Type 'A'
   Keypad_TC::instance()->_getPuppet()->push_back('A');
-  tc->loop(false);
-  tc->loop(false);
+  tc->loop();
+  tc->loop();
   assertEqual("MainMenu", tc->stateName());
   assertEqual("", GODMODE()->serialPort[1].dataOut);
   assertTrue(EEPROM_TC::instance()->getIgnoreBadPHSlope());
@@ -84,13 +84,13 @@ unittest(Clear) {
 
   // Type 'B'
   Keypad_TC::instance()->_getPuppet()->push_back('B');
-  tc->loop(false);
+  tc->loop();
   assertEqual("PHCalibrationWarning", tc->stateName());
 
   // Type 'C'
   assertEqual("", GODMODE()->serialPort[1].dataOut);
   Keypad_TC::instance()->_getPuppet()->push_back('C');
-  tc->loop(false);
+  tc->loop();
   assertEqual("SeePHCalibration", tc->stateName());
   assertEqual("Cal,clear\rCAL,?\rSLOPE,?\r", GODMODE()->serialPort[1].dataOut);
   assertFalse(EEPROM_TC::instance()->getIgnoreBadPHSlope());
@@ -106,15 +106,15 @@ unittest(CatchBadCalibration) {
   assertFalse(pHProbe->shouldWarnAboutCalibration());
 
   tc->setNextState(new MainMenu());
-  tc->loop(false);
+  tc->loop();
   assertEqual("MainMenu", tc->stateName());
   assertFalse(tc->isInCalibration());
   pHProbe->setPhSlope("?SLOPE,99.7,0");  // 0% base slope is outside range
   assertTrue(pHProbe->slopeIsBad());
   assertTrue(pHProbe->shouldWarnAboutCalibration());
   assertEqual("MainMenu", tc->stateName());
-  tc->loop(false);  // catch flag and queue next state
-  tc->loop(false);  // make new state active
+  tc->loop();  // catch flag and queue next state
+  tc->loop();  // make new state active
   assertEqual("PHCalibrationWarning", tc->stateName());
 }
 
@@ -131,15 +131,15 @@ unittest(IgnoreBadCalibration) {
   assertTrue(eeprom->getIgnoreBadPHSlope());
 
   tc->setNextState(new MainMenu());
-  tc->loop(false);
+  tc->loop();
   assertEqual("MainMenu", tc->stateName());
   assertFalse(tc->isInCalibration());
   pHProbe->setPhSlope("?SLOPE,99.7,0");  // 0% base slope is outside range
   assertTrue(pHProbe->slopeIsBad());
   assertFalse(pHProbe->shouldWarnAboutCalibration());
   assertEqual("MainMenu", tc->stateName());
-  tc->loop(false);  // ignore bad calibration flag
-  tc->loop(false);  // continue to ignore flag
+  tc->loop();  // ignore bad calibration flag
+  tc->loop();  // continue to ignore flag
   assertEqual("MainMenu", tc->stateName());
 }
 

@@ -80,7 +80,7 @@ unittest(display) {
   server->loop();
   EthernetClient_CI client = server->getClient();
   TankController* tc = TankController::instance();
-  tc->loop(false);  // for main menu to idle
+  tc->loop();  // for main menu to idle
   const char request[] =
       "GET /api/1/display HTTP/1.1\r\n"
       "Host: localhost:80\r\n"
@@ -89,7 +89,7 @@ unittest(display) {
       "Accept-Language: en-US\r\n"
       "\r\n";
   client.pushToReadBuffer(request);
-  tc->loop(false);  // for targets to take effect
+  tc->loop();  // for targets to take effect
   deque<uint8_t>* pBuffer = client.writeBuffer();
   assertTrue(pBuffer->size() > 100);
   String response;
@@ -147,10 +147,10 @@ unittest(keypress) {
       "\r\n";
   assertEqual(expectedResponse, response);
   assertEqual(FINISHED, server->getState());
-  tc->loop(false);  // Loop to handle the UI press
+  tc->loop();  // Loop to handle the UI press
   assertEqual("Change settings ", lcd->getLines().at(0));
   delay(60000);  // IDLE_TIMEOUT
-  tc->loop(false);
+  tc->loop();
   assertEqual("MainMenu", tc->stateName());
   assertEqual(NOT_CONNECTED, server->getState());
   client.stop();
@@ -171,7 +171,7 @@ unittest(currentData) {
   ThermalControl::instance()->setThermalTarget(21.75);  // target
   EEPROM_TC::instance()->setHeat(0);
   PID_TC::instance()->setTunings(5000.5, 1234.46, 987.44);
-  TankController::instance()->loop(false);  // for targets to take effect
+  TankController::instance()->loop();  // for targets to take effect
 
   EthernetServer_TC* server = EthernetServer_TC::instance();
   server->setHasClientCalling(true);

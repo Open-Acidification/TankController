@@ -58,9 +58,13 @@ unittest(report_loop_delay) {
   assertEqual("New info written to remote log\r\n", state->serialPort[0].dataOut);
   state->serialPort[0].dataOut = "";  // clear serial output
 
+  tc->loop(true);  // to get the first loop delay message
+  assertEqual("TankController::loop() - took 0 ms (at 60 sec uptime)\r\n", state->serialPort[0].dataOut);
+  state->serialPort[0].dataOut = "";  // clear serial output
+
   delay(505);
   assertEqual(605, millis() / 100);
-  tc->loop();
+  tc->loop(true);
   assertEqual("", state->serialPort[0].dataIn);
   assertEqual("unexpected delay of 505 ms\r\n", state->serialPort[0].dataOut);
 }

@@ -14,7 +14,7 @@ Keypad* keypad = Keypad_TC::instance()->_getPuppet();
 // reduce duplicate code and make it more explicit
 void enterKey(char key) {
   keypad->push_back(key);
-  tc->loop(false);  // recognize and apply the key entry
+  tc->loop();  // recognize and apply the key entry
 }
 
 unittest(test) {

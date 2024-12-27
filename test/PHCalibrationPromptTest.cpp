@@ -17,13 +17,13 @@ unittest(onePoint) {
   assertEqual("1, 2 or 3 point?", lines[0]);
   assertEqual("1-pt pH calib...", lines[1]);
   assertEqual("PHCalibrationPrompt", tc->stateName());
-  tc->loop(false);  // transition to Wait
+  tc->loop();  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(1000);
   assertTrue(tc->isInCalibration());
   delay(1000);
-  tc->loop(false);  // after the delay, Wait will call setNextState to prepare to go to PHCalibrationOnly
-  tc->loop(false);  // updateState to PHCalibrationOnly
+  tc->loop();  // after the delay, Wait will call setNextState to prepare to go to PHCalibrationOnly
+  tc->loop();  // updateState to PHCalibrationOnly
   assertEqual("PHCalibrationOnly", tc->stateName());
 }
 
@@ -39,13 +39,13 @@ unittest(twoPoint) {
   assertEqual("1, 2 or 3 point?", lines[0]);
   assertEqual("2-pt pH calib...", lines[1]);
   assertEqual("PHCalibrationPrompt", tc->stateName());
-  tc->loop(false);  // transition to Wait
+  tc->loop();  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(1000);
   assertTrue(tc->isInCalibration());
   delay(1000);
-  tc->loop(false);  // after the delay, Wait will call setNextState to prepare to go to PHCalibrationHigher
-  tc->loop(false);  // updateState to PHCalibrationHigher
+  tc->loop();  // after the delay, Wait will call setNextState to prepare to go to PHCalibrationHigher
+  tc->loop();  // updateState to PHCalibrationHigher
   assertEqual("PHCalibrationHigher", tc->stateName());
 }
 
@@ -61,13 +61,13 @@ unittest(threePoint) {
   assertEqual("1, 2 or 3 point?", lines[0]);
   assertEqual("3-pt pH calib...", lines[1]);
   assertEqual("PHCalibrationPrompt", tc->stateName());
-  tc->loop(false);  // transition to Wait
+  tc->loop();  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(1000);
   assertTrue(tc->isInCalibration());
   delay(1000);
-  tc->loop(false);  // after the delay, Wait will call setNextState to prepare to go to PHCalibrationMid
-  tc->loop(false);  // updateState to PHCalibrationMid
+  tc->loop();  // after the delay, Wait will call setNextState to prepare to go to PHCalibrationMid
+  tc->loop();  // updateState to PHCalibrationMid
   assertEqual("PHCalibrationMid", tc->stateName());
 }
 
@@ -83,11 +83,11 @@ unittest(badEntry) {
   assertEqual("1, 2 or 3 point?", lines[0]);
   assertEqual("Invalid entry   ", lines[1]);
   assertEqual("PHCalibrationPrompt", tc->stateName());
-  tc->loop(false);  // transition to Wait
+  tc->loop();  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(3000);
-  tc->loop(false);  // after the delay, Wait will call setNextState to prepare to go to MainMenu
-  tc->loop(false);  // updateState to MainMenu
+  tc->loop();  // after the delay, Wait will call setNextState to prepare to go to MainMenu
+  tc->loop();  // updateState to MainMenu
   assertEqual("MainMenu", tc->stateName());
 }
 

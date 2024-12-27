@@ -20,7 +20,7 @@ public:
   // instance methods
   bool isInCalibration();
   int freeMemory();
-  void loop(bool report_loop_delay = true);
+  void loop(bool report_loop_delay = false);
   void serialEvent();
   void serialEvent1();
   void setNextState(UIState* newState, bool update = false);

@@ -23,7 +23,7 @@ unittest(testOutput) {
   assertEqual("Google Mins:    ", display->getLines().at(0));
   assertEqual("60              ", display->getLines().at(1));
   Keypad_TC::instance()->_getPuppet()->push_back('D');
-  tc->loop(false);
+  tc->loop();
   assertEqual("MainMenu", tc->stateName());
 
   // Clean up

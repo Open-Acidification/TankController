@@ -181,7 +181,7 @@ void TankController::loop(bool report_loop_delay) {
   if (report_loop_delay) {
     static long int count = 0;
     unsigned long loopTime = millis() - start;
-    if (+count % 10000 == 1 || loopTime > 200) {  // first time through and periodically thereafter
+    if (++count % 10000 == 1 || loopTime > 200) {  // first time through and periodically thereafter
       serial(F("TankController::loop() - took %lu ms (at %lu sec uptime)"), loopTime, start / 1000);
     }
     lastTime = millis();

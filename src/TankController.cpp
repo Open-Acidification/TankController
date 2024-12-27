@@ -171,14 +171,15 @@ void TankController::loop(bool report_loop_delay) {
   }
   unsigned long start = millis();
   wdt_reset();
-  blink();                                // blink the on-board LED to show that we are running (0ms)
-  updateControls();                       // turn CO2 and temperature controls on or off (~90ms)
-  handleUI();                             // look at keypad, update LCD (~10ms)
-  DataLogger::instance()->loop();         // record current data to SD and serial (~80ms)
-  GetTime::instance()->loop();            // update the time (~0ms)
-  PushingBox::instance()->loop();         // write data to Google Sheets (~0ms; ~1130ms every report)
-  Ethernet_TC::instance()->loop();        // renew DHCP lease (~0ms)
-  EthernetServer_TC::instance()->loop();  // handle any HTTP requests (~0ms)
+  blink();                                // blink the on-board LED to show that we are running
+  updateControls();                       // turn CO2 and temperature controls on or off
+  handleUI();                             // look at keypad, update LCD
+  DataLogger::instance()->loop();         // record current data to SD and serial
+  GetTime::instance()->loop();            // update the time
+  PushingBox::instance()->loop();         // write data to Google Sheets (~1130ms every report)
+  Ethernet_TC::instance()->loop();        // renew DHCP lease
+  EthernetServer_TC::instance()->loop();  // handle any HTTP requests
+  RemoteLogPusher::instance()->loop();    // push data to remote server
   if (report_loop_delay) {
     static long int count = 0;
     unsigned long loopTime = millis() - start;
@@ -239,7 +240,7 @@ void TankController::updateControls() {
   // update ThermalControl
   ThermalControl::instance()->updateControl(ThermalProbe_TC::instance()->getRunningAverage());
   // update PHControl
-  PHControl::instance()->updateControl(PHProbe::instance()->getPh());
+  PHControl::instance()->loop();
 }
 
 /**

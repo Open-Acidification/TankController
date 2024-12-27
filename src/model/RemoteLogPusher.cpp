@@ -31,8 +31,7 @@ RemoteLogPusher::RemoteLogPusher() {
 }
 
 bool RemoteLogPusher::isReadyToPost() {
-  return _isReadyToPost && millis() > delayRequestsUntilTime;
-  //      && !(PHControl::instance()->isOn());
+  return _isReadyToPost && millis() > delayRequestsUntilTime && !(PHControl::instance()->isOn());
 }
 
 void RemoteLogPusher::loop() {
@@ -209,6 +208,5 @@ void RemoteLogPusher::sendPostRequest() {
 }
 
 bool RemoteLogPusher::shouldSendHeadRequest() {
-  return _shouldSendHeadRequest && millis() > delayRequestsUntilTime;
-  //      && !(PHControl::instance()->isOn());
+  return _shouldSendHeadRequest && millis() > delayRequestsUntilTime && !(PHControl::instance()->isOn());
 }

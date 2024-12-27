@@ -20,7 +20,8 @@ unittest_setup() {
   PHControl::instance()->enablePID(0);
   PHControl::instance()->setBaseTargetPh(7.0);
   PHControl::instance()->setRampDurationHours(0.0);
-  PHControl::instance()->updateControl(7.0);
+  PHProbe::instance()->setPh(7.0);
+  PHControl::instance()->loop();
   ThermalControl::instance()->setThermalTarget(22);
   EEPROM_TC::instance()->setTankID(0);
   EEPROM_TC::instance()->setHeat(0);

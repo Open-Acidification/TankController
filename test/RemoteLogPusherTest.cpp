@@ -8,11 +8,15 @@
 #include "SD_TC.h"
 #include "TC_util.h"
 #include "TankController.h"
+#include "DataLogger.h"
 
 unittest_setup() {
   GODMODE()->reset();
   Ethernet.mockDHCP(IPAddress(192, 168, 1, 42));
   SD_TC::instance()->format();  // reset the remote log file
+  DataLogger::instance()->reset();
+  RemoteLogPusher::instance()->reset();
+  TankController::instance();
 }
 
 unittest_teardown() {
@@ -30,6 +34,7 @@ unittest(loopSendsRequests) {
   RemoteLogPusher* pusher = RemoteLogPusher::instance();
   EthernetClient* pClient = pusher->getClient();
 
+  // Set up the server to respond to the HEAD request
   assertTrue(Ethernet_TC::instance(true)->isConnectedToNetwork());
   EthernetClient::startMockServer(
     pusher->getServerDomain(), 
@@ -50,8 +55,11 @@ unittest(loopSendsRequests) {
   SD_TC::instance()->getRemoteLogContents(buffer, sizeof(buffer), 0);
   assertEqual("", buffer);
 
-  // during a loop we write to the remote log file
-  tc->loop(false);
+  DataLogger::instance()->writeWarningSoon();
+  tc->loop(false);  // write to data log
+  assertTrue(pusher->basicShouldSendHeadRequest());
+  assertFalse(pusher->shouldSendHeadRequest());
+  tc->loop(false);  // write to remote log
   assertEqual(CLIENT_NOT_CONNECTED, pusher->getState());
   SD_TC::instance()->getRemoteLogContents(buffer, sizeof(buffer), 0);
   buffer[7] = '\0';  // truncate the message
@@ -60,6 +68,7 @@ unittest(loopSendsRequests) {
   // After a start-up delay we send a HEAD request
   tc->loop(false);
   assertEqual(CLIENT_NOT_CONNECTED, pusher->getState());
+  assertTrue(pusher->basicShouldSendHeadRequest());
   assertFalse(pusher->shouldSendHeadRequest());
   assertFalse(pusher->isReadyToPost());
   delay(40000);
@@ -101,7 +110,7 @@ unittest(loopSendsRequests) {
   assertFalse(pusher->shouldSendHeadRequest());
   assertFalse(pClient->connected());
 
-  // After a brief delay we are ready to send another HEAD request
+  // After a brief delay we could send another HEAD request
   delay(4000);
   assertTrue(pusher->shouldSendHeadRequest());
 
@@ -133,15 +142,18 @@ unittest(loopSendsRequests) {
 
 unittest(noInternetConnectionWhenBubblerIsOn) {
   TankController* tc = TankController::instance();
-  PHControl* controlSolenoid = PHControl::instance();
-  PHProbe* pHProbe = PHProbe::instance();
   RemoteLogPusher* pusher = RemoteLogPusher::instance();
+  assertFalse(pusher->basicShouldSendHeadRequest());
+  EthernetClient* pClient = pusher->getClient();
 
   // Turn on the bubbler
+  PHControl* controlSolenoid = PHControl::instance();
+  PHProbe* pHProbe = PHProbe::instance();
   controlSolenoid->setBaseTargetPh(7.50);
   pHProbe->setPh(8.5);
-  // tc->loop(false);  // update the controls based on the current readings
-  // assertTrue(controlSolenoid->isOn());
+  tc->loop(false);  // update the controls based on the current readings
+  assertTrue(controlSolenoid->isOn());
+  assertTrue(pusher->basicShouldSendHeadRequest());
 
   // Set up the server to respond to the HEAD request
   assertTrue(Ethernet_TC::instance(true)->isConnectedToNetwork());
@@ -156,37 +168,40 @@ unittest(noInternetConnectionWhenBubblerIsOn) {
   );
 
   // We start the test with a fresh remote log file
+  DataLogger::instance()->writeWarningSoon();
+  assertTrue(pusher->basicShouldSendHeadRequest());
   assertFalse(pusher->shouldSendHeadRequest());
   assertFalse(pusher->isReadyToPost());
   assertEqual(CLIENT_NOT_CONNECTED, pusher->getState());
-  SD_TC::instance()->format();  // reset the remote log file
+  assertFalse(pClient->connected());
   char buffer[100];
   SD_TC::instance()->getRemoteLogContents(buffer, sizeof(buffer), 0);
-  assertEqual("", buffer);
-
-  // during a loop we write to the remote log file
-  tc->loop(false);
-  assertEqual(CLIENT_NOT_CONNECTED, pusher->getState());
-  SD_TC::instance()->getRemoteLogContents(buffer, sizeof(buffer), 0);
   buffer[7] = '\0';  // truncate the message
-  assertEqual("Version", buffer);
+  assertEqual("Version", buffer); // We have data to send to the server
 
-  // After a start-up delay we send a HEAD request
+  // Allow start-up delay to pass; we should not send a HEAD request
   tc->loop(false);
   assertEqual(CLIENT_NOT_CONNECTED, pusher->getState());
+  assertTrue(pusher->basicShouldSendHeadRequest());
   assertFalse(pusher->shouldSendHeadRequest());
   assertFalse(pusher->isReadyToPost());
   delay(40000);
-  assertTrue(pusher->shouldSendHeadRequest());
-  tc->loop(false);  // Send HEAD request to server
-  assertEqual(PROCESS_HEAD_RESPONSE, pusher->getState());
-  assertFalse(pusher->shouldSendHeadRequest());
+  assertTrue(pusher->basicShouldSendHeadRequest());
+  assertFalse(pusher->shouldSendHeadRequest()); // because bubbler is on
+  tc->loop(false);
+  assertEqual(CLIENT_NOT_CONNECTED, pusher->getState());
+  assertTrue(pusher->basicShouldSendHeadRequest());
+  assertFalse(pClient->connected());
 
-  // Turn off the bubbler
+  // Allow time to pass to turn off bubbler
   delay(7500);
-  pHProbe->setPh(7.25);
-  tc->loop(false);  // update the controls based on the current readings
-  assertFalse(controlSolenoid->isOn());
+  assertFalse(pClient->connected());
+  assertTrue(pusher->basicShouldSendHeadRequest());
+  pHProbe->setPh(7.25); // this also does a loop() call
+  assertFalse(pusher->basicShouldSendHeadRequest());
+  assertTrue(pClient->connected());
+  assertEqual(PROCESS_HEAD_RESPONSE, pusher->getState());
+  // from here on we are testing the normal case
 }
 
 unittest_main()

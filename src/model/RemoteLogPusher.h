@@ -60,11 +60,18 @@ public:
   const char *getServerDomain() {
     return serverDomain;
   }
+  bool basicShouldSendHeadRequest() {
+    return _shouldSendHeadRequest;
+  }
+
   void setShouldSentHeadRequest(bool value) {
     _shouldSendHeadRequest = value;
   }
   clientState_t getState() {
     return state;
+  }
+  void reset() {
+    _instance = nullptr;
   }
 #endif
 

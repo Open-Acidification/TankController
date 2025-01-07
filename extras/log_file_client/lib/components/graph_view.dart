@@ -3,9 +3,10 @@ import 'package:log_file_client/utils/http_client.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class GraphView extends StatefulWidget {
-  const GraphView({required this.csvPath, required this.httpClient, super.key});
+  const GraphView(
+      {required this.filePath, required this.httpClient, super.key,});
 
-  final String csvPath;
+  final String filePath;
   final HttpClient httpClient;
 
   @override
@@ -17,7 +18,7 @@ class _GraphViewState extends State<GraphView> {
   late final Future<List<LogDataLine>> logData = getLogData();
 
   Future<List<LogDataLine>> getLogData() async {
-    final table = await widget.httpClient.getLogData(widget.csvPath);
+    final table = await widget.httpClient.getLogData(widget.filePath);
     return table!;
   }
 
@@ -85,7 +86,7 @@ class _GraphViewState extends State<GraphView> {
                       name: 'temp',
                       dataSource: logData,
                       xValueMapper: (LogDataLine log, _) => log.time,
-                      yValueMapper: (LogDataLine log, _) => log.temp,
+                      yValueMapper: (LogDataLine log, _) => log.tempMean,
                       color: Colors.blue,
                       yAxisName: 'TemperatureAxis',
                     ),
@@ -94,7 +95,7 @@ class _GraphViewState extends State<GraphView> {
                       name: 'temp setpoint',
                       dataSource: logData,
                       xValueMapper: (LogDataLine log, _) => log.time,
-                      yValueMapper: (LogDataLine log, _) => log.tempSetpoint,
+                      yValueMapper: (LogDataLine log, _) => log.tempTarget,
                       dashArray: <double>[5, 5],
                       color: Colors.blue,
                       yAxisName: 'TemperatureAxis',
@@ -104,7 +105,7 @@ class _GraphViewState extends State<GraphView> {
                       name: 'pH',
                       dataSource: logData,
                       xValueMapper: (LogDataLine log, _) => log.time,
-                      yValueMapper: (LogDataLine log, _) => log.pH,
+                      yValueMapper: (LogDataLine log, _) => log.phCurrent,
                       color: Colors.green,
                       yAxisName: 'pHAxis',
                     ),
@@ -113,7 +114,7 @@ class _GraphViewState extends State<GraphView> {
                       name: 'pH setpoint',
                       dataSource: logData,
                       xValueMapper: (LogDataLine log, _) => log.time,
-                      yValueMapper: (LogDataLine log, _) => log.pHSetpoint,
+                      yValueMapper: (LogDataLine log, _) => log.phTarget,
                       dashArray: <double>[5, 5],
                       color: Colors.green,
                       yAxisName: 'pHAxis',

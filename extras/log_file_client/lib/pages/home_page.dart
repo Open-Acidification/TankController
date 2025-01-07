@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
     unawaited(_getLogList());
   }
 
-  // Fetches the list of csv files available
+  // Fetches the list of log files available
   Future<void> _getLogList() async {
     final result = await httpClient.getLogList();
     setState(() {
@@ -61,7 +61,7 @@ class _HomePageState extends State<HomePage> {
             ? const CircularProgressIndicator()
             : _openedLogIndex >= 0
                 ? GraphView(
-                    csvPath: _logList![_openedLogIndex].uri,
+                    filePath: _logList![_openedLogIndex].uri,
                     httpClient: httpClient,
                   )
                 : null,

@@ -169,8 +169,8 @@ void TankController::loop(bool report_loop_delay) {
   static unsigned long previousLoopStart = 0;
   unsigned long currentLoopStart = millis();
   if (report_loop_delay && previousLoopStart && currentLoopStart - previousLoopStart > 300) {
-    serial(F("unexpected overall delay of %i ms (at %lu sec uptime)"), 
-      currentLoopStart - previousLoopStart, millis() / 1000);
+    serial(F("unexpected overall delay of %i ms (at %lu sec uptime)"), currentLoopStart - previousLoopStart,
+           millis() / 1000);
   }
   wdt_reset();
   blink();                                // blink the on-board LED to show that we are running (0ms)
@@ -185,8 +185,7 @@ void TankController::loop(bool report_loop_delay) {
     static long int count = 0;
     unsigned long currentLoopTime = millis() - currentLoopStart;
     if (++count % 10000 == 1 || currentLoopTime > 200) {  // first time through and periodically thereafter
-      serial(F("TankController::loop() - took %lu ms (at %lu sec uptime)"), 
-        currentLoopTime, millis() / 1000);
+      serial(F("TankController::loop() - took %lu ms (at %lu sec uptime)"), currentLoopTime, millis() / 1000);
     }
   }
   previousLoopStart = currentLoopStart;

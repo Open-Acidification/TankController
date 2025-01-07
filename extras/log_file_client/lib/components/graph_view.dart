@@ -3,8 +3,11 @@ import 'package:log_file_client/utils/http_client.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class GraphView extends StatefulWidget {
-  const GraphView(
-      {required this.filePath, required this.httpClient, super.key,});
+  const GraphView({
+    required this.filePath,
+    required this.httpClient,
+    super.key,
+  });
 
   final String filePath;
   final HttpClient httpClient;

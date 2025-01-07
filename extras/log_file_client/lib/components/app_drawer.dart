@@ -21,7 +21,7 @@ class AppDrawer extends StatelessWidget {
             child: Image.asset('lib/assets/oap.png'),
           ),
 
-          // CSV files that can be opened
+          // Log files that can be opened
           Expanded(
             child: ListView.builder(
               itemCount: logList.length,

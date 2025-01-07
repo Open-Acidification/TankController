@@ -1,9 +1,6 @@
 import 'package:log_file_client/utils/http_client.dart';
 import 'package:test/test.dart';
 
-//  how to run the test
-//  flutter test test/http_client_test.dart
-
 void main() {
   test('Log constructor', () {
     final Log newLog = Log('Test1', 'Test1.test');
@@ -19,48 +16,21 @@ void main() {
       final data = await client.fetchData('logs/index.html');
       expect(
         data,
-        '<html><body><ul><li><a href="/test1.csv">/logs/test1.csv</a></li><li><a href="/test2.csv"">/logs/test2.csv</a></li><li><a href="/test3.csv">/logs/test3.csv</a></li></ul></body></html>',
+        '<html><body><ul><li><a href="/test1.log">/logs/test1.log</a></li><li><a href="/test2.log"">/logs/test2.log</a></li><li><a href="/test3.log">/logs/test3.log</a></li></ul></body></html>',
       );
     });
 
-    test('sample CSV data', () async {
-      final data = await client.fetchData('sample_short.csv');
+    test('sample log data', () async {
+      final data = await client.fetchData('sample_short.log');
       expect(
         data,
         '''
-time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd
-01/20/2023 16:18:21,  99, 0.00, 10.00, 0.000, 8.645,    6,    700.0,    100.0,      0.0
-01/20/2023 16:18:22,  99, 1.23, 10.00, 7.123, 8.645,    8,    710.0,    110.0,      1.0
-01/20/2023 16:18:23,  99, 2.34, 10.00, 6.789, 8.645,    9,    720.0,    120.0,      2.0
-01/20/2023 16:18:24,  99, 3.45, 10.00, 5.456, 8.645,   10,    730.0,    130.0,      3.0
-01/20/2023 16:18:25,  99, 4.56, 10.00, 4.123, 8.645,   11,    740.0,    140.0,      4.0''',
+1.0	49	I	2025-01-06 22:45:43		34.6	34.31	0.145	6.09	6.21	0
+1.0	49	I	2025-01-06 22:46:43		34.6	34.32	0.14	6.09	6.19	60
+1.0	49	I	2025-01-06 22:47:43		34.6	34.43	0.085	6.09	6.19	120
+1.0	49	W	2025-01-06 22:48:43							180	19:75:7F:FA:3C:9C	0.92	
+1.0	49	I	2025-01-06 22:49:43		34.6	34.23	0.185	6.09	6.06	240''',
       );
-    });
-  });
-
-  group('formatDateString', () {
-    final client = HttpClientTest();
-
-    test('formats date strings correctly', () {
-      final data1 = client.formatDateString('01/20/2023 16:18:21');
-      expect(data1, equals('2023-01-20 16:18:21'));
-
-      final data2 = client.formatDateString('02/15/2021 14:22:45');
-      expect(data2, equals('2021-02-15 14:22:45'));
-
-      final data3 = client.formatDateString('03/10/2022 09:30:12');
-      expect(data3, equals('2022-03-10 09:30:12'));
-
-      final data4 = client.formatDateString('04/05/2020 18:45:33');
-      expect(data4, equals('2020-04-05 18:45:33'));
-    });
-
-    test('returns "InvalidDate" for invalid date strings', () {
-      final data1 = client.formatDateString('11-11-2019 18:45:33');
-      expect(data1, equals('InvalidDate'));
-
-      final data2 = client.formatDateString('invalid date string');
-      expect(data2, equals('InvalidDate'));
     });
   });
 
@@ -74,18 +44,18 @@ time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd
       expect(logList.length, equals(3));
 
       // Validate the parsed log entries
-      expect(logList[0].name, equals('test1.csv'));
-      expect(logList[0].uri, equals('/test1.csv'));
+      expect(logList[0].name, equals('test1.log'));
+      expect(logList[0].uri, equals('/test1.log'));
 
-      expect(logList[1].name, equals('test2.csv'));
-      expect(logList[1].uri, equals('/test2.csv'));
+      expect(logList[1].name, equals('test2.log'));
+      expect(logList[1].uri, equals('/test2.log'));
 
-      expect(logList[2].name, equals('test3.csv'));
-      expect(logList[2].uri, equals('/test3.csv'));
+      expect(logList[2].name, equals('test3.log'));
+      expect(logList[2].uri, equals('/test3.log'));
     });
 
-    test('returns an empty list if no CSV links are present', () async {
-      // Set up a different HTML in the client with no CSV links
+    test('returns an empty list if no log links are present', () async {
+      // Set up a different HTML in the client with no log links
       client.testHTML =
           '<html><body><ul><li><a href="/logs/test1">/logs/test1</a></li></ul></body></html>';
 
@@ -98,7 +68,7 @@ time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd
     test('handles malformed HTML without throwing an error', () async {
       // Set up malformed HTML
       client.testHTML =
-          '<html><body><ul><li><a>/logs/test1.csv</a></li></body></ul>';
+          '<html><body><ul><li><a>/logs/test1.log</a></li></body></ul>';
 
       expect(() async => client.getLogList(), returnsNormally);
     });
@@ -107,92 +77,144 @@ time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd
   group('getLogData', () {
     final client = HttpClientTest();
 
-    test('accurately parses a sample CSV file', () async {
-      final logTable = await client.getLogData('sample_short.csv');
+    test('accurately parses a sample log file', () async {
+      final logTable = await client.getLogData('sample_short.log');
 
-      // Validate structure and date parsing for sample_short.csv
+      // Validate structure and date parsing for sample_short.log
       expect(logTable!.length, equals(5));
 
       expect(
         logTable,
         [
           LogDataLine(
-            DateTime.parse('2023-01-20 16:18:21'),
-            99,
-            0.00,
-            10.00,
-            0.000,
-            8.645,
-            6,
-            700.0,
-            100.0,
-            0.0,
-          ),
-          LogDataLine(
-            DateTime.parse('2023-01-20 16:18:22'),
-            99,
-            1.23,
-            10.00,
-            7.123,
-            8.645,
-            8,
-            710.0,
-            110.0,
             1.0,
+            80,
+            DateTime.parse('2025-01-07 11:02:30'),
+            31.25,
+            31.11,
+            0.07,
+            6.38,
+            6.41,
+            0,
           ),
           LogDataLine(
-            DateTime.parse('2023-01-20 16:18:23'),
-            99,
-            2.34,
-            10.00,
-            6.789,
-            8.645,
-            9,
-            720.0,
-            120.0,
-            2.0,
+            1.0,
+            80,
+            DateTime.parse('2025-01-07 11:03:30'),
+            31.25,
+            31.25,
+            0.0,
+            6.38,
+            6.38,
+            60,
           ),
           LogDataLine(
-            DateTime.parse('2023-01-20 16:18:24'),
-            99,
-            3.45,
-            10.00,
-            5.456,
-            8.645,
-            10,
-            730.0,
-            130.0,
-            3.0,
+            1.0,
+            80,
+            DateTime.parse('2025-01-07 11:04:30'),
+            31.25,
+            31.43,
+            0.09,
+            6.38,
+            6.36,
+            120,
           ),
           LogDataLine(
-            DateTime.parse('2023-01-20 16:18:25'),
-            99,
-            4.56,
-            10.00,
-            4.123,
-            8.645,
-            11,
-            740.0,
-            140.0,
-            4.0,
+            1.0,
+            80,
+            DateTime.parse('2025-01-07 11:05:30'),
+            31.25,
+            31.54,
+            0.145,
+            6.38,
+            6.46,
+            180,
+          ),
+          LogDataLine(
+            1.0,
+            80,
+            DateTime.parse('2025-01-07 11:06:30'),
+            31.25,
+            31.42,
+            0.085,
+            6.38,
+            6.35,
+            240,
           ),
         ],
       );
     });
 
-    test('handles empty CSV file without errors', () async {
-      final logTable = await client.getLogData('empty.csv');
+    test('handles empty log file without errors', () async {
+      final logTable = await client.getLogData('empty.log');
 
-      // Expect a null value for an empty CSV file
+      // Expect a null value for an empty log file
       expect(logTable, isNull);
     });
 
-    test('handles CSV with invalid values', () async {
-      final logTable = await client.getLogData('invalid_values.csv');
+    test('handles log file with calibration values', () async {
+      final logTable = await client.getLogData('calibration.log');
 
       // temp and pH values should be null
-      expect(logTable![0].temp, isNull);
-      expect(logTable[0].pH, isNull);
+      expect(logTable![0].tempMean, isNull);
+      expect(logTable[0].tempStdDev, isNull);
+      expect(logTable[0].phCurrent, isNull);
+    });
+
+    test('handles log file with warning logs', () async {
+      final logTable = await client.getLogData('warnings.log');
+
+      expect(logTable!.length, equals(4));
+
+      expect(
+        logTable,
+        [
+          LogDataLine(
+            1.0,
+            80,
+            DateTime.parse('2025-01-07 11:20:30'),
+            31.25,
+            30.81,
+            0.22,
+            6.38,
+            6.3,
+            1080,
+          ),
+          LogDataLine(
+            1.0,
+            80,
+            DateTime.parse('2025-01-07 11:21:30'),
+            31.25,
+            30.99,
+            0.13,
+            6.38,
+            6.38,
+            1140,
+          ),
+          LogDataLine(
+            1.0,
+            80,
+            DateTime.parse('2025-01-07 11:22:30'),
+            31.25,
+            31.38,
+            0.065,
+            6.38,
+            6.39,
+            1200,
+          ),
+          LogDataLine(
+            1.0,
+            80,
+            DateTime.parse('2025-01-07 11:23:30'),
+            31.25,
+            31.22,
+            0.015,
+            6.38,
+            6.34,
+            1260,
+          ),
+        ],
+      );
     });
   });
 }

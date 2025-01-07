@@ -66,7 +66,7 @@ unittest(report_loop_delay) {
   assertEqual(605, millis() / 100);
   tc->loop(true);
   assertEqual("", state->serialPort[0].dataIn);
-  assertEqual("unexpected delay of 505 ms\r\n", state->serialPort[0].dataOut);
+  assertEqual("unexpected overall delay of 505 ms (at 60 sec uptime)\r\n", state->serialPort[0].dataOut);
 }
 
 unittest_main()

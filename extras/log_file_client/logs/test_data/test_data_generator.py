@@ -1,73 +1,88 @@
-import csv
 import secrets
-from datetime import datetime, timedelta
+import time
 
-# Function to generate a random float in a range
-def secure_uniform(start, end, precision=2):
-    scale = 10 ** precision
-    return round(secrets.randbelow(int((end - start) * scale)) / scale + start, precision)
+# Helper functions to replace random with secrets
+def randint(a, b):
+    return secrets.randbelow(b - a + 1) + a
+def uniform(a, b):
+    return secrets.randbelow(int((b - a) * 100)) / 100 + a
+def random():
+    return secrets.randbelow(1_000_000) / 1_000_000
 
-# Function to generate random integers
-def secure_randint(start, end):
-    return secrets.randbelow(end - start + 1) + start
+# Constants for simulation
+tank_id = randint(1, 100)  # Generate a random tank ID as an integer
+version = "1.0"
+seconds_in_24_hours = 24 * 60 * 60
+log_interval = 60  # Generate a log every 60 seconds
 
-# Function to generate a random PID gain
-def generate_pid_gain():
-    Kp = secure_uniform(0.5, 2.0)
-    Ki = secure_uniform(0.1, 1.0)
-    Kd = secure_uniform(0.1, 1.0)
-    return Kp, Ki, Kd
+# Set consistent targets that change once or twice a day
+thermal_target = round(uniform(18.0, 35.0), 2)
+ph_target = round(uniform(6.0, 8.0), 3)
 
-# Function to generate the mockup data
-def generate_mock_data():
-    # Start time for the mock data (beginning of the day)
-    start_time = datetime(2024, 12, 16, 0, 0, 0)
-    tank_id = 99
-    temp = 20.0  # Initial temperature in °C
-    temp_setpoint = 20.0  # Initial temp setpoint
-    pH = 7.0  # Initial pH value
-    pH_setpoint = 7.0  # Initial pH setpoint
+# Helper functions to generate mock data
+def generate_timestamp(start_time, offset):
+    timestamp = time.localtime(start_time + offset)
+    return f"{timestamp.tm_year:04d}-{timestamp.tm_mon:02d}-{timestamp.tm_mday:02d} {timestamp.tm_hour:02d}:{timestamp.tm_min:02d}:{timestamp.tm_sec:02d}"
 
-    # List to store data rows
-    data = []
+def generate_thermal_data(target):
+    fluctuation = uniform(-0.5, 0.5)  # Small fluctuations around the target
+    mean = round(target + fluctuation, 2)
+    std_dev = round(abs(fluctuation) / 2, 3)  # Standard deviation proportional to fluctuation
+    return mean, std_dev
 
-    # Generate data for one day (24 hours, 1440 minutes)
-    for minute in range(1440):
-        time_stamp = (start_time + timedelta(minutes=minute)).strftime("%d/%m/%Y %H:%M:%S")
+def generate_ph_data(target):
+    fluctuation = uniform(-0.2, 0.2)  # Small fluctuations around the target
+    return round(target + fluctuation, 3)
 
-        # Change temp setpoint and temp gradually
-        if minute % 240 == 0:  # Every 4 hours change temp setpoint
-            temp_setpoint = secure_uniform(18.0, 30.0, 1)  # Secure random temp setpoint between 18°C and 30°C
+def generate_mac_address():
+    return ":".join(f"{randint(0, 255):02X}" for _ in range(6))
 
-        # Gradual change in temp based on setpoint
-        temp = round(temp + secure_uniform(-0.1, 0.3, 1), 1) if temp < temp_setpoint else round(temp + secure_uniform(-0.3, 0.1, 1), 1)
+# Generate log entries
+def generate_information_log(timestamp, uptime):
+    global thermal_target, ph_target
 
-        # Change pH setpoint and pH gradually
-        if minute % 300 == 0:  # Every 5 hours change pH setpoint
-            pH_setpoint = secure_uniform(6.5, 8.5, 1)  # Secure random pH setpoint between 6.5 and 8.5
+    # Change targets once or twice during the day
+    if random() < 0.001:  # Very low probability to simulate rare target changes
+        thermal_target = round(uniform(18.0, 35.0), 2)
+        ph_target = round(uniform(6.0, 8.0), 3)
+    if random() < 0.01:  # 1% chance of calibration mode
+        thermal_mean, thermal_std_dev, ph = "C", "C", "C"
+    else:
+        thermal_mean, thermal_std_dev = generate_thermal_data(thermal_target)
+        ph = generate_ph_data(ph_target)
 
-        # Gradual change in pH based on setpoint
-        pH = round(pH + secure_uniform(-0.1, 0.3, 1), 1) if pH < pH_setpoint else round(pH + secure_uniform(-0.3, 0.1, 1), 1)
+    return f"{version}\t{tank_id}\tI\t{timestamp}\t\t{thermal_target}\t{thermal_mean}\t{thermal_std_dev}\t{ph_target}\t{ph}\t{uptime}"
 
-        # Generate random PID gains
-        Kp, Ki, Kd = generate_pid_gain()
+def generate_warning_log(timestamp, uptime):
+    mac_address = generate_mac_address()
+    ph_slope = round(uniform(0.9, 1.1), 3)
+    return f"{version}\t{tank_id}\tW\t{timestamp}\t\t\t\t\t\t\t{uptime}\t{mac_address}\t{ph_slope}\t"
 
-        # Construct data row
-        data_row = [time_stamp, tank_id, temp, temp_setpoint, pH, pH_setpoint, secure_randint(0, 30), Kp, Ki, Kd]
-        data.append(data_row)
+# Main function to generate logs
+def generate_logs():
+    start_time = int(time.time())
+    logs = []
 
-    return data
+    for offset in range(0, seconds_in_24_hours, log_interval):
+        timestamp = generate_timestamp(start_time, offset)
+        uptime = offset  # Uptime starts at 0 and increments by log_interval
 
-# Write data to CSV file
-def write_data_to_csv(filename, data):
-    header = ['time', 'tankid', 'temp', 'temp setpoint', 'pH', 'pH setpoint', 'onTime', 'Kp', 'Ki', 'Kd']
-    with open(filename, mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(header)
-        writer.writerows(data)
+        if random() < 0.01:  # Low probability to simulate rare warning logs
+            log = generate_warning_log(timestamp, uptime)
+            logs.append(log)
+        
+        log = generate_information_log(timestamp, uptime)
+            
+        logs.append(log)
 
-# Generate and write mock data
-data = generate_mock_data()
-write_data_to_csv(r'extras\log_file_client\logs\test_data\tank_controller_data.csv', data)
+    return logs
 
-print("CSV data for tank controller has been written.")
+# Write logs to a file
+def write_logs_to_file(filename, logs):
+    with open(filename, "w") as file:
+        file.write("\n".join(logs))
+
+if __name__ == "__main__":
+    logs = generate_logs()
+    write_logs_to_file(r"extras\log_file_client\logs\test_data\mock_log_file.log", logs)
+    print("Log file 'mock_log_file.log' has been generated.")

@@ -70,7 +70,7 @@ def generate_logs():
         if random() < 0.01:  # Low probability to simulate rare warning logs
             log = generate_warning_log(timestamp, uptime)
             logs.append(log)
-        
+
         log = generate_information_log(timestamp, uptime)
             
         logs.append(log)

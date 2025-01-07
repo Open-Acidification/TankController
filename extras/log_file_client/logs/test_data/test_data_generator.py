@@ -72,7 +72,7 @@ def generate_logs():
             logs.append(log)
 
         log = generate_information_log(timestamp, uptime)
-            
+
         logs.append(log)
 
     return logs

@@ -3,7 +3,7 @@
 
 #include "Keypad_TC.h"
 
-unittest(constructor) {
+unittest(KeypadTest_constructor) {
   // Test singleton
   Keypad_TC* singleton1 = nullptr;
   singleton1 = Keypad_TC::instance();

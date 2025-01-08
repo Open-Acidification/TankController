@@ -20,7 +20,7 @@ public:
   // instance methods
   bool isInCalibration();
   int freeMemory();
-  void loop(bool report_loop_delay = true);
+  void loop(bool report_loop_delay = false);
   void serialEvent();
   void serialEvent1();
   void setNextState(UIState* newState, bool update = false);
@@ -42,7 +42,7 @@ private:
   char nextKey = 0;
 
   // instance methods
-  TankController(const char* remoteLogName);
+  TankController();
   ~TankController();
   void blink();
   void handleUI();

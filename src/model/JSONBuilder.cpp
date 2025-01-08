@@ -44,7 +44,7 @@ int JSONBuilder::buildCurrentValues() {
   char pHSlope[20];
   float pHSineAmplitude = 0.0;
   if ((EEPROM_TC::instance()->getPhSinePeriod() / 3600.0) > 0) {
-    pHSineAmplitude = (PHControl::instance()->getAmplitude() ? PHControl::instance()->getAmplitude() : 0);
+    pHSineAmplitude = PHControl::instance()->getAmplitude();
   }
   int pHSineAmplitude_f = (int)(pHSineAmplitude * 1000 + 0.5) % 1000;
   while (pHSineAmplitude_f && pHSineAmplitude_f % 10 == 0) {
@@ -111,7 +111,7 @@ int JSONBuilder::buildCurrentValues() {
   float pH_SinePeriodHours = 0.0;
   int pH_SinePeriodHours_f = 0;
   // if sine amplitude is nonzero, then we are in sine mode and display the sine period
-  if (pHSineAmplitude != 0) {
+  if (pHSineAmplitude > 0.01) {
     pH_SinePeriodHours = EEPROM_TC::instance()->getPhSinePeriod() / 3600.0;
   }
   if (pH_SinePeriodHours > 0) {

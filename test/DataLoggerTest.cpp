@@ -38,7 +38,7 @@ unittest(loop) {
   assertEqual("", sd->mostRecentRemoteLogEntry);
 
   // initial loop
-  tc->loop(false);
+  tc->loop();
   assertEqual("", sd->mostRecentDataLogHeader);
   assertEqual("", sd->mostRecentDataLogLine);
   assertEqual("heater turned on at 6 after 6 ms", serialPort->getBuffer());
@@ -47,10 +47,10 @@ unittest(loop) {
 
   // data log after one second
   delay(1000);
-  tc->loop(false);  // write to data log
-  tc->loop(false);  // should not write to serial log
-  tc->loop(false);  // should not write data to remote log
-  tc->loop(false);  // should not write warning to remote log
+  tc->loop();  // write to data log
+  tc->loop();  // should not write to serial log
+  tc->loop();  // should not write data to remote log
+  tc->loop();  // should not write warning to remote log
   assertEqual("time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd", sd->mostRecentDataLogHeader);
   assertEqual("08/15/2023 00:00:01,   0, 0.00, 20.00, 0.000, 8.100,    1, 100000.0,      0.0,      0.0",
               sd->mostRecentDataLogLine);
@@ -59,13 +59,13 @@ unittest(loop) {
 
   // serial log after one minute
   delay(59000);
-  tc->loop(false);  // write to data log
-  tc->loop(false);  // write to serial log
+  tc->loop();  // write to data log
+  tc->loop();  // write to serial log
   assertEqual("00:01 pH=0.000 temp= 0.00", serialPort->getBuffer());
 
   // remote log entry after one minute
   assertFalse(0.0 == thermalProbe->getSampleMean());
-  tc->loop(false);                                                // write info to remote log
+  tc->loop();                                                     // write info to remote log
   assertTrue(isnan(thermalProbe->getSampleMean()));               // thermal sample has been collected
   assertTrue(isnan(thermalProbe->getSampleStandardDeviation()));  // thermal sample has been reset
   char infoString[512] = "";
@@ -89,7 +89,7 @@ unittest(writeWarningToLog) {
   dl->writeWarningSoon();
   assertTrue(dl->getShouldWriteWarning());
   delay(19000);
-  tc->loop(false);  // write the warning
+  tc->loop();  // write the warning
   char warningString[512] = "";
   snprintf(warningString, sizeof(warningString), "%s\t%s", VERSION,
            "0\tW\t2023-08-15 "

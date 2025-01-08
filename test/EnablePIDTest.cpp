@@ -26,11 +26,11 @@ unittest(DisablePID) {
   test->setValue(9.0);
   assertFalse(PHControl::instance()->getUsePID());
   assertEqual("EnablePID", tc->stateName());
-  tc->loop(false);  // transition to Wait
+  tc->loop();  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(3000);
-  tc->loop(false);  // after the delay, Wait will call setNextState
-  tc->loop(false);  // now transition back to main
+  tc->loop();  // after the delay, Wait will call setNextState
+  tc->loop();  // now transition back to main
   assertEqual("MainMenu", tc->stateName());
 }
 
@@ -42,11 +42,11 @@ unittest(EnablePID) {
   test->setValue(1.0);
   assertTrue(PHControl::instance()->getUsePID());
   assertEqual("EnablePID", tc->stateName());
-  tc->loop(false);  // transition to Wait
+  tc->loop();  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(3000);
-  tc->loop(false);  // after the delay, Wait will call setNextState
-  tc->loop(false);  // now transition back to main
+  tc->loop();  // after the delay, Wait will call setNextState
+  tc->loop();  // now transition back to main
   assertEqual("MainMenu", tc->stateName());
 }
 

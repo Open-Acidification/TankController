@@ -30,7 +30,7 @@ unittest(TestVerticalScrollWithFlatSet) {
   // Transition states
   assertEqual("MainMenu", tc->stateName());
   tc->setNextState(test, true);  // MainMenu -> SeePh nextState: Wait
-  tc->loop(false);
+  tc->loop();
   assertEqual("SeePh", tc->stateName());
 
   // Set up
@@ -57,7 +57,7 @@ unittest(TestVerticalScrollWithFlatSet) {
   assertEqual("7.06 7.062 7.062", lc->getLines().at(1));
 
   Keypad_TC::instance()->_getPuppet()->push_back('D');
-  tc->loop(false);
+  tc->loop();
   assertEqual("MainMenu", tc->stateName());
 }
 
@@ -70,7 +70,7 @@ unittest(TestVerticalScrollWithRampSet) {
   // Transition states
   assertEqual("MainMenu", tc->stateName());
   tc->setNextState(test, true);  // MainMenu -> SeePh nextState: Wait
-  tc->loop(false);
+  tc->loop();
   assertEqual("SeePh", tc->stateName());
 
   // Set up
@@ -104,7 +104,7 @@ unittest(TestVerticalScrollWithRampSet) {
   assertEqual("Now  Next  Goal ", lc->getLines().at(0));
   assertEqual("7.67 7.000 7.000", lc->getLines().at(1));
   delay(3000);
-  tc->loop(false);
+  tc->loop();
   assertEqual("type: ramp      ", lc->getLines().at(0));
   assertEqual("left: 0:0:0     ", lc->getLines().at(1));
   delay(3000);
@@ -113,7 +113,7 @@ unittest(TestVerticalScrollWithRampSet) {
   assertEqual("7.00 7.000 7.000", lc->getLines().at(1));
 
   Keypad_TC::instance()->_getPuppet()->push_back('D');
-  tc->loop(false);
+  tc->loop();
   assertEqual("MainMenu", tc->stateName());
 }
 
@@ -126,7 +126,7 @@ unittest(TestVerticalScrollWithSineSet) {
   // Transition states
   assertEqual("MainMenu", tc->stateName());
   tc->setNextState(test, true);  // MainMenu -> SeePh nextState: Wait
-  tc->loop(false);
+  tc->loop();
   assertEqual("SeePh", tc->stateName());
 
   // Set up
@@ -153,7 +153,7 @@ unittest(TestVerticalScrollWithSineSet) {
   assertEqual("p=0.125 a=1.500 ", lc->getLines().at(1));
 
   Keypad_TC::instance()->_getPuppet()->push_back('D');
-  tc->loop(false);
+  tc->loop();
   assertEqual("MainMenu", tc->stateName());
 }
 

@@ -19,12 +19,12 @@ unittest(testOutput) {
   // Test the output
   char reference[17];
   snprintf_P(reference, sizeof(reference), (PGM_P)F("%4i%02i%02i.csv       "), now.year(), now.month(), now.day());
-  tc->loop(false);
+  tc->loop();
   assertEqual("Current Log File", display->getLines().at(0));
   assertEqual(reference, display->getLines().at(1).c_str());
   // Return to mainMenu
   Keypad_TC::instance()->_getPuppet()->push_back('D');
-  tc->loop(false);
+  tc->loop();
   assertEqual("MainMenu", tc->stateName());
 }
 

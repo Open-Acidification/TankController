@@ -59,7 +59,7 @@ unittest(basicOperation) {
   float avgTemp = static_cast<int16_t>((thermalProbe->getRunningAverage() * 100.0 + 0.5)) / 100.0;
   assertEqual(16.75, avgTemp);
   assertEqual(7.125, pHProbe->getPh());
-  tc->loop(false);
+  tc->loop();
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_PIN]);  // solenoid off
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_PIN]);    // solenoid off
 
@@ -69,9 +69,9 @@ unittest(basicOperation) {
 
   // verify that solonoids are on
   delay(1000);
-  tc->loop(false);
+  tc->loop();
   delay(1000);
-  tc->loop(false);
+  tc->loop();
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[TEMP_PIN]);  // solenoid on
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_PIN]);    // solenoid on
 
@@ -81,9 +81,9 @@ unittest(basicOperation) {
 
   // verify that solonoids are off
   delay(1000);
-  tc->loop(false);
+  tc->loop();
   delay(1000);
-  tc->loop(false);
+  tc->loop();
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[TEMP_PIN]);
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_PIN]);
 }
@@ -95,7 +95,7 @@ unittest(storeDataToSD) {
   delay(10000);
   for (size_t i = 0; i < 4; ++i) {
     delay(500);
-    tc->loop(false);
+    tc->loop();
   }
   /*
     time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd

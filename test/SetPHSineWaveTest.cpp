@@ -56,11 +56,11 @@ unittest(test) {
   assertEqual("New pH=7.125    ", lines[0]);
   assertEqual("A=2.125 P=1.500 ", lines[1]);
   assertEqual("SetPHSineWave", tc->stateName());
-  tc->loop(false);  // transition to Wait
+  tc->loop();  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(3000);
-  tc->loop(false);  // queue MainMenu to be next
-  tc->loop(false);  // transition to MainMenu
+  tc->loop();  // queue MainMenu to be next
+  tc->loop();  // transition to MainMenu
   // now we should be back to the main menu
   assertEqual("MainMenu", tc->stateName());
 }

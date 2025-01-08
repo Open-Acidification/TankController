@@ -23,7 +23,7 @@ unittest(onePointMid) {
   pHProbe->setPh(7.325);
   lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("              0 ", lines.at(1));
-  tc->loop(false);
+  tc->loop();
   lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("              0 ", lines.at(1));
   // setValue
@@ -32,13 +32,13 @@ unittest(onePointMid) {
   lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("Buffer = 12.345 ", lines.at(1));
   assertEqual("PHCalibrationOnly", tc->stateName());
-  tc->loop(false);  // transition to Wait
+  tc->loop();  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(2000);
   assertTrue(tc->isInCalibration());
   delay(1000);
-  tc->loop(false);  // after the delay, Wait will call setNextState to prepare to go to SeePHCalibration
-  tc->loop(false);  // updateState to SeePHCalibration
+  tc->loop();  // after the delay, Wait will call setNextState to prepare to go to SeePHCalibration
+  tc->loop();  // updateState to SeePHCalibration
   assertEqual("SeePHCalibration", tc->stateName());
   assertTrue(tc->isInCalibration());
 }
@@ -60,7 +60,7 @@ unittest(twoPointMid) {
   pHProbe->setPh(7.325);
   lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("              0 ", lines.at(1));
-  tc->loop(false);
+  tc->loop();
   lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("              0 ", lines.at(1));
   // setValue
@@ -69,13 +69,13 @@ unittest(twoPointMid) {
   lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("Higher = 12.345 ", lines.at(1));
   assertEqual("PHCalibrationHigher", tc->stateName());
-  tc->loop(false);  // transition to Wait
+  tc->loop();  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(2000);
   assertTrue(tc->isInCalibration());
   delay(1000);
-  tc->loop(false);  // after the delay, Wait will call setNextState to prepare to go to PHCalibrationLower
-  tc->loop(false);  // updateState to PHCalibrationLower
+  tc->loop();  // after the delay, Wait will call setNextState to prepare to go to PHCalibrationLower
+  tc->loop();  // updateState to PHCalibrationLower
   assertEqual("PHCalibrationLower", tc->stateName());
   assertTrue(tc->isInCalibration());
 }
@@ -97,7 +97,7 @@ unittest(threePointMid) {
   pHProbe->setPh(7.325);
   lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("              0 ", lines.at(1));
-  tc->loop(false);
+  tc->loop();
   lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("              0 ", lines.at(1));
   // setValue
@@ -106,13 +106,13 @@ unittest(threePointMid) {
   lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("Mid = 12.345    ", lines.at(1));
   assertEqual("PHCalibrationMid", tc->stateName());
-  tc->loop(false);  // transition to Wait
+  tc->loop();  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(2000);
   assertTrue(tc->isInCalibration());
   delay(1000);
-  tc->loop(false);  // after the delay, Wait will call setNextState to prepare to go to PHCalibrationHigh
-  tc->loop(false);  // updateState to PHCalibrationHigh
+  tc->loop();  // after the delay, Wait will call setNextState to prepare to go to PHCalibrationHigh
+  tc->loop();  // updateState to PHCalibrationHigh
   assertEqual("PHCalibrationHigh", tc->stateName());
   assertTrue(tc->isInCalibration());
 }
@@ -133,17 +133,17 @@ unittest(keyEntry) {
   assertEqual("              0 ", lc->getLines().at(1));
   pHProbe->setPh(7.325);
   assertEqual("              0 ", lc->getLines().at(1));
-  tc->loop(false);
+  tc->loop();
   assertEqual("              0 ", lc->getLines().at(1));
 
   // See whether a typed '7' causes the display to update correctly
   test->handleKey('7');
-  tc->loop(false);
+  tc->loop();
   assertEqual("              7 ", lc->getLines().at(1));
 
   // See whether a typed 'D' causes the calibration status to be shown
   test->handleKey('D');
-  tc->loop(false);
+  tc->loop();
   assertEqual("SeePHCalibration", tc->stateName());
   assertTrue(tc->isInCalibration());
 }

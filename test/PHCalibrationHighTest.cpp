@@ -17,13 +17,13 @@ unittest(test) {
   std::vector<String> lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("High = 12.345   ", lines[1]);
   assertEqual("PHCalibrationHigh", tc->stateName());
-  tc->loop(false);  // transition to Wait
+  tc->loop();  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(2000);
   assertTrue(tc->isInCalibration());
   delay(1000);
-  tc->loop(false);  // after the delay, Wait will call setNextState to prepare to go to PHCalibrationLow
-  tc->loop(false);  // updateState to PHCalibrationLow
+  tc->loop();  // after the delay, Wait will call setNextState to prepare to go to PHCalibrationLow
+  tc->loop();  // updateState to PHCalibrationLow
   assertEqual("PHCalibrationLow", tc->stateName());
   assertTrue(tc->isInCalibration());
 }

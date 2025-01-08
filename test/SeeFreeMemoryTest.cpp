@@ -22,7 +22,7 @@ unittest(testOutput) {
   assertEqual(0, strcmp("1024 bytes      ", line2.c_str()));
   // Return to mainMenu
   Keypad_TC::instance()->_getPuppet()->push_back('D');
-  tc->loop(false);
+  tc->loop();
   assertEqual("MainMenu", tc->stateName());
 }
 

@@ -20,7 +20,7 @@ Keypad* keypad = Keypad_TC::instance()->_getPuppet();
 // reduce duplicate code and make it more explicit
 void enterKey(char key) {
   keypad->push_back(key);
-  tc->loop(false);  // recognize and apply the key entry
+  tc->loop();  // recognize and apply the key entry
 }
 
 unittest_setup() {
@@ -30,7 +30,7 @@ unittest_setup() {
   ThermalControl::enableHeater(true);
   ThermalControl::instance()->setThermalTarget(15.75);
   ThermalProbe_TC::instance()->setTemperature(12.25, true);
-  tc->loop(false);  // recognize and apply the targets
+  tc->loop();  // recognize and apply the targets
   enterKey('D');
 }
 
@@ -49,11 +49,11 @@ unittest(MainMenu) {
   assertEqual("pH=0.000   8.100", lc->getLines().at(0));
   assertEqual("T=12.23 H 15.75 ", lc->getLines().at(1));
   delay(1000);
-  tc->loop(false);
+  tc->loop();
   assertEqual("pH 0.000   8.100", lc->getLines().at(0));
   assertEqual("T 12.23 H 15.75 ", lc->getLines().at(1));
   delay(1000);
-  tc->loop(false);
+  tc->loop();
   assertEqual("pH=0.000   8.100", lc->getLines().at(0));
   assertEqual("T=12.23 H 15.75 ", lc->getLines().at(1));
 }
@@ -113,10 +113,10 @@ unittest(ViewTime) {
   enterKey('6');
   assertEqual(DateTime_TC::now().as16CharacterString(), lc->getLines().at(0).c_str());
   delay(6000);
-  tc->loop(false);
+  tc->loop();
   assertEqual("SeeDeviceUptime", tc->stateName());
   delay(55000);  // idle timeout should return to main menu
-  tc->loop(false);
+  tc->loop();
   assertEqual("MainMenu", tc->stateName());
 }
 
@@ -129,7 +129,7 @@ unittest(DisableTimeout) {
   enterKey('6');
   assertEqual("PHCalibrationPrompt", tc->stateName());
   delay(65000);  // wait for over 60 seconds to verify that it does not return to main menu
-  tc->loop(false);
+  tc->loop();
   assertEqual("PHCalibrationPrompt", tc->stateName());
 }
 

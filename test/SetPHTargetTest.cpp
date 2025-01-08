@@ -53,11 +53,11 @@ unittest(test_target_of_7_125_with_ramp_of_4_125) {
   assertEqual("New pH=7.125    ", lines[0]);
   assertEqual("New ramp=4.125  ", lines[1]);
   assertEqual("SetPHTarget", tc->stateName());
-  tc->loop(false);  // transition to Wait
+  tc->loop();  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(3000);
-  tc->loop(false);  // queue MainMenu to be next
-  tc->loop(false);  // transition to MainMenu
+  tc->loop();  // queue MainMenu to be next
+  tc->loop();  // transition to MainMenu
   // now we should be back to the main menu
   assertEqual("MainMenu", tc->stateName());
 }
@@ -82,11 +82,11 @@ unittest(test_target_of_14_with_ramp_of_0) {
 
   // complete cycle back to main menu
   assertEqual("SetPHTarget", tc->stateName());
-  tc->loop(false);  // transition to Wait
+  tc->loop();  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(3000);
-  tc->loop(false);  // queue MainMenu to be next
-  tc->loop(false);  // transition to MainMenu
+  tc->loop();  // queue MainMenu to be next
+  tc->loop();  // transition to MainMenu
   // now we should be back to the main menu
   assertEqual("MainMenu", tc->stateName());
   // note that the following shows only two digits after the decimal

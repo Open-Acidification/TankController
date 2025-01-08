@@ -16,13 +16,13 @@ unittest(twoPointLow) {
   std::vector<String> lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("Lower = 12.345  ", lines[1]);
   assertEqual("PHCalibrationLower", tc->stateName());
-  tc->loop(false);  // transition to Wait
+  tc->loop();  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(2000);
   assertTrue(tc->isInCalibration());
   delay(1000);
-  tc->loop(false);  // after the delay, Wait will call setNextState to prepare to go to SeePHCalibration
-  tc->loop(false);  // updateState to SeePHCalibration
+  tc->loop();  // after the delay, Wait will call setNextState to prepare to go to SeePHCalibration
+  tc->loop();  // updateState to SeePHCalibration
   assertEqual("SeePHCalibration", tc->stateName());
   assertTrue(tc->isInCalibration());
 }
@@ -38,13 +38,13 @@ unittest(threePointLow) {
   std::vector<String> lines = LiquidCrystal_TC::instance()->getLines();
   assertEqual("Low = 12.345    ", lines[1]);
   assertEqual("PHCalibrationLow", tc->stateName());
-  tc->loop(false);  // transition to Wait
+  tc->loop();  // transition to Wait
   assertEqual("Wait", tc->stateName());
   delay(2000);
   assertTrue(tc->isInCalibration());
   delay(1000);
-  tc->loop(false);  // after the delay, Wait will call setNextState to prepare to go to SeePHCalibration
-  tc->loop(false);  // updateState to SeePHCalibration
+  tc->loop();  // after the delay, Wait will call setNextState to prepare to go to SeePHCalibration
+  tc->loop();  // updateState to SeePHCalibration
   assertEqual("SeePHCalibration", tc->stateName());
   assertTrue(tc->isInCalibration());
 }

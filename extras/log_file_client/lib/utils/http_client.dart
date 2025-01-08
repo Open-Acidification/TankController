@@ -13,32 +13,29 @@ class Log {
 
 class LogDataLine {
   LogDataLine(
-    this.time,
+    this.version,
     this.tankid,
-    this.temp,
-    this.tempSetpoint,
-    this.pH,
-    this.pHSetpoint,
+    this.time,
+    this.tempTarget,
+    this.tempMean,
+    this.tempStdDev,
+    this.phTarget,
+    this.phCurrent,
     this.onTime,
-    this.kp,
-    this.ki,
-    this.kd,
   );
-  final DateTime time;
+  final double version;
   final int tankid;
-  final double? temp;
-  final double? tempSetpoint;
-  final double? pH;
-  final double? pHSetpoint;
+  final DateTime time;
+  final double? tempTarget;
+  final double? tempMean;
+  final double? tempStdDev;
+  final double? phTarget;
+  final double? phCurrent;
   final int? onTime;
-  final double? kp;
-  final double? ki;
-  final double? kd;
 
   @override
   String toString() {
-    return 'LogDataLine(tankid: $tankid, time: $time, temp: $temp, tempSetpoint: $tempSetpoint, '
-        'pH: $pH, pHSetpoint: $pHSetpoint, onTime: $onTime, kp: $kp, ki: $ki, kd: $kd)';
+    return 'LogDataLine(version: $version, tankid: $tankid, time: $time, tempTarget: $tempTarget, tempMean: $tempMean, tempStdDev: $tempStdDev, phTarget: $phTarget, phCurrent: $phCurrent, onTime: $onTime)';
   }
 
   @override
@@ -49,30 +46,28 @@ class LogDataLine {
     if (other is! LogDataLine) {
       return false;
     }
-    return time == other.time &&
-        tankid == other.tankid &&
-        temp == other.temp &&
-        tempSetpoint == other.tempSetpoint &&
-        pH == other.pH &&
-        pHSetpoint == other.pHSetpoint &&
-        onTime == other.onTime &&
-        kp == other.kp &&
-        ki == other.ki &&
-        kd == other.kd;
+    return other.version == version &&
+        other.tankid == tankid &&
+        other.time == time &&
+        other.tempTarget == tempTarget &&
+        other.tempMean == tempMean &&
+        other.tempStdDev == tempStdDev &&
+        other.phTarget == phTarget &&
+        other.phCurrent == phCurrent &&
+        other.onTime == onTime;
   }
 
   @override
   int get hashCode => Object.hash(
-        time,
+        version,
         tankid,
-        temp,
-        tempSetpoint,
-        pH,
-        pHSetpoint,
+        time,
+        tempTarget,
+        tempMean,
+        tempStdDev,
+        phTarget,
+        phCurrent,
         onTime,
-        kp,
-        ki,
-        kd,
       );
 }
 
@@ -80,17 +75,6 @@ abstract class HttpClient {
   HttpClient();
 
   Future<String> fetchData(String filePath);
-
-  String formatDateString(String dateString) {
-    final parts = dateString.split(RegExp('[ /:]'));
-    if (parts.length == 6) {
-      final formattedDateString =
-          '${parts[2]}-${parts[0]}-${parts[1]} ${parts[3]}:${parts[4]}:${parts[5]}';
-      return formattedDateString;
-    } else {
-      return 'InvalidDate';
-    }
-  }
 
   Future<List<Log>> getLogList() async {
     // Fetch data from server
@@ -104,7 +88,7 @@ abstract class HttpClient {
               e.children[0].attributes.containsKey('href')) {
             final innerHtml = e.children[0].innerHtml;
             final name = innerHtml.substring(innerHtml.lastIndexOf('/') + 1);
-            if (e.children[0].attributes['href']!.endsWith('.csv')) {
+            if (e.children[0].attributes['href']!.endsWith('.log')) {
               return [name, e.children[0].attributes['href']!];
             }
           }
@@ -124,38 +108,36 @@ abstract class HttpClient {
       return null;
     }
 
-    final List<List<dynamic>> csvTable =
-        const CsvToListConverter(eol: '\n').convert(data);
+    final List<List<dynamic>> logTable =
+        const CsvToListConverter(fieldDelimiter: '\t', eol: '\n').convert(data);
 
-    // Parse the date strings in the first column of each row
-    for (int i = 1; i < csvTable.length; i++) {
-      final parsedDate =
-          DateTime.tryParse(formatDateString(csvTable[i][0].toString()));
+    // Parse the date strings
+    for (int i = 0; i < logTable.length; i++) {
+      final parsedDate = DateTime.tryParse(logTable[i][3]);
 
       if (parsedDate == null) {
         throw FormatException(
-          'Invalid date format in row ${i + 1}: ${csvTable[i][0].toString()}',
+          'Invalid date format in row ${i + 1}: ${logTable[i][3].toString()}',
         );
       }
 
-      csvTable[i][0] = parsedDate;
+      logTable[i][3] = parsedDate;
     }
 
     // Convert the list of lists to a list of LogDataLine objects
-    final List<LogDataLine> logData = csvTable
-        .sublist(1)
+    final List<LogDataLine> logData = logTable
+        .where((row) => row[2] == 'I') // Filter out non-data rows
         .map(
           (e) => LogDataLine(
-            e[0],
-            e[1],
-            e[2] is double ? e[2] : (e[2] is int ? e[2].toDouble() : null),
-            e[3] is double ? e[3] : (e[3] is int ? e[3].toDouble() : null),
-            e[4] is double ? e[4] : (e[4] is int ? e[4].toDouble() : null),
+            e[0].toDouble(),
+            e[1].toInt(),
+            e[3],
             e[5] is double ? e[5] : (e[5] is int ? e[5].toDouble() : null),
-            e[6] is int ? e[6] : (e[6] is double ? e[6].toInt() : null),
+            e[6] is double ? e[6] : (e[6] is int ? e[6].toDouble() : null),
             e[7] is double ? e[7] : (e[7] is int ? e[7].toDouble() : null),
             e[8] is double ? e[8] : (e[8] is int ? e[8].toDouble() : null),
             e[9] is double ? e[9] : (e[9] is int ? e[9].toDouble() : null),
+            e[10] is int ? e[10] : (e[10] is double ? e[10].toInt() : null),
           ),
         )
         .toList();
@@ -187,38 +169,38 @@ class HttpClientProd extends HttpClient {
 }
 
 class HttpClientTest extends HttpClient {
-  // Fetches data from a hard-coded string (short) or the local Dart file (1000 sample lines) for testing purposes
+  // Fetches data from a hard-coded string (short) or the local Dart file (1440 sample lines) for testing purposes
   HttpClientTest();
 
   late String testHTML =
-      '<html><body><ul><li><a href="/test1.csv">/logs/test1.csv</a></li><li><a href="/test2.csv"">/logs/test2.csv</a></li><li><a href="/test3.csv">/logs/test3.csv</a></li></ul></body></html>';
+      '<html><body><ul><li><a href="/test1.log">/logs/test1.log</a></li><li><a href="/test2.log"">/logs/test2.log</a></li><li><a href="/test3.log">/logs/test3.log</a></li></ul></body></html>';
 
   @override
   Future<String> fetchData(String filePath) async {
     if (filePath == 'logs/index.html') {
       return testHTML;
-    } else if (filePath == 'sample_short.csv') {
+    } else if (filePath == 'sample_short.log') {
       return '''
-time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd
-01/20/2023 16:18:21,  99, 0.00, 10.00, 0.000, 8.645,    6,    700.0,    100.0,      0.0
-01/20/2023 16:18:22,  99, 1.23, 10.00, 7.123, 8.645,    8,    710.0,    110.0,      1.0
-01/20/2023 16:18:23,  99, 2.34, 10.00, 6.789, 8.645,    9,    720.0,    120.0,      2.0
-01/20/2023 16:18:24,  99, 3.45, 10.00, 5.456, 8.645,   10,    730.0,    130.0,      3.0
-01/20/2023 16:18:25,  99, 4.56, 10.00, 4.123, 8.645,   11,    740.0,    140.0,      4.0''';
-    } else if (filePath == 'sample_long.csv') {
+1.0	80	I	2025-01-07 11:02:30		31.25	31.11	0.07	6.38	6.41	0
+1.0	80	I	2025-01-07 11:03:30		31.25	31.25	0.0	6.38	6.38	60
+1.0	80	I	2025-01-07 11:04:30		31.25	31.43	0.09	6.38	6.36	120
+1.0	80	I	2025-01-07 11:05:30		31.25	31.54	0.145	6.38	6.46	180
+1.0	80	I	2025-01-07 11:06:30		31.25	31.42	0.085	6.38	6.35	240''';
+    } else if (filePath == 'sample_long.log') {
       return sampleData();
-    } else if (filePath == 'invalid_date.csv') {
+    } else if (filePath == 'calibration.log') {
       return '''
-      time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd
-      01-20-2023 16:18:21,  99, 0.00, 10.00, 0.000, 8.645,    6,    700.0,    100.0,      0.0
-      01/20/2023 16:18:22,  99, 1.23, 10.00, 7.123, 8.645,    8,    710.0,    110.0,      1.0
-      ''';
-    } else if (filePath == 'invalid_values.csv') {
+1.0	80	I	2025-01-07 11:09:30		31.25	C	C	6.38	C	420
+1.0	80	I	2025-01-07 11:10:30		31.25	31.5	0.125	6.38	6.44	480''';
+    } else if (filePath == 'warnings.log') {
       return '''
-time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd
-01/20/2023 16:49:44,  99, C, 11.00, C, 8.645,  959,    700.0,    100.0,      0.0
+1.0	80	I	2025-01-07 11:20:30		31.25	30.81	0.22	6.38	6.3	1080
+1.0	80	I	2025-01-07 11:21:30		31.25	30.99	0.13	6.38	6.38	1140
+1.0	80	W	2025-01-07 11:22:30							1200	FD:C7:B3:E5:DC:8A	0.99	
+1.0	80	I	2025-01-07 11:22:30		31.25	31.38	0.065	6.38	6.39	1200
+1.0	80	I	2025-01-07 11:23:30		31.25	31.22	0.015	6.38	6.34	1260
 ''';
-    } else if (filePath == 'empty.csv') {
+    } else if (filePath == 'empty.log') {
       return '';
     } else {
       throw Exception('Failed to fetch data from $filePath');

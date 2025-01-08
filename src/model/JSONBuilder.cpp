@@ -44,7 +44,7 @@ int JSONBuilder::buildCurrentValues() {
   char pHSlope[20];
   float pHSineAmplitude = 0.0;
   if ((EEPROM_TC::instance()->getPhSinePeriod() / 3600.0) > 0) {
-    pHSineAmplitude = (PHControl::instance()->getAmplitude() > 0.01 ? PHControl::instance()->getAmplitude() : 0.0);
+    pHSineAmplitude = PHControl::instance()->getAmplitude();
   }
   int pHSineAmplitude_f = (int)(pHSineAmplitude * 1000 + 0.5) % 1000;
   while (pHSineAmplitude_f && pHSineAmplitude_f % 10 == 0) {

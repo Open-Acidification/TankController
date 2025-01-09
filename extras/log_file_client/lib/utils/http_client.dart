@@ -5,6 +5,13 @@ import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:log_file_client/utils/sample_data.dart';
 
+class Project {
+  Project(this.name, this.logs);
+
+  final String name;
+  final List<Log> logs;
+}
+
 class Log {
   Log(this.name, this.uri);
   final String name;
@@ -75,6 +82,42 @@ abstract class HttpClient {
   HttpClient();
 
   Future<String> fetchData(String filePath);
+
+  Future<List<Project>> getProjectList() async {
+    // Fetch data from server
+    final data = await fetchData('logs/index.html');
+
+    // Get list items from HTML
+    final listItems = parse(data)
+        .getElementsByTagName('li')
+        .map((e) {
+          if (e.children.isNotEmpty &&
+              e.children[0].attributes.containsKey('href')) {
+            final innerHtml = e.children[0].innerHtml;
+            final name = innerHtml.substring(innerHtml.lastIndexOf('/') + 1);
+            if (e.children[0].attributes['href']!.endsWith('.log')) {
+              return [name, e.children[0].attributes['href']!];
+            }
+          }
+          return null;
+        })
+        .where((item) => item != null)
+        .toList();
+    
+    // Parse projects from logs
+    final Map<String, List<Log>> projects = {};
+    for (int i = 0; i < listItems.length; i++) {
+      final projectName = listItems[i]![0].split('-')[0];
+      if (projects[projectName] != null) {
+        projects[projectName]!.add(Log(listItems[i]![0], listItems[i]![1]));
+      } else {
+        projects[projectName] = [Log(listItems[i]![0], listItems[i]![1])];
+      }
+    }
+  
+    // Return list items as a list of projects
+    return projects.entries.map((e) => Project(e.key, e.value)).toList();
+  }
 
   Future<List<Log>> getLogList() async {
     // Fetch data from server
@@ -173,7 +216,7 @@ class HttpClientTest extends HttpClient {
   HttpClientTest();
 
   late String testHTML =
-      '<html><body><ul><li><a href="/test1.log">/logs/test1.log</a></li><li><a href="/test2.log"">/logs/test2.log</a></li><li><a href="/test3.log">/logs/test3.log</a></li></ul></body></html>';
+      '<html><body><ul><li><a href="/projecta-tank1.log">/logs/projecta-tank1.log</a></li><li><a href="/projecta-tank2.log">/logs/projecta-tank2.log</a></li><li><a href="/projectb-tank3.log">/logs/projectb-tank3.log</a></li></ul></body></html>';
 
   @override
   Future<String> fetchData(String filePath) async {

@@ -16,7 +16,7 @@ void main() {
       final data = await client.fetchData('logs/index.html');
       expect(
         data,
-        '<html><body><ul><li><a href="/test1.log">/logs/test1.log</a></li><li><a href="/test2.log"">/logs/test2.log</a></li><li><a href="/test3.log">/logs/test3.log</a></li></ul></body></html>',
+        '<html><body><ul><li><a href="/projecta-tank1.log">/logs/projecta-tank1.log</a></li><li><a href="/projecta-tank2.log">/logs/projecta-tank2.log</a></li><li><a href="/projectb-tank3.log">/logs/projectb-tank3.log</a></li></ul></body></html>',
       );
     });
 
@@ -34,6 +34,51 @@ void main() {
     });
   });
 
+  group('getProjectList', () {
+    final client = HttpClientTest();
+
+    test('Returns valid projects for valid HTML data', () async {
+      final projects = await client.getProjectList();
+
+      // Check that the correct number of projects is returned
+      expect(projects.length, equals(2));
+
+      // Validate the parsed projects
+      expect(projects[0].name, equals('projecta'));
+      expect(projects[0].logs.length, equals(2));
+
+      expect(projects[1].name, equals('projectb'));
+      expect(projects[1].logs.length, equals(1));
+    });
+
+    test('Returns empty list when no <li> elements are present', () async {
+      client.testHTML = '<ul></ul>';
+      final projects = await client.getProjectList();
+
+      expect(projects, isEmpty);
+    });
+
+    test('Returns empty list when HTML is empty', () async {
+      client.testHTML = '';
+      final projects = await client.getProjectList();
+
+      expect(projects, isEmpty);
+    });
+
+    test('Ignores <li> elements not ending in .log', () async {
+      client.testHTML = '''
+      <ul>
+        <li><a href="project1-log1.txt">project1-log1.txt</a></li>
+        <li>Invalid Item</li>
+      </ul>
+    ''';
+
+      final projects = await client.getProjectList();
+
+      expect(projects, isEmpty);
+    });
+  });
+
   group('getLogList', () {
     final client = HttpClientTest();
 
@@ -44,14 +89,14 @@ void main() {
       expect(logList.length, equals(3));
 
       // Validate the parsed log entries
-      expect(logList[0].name, equals('test1.log'));
-      expect(logList[0].uri, equals('/test1.log'));
+      expect(logList[0].name, equals('projecta-tank1.log'));
+      expect(logList[0].uri, equals('/projecta-tank1.log'));
 
-      expect(logList[1].name, equals('test2.log'));
-      expect(logList[1].uri, equals('/test2.log'));
+      expect(logList[1].name, equals('projecta-tank2.log'));
+      expect(logList[1].uri, equals('/projecta-tank2.log'));
 
-      expect(logList[2].name, equals('test3.log'));
-      expect(logList[2].uri, equals('/test3.log'));
+      expect(logList[2].name, equals('projectb-tank3.log'));
+      expect(logList[2].uri, equals('/projectb-tank3.log'));
     });
 
     test('returns an empty list if no log links are present', () async {

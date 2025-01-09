@@ -47,7 +47,6 @@ unittest_teardown() {
 }
 
 unittest(NoTankID) {
-  // auto expected1 = "RemoteLogPusher: connection to oap.cs.wallawalla.edu failed";
   auto expected1 = "heater turned on at 1813 after 1813 ms";
   assertEqual(expected1, Serial_TC::instance()->getBuffer());
   Serial_TC::instance()->clearBuffer();

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:log_file_client/components/tank_card.dart';
 // import 'package:log_file_client/components/app_drawer.dart';
 // import 'package:log_file_client/components/graph_view.dart';
 import 'package:log_file_client/utils/http_client.dart';
@@ -17,24 +18,23 @@ class ProjectPage extends StatefulWidget {
 
 class _ProjectPageState extends State<ProjectPage> {
   late final HttpClient httpClient;
-  List<Log>? _logList;
-  bool _isLoading = true;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
     httpClient = widget.httpClient ?? HttpClientProd();
-    unawaited(_getLogList());
+    // unawaited(_getLogList());
   }
 
-  // Fetches the list of log files available
-  Future<void> _getLogList() async {
-    final result = await httpClient.getLogList();
-    setState(() {
-      _logList = result;
-      _isLoading = false;
-    });
-  }
+  // // Fetches the list of log files available
+  // Future<void> _getLogList() async {
+  //   final result = await httpClient.getLogList();
+  //   setState(() {
+  //     _logList = result;
+  //     _isLoading = false;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +82,25 @@ class _ProjectPageState extends State<ProjectPage> {
                       ),
                     ),
                   ),
-                  // TODO: Implement the tank cards
+                  Expanded(
+                    child: GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: gridCrossAxis,
+                      ),
+                      itemCount: widget.project.logs.length,
+                      itemBuilder: (context, index) {
+                        return TankCard(
+                          log: widget.project.logs[index],
+                          onTap: () => {},
+                        );
+                      },
+                      padding: EdgeInsets.only(
+                        left: screenWidth * 0.067,
+                        right: screenWidth * 0.067,
+                        top: screenWidth * 0.011,
+                      ),
+                    ),
+                  ),
                 ],
               ),
       ),

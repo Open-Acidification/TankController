@@ -3,51 +3,37 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 // import 'package:log_file_client/components/app_drawer.dart';
 // import 'package:log_file_client/components/graph_view.dart';
-import 'package:log_file_client/components/project_card.dart';
-import 'package:log_file_client/pages/project_page.dart';
 import 'package:log_file_client/utils/http_client.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key, this.httpClient});
+class ProjectPage extends StatefulWidget {
+  const ProjectPage({required this.project, super.key, this.httpClient});
 
   final HttpClient? httpClient;
+  final Project project;
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<ProjectPage> createState() => _ProjectPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _ProjectPageState extends State<ProjectPage> {
   late final HttpClient httpClient;
-  List<Project>? _projectList;
+  List<Log>? _logList;
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    httpClient = widget.httpClient ?? HttpClientTest();
-    unawaited(_getProjectList());
+    httpClient = widget.httpClient ?? HttpClientProd();
+    unawaited(_getLogList());
   }
 
-  // Fetches the list of projects available
-  Future<void> _getProjectList() async {
-    final result = await httpClient.getProjectList();
+  // Fetches the list of log files available
+  Future<void> _getLogList() async {
+    final result = await httpClient.getLogList();
     setState(() {
-      _projectList = result;
+      _logList = result;
       _isLoading = false;
     });
-  }
-
-  Future<void> openProject(Project project) async {
-    await Navigator.of(context).push(
-      PageRouteBuilder(
-        pageBuilder: (context, animation1, animation2) => ProjectPage(
-          project: project,
-          httpClient: httpClient,
-        ),
-        transitionDuration: Duration.zero,
-        reverseTransitionDuration: Duration.zero,
-      ),
-    );
   }
 
   @override
@@ -88,7 +74,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     child: Text(
-                      'Projects',
+                      '${widget.project.name} Tanks',
                       style: TextStyle(
                         fontSize: screenWidth * 0.04,
                         letterSpacing: -2,
@@ -96,25 +82,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-                  Expanded(
-                    child: GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: gridCrossAxis,
-                      ),
-                      itemCount: _projectList?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        return ProjectCard(
-                          project: _projectList![index],
-                          onTap: () => openProject(_projectList![index]),
-                        );
-                      },
-                      padding: EdgeInsets.only(
-                        left: screenWidth * 0.067,
-                        right: screenWidth * 0.067,
-                        top: screenWidth * 0.011,
-                      ),
-                    ),
-                  ),
+                  // TODO: Implement the tank cards
                 ],
               ),
       ),

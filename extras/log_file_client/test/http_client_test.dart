@@ -79,7 +79,7 @@ void main() {
     });
   });
 
-  group('getLogList', () {
+  group('getLogList / parseLogListFromHTML', () {
     final client = HttpClientTest();
 
     test('parses HTML with valid list items', () async {

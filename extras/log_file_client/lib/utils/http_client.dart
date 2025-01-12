@@ -96,22 +96,8 @@ abstract class HttpClient {
     final data = await fetchData('logs/index.html');
 
     // Get list items from HTML
-    final listItems = parse(data)
-        .getElementsByTagName('li')
-        .map((e) {
-          if (e.children.isNotEmpty &&
-              e.children[0].attributes.containsKey('href')) {
-            final innerHtml = e.children[0].innerHtml;
-            final name = innerHtml.substring(innerHtml.lastIndexOf('/') + 1);
-            if (e.children[0].attributes['href']!.endsWith('.log')) {
-              return [name, e.children[0].attributes['href']!];
-            }
-          }
-          return null;
-        })
-        .where((item) => item != null)
-        .toList();
-    
+    final listItems = parseLogListFromHTML(data);
+
     // Parse projects from logs
     final Map<String, List<Log>> projects = {};
     for (int i = 0; i < listItems.length; i++) {
@@ -122,7 +108,7 @@ abstract class HttpClient {
         projects[projectName] = [Log(listItems[i]![0], listItems[i]![1])];
       }
     }
-  
+
     // Return list items as a list of projects
     return projects.entries.map((e) => Project(e.key, e.value)).toList();
   }
@@ -132,21 +118,7 @@ abstract class HttpClient {
     final data = await fetchData('logs/index.html');
 
     // Get list items from HTML
-    final listItems = parse(data)
-        .getElementsByTagName('li')
-        .map((e) {
-          if (e.children.isNotEmpty &&
-              e.children[0].attributes.containsKey('href')) {
-            final innerHtml = e.children[0].innerHtml;
-            final name = innerHtml.substring(innerHtml.lastIndexOf('/') + 1);
-            if (e.children[0].attributes['href']!.endsWith('.log')) {
-              return [name, '/${e.children[0].attributes['href']!.split('/').last}'];
-            }
-          }
-          return null;
-        })
-        .where((item) => item != null)
-        .toList();
+    final listItems = parseLogListFromHTML(data);
 
     // Return list items as a list of logs
     return listItems.map((e) => Log(e![0], e[1])).toList();
@@ -161,8 +133,8 @@ abstract class HttpClient {
       return TankSnapshot(log, [], null, null);
     }
 
-    return TankSnapshot(log, loglines, loglines[loglines.length - 1]?.phCurrent, loglines[loglines.length - 1]?.tempMean);
-    
+    return TankSnapshot(log, loglines, loglines[loglines.length - 1]?.phCurrent,
+        loglines[loglines.length - 1]?.tempMean);
   }
 
   Future<List<LogDataLine?>> getLogData(String filePath) async {
@@ -213,7 +185,26 @@ abstract class HttpClient {
     return logData;
   }
 
-
+  List<List<String>?> parseLogListFromHTML(String data) {
+    return parse(data)
+        .getElementsByTagName('li')
+        .map((e) {
+          if (e.children.isNotEmpty &&
+              e.children[0].attributes.containsKey('href')) {
+            final innerHtml = e.children[0].innerHtml;
+            final name = innerHtml.substring(innerHtml.lastIndexOf('/') + 1);
+            if (e.children[0].attributes['href']!.endsWith('.log')) {
+              return [
+                name,
+                '/${e.children[0].attributes['href']!.split('/').last}'
+              ];
+            }
+          }
+          return null;
+        })
+        .where((item) => item != null)
+        .toList();
+  }
 }
 
 class HttpClientProd extends HttpClient {
@@ -249,7 +240,8 @@ class HttpClientTest extends HttpClient {
   Future<String> fetchData(String filePath) async {
     if (filePath == 'logs/index.html') {
       return testHTML;
-    } else if (filePath == 'sample_short.log' || filePath == 'snapshot/sample_short.log') {
+    } else if (filePath == 'sample_short.log' ||
+        filePath == 'snapshot/sample_short.log') {
       return '''
 1.0	80	I	2025-01-07 11:02:30		31.25	31.11	0.07	6.38	6.41	0
 1.0	80	I	2025-01-07 11:03:30		31.25	31.25	0.0	6.38	6.38	60
@@ -258,10 +250,12 @@ class HttpClientTest extends HttpClient {
 1.0	80	I	2025-01-07 11:06:30		31.25	31.42	0.085	6.38	6.35	240''';
     } else if (filePath == 'sample_long.log') {
       return sampleData();
-    } else if (filePath == 'calibration.log' || filePath == 'snapshot/calibration.log') {
+    } else if (filePath == 'calibration.log' ||
+        filePath == 'snapshot/calibration.log') {
       return '''
 1.0	80	I	2025-01-07 11:09:30		31.25	C	C	6.38	C	420''';
-    } else if (filePath == 'warnings.log' || filePath == 'snapshot/warnings.log') {
+    } else if (filePath == 'warnings.log' ||
+        filePath == 'snapshot/warnings.log') {
       return '''
 1.0	80	I	2025-01-07 11:20:30		31.25	30.81	0.22	6.38	6.3	1080
 1.0	80	I	2025-01-07 11:21:30		31.25	30.99	0.13	6.38	6.38	1140

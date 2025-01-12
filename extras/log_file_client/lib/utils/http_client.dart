@@ -140,7 +140,7 @@ abstract class HttpClient {
             final innerHtml = e.children[0].innerHtml;
             final name = innerHtml.substring(innerHtml.lastIndexOf('/') + 1);
             if (e.children[0].attributes['href']!.endsWith('.log')) {
-              return [name, e.children[0].attributes['href']!];
+              return [name, '/${e.children[0].attributes['href']!.split('/').last}'];
             }
           }
           return null;
@@ -243,7 +243,7 @@ class HttpClientTest extends HttpClient {
   HttpClientTest();
 
   late String testHTML =
-      '<html><body><ul><li><a href="/projecta-tank1.log">/logs/projecta-tank1.log</a></li><li><a href="/projecta-tank2.log">/logs/projecta-tank2.log</a></li><li><a href="/projectb-tank3.log">/logs/projectb-tank3.log</a></li></ul></body></html>';
+      '<html><body><ul><li><a href="/logs/ProjectA-tank-24.log">/logs/ProjectA-tank-24.log</a></li><li><a href="/logs/ProjectA-tank-70.log">/logs/ProjectA-tank-70.log</a></li><li><a href="/logs/ProjectB-tank-58.log">/logs/ProjectB-tank-58.log</a></li><li><ahref="/logs/index.html">/logs/index.html</a></li></ul></body></html>';
 
   @override
   Future<String> fetchData(String filePath) async {

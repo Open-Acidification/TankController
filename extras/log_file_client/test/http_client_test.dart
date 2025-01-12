@@ -16,7 +16,7 @@ void main() {
       final data = await client.fetchData('logs/index.html');
       expect(
         data,
-        '<html><body><ul><li><a href="/projecta-tank1.log">/logs/projecta-tank1.log</a></li><li><a href="/projecta-tank2.log">/logs/projecta-tank2.log</a></li><li><a href="/projectb-tank3.log">/logs/projectb-tank3.log</a></li></ul></body></html>',
+        '<html><body><ul><li><a href="/logs/ProjectA-tank-24.log">/logs/ProjectA-tank-24.log</a></li><li><a href="/logs/ProjectA-tank-70.log">/logs/ProjectA-tank-70.log</a></li><li><a href="/logs/ProjectB-tank-58.log">/logs/ProjectB-tank-58.log</a></li><li><ahref="/logs/index.html">/logs/index.html</a></li></ul></body></html>',
       );
     });
 
@@ -44,10 +44,10 @@ void main() {
       expect(projects.length, equals(2));
 
       // Validate the parsed projects
-      expect(projects[0].name, equals('projecta'));
+      expect(projects[0].name, equals('ProjectA'));
       expect(projects[0].logs.length, equals(2));
 
-      expect(projects[1].name, equals('projectb'));
+      expect(projects[1].name, equals('ProjectB'));
       expect(projects[1].logs.length, equals(1));
     });
 
@@ -89,14 +89,14 @@ void main() {
       expect(logList.length, equals(3));
 
       // Validate the parsed log entries
-      expect(logList[0].name, equals('projecta-tank1.log'));
-      expect(logList[0].uri, equals('/projecta-tank1.log'));
+      expect(logList[0].name, equals('ProjectA-tank-24.log'));
+      expect(logList[0].uri, equals('/ProjectA-tank-24.log'));
 
-      expect(logList[1].name, equals('projecta-tank2.log'));
-      expect(logList[1].uri, equals('/projecta-tank2.log'));
+      expect(logList[1].name, equals('ProjectA-tank-70.log'));
+      expect(logList[1].uri, equals('/ProjectA-tank-70.log'));
 
-      expect(logList[2].name, equals('projectb-tank3.log'));
-      expect(logList[2].uri, equals('/projectb-tank3.log'));
+      expect(logList[2].name, equals('ProjectB-tank-58.log'));
+      expect(logList[2].uri, equals('/ProjectB-tank-58.log'));
     });
 
     test('returns an empty list if no log links are present', () async {

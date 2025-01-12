@@ -119,14 +119,60 @@ void main() {
     });
   });
 
-  group('getLogData', () {
+  group('getTankSnapshot', () {
+    final client = HttpClientTest();
+
+    test('Returns valid TankSnapshot for a valid log file', () async {
+      final log = Log('sample_short.log', '/sample_short.log');
+      final snapshot = await client.getTankSnapshot(log);
+
+      expect(snapshot, isNotNull);
+      expect(snapshot.log, equals(log));
+      expect(snapshot.latestData.length, equals(5));
+      expect(snapshot.pH, equals(6.35));
+      expect(snapshot.temperature, equals(31.42));
+    });
+
+    test('Handles empty log file', () async {
+      final log = Log('empty.log', '/empty.log');
+      final snapshot = await client.getTankSnapshot(log);
+
+      expect(snapshot, isNotNull);
+      expect(snapshot.latestData, isEmpty);
+      expect(snapshot.pH, isNull);
+      expect(snapshot.temperature, isNull);
+    });
+
+    test('Handles calibrating tank', () async {
+      final log = Log('calibration.log', '/calibration.log');
+      final snapshot = await client.getTankSnapshot(log);
+
+      expect(snapshot, isNotNull);
+      expect(snapshot.latestData.length, equals(1));
+      expect(snapshot.pH, isNull);
+      expect(snapshot.temperature, isNull);
+    });
+  
+    test('Handles log file with warnings', () async {
+      final log = Log('warnings.log', '/warnings.log');
+      final snapshot = await client.getTankSnapshot(log);
+
+      expect(snapshot, isNotNull);
+      expect(snapshot.latestData.length, equals(4));
+      expect(snapshot.pH, equals(6.34));
+      expect(snapshot.temperature, equals(31.22));
+    });
+  
+  });
+
+  group('getLogData / parseLogData', () {
     final client = HttpClientTest();
 
     test('accurately parses a sample log file', () async {
       final logTable = await client.getLogData('sample_short.log');
 
       // Validate structure and date parsing for sample_short.log
-      expect(logTable!.length, equals(5));
+      expect(logTable.length, equals(5));
 
       expect(
         logTable,
@@ -193,23 +239,23 @@ void main() {
     test('handles empty log file without errors', () async {
       final logTable = await client.getLogData('empty.log');
 
-      // Expect a null value for an empty log file
-      expect(logTable, isNull);
+      // Expect an empty list for an empty log file
+      expect(logTable, isEmpty);
     });
 
     test('handles log file with calibration values', () async {
       final logTable = await client.getLogData('calibration.log');
 
       // temp and pH values should be null
-      expect(logTable![0].tempMean, isNull);
-      expect(logTable[0].tempStdDev, isNull);
-      expect(logTable[0].phCurrent, isNull);
+      expect(logTable[0]?.tempMean, isNull);
+      expect(logTable[0]?.tempStdDev, isNull);
+      expect(logTable[0]?.phCurrent, isNull);
     });
 
     test('handles log file with warning logs', () async {
       final logTable = await client.getLogData('warnings.log');
 
-      expect(logTable!.length, equals(4));
+      expect(logTable.length, equals(4));
 
       expect(
         logTable,

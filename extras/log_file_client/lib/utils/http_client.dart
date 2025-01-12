@@ -78,6 +78,14 @@ class LogDataLine {
       );
 }
 
+class TankSnapshot {
+  TankSnapshot(this.log, this.latestData, this.pH, this.temperature);
+  final Log log;
+  final List<LogDataLine?> latestData;
+  final double? pH;
+  final double? temperature;
+}
+
 abstract class HttpClient {
   HttpClient();
 
@@ -144,11 +152,28 @@ abstract class HttpClient {
     return listItems.map((e) => Log(e![0], e[1])).toList();
   }
 
-  Future<List<LogDataLine>?> getLogData(String filePath) async {
+  Future<TankSnapshot> getTankSnapshot(Log log) async {
+    final data = await fetchData('snapshot${log.uri}');
+
+    final loglines = parseLogData(data);
+
+    if (loglines.isEmpty) {
+      return TankSnapshot(log, [], null, null);
+    }
+
+    return TankSnapshot(log, loglines, loglines[loglines.length - 1]?.phCurrent, loglines[loglines.length - 1]?.tempMean);
+    
+  }
+
+  Future<List<LogDataLine?>> getLogData(String filePath) async {
     final data = await fetchData(filePath);
 
+    return parseLogData(data);
+  }
+
+  List<LogDataLine?> parseLogData(String data) {
     if (data.trim().isEmpty) {
-      return null;
+      return [];
     }
 
     final List<List<dynamic>> logTable =
@@ -187,6 +212,8 @@ abstract class HttpClient {
 
     return logData;
   }
+
+
 }
 
 class HttpClientProd extends HttpClient {
@@ -222,7 +249,7 @@ class HttpClientTest extends HttpClient {
   Future<String> fetchData(String filePath) async {
     if (filePath == 'logs/index.html') {
       return testHTML;
-    } else if (filePath == 'sample_short.log') {
+    } else if (filePath == 'sample_short.log' || filePath == 'snapshot/sample_short.log') {
       return '''
 1.0	80	I	2025-01-07 11:02:30		31.25	31.11	0.07	6.38	6.41	0
 1.0	80	I	2025-01-07 11:03:30		31.25	31.25	0.0	6.38	6.38	60
@@ -231,11 +258,10 @@ class HttpClientTest extends HttpClient {
 1.0	80	I	2025-01-07 11:06:30		31.25	31.42	0.085	6.38	6.35	240''';
     } else if (filePath == 'sample_long.log') {
       return sampleData();
-    } else if (filePath == 'calibration.log') {
+    } else if (filePath == 'calibration.log' || filePath == 'snapshot/calibration.log') {
       return '''
-1.0	80	I	2025-01-07 11:09:30		31.25	C	C	6.38	C	420
-1.0	80	I	2025-01-07 11:10:30		31.25	31.5	0.125	6.38	6.44	480''';
-    } else if (filePath == 'warnings.log') {
+1.0	80	I	2025-01-07 11:09:30		31.25	C	C	6.38	C	420''';
+    } else if (filePath == 'warnings.log' || filePath == 'snapshot/warnings.log') {
       return '''
 1.0	80	I	2025-01-07 11:20:30		31.25	30.81	0.22	6.38	6.3	1080
 1.0	80	I	2025-01-07 11:21:30		31.25	30.99	0.13	6.38	6.38	1140
@@ -243,7 +269,7 @@ class HttpClientTest extends HttpClient {
 1.0	80	I	2025-01-07 11:22:30		31.25	31.38	0.065	6.38	6.39	1200
 1.0	80	I	2025-01-07 11:23:30		31.25	31.22	0.015	6.38	6.34	1260
 ''';
-    } else if (filePath == 'empty.log') {
+    } else if (filePath == 'empty.log' || filePath == 'snapshot/empty.log') {
       return '';
     } else {
       throw Exception('Failed to fetch data from $filePath');

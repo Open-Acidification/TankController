@@ -113,17 +113,6 @@ abstract class HttpClient {
     return projects.entries.map((e) => Project(e.key, e.value)).toList();
   }
 
-  Future<List<Log>> getLogList() async {
-    // Fetch data from server
-    final data = await fetchData('logs/index.html');
-
-    // Get list items from HTML
-    final listItems = parseLogListFromHTML(data);
-
-    // Return list items as a list of logs
-    return listItems.map((e) => Log(parseLogName(e![0]), e[1])).toList();
-  }
-
   Future<TankSnapshot> getTankSnapshot(Log log) async {
     final data = await fetchData('snapshot${log.uri}');
 

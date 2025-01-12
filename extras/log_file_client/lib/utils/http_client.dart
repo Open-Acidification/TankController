@@ -103,9 +103,9 @@ abstract class HttpClient {
     for (int i = 0; i < listItems.length; i++) {
       final projectName = listItems[i]![0].split('-')[0];
       if (projects[projectName] != null) {
-        projects[projectName]!.add(Log(listItems[i]![0], listItems[i]![1]));
+        projects[projectName]!.add(Log(parseLogName(listItems[i]![0]), listItems[i]![1]));
       } else {
-        projects[projectName] = [Log(listItems[i]![0], listItems[i]![1])];
+        projects[projectName] = [Log(parseLogName(listItems[i]![0]), listItems[i]![1])];
       }
     }
 
@@ -121,7 +121,7 @@ abstract class HttpClient {
     final listItems = parseLogListFromHTML(data);
 
     // Return list items as a list of logs
-    return listItems.map((e) => Log(e![0], e[1])).toList();
+    return listItems.map((e) => Log(parseLogName(e![0]), e[1])).toList();
   }
 
   Future<TankSnapshot> getTankSnapshot(Log log) async {
@@ -205,6 +205,11 @@ abstract class HttpClient {
         .where((item) => item != null)
         .toList();
   }
+
+  String parseLogName(String name) {
+    return name.split('-').sublist(1).join('-').split('.').first;
+  }
+
 }
 
 class HttpClientProd extends HttpClient {

@@ -89,13 +89,13 @@ void main() {
       expect(logList.length, equals(3));
 
       // Validate the parsed log entries
-      expect(logList[0].name, equals('ProjectA-tank-24.log'));
+      expect(logList[0].name, equals('tank-24'));
       expect(logList[0].uri, equals('/ProjectA-tank-24.log'));
 
-      expect(logList[1].name, equals('ProjectA-tank-70.log'));
+      expect(logList[1].name, equals('tank-70'));
       expect(logList[1].uri, equals('/ProjectA-tank-70.log'));
 
-      expect(logList[2].name, equals('ProjectB-tank-58.log'));
+      expect(logList[2].name, equals('tank-58'));
       expect(logList[2].uri, equals('/ProjectB-tank-58.log'));
     });
 
@@ -152,7 +152,7 @@ void main() {
       expect(snapshot.pH, isNull);
       expect(snapshot.temperature, isNull);
     });
-  
+
     test('Handles log file with warnings', () async {
       final log = Log('warnings.log', '/warnings.log');
       final snapshot = await client.getTankSnapshot(log);
@@ -162,7 +162,6 @@ void main() {
       expect(snapshot.pH, equals(6.34));
       expect(snapshot.temperature, equals(31.22));
     });
-  
   });
 
   group('getLogData / parseLogData', () {
@@ -306,6 +305,39 @@ void main() {
           ),
         ],
       );
+    });
+  });
+
+  group('parseLogName', () {
+    final client = HttpClientTest();
+
+    test('Valid input with standard convention', () {
+      expect(client.parseLogName('projectA-tank1.log'), 'tank1');
+    });
+
+    test('Valid input with multiple hyphens in tank name', () {
+      expect(client.parseLogName('projectB-tank-name-with-hyphen.log'),
+          'tank-name-with-hyphen');
+    });
+
+    test('Input without a valid tank name', () {
+      expect(client.parseLogName('projectD-.log'), '');
+    });
+
+    test('Input missing project name', () {
+      expect(client.parseLogName('-tank1.log'), 'tank1');
+    });
+
+    test('Input without hyphen separation', () {
+      expect(client.parseLogName('invalidlogfile.log'), '');
+    });
+
+    test('Empty string input', () {
+      expect(client.parseLogName(''), '');
+    });
+
+    test('Input without .log extension', () {
+      expect(client.parseLogName('projectE-tank2'), 'tank2');
     });
   });
 }

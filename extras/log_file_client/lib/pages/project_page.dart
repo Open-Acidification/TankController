@@ -1,9 +1,5 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:log_file_client/components/tank_card.dart';
-// import 'package:log_file_client/components/app_drawer.dart';
-// import 'package:log_file_client/components/graph_view.dart';
 import 'package:log_file_client/utils/http_client.dart';
 
 class ProjectPage extends StatefulWidget {
@@ -18,23 +14,12 @@ class ProjectPage extends StatefulWidget {
 
 class _ProjectPageState extends State<ProjectPage> {
   late final HttpClient httpClient;
-  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
     httpClient = widget.httpClient ?? HttpClientProd();
-    // unawaited(_getLogList());
   }
-
-  // // Fetches the list of log files available
-  // Future<void> _getLogList() async {
-  //   final result = await httpClient.getLogList();
-  //   setState(() {
-  //     _logList = result;
-  //     _isLoading = false;
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -46,17 +31,10 @@ class _ProjectPageState extends State<ProjectPage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Tank Monitor'),
       ),
-      // drawer: _isLoading
-      //     ? Drawer() // null drawer
-      //     : AppDrawer(
-      //         logList: _logList!,
-      //         openLogFile: openLogFile,
-      //       ),
       body: Center(
-        child: _isLoading
-            ? const CircularProgressIndicator()
-            : Column(
+        child: Column(
                 children: [
+                  // Header
                   Container(
                     margin: EdgeInsets.only(
                       top: screenWidth * 0.025,
@@ -82,6 +60,8 @@ class _ProjectPageState extends State<ProjectPage> {
                       ),
                     ),
                   ),
+                  
+                  // Grid View of Tank Cards
                   Expanded(
                     child: GridView.builder(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -91,7 +71,7 @@ class _ProjectPageState extends State<ProjectPage> {
                       itemBuilder: (context, index) {
                         return TankCard(
                           log: widget.project.logs[index],
-                          onTap: () => {},
+                          onTap: () {},
                         );
                       },
                       padding: EdgeInsets.only(

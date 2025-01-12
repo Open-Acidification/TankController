@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    httpClient = widget.httpClient ?? HttpClientTest();
+    httpClient = widget.httpClient ?? HttpClientProd();
     unawaited(_getProjectList());
   }
 
@@ -105,7 +105,7 @@ class _HomePageState extends State<HomePage> {
                       itemBuilder: (context, index) {
                         return ProjectCard(
                           project: _projectList![index],
-                          onTap: () => openProject(_projectList![index]),
+                          onTap: () => unawaited(openProject(_projectList![index])),
                         );
                       },
                       padding: EdgeInsets.only(

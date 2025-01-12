@@ -8,16 +8,16 @@ class TableView extends StatelessWidget {
 
   final String filePath;
   final HttpClient httpClient;
-  late final Future<List<LogDataLine>> logData = getLogData();
+  late final Future<List<LogDataLine?>> logData = getLogData();
 
-  Future<List<LogDataLine>> getLogData() async {
+  Future<List<LogDataLine?>> getLogData() async {
     final table = await httpClient.getLogData(filePath);
-    return table!;
+    return table;
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<LogDataLine>>(
+    return FutureBuilder<List<LogDataLine?>>(
       future: logData,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -113,7 +113,7 @@ class TableView extends StatelessWidget {
                       ),
                       child: Row(
                         children: [
-                          Expanded(child: Text(row.version.toString())),
+                          Expanded(child: Text(row!.version.toString())),
                           Expanded(child: Text(row.tankid.toString())),
                           Expanded(
                             flex: 2,

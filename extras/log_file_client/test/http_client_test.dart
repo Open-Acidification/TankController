@@ -131,7 +131,8 @@ void main() {
       final testHTML =
           '<html><body><ul><li><a>/logs/test1.log</a></li></body></ul>';
 
-      expect(() async => client.parseLogListFromHTML(testHTML), returnsNormally);
+      expect(
+          () async => client.parseLogListFromHTML(testHTML), returnsNormally);
     });
   });
 
@@ -332,8 +333,10 @@ void main() {
     });
 
     test('Valid input with multiple hyphens in tank name', () {
-      expect(client.parseLogName('projectB-tank-name-with-hyphen.log'),
-          'tank-name-with-hyphen',);
+      expect(
+        client.parseLogName('projectB-tank-name-with-hyphen.log'),
+        'tank-name-with-hyphen',
+      );
     });
 
     test('Input without a valid tank name', () {

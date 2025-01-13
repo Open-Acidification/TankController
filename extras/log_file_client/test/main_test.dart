@@ -112,9 +112,8 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: ProjectPage(
-          project: Project('ProjectA', [
-            Log('tank-24', '/ProjectA-tank-24.log')
-          ]),
+          project:
+              Project('ProjectA', [Log('tank-24', '/ProjectA-tank-24.log')]),
           httpClient: HttpClientTest(),
         ),
       ),

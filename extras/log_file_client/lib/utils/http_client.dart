@@ -107,7 +107,7 @@ abstract class HttpClient {
             .add(Log(parseLogName(listItems[i]![0]), listItems[i]![1]));
       } else {
         projects[projectName] = [
-          Log(parseLogName(listItems[i]![0]), listItems[i]![1])
+          Log(parseLogName(listItems[i]![0]), listItems[i]![1]),
         ];
       }
     }

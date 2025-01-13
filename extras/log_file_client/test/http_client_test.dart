@@ -132,7 +132,9 @@ void main() {
           '<html><body><ul><li><a>/logs/test1.log</a></li></body></ul>';
 
       expect(
-          () async => client.parseLogListFromHTML(testHTML), returnsNormally);
+        () async => client.parseLogListFromHTML(testHTML),
+        returnsNormally,
+      );
     });
   });
 

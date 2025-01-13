@@ -30,9 +30,9 @@ class _GraphPageState extends State<GraphPage> {
       ),
       body: Center(
         child: GraphView(
-                    filePath: '/logs${widget.log.uri}',
-                    httpClient: httpClient,
-                  ),
+          filePath: '/logs${widget.log.uri}',
+          httpClient: httpClient,
+        ),
       ),
     );
   }

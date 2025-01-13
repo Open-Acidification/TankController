@@ -103,9 +103,12 @@ abstract class HttpClient {
     for (int i = 0; i < listItems.length; i++) {
       final projectName = listItems[i]![0].split('-')[0];
       if (projects[projectName] != null) {
-        projects[projectName]!.add(Log(parseLogName(listItems[i]![0]), listItems[i]![1]));
+        projects[projectName]!
+            .add(Log(parseLogName(listItems[i]![0]), listItems[i]![1]));
       } else {
-        projects[projectName] = [Log(parseLogName(listItems[i]![0]), listItems[i]![1])];
+        projects[projectName] = [
+          Log(parseLogName(listItems[i]![0]), listItems[i]![1])
+        ];
       }
     }
 
@@ -122,8 +125,12 @@ abstract class HttpClient {
       return TankSnapshot(log, [], null, null);
     }
 
-    return TankSnapshot(log, loglines, loglines[loglines.length - 1]?.phCurrent,
-        loglines[loglines.length - 1]?.tempMean);
+    return TankSnapshot(
+      log,
+      loglines,
+      loglines[loglines.length - 1]?.phCurrent,
+      loglines[loglines.length - 1]?.tempMean,
+    );
   }
 
   Future<List<LogDataLine?>> getLogData(String filePath) async {
@@ -185,7 +192,7 @@ abstract class HttpClient {
             if (e.children[0].attributes['href']!.endsWith('.log')) {
               return [
                 name,
-                '/${e.children[0].attributes['href']!.split('/').last}'
+                '/${e.children[0].attributes['href']!.split('/').last}',
               ];
             }
           }
@@ -198,7 +205,6 @@ abstract class HttpClient {
   String parseLogName(String name) {
     return name.split('-').sublist(1).join('-').split('.').first;
   }
-
 }
 
 class HttpClientProd extends HttpClient {
@@ -259,6 +265,18 @@ class HttpClientTest extends HttpClient {
 ''';
     } else if (filePath == 'empty.log' || filePath == 'snapshot/empty.log') {
       return '';
+    } else if (filePath == 'snapshot/ProjectA-tank-24.log') {
+      return '''
+1.0	24	I	2025-01-09 16:09:16		21.45	21.91	0.23	6.25	6.24	86220
+1.0	24	I	2025-01-09 16:10:16		21.45	21.34	0.055	6.25	6.18	86280
+1.0	24	I	2025-01-09 16:11:16		21.45	20.98	0.235	6.25	6.33	86340
+''';
+    } else if (filePath == 'snapshot/ProjectA-tank-70.log') {
+      return '''
+1.0	70	I	2025-01-09 16:04:29		23.29	23.27	0.01	7.22	7.34	86220
+1.0	70	I	2025-01-09 16:05:29		23.29	23.26	0.015	7.22	7.1	86280
+1.0	70	I	2025-01-09 16:06:29		23.29	23.67	0.19	7.22	7.29	86340
+''';
     } else {
       throw Exception('Failed to fetch data from $filePath');
     }

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:log_file_client/components/tank_thumbnail.dart';
 import 'package:log_file_client/utils/http_client.dart';
 
 class TankCard extends StatefulWidget {
@@ -60,22 +61,39 @@ class _TankCardState extends State<TankCard> {
               child: Column(
                 children: [
                   // Graph Thumbnail
-                  Container(
-                    width: cardWidth,
-                    height: cardWidth * 0.6,
-                    margin: EdgeInsets.only(
-                      bottom: cardWidth * 0.05,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(20)),
-                      image: DecorationImage(
-                        image: AssetImage(
-                          './lib/assets/placeholder.png',
-                        ),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                  FutureBuilder(
+                    future: _tankSnapshot,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(
+                          child: Text(
+                            'Error: ${snapshot.error}',
+                          ),
+                        );
+                      } else {
+                        final tankSnapshot = snapshot.data!;
+                        return Container(
+                          width: cardWidth,
+                          height: cardWidth * 0.6,
+                          margin: EdgeInsets.only(
+                            bottom: cardWidth * 0.05,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(20),
+                            ),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(20),
+                            ),
+                            child: TankThumbnail(snapshot: tankSnapshot),
+                          ),
+                        );
+                      }
+                    },
                   ),
 
                   // Tank Name
@@ -96,9 +114,10 @@ class _TankCardState extends State<TankCard> {
                         return Center(
                           child: Padding(
                             padding: EdgeInsets.only(
-                                left: cardWidth * 0.2,
-                                right: cardWidth * 0.2,
-                                top: cardWidth * 0.05),
+                              left: cardWidth * 0.2,
+                              right: cardWidth * 0.2,
+                              top: cardWidth * 0.05,
+                            ),
                             child: LinearProgressIndicator(),
                           ),
                         );

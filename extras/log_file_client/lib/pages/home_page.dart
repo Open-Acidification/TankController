@@ -105,7 +105,8 @@ class _HomePageState extends State<HomePage> {
                       itemBuilder: (context, index) {
                         return ProjectCard(
                           project: _projectList![index],
-                          onTap: () => unawaited(openProject(_projectList![index])),
+                          onTap: () =>
+                              unawaited(openProject(_projectList![index])),
                         );
                       },
                       padding: EdgeInsets.only(

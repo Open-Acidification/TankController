@@ -37,7 +37,9 @@ class ProjectCard extends StatelessWidget {
                     width: imageSize,
                     height: imageSize,
                     margin: EdgeInsets.only(
-                        top: cardWidth * 0.11, bottom: cardWidth * 0.075),
+                      top: cardWidth * 0.11,
+                      bottom: cardWidth * 0.075,
+                    ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(cardWidth * 0.25),
                       image: DecorationImage(

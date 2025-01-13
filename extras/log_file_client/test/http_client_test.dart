@@ -333,7 +333,7 @@ void main() {
 
     test('Valid input with multiple hyphens in tank name', () {
       expect(client.parseLogName('projectB-tank-name-with-hyphen.log'),
-          'tank-name-with-hyphen');
+          'tank-name-with-hyphen',);
     });
 
     test('Input without a valid tank name', () {

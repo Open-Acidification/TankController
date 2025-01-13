@@ -87,7 +87,9 @@ class _ProjectPageState extends State<ProjectPage> {
                 itemBuilder: (context, index) {
                   return TankCard(
                     log: widget.project.logs[index],
-                    onTap: () => unawaited(openTankGraph(widget.project.logs[index])),
+                    httpClient: httpClient,
+                    onTap: () =>
+                        unawaited(openTankGraph(widget.project.logs[index])),
                   );
                 },
                 padding: EdgeInsets.only(

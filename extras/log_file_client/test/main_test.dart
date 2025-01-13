@@ -4,6 +4,7 @@ import 'package:log_file_client/components/graph_view.dart';
 import 'package:log_file_client/components/project_card.dart';
 import 'package:log_file_client/components/table_view.dart';
 import 'package:log_file_client/components/tank_card.dart';
+import 'package:log_file_client/components/tank_thumbnail.dart';
 import 'package:log_file_client/main.dart';
 import 'package:log_file_client/pages/home_page.dart';
 import 'package:log_file_client/pages/project_page.dart';
@@ -84,7 +85,10 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: ProjectPage(
-          project: Project('ProjectA', [Log('tank-24', '/ProjectA-tank-24.log'), Log('tank-70', '/ProjectA-tank-70.log')]),
+          project: Project('ProjectA', [
+            Log('tank-24', '/ProjectA-tank-24.log'),
+            Log('tank-70', '/ProjectA-tank-70.log')
+          ]),
           httpClient: HttpClientTest(),
         ),
       ),
@@ -102,12 +106,35 @@ void main() {
     expect(find.text('tank-24'), findsOneWidget);
     expect(find.text('tank-70'), findsOneWidget);
   });
-  testWidgets('TankCard opens graph when selected', (WidgetTester tester) async {
+
+  testWidgets('TankCards have thumbnail graphs', (WidgetTester tester) async {
     // Build the ProjectPage widget
     await tester.pumpWidget(
       MaterialApp(
         home: ProjectPage(
-          project: Project('ProjectA', [Log('tank-24', '/ProjectA-tank-24.log'), Log('tank-70', '/ProjectA-tank-70.log')]),
+          project: Project('ProjectA', [
+            Log('tank-24', '/ProjectA-tank-24.log')
+          ]),
+          httpClient: HttpClientTest(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.byType(TankCard), findsOneWidget);
+
+    // Verify that the TankThumbnail widget is displayed
+    expect(find.byType(TankThumbnail), findsOneWidget);
+  });
+  testWidgets('TankCard opens graph when selected',
+      (WidgetTester tester) async {
+    // Build the ProjectPage widget
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProjectPage(
+          project: Project('ProjectA', [
+            Log('tank-24', '/ProjectA-tank-24.log'),
+            Log('tank-70', '/ProjectA-tank-70.log')
+          ]),
           httpClient: HttpClientTest(),
         ),
       ),
@@ -137,7 +164,7 @@ void main() {
     );
 
     // Check that table is loading
-    expect(find.byType(FutureBuilder<List<LogDataLine>>), findsOneWidget);
+    expect(find.byType(FutureBuilder<List<LogDataLine?>>), findsOneWidget);
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
     await tester.pumpAndSettle();
     expect(find.byType(CircularProgressIndicator), findsNothing);

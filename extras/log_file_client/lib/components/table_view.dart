@@ -12,7 +12,7 @@ class TableView extends StatelessWidget {
 
   Future<List<LogDataLine>> getLogData() async {
     final table = await httpClient.getLogData(filePath);
-    return table!;
+    return table;
   }
 
   @override

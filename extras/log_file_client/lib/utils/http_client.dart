@@ -1,9 +1,17 @@
 import 'dart:async';
 
 import 'package:csv/csv.dart';
+import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:log_file_client/utils/sample_data.dart';
+
+class Project {
+  Project(this.name, this.logs);
+
+  final String name;
+  final List<Log> logs;
+}
 
 class Log {
   Log(this.name, this.uri);
@@ -71,41 +79,70 @@ class LogDataLine {
       );
 }
 
+class TankSnapshot {
+  TankSnapshot(this.log, this.latestData, this.pH, this.temperature);
+  final Log log;
+  final List<LogDataLine?> latestData;
+  final double? pH;
+  final double? temperature;
+}
+
 abstract class HttpClient {
   HttpClient();
 
   Future<String> fetchData(String filePath);
 
-  Future<List<Log>> getLogList() async {
+  Future<List<Project>> getProjectList() async {
     // Fetch data from server
     final data = await fetchData('logs/index.html');
 
     // Get list items from HTML
-    final listItems = parse(data)
-        .getElementsByTagName('li')
-        .map((e) {
-          if (e.children.isNotEmpty &&
-              e.children[0].attributes.containsKey('href')) {
-            final innerHtml = e.children[0].innerHtml;
-            final name = innerHtml.substring(innerHtml.lastIndexOf('/') + 1);
-            if (e.children[0].attributes['href']!.endsWith('.log')) {
-              return [name, e.children[0].attributes['href']!];
-            }
-          }
-          return null;
-        })
-        .where((item) => item != null)
-        .toList();
+    final listItems = parseLogListFromHTML(data);
 
-    // Return list items as a list of logs
-    return listItems.map((e) => Log(e![0], e[1])).toList();
+    // Parse projects from logs
+    final Map<String, List<Log>> projects = {};
+    for (int i = 0; i < listItems.length; i++) {
+      final projectName = listItems[i][0].split('-')[0];
+      if (projects[projectName] != null) {
+        projects[projectName]!
+            .add(Log(parseLogName(listItems[i][0]), listItems[i][1]));
+      } else {
+        projects[projectName] = [
+          Log(parseLogName(listItems[i][0]), listItems[i][1]),
+        ];
+      }
+    }
+
+    // Return list items as a list of projects
+    return projects.entries.map((e) => Project(e.key, e.value)).toList();
   }
 
-  Future<List<LogDataLine>?> getLogData(String filePath) async {
+  Future<TankSnapshot> getTankSnapshot(Log log) async {
+    final data = await fetchData('snapshot${log.uri}');
+
+    final loglines = parseLogData(data);
+
+    if (loglines.isEmpty) {
+      return TankSnapshot(log, [], null, null);
+    }
+
+    return TankSnapshot(
+      log,
+      loglines,
+      loglines[loglines.length - 1].phCurrent,
+      loglines[loglines.length - 1].tempMean,
+    );
+  }
+
+  Future<List<LogDataLine>> getLogData(String filePath) async {
     final data = await fetchData(filePath);
 
+    return parseLogData(data);
+  }
+
+  List<LogDataLine> parseLogData(String data) {
     if (data.trim().isEmpty) {
-      return null;
+      return [];
     }
 
     final List<List<dynamic>> logTable =
@@ -144,6 +181,28 @@ abstract class HttpClient {
 
     return logData;
   }
+
+  List<List<String>> parseLogListFromHTML(String data) {
+    final result = <List<String>>[];
+    for (final Element e in parse(data).getElementsByTagName('li')) {
+      if (e.children.isNotEmpty &&
+          e.children[0].attributes.containsKey('href')) {
+        final innerHtml = e.children[0].innerHtml;
+        final name = innerHtml.substring(innerHtml.lastIndexOf('/') + 1);
+        if (e.children[0].attributes['href']!.endsWith('.log')) {
+          result.add([
+            name,
+            '/${e.children[0].attributes['href']!.split('/').last}',
+          ]);
+        }
+      }
+    }
+    return result;
+  }
+
+  String parseLogName(String name) {
+    return name.split('-').sublist(1).join('-').split('.').first;
+  }
 }
 
 class HttpClientProd extends HttpClient {
@@ -173,13 +232,14 @@ class HttpClientTest extends HttpClient {
   HttpClientTest();
 
   late String testHTML =
-      '<html><body><ul><li><a href="/test1.log">/logs/test1.log</a></li><li><a href="/test2.log"">/logs/test2.log</a></li><li><a href="/test3.log">/logs/test3.log</a></li></ul></body></html>';
+      '<html><body><ul><li><a href="/logs/ProjectA-tank-24.log">/logs/ProjectA-tank-24.log</a></li><li><a href="/logs/ProjectA-tank-70.log">/logs/ProjectA-tank-70.log</a></li><li><a href="/logs/ProjectB-tank-58.log">/logs/ProjectB-tank-58.log</a></li><li><ahref="/logs/index.html">/logs/index.html</a></li></ul></body></html>';
 
   @override
   Future<String> fetchData(String filePath) async {
     if (filePath == 'logs/index.html') {
       return testHTML;
-    } else if (filePath == 'sample_short.log') {
+    } else if (filePath == 'sample_short.log' ||
+        filePath == 'snapshot/sample_short.log') {
       return '''
 1.0	80	I	2025-01-07 11:02:30		31.25	31.11	0.07	6.38	6.41	0
 1.0	80	I	2025-01-07 11:03:30		31.25	31.25	0.0	6.38	6.38	60
@@ -188,11 +248,12 @@ class HttpClientTest extends HttpClient {
 1.0	80	I	2025-01-07 11:06:30		31.25	31.42	0.085	6.38	6.35	240''';
     } else if (filePath == 'sample_long.log') {
       return sampleData();
-    } else if (filePath == 'calibration.log') {
+    } else if (filePath == 'calibration.log' ||
+        filePath == 'snapshot/calibration.log') {
       return '''
-1.0	80	I	2025-01-07 11:09:30		31.25	C	C	6.38	C	420
-1.0	80	I	2025-01-07 11:10:30		31.25	31.5	0.125	6.38	6.44	480''';
-    } else if (filePath == 'warnings.log') {
+1.0	80	I	2025-01-07 11:09:30		31.25	C	C	6.38	C	420''';
+    } else if (filePath == 'warnings.log' ||
+        filePath == 'snapshot/warnings.log') {
       return '''
 1.0	80	I	2025-01-07 11:20:30		31.25	30.81	0.22	6.38	6.3	1080
 1.0	80	I	2025-01-07 11:21:30		31.25	30.99	0.13	6.38	6.38	1140
@@ -200,8 +261,20 @@ class HttpClientTest extends HttpClient {
 1.0	80	I	2025-01-07 11:22:30		31.25	31.38	0.065	6.38	6.39	1200
 1.0	80	I	2025-01-07 11:23:30		31.25	31.22	0.015	6.38	6.34	1260
 ''';
-    } else if (filePath == 'empty.log') {
+    } else if (filePath == 'empty.log' || filePath == 'snapshot/empty.log') {
       return '';
+    } else if (filePath == 'snapshot/ProjectA-tank-24.log') {
+      return '''
+1.0	24	I	2025-01-09 16:09:16		21.45	21.91	0.23	6.25	6.24	86220
+1.0	24	I	2025-01-09 16:10:16		21.45	21.34	0.055	6.25	6.18	86280
+1.0	24	I	2025-01-09 16:11:16		21.45	20.98	0.235	6.25	6.33	86340
+''';
+    } else if (filePath == 'snapshot/ProjectA-tank-70.log') {
+      return '''
+1.0	70	I	2025-01-09 16:04:29		23.29	23.27	0.01	7.22	7.34	86220
+1.0	70	I	2025-01-09 16:05:29		23.29	23.26	0.015	7.22	7.1	86280
+1.0	70	I	2025-01-09 16:06:29		23.29	23.67	0.19	7.22	7.29	86340
+''';
     } else {
       throw Exception('Failed to fetch data from $filePath');
     }

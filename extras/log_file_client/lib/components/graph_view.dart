@@ -22,7 +22,7 @@ class _GraphViewState extends State<GraphView> {
 
   Future<List<LogDataLine>> getLogData() async {
     final table = await widget.httpClient.getLogData(widget.filePath);
-    return table!;
+    return table;
   }
 
   @override

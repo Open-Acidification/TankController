@@ -11,6 +11,7 @@
 #include "model/PHControl.h"
 #include "model/PHProbe.h"
 #include "model/PushingBox.h"
+#include "model/RemoteLogPusher.h"
 #include "model/TC_util.h"
 #include "model/ThermalControl.h"
 #include "wrappers/DateTime_TC.h"

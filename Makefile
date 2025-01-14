@@ -69,6 +69,7 @@ all : $(BIN)/BlinkTest.cpp.bin \
 	$(BIN)/PHProbeTest.cpp.bin \
 	$(BIN)/PIDTest.cpp.bin \
 	$(BIN)/PushingBoxTest.cpp.bin \
+	$(BIN)/RemoteLogPusherTest.cpp.bin \
 	$(BIN)/SDTest.cpp.bin \
 	$(BIN)/SeeDeviceAddressTest.cpp.bin \
 	$(BIN)/SeeDeviceUptimeTest.cpp.bin \
@@ -168,6 +169,9 @@ $(BIN)/PIDTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/PIDTest.cpp $(HEADERS)
 
 $(BIN)/PushingBoxTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/PushingBoxTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/PushingBoxTest.cpp.bin $(TEST)/PushingBoxTest.cpp -larduino
+
+$(BIN)/RemoteLogPusherTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/RemoteLogPusherTest.cpp $(HEADERS)
+	$(GPP_TEST) -o $(BIN)/RemoteLogPusherTest.cpp.bin $(TEST)/RemoteLogPusherTest.cpp -larduino
 
 $(BIN)/SDTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SDTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/SDTest.cpp.bin $(TEST)/SDTest.cpp -larduino

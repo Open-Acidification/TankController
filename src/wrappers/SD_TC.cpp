@@ -1,6 +1,7 @@
 #include "wrappers/SD_TC.h"
 
 #include "model/DataLogger.h"
+#include "model/RemoteLogPusher.h"
 #include "model/TC_util.h"
 #include "wrappers/DateTime_TC.h"
 #include "wrappers/Ethernet_TC.h"

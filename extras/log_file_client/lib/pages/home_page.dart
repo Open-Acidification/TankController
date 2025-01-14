@@ -1,8 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-// import 'package:log_file_client/components/app_drawer.dart';
-// import 'package:log_file_client/components/graph_view.dart';
 import 'package:log_file_client/components/project_card.dart';
 import 'package:log_file_client/pages/project_page.dart';
 import 'package:log_file_client/utils/http_client.dart';
@@ -60,12 +58,6 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Tank Monitor'),
       ),
-      // drawer: _isLoading
-      //     ? Drawer() // null drawer
-      //     : AppDrawer(
-      //         logList: _logList!,
-      //         openLogFile: openLogFile,
-      //       ),
       body: Center(
         child: _isLoading
             ? const CircularProgressIndicator()

@@ -370,6 +370,7 @@ OBJECTS=$(BIN)/Arduino.o \
 	$(BIN)/PHCalibrationLow.o \
 	$(BIN)/PHCalibrationMid.o \
 	$(BIN)/PHCalibrationPrompt.o \
+	$(BIN)/RemoteLogPusher.o \
 	$(BIN)/SeeDeviceAddress.o \
 	$(BIN)/SeeDeviceUptime.o \
 	$(BIN)/SeeFreeMemory.o \
@@ -495,6 +496,9 @@ $(BIN)/PHCalibrationMid.o: $(SRC)/UIState/PHCalibrationMid.cpp $(HEADERS)
 
 $(BIN)/PHCalibrationPrompt.o: $(SRC)/UIState/PHCalibrationPrompt.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/PHCalibrationPrompt.o $(SRC)/UIState/PHCalibrationPrompt.cpp
+
+$(BIN)/RemoteLogPusher.o: $(SRC)/model/RemoteLogPusher.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/RemoteLogPusher.o $(SRC)/model/RemoteLogPusher.cpp
 
 $(BIN)/SeeDeviceAddress.o: $(SRC)/UIState/SeeDeviceAddress.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SeeDeviceAddress.o $(SRC)/UIState/SeeDeviceAddress.cpp

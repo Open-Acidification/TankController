@@ -27,6 +27,7 @@ unittest_setup() {
   EEPROM_TC::instance()->setHeat(0);
   EEPROM_TC::instance()->setGoogleSheetInterval(65535);
 }
+
 /**
  * Trivial test to confirm that EthernetServer_TC compiles,
  * is of proper class, and has proper port

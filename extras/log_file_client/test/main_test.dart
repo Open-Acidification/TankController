@@ -163,7 +163,7 @@ void main() {
     );
 
     // Check that table is loading
-    expect(find.byType(FutureBuilder<List<LogDataLine?>>), findsOneWidget);
+    expect(find.byType(FutureBuilder<List<LogDataLine>>), findsOneWidget);
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
     await tester.pumpAndSettle();
     expect(find.byType(CircularProgressIndicator), findsNothing);

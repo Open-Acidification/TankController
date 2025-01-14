@@ -47,7 +47,8 @@ INCLUDE=-I$(ARDUINO_CI)/arduino \
 HEADERS=$(wildcard src/*.h) $(wildcard src/wrappers/*) $(wildcard src/UIState/*)
 
 .PHONY : all
-all : $(BIN)/BlinkTest.cpp.bin \
+all : \
+	$(BIN)/BlinkTest.cpp.bin \
 	$(BIN)/DataLoggerTest.cpp.bin \
 	$(BIN)/DateTimeTest.cpp.bin \
 	$(BIN)/EEPROMTest.cpp.bin \
@@ -70,6 +71,8 @@ all : $(BIN)/BlinkTest.cpp.bin \
 	$(BIN)/PIDTest.cpp.bin \
 	$(BIN)/PushingBoxTest.cpp.bin \
 	$(BIN)/RemoteLogPusherTest.cpp.bin \
+	$(BIN)/ResetPHCalibrationTest.cpp.bin \
+	$(BIN)/ResetThermalCalibrationTest.cpp.bin \
 	$(BIN)/SDTest.cpp.bin \
 	$(BIN)/SeeDeviceAddressTest.cpp.bin \
 	$(BIN)/SeeDeviceUptimeTest.cpp.bin \
@@ -77,8 +80,8 @@ all : $(BIN)/BlinkTest.cpp.bin \
 	$(BIN)/SeeGoogleMinsTest.cpp.bin \
 	$(BIN)/SeeLogFileTest.cpp.bin \
 	$(BIN)/SeePHCalibrationTest.cpp.bin \
-	$(BIN)/SeePIDConstantsTest.cpp.bin \
 	$(BIN)/SeePhTest.cpp.bin \
+	$(BIN)/SeePIDConstantsTest.cpp.bin \
 	$(BIN)/SeeTankIDTest.cpp.bin \
 	$(BIN)/SeeThermalCorrectionTest.cpp.bin \
 	$(BIN)/SeeVersionTest.cpp.bin \
@@ -88,24 +91,26 @@ all : $(BIN)/BlinkTest.cpp.bin \
 	$(BIN)/SetKDTest.cpp.bin \
 	$(BIN)/SetKITest.cpp.bin \
 	$(BIN)/SetKPTest.cpp.bin \
-	$(BIN)/ResetPHCalibrationTest.cpp.bin \
-	$(BIN)/SetPHTargetTest.cpp.bin \
 	$(BIN)/SetPHSineWaveTest.cpp.bin \
+	$(BIN)/SetPHTargetTest.cpp.bin \
 	$(BIN)/SetTankIDTest.cpp.bin \
-	$(BIN)/ResetThermalCalibrationTest.cpp.bin \
-	$(BIN)/SetThermalTargetTest.cpp.bin \
 	$(BIN)/SetThermalSineWaveTest.cpp.bin \
+	$(BIN)/SetThermalTargetTest.cpp.bin \
 	$(BIN)/SetTimeTest.cpp.bin \
 	$(BIN)/StringsTest.cpp.bin \
 	$(BIN)/TCLibTest.cpp.bin \
-	$(BIN)/ThermalProbeTest.cpp.bin \
 	$(BIN)/ThermalCalibrationTest.cpp.bin \
-	$(BIN)/ThermalControlTest.cpp.bin $(BIN)
+	$(BIN)/ThermalControlTest.cpp.bin \
+	$(BIN)/ThermalProbeTest.cpp.bin \
+	$(BIN)
 
 GPP_TEST=g++ $(FLAGS) -L$(BIN) $(INCLUDE)
 
 $(BIN)/PHCalibrationWarningTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/PHCalibrationWarningTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/PHCalibrationWarningTest.cpp.bin $(TEST)/PHCalibrationWarningTest.cpp -larduino
+
+$(BIN)/RemoteLogPusherTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/RemoteLogPusherTest.cpp $(HEADERS)
+	$(GPP_TEST) -o $(BIN)/RemoteLogPusherTest.cpp.bin $(TEST)/RemoteLogPusherTest.cpp -larduino
 
 $(BIN)/BlinkTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/BlinkTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/BlinkTest.cpp.bin $(TEST)/BlinkTest.cpp -larduino
@@ -274,11 +279,11 @@ ETHERNET=$(BIN)/Dhcp.o \
 	$(BIN)/Ethernet.o \
 	$(BIN)/EthernetClient.o \
 	$(BIN)/EthernetClient_CI.o \
-$(BIN)/EthernetServer.o \
+	$(BIN)/EthernetServer.o \
 	$(BIN)/EthernetServer_CI.o \
 	$(BIN)/EthernetUdp.o \
 	$(BIN)/Ethernet_CI.o \
-$(BIN)/socket.o \
+	$(BIN)/socket.o \
 	$(BIN)/w5100.o
 LCD=$(BIN)/LiquidCrystal.o \
 	$(BIN)/LiquidCrystal_CI.o
@@ -309,8 +314,8 @@ SDFAT=$(BIN)/FreeStack.o \
 	$(BIN)/ExFatVolume.o \
 	$(BIN)/FatDbg.o \
 	$(BIN)/FatFile.o \
-	$(BIN)/FatFileLFN.o  \
-	$(BIN)/FatFilePrint.o  \
+	$(BIN)/FatFileLFN.o \
+	$(BIN)/FatFilePrint.o \
 	$(BIN)/FatFileSFN.o \
 	$(BIN)/FatFormatter.o \
 	$(BIN)/FatName.o \
@@ -425,6 +430,9 @@ $(BIN)/TC_util.o: $(SRC)/model/TC_util.cpp $(HEADERS)
 
 $(BIN)/TankController.o: $(SRC)/TankController.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/TankController.o $(SRC)/TankController.cpp
+
+$(BIN)/RemoteLogPusher.o: $(SRC)/model/RemoteLogPusher.cpp $(HEADERS)
+	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/RemoteLogPusher.o $(SRC)/model/RemoteLogPusher.cpp
 
 $(BIN)/DataLogger.o: $(SRC)/model/DataLogger.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/DataLogger.o $(SRC)/model/DataLogger.cpp

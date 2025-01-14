@@ -42,6 +42,7 @@ SD_TC::SD_TC() {
   if (!sd.begin(SD_SELECT_PIN)) {
     Serial.println(F("SD_TC failed to initialize!"));
   }
+  setRemoteLogName();
   remoteLogName[0] = '\0';
 }
 
@@ -124,6 +125,10 @@ bool SD_TC::exists(const char* path) {
 
 bool SD_TC::format() {
   return sd.format();
+}
+
+void SD_TC::getRemoteLogContents(char* buffer, int size, uint32_t index) {
+  // This function is not called in the current codebase
 }
 
 const char* SD_TC::getRemoteLogName() {
@@ -244,6 +249,7 @@ bool SD_TC::remove(const char* path) {
 }
 
 void SD_TC::setRemoteLogName(const char* newFileName) {
+  // See TankController.ino for the definition of remoteLogName
   if (newFileName != nullptr && strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) > 0 &&
       strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) <= MAX_FILE_NAME_LENGTH) {
     // valid file name has been provided (See TankController.ino)
@@ -280,5 +286,5 @@ void SD_TC::writeToRemoteLog(const char* line) {
     appendStringToPath(buffer, remoteLogName);
   }
   appendStringToPath(line, remoteLogName);
-  // AlertPusher::instance()->pushSoon();
+  RemoteLogPusher::instance()->pushSoon();
 }

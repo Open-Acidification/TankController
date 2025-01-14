@@ -241,7 +241,7 @@ void TankController::updateControls() {
   // update ThermalControl
   ThermalControl::instance()->updateControl(ThermalProbe_TC::instance()->getRunningAverage());
   // update PHControl
-  PHControl::instance()->updateControl(PHProbe::instance()->getPh());
+   PHControl::instance()->loop();
 }
 
 /**

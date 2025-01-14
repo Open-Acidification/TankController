@@ -175,6 +175,9 @@ $(BIN)/PIDTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/PIDTest.cpp $(HEADERS)
 $(BIN)/PushingBoxTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/PushingBoxTest.cpp $(HEADERS)
   $(GPP_TEST) -o $(BIN)/PushingBoxTest.cpp.bin $(TEST)/PushingBoxTest.cpp -larduino
 
+$(BIN)/RemoteLogPusherTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/RemoteLogPusherTest.cpp $(HEADERS)
+  $(GPP_TEST) -o $(BIN)/RemoteLogPusherTest.cpp.bin $(TEST)/RemoteLogPusherTest.cpp -larduino
+
 $(BIN)/SDTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SDTest.cpp $(HEADERS)
   $(GPP_TEST) -o $(BIN)/SDTest.cpp.bin $(TEST)/SDTest.cpp -larduino
 
@@ -351,7 +354,6 @@ OBJECTS=$(BIN)/Arduino.o \
   $(BIN)/ArduinoUnitTests.o \
   $(BIN)/TC_util.o \
   $(BIN)/TankController.o \
-  $(BIN)/RemoteLogPusher.o \
   $(BIN)/DataLogger.o \
   $(BIN)/DateTime_TC.o \
   $(BIN)/EEPROM_TC.o \
@@ -377,6 +379,7 @@ OBJECTS=$(BIN)/Arduino.o \
   $(BIN)/PHCalibrationLow.o \
   $(BIN)/PHCalibrationMid.o \
   $(BIN)/PHCalibrationPrompt.o \
+  $(BIN)/RemoteLogPusher.o \
   $(BIN)/SeeDeviceAddress.o \
   $(BIN)/SeeDeviceUptime.o \
   $(BIN)/SeeFreeMemory.o \
@@ -505,6 +508,9 @@ $(BIN)/PHCalibrationMid.o: $(SRC)/UIState/PHCalibrationMid.cpp $(HEADERS)
 
 $(BIN)/PHCalibrationPrompt.o: $(SRC)/UIState/PHCalibrationPrompt.cpp $(HEADERS)
   g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/PHCalibrationPrompt.o $(SRC)/UIState/PHCalibrationPrompt.cpp
+
+$(BIN)/RemoteLogPusher.o: $(SRC)/model/RemoteLogPusher.cpp $(HEADERS)
+  g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/RemoteLogPusher.o $(SRC)/model/RemoteLogPusher.cpp
 
 $(BIN)/SeeDeviceAddress.o: $(SRC)/UIState/SeeDeviceAddress.cpp $(HEADERS)
   g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/SeeDeviceAddress.o $(SRC)/UIState/SeeDeviceAddress.cpp

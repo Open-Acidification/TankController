@@ -3,22 +3,22 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:log_file_client/utils/http_client.dart';
 
-class CsvView extends StatelessWidget {
-  CsvView({required this.csvPath, required this.httpClient, super.key});
+class TableView extends StatelessWidget {
+  TableView({required this.filePath, required this.httpClient, super.key});
 
-  final String csvPath;
+  final String filePath;
   final HttpClient httpClient;
   late final Future<List<LogDataLine>> logData = getLogData();
 
   Future<List<LogDataLine>> getLogData() async {
-    final table = await httpClient.getLogData(csvPath);
-    return table!;
+    final table = await httpClient.getLogData(filePath);
+    return table;
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<LogDataLine>>(
-      future: logData, // Assuming this fetches a List<LogDataLine>
+      future: logData,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -39,27 +39,45 @@ class CsvView extends StatelessWidget {
                 child: Row(
                   children: const [
                     Expanded(
+                      child: Text(
+                        'Version',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        'Tank ID',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                    Expanded(
                       flex: 2,
                       child: Text(
-                        'time',
+                        'Time',
                         style: TextStyle(fontStyle: FontStyle.italic),
                       ),
                     ),
                     Expanded(
                       child: Text(
-                        'tankid',
+                        'Temp Target',
                         style: TextStyle(fontStyle: FontStyle.italic),
                       ),
                     ),
                     Expanded(
                       child: Text(
-                        'temp',
+                        'Temp Mean',
                         style: TextStyle(fontStyle: FontStyle.italic),
                       ),
                     ),
                     Expanded(
                       child: Text(
-                        'temp setpoint',
+                        'Temp Standard Deviation',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        'pH Target',
                         style: TextStyle(fontStyle: FontStyle.italic),
                       ),
                     ),
@@ -71,31 +89,7 @@ class CsvView extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        'pH setpoint',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
                         'onTime',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        'Kp',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        'Ki',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        'Kd',
                         style: TextStyle(fontStyle: FontStyle.italic),
                       ),
                     ),
@@ -119,6 +113,8 @@ class CsvView extends StatelessWidget {
                       ),
                       child: Row(
                         children: [
+                          Expanded(child: Text(row.version.toString())),
+                          Expanded(child: Text(row.tankid.toString())),
                           Expanded(
                             flex: 2,
                             child: Text(
@@ -126,15 +122,12 @@ class CsvView extends StatelessWidget {
                               style: const TextStyle(fontSize: 16),
                             ),
                           ),
-                          Expanded(child: Text(row.tankid.toString())),
-                          Expanded(child: Text(row.temp.toString())),
-                          Expanded(child: Text(row.tempSetpoint.toString())),
-                          Expanded(child: Text(row.pH.toString())),
-                          Expanded(child: Text(row.pHSetpoint.toString())),
+                          Expanded(child: Text(row.tempTarget.toString())),
+                          Expanded(child: Text(row.tempMean.toString())),
+                          Expanded(child: Text(row.tempStdDev.toString())),
+                          Expanded(child: Text(row.phTarget.toString())),
+                          Expanded(child: Text(row.phCurrent.toString())),
                           Expanded(child: Text(row.onTime.toString())),
-                          Expanded(child: Text(row.kp.toString())),
-                          Expanded(child: Text(row.ki.toString())),
-                          Expanded(child: Text(row.kd.toString())),
                         ],
                       ),
                     );

@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Tank Monitor',
       theme: ThemeData(
-        scaffoldBackgroundColor: const Color.fromARGB(255, 215, 215, 215),
+        scaffoldBackgroundColor: Colors.white,
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color.fromARGB(255, 21, 98, 231),
         ),

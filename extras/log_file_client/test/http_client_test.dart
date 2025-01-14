@@ -1,9 +1,6 @@
 import 'package:log_file_client/utils/http_client.dart';
 import 'package:test/test.dart';
 
-//  how to run the test
-//  flutter test test/http_client_test.dart
-
 void main() {
   test('Log constructor', () {
     final Log newLog = Log('Test1', 'Test1.test');
@@ -19,77 +16,111 @@ void main() {
       final data = await client.fetchData('logs/index.html');
       expect(
         data,
-        '<html><body><ul><li><a href="/test1.csv">/logs/test1.csv</a></li><li><a href="/test2.csv"">/logs/test2.csv</a></li><li><a href="/test3.csv">/logs/test3.csv</a></li></ul></body></html>',
+        '<html><body><ul><li><a href="/logs/ProjectA-tank-24.log">/logs/ProjectA-tank-24.log</a></li><li><a href="/logs/ProjectA-tank-70.log">/logs/ProjectA-tank-70.log</a></li><li><a href="/logs/ProjectB-tank-58.log">/logs/ProjectB-tank-58.log</a></li><li><ahref="/logs/index.html">/logs/index.html</a></li></ul></body></html>',
       );
     });
 
-    test('sample CSV data', () async {
-      final data = await client.fetchData('sample_short.csv');
+    test('sample log data', () async {
+      final data = await client.fetchData('sample_short.log');
       expect(
         data,
         '''
-time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd
-01/20/2023 16:18:21,  99, 0.00, 10.00, 0.000, 8.645,    6,    700.0,    100.0,      0.0
-01/20/2023 16:18:22,  99, 1.23, 10.00, 7.123, 8.645,    8,    710.0,    110.0,      1.0
-01/20/2023 16:18:23,  99, 2.34, 10.00, 6.789, 8.645,    9,    720.0,    120.0,      2.0
-01/20/2023 16:18:24,  99, 3.45, 10.00, 5.456, 8.645,   10,    730.0,    130.0,      3.0
-01/20/2023 16:18:25,  99, 4.56, 10.00, 4.123, 8.645,   11,    740.0,    140.0,      4.0''',
+1.0	80	I	2025-01-07 11:02:30		31.25	31.11	0.07	6.38	6.41	0
+1.0	80	I	2025-01-07 11:03:30		31.25	31.25	0.0	6.38	6.38	60
+1.0	80	I	2025-01-07 11:04:30		31.25	31.43	0.09	6.38	6.36	120
+1.0	80	I	2025-01-07 11:05:30		31.25	31.54	0.145	6.38	6.46	180
+1.0	80	I	2025-01-07 11:06:30		31.25	31.42	0.085	6.38	6.35	240''',
       );
     });
   });
 
-  group('formatDateString', () {
+  group('getProjectList', () {
     final client = HttpClientTest();
 
-    test('formats date strings correctly', () {
-      final data1 = client.formatDateString('01/20/2023 16:18:21');
-      expect(data1, equals('2023-01-20 16:18:21'));
+    test('Returns valid projects for valid HTML data', () async {
+      final projects = await client.getProjectList();
 
-      final data2 = client.formatDateString('02/15/2021 14:22:45');
-      expect(data2, equals('2021-02-15 14:22:45'));
+      // Check that the correct number of projects is returned
+      expect(projects.length, equals(2));
 
-      final data3 = client.formatDateString('03/10/2022 09:30:12');
-      expect(data3, equals('2022-03-10 09:30:12'));
+      // Validate the parsed projects
+      expect(projects[0].name, equals('ProjectA'));
+      expect(projects[0].logs.length, equals(2));
 
-      final data4 = client.formatDateString('04/05/2020 18:45:33');
-      expect(data4, equals('2020-04-05 18:45:33'));
+      expect(projects[1].name, equals('ProjectB'));
+      expect(projects[1].logs.length, equals(1));
     });
 
-    test('returns "InvalidDate" for invalid date strings', () {
-      final data1 = client.formatDateString('11-11-2019 18:45:33');
-      expect(data1, equals('InvalidDate'));
+    test('Returns correct logs for projects', () async {
+      final projects = await client.getProjectList();
 
-      final data2 = client.formatDateString('invalid date string');
-      expect(data2, equals('InvalidDate'));
+      // Check that the correct number of projects is returned
+      expect(projects.length, equals(2));
+
+      // Validate the parsed projects
+      expect(projects[0].name, equals('ProjectA'));
+      expect(projects[0].logs.length, equals(2));
+
+      expect(projects[0].logs[0].name, equals('tank-24'));
+      expect(projects[0].logs[0].uri, equals('/ProjectA-tank-24.log'));
+      expect(projects[0].logs[1].name, equals('tank-70'));
+      expect(projects[0].logs[1].uri, equals('/ProjectA-tank-70.log'));
+    });
+
+    test('Returns empty list when no <li> elements are present', () async {
+      client.testHTML = '<ul></ul>';
+      final projects = await client.getProjectList();
+
+      expect(projects, isEmpty);
+    });
+
+    test('Returns empty list when HTML is empty', () async {
+      client.testHTML = '';
+      final projects = await client.getProjectList();
+
+      expect(projects, isEmpty);
+    });
+
+    test('Ignores <li> elements not ending in .log', () async {
+      client.testHTML = '''
+      <ul>
+        <li><a href="project1-log1.txt">project1-log1.txt</a></li>
+        <li>Invalid Item</li>
+      </ul>
+    ''';
+
+      final projects = await client.getProjectList();
+
+      expect(projects, isEmpty);
     });
   });
 
-  group('getLogList', () {
+  group('parseLogListFromHTML', () {
     final client = HttpClientTest();
 
     test('parses HTML with valid list items', () async {
-      final logList = await client.getLogList();
+      final logList = client.parseLogListFromHTML(client.testHTML);
 
       // Check that the correct number of log items is returned
       expect(logList.length, equals(3));
 
       // Validate the parsed log entries
-      expect(logList[0].name, equals('test1.csv'));
-      expect(logList[0].uri, equals('/test1.csv'));
+      expect(logList[0][0], equals('ProjectA-tank-24.log'));
+      expect(logList[0][1], equals('/ProjectA-tank-24.log'));
 
-      expect(logList[1].name, equals('test2.csv'));
-      expect(logList[1].uri, equals('/test2.csv'));
+      expect(logList[1][0], equals('ProjectA-tank-70.log'));
+      expect(logList[1][1], equals('/ProjectA-tank-70.log'));
 
-      expect(logList[2].name, equals('test3.csv'));
-      expect(logList[2].uri, equals('/test3.csv'));
+      expect(logList[2][0], equals('ProjectB-tank-58.log'));
+      expect(logList[2][1], equals('/ProjectB-tank-58.log'));
     });
 
-    test('returns an empty list if no CSV links are present', () async {
-      // Set up a different HTML in the client with no CSV links
-      client.testHTML =
+    test('returns an empty list if no log links are present', () async {
+      // Set up a different HTML in the client with no log links
+      final testHTML =
           '<html><body><ul><li><a href="/logs/test1">/logs/test1</a></li></ul></body></html>';
 
-      final logList = await client.getLogList();
+      final logList = client.parseLogListFromHTML(testHTML);
 
       // Expect an empty list
       expect(logList, isEmpty);
@@ -97,102 +128,237 @@ time,tankid,temp,temp setpoint,pH,pH setpoint,onTime,Kp,Ki,Kd
 
     test('handles malformed HTML without throwing an error', () async {
       // Set up malformed HTML
-      client.testHTML =
-          '<html><body><ul><li><a>/logs/test1.csv</a></li></body></ul>';
+      final testHTML =
+          '<html><body><ul><li><a>/logs/test1.log</a></li></body></ul>';
 
-      expect(() async => client.getLogList(), returnsNormally);
+      expect(
+        () async => client.parseLogListFromHTML(testHTML),
+        returnsNormally,
+      );
     });
   });
 
-  group('getLogData', () {
+  group('getTankSnapshot', () {
     final client = HttpClientTest();
 
-    test('accurately parses a sample CSV file', () async {
-      final logTable = await client.getLogData('sample_short.csv');
+    test('Returns valid TankSnapshot for a valid log file', () async {
+      final log = Log('sample_short.log', '/sample_short.log');
+      final snapshot = await client.getTankSnapshot(log);
 
-      // Validate structure and date parsing for sample_short.csv
-      expect(logTable!.length, equals(5));
+      expect(snapshot, isNotNull);
+      expect(snapshot.log, equals(log));
+      expect(snapshot.latestData.length, equals(5));
+      expect(snapshot.pH, equals(6.35));
+      expect(snapshot.temperature, equals(31.42));
+    });
+
+    test('Handles empty log file', () async {
+      final log = Log('empty.log', '/empty.log');
+      final snapshot = await client.getTankSnapshot(log);
+
+      expect(snapshot, isNotNull);
+      expect(snapshot.latestData, isEmpty);
+      expect(snapshot.pH, isNull);
+      expect(snapshot.temperature, isNull);
+    });
+
+    test('Handles calibrating tank', () async {
+      final log = Log('calibration.log', '/calibration.log');
+      final snapshot = await client.getTankSnapshot(log);
+
+      expect(snapshot, isNotNull);
+      expect(snapshot.latestData.length, equals(1));
+      expect(snapshot.pH, isNull);
+      expect(snapshot.temperature, isNull);
+    });
+
+    test('Handles log file with warnings', () async {
+      final log = Log('warnings.log', '/warnings.log');
+      final snapshot = await client.getTankSnapshot(log);
+
+      expect(snapshot, isNotNull);
+      expect(snapshot.latestData.length, equals(4));
+      expect(snapshot.pH, equals(6.34));
+      expect(snapshot.temperature, equals(31.22));
+    });
+  });
+
+  group('getLogData / parseLogData', () {
+    final client = HttpClientTest();
+
+    test('accurately parses a sample log file', () async {
+      final logTable = await client.getLogData('sample_short.log');
+
+      // Validate structure and date parsing for sample_short.log
+      expect(logTable.length, equals(5));
 
       expect(
         logTable,
         [
           LogDataLine(
-            DateTime.parse('2023-01-20 16:18:21'),
-            99,
-            0.00,
-            10.00,
-            0.000,
-            8.645,
-            6,
-            700.0,
-            100.0,
-            0.0,
-          ),
-          LogDataLine(
-            DateTime.parse('2023-01-20 16:18:22'),
-            99,
-            1.23,
-            10.00,
-            7.123,
-            8.645,
-            8,
-            710.0,
-            110.0,
             1.0,
+            80,
+            DateTime.parse('2025-01-07 11:02:30'),
+            31.25,
+            31.11,
+            0.07,
+            6.38,
+            6.41,
+            0,
           ),
           LogDataLine(
-            DateTime.parse('2023-01-20 16:18:23'),
-            99,
-            2.34,
-            10.00,
-            6.789,
-            8.645,
-            9,
-            720.0,
-            120.0,
-            2.0,
+            1.0,
+            80,
+            DateTime.parse('2025-01-07 11:03:30'),
+            31.25,
+            31.25,
+            0.0,
+            6.38,
+            6.38,
+            60,
           ),
           LogDataLine(
-            DateTime.parse('2023-01-20 16:18:24'),
-            99,
-            3.45,
-            10.00,
-            5.456,
-            8.645,
-            10,
-            730.0,
-            130.0,
-            3.0,
+            1.0,
+            80,
+            DateTime.parse('2025-01-07 11:04:30'),
+            31.25,
+            31.43,
+            0.09,
+            6.38,
+            6.36,
+            120,
           ),
           LogDataLine(
-            DateTime.parse('2023-01-20 16:18:25'),
-            99,
-            4.56,
-            10.00,
-            4.123,
-            8.645,
-            11,
-            740.0,
-            140.0,
-            4.0,
+            1.0,
+            80,
+            DateTime.parse('2025-01-07 11:05:30'),
+            31.25,
+            31.54,
+            0.145,
+            6.38,
+            6.46,
+            180,
+          ),
+          LogDataLine(
+            1.0,
+            80,
+            DateTime.parse('2025-01-07 11:06:30'),
+            31.25,
+            31.42,
+            0.085,
+            6.38,
+            6.35,
+            240,
           ),
         ],
       );
     });
 
-    test('handles empty CSV file without errors', () async {
-      final logTable = await client.getLogData('empty.csv');
+    test('handles empty log file without errors', () async {
+      final logTable = await client.getLogData('empty.log');
 
-      // Expect a null value for an empty CSV file
-      expect(logTable, isNull);
+      // Expect an empty list for an empty log file
+      expect(logTable, isEmpty);
     });
 
-    test('handles CSV with invalid values', () async {
-      final logTable = await client.getLogData('invalid_values.csv');
+    test('handles log file with calibration values', () async {
+      final logTable = await client.getLogData('calibration.log');
 
       // temp and pH values should be null
-      expect(logTable![0].temp, isNull);
-      expect(logTable[0].pH, isNull);
+      expect(logTable[0].tempMean, isNull);
+      expect(logTable[0].tempStdDev, isNull);
+      expect(logTable[0].phCurrent, isNull);
+    });
+
+    test('handles log file with warning logs', () async {
+      final logTable = await client.getLogData('warnings.log');
+
+      expect(logTable.length, equals(4));
+
+      expect(
+        logTable,
+        [
+          LogDataLine(
+            1.0,
+            80,
+            DateTime.parse('2025-01-07 11:20:30'),
+            31.25,
+            30.81,
+            0.22,
+            6.38,
+            6.3,
+            1080,
+          ),
+          LogDataLine(
+            1.0,
+            80,
+            DateTime.parse('2025-01-07 11:21:30'),
+            31.25,
+            30.99,
+            0.13,
+            6.38,
+            6.38,
+            1140,
+          ),
+          LogDataLine(
+            1.0,
+            80,
+            DateTime.parse('2025-01-07 11:22:30'),
+            31.25,
+            31.38,
+            0.065,
+            6.38,
+            6.39,
+            1200,
+          ),
+          LogDataLine(
+            1.0,
+            80,
+            DateTime.parse('2025-01-07 11:23:30'),
+            31.25,
+            31.22,
+            0.015,
+            6.38,
+            6.34,
+            1260,
+          ),
+        ],
+      );
+    });
+  });
+
+  group('parseLogName', () {
+    final client = HttpClientTest();
+
+    test('Valid input with standard convention', () {
+      expect(client.parseLogName('projectA-tank1.log'), 'tank1');
+    });
+
+    test('Valid input with multiple hyphens in tank name', () {
+      expect(
+        client.parseLogName('projectB-tank-name-with-hyphen.log'),
+        'tank-name-with-hyphen',
+      );
+    });
+
+    test('Input without a valid tank name', () {
+      expect(client.parseLogName('projectD-.log'), '');
+    });
+
+    test('Input missing project name', () {
+      expect(client.parseLogName('-tank1.log'), 'tank1');
+    });
+
+    test('Input without hyphen separation', () {
+      expect(client.parseLogName('invalidlogfile.log'), '');
+    });
+
+    test('Empty string input', () {
+      expect(client.parseLogName(''), '');
+    });
+
+    test('Input without .log extension', () {
+      expect(client.parseLogName('projectE-tank2'), 'tank2');
     });
   });
 }

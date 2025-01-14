@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:log_file_client/components/csv_view.dart';
 import 'package:log_file_client/components/graph_view.dart';
+import 'package:log_file_client/components/project_card.dart';
+import 'package:log_file_client/components/table_view.dart';
+import 'package:log_file_client/components/tank_card.dart';
+import 'package:log_file_client/components/tank_thumbnail.dart';
 import 'package:log_file_client/main.dart';
 import 'package:log_file_client/pages/home_page.dart';
+import 'package:log_file_client/pages/project_page.dart';
 import 'package:log_file_client/utils/http_client.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -33,9 +37,7 @@ void main() {
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });
 
-  testWidgets('Drawer displays log list after loading',
-      (WidgetTester tester) async {
-    // Build the HomePage widget
+  testWidgets('HomePage displays projects', (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: HomePage(
@@ -44,23 +46,21 @@ void main() {
       ),
     );
 
-    // Wait for the fetchList method to complete
     await tester.pumpAndSettle();
 
-    // Open the drawer
-    await tester.tap(find.byTooltip('Open navigation menu'));
-    await tester.pumpAndSettle();
+    // Verify that the Projects header is displayed
+    expect(find.text('Projects'), findsOneWidget);
 
-    // Verify that the drawer is open
-    expect(find.byType(Drawer), findsOneWidget);
+    // Verify that a GridView of ProjectCards is displayed
+    expect(find.byType(GridView), findsOneWidget);
+    expect(find.byType(ProjectCard), findsNWidgets(2));
 
-    // Verify that the log list is displayed in the drawer
-    expect(find.text('test1.csv'), findsOneWidget);
-    expect(find.text('test2.csv'), findsOneWidget);
-    expect(find.text('test3.csv'), findsOneWidget);
+    // Verify that the ProjectCard widgets contain the correct text
+    expect(find.text('ProjectA'), findsOneWidget);
+    expect(find.text('ProjectB'), findsOneWidget);
   });
 
-  testWidgets('Drawer opens log file when selected',
+  testWidgets('ProjectCard opens project page when selected',
       (WidgetTester tester) async {
     // Build the HomePage widget
     await tester.pumpWidget(
@@ -70,30 +70,92 @@ void main() {
         ),
       ),
     );
-
-    // Wait for the fetchList method to complete
     await tester.pumpAndSettle();
 
-    // Open the drawer
-    await tester.tap(find.byTooltip('Open navigation menu'));
+    // Open the project page by tapping on the ProjectCard widget
+    await tester.tap(find.text('ProjectA'));
     await tester.pumpAndSettle();
 
-    // Tap on the first log file
-    await tester.tap(find.text('test1.csv'));
+    // Verify that the project page is displayed
+    expect(find.byType(ProjectPage), findsOneWidget);
+  });
+
+  testWidgets('ProjectPage displays TankCards', (WidgetTester tester) async {
+    // Build the ProjectPage widget
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProjectPage(
+          project: Project('ProjectA', [
+            Log('tank-24', '/ProjectA-tank-24.log'),
+            Log('tank-70', '/ProjectA-tank-70.log'),
+          ]),
+          httpClient: HttpClientTest(),
+        ),
+      ),
+    );
     await tester.pumpAndSettle();
 
-    // Verify that the GraphView widget is displayed
+    // Verify that the Tanks header is displayed
+    expect(find.text('ProjectA Tanks'), findsOneWidget);
+
+    // Verify that a GridView of TankCards is displayed
+    expect(find.byType(GridView), findsOneWidget);
+    expect(find.byType(TankCard), findsNWidgets(2));
+
+    // Verify that the TankCard widgets contain the correct text
+    expect(find.text('tank-24'), findsOneWidget);
+    expect(find.text('tank-70'), findsOneWidget);
+  });
+
+  testWidgets('TankCards have thumbnail graphs', (WidgetTester tester) async {
+    // Build the ProjectPage widget
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProjectPage(
+          project:
+              Project('ProjectA', [Log('tank-24', '/ProjectA-tank-24.log')]),
+          httpClient: HttpClientTest(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.byType(TankCard), findsOneWidget);
+
+    // Verify that the TankThumbnail widget is displayed
+    expect(find.byType(TankThumbnail), findsOneWidget);
+  });
+  testWidgets('TankCard opens graph when selected',
+      (WidgetTester tester) async {
+    // Build the ProjectPage widget
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProjectPage(
+          project: Project('ProjectA', [
+            Log('tank-24', '/ProjectA-tank-24.log'),
+            Log('tank-70', '/ProjectA-tank-70.log'),
+          ]),
+          httpClient: HttpClientTest(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // Open the graph page by tapping on the TankCard widget
+    await tester.tap(find.text('tank-24'));
+    await tester.pumpAndSettle();
+
+    // Verify that the graph page is displayed
     expect(find.byType(GraphView), findsOneWidget);
   });
 
-  testWidgets('CsvView displays table with log data from CSV file',
+  testWidgets('TableView displays table with log data from file',
       (WidgetTester tester) async {
-    // Build the CsvView widget
+    // Build the TableView widget
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          body: CsvView(
-            csvPath: 'sample_short.csv',
+          body: TableView(
+            filePath: 'sample_short.log',
             httpClient: HttpClientTest(),
           ),
         ),
@@ -115,45 +177,52 @@ void main() {
     expect(find.byType(Column), findsOneWidget);
 
     // Verify that the table headers are displayed
-    expect(find.text('time'), findsOneWidget);
-    expect(find.text('tankid'), findsOneWidget);
-    expect(find.text('temp'), findsOneWidget);
-    expect(find.text('temp setpoint'), findsOneWidget);
+    expect(find.text('Version'), findsOneWidget);
+    expect(find.text('Tank ID'), findsOneWidget);
+    expect(find.text('Time'), findsOneWidget);
+    expect(find.text('Temp Target'), findsOneWidget);
+    expect(find.text('Temp Mean'), findsOneWidget);
+    expect(find.text('Temp Standard Deviation'), findsOneWidget);
+    expect(find.text('pH Target'), findsOneWidget);
     expect(find.text('pH'), findsOneWidget);
-    expect(find.text('pH setpoint'), findsOneWidget);
     expect(find.text('onTime'), findsOneWidget);
-    expect(find.text('Kp'), findsOneWidget);
-    expect(find.text('Ki'), findsOneWidget);
-    expect(find.text('Kd'), findsOneWidget);
 
     // Verify that the table data is displayed
     expect(find.byType(ListView), findsOneWidget);
 
-    expect(find.text('2023-01-20 16:18:21.000'), findsOneWidget);
-    expect(find.text('2023-01-20 16:18:22.000'), findsOneWidget);
-    expect(find.text('2023-01-20 16:18:23.000'), findsOneWidget);
-    expect(find.text('2023-01-20 16:18:24.000'), findsOneWidget);
-    expect(find.text('2023-01-20 16:18:25.000'), findsOneWidget);
+    expect(find.text('2025-01-07 11:02:30.000'), findsOneWidget);
+    expect(find.text('2025-01-07 11:03:30.000'), findsOneWidget);
+    expect(find.text('2025-01-07 11:04:30.000'), findsOneWidget);
+    expect(find.text('2025-01-07 11:05:30.000'), findsOneWidget);
+    expect(find.text('2025-01-07 11:06:30.000'), findsOneWidget);
 
-    expect(find.text('99'), findsNWidgets(5));
+    expect(find.text('80'), findsNWidgets(5));
 
-    expect(find.text('1.23'), findsOneWidget);
-    expect(find.text('2.34'), findsOneWidget);
-    expect(find.text('3.45'), findsOneWidget);
-    expect(find.text('4.56'), findsOneWidget);
+    expect(find.text('31.25'), findsNWidgets(6));
 
-    expect(find.text('7.123'), findsOneWidget);
-    expect(find.text('6.789'), findsOneWidget);
-    expect(find.text('5.456'), findsOneWidget);
-    expect(find.text('4.123'), findsOneWidget);
+    expect(find.text('31.11'), findsOneWidget);
+    expect(find.text('31.43'), findsOneWidget);
+    expect(find.text('31.54'), findsOneWidget);
+    expect(find.text('31.42'), findsOneWidget);
 
-    expect(find.text('8.645'), findsNWidgets(5));
+    expect(find.text('0.07'), findsOneWidget);
+    expect(find.text('0.0'), findsOneWidget);
+    expect(find.text('0.09'), findsOneWidget);
+    expect(find.text('0.145'), findsOneWidget);
+    expect(find.text('0.085'), findsOneWidget);
 
-    expect(find.text('6'), findsOneWidget);
-    expect(find.text('8'), findsOneWidget);
-    expect(find.text('9'), findsOneWidget);
-    expect(find.text('10'), findsOneWidget);
-    expect(find.text('11'), findsOneWidget);
+    expect(find.text('6.38'), findsNWidgets(6));
+
+    expect(find.text('6.41'), findsOneWidget);
+    expect(find.text('6.36'), findsOneWidget);
+    expect(find.text('6.46'), findsOneWidget);
+    expect(find.text('6.35'), findsOneWidget);
+
+    expect(find.text('0'), findsOneWidget);
+    expect(find.text('60'), findsOneWidget);
+    expect(find.text('120'), findsOneWidget);
+    expect(find.text('180'), findsOneWidget);
+    expect(find.text('240'), findsOneWidget);
   });
 
   testWidgets('GraphView widget test', (WidgetTester tester) async {
@@ -162,7 +231,7 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: GraphView(
-            csvPath: 'sample_short.csv',
+            filePath: 'sample_short.log',
             httpClient: HttpClientTest(),
           ),
         ),

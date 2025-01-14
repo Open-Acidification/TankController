@@ -33,7 +33,7 @@ float EEPROM_TC::eepromReadFloat(uint16_t address) {
 }
 
 /**
- * @brief writes the value to the address and triggers an remote log in DataLogger
+ * @brief writes the value to the address and triggers a remote log in DataLogger
  *
  * @param address
  * @param value
@@ -58,7 +58,7 @@ int32_t EEPROM_TC::eepromReadInt(uint16_t address) {
 }
 
 /**
- * @brief writes the value to the address and triggers an remote log in DataLogger
+ * @brief writes the value to the address and triggers a remote log in DataLogger
  *
  * @param address
  * @param value

@@ -19,53 +19,87 @@ FLAGS=-std=c++0x \
 	-DARDUINO_AVR_MEGA2560
 
 INCLUDE=-I$(ARDUINO_CI)/arduino \
-  -I$(ARDUINO_CI)/unittest \
-  -I$(LIBRARIES)/TankController/src \
-  -I$(LIBRARIES)/TankController/src/model \
-  -I$(LIBRARIES)/TankController/src/UIState \
-  -I$(LIBRARIES)/TankController/src/wrappers \
-  -I$(LIBRARIES)/Adafruit_BusIO/src \
-  -I$(LIBRARIES)/Adafruit_MAX31865_library/src \
-  -I$(LIBRARIES)/PID/src \
-  -I$(LIBRARIES)/Ethernet/src \
-  -I$(LIBRARIES)/Ethernet/src/utility \
-  -I$(LIBRARIES)/LiquidCrystal/src \
-  -I$(LIBRARIES)/RTClib/src \
-  -I$(LIBRARIES)/Keypad/src \
-  -I$(LIBRARIES)/SdFat/src \
-  -I$(LIBRARIES)/SdFat/src/ArduinoCI \
-  -I$(LIBRARIES)/SdFat/src/DigitalIO \
-  -I$(LIBRARIES)/SdFat/src/DigitalIO/boards \
-  -I$(LIBRARIES)/SdFat/src/ExFatLib \
-  -I$(LIBRARIES)/SdFat/src/FatLib \
-  -I$(LIBRARIES)/SdFat/src/FsLib \
-  -I$(LIBRARIES)/SdFat/src/SdCard \
-  -I$(LIBRARIES)/SdFat/src/SpiDriver \
-  -I$(LIBRARIES)/SdFat/src/common \
-  -I$(LIBRARIES)/SdFat/src/iostream
+	-I$(ARDUINO_CI)/unittest \
+	-I$(LIBRARIES)/TankController/src \
+	-I$(LIBRARIES)/TankController/src/model \
+	-I$(LIBRARIES)/TankController/src/UIState \
+	-I$(LIBRARIES)/TankController/src/wrappers \
+	-I$(LIBRARIES)/Adafruit_BusIO/src \
+	-I$(LIBRARIES)/Adafruit_MAX31865_library/src \
+	-I$(LIBRARIES)/PID/src \
+	-I$(LIBRARIES)/Ethernet/src \
+	-I$(LIBRARIES)/Ethernet/src/utility \
+	-I$(LIBRARIES)/LiquidCrystal/src \
+	-I$(LIBRARIES)/RTClib/src \
+	-I$(LIBRARIES)/Keypad/src \
+	-I$(LIBRARIES)/SdFat/src \
+	-I$(LIBRARIES)/SdFat/src/ArduinoCI \
+	-I$(LIBRARIES)/SdFat/src/DigitalIO \
+	-I$(LIBRARIES)/SdFat/src/DigitalIO/boards \
+	-I$(LIBRARIES)/SdFat/src/ExFatLib \
+	-I$(LIBRARIES)/SdFat/src/FatLib \
+	-I$(LIBRARIES)/SdFat/src/FsLib \
+	-I$(LIBRARIES)/SdFat/src/SdCard \
+	-I$(LIBRARIES)/SdFat/src/SpiDriver \
+	-I$(LIBRARIES)/SdFat/src/common \
+	-I$(LIBRARIES)/SdFat/src/iostream
 
 HEADERS=$(wildcard src/*.h) $(wildcard src/wrappers/*) $(wildcard src/UIState/*)
 
 .PHONY : all
-all : $(BIN)/BlinkTest.cpp.bin $(BIN)/DataLoggerTest.cpp.bin $(BIN)/DateTimeTest.cpp.bin $(BIN)/EEPROMTest.cpp.bin \
-  $(BIN)/EnablePIDTest.cpp.bin $(BIN)/EthernetServerTest.cpp.bin $(BIN)/EthernetTest.cpp.bin \
-  $(BIN)/GetTimeTest.cpp.bin $(BIN)/JSONBuilderTest.cpp.bin $(BIN)/KeypadTest.cpp.bin \
+all : $(BIN)/BlinkTest.cpp.bin \
+	$(BIN)/DataLoggerTest.cpp.bin \
+	$(BIN)/DateTimeTest.cpp.bin \
+	$(BIN)/EEPROMTest.cpp.bin \
+	$(BIN)/EnablePIDTest.cpp.bin \
+	$(BIN)/EthernetServerTest.cpp.bin \
+	$(BIN)/EthernetTest.cpp.bin \
+	$(BIN)/GetTimeTest.cpp.bin \
+	$(BIN)/JSONBuilderTest.cpp.bin \
+	$(BIN)/KeypadTest.cpp.bin \
 	$(BIN)/LiquidCrystalTest.cpp.bin \
-  $(BIN)/MenuTest.cpp.bin $(BIN)/NumberCollectorTest.cpp.bin $(BIN)/PHCalibrationHighTest.cpp.bin \
-  $(BIN)/PHCalibrationLowTest.cpp.bin $(BIN)/PHCalibrationMidTest.cpp.bin \
-	$(BIN)/PHCalibrationPromptTest.cpp.bin $(BIN)/PHCalibrationWarningTest.cpp.bin $(BIN)/PHControlTest.cpp.bin \
-  $(BIN)/PHProbeTest.cpp.bin $(BIN)/PIDTest.cpp.bin $(BIN)/PushingBoxTest.cpp.bin $(BIN)/SDTest.cpp.bin \
-  $(BIN)/SeeDeviceAddressTest.cpp.bin $(BIN)/SeeDeviceUptimeTest.cpp.bin $(BIN)/SeeFreeMemoryTest.cpp.bin \
-  $(BIN)/SeeGoogleMinsTest.cpp.bin $(BIN)/SeeLogFileTest.cpp.bin $(BIN)/SeePHCalibrationTest.cpp.bin \
-  $(BIN)/SeePIDConstantsTest.cpp.bin $(BIN)/SeePhTest.cpp.bin $(BIN)/SeeTankIDTest.cpp.bin \
-  $(BIN)/SeeThermalCorrectionTest.cpp.bin $(BIN)/SeeVersionTest.cpp.bin $(BIN)/SerialTest.cpp.bin \
-  $(BIN)/SetChillOrHeatTest.cpp.bin $(BIN)/SetGoogleSheetIntervalTest.cpp.bin $(BIN)/SetKDTest.cpp.bin \
-  $(BIN)/SetKITest.cpp.bin $(BIN)/SetKPTest.cpp.bin $(BIN)/ResetPHCalibrationTest.cpp.bin \
-  $(BIN)/SetPHTargetTest.cpp.bin $(BIN)/SetPHSineWaveTest.cpp.bin $(BIN)/SetTankIDTest.cpp.bin \
-  $(BIN)/ResetThermalCalibrationTest.cpp.bin $(BIN)/SetThermalTargetTest.cpp.bin $(BIN)/SetThermalSineWaveTest.cpp.bin \
-  $(BIN)/SetTimeTest.cpp.bin $(BIN)/StringsTest.cpp.bin $(BIN)/TCLibTest.cpp.bin \
-  $(BIN)/ThermalProbeTest.cpp.bin $(BIN)/ThermalCalibrationTest.cpp.bin \
-  $(BIN)/ThermalControlTest.cpp.bin $(BIN)
+	$(BIN)/MenuTest.cpp.bin \
+	$(BIN)/NumberCollectorTest.cpp.bin \
+	$(BIN)/PHCalibrationHighTest.cpp.bin \
+	$(BIN)/PHCalibrationLowTest.cpp.bin \
+	$(BIN)/PHCalibrationMidTest.cpp.bin \
+	$(BIN)/PHCalibrationPromptTest.cpp.bin \
+	$(BIN)/PHCalibrationWarningTest.cpp.bin \
+	$(BIN)/PHControlTest.cpp.bin \
+	$(BIN)/PHProbeTest.cpp.bin \
+	$(BIN)/PIDTest.cpp.bin \
+	$(BIN)/PushingBoxTest.cpp.bin \
+	$(BIN)/SDTest.cpp.bin \
+	$(BIN)/SeeDeviceAddressTest.cpp.bin \
+	$(BIN)/SeeDeviceUptimeTest.cpp.bin \
+	$(BIN)/SeeFreeMemoryTest.cpp.bin \
+	$(BIN)/SeeGoogleMinsTest.cpp.bin \
+	$(BIN)/SeeLogFileTest.cpp.bin \
+	$(BIN)/SeePHCalibrationTest.cpp.bin \
+	$(BIN)/SeePIDConstantsTest.cpp.bin \
+	$(BIN)/SeePhTest.cpp.bin \
+	$(BIN)/SeeTankIDTest.cpp.bin \
+	$(BIN)/SeeThermalCorrectionTest.cpp.bin \
+	$(BIN)/SeeVersionTest.cpp.bin \
+	$(BIN)/SerialTest.cpp.bin \
+	$(BIN)/SetChillOrHeatTest.cpp.bin \
+	$(BIN)/SetGoogleSheetIntervalTest.cpp.bin \
+	$(BIN)/SetKDTest.cpp.bin \
+	$(BIN)/SetKITest.cpp.bin \
+	$(BIN)/SetKPTest.cpp.bin \
+	$(BIN)/ResetPHCalibrationTest.cpp.bin \
+	$(BIN)/SetPHTargetTest.cpp.bin \
+	$(BIN)/SetPHSineWaveTest.cpp.bin \
+	$(BIN)/SetTankIDTest.cpp.bin \
+	$(BIN)/ResetThermalCalibrationTest.cpp.bin \
+	$(BIN)/SetThermalTargetTest.cpp.bin \
+	$(BIN)/SetThermalSineWaveTest.cpp.bin \
+	$(BIN)/SetTimeTest.cpp.bin \
+	$(BIN)/StringsTest.cpp.bin \
+	$(BIN)/TCLibTest.cpp.bin \
+	$(BIN)/ThermalProbeTest.cpp.bin \
+	$(BIN)/ThermalCalibrationTest.cpp.bin \
+	$(BIN)/ThermalControlTest.cpp.bin $(BIN)
 
 GPP_TEST=g++ $(FLAGS) -L$(BIN) $(INCLUDE)
 
@@ -228,44 +262,141 @@ $(BIN)/ThermalCalibrationTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/ThermalCalib
 $(BIN)/ThermalControlTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/ThermalControlTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/ThermalControlTest.cpp.bin $(TEST)/ThermalControlTest.cpp -larduino
 
-BUSIO=$(BIN)/BusIO.o $(BIN)/I2CDevice.o $(BIN)/SPIDevice.o
-ETHERNET=$(BIN)/Dhcp.o $(BIN)/Dns.o $(BIN)/Ethernet.o $(BIN)/EthernetClient.o $(BIN)/EthernetClient_CI.o \
-$(BIN)/EthernetServer.o $(BIN)/EthernetServer_CI.o $(BIN)/EthernetUdp.o $(BIN)/Ethernet_CI.o \
-$(BIN)/socket.o $(BIN)/w5100.o
-LCD=$(BIN)/LiquidCrystal.o $(BIN)/LiquidCrystal_CI.o
-MAX31865=$(BIN)/MAX31865.o $(BIN)/MAX31865_CI.o
-RTC=$(BIN)/RTC_DS1307.o $(BIN)/RTC_DS3231.o $(BIN)/RTC_Micros.o $(BIN)/RTC_Millis.o \
-  $(BIN)/RTC_PCF8523.o $(BIN)/RTC_PCF8563.o $(BIN)/RTClib.o $(BIN)/RTClib_CI.o
-KEYPAD=$(BIN)/Key.o $(BIN)/Keypad.o $(BIN)/Keypad_CI.o
-SDFAT=$(BIN)/FreeStack.o $(BIN)/MinimumSerial.o $(BIN)/File_CI.o $(BIN)/SD_CI.o $(BIN)/ExFatDbg.o \
-  $(BIN)/ExFatFile.o $(BIN)/ExFatFilePrint.o $(BIN)/ExFatFileWrite.o $(BIN)/ExFatFormatter.o \
-  $(BIN)/ExFatName.o $(BIN)/ExFatPartition.o $(BIN)/ExFatVolume.o $(BIN)/FatDbg.o $(BIN)/FatFile.o \
-	$(BIN)/FatFileLFN.o  $(BIN)/FatFilePrint.o  $(BIN)/FatFileSFN.o \
-  $(BIN)/FatFormatter.o $(BIN)/FatName.o $(BIN)/FatPartition.o $(BIN)/FatVolume.o $(BIN)/FsFile.o \
-  $(BIN)/FsNew.o $(BIN)/FsVolume.o $(BIN)/SdCardInfo.o $(BIN)/SdSpiCard.o $(BIN)/SdioTeensy.o \
-  $(BIN)/SdSpiArtemis.o $(BIN)/SdSpiChipSelect.o $(BIN)/SdSpiDue.o $(BIN)/SdSpiESP.o \
-  $(BIN)/SdSpiParticle.o $(BIN)/SdSpiSTM32.o $(BIN)/SdSpiSTM32Core.o $(BIN)/SdSpiTeensy3.o \
-  $(BIN)/FmtNumber.o $(BIN)/FsCache.o $(BIN)/FsDateTime.o $(BIN)/FsName.o $(BIN)/FsStructs.o \
-  $(BIN)/FsUtf.o $(BIN)/PrintBasic.o $(BIN)/upcase.o $(BIN)/StdioStream.o $(BIN)/StreamBaseClass.o \
-  $(BIN)/istream.o $(BIN)/ostream.o
+BUSIO=$(BIN)/BusIO.o \
+	$(BIN)/I2CDevice.o \
+	$(BIN)/SPIDevice.o
+ETHERNET=$(BIN)/Dhcp.o \
+	$(BIN)/Dns.o \
+	$(BIN)/Ethernet.o \
+	$(BIN)/EthernetClient.o \
+	$(BIN)/EthernetClient_CI.o \
+$(BIN)/EthernetServer.o \
+	$(BIN)/EthernetServer_CI.o \
+	$(BIN)/EthernetUdp.o \
+	$(BIN)/Ethernet_CI.o \
+$(BIN)/socket.o \
+	$(BIN)/w5100.o
+LCD=$(BIN)/LiquidCrystal.o \
+	$(BIN)/LiquidCrystal_CI.o
+MAX31865=$(BIN)/MAX31865.o \
+	$(BIN)/MAX31865_CI.o
+RTC=$(BIN)/RTC_DS1307.o \
+	$(BIN)/RTC_DS3231.o \
+	$(BIN)/RTC_Micros.o \
+	$(BIN)/RTC_Millis.o \
+	$(BIN)/RTC_PCF8523.o \
+	$(BIN)/RTC_PCF8563.o \
+	$(BIN)/RTClib.o \
+	$(BIN)/RTClib_CI.o
+KEYPAD=$(BIN)/Key.o \
+	$(BIN)/Keypad.o \
+	$(BIN)/Keypad_CI.o
+SDFAT=$(BIN)/FreeStack.o \
+	$(BIN)/MinimumSerial.o \
+	$(BIN)/File_CI.o \
+	$(BIN)/SD_CI.o \
+	$(BIN)/ExFatDbg.o \
+	$(BIN)/ExFatFile.o \
+	$(BIN)/ExFatFilePrint.o \
+	$(BIN)/ExFatFileWrite.o \
+	$(BIN)/ExFatFormatter.o \
+	$(BIN)/ExFatName.o \
+	$(BIN)/ExFatPartition.o \
+	$(BIN)/ExFatVolume.o \
+	$(BIN)/FatDbg.o \
+	$(BIN)/FatFile.o \
+	$(BIN)/FatFileLFN.o  \
+	$(BIN)/FatFilePrint.o  \
+	$(BIN)/FatFileSFN.o \
+	$(BIN)/FatFormatter.o \
+	$(BIN)/FatName.o \
+	$(BIN)/FatPartition.o \
+	$(BIN)/FatVolume.o \
+	$(BIN)/FsFile.o \
+	$(BIN)/FsNew.o \
+	$(BIN)/FsVolume.o \
+	$(BIN)/SdCardInfo.o \
+	$(BIN)/SdSpiCard.o \
+	$(BIN)/SdioTeensy.o \
+	$(BIN)/SdSpiArtemis.o \
+	$(BIN)/SdSpiChipSelect.o \
+	$(BIN)/SdSpiDue.o \
+	$(BIN)/SdSpiESP.o \
+	$(BIN)/SdSpiParticle.o \
+	$(BIN)/SdSpiSTM32.o \
+	$(BIN)/SdSpiSTM32Core.o \
+	$(BIN)/SdSpiTeensy3.o \
+	$(BIN)/FmtNumber.o \
+	$(BIN)/FsCache.o \
+	$(BIN)/FsDateTime.o \
+	$(BIN)/FsName.o \
+	$(BIN)/FsStructs.o \
+	$(BIN)/FsUtf.o \
+	$(BIN)/PrintBasic.o \
+	$(BIN)/upcase.o \
+	$(BIN)/StdioStream.o \
+	$(BIN)/StreamBaseClass.o \
+	$(BIN)/istream.o \
+	$(BIN)/ostream.o
 
-OBJECTS=$(BIN)/Arduino.o $(BIN)/Godmode.o $(BIN)/stdlib.o $(BIN)/ArduinoUnitTests.o \
-  $(BIN)/TC_util.o $(BIN)/TankController.o $(BIN)/DataLogger.o $(BIN)/DateTime_TC.o \
-  $(BIN)/EEPROM_TC.o $(BIN)/EthernetServer_TC.o $(BIN)/Ethernet_TC.o $(BIN)/GetTime.o \
+OBJECTS=$(BIN)/Arduino.o \
+	$(BIN)/Godmode.o \
+	$(BIN)/stdlib.o \
+	$(BIN)/ArduinoUnitTests.o \
+	$(BIN)/TC_util.o \
+	$(BIN)/TankController.o \
+	$(BIN)/DataLogger.o \
+	$(BIN)/DateTime_TC.o \
+	$(BIN)/EEPROM_TC.o \
+	$(BIN)/EthernetServer_TC.o \
+	$(BIN)/Ethernet_TC.o \
+	$(BIN)/GetTime.o \
 	$(BIN)/JSONBuilder.o \
-  $(BIN)/Keypad_TC.o $(BIN)/LiquidCrystal_TC.o $(BIN)/PHControl.o $(BIN)/PHProbe.o \
-  $(BIN)/PID_TC.o $(BIN)/PushingBox.o $(BIN)/SD_TC.o $(BIN)/Serial_TC.o $(BIN)/ThermalProbe_TC.o \
-  $(BIN)/ThermalControl.o $(BIN)/PHCalibrationWarning.o $(BIN)/EnablePID.o $(BIN)/MainMenu.o \
-  $(BIN)/NumberCollector.o $(BIN)/PHCalibrationHigh.o $(BIN)/PHCalibrationLow.o \
-  $(BIN)/PHCalibrationMid.o $(BIN)/PHCalibrationPrompt.o $(BIN)/SeeDeviceAddress.o \
-	$(BIN)/SeeDeviceUptime.o $(BIN)/SeeFreeMemory.o \
-  $(BIN)/SeeGoogleMins.o $(BIN)/SeeLogFile.o $(BIN)/SeePHCalibration.o \
+	$(BIN)/Keypad_TC.o \
+	$(BIN)/LiquidCrystal_TC.o \
+	$(BIN)/PHControl.o \
+	$(BIN)/PHProbe.o \
+	$(BIN)/PID_TC.o \
+	$(BIN)/PushingBox.o \
+	$(BIN)/SD_TC.o \
+	$(BIN)/Serial_TC.o \
+	$(BIN)/ThermalProbe_TC.o \
+	$(BIN)/ThermalControl.o \
+	$(BIN)/PHCalibrationWarning.o \
+	$(BIN)/EnablePID.o \
+	$(BIN)/MainMenu.o \
+	$(BIN)/NumberCollector.o \
+	$(BIN)/PHCalibrationHigh.o \
+	$(BIN)/PHCalibrationLow.o \
+	$(BIN)/PHCalibrationMid.o \
+	$(BIN)/PHCalibrationPrompt.o \
+	$(BIN)/SeeDeviceAddress.o \
+	$(BIN)/SeeDeviceUptime.o \
+	$(BIN)/SeeFreeMemory.o \
+	$(BIN)/SeeGoogleMins.o \
+	$(BIN)/SeeLogFile.o \
+	$(BIN)/SeePHCalibration.o \
 	$(BIN)/SeePIDConstants.o \
-  $(BIN)/SeePh.o $(BIN)/SeeTankID.o $(BIN)/SeeThermalCorrection.o $(BIN)/SeeVersion.o \
-  $(BIN)/SetChillOrHeat.o $(BIN)/SetGoogleSheetInterval.o $(BIN)/SetKD.o $(BIN)/SetKI.o \
-  $(BIN)/SetKP.o $(BIN)/ResetPHCalibration.o $(BIN)/SetPHTarget.o $(BIN)/SetPHSineWave.o \
-  $(BIN)/SetTankID.o $(BIN)/ResetThermalCalibration.o $(BIN)/SetThermalTarget.o $(BIN)/SetThermalSineWave.o \
-  $(BIN)/SetTime.o $(BIN)/ThermalCalibration.o $(BIN)/UIState.o $(BIN)/Wait.o \
+	$(BIN)/SeePh.o \
+	$(BIN)/SeeTankID.o \
+	$(BIN)/SeeThermalCorrection.o \
+	$(BIN)/SeeVersion.o \
+	$(BIN)/SetChillOrHeat.o \
+	$(BIN)/SetGoogleSheetInterval.o \
+	$(BIN)/SetKD.o \
+	$(BIN)/SetKI.o \
+	$(BIN)/SetKP.o \
+	$(BIN)/ResetPHCalibration.o \
+	$(BIN)/SetPHTarget.o \
+	$(BIN)/SetPHSineWave.o \
+	$(BIN)/SetTankID.o \
+	$(BIN)/ResetThermalCalibration.o \
+	$(BIN)/SetThermalTarget.o \
+	$(BIN)/SetThermalSineWave.o \
+	$(BIN)/SetTime.o \
+	$(BIN)/ThermalCalibration.o \
+	$(BIN)/UIState.o \
+	$(BIN)/Wait.o \
 	$(BUSIO) $(LCD) $(MAX31865) $(BIN)/PID.o $(ETHERNET) $(RTC) $(KEYPAD) $(SDFAT)
 
 $(BIN)/libarduino.so: $(OBJECTS)

@@ -18,9 +18,9 @@ class GraphView extends StatefulWidget {
 
 class _GraphViewState extends State<GraphView> {
   late TrackballBehavior _trackballBehavior;
-  late final Future<List<LogDataLine?>> logData = getLogData();
+  late final Future<List<LogDataLine>> logData = getLogData();
 
-  Future<List<LogDataLine?>> getLogData() async {
+  Future<List<LogDataLine>> getLogData() async {
     final table = await widget.httpClient.getLogData(widget.filePath);
     return table;
   }
@@ -46,7 +46,7 @@ class _GraphViewState extends State<GraphView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: FutureBuilder<List<LogDataLine?>>(
+        child: FutureBuilder<List<LogDataLine>>(
           future: logData,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -60,7 +60,7 @@ class _GraphViewState extends State<GraphView> {
               return Container(
                 padding: const EdgeInsets.all(16.0),
                 child: SfCartesianChart(
-                  title: ChartTitle(text: 'Tank ID: ${logData.first?.tankid}'),
+                  title: ChartTitle(text: 'Tank ID: ${logData.first.tankid}'),
                   backgroundColor: Colors.white,
                   primaryXAxis: DateTimeAxis(
                     title: AxisTitle(text: 'Time'),
@@ -84,40 +84,40 @@ class _GraphViewState extends State<GraphView> {
                   ),
                   trackballBehavior: _trackballBehavior,
                   series: <CartesianSeries>[
-                    LineSeries<LogDataLine?, DateTime>(
+                    LineSeries<LogDataLine, DateTime>(
                       legendItemText: 'temp',
                       name: 'temp',
                       dataSource: logData,
-                      xValueMapper: (LogDataLine? log, _) => log?.time,
-                      yValueMapper: (LogDataLine? log, _) => log?.tempMean,
+                      xValueMapper: (LogDataLine log, _) => log.time,
+                      yValueMapper: (LogDataLine log, _) => log.tempMean,
                       color: Colors.blue,
                       yAxisName: 'TemperatureAxis',
                     ),
-                    LineSeries<LogDataLine?, DateTime>(
+                    LineSeries<LogDataLine, DateTime>(
                       legendItemText: 'temp setpoint',
                       name: 'temp setpoint',
                       dataSource: logData,
-                      xValueMapper: (LogDataLine? log, _) => log?.time,
-                      yValueMapper: (LogDataLine? log, _) => log?.tempTarget,
+                      xValueMapper: (LogDataLine log, _) => log.time,
+                      yValueMapper: (LogDataLine log, _) => log.tempTarget,
                       dashArray: <double>[5, 5],
                       color: Colors.blue,
                       yAxisName: 'TemperatureAxis',
                     ),
-                    LineSeries<LogDataLine?, DateTime>(
+                    LineSeries<LogDataLine, DateTime>(
                       legendItemText: 'pH',
                       name: 'pH',
                       dataSource: logData,
-                      xValueMapper: (LogDataLine? log, _) => log?.time,
-                      yValueMapper: (LogDataLine? log, _) => log?.phCurrent,
+                      xValueMapper: (LogDataLine log, _) => log.time,
+                      yValueMapper: (LogDataLine log, _) => log.phCurrent,
                       color: Colors.green,
                       yAxisName: 'pHAxis',
                     ),
-                    LineSeries<LogDataLine?, DateTime>(
+                    LineSeries<LogDataLine, DateTime>(
                       legendItemText: 'pH setpoint',
                       name: 'pH setpoint',
                       dataSource: logData,
-                      xValueMapper: (LogDataLine? log, _) => log?.time,
-                      yValueMapper: (LogDataLine? log, _) => log?.phTarget,
+                      xValueMapper: (LogDataLine log, _) => log.time,
+                      yValueMapper: (LogDataLine log, _) => log.phTarget,
                       dashArray: <double>[5, 5],
                       color: Colors.green,
                       yAxisName: 'pHAxis',

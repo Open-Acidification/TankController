@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:csv/csv.dart';
+import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:log_file_client/utils/sample_data.dart';
@@ -101,13 +102,13 @@ abstract class HttpClient {
     // Parse projects from logs
     final Map<String, List<Log>> projects = {};
     for (int i = 0; i < listItems.length; i++) {
-      final projectName = listItems[i]![0].split('-')[0];
+      final projectName = listItems[i][0].split('-')[0];
       if (projects[projectName] != null) {
         projects[projectName]!
-            .add(Log(parseLogName(listItems[i]![0]), listItems[i]![1]));
+            .add(Log(parseLogName(listItems[i][0]), listItems[i][1]));
       } else {
         projects[projectName] = [
-          Log(parseLogName(listItems[i]![0]), listItems[i]![1]),
+          Log(parseLogName(listItems[i][0]), listItems[i][1]),
         ];
       }
     }
@@ -128,18 +129,18 @@ abstract class HttpClient {
     return TankSnapshot(
       log,
       loglines,
-      loglines[loglines.length - 1]?.phCurrent,
-      loglines[loglines.length - 1]?.tempMean,
+      loglines[loglines.length - 1].phCurrent,
+      loglines[loglines.length - 1].tempMean,
     );
   }
 
-  Future<List<LogDataLine?>> getLogData(String filePath) async {
+  Future<List<LogDataLine>> getLogData(String filePath) async {
     final data = await fetchData(filePath);
 
     return parseLogData(data);
   }
 
-  List<LogDataLine?> parseLogData(String data) {
+  List<LogDataLine> parseLogData(String data) {
     if (data.trim().isEmpty) {
       return [];
     }
@@ -181,25 +182,22 @@ abstract class HttpClient {
     return logData;
   }
 
-  List<List<String>?> parseLogListFromHTML(String data) {
-    return parse(data)
-        .getElementsByTagName('li')
-        .map((e) {
-          if (e.children.isNotEmpty &&
-              e.children[0].attributes.containsKey('href')) {
-            final innerHtml = e.children[0].innerHtml;
-            final name = innerHtml.substring(innerHtml.lastIndexOf('/') + 1);
-            if (e.children[0].attributes['href']!.endsWith('.log')) {
-              return [
-                name,
-                '/${e.children[0].attributes['href']!.split('/').last}',
-              ];
-            }
-          }
-          return null;
-        })
-        .where((item) => item != null)
-        .toList();
+  List<List<String>> parseLogListFromHTML(String data) {
+    final result = <List<String>>[];
+    for (final Element e in parse(data).getElementsByTagName('li')) {
+      if (e.children.isNotEmpty &&
+          e.children[0].attributes.containsKey('href')) {
+        final innerHtml = e.children[0].innerHtml;
+        final name = innerHtml.substring(innerHtml.lastIndexOf('/') + 1);
+        if (e.children[0].attributes['href']!.endsWith('.log')) {
+          result.add([
+            name,
+            '/${e.children[0].attributes['href']!.split('/').last}',
+          ]);
+        }
+      }
+    }
+    return result;
   }
 
   String parseLogName(String name) {

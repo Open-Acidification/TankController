@@ -105,14 +105,14 @@ void main() {
       expect(logList.length, equals(3));
 
       // Validate the parsed log entries
-      expect(logList[0]![0], equals('ProjectA-tank-24.log'));
-      expect(logList[0]![1], equals('/ProjectA-tank-24.log'));
+      expect(logList[0][0], equals('ProjectA-tank-24.log'));
+      expect(logList[0][1], equals('/ProjectA-tank-24.log'));
 
-      expect(logList[1]![0], equals('ProjectA-tank-70.log'));
-      expect(logList[1]![1], equals('/ProjectA-tank-70.log'));
+      expect(logList[1][0], equals('ProjectA-tank-70.log'));
+      expect(logList[1][1], equals('/ProjectA-tank-70.log'));
 
-      expect(logList[2]![0], equals('ProjectB-tank-58.log'));
-      expect(logList[2]![1], equals('/ProjectB-tank-58.log'));
+      expect(logList[2][0], equals('ProjectB-tank-58.log'));
+      expect(logList[2][1], equals('/ProjectB-tank-58.log'));
     });
 
     test('returns an empty list if no log links are present', () async {
@@ -265,9 +265,9 @@ void main() {
       final logTable = await client.getLogData('calibration.log');
 
       // temp and pH values should be null
-      expect(logTable[0]?.tempMean, isNull);
-      expect(logTable[0]?.tempStdDev, isNull);
-      expect(logTable[0]?.phCurrent, isNull);
+      expect(logTable[0].tempMean, isNull);
+      expect(logTable[0].tempStdDev, isNull);
+      expect(logTable[0].phCurrent, isNull);
     });
 
     test('handles log file with warning logs', () async {

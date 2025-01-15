@@ -135,7 +135,11 @@ void SD_TC::getRemoteLogContents(char* buffer, int size, uint32_t index) {
     int remaining = file.available();
     if (remaining > 0) {
       int readSize = file.read(buffer, min(size - 1, remaining));
-      buffer[readSize] = '\0';
+      if (readSize == min(size - 1, remaining)) {
+        buffer[readSize] = '\0';
+      } else {
+        buffer[0] = '\0';
+      }
     }
     file.close();
   }

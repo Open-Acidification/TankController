@@ -109,9 +109,6 @@ GPP_TEST=g++ $(FLAGS) -L$(BIN) $(INCLUDE)
 $(BIN)/PHCalibrationWarningTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/PHCalibrationWarningTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/PHCalibrationWarningTest.cpp.bin $(TEST)/PHCalibrationWarningTest.cpp -larduino
 
-$(BIN)/RemoteLogPusherTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/RemoteLogPusherTest.cpp $(HEADERS)
-	$(GPP_TEST) -o $(BIN)/RemoteLogPusherTest.cpp.bin $(TEST)/RemoteLogPusherTest.cpp -larduino
-
 $(BIN)/BlinkTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/BlinkTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/BlinkTest.cpp.bin $(TEST)/BlinkTest.cpp -larduino
 
@@ -430,9 +427,6 @@ $(BIN)/TC_util.o: $(SRC)/model/TC_util.cpp $(HEADERS)
 
 $(BIN)/TankController.o: $(SRC)/TankController.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/TankController.o $(SRC)/TankController.cpp
-
-$(BIN)/RemoteLogPusher.o: $(SRC)/model/RemoteLogPusher.cpp $(HEADERS)
-	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/RemoteLogPusher.o $(SRC)/model/RemoteLogPusher.cpp
 
 $(BIN)/DataLogger.o: $(SRC)/model/DataLogger.cpp $(HEADERS)
 	g++ -c $(FLAGS) $(INCLUDE) -o $(BIN)/DataLogger.o $(SRC)/model/DataLogger.cpp

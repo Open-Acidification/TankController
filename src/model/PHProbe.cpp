@@ -175,6 +175,7 @@ void PHProbe::setCalibration(int calibrationPoints) {
   TankController::instance()->serialEvent1();  // fake interrupt to update the calibration reading
   TankController::instance()->loop();          // update the controls based on the current readings
 }
+
 void PHProbe::setPh(float newValue) {
   char buffer[10];
   snprintf_P(buffer, sizeof(buffer), (PGM_P)F("%i.%03i\r"), (int)newValue, (int)(newValue * 1000 + 0.5) % 1000);
@@ -182,6 +183,7 @@ void PHProbe::setPh(float newValue) {
   TankController::instance()->serialEvent1();  // fake interrupt to update the current pH reading
   TankController::instance()->loop();          // update the controls based on the current readings
 }
+
 void PHProbe::setPhSlope(const char *slope) {
   GODMODE()->serialPort[1].dataIn = String(slope);  // the queue of data waiting to be read
   TankController::instance()->serialEvent1();       // fake interrupt to update the current pH reading

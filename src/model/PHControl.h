@@ -65,5 +65,5 @@ public:
   void setSineAmplitude(float sineAmplitude);
   void setSineAmplitudeAndHours(float sineAmplitude, float sinePeriodInHours);
   void enablePID(bool flag);
-  void updateControl(float pH);
+  void loop();
 };

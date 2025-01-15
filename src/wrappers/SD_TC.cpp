@@ -1,6 +1,7 @@
 #include "wrappers/SD_TC.h"
 
 #include "model/DataLogger.h"
+#include "model/RemoteLogPusher.h"
 #include "model/TC_util.h"
 #include "wrappers/DateTime_TC.h"
 #include "wrappers/Ethernet_TC.h"
@@ -41,6 +42,7 @@ SD_TC::SD_TC() {
   if (!sd.begin(SD_SELECT_PIN)) {
     Serial.println(F("SD_TC failed to initialize!"));
   }
+  setRemoteLogName();
   remoteLogName[0] = '\0';
 }
 
@@ -123,6 +125,24 @@ bool SD_TC::exists(const char* path) {
 
 bool SD_TC::format() {
   return sd.format();
+}
+
+void SD_TC::getRemoteLogContents(char* buffer, int size, uint32_t index) {
+  buffer[0] = '\0';
+  File file = open(getRemoteLogName(), O_RDONLY);
+  if (file) {
+    file.seek(index);
+    int remaining = file.available();
+    if (remaining > 0) {
+      int readSize = file.read(buffer, min(size - 1, remaining));  // Flawfinder: ignore
+      if (readSize == min(size - 1, remaining)) {
+        buffer[readSize] = '\0';
+      } else {
+        buffer[0] = '\0';
+      }
+    }
+    file.close();
+  }
 }
 
 const char* SD_TC::getRemoteLogName() {
@@ -243,6 +263,7 @@ bool SD_TC::remove(const char* path) {
 }
 
 void SD_TC::setRemoteLogName(const char* newFileName) {
+  // See TankController.ino for the definition of remoteLogName
   if (newFileName != nullptr && strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) > 0 &&
       strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) <= MAX_FILE_NAME_LENGTH) {
     // valid file name has been provided (See TankController.ino)
@@ -254,6 +275,16 @@ void SD_TC::todaysDataFileName(char* path, int size) {
   DateTime_TC now = DateTime_TC::now();
   snprintf_P(path, size, (PGM_P)F("%4i%02i%02i.csv"), now.year(), now.month(), now.day());
   COUT(path);
+}
+
+void SD_TC::updateRemoteFileSize() {
+  File file = open(remoteLogName, O_RDONLY);
+  if (file) {
+    remoteFileSize = file.size();
+    file.close();
+  } else {
+    remoteFileSize = 0;
+  }
 }
 
 /**
@@ -279,5 +310,5 @@ void SD_TC::writeToRemoteLog(const char* line) {
     appendStringToPath(buffer, remoteLogName);
   }
   appendStringToPath(line, remoteLogName);
-  // AlertPusher::instance()->pushSoon();
+  RemoteLogPusher::instance()->pushSoon();
 }

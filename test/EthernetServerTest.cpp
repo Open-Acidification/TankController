@@ -20,12 +20,14 @@ unittest_setup() {
   PHControl::instance()->enablePID(0);
   PHControl::instance()->setBaseTargetPh(7.0);
   PHControl::instance()->setRampDurationHours(0.0);
-  PHControl::instance()->updateControl(7.0);
+  PHProbe::instance()->setPh(7.0);
+  PHControl::instance()->loop();
   ThermalControl::instance()->setThermalTarget(22);
   EEPROM_TC::instance()->setTankID(0);
   EEPROM_TC::instance()->setHeat(0);
   EEPROM_TC::instance()->setGoogleSheetInterval(65535);
 }
+
 /**
  * Trivial test to confirm that EthernetServer_TC compiles,
  * is of proper class, and has proper port
@@ -74,6 +76,7 @@ unittest(echo) {
 }
 
 unittest(display) {
+  PHProbe::instance()->setPh(7.0);
   EthernetServer_TC* server = EthernetServer_TC::instance();
   server->setHasClientCalling(true);
   delay(1);
@@ -105,7 +108,7 @@ unittest(display) {
       "Access-Control-Allow-Origin: *\r\n"
       "Content-Length: 36\r\n"
       "\r\n"
-      "pH 0.000   7.000\r\n"
+      "pH 7.000   7.000\r\n"
       "T  0.00 H 22.00 \r\n";
   assertEqual(expectedResponse, response);
   assertEqual(FINISHED, server->getState());

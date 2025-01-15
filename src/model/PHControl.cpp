@@ -147,8 +147,8 @@ bool PHControl::isOn() {
   return digitalRead(PH_CONTROL_PIN) == TURN_SOLENOID_ON;
 }
 
-void PHControl::updateControl(float pH) {
-  // called each loop()
+void PHControl::loop() {
+  float pH = PHProbe::instance()->getPh();
   int msToBeOn;
   int nowModWindow = millis() % WINDOW_SIZE;
   uint32_t currentTime = DateTime_TC::now().secondstime();

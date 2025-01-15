@@ -11,6 +11,7 @@
 #include "model/PHControl.h"
 #include "model/PHProbe.h"
 #include "model/PushingBox.h"
+#include "model/RemoteLogPusher.h"
 #include "model/TC_util.h"
 #include "model/ThermalControl.h"
 #include "wrappers/DateTime_TC.h"
@@ -177,6 +178,7 @@ void TankController::loop(bool report_loop_delay) {
   updateControls();                       // turn CO2 and temperature controls on or off (~90ms)
   handleUI();                             // look at keypad, update LCD (~10ms)
   DataLogger::instance()->loop();         // record current data to SD and serial (~80ms)
+  RemoteLogPusher::instance()->loop();    // write data to remote log
   GetTime::instance()->loop();            // update the time (~0ms)
   PushingBox::instance()->loop();         // write data to Google Sheets (~0ms; ~1130ms every report)
   Ethernet_TC::instance()->loop();        // renew DHCP lease (~0ms)
@@ -241,7 +243,7 @@ void TankController::updateControls() {
   // update ThermalControl
   ThermalControl::instance()->updateControl(ThermalProbe_TC::instance()->getRunningAverage());
   // update PHControl
-  PHControl::instance()->updateControl(PHProbe::instance()->getPh());
+  PHControl::instance()->loop();
 }
 
 /**

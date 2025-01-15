@@ -27,6 +27,10 @@ public:
   bool countFiles(void (*callWhenFinished)(int));
   bool exists(const char* path);
   bool format();
+  void getRemoteLogContents(char* buffer, int size, uint32_t index);
+  uint32_t getRemoteFileSize() {
+    return remoteFileSize;
+  }
   const char* getRemoteLogName();
   bool listRootToBuffer(void (*callWhenFull)(const char*, bool));
   bool mkdir(const char* path);
@@ -41,6 +45,9 @@ public:
   char mostRecentDataLogHeader[128] = "";
   char mostRecentDataLogLine[128] = "";
   char mostRecentRemoteLogEntry[256] = "";
+  void updateRemoteLogFileSizeForTest() {
+    updateRemoteFileSize();
+  }
 #endif
 
 private:
@@ -52,6 +59,7 @@ private:
   bool hasHadError = false;
   SdFat sd;
   char remoteLogName[MAX_FILE_NAME_LENGTH + 5];  // add ".log" with null-terminator
+  uint32_t remoteFileSize = 0;
 
   // Max depth of file system search for rootdir()
   // Two is minimum: First for root, second for files
@@ -67,4 +75,5 @@ private:
   bool iterateOnFiles(doOnFile functionName, void* userData);
   static bool incrementFileCount(File* myFile, void* pFileCount);
   static bool listFile(File* myFile, void* userData);
+  void updateRemoteFileSize();
 };

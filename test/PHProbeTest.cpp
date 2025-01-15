@@ -155,12 +155,18 @@ unittest(setLowpointCalibration) {
 unittest(setMidpointCalibration) {
   GodmodeState *state = GODMODE();
   state->reset();
+  DataLogger::instance()->reset();
+  assertFalse(DataLogger::instance()->getShouldWriteWarning());
   eeprom->setIgnoreBadPHSlope(true);
   assertTrue(eeprom->getIgnoreBadPHSlope());
+  assertTrue(DataLogger::instance()->getShouldWriteWarning());
+  DataLogger::instance()->reset();
+  assertFalse(DataLogger::instance()->getShouldWriteWarning());
   assertEqual("", state->serialPort[0].dataOut);
   assertEqual("", state->serialPort[1].dataOut);
   state->serialPort[0].dataOut = "";
   pHProbe->setMidpointCalibration(11.875);
+  assertTrue(DataLogger::instance()->getShouldWriteWarning());
   assertEqual("PHProbe::setMidpointCalibration(11.875)\r\n", state->serialPort[0].dataOut);
   assertEqual("Cal,mid,11.875\r", state->serialPort[1].dataOut);
   assertFalse(eeprom->getIgnoreBadPHSlope());

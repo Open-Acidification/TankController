@@ -212,12 +212,12 @@ unittest(writeRemoteLog) {
   int size = sd->getRemoteFileSize();
   sd->writeToRemoteLog("line 2");
   sd->updateRemoteLogFileSizeForTest();
-  assertEqual(size + strlen("line 2\n"), sd->getRemoteFileSize());
+  assertEqual(size + strlen("line 2\n"), sd->getRemoteFileSize());  // Flawfinder: ignore
 
   // verify contents of remote log
   File file = sd->open("90A2DA807B76.log");
   file.seek(size);
-  file.read(data, 7);
+  file.read(data, 7);  // Flawfinder: ignore
   file.close();
   data[7] = '\0';
   assertEqual("line 2\n", data);

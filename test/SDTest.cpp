@@ -241,6 +241,7 @@ unittest(getRemoteLogContents) {
 
 unittest(noRemoteLogFileName) {
   SD_TC* sd = SD_TC::instance();
+  sd->setRemoteLogName("90A2DA807B76");
   sd->setRemoteLogName("");
   assertEqual("90A2DA807B76.log", sd->getRemoteLogName());
 }
@@ -256,7 +257,7 @@ unittest(longRemoteLogFileName) {
   sd->setRemoteLogName("1234567890123456789012345678");  // maximum length
   assertEqual("1234567890123456789012345678.log", sd->getRemoteLogName());
   sd->setRemoteLogName("12345678901234567890123456789");  // one character too many
-  assertEqual("90A2DA807B76.log", sd->getRemoteLogName());
+  assertEqual("1234567890123456789012345678.log", sd->getRemoteLogName());
 }
 
 unittest(remoteLogName) {

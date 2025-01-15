@@ -244,18 +244,18 @@ packages:
     dependency: transitive
     description:
       name: http_parser
-      sha256: "76d306a1c3afb33fe82e2bbacad62a61f409b5634c915fceb0d799de1a913360"
+      sha256: "178d74305e7866013777bab2c3d8726205dc5a4dd935297175b19a23a2e66571"
       url: "https://pub.dev"
     source: hosted
-    version: "4.1.1"
+    version: "4.1.2"
   intl:
     dependency: transitive
     description:
       name: intl
-      sha256: d6f56758b7d3014a48af9701c085700aac781a92a87a62b1333b46d8879661cf
+      sha256: "00f33b908655e606b86d2ade4710a231b802eec6f11e87e4ea3783fd72077a50"
       url: "https://pub.dev"
     source: hosted
-    version: "0.19.0"
+    version: "0.20.1"
   io:
     dependency: transitive
     description:
@@ -497,18 +497,18 @@ packages:
     dependency: "direct main"
     description:
       name: syncfusion_flutter_charts
-      sha256: abf7a054f0bc5ccbed2102adf3ed05b3ee220b602f18aefe01a232605d4a5987
+      sha256: "117823c9e2ffcb7fb9868c73263df88751e3bb1f3d81f617cbaf63112f530e9c"
       url: "https://pub.dev"
     source: hosted
-    version: "28.1.35"
+    version: "28.1.39"
   syncfusion_flutter_core:
     dependency: transitive
     description:
       name: syncfusion_flutter_core
-      sha256: f6d1e8c08361aed6fb7f7b6f327cbd190464e1c717c6152d59866b2f0bb90ffd
+      sha256: "794870919ca73e29c6cb25392a097cdfe58da4d6f3f3d3eccc529ecf52f78752"
       url: "https://pub.dev"
     source: hosted
-    version: "28.1.35"
+    version: "28.1.39"
   term_glyph:
     dependency: transitive
     description:

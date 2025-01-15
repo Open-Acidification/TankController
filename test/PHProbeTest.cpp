@@ -162,6 +162,7 @@ unittest(setMidpointCalibration) {
   assertTrue(DataLogger::instance()->getShouldWriteWarning());
   DataLogger::instance()->reset();
   assertFalse(DataLogger::instance()->getShouldWriteWarning());
+  assertEqual("", state->serialPort[0].dataOut);
   assertEqual("", state->serialPort[1].dataOut);
   state->serialPort[0].dataOut = "";
   pHProbe->setMidpointCalibration(11.875);

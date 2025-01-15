@@ -18,7 +18,6 @@ RemoteLogPusher* RemoteLogPusher::_instance = nullptr;
  *
  * @return RemoteLogPusher*
  */
-
 RemoteLogPusher* RemoteLogPusher::instance() {
   if (!_instance) {
     _instance = new RemoteLogPusher();

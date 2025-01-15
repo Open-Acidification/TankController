@@ -201,13 +201,13 @@ unittest(writeRemoteLog) {
   sd->updateRemoteLogFileSizeForTest();
   assertFalse(sd->exists("90A2DA807B76.log"));
   assertEqual(0, sd->getRemoteFileSize());
-  // pusher->setShouldSentHeadRequest(false);   // TODO: restore this and the next line
-  // assertFalse(pusher->shouldSendHeadRequest());
+  pusher->setShouldSentHeadRequest(false);
+  assertFalse(pusher->shouldSendHeadRequest());
 
   // write data
   sd->writeToRemoteLog("line 1");  // also writes header row
   sd->updateRemoteLogFileSizeForTest();
-  // assertTrue(pusher->basicShouldSendHeadRequest());  TODO: restore this line
+  assertTrue(pusher->basicShouldSendHeadRequest());
   assertTrue(sd->exists("90A2DA807B76.log"));
   int size = sd->getRemoteFileSize();
   sd->writeToRemoteLog("line 2");

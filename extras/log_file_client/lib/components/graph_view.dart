@@ -59,76 +59,84 @@ class _GraphViewState extends State<GraphView> {
               final logData = snapshot.data!;
               return Container(
                 padding: const EdgeInsets.all(16.0),
-                child: SfCartesianChart(
-                  title: ChartTitle(text: 'Tank ID: ${logData.first.tankid}'),
-                  backgroundColor: Colors.white,
-                  primaryXAxis: DateTimeAxis(
-                    title: AxisTitle(text: 'Time'),
-                    intervalType: DateTimeIntervalType.hours,
-                    interval: 1,
-                  ),
-                  primaryYAxis: NumericAxis(
-                    name: 'pHAxis',
-                    title: AxisTitle(text: 'pH Value'),
-                  ),
-                  axes: <ChartAxis>[
-                    NumericAxis(
-                      name: 'TemperatureAxis',
-                      title: AxisTitle(text: 'Temperature Value'),
-                      opposedPosition: true,
-                    ),
-                  ],
-                  legend: Legend(
-                    isVisible: true,
-                    position: LegendPosition.bottom,
-                  ),
-                  trackballBehavior: _trackballBehavior,
-                  series: <CartesianSeries>[
-                    LineSeries<LogDataLine, DateTime>(
-                      legendItemText: 'temp',
-                      name: 'temp',
-                      dataSource: logData,
-                      xValueMapper: (LogDataLine log, _) => log.time,
-                      yValueMapper: (LogDataLine log, _) => log.tempMean,
-                      color: Colors.blue,
-                      yAxisName: 'TemperatureAxis',
-                    ),
-                    LineSeries<LogDataLine, DateTime>(
-                      legendItemText: 'temp setpoint',
-                      name: 'temp setpoint',
-                      dataSource: logData,
-                      xValueMapper: (LogDataLine log, _) => log.time,
-                      yValueMapper: (LogDataLine log, _) => log.tempTarget,
-                      dashArray: <double>[5, 5],
-                      color: Colors.blue,
-                      yAxisName: 'TemperatureAxis',
-                    ),
-                    LineSeries<LogDataLine, DateTime>(
-                      legendItemText: 'pH',
-                      name: 'pH',
-                      dataSource: logData,
-                      xValueMapper: (LogDataLine log, _) => log.time,
-                      yValueMapper: (LogDataLine log, _) => log.phCurrent,
-                      color: Colors.green,
-                      yAxisName: 'pHAxis',
-                    ),
-                    LineSeries<LogDataLine, DateTime>(
-                      legendItemText: 'pH setpoint',
-                      name: 'pH setpoint',
-                      dataSource: logData,
-                      xValueMapper: (LogDataLine log, _) => log.time,
-                      yValueMapper: (LogDataLine log, _) => log.phTarget,
-                      dashArray: <double>[5, 5],
-                      color: Colors.green,
-                      yAxisName: 'pHAxis',
-                    ),
-                  ],
-                ),
+                child: _graph(logData),
               );
             }
           },
         ),
       ),
     );
+  }
+
+  SfCartesianChart _graph(List<LogDataLine> logData) {
+    return SfCartesianChart(
+      title: ChartTitle(text: 'Tank ID: ${logData.first.tankid}'),
+      backgroundColor: Colors.white,
+      primaryXAxis: DateTimeAxis(
+        title: AxisTitle(text: 'Time'),
+        intervalType: DateTimeIntervalType.hours,
+        interval: 1,
+      ),
+      primaryYAxis: NumericAxis(
+        name: 'pHAxis',
+        title: AxisTitle(text: 'pH Value'),
+      ),
+      axes: <ChartAxis>[
+        NumericAxis(
+          name: 'TemperatureAxis',
+          title: AxisTitle(text: 'Temperature Value'),
+          opposedPosition: true,
+        ),
+      ],
+      legend: Legend(
+        isVisible: true,
+        position: LegendPosition.bottom,
+      ),
+      trackballBehavior: _trackballBehavior,
+      series: _chartSeries(logData),
+    );
+  }
+
+  List<CartesianSeries> _chartSeries(List<LogDataLine> logData) {
+    return <CartesianSeries>[
+      LineSeries<LogDataLine, DateTime>(
+        legendItemText: 'temp',
+        name: 'temp',
+        dataSource: logData,
+        xValueMapper: (LogDataLine log, _) => log.time,
+        yValueMapper: (LogDataLine log, _) => log.tempMean,
+        color: Colors.blue,
+        yAxisName: 'TemperatureAxis',
+      ),
+      LineSeries<LogDataLine, DateTime>(
+        legendItemText: 'temp setpoint',
+        name: 'temp setpoint',
+        dataSource: logData,
+        xValueMapper: (LogDataLine log, _) => log.time,
+        yValueMapper: (LogDataLine log, _) => log.tempTarget,
+        dashArray: <double>[5, 5],
+        color: Colors.blue,
+        yAxisName: 'TemperatureAxis',
+      ),
+      LineSeries<LogDataLine, DateTime>(
+        legendItemText: 'pH',
+        name: 'pH',
+        dataSource: logData,
+        xValueMapper: (LogDataLine log, _) => log.time,
+        yValueMapper: (LogDataLine log, _) => log.phCurrent,
+        color: Colors.green,
+        yAxisName: 'pHAxis',
+      ),
+      LineSeries<LogDataLine, DateTime>(
+        legendItemText: 'pH setpoint',
+        name: 'pH setpoint',
+        dataSource: logData,
+        xValueMapper: (LogDataLine log, _) => log.time,
+        yValueMapper: (LogDataLine log, _) => log.phTarget,
+        dashArray: <double>[5, 5],
+        color: Colors.green,
+        yAxisName: 'pHAxis',
+      ),
+    ];
   }
 }

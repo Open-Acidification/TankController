@@ -6,9 +6,13 @@ import 'package:log_file_client/pages/graph_page.dart';
 import 'package:log_file_client/utils/http_client.dart';
 
 class ProjectPage extends StatefulWidget {
-  const ProjectPage({required this.project, super.key, this.httpClient});
+  const ProjectPage({
+    required this.project,
+    required this.httpClient,
+    super.key,
+  });
 
-  final HttpClient? httpClient;
+  final HttpClient httpClient;
   final Project project;
 
   @override
@@ -16,20 +20,12 @@ class ProjectPage extends StatefulWidget {
 }
 
 class _ProjectPageState extends State<ProjectPage> {
-  late final HttpClient httpClient;
-
-  @override
-  void initState() {
-    super.initState();
-    httpClient = widget.httpClient ?? HttpClientProd();
-  }
-
   Future<void> openTankGraph(Log log) async {
     await Navigator.of(context).push(
       PageRouteBuilder(
         pageBuilder: (context, animation1, animation2) => GraphPage(
           log: log,
-          httpClient: httpClient,
+          httpClient: widget.httpClient,
         ),
         transitionDuration: Duration.zero,
         reverseTransitionDuration: Duration.zero,
@@ -96,7 +92,7 @@ class _ProjectPageState extends State<ProjectPage> {
         itemBuilder: (context, index) {
           return TankCard(
             log: widget.project.logs[index],
-            httpClient: httpClient,
+            httpClient: widget.httpClient,
             onTap: () => unawaited(openTankGraph(widget.project.logs[index])),
           );
         },

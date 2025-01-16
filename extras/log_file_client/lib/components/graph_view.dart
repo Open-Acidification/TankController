@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:log_file_client/utils/http_client.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-class GraphView extends StatefulWidget {
+class GraphView extends StatelessWidget {
   const GraphView({
     required this.filePath,
     required this.httpClient,
@@ -12,38 +12,16 @@ class GraphView extends StatefulWidget {
   final String filePath;
   final HttpClient httpClient;
 
-  @override
-  State<GraphView> createState() => _GraphViewState();
-}
-
-class _GraphViewState extends State<GraphView> {
-  late TrackballBehavior _trackballBehavior;
-  late final Future<List<LogDataLine>> logData = getLogData();
-
   Future<List<LogDataLine>> getLogData() async {
-    final table = await widget.httpClient.getLogData(widget.filePath);
+    final table = await httpClient.getLogData(filePath);
     return table;
   }
 
   @override
-  void initState() {
-    _trackballBehavior = TrackballBehavior(
-      enable: true,
-      tooltipDisplayMode: TrackballDisplayMode.groupAllPoints,
-      markerSettings: TrackballMarkerSettings(
-        markerVisibility: TrackballVisibilityMode.visible,
-      ),
-      tooltipSettings: InteractiveTooltip(
-        enable: true,
-        format: 'series.name : point.y',
-      ),
-      activationMode: ActivationMode.singleTap,
-    );
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    // ignore: discarded_futures
+    final Future<List<LogDataLine>> logData = getLogData();
+
     return Scaffold(
       body: Center(
         child: FutureBuilder<List<LogDataLine>>(
@@ -69,6 +47,19 @@ class _GraphViewState extends State<GraphView> {
   }
 
   SfCartesianChart _graph(List<LogDataLine> logData) {
+    final trackballBehavior = TrackballBehavior(
+      enable: true,
+      tooltipDisplayMode: TrackballDisplayMode.groupAllPoints,
+      markerSettings: TrackballMarkerSettings(
+        markerVisibility: TrackballVisibilityMode.visible,
+      ),
+      tooltipSettings: InteractiveTooltip(
+        enable: true,
+        format: 'series.name : point.y',
+      ),
+      activationMode: ActivationMode.singleTap,
+    );
+
     return SfCartesianChart(
       title: ChartTitle(text: 'Tank ID: ${logData.first.tankid}'),
       backgroundColor: Colors.white,
@@ -92,7 +83,7 @@ class _GraphViewState extends State<GraphView> {
         isVisible: true,
         position: LegendPosition.bottom,
       ),
-      trackballBehavior: _trackballBehavior,
+      trackballBehavior: trackballBehavior,
       series: _chartSeries(logData),
     );
   }

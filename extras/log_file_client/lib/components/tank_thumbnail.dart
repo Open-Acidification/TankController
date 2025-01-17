@@ -33,28 +33,32 @@ class TankThumbnail extends StatelessWidget {
           anchorRangeToVisiblePoints: false,
         ),
       ],
-      series: <CartesianSeries>[
-        LineSeries<LogDataLine?, DateTime>(
-          legendItemText: 'temp',
-          name: 'temp',
-          dataSource: snapshot.latestData,
-          xValueMapper: (LogDataLine? log, _) => log?.time,
-          yValueMapper: (LogDataLine? log, _) => log?.tempMean,
-          color: Colors.blue,
-          yAxisName: 'TemperatureAxis',
-          animationDuration: 0,
-        ),
-        LineSeries<LogDataLine?, DateTime>(
-          legendItemText: 'pH',
-          name: 'pH',
-          dataSource: snapshot.latestData,
-          xValueMapper: (LogDataLine? log, _) => log?.time,
-          yValueMapper: (LogDataLine? log, _) => log?.phCurrent,
-          color: Colors.green,
-          yAxisName: 'pHAxis',
-          animationDuration: 0,
-        ),
-      ],
+      series: _chartSeries(),
     );
+  }
+
+  List<CartesianSeries> _chartSeries() {
+    return <CartesianSeries>[
+      LineSeries<LogDataLine?, DateTime>(
+        legendItemText: 'temp',
+        name: 'temp',
+        dataSource: snapshot.latestData,
+        xValueMapper: (LogDataLine? log, _) => log?.time,
+        yValueMapper: (LogDataLine? log, _) => log?.tempMean,
+        color: Colors.blue,
+        yAxisName: 'TemperatureAxis',
+        animationDuration: 0,
+      ),
+      LineSeries<LogDataLine?, DateTime>(
+        legendItemText: 'pH',
+        name: 'pH',
+        dataSource: snapshot.latestData,
+        xValueMapper: (LogDataLine? log, _) => log?.time,
+        yValueMapper: (LogDataLine? log, _) => log?.phCurrent,
+        color: Colors.green,
+        yAxisName: 'pHAxis',
+        animationDuration: 0,
+      ),
+    ];
   }
 }

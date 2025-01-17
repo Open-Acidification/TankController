@@ -182,7 +182,7 @@ void main() {
     expect(find.text('Time'), findsOneWidget);
     expect(find.text('Temp Target'), findsOneWidget);
     expect(find.text('Temp Mean'), findsOneWidget);
-    expect(find.text('Temp Standard Deviation'), findsOneWidget);
+    expect(find.text('Temp Std Dev'), findsOneWidget);
     expect(find.text('pH Target'), findsOneWidget);
     expect(find.text('pH'), findsOneWidget);
     expect(find.text('onTime'), findsOneWidget);

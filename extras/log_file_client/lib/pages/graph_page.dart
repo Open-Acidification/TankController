@@ -2,24 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:log_file_client/components/graph_view.dart';
 import 'package:log_file_client/utils/http_client.dart';
 
-class GraphPage extends StatefulWidget {
-  const GraphPage({required this.log, super.key, this.httpClient});
+class GraphPage extends StatelessWidget {
+  const GraphPage({required this.log, required this.httpClient, super.key});
 
-  final HttpClient? httpClient;
+  final HttpClient httpClient;
   final Log log;
-
-  @override
-  State<GraphPage> createState() => _GraphPageState();
-}
-
-class _GraphPageState extends State<GraphPage> {
-  late final HttpClient httpClient;
-
-  @override
-  void initState() {
-    super.initState();
-    httpClient = widget.httpClient ?? HttpClientProd();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +17,7 @@ class _GraphPageState extends State<GraphPage> {
       ),
       body: Center(
         child: GraphView(
-          filePath: '/logs${widget.log.uri}',
+          filePath: '/logs${log.uri}',
           httpClient: httpClient,
         ),
       ),

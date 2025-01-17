@@ -28,116 +28,93 @@ class TableView extends StatelessWidget {
           return const Center(child: Text('No data found'));
         } else {
           final logData = snapshot.data!;
-          return Column(
-            children: [
-              // Headers
-              Container(
-                padding: const EdgeInsets.all(5),
-                decoration: const BoxDecoration(
-                  border: Border(bottom: BorderSide(color: Colors.grey)),
-                ),
-                child: Row(
-                  children: const [
-                    Expanded(
-                      child: Text(
-                        'Version',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        'Tank ID',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: Text(
-                        'Time',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        'Temp Target',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        'Temp Mean',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        'Temp Standard Deviation',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        'pH Target',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        'pH',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        'onTime',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Data
-              Expanded(
-                child: ListView.builder(
-                  // Cutoff at 5000 lines to avoid long wait times
-                  itemCount: logData.length > 5000 ? 5000 : logData.length,
-                  itemBuilder: (context, index) {
-                    final row = logData[index];
-                    return Container(
-                      padding: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(color: Colors.grey.shade400),
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(child: Text(row.version.toString())),
-                          Expanded(child: Text(row.tankid.toString())),
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                              row.time.toString(),
-                              style: const TextStyle(fontSize: 16),
-                            ),
-                          ),
-                          Expanded(child: Text(row.tempTarget.toString())),
-                          Expanded(child: Text(row.tempMean.toString())),
-                          Expanded(child: Text(row.tempStdDev.toString())),
-                          Expanded(child: Text(row.phTarget.toString())),
-                          Expanded(child: Text(row.phCurrent.toString())),
-                          Expanded(child: Text(row.onTime.toString())),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          );
+          return _table(logData);
         }
       },
+    );
+  }
+
+  Column _table(List<LogDataLine> logData) {
+    return Column(
+      children: [
+        _tableHeader(),
+        _tableData(logData),
+      ],
+    );
+  }
+
+  Container _tableHeader() {
+    return Container(
+      padding: const EdgeInsets.all(5),
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(color: Colors.grey)),
+      ),
+      child: Row(
+        children: [
+          _headerItem(item: 'Version'),
+          _headerItem(item: 'Tank ID'),
+          _headerItem(item: 'Time', flex: 2),
+          _headerItem(item: 'Temp Target'),
+          _headerItem(item: 'Temp Mean'),
+          _headerItem(item: 'Temp Std Dev'),
+          _headerItem(item: 'pH Target'),
+          _headerItem(item: 'pH'),
+          _headerItem(item: 'onTime'),
+        ],
+      ),
+    );
+  }
+
+  Expanded _headerItem({required String item, int flex = 1}) {
+    return Expanded(
+      flex: flex,
+      child: Text(
+        item,
+        style: TextStyle(fontStyle: FontStyle.italic),
+      ),
+    );
+  }
+
+  Expanded _tableData(List<LogDataLine> logData) {
+    return Expanded(
+      child: ListView.builder(
+        // Cutoff at 5000 lines to avoid long wait times
+        itemCount: logData.length > 5000 ? 5000 : logData.length,
+        itemBuilder: (context, index) {
+          final row = logData[index];
+          return Container(
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(color: Colors.grey.shade400),
+              ),
+            ),
+            child: _dataRow(row),
+          );
+        },
+      ),
+    );
+  }
+
+  Row _dataRow(LogDataLine row) {
+    return Row(
+      children: [
+        Expanded(child: Text(row.version.toString())),
+        Expanded(child: Text(row.tankid.toString())),
+        Expanded(
+          flex: 2,
+          child: Text(
+            row.time.toString(),
+            style: const TextStyle(fontSize: 16),
+          ),
+        ),
+        Expanded(child: Text(row.tempTarget.toString())),
+        Expanded(child: Text(row.tempMean.toString())),
+        Expanded(child: Text(row.tempStdDev.toString())),
+        Expanded(child: Text(row.phTarget.toString())),
+        Expanded(child: Text(row.phCurrent.toString())),
+        Expanded(child: Text(row.onTime.toString())),
+      ],
     );
   }
 }

@@ -141,8 +141,8 @@ void main() {
   group('getTankSnapshot', () {
     final client = HttpClientTest();
 
-    test('Returns valid TankSnapshot for a valid log file', () async {
-      final log = Log('sample_short.log', '/sample_short.log');
+    test('Returns valid TankSnapshot for a short log file', () async {
+      final log = Log('sample_short', 'sample_short.log');
       final snapshot = await client.getTankSnapshot(log);
 
       expect(snapshot, isNotNull);
@@ -152,8 +152,19 @@ void main() {
       expect(snapshot.temperature, equals(31.42));
     });
 
+    test('Returns valid TankSnapshot for a long log file', () async {
+      final log = Log('sample_long', 'sample_long.log');
+      final snapshot = await client.getTankSnapshot(log);
+
+      expect(snapshot, isNotNull);
+      expect(snapshot.log, equals(log));
+      expect(snapshot.latestData.length, equals(360));
+      expect(snapshot.pH, equals(6.64));
+      expect(snapshot.temperature, equals(24.91));
+    });
+
     test('Handles empty log file', () async {
-      final log = Log('empty.log', '/empty.log');
+      final log = Log('empty', 'empty.log');
       final snapshot = await client.getTankSnapshot(log);
 
       expect(snapshot, isNotNull);
@@ -163,7 +174,7 @@ void main() {
     });
 
     test('Handles calibrating tank', () async {
-      final log = Log('calibration.log', '/calibration.log');
+      final log = Log('calibration', 'calibration.log');
       final snapshot = await client.getTankSnapshot(log);
 
       expect(snapshot, isNotNull);
@@ -173,7 +184,7 @@ void main() {
     });
 
     test('Handles log file with warnings', () async {
-      final log = Log('warnings.log', '/warnings.log');
+      final log = Log('warnings', 'warnings.log');
       final snapshot = await client.getTankSnapshot(log);
 
       expect(snapshot, isNotNull);

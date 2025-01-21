@@ -29,6 +29,16 @@ void main() {
     expect(response.statusCode, 404);
   });
 
+  test('Get snapshot froms /logs/snapshot/snapshotTest.log', () async {
+    final response =
+        await get(Uri.parse('$host/logs/snapshot/snapshotTest.log'));
+    expect(response.statusCode, 200);
+    // print(response.body);
+
+    expect(response.body.length, 360);
+    expect(response.body.contains('W'), isFalse);
+  });
+
   test('Write to /logs/deleteMe.log', () async {
     final uri = Uri.parse('$host/logs/deleteMe.log');
     final line1 = 'This is data for line 1\n';

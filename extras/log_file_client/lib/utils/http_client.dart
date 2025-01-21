@@ -262,13 +262,13 @@ class HttpClientTest extends HttpClient {
 ''';
     } else if (filePath == 'empty.log' || filePath == 'logs/snapshot/empty.log') {
       return '';
-    } else if (filePath == 'snapshot/ProjectA-tank-24.log') {
+    } else if (filePath == 'logs/snapshot/ProjectA-tank-24.log') {
       return '''
 1.0	24	I	2025-01-09 16:09:16		21.45	21.91	0.23	6.25	6.24	86220
 1.0	24	I	2025-01-09 16:10:16		21.45	21.34	0.055	6.25	6.18	86280
 1.0	24	I	2025-01-09 16:11:16		21.45	20.98	0.235	6.25	6.33	86340
 ''';
-    } else if (filePath == 'snapshot/ProjectA-tank-70.log') {
+    } else if (filePath == 'logs/snapshot/ProjectA-tank-70.log') {
       return '''
 1.0	70	I	2025-01-09 16:04:29		23.29	23.27	0.01	7.22	7.34	86220
 1.0	70	I	2025-01-09 16:05:29		23.29	23.26	0.015	7.22	7.1	86280

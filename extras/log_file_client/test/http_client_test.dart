@@ -62,9 +62,9 @@ void main() {
       expect(projects[0].logs.length, equals(2));
 
       expect(projects[0].logs[0].name, equals('tank-24'));
-      expect(projects[0].logs[0].uri, equals('/ProjectA-tank-24.log'));
+      expect(projects[0].logs[0].uri, equals('ProjectA-tank-24.log'));
       expect(projects[0].logs[1].name, equals('tank-70'));
-      expect(projects[0].logs[1].uri, equals('/ProjectA-tank-70.log'));
+      expect(projects[0].logs[1].uri, equals('ProjectA-tank-70.log'));
     });
 
     test('Returns empty list when no <li> elements are present', () async {
@@ -106,13 +106,13 @@ void main() {
 
       // Validate the parsed log entries
       expect(logList[0][0], equals('ProjectA-tank-24.log'));
-      expect(logList[0][1], equals('/ProjectA-tank-24.log'));
+      expect(logList[0][1], equals('ProjectA-tank-24.log'));
 
       expect(logList[1][0], equals('ProjectA-tank-70.log'));
-      expect(logList[1][1], equals('/ProjectA-tank-70.log'));
+      expect(logList[1][1], equals('ProjectA-tank-70.log'));
 
       expect(logList[2][0], equals('ProjectB-tank-58.log'));
-      expect(logList[2][1], equals('/ProjectB-tank-58.log'));
+      expect(logList[2][1], equals('ProjectB-tank-58.log'));
     });
 
     test('returns an empty list if no log links are present', () async {

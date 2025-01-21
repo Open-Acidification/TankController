@@ -192,7 +192,7 @@ abstract class HttpClient {
         if (e.children[0].attributes['href']!.endsWith('.log')) {
           result.add([
             name,
-            '/${e.children[0].attributes['href']!.split('/').last}',
+            e.children[0].attributes['href']!.split('/').last,
           ]);
         }
       }

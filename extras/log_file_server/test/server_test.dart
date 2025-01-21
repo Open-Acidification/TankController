@@ -29,7 +29,7 @@ void main() {
     expect(response.statusCode, 404);
   });
 
-  test('Get snapshot froms /logs/snapshot/snapshotTest.log', () async {
+  test('Get snapshot from /logs/snapshot/snapshotTest.log', () async {
     final response =
         await get(Uri.parse('$host/logs/snapshot/snapshotTest.log'));
     expect(response.statusCode, 200);

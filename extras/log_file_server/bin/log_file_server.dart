@@ -44,7 +44,7 @@ Future<Response> _getSnapshot(Request req, String path) async {
   final body = file.readAsStringSync();
   final List<List<dynamic>> logTable =
       const CsvToListConverter(fieldDelimiter: '\t', eol: '\n').convert(body);
-  
+
   if (logTable.isEmpty || logTable.length < 360) {
     return Response.ok(body);
   } else {

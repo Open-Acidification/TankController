@@ -86,8 +86,8 @@ void main() {
       MaterialApp(
         home: ProjectPage(
           project: Project('ProjectA', [
-            Log('tank-24', '/ProjectA-tank-24.log'),
-            Log('tank-70', '/ProjectA-tank-70.log'),
+            Log('tank-24', 'ProjectA-tank-24.log'),
+            Log('tank-70', 'ProjectA-tank-70.log'),
           ]),
           httpClient: HttpClientTest(),
         ),
@@ -113,7 +113,7 @@ void main() {
       MaterialApp(
         home: ProjectPage(
           project:
-              Project('ProjectA', [Log('tank-24', '/ProjectA-tank-24.log')]),
+              Project('ProjectA', [Log('tank-24', 'ProjectA-tank-24.log')]),
           httpClient: HttpClientTest(),
         ),
       ),
@@ -131,8 +131,8 @@ void main() {
       MaterialApp(
         home: ProjectPage(
           project: Project('ProjectA', [
-            Log('tank-24', '/ProjectA-tank-24.log'),
-            Log('tank-70', '/ProjectA-tank-70.log'),
+            Log('tank-24', 'ProjectA-tank-24.log'),
+            Log('tank-70', 'ProjectA-tank-70.log'),
           ]),
           httpClient: HttpClientTest(),
         ),

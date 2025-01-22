@@ -1,6 +1,7 @@
 import 'dart:async' show Future, Timer;
 import 'dart:io';
 
+import 'package:csv/csv.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
@@ -11,6 +12,7 @@ String rootDir =
 // Configure routes.
 final _router = Router()
   ..delete('/logs/deleteMe.log', _delete)
+  ..get('/logs/snapshot/<path>', _getSnapshot)
   ..get('/logs/<path>', _get)
   ..head('/logs/<path>', _head)
   ..post('/logs/<path>', _post);
@@ -30,6 +32,24 @@ Future<Response> _get(Request req, String path) async {
   }
   final body = file.readAsStringSync();
   return Response.ok(body);
+}
+
+Future<Response> _getSnapshot(Request req, String path) async {
+  final file = File('$rootDir/${path.split("/").last}');
+
+  if (!file.existsSync()) {
+    return Response.notFound(null);
+  }
+
+  final body = file.readAsStringSync();
+  final List<List<dynamic>> logTable =
+      const CsvToListConverter(fieldDelimiter: '\t', eol: '\n').convert(body);
+
+  if (logTable.isEmpty || logTable.length < 360) {
+    return Response.ok(body);
+  } else {
+    return Response.ok(body.substring(body.length - 360));
+  }
 }
 
 Future<Response> _head(Request req, String path) async {

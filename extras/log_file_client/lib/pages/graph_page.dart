@@ -17,7 +17,7 @@ class GraphPage extends StatelessWidget {
       ),
       body: Center(
         child: GraphView(
-          filePath: '/logs${log.uri}',
+          filePath: '/logs/${log.uri}',
           httpClient: httpClient,
         ),
       ),

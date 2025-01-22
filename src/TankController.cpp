@@ -169,7 +169,7 @@ void TankController::handleUI() {
 void TankController::loop(bool report_loop_delay) {
   static unsigned long previousLoopStart = 0;
   unsigned long currentLoopStart = millis();
-  if (report_loop_delay && previousLoopStart && currentLoopStart - previousLoopStart > 300) {
+  if (report_loop_delay && previousLoopStart && currentLoopStart - previousLoopStart > 500) {
     serial(F("unexpected overall delay of %i ms (at %lu sec uptime)"), currentLoopStart - previousLoopStart,
            millis() / 1000);
   }
@@ -186,7 +186,7 @@ void TankController::loop(bool report_loop_delay) {
   if (report_loop_delay) {
     static long int count = 0;
     unsigned long currentLoopTime = millis() - currentLoopStart;
-    if (++count % 10000 == 1 || currentLoopTime > 200) {  // first time through and periodically thereafter
+    if (++count % 100000 == 1 || currentLoopTime > 500) {  // first time through and periodically thereafter
       serial(F("TankController::loop() - took %lu ms (at %lu sec uptime)"), currentLoopTime, millis() / 1000);
     }
   }

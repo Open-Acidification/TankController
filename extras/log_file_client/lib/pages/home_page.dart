@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:log_file_client/components/project_card.dart';
 import 'package:log_file_client/pages/project_page.dart';
 import 'package:log_file_client/utils/http_client.dart';
+import 'package:web/web.dart' as html;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, this.httpClient});
@@ -56,6 +57,9 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Tank Monitor'),
+        actions: [
+          _tankManagerRedirect(),
+        ],
       ),
       body: Center(
         child: _isLoading
@@ -66,6 +70,29 @@ class _HomePageState extends State<HomePage> {
                   _projectCards(gridCrossAxis, screenWidth),
                 ],
               ),
+      ),
+    );
+  }
+
+  Padding _tankManagerRedirect() {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8.0),
+      child: TextButton(
+        onPressed: () {
+          const tankManagerUrl = 'http://oap.cs.wallawalla.edu/';
+          html.window.open(tankManagerUrl, '_self');
+        },
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            Text(
+              'Go to Tank Manager',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(width: 8),
+            Icon(Icons.swap_horiz),
+          ],
+        ),
       ),
     );
   }

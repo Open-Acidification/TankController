@@ -7,6 +7,7 @@ import 'package:device_client/view/current_data_page.dart';
 import 'package:device_client/view/files_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:web/web.dart' as html;
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({required this.title, super.key});
@@ -45,12 +46,38 @@ class _MyHomePageState extends State<MyHomePage> {
             title: Text(
               '${widget.title}: ${appData.currentTank.name}',
             ),
+            actions: [
+              _tankMonitorRedirect(),
+            ],
           ),
           drawer: AppDrawer(context: context),
           body: children[appData.currentIndex],
           bottomNavigationBar: NavBar(context: context),
         );
       },
+    );
+  }
+
+    Padding _tankMonitorRedirect() {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8.0),
+      child: TextButton(
+        onPressed: () {
+          const tankMonitorUrl = 'https://oap.cs.wallawalla.edu/';
+          html.window.open(tankMonitorUrl, '_self');
+        },
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            Text(
+              'Go to Tank Monitor',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(width: 8),
+            Icon(Icons.swap_horiz),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -98,6 +98,7 @@ class GraphView extends StatelessWidget {
         yValueMapper: (LogDataLine log, _) => log.tempMean,
         color: Colors.blue,
         yAxisName: 'TemperatureAxis',
+        animationDuration: 0,
       ),
       LineSeries<LogDataLine, DateTime>(
         legendItemText: 'temp setpoint',
@@ -108,6 +109,7 @@ class GraphView extends StatelessWidget {
         dashArray: <double>[5, 5],
         color: Colors.blue,
         yAxisName: 'TemperatureAxis',
+        animationDuration: 0,
       ),
       LineSeries<LogDataLine, DateTime>(
         legendItemText: 'pH',
@@ -117,6 +119,7 @@ class GraphView extends StatelessWidget {
         yValueMapper: (LogDataLine log, _) => log.phCurrent,
         color: Colors.green,
         yAxisName: 'pHAxis',
+        animationDuration: 0,
       ),
       LineSeries<LogDataLine, DateTime>(
         legendItemText: 'pH setpoint',
@@ -127,6 +130,7 @@ class GraphView extends StatelessWidget {
         dashArray: <double>[5, 5],
         color: Colors.green,
         yAxisName: 'pHAxis',
+        animationDuration: 0,
       ),
     ];
   }

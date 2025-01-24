@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:log_file_client/components/option_selector.dart';
 import 'package:log_file_client/utils/http_client.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -35,9 +36,22 @@ class GraphView extends StatelessWidget {
               return const Center(child: Text('No data found'));
             } else {
               final logData = snapshot.data!;
-              return Container(
-                padding: const EdgeInsets.all(16.0),
-                child: _graph(logData),
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0, right: 75.0),
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: OptionSelector(),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+                      child: _graph(logData),
+                    ),
+                  ),
+                ],
               );
             }
           },

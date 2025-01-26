@@ -188,7 +188,6 @@ void DataLogger::writeDataToRemoteLog() {
     serial(F("WARNING! String was truncated to \"%s\""), buffer);
   }
   SD_TC::instance()->writeToRemoteLog(buffer);
-  serial(F("New info written to remote log"));
 }
 
 /**

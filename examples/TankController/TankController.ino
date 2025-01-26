@@ -14,6 +14,7 @@ const char pushingBoxID[] = "";
 // If it remains empty, the MAC address will be used. Keep in mind that
 // the name should be unique across all devices, not just your devices.
 // So "tank-1" is not a good name, but "Onthank-tank-1" is.
+// The name will have ".log" added to it (so don't include it!).
 const char remoteLogName[] = "";
 
 // We query a web server for GMT time and then adjust for local time

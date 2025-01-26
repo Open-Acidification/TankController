@@ -40,7 +40,6 @@ TankController *TankController::instance(const char *remoteLogName, const char *
   if (!_instance) {
     serial(F("\r\n##############\r\nTankController %s"), TANK_CONTROLLER_VERSION);
     _instance = new TankController();
-    unsigned long start = millis();
     SD_TC::instance()->setRemoteLogName(remoteLogName);
     EEPROM_TC::instance();
     Keypad_TC::instance();
@@ -60,7 +59,6 @@ TankController *TankController::instance(const char *remoteLogName, const char *
     GetTime::instance(tzOffsetHrs);
     serial(F("Free memory = %i"), _instance->freeMemory());
     wdt_enable(WDTO_8S);
-    serial(F("TankController::instance() - took %lu ms"), millis() - start);
   }
   return _instance;
 }
@@ -170,7 +168,7 @@ void TankController::loop(bool report_loop_delay) {
   static unsigned long previousLoopStart = 0;
   unsigned long currentLoopStart = millis();
   if (report_loop_delay && previousLoopStart && currentLoopStart - previousLoopStart > 500) {
-    serial(F("unexpected overall delay of %i ms (at %lu sec uptime)"), currentLoopStart - previousLoopStart,
+    serial(F("unexpected overall delay of %lu ms (at %lu sec uptime)"), currentLoopStart - previousLoopStart,
            millis() / 1000);
   }
   wdt_reset();

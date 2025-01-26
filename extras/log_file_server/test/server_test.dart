@@ -33,10 +33,10 @@ void main() {
     final response =
         await get(Uri.parse('$host/logs/snapshot/snapshotTest.log'));
     expect(response.statusCode, 200);
-    // print(response.body);
+    print(response.body);
 
-    expect(response.body.length, 360);
     expect(response.body.contains('W'), isFalse);
+    expect(response.body.length, 22735); // 360 lines
   });
 
   test('Write to /logs/deleteMe.log', () async {

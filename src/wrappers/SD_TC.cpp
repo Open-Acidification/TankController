@@ -295,9 +295,6 @@ void SD_TC::updateRemoteFileSize() {
  * @param line
  */
 void SD_TC::writeToRemoteLog(const char* line) {
-  if (remoteLogName[0] == '\0') {
-    return;
-  }
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   strncpy(mostRecentRemoteLogEntry, line, sizeof(mostRecentRemoteLogEntry));  // Flawfinder: ignore
   mostRecentRemoteLogEntry[sizeof(mostRecentRemoteLogEntry) - 1] = '\0';      // Ensure null-terminated string

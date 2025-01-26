@@ -71,6 +71,7 @@ void RemoteLogPusher::loopHead() {
             buffer[index] = '\0';
             bool isDone = false;
             if (index >= 22 && memcmp_P(buffer, F("http/1.1 404 not found"), 22) == 0) {
+              // File has not yet been created on server
               serverFileSize = (uint32_t)0;
               _isReadyToPost = true;
               isDone = true;
@@ -168,6 +169,7 @@ void RemoteLogPusher::sendHeadRequest() {
   if (client.connected() || client.connect(serverDomain, PORT) == 1) {  // this is a blocking step
     client.write(buffer, strnlen(buffer, sizeof(buffer)));
   } else {
+    serial(F("RemoteLogPusher: connection to %s failed"), serverDomain);
     // "_shouldSendHeadRequest = true;" would retry next loop but we'll try within one minute anyway
   }
   buffer[0] = '\0';

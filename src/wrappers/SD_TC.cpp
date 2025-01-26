@@ -128,7 +128,7 @@ bool SD_TC::format() {
 
 void SD_TC::getRemoteLogContents(char* buffer, int size, uint32_t index) {
   buffer[0] = '\0';
-  const char *logName = getRemoteLogName();
+  const char* logName = getRemoteLogName();
   if (logName[0] == '\0') {
     return;
   }
@@ -302,7 +302,7 @@ void SD_TC::writeToRemoteLog(const char* line) {
   strncpy(mostRecentRemoteLogEntry, line, sizeof(mostRecentRemoteLogEntry));  // Flawfinder: ignore
   mostRecentRemoteLogEntry[sizeof(mostRecentRemoteLogEntry) - 1] = '\0';      // Ensure null-terminated string
 #endif
-  const char *logName = getRemoteLogName();
+  const char* logName = getRemoteLogName();
   if (logName[0] == '\0') {
     return;
   }

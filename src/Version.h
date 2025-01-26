@@ -1,1 +1,1 @@
-#define VERSION "v24.10.2-90-g2e+"
+#define VERSION "v24.10.2-96-g18+"

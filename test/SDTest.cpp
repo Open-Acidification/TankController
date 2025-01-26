@@ -195,7 +195,6 @@ unittest(writeRemoteLog) {
   sd->setRemoteLogName("Tank1");
   delay(60000);  // remote logs don't get written immediately
   char data[20];
-  SD_TC* sd = SD_TC::instance();
   sd->setRemoteLogName("90A2DA807B76");
   RemoteLogPusher* pusher = RemoteLogPusher::instance();
 

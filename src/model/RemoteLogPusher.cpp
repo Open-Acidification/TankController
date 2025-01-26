@@ -7,7 +7,7 @@
 #include "wrappers/SD_TC.h"
 #include "wrappers/Serial_TC.h"
 
-const uint16_t PORT = 8080;
+const uint16_t PORT = 80;
 
 //  class variables
 RemoteLogPusher* RemoteLogPusher::_instance = nullptr;

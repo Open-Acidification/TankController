@@ -33,10 +33,18 @@ void main() {
     final response =
         await get(Uri.parse('$host/logs/snapshot/snapshotTest.log'));
     expect(response.statusCode, 200);
-    print(response.body);
 
     expect(response.body.contains('W'), isFalse);
     expect(response.body.length, 22735); // 360 lines
+  });
+
+  test('Get snapshot using length parameter', () async {
+    final response =
+        await get(Uri.parse('$host/logs/snapshot/snapshotTest.log?length=10'));
+    expect(response.statusCode, 200);
+
+    expect(response.body.contains('W'), isFalse);
+    expect(response.body.length, 630); // 10 lines
   });
 
   test('Write to /logs/deleteMe.log', () async {

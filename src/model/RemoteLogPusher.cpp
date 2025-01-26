@@ -7,7 +7,7 @@
 #include "wrappers/SD_TC.h"
 #include "wrappers/Serial_TC.h"
 
-const uint16_t PORT = 8080;
+const uint16_t PORT = 80;
 
 //  class variables
 RemoteLogPusher* RemoteLogPusher::_instance = nullptr;
@@ -65,23 +65,18 @@ void RemoteLogPusher::loopHead() {
   if (client.connected()) {
     if (client.available()) {  // bytes are remaining in the current packet
       int next;
-      serial(F("RemoteLogPusher: received"));
       while ((next = client.read()) != -1) {  // Flawfinder: ignore
         if (next) {
           if (next == '\r') {
             buffer[index] = '\0';
-            serial(F("  %s"), buffer);
             bool isDone = false;
             if (index >= 22 && memcmp_P(buffer, F("http/1.1 404 not found"), 22) == 0) {
-              // File has not yet been created on server
               serverFileSize = (uint32_t)0;
               _isReadyToPost = true;
               isDone = true;
             } else if (index > 16 && memcmp_P(buffer, F("content-length: "), 16) == 0) {
               serverFileSize = strtoul(buffer + 16, nullptr, 10);
               uint32_t localFileSize = SD_TC::instance()->getRemoteFileSize();
-              serial(F("RemoteLogPusher: local %lu bytes, cloud %lu bytes"), (uint32_t)localFileSize,
-                     (uint32_t)serverFileSize);
               _isReadyToPost = serverFileSize < localFileSize;
               isDone = true;
             }
@@ -90,11 +85,10 @@ void RemoteLogPusher::loopHead() {
               index = 0;
               client.stop();
               state = CLIENT_NOT_CONNECTED;
-              delayRequestsUntilTime = millis() + 3000;
+              delayRequestsUntilTime = millis() + (_isReadyToPost ? 3000 : 30000);
               return;
             }
           } else if (next == '\n' || index == sizeof(buffer)) {
-            serial(F("Buffer loop after filled with \"%s\""), buffer);
             buffer[0] = '\0';
             index = 0;
           } else {
@@ -114,12 +108,10 @@ void RemoteLogPusher::loopPost() {
   if (client.connected()) {
     if (client.available()) {  // bytes are remaining in the current packet
       int next;
-      serial(F("RemoteLogPusher: received"));
       while ((next = client.read()) != -1) {  // Flawfinder: ignore
         if (next) {
           if (next == '\r') {
             buffer[index] = '\0';
-            serial(F("  %s"), buffer);
             if (index >= 15 && memcmp_P(buffer, F("http/1.1 200 ok"), 15) == 0) {
               buffer[0] = '\0';
               index = 0;
@@ -161,7 +153,6 @@ void RemoteLogPusher::pushSoon() {
  *
  */
 void RemoteLogPusher::sendHeadRequest() {
-  serial(F("RemoteLogPusher: attempting HEAD request"));
   static const char format[] PROGMEM =
       "HEAD /logs/%s HTTP/1.1\r\n"
       "Host: %s\r\n"
@@ -171,10 +162,8 @@ void RemoteLogPusher::sendHeadRequest() {
       "\r\n";
   snprintf_P(buffer, sizeof(buffer), (PGM_P)format, SD_TC::instance()->getRemoteLogName(), serverDomain, VERSION);
   if (client.connected() || client.connect(serverDomain, PORT) == 1) {  // this is a blocking step
-    serial(F("RemoteLogPusher: connected to %s, sending..."), serverDomain);
     client.write(buffer, strnlen(buffer, sizeof(buffer)));
   } else {
-    serial(F("RemoteLogPusher: connection to %s failed"), serverDomain);
     // "_shouldSendHeadRequest = true;" would retry next loop but we'll try within one minute anyway
   }
   buffer[0] = '\0';
@@ -182,11 +171,10 @@ void RemoteLogPusher::sendHeadRequest() {
 }
 
 void RemoteLogPusher::sendPostRequest() {
-  serial(F("RemoteLogPusher: attempting POST request"));
-  char data[300];
+  char data[400];
   SD_TC::instance()->getRemoteLogContents(data, sizeof(data), serverFileSize);
   static const char format[] PROGMEM =
-      "POST /logs/%s HTTP/1.1\r\n"
+      "POST /api/%s HTTP/1.1\r\n"
       "Host: %s\r\n"
       "Content-Type: text/plain\r\n"
       "User-Agent: TankController/%s\r\n"
@@ -196,8 +184,6 @@ void RemoteLogPusher::sendPostRequest() {
   snprintf_P(buffer, sizeof(buffer), (PGM_P)format, SD_TC::instance()->getRemoteLogName(), serverDomain, VERSION,
              strnlen(data, sizeof(data)));
   if (client.connected() || client.connect(serverDomain, PORT) == 1) {  // this is a blocking step
-    serial(F("RemoteLogPusher: connected to %s, sending..."), serverDomain);
-    serial(data);
     client.write(buffer, strnlen(buffer, sizeof(buffer)));
     client.write(data, strnlen(data, sizeof(data)));
   } else {

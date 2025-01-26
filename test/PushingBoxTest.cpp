@@ -61,9 +61,6 @@ unittest(NoTankID) {
   tc->loop();
   delay(20 * 1000);  // allow 50 seconds (30 + 40) for RemoteLogPusher update
   tc->loop();        // Trigger SD logging and Serial (DataLogger)
-  auto expected3 = "RemoteLogPusher: connection to oap.cs.wallawalla.edu failed";
-  assertEqual(expected3, Serial_TC::instance()->getBuffer());
-  Serial_TC::instance()->clearBuffer();
   delay(20 * 1000);  // allow 70 seconds (30 + 20 + 20) for PushingBox update
   tc->loop();        // Trigger PushingBox
   auto expected4 = "Set Tank ID in order to send data to PushingBox";
@@ -85,7 +82,6 @@ unittest(SendData) {
   delay(10 * 1000);  // allow for PushingBox update
   tc->loop();
   char expected[] =
-      "New info written to remote log\r\n"
       "GET /pushingbox?devid=PushingBoxIdentifier&tankid=99&tempData=20.25&pHdata=7.125 HTTP/1.1\r\n"
       "attempting to connect to PushingBox...\r\n"
       "connected\r\n"

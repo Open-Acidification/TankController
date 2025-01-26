@@ -30,15 +30,26 @@
 
 Traefik receives several types of requests (on links B and C) that it passes on to oap-vm (on link A). Each is sent to oap-vm using HTTPS, so the request needs to be mapped to something that Nginx on oap-vm can recognize as distinct.
 
+### HTTPS
+
+1. GET https://oap.cs.wallawalla.edu/api/ requests are for recent lines from files saved by the log_file_server app (link B).
+    * Traefik forwards to https://oap.vm.cs.wallawalla.edu:443/
+    * Nginx forwards to http://localhost:8080 (log_file_server)
 1. GET https://oap.cs.wallawalla.edu/logs/ requests are for files saved by the log_file_server app (link B).
     * Traefik forwards to https://oap.vm.cs.wallawalla.edu:443/
     * Nginx serves `/var/www/html` with `autoindex on`
 1. GET https://oap.cs.wallawalla.edu/ requests are for the log_file_client app (link B).
     * Traefik forwards to https://oap.vm.cs.wallawalla.edu:443/
     * Nginx serves `/var/www/html/log_file_client/`
+
+### HTTP
+
 1. GET http://oap.cs.wallawalla.edu/ requests are for the device_client app (link B).
     * Traefik forwards to https://oap.vm.cs.wallawalla.edu:444/
     * Nginx serves `/var/www/html/device_client/`
-1. POST http://oap.cs.wallawalla.edu/ requests are to the log_file_server app (link C).
-    * Traefik forwards to https://oap.vm.cs.wallawalla.edu:444/
+1. HEAD http://oap.cs.wallawalla.edu/logs/ requests are for the size of log files (link C).
+    * Traefik forwards to https://oap.vm.cs.wallawalla.edu:444/logs/
+    * Nginx serves `/var/www/html/`
+1. POST http://oap.cs.wallawalla.edu/api/ requests are to the log_file_server app (link C).
+    * Traefik forwards to https://oap.vm.cs.wallawalla.edu:444/api/
     * Nginx forwards to http://localhost:8080 (log_file_server)

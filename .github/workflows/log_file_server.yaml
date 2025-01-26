@@ -60,7 +60,6 @@
             mkdir -p test/logs
             touch test/logs/empty.log
             echo "123456789" > test/logs/ten.log
-            echo "This is data for line 1\nThis is data for line 2" > test/logs/deleteMe.log
             dart run "bin/log_file_server.dart" "test/logs" &
             dart test --concurrency=1
             jobs

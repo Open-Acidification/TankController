@@ -11,30 +11,10 @@ String rootDir =
 
 // Configure routes.
 final _router = Router()
-  ..delete('/logs/deleteMe.log', _delete)
-  ..get('/logs/snapshot/<path>', _getSnapshot)
-  ..get('/logs/<path>', _get)
-  ..head('/logs/<path>', _head)
-  ..post('/logs/<path>', _post);
-
-Future<Response> _delete(Request req) async {
-  final file = File('$rootDir/deleteMe.log');
-  if (file.existsSync()) {
-    await file.delete();
-  }
-  return Response.ok(null);
-}
+  ..get('/api/<path>', _get)
+  ..post('/api/<path>', _post);
 
 Future<Response> _get(Request req, String path) async {
-  final file = File('$rootDir/$path');
-  if (!file.existsSync()) {
-    return Response.notFound(null);
-  }
-  final body = file.readAsStringSync();
-  return Response.ok(body);
-}
-
-Future<Response> _getSnapshot(Request req, String path) async {
   final file = File('$rootDir/${path.split("/").last}');
 
   if (!file.existsSync()) {
@@ -50,15 +30,6 @@ Future<Response> _getSnapshot(Request req, String path) async {
   } else {
     return Response.ok(body.substring(body.length - 360));
   }
-}
-
-Future<Response> _head(Request req, String path) async {
-  final file = File('$rootDir/$path');
-  if (!file.existsSync()) {
-    return Response.notFound(null);
-  }
-  final length = file.lengthSync();
-  return Response.ok(null, headers: {'content-length': '$length'});
 }
 
 Future<Response> _post(Request req, String path) async {
@@ -80,12 +51,6 @@ Future<Response> _post(Request req, String path) async {
           'did not match body.length of ${body.length}!',
     );
   }
-
-  // // get remote address
-  // var connectionInfo =
-  //     req.context['shelf.io.connection_info'] as HttpConnectionInfo;
-  // var remoteAddress = connectionInfo.remoteAddress.address;
-  // print('remoteAddress = "$remoteAddress" (${remoteAddress.runtimeType})');
 
   final file = File('$rootDir/$path');
   file.createSync(exclusive: false);

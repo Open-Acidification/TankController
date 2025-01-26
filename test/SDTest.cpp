@@ -191,15 +191,15 @@ unittest(removeFile) {
 }
 
 unittest(writeRemoteLog) {
+  SD_TC* sd = SD_TC::instance();
+  sd->setRemoteLogName("Tank1");
   delay(60000);  // remote logs don't get written immediately
   char data[20];
-  SD_TC* sd = SD_TC::instance();
   RemoteLogPusher* pusher = RemoteLogPusher::instance();
 
-  assertEqual("90A2DA807B76.log", sd->getRemoteLogName());
-  // because sd was previously initialized, we have remoteLogFileNameIsReady == true
+  assertEqual("Tank1.log", sd->getRemoteLogName());
   sd->updateRemoteLogFileSizeForTest();
-  assertFalse(sd->exists("90A2DA807B76.log"));
+  assertFalse(sd->exists("Tank1.log"));
   assertEqual(0, sd->getRemoteFileSize());
   pusher->setShouldSentHeadRequest(false);
   assertFalse(pusher->shouldSendHeadRequest());
@@ -208,14 +208,14 @@ unittest(writeRemoteLog) {
   sd->writeToRemoteLog("line 1");  // also writes header row
   sd->updateRemoteLogFileSizeForTest();
   assertTrue(pusher->basicShouldSendHeadRequest());
-  assertTrue(sd->exists("90A2DA807B76.log"));
+  assertTrue(sd->exists("Tank1.log"));
   int size = sd->getRemoteFileSize();
   sd->writeToRemoteLog("line 2");
   sd->updateRemoteLogFileSizeForTest();
   assertEqual(size + strlen("line 2\n"), sd->getRemoteFileSize());  // Flawfinder: ignore
 
   // verify contents of remote log
-  File file = sd->open("90A2DA807B76.log");
+  File file = sd->open("Tank1.log");
   file.seek(size);
   file.read(data, 7);  // Flawfinder: ignore
   file.close();
@@ -241,9 +241,9 @@ unittest(getRemoteLogContents) {
 
 unittest(noRemoteLogFileName) {
   SD_TC* sd = SD_TC::instance();
-  sd->setRemoteLogName("90A2DA807B76");
+  sd->setRemoteLogName("Tank1");
   sd->setRemoteLogName("");
-  assertEqual("90A2DA807B76.log", sd->getRemoteLogName());
+  assertEqual("", sd->getRemoteLogName());
 }
 
 unittest(validRemoteLogFileName) {
@@ -272,7 +272,7 @@ unittest(remoteLogName) {
   tc = TankController::instance();
   sd = SD_TC::instance();
   name = sd->getRemoteLogName();
-  assertEqual("90A2DA807B76.log", name);
+  assertEqual("", name);
 
   sd->setRemoteLogName("newName");
   name = sd->getRemoteLogName();

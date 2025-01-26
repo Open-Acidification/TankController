@@ -72,7 +72,6 @@ unittest(loop) {
   snprintf(infoString, sizeof(infoString), "%s\t%s", VERSION,
            "0\tI\t2023-08-15 00:01:00\t\t20.00\t-242.02\t0.000\t8.100\t0.000\t60");
   assertEqual(infoString, sd->mostRecentRemoteLogEntry);
-  assertEqual("New info written to remote log", serialPort->getBuffer());
 }
 
 unittest(writeToSD) {

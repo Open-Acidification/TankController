@@ -93,6 +93,21 @@ void main() {
 
       expect(projects, isEmpty);
     });
+
+    test('Ignores .log files that do not follow naming convention', () async {
+      client.testHTML = '''
+      <ul>
+        <li><a href="project1log1.log">project1log1.log</a></li>
+        <li><a href="project2-log2.log">project2-log2.log</a></li>
+        <li><a href="project3_log3.log">project3_log3.log</a></li>
+      </ul>
+    ''';
+
+      final projects = await client.getProjectList();
+
+      expect(projects.length, equals(1));
+      expect(projects[0].name, equals('project2'));
+    });
   });
 
   group('parseLogListFromHTML', () {

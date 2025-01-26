@@ -102,6 +102,10 @@ abstract class HttpClient {
     // Parse projects from logs
     final Map<String, List<Log>> projects = {};
     for (int i = 0; i < listItems.length; i++) {
+      // Skip items that don't follow the naming convention
+      if (listItems[i][0].split('-').length < 2) {
+        continue;
+      }
       final projectName = listItems[i][0].split('-')[0];
       if (projects[projectName] != null) {
         projects[projectName]!

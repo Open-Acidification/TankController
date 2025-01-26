@@ -55,8 +55,6 @@ unittest(report_loop_delay) {
   assertEqual("00:01 pH=0.000 temp= 0.00\r\n", state->serialPort[0].dataOut);
   state->serialPort[0].dataOut = "";  // clear serial output
   tc->loop();                         // for remote log
-  // assertEqual("New info written to remote log\r\n", state->serialPort[0].dataOut);
-  state->serialPort[0].dataOut = "";  // clear serial output
 
   tc->loop(true);  // to get the first loop delay message
   assertEqual("TankController::loop() - took 0 ms (at 60 sec uptime)\r\n", state->serialPort[0].dataOut);

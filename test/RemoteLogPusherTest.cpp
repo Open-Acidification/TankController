@@ -33,13 +33,14 @@ unittest(loopSendsRequests) {
   TankController* tc = TankController::instance();
   RemoteLogPusher* pusher = RemoteLogPusher::instance();
   EthernetClient* pClient = pusher->getClient();
+  SD_TC::instance()->setRemoteLogName("90A2DA807B76");
 
   // Set up the server to respond to the HEAD request
   assertTrue(Ethernet_TC::instance(true)->isConnectedToNetwork());
   EthernetClient::startMockServer(
     pusher->getServerDomain(), 
     (uint32_t)0, 
-    8080, 
+    80, 
     (const uint8_t *)"HTTP/1.1 404 Not Found\r\n"
       "Date: Mon, 21 Aug 2023 16:33:52 GMT\r\n"
       "Content-Type: text/html\r\n"
@@ -85,11 +86,11 @@ unittest(loopSendsRequests) {
 
   pClient->stop();  // clears the readBuffer (but not the write buffer!?)
   assertFalse(pClient->connected());
-  EthernetClient::stopMockServer(pusher->getServerDomain(), (uint32_t)0, 8080);
+  EthernetClient::stopMockServer(pusher->getServerDomain(), (uint32_t)0, 80);
   EthernetClient::startMockServer(
     pusher->getServerDomain(), 
     (uint32_t)0, 
-    8080, 
+    80, 
     (const uint8_t *)"HTTP/1.1 200 OK\r\n"
       "Date: Tue, 12 Mar 2024 16:33:52 GMT\r\n"
       "Content-Type: text/html\r\n"
@@ -116,11 +117,11 @@ unittest(loopSendsRequests) {
 
   // set up server for next HEAD request
   (pusher->getClient())->stop();
-  EthernetClient::stopMockServer(pusher->getServerDomain(), (uint32_t)0, 8080);
+  EthernetClient::stopMockServer(pusher->getServerDomain(), (uint32_t)0, 80);
   EthernetClient::startMockServer(
     pusher->getServerDomain(), 
     (uint32_t)0, 
-    8080, 
+    80, 
     (const uint8_t*)"HTTP/1.1 200 OK\r\n"
                     "Date: Mon, 21 Aug 2023 16:33:54 GMT\r\n"
                     "Content-Length: 664\r\n"
@@ -137,7 +138,7 @@ unittest(loopSendsRequests) {
   assertFalse(pusher->isReadyToPost());          // because server has all 15 bytes
   assertEqual(CLIENT_NOT_CONNECTED, pusher->getState());
   (pusher->getClient())->stop();
-  EthernetClient::stopMockServer(pusher->getServerDomain(), (uint32_t)0, 8080);
+  EthernetClient::stopMockServer(pusher->getServerDomain(), (uint32_t)0, 80);
 }
 
 unittest(noInternetConnectionWhenBubblerIsOn) {
@@ -160,7 +161,7 @@ unittest(noInternetConnectionWhenBubblerIsOn) {
   EthernetClient::startMockServer(
     pusher->getServerDomain(), 
     (uint32_t)0, 
-    8080, 
+    80, 
     (const uint8_t *)"HTTP/1.1 404 Not Found\r\n"
       "Date: Mon, 21 Aug 2023 16:33:52 GMT\r\n"
       "Content-Type: text/html\r\n"

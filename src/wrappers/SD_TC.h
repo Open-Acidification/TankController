@@ -32,8 +32,8 @@ public:
     return remoteFileSize;
   }
   const char* getRemoteLogName() {
-  return remoteLogName;
-}
+    return remoteLogName;
+  }
   bool listRootToBuffer(void (*callWhenFull)(const char*, bool));
   bool mkdir(const char* path);
   File open(const char* path, oflag_t oflag = 0x00);

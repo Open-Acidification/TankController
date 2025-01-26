@@ -42,6 +42,7 @@ SD_TC::SD_TC() {
   if (!sd.begin(SD_SELECT_PIN)) {
     Serial.println(F("SD_TC failed to initialize!"));
   }
+  remoteLogName[0] = '\0';
 }
 
 /**
@@ -127,10 +128,11 @@ bool SD_TC::format() {
 
 void SD_TC::getRemoteLogContents(char* buffer, int size, uint32_t index) {
   buffer[0] = '\0';
-  if (remoteLogName[0] == '\0') {
+  const char *logName = getRemoteLogName();
+  if (logName[0] == '\0') {
     return;
   }
-  File file = open(getRemoteLogName(), O_RDONLY);
+  File file = open(logName, O_RDONLY);
   if (file) {
     file.seek(index);
     int remaining = file.available();
@@ -261,8 +263,7 @@ void SD_TC::setRemoteLogName(const char* newFileName) {
     return;
   }
   // See TankController.ino for the definition of remoteLogName
-  if (newFileName != nullptr && strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) > 0 &&
-      strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) <= MAX_FILE_NAME_LENGTH) {
+  if (strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) <= MAX_FILE_NAME_LENGTH) {
     // valid file name has been provided (See TankController.ino)
     snprintf_P(remoteLogName, MAX_FILE_NAME_LENGTH + 5, PSTR("%s.log"), newFileName);
   }
@@ -301,7 +302,11 @@ void SD_TC::writeToRemoteLog(const char* line) {
   strncpy(mostRecentRemoteLogEntry, line, sizeof(mostRecentRemoteLogEntry));  // Flawfinder: ignore
   mostRecentRemoteLogEntry[sizeof(mostRecentRemoteLogEntry) - 1] = '\0';      // Ensure null-terminated string
 #endif
-  if (!sd.exists(getRemoteLogName())) {
+  const char *logName = getRemoteLogName();
+  if (logName[0] == '\0') {
+    return;
+  }
+  if (!sd.exists(logName)) {
     // rather than write an entire header line in one buffer, we break it into chunks to save memory
     char buffer[200];
     DataLogger::instance()->writeRemoteFileHeader(buffer, sizeof(buffer), 0);

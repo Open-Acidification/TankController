@@ -47,6 +47,7 @@ unittest_teardown() {
 }
 
 unittest(NoTankID) {
+  SD_TC::instance()->setRemoteLogName("90A2DA807B76");
   auto expected1 = "heater turned on at 1813 after 1813 ms";
   assertEqual(expected1, Serial_TC::instance()->getBuffer());
   Serial_TC::instance()->clearBuffer();

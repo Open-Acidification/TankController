@@ -194,6 +194,7 @@ unittest(writeRemoteLog) {
   delay(60000);  // remote logs don't get written immediately
   char data[20];
   SD_TC* sd = SD_TC::instance();
+  sd->setRemoteLogName("90A2DA807B76");
   RemoteLogPusher* pusher = RemoteLogPusher::instance();
 
   assertEqual("90A2DA807B76.log", sd->getRemoteLogName());
@@ -243,7 +244,7 @@ unittest(noRemoteLogFileName) {
   SD_TC* sd = SD_TC::instance();
   sd->setRemoteLogName("90A2DA807B76");
   sd->setRemoteLogName("");
-  assertEqual("90A2DA807B76.log", sd->getRemoteLogName());
+  assertEqual("", sd->getRemoteLogName());
 }
 
 unittest(validRemoteLogFileName) {
@@ -272,7 +273,7 @@ unittest(remoteLogName) {
   tc = TankController::instance();
   sd = SD_TC::instance();
   name = sd->getRemoteLogName();
-  assertEqual("90A2DA807B76.log", name);
+  assertEqual("", name);
 
   sd->setRemoteLogName("newName");
   name = sd->getRemoteLogName();

@@ -31,7 +31,9 @@ public:
   uint32_t getRemoteFileSize() {
     return remoteFileSize;
   }
-  const char* getRemoteLogName();
+  const char* getRemoteLogName() {
+    return remoteLogName;
+  }
   bool listRootToBuffer(void (*callWhenFull)(const char*, bool));
   bool mkdir(const char* path);
   File open(const char* path, oflag_t oflag = 0x00);
@@ -58,7 +60,7 @@ private:
   const uint8_t SD_SELECT_PIN = SS;
   bool hasHadError = false;
   SdFat sd;
-  char remoteLogName[MAX_FILE_NAME_LENGTH + 5];  // add ".log" with null-terminator
+  char remoteLogName[MAX_FILE_NAME_LENGTH + 5] = "";  // add ".log" with null-terminator
   uint32_t remoteFileSize = 0;
 
   // Max depth of file system search for rootdir()

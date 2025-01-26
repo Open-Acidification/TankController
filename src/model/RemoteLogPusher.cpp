@@ -154,6 +154,10 @@ void RemoteLogPusher::pushSoon() {
  *
  */
 void RemoteLogPusher::sendHeadRequest() {
+  const char *logName = SD_TC::instance()->getRemoteLogName();
+  if (logName[0] == '\0') {
+    return;
+  }
   static const char format[] PROGMEM =
       "HEAD /logs/%s HTTP/1.1\r\n"
       "Host: %s\r\n"
@@ -161,7 +165,7 @@ void RemoteLogPusher::sendHeadRequest() {
       "Accept: text/plain\r\n"
       "Connection: Close\r\n"
       "\r\n";
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)format, SD_TC::instance()->getRemoteLogName(), serverDomain, VERSION);
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)format, logName, serverDomain, VERSION);
   if (client.connected() || client.connect(serverDomain, PORT) == 1) {  // this is a blocking step
     client.write(buffer, strnlen(buffer, sizeof(buffer)));
   } else {
@@ -173,6 +177,10 @@ void RemoteLogPusher::sendHeadRequest() {
 }
 
 void RemoteLogPusher::sendPostRequest() {
+  const char *logName = SD_TC::instance()->getRemoteLogName();
+  if (logName[0] == '\0') {
+    return;
+  }
   char data[300];
   SD_TC::instance()->getRemoteLogContents(data, sizeof(data), serverFileSize);
   static const char format[] PROGMEM =
@@ -183,7 +191,7 @@ void RemoteLogPusher::sendPostRequest() {
       "Content-Length: %i\r\n"
       "Connection: Close\r\n"
       "\r\n";
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)format, SD_TC::instance()->getRemoteLogName(), serverDomain, VERSION,
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)format, logName, serverDomain, VERSION,
              strnlen(data, sizeof(data)));
   if (client.connected() || client.connect(serverDomain, PORT) == 1) {  // this is a blocking step
     client.write(buffer, strnlen(buffer, sizeof(buffer)));

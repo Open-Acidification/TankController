@@ -33,6 +33,7 @@ unittest(loopSendsRequests) {
   TankController* tc = TankController::instance();
   RemoteLogPusher* pusher = RemoteLogPusher::instance();
   EthernetClient* pClient = pusher->getClient();
+  SD_TC::instance()->setRemoteLogName("90A2DA807B76");
 
   // Set up the server to respond to the HEAD request
   assertTrue(Ethernet_TC::instance(true)->isConnectedToNetwork());

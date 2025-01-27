@@ -12,7 +12,7 @@ String rootDir =
 // Configure routes.
 final _router = Router()
   ..delete('/logs/deleteMe.log', _delete)
-  ..get('/logs/snapshot/<path>', _getSnapshot)
+  ..get('/api/<path>', _getSnapshot)
   ..get('/logs/<path>', _get)
   ..head('/logs/<path>', _head)
   ..post('/logs/<path>', _post);
@@ -35,8 +35,9 @@ Future<Response> _get(Request req, String path) async {
 }
 
 Future<Response> _getSnapshot(Request req, String path) async {
+  final file = File('$rootDir/$path');
+
   final uri = req.requestedUri;
-  final file = File('$rootDir/${uri.path.split("/").last}');
   final snapshotLength = uri.queryParameters['length'] == null
       ? 360
       : int.parse(uri.queryParameters['length']!);

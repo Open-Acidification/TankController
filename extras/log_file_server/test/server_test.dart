@@ -29,9 +29,8 @@ void main() {
     expect(response.statusCode, 404);
   });
 
-  test('Get snapshot from /logs/snapshot/snapshotTest.log', () async {
-    final response =
-        await get(Uri.parse('$host/logs/snapshot/snapshotTest.log'));
+  test('Get snapshot from /api/snapshotTest.log', () async {
+    final response = await get(Uri.parse('$host/api/snapshotTest.log'));
     expect(response.statusCode, 200);
 
     expect(response.body.contains('W'), isFalse);
@@ -40,7 +39,7 @@ void main() {
 
   test('Get snapshot using length parameter', () async {
     final response =
-        await get(Uri.parse('$host/logs/snapshot/snapshotTest.log?length=10'));
+        await get(Uri.parse('$host/api/snapshotTest.log?length=10'));
     expect(response.statusCode, 200);
 
     expect(response.body.contains('W'), isFalse);

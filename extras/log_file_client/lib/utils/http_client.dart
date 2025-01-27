@@ -94,7 +94,7 @@ abstract class HttpClient {
 
   Future<List<Project>> getProjectList() async {
     // Fetch data from server
-    final data = await fetchData('logs/index.html');
+    final data = await fetchData('logs');
 
     // Get list items from HTML
     final listItems = parseLogListFromHTML(data);
@@ -188,15 +188,13 @@ abstract class HttpClient {
 
   List<List<String>> parseLogListFromHTML(String data) {
     final result = <List<String>>[];
-    for (final Element e in parse(data).getElementsByTagName('li')) {
-      if (e.children.isNotEmpty &&
-          e.children[0].attributes.containsKey('href')) {
-        final innerHtml = e.children[0].innerHtml;
-        final name = innerHtml.substring(innerHtml.lastIndexOf('/') + 1);
-        if (e.children[0].attributes['href']!.endsWith('.log')) {
+    for (final Element e in parse(data).getElementsByTagName('a')) {
+      if (e.attributes.containsKey('href')) {
+        final name = e.innerHtml;
+        if (e.attributes['href']!.endsWith('.log') && name.contains('-')) {
           result.add([
             name,
-            e.children[0].attributes['href']!.split('/').last,
+            e.attributes['href']!,
           ]);
         }
       }
@@ -235,12 +233,24 @@ class HttpClientTest extends HttpClient {
   // Fetches data from a hard-coded string (short) or the local Dart file (1440 sample lines) for testing purposes
   HttpClientTest();
 
-  late String testHTML =
-      '<html><body><ul><li><a href="/logs/ProjectA-tank-24.log">/logs/ProjectA-tank-24.log</a></li><li><a href="/logs/ProjectA-tank-70.log">/logs/ProjectA-tank-70.log</a></li><li><a href="/logs/ProjectB-tank-58.log">/logs/ProjectB-tank-58.log</a></li><li><ahref="/logs/index.html">/logs/index.html</a></li></ul></body></html>';
+  late String testHTML = '''
+<html>
+<head><title>Index of /logs/</title></head>
+<body>
+<h1>Index of /logs/</h1><hr><pre><a href="../">../</a>
+<a href="20230120.csv">20230120.csv</a>                                       11-Oct-2024 00:44             2247845
+<a href="20230120.log">20230120.log</a>                                       11-Oct-2024 00:44               28072
+<a href="20230121.log">20230121.log</a>                                       11-Oct-2024 00:44               72127
+<a href="fostja-tank-1.log">fostja-tank-1.log</a>                                  25-Jan-2025 00:49               48059
+<a href="james.txt">james.txt</a>                                          23-Jan-2025 23:58                 196
+<a href="stefan-tank-1.log">stefan-tank-1.log</a>                                  26-Jan-2025 06:02                  32
+<a href="stefan-tank-2.log">stefan-tank-2.log</a>                                  26-Jan-2025 06:02                  32
+</pre><hr></body>
+</html>''';
 
   @override
   Future<String> fetchData(String filePath) async {
-    if (filePath == 'logs/index.html') {
+    if (filePath == 'logs') {
       return testHTML;
     } else if (filePath == 'sample_short.log' ||
         filePath == 'logs/snapshot/sample_short.log') {

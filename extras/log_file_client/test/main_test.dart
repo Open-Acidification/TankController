@@ -56,8 +56,8 @@ void main() {
     expect(find.byType(ProjectCard), findsNWidgets(2));
 
     // Verify that the ProjectCard widgets contain the correct text
-    expect(find.text('ProjectA'), findsOneWidget);
-    expect(find.text('ProjectB'), findsOneWidget);
+    expect(find.text('fostja'), findsOneWidget);
+    expect(find.text('stefan'), findsOneWidget);
   });
 
   testWidgets('ProjectCard opens project page when selected',
@@ -73,7 +73,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Open the project page by tapping on the ProjectCard widget
-    await tester.tap(find.text('ProjectA'));
+    await tester.tap(find.text('fostja'));
     await tester.pumpAndSettle();
 
     // Verify that the project page is displayed

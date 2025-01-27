@@ -13,10 +13,23 @@ void main() {
     final client = HttpClientTest();
 
     test('sample HTML data', () async {
-      final data = await client.fetchData('logs/index.html');
+      final data = await client.fetchData('logs');
       expect(
         data,
-        '<html><body><ul><li><a href="/logs/ProjectA-tank-24.log">/logs/ProjectA-tank-24.log</a></li><li><a href="/logs/ProjectA-tank-70.log">/logs/ProjectA-tank-70.log</a></li><li><a href="/logs/ProjectB-tank-58.log">/logs/ProjectB-tank-58.log</a></li><li><ahref="/logs/index.html">/logs/index.html</a></li></ul></body></html>',
+        '''
+<html>
+<head><title>Index of /logs/</title></head>
+<body>
+<h1>Index of /logs/</h1><hr><pre><a href="../">../</a>
+<a href="20230120.csv">20230120.csv</a>                                       11-Oct-2024 00:44             2247845
+<a href="20230120.log">20230120.log</a>                                       11-Oct-2024 00:44               28072
+<a href="20230121.log">20230121.log</a>                                       11-Oct-2024 00:44               72127
+<a href="fostja-tank-1.log">fostja-tank-1.log</a>                                  25-Jan-2025 00:49               48059
+<a href="james.txt">james.txt</a>                                          23-Jan-2025 23:58                 196
+<a href="stefan-tank-1.log">stefan-tank-1.log</a>                                  26-Jan-2025 06:02                  32
+<a href="stefan-tank-2.log">stefan-tank-2.log</a>                                  26-Jan-2025 06:02                  32
+</pre><hr></body>
+</html>''',
       );
     });
 
@@ -44,11 +57,11 @@ void main() {
       expect(projects.length, equals(2));
 
       // Validate the parsed projects
-      expect(projects[0].name, equals('ProjectA'));
-      expect(projects[0].logs.length, equals(2));
+      expect(projects[0].name, equals('fostja'));
+      expect(projects[0].logs.length, equals(1));
 
-      expect(projects[1].name, equals('ProjectB'));
-      expect(projects[1].logs.length, equals(1));
+      expect(projects[1].name, equals('stefan'));
+      expect(projects[1].logs.length, equals(2));
     });
 
     test('Returns correct logs for projects', () async {
@@ -58,13 +71,13 @@ void main() {
       expect(projects.length, equals(2));
 
       // Validate the parsed projects
-      expect(projects[0].name, equals('ProjectA'));
-      expect(projects[0].logs.length, equals(2));
+      expect(projects[1].name, equals('stefan'));
+      expect(projects[1].logs.length, equals(2));
 
-      expect(projects[0].logs[0].name, equals('tank-24'));
-      expect(projects[0].logs[0].uri, equals('ProjectA-tank-24.log'));
-      expect(projects[0].logs[1].name, equals('tank-70'));
-      expect(projects[0].logs[1].uri, equals('ProjectA-tank-70.log'));
+      expect(projects[1].logs[0].name, equals('tank-1'));
+      expect(projects[1].logs[0].uri, equals('stefan-tank-1.log'));
+      expect(projects[1].logs[1].name, equals('tank-2'));
+      expect(projects[1].logs[1].uri, equals('stefan-tank-2.log'));
     });
 
     test('Returns empty list when no <li> elements are present', () async {
@@ -120,20 +133,20 @@ void main() {
       expect(logList.length, equals(3));
 
       // Validate the parsed log entries
-      expect(logList[0][0], equals('ProjectA-tank-24.log'));
-      expect(logList[0][1], equals('ProjectA-tank-24.log'));
+      expect(logList[0][0], equals('fostja-tank-1.log'));
+      expect(logList[0][1], equals('fostja-tank-1.log'));
 
-      expect(logList[1][0], equals('ProjectA-tank-70.log'));
-      expect(logList[1][1], equals('ProjectA-tank-70.log'));
+      expect(logList[1][0], equals('stefan-tank-1.log'));
+      expect(logList[1][1], equals('stefan-tank-1.log'));
 
-      expect(logList[2][0], equals('ProjectB-tank-58.log'));
-      expect(logList[2][1], equals('ProjectB-tank-58.log'));
+      expect(logList[2][0], equals('stefan-tank-2.log'));
+      expect(logList[2][1], equals('stefan-tank-2.log'));
     });
 
     test('returns an empty list if no log links are present', () async {
       // Set up a different HTML in the client with no log links
       final testHTML =
-          '<html><body><ul><li><a href="/logs/test1">/logs/test1</a></li></ul></body></html>';
+          '<html><body><a href="/logs/test1">/logs/test1</a></body></html>';
 
       final logList = client.parseLogListFromHTML(testHTML);
 
@@ -144,7 +157,7 @@ void main() {
     test('handles malformed HTML without throwing an error', () async {
       // Set up malformed HTML
       final testHTML =
-          '<html><body><ul><li><a>/logs/test1.log</a></li></body></ul>';
+          '<html><body><a>/logs/test1.log</body></ul>';
 
       expect(
         () async => client.parseLogListFromHTML(testHTML),

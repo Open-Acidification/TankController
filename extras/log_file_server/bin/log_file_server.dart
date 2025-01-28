@@ -12,7 +12,7 @@ String rootDir =
 // Configure routes.
 final _router = Router()
   ..delete('/logs/deleteMe.log', _delete)
-  ..get('/logs/snapshot/<path>', _getSnapshot)
+  ..get('/api/<path>', _getSnapshot)
   ..get('/logs/<path>', _get)
   ..head('/logs/<path>', _head)
   ..post('/logs/<path>', _post);
@@ -35,7 +35,12 @@ Future<Response> _get(Request req, String path) async {
 }
 
 Future<Response> _getSnapshot(Request req, String path) async {
-  final file = File('$rootDir/${path.split("/").last}');
+  final file = File('$rootDir/$path');
+
+  final uri = req.requestedUri;
+  final snapshotLength = uri.queryParameters['length'] == null
+      ? 360
+      : int.parse(uri.queryParameters['length']!);
 
   if (!file.existsSync()) {
     return Response.notFound(null);
@@ -44,11 +49,15 @@ Future<Response> _getSnapshot(Request req, String path) async {
   final body = file.readAsStringSync();
   final List<List<dynamic>> logTable =
       const CsvToListConverter(fieldDelimiter: '\t', eol: '\n').convert(body);
+  logTable.removeWhere((row) => row[2] != 'I');
 
-  if (logTable.isEmpty || logTable.length < 360) {
+  if (logTable.isEmpty || logTable.length < snapshotLength) {
     return Response.ok(body);
   } else {
-    return Response.ok(body.substring(body.length - 360));
+    logTable.removeRange(0, logTable.length - snapshotLength);
+    final shortBody = const ListToCsvConverter(fieldDelimiter: '\t', eol: '\n')
+        .convert(logTable);
+    return Response.ok(shortBody);
   }
 }
 

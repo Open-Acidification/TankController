@@ -38,11 +38,13 @@ void main() {
       expect(
         data,
         '''
-1.0	80	I	2025-01-07 11:02:30		31.25	31.11	0.07	6.38	6.41	0
-1.0	80	I	2025-01-07 11:03:30		31.25	31.25	0.0	6.38	6.38	60
-1.0	80	I	2025-01-07 11:04:30		31.25	31.43	0.09	6.38	6.36	120
-1.0	80	I	2025-01-07 11:05:30		31.25	31.54	0.145	6.38	6.46	180
-1.0	80	I	2025-01-07 11:06:30		31.25	31.42	0.085	6.38	6.35	240''',
+Version	Tank ID	Severity	Date Time	Message	Temperature Target	Temperature Mean	Temperature Std Dev	pH Target	pH	Uptime	MAC Address	pH Slope	Ignoring Bad pH Calibration	Temperature Correction	Ignoring Bad Temperature Calibration	Heat (1) or Chill (0)	KD	KI	KP	pH Flat (0) Ramp (1) Sine (2)	pH Target	pH Ramp Start Time	pH Ramp End Time	pH Ramp Start Value	pH Sine Start Time	pH Sine Period	pH Sine Amplitude	Temperature Flat (0) Ramp (1) Sine (2)	Temperature Target	Temperature Ramp Start Time	Temperature Ramp End Time	Temperature Ramp Start Value	Temperature Sine Start Time	Temperature Sine Period	Temperature Sine Amplitude	Google Sheet Interval
+v25.1.1        	89	I	2025-01-23 15:38		20.11	20	0	7	0	60																										
+v25.1.1        	89	I	2025-01-23 15:39		20.18	20	0	7	0	120																										
+v25.1.1        	89	I	2025-01-23 15:40		20.24	20	0	7	0	180																										
+v25.1.1        	89	I	2025-01-23 15:43		20.38	20	0	7	0	60																										
+v25.1.1        	89	I	2025-01-23 15:44		20.44	20	0	7	0	121																										
+''',
       );
     });
   });
@@ -156,8 +158,7 @@ void main() {
 
     test('handles malformed HTML without throwing an error', () async {
       // Set up malformed HTML
-      final testHTML =
-          '<html><body><a>/logs/test1.log</body></ul>';
+      final testHTML = '<html><body><a>/logs/test1.log</body></ul>';
 
       expect(
         () async => client.parseLogListFromHTML(testHTML),
@@ -176,8 +177,8 @@ void main() {
       expect(snapshot, isNotNull);
       expect(snapshot.log, equals(log));
       expect(snapshot.latestData.length, equals(5));
-      expect(snapshot.pH, equals(6.35));
-      expect(snapshot.temperature, equals(31.42));
+      expect(snapshot.pH, equals(0));
+      expect(snapshot.temperature, equals(20));
     });
 
     test('Returns valid TankSnapshot for a long log file', () async {
@@ -187,8 +188,8 @@ void main() {
       expect(snapshot, isNotNull);
       expect(snapshot.log, equals(log));
       expect(snapshot.latestData.length, equals(360));
-      expect(snapshot.pH, equals(6.64));
-      expect(snapshot.temperature, equals(24.91));
+      expect(snapshot.pH, equals(7));
+      expect(snapshot.temperature, equals(21));
     });
 
     test('Handles empty log file', () async {
@@ -235,59 +236,59 @@ void main() {
         logTable,
         [
           LogDataLine(
-            1.0,
-            80,
-            DateTime.parse('2025-01-07 11:02:30'),
-            31.25,
-            31.11,
-            0.07,
-            6.38,
-            6.41,
-            0,
-          ),
-          LogDataLine(
-            1.0,
-            80,
-            DateTime.parse('2025-01-07 11:03:30'),
-            31.25,
-            31.25,
+            'v25.1.1',
+            89,
+            DateTime.parse('2025-01-23 15:38:00'),
+            20.11,
+            20.0,
             0.0,
-            6.38,
-            6.38,
+            7.0,
+            0.0,
             60,
           ),
           LogDataLine(
-            1.0,
-            80,
-            DateTime.parse('2025-01-07 11:04:30'),
-            31.25,
-            31.43,
-            0.09,
-            6.38,
-            6.36,
+            'v25.1.1',
+            89,
+            DateTime.parse('2025-01-23 15:39:00'),
+            20.18,
+            20.0,
+            0.0,
+            7.0,
+            0.0,
             120,
           ),
           LogDataLine(
-            1.0,
-            80,
-            DateTime.parse('2025-01-07 11:05:30'),
-            31.25,
-            31.54,
-            0.145,
-            6.38,
-            6.46,
+            'v25.1.1',
+            89,
+            DateTime.parse('2025-01-23 15:40:00'),
+            20.24,
+            20.0,
+            0.0,
+            7.0,
+            0.0,
             180,
           ),
           LogDataLine(
-            1.0,
-            80,
-            DateTime.parse('2025-01-07 11:06:30'),
-            31.25,
-            31.42,
-            0.085,
-            6.38,
-            6.35,
-            240,
+            'v25.1.1',
+            89,
+            DateTime.parse('2025-01-23 15:43:00'),
+            20.38,
+            20.0,
+            0.0,
+            7.0,
+            0.0,
+            60,
+          ),
+          LogDataLine(
+            'v25.1.1',
+            89,
+            DateTime.parse('2025-01-23 15:44:00'),
+            20.44,
+            20.0,
+            0.0,
+            7.0,
+            0.0,
+            121,
           ),
         ],
       );
@@ -318,9 +319,9 @@ void main() {
         logTable,
         [
           LogDataLine(
-            1.0,
+            'v1.0',
             80,
-            DateTime.parse('2025-01-07 11:20:30'),
+            DateTime.parse('2025-01-07 11:20:00'),
             31.25,
             30.81,
             0.22,
@@ -329,9 +330,9 @@ void main() {
             1080,
           ),
           LogDataLine(
-            1.0,
+            'v1.0',
             80,
-            DateTime.parse('2025-01-07 11:21:30'),
+            DateTime.parse('2025-01-07 11:21:00'),
             31.25,
             30.99,
             0.13,
@@ -340,9 +341,9 @@ void main() {
             1140,
           ),
           LogDataLine(
-            1.0,
+            'v1.0',
             80,
-            DateTime.parse('2025-01-07 11:22:30'),
+            DateTime.parse('2025-01-07 11:22:00'),
             31.25,
             31.38,
             0.065,
@@ -351,9 +352,9 @@ void main() {
             1200,
           ),
           LogDataLine(
-            1.0,
+            'v1.0',
             80,
-            DateTime.parse('2025-01-07 11:23:30'),
+            DateTime.parse('2025-01-07 11:23:00'),
             31.25,
             31.22,
             0.015,

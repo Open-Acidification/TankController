@@ -24,11 +24,15 @@ Future<Response> _get(Request req, String path) async {
   final body = file.readAsStringSync();
   final List<List<dynamic>> logTable =
       const CsvToListConverter(fieldDelimiter: '\t', eol: '\n').convert(body);
+  logTable.removeWhere((row) => row[2] != 'I');
 
-  if (logTable.isEmpty || logTable.length < 360) {
+  if (logTable.isEmpty || logTable.length < snapshotLength) {
     return Response.ok(body);
   } else {
-    return Response.ok(body.substring(body.length - 360));
+    logTable.removeRange(0, logTable.length - snapshotLength);
+    final shortBody = const ListToCsvConverter(fieldDelimiter: '\t', eol: '\n')
+        .convert(logTable);
+    return Response.ok(shortBody);
   }
 }
 

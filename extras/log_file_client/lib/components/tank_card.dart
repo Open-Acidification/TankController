@@ -57,27 +57,27 @@ class TankCard extends StatelessWidget {
     );
   }
 
-  FutureBuilder<TankSnapshot> _graphThumbnailBuilder(
+  Expanded _graphThumbnailBuilder(
     Future<TankSnapshot> tankSnapshot,
     double cardWidth,
   ) {
-    return FutureBuilder(
-      future: tankSnapshot,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Expanded(
-            child: Center(
+    return Expanded(
+      child: FutureBuilder(
+        future: tankSnapshot,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(
               child: Text(
                 'Error: ${snapshot.error}',
               ),
-            ),
-          );
-        } else {
-          return _graphThumbnail(cardWidth, snapshot);
-        }
-      },
+            );
+          } else {
+            return _graphThumbnail(cardWidth, snapshot);
+          }
+        },
+      ),
     );
   }
 
@@ -116,31 +116,33 @@ class TankCard extends StatelessWidget {
     );
   }
 
-  FutureBuilder<TankSnapshot> _tankInfoBuilder(
+  Flexible _tankInfoBuilder(
     Future<TankSnapshot> tankSnapshot,
     double cardWidth,
     double descriptionFontSize,
   ) {
-    return FutureBuilder(
-      future: tankSnapshot,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
-            child: Padding(
-              padding: EdgeInsets.only(
-                left: cardWidth * 0.2,
-                right: cardWidth * 0.2,
-                top: cardWidth * 0.05,
+    return Flexible(
+      child: FutureBuilder(
+        future: tankSnapshot,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: cardWidth * 0.2,
+                  right: cardWidth * 0.2,
+                  top: cardWidth * 0.05,
+                ),
+                child: LinearProgressIndicator(),
               ),
-              child: LinearProgressIndicator(),
-            ),
-          );
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else {
-          return _tankInfo(cardWidth, descriptionFontSize, snapshot);
-        }
-      },
+            );
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            return _tankInfo(cardWidth, descriptionFontSize, snapshot);
+          }
+        },
+      ),
     );
   }
 

@@ -190,39 +190,30 @@ void main() {
     // Verify that the table data is displayed
     expect(find.byType(ListView), findsOneWidget);
 
-    expect(find.text('2025-01-07 11:02:30.000'), findsOneWidget);
-    expect(find.text('2025-01-07 11:03:30.000'), findsOneWidget);
-    expect(find.text('2025-01-07 11:04:30.000'), findsOneWidget);
-    expect(find.text('2025-01-07 11:05:30.000'), findsOneWidget);
-    expect(find.text('2025-01-07 11:06:30.000'), findsOneWidget);
+    expect(find.text('2025-01-23 15:38:00.000'), findsOneWidget);
+    expect(find.text('2025-01-23 15:39:00.000'), findsOneWidget);
+    expect(find.text('2025-01-23 15:40:00.000'), findsOneWidget);
+    expect(find.text('2025-01-23 15:43:00.000'), findsOneWidget);
+    expect(find.text('2025-01-23 15:44:00.000'), findsOneWidget);
 
-    expect(find.text('80'), findsNWidgets(5));
+    expect(find.text('89'), findsNWidgets(5));
 
-    expect(find.text('31.25'), findsNWidgets(6));
+    expect(find.text('20.11'), findsOneWidget);
+    expect(find.text('20.18'), findsOneWidget);
+    expect(find.text('20.24'), findsOneWidget);
+    expect(find.text('20.38'), findsOneWidget);
+    expect(find.text('20.44'), findsOneWidget);
 
-    expect(find.text('31.11'), findsOneWidget);
-    expect(find.text('31.43'), findsOneWidget);
-    expect(find.text('31.54'), findsOneWidget);
-    expect(find.text('31.42'), findsOneWidget);
+    expect(find.text('20.0'), findsNWidgets(5));
 
-    expect(find.text('0.07'), findsOneWidget);
-    expect(find.text('0.0'), findsOneWidget);
-    expect(find.text('0.09'), findsOneWidget);
-    expect(find.text('0.145'), findsOneWidget);
-    expect(find.text('0.085'), findsOneWidget);
+    expect(find.text('0.0'), findsNWidgets(10));
 
-    expect(find.text('6.38'), findsNWidgets(6));
+    expect(find.text('7.0'), findsNWidgets(5));
 
-    expect(find.text('6.41'), findsOneWidget);
-    expect(find.text('6.36'), findsOneWidget);
-    expect(find.text('6.46'), findsOneWidget);
-    expect(find.text('6.35'), findsOneWidget);
-
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('60'), findsOneWidget);
+    expect(find.text('60'), findsNWidgets(2));
     expect(find.text('120'), findsOneWidget);
     expect(find.text('180'), findsOneWidget);
-    expect(find.text('240'), findsOneWidget);
+    expect(find.text('121'), findsOneWidget);
   });
 
   testWidgets('GraphView widget test', (WidgetTester tester) async {

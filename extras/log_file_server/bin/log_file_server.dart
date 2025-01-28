@@ -15,8 +15,12 @@ final _router = Router()
   ..post('/api/<path>', _post);
 
 Future<Response> _get(Request req, String path) async {
-  final file = File('$rootDir/${path.split("/").last}');
+  final file = File('$rootDir/$path');
 
+  final uri = req.requestedUri;
+  final snapshotLength = uri.queryParameters['length'] == null
+      ? 360
+      : int.parse(uri.queryParameters['length']!);
   if (!file.existsSync()) {
     return Response.notFound(null);
   }

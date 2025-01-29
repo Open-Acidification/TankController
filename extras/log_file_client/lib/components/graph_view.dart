@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:log_file_client/components/option_selector.dart';
+import 'package:log_file_client/components/toggle_button.dart';
 import 'package:log_file_client/utils/http_client.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-class GraphView extends StatelessWidget {
+class GraphView extends StatefulWidget {
   const GraphView({
     required this.filePath,
     required this.httpClient,
@@ -13,9 +13,27 @@ class GraphView extends StatelessWidget {
   final String filePath;
   final HttpClient httpClient;
 
+  @override
+  State<GraphView> createState() => _GraphViewState();
+}
+
+class _GraphViewState extends State<GraphView> {
+  bool _showPH = true;
+  bool _showTemp = true;
+
   Future<List<LogDataLine>> getLogData() async {
-    final table = await httpClient.getLogData(filePath);
+    final table = await widget.httpClient.getLogData(widget.filePath);
     return table;
+  }
+
+  void toggleSeriesView(int index) {
+    setState(() {
+      if (index == 0) {
+        _showPH = !_showPH;
+      } else {
+        _showTemp = !_showTemp;
+      }
+    });
   }
 
   @override
@@ -38,17 +56,15 @@ class GraphView extends StatelessWidget {
               final logData = snapshot.data!;
               return Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16.0, right: 75.0),
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: OptionSelector(),
-                    ),
-                  ),
                   Expanded(
+                    child: _graph(logData),
+                  ),
+                  Center(
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
-                      child: _graph(logData),
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: ToggleButton(
+                        onPressed: toggleSeriesView,
+                      ),
                     ),
                   ),
                 ],
@@ -86,17 +102,29 @@ class GraphView extends StatelessWidget {
         name: 'pHAxis',
         title: AxisTitle(text: 'pH Value'),
       ),
+      // primaryYAxis: _showPH
+      //     ? NumericAxis(
+      //         name: 'pHAxis',
+      //         title: AxisTitle(text: 'pH Value'),
+      //       )
+      //     : NumericAxis(
+      //         name: 'TemperatureAxis',
+      //         title: AxisTitle(text: 'Temperature Value'),
+      //         opposedPosition: true,
+      //       ),
       axes: <ChartAxis>[
+        // NumericAxis(
+        //   name: 'pHAxis',
+        //   title: AxisTitle(text: 'pH Value'),
+        //   isVisible: _showPH && _showTemp,
+        // ),
         NumericAxis(
           name: 'TemperatureAxis',
           title: AxisTitle(text: 'Temperature Value'),
           opposedPosition: true,
+          isVisible: _showTemp && _showPH,
         ),
       ],
-      legend: Legend(
-        isVisible: true,
-        position: LegendPosition.bottom,
-      ),
       trackballBehavior: trackballBehavior,
       series: _chartSeries(logData),
     );
@@ -113,6 +141,7 @@ class GraphView extends StatelessWidget {
         color: Colors.blue,
         yAxisName: 'TemperatureAxis',
         animationDuration: 0,
+        initialIsVisible: _showTemp,
       ),
       LineSeries<LogDataLine, DateTime>(
         legendItemText: 'temp setpoint',
@@ -124,6 +153,7 @@ class GraphView extends StatelessWidget {
         color: Colors.blue,
         yAxisName: 'TemperatureAxis',
         animationDuration: 0,
+        initialIsVisible: _showTemp,
       ),
       LineSeries<LogDataLine, DateTime>(
         legendItemText: 'pH',
@@ -134,6 +164,7 @@ class GraphView extends StatelessWidget {
         color: Colors.green,
         yAxisName: 'pHAxis',
         animationDuration: 0,
+        initialIsVisible: _showPH,
       ),
       LineSeries<LogDataLine, DateTime>(
         legendItemText: 'pH setpoint',
@@ -145,6 +176,7 @@ class GraphView extends StatelessWidget {
         color: Colors.green,
         yAxisName: 'pHAxis',
         animationDuration: 0,
+        initialIsVisible: _showPH,
       ),
     ];
   }

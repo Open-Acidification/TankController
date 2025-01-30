@@ -81,11 +81,13 @@ class LogDataLine {
 }
 
 class TankSnapshot {
-  TankSnapshot(this.log, this.latestData, this.pH, this.temperature);
+  TankSnapshot(this.log, this.latestData, this.pH, this.temperature, this.pHSetpoint, this.temperatureSetpoint);
   final Log log;
   final List<LogDataLine?> latestData;
   final double? pH;
   final double? temperature;
+  final double? pHSetpoint;
+  final double? temperatureSetpoint;
 }
 
 abstract class HttpClient {
@@ -129,13 +131,15 @@ abstract class HttpClient {
     final loglines = parseLogData(data);
 
     if (loglines.isEmpty) {
-      return TankSnapshot(log, [], null, null);
+      return TankSnapshot(log, [], null, null, null, null);
     } else {
       return TankSnapshot(
         log,
         loglines,
         loglines[loglines.length - 1].phCurrent,
         loglines[loglines.length - 1].tempMean,
+        loglines[loglines.length - 1].phTarget,
+        loglines[loglines.length - 1].tempTarget,
       );
     }
   }

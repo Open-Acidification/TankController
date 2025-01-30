@@ -20,7 +20,7 @@ Future<Response> _get(Request req, String path) async {
 
   final uri = req.requestedUri;
   final snapshotLength = uri.queryParameters['length'] == null
-      ? 360
+      ? 720
       : int.parse(uri.queryParameters['length']!);
 
   if (!file.existsSync()) {

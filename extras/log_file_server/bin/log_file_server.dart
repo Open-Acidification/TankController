@@ -11,31 +11,12 @@ String rootDir =
 
 // Configure routes.
 final _router = Router()
-  ..delete('/logs/deleteMe.log', _delete)
-  ..get('/api/<path>', _getSnapshot)
-  ..get('/logs/<path>', _get)
-  ..head('/logs/<path>', _head)
+  ..get('/api/<path>', _get)
   ..post('/logs/<path>', _post);
 
-Future<Response> _delete(Request req) async {
-  final file = File('$rootDir/deleteMe.log');
-  if (file.existsSync()) {
-    await file.delete();
-  }
-  return Response.ok(null);
-}
-
+// Get snapshots of log files
 Future<Response> _get(Request req, String path) async {
-  final file = File('$rootDir/$path');
-  if (!file.existsSync()) {
-    return Response.notFound(null);
-  }
-  final body = file.readAsStringSync();
-  return Response.ok(body);
-}
-
-Future<Response> _getSnapshot(Request req, String path) async {
-  final file = File('$rootDir/$path');
+  final file = File('$rootDir/${path.split('/').last}');
 
   final uri = req.requestedUri;
   final snapshotLength = uri.queryParameters['length'] == null
@@ -59,15 +40,6 @@ Future<Response> _getSnapshot(Request req, String path) async {
         .convert(logTable);
     return Response.ok(shortBody);
   }
-}
-
-Future<Response> _head(Request req, String path) async {
-  final file = File('$rootDir/$path');
-  if (!file.existsSync()) {
-    return Response.notFound(null);
-  }
-  final length = file.lengthSync();
-  return Response.ok(null, headers: {'content-length': '$length'});
 }
 
 Future<Response> _post(Request req, String path) async {

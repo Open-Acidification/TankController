@@ -257,7 +257,7 @@ class HttpClientTest extends HttpClient {
 
   @override
   Future<String> fetchData(String filePath) async {
-    if (filePath == 'logs') {
+    if (filePath == 'logs' || filePath == 'logs/index.html') {
       return testHTML;
     } else if (filePath == 'sample_short.log' ||
         filePath == 'api/sample_short.log') {

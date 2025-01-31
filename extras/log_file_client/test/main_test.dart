@@ -24,19 +24,6 @@ void main() {
     expect(find.byType(HomePage), findsOneWidget);
   });
 
-  testWidgets('HomePage displays CircularProgressIndicator initially',
-      (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: HomePage(
-          httpClient: HttpClientTest(),
-        ),
-      ),
-    );
-
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
-  });
-
   testWidgets('HomePage displays projects', (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(

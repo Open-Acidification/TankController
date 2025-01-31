@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:log_file_client/components/project_card.dart';
 import 'package:log_file_client/pages/project_page.dart';
 import 'package:log_file_client/utils/http_client.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:web/web.dart' as html;
 
 class HomePage extends StatefulWidget {
@@ -18,6 +19,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late final HttpClient httpClient;
   List<Project>? _projectList;
+  final List<Project> _mockProjectList = [
+    Project('mock', []),
+    Project('mock', []),
+    Project('mock', []),
+  ];
   bool _isLoading = true;
 
   @override
@@ -62,14 +68,12 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: Center(
-        child: _isLoading
-            ? const CircularProgressIndicator()
-            : Column(
-                children: [
-                  _pageHeader(screenWidth),
-                  _projectCards(gridCrossAxis, screenWidth),
-                ],
-              ),
+        child: Column(
+          children: [
+            _pageHeader(screenWidth),
+            _projectCards(gridCrossAxis, screenWidth),
+          ],
+        ),
       ),
     );
   }
@@ -125,23 +129,54 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Expanded _projectCards(int gridCrossAxis, double screenWidth) {
-    return Expanded(
-      child: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: gridCrossAxis,
-        ),
-        itemCount: _projectList?.length ?? 0,
-        itemBuilder: (context, index) {
-          return ProjectCard(
-            project: _projectList![index],
-            onTap: () => unawaited(openProject(_projectList![index])),
+  Widget _projectCards(int gridCrossAxis, double screenWidth) {
+    return _isLoading
+        ? _skeletonLoader(gridCrossAxis, screenWidth)
+        : Expanded(
+            child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: gridCrossAxis,
+              ),
+              itemCount: _projectList?.length ?? 0,
+              itemBuilder: (context, index) {
+                return ProjectCard(
+                  project: _projectList![index],
+                  onTap: () => unawaited(openProject(_projectList![index])),
+                );
+              },
+              padding: EdgeInsets.only(
+                left: screenWidth * 0.067,
+                right: screenWidth * 0.067,
+                top: screenWidth * 0.011,
+              ),
+            ),
           );
-        },
-        padding: EdgeInsets.only(
-          left: screenWidth * 0.067,
-          right: screenWidth * 0.067,
-          top: screenWidth * 0.011,
+  }
+
+  Widget _skeletonLoader(int gridCrossAxis, double screenWidth) {
+    return Expanded(
+      child: Skeletonizer(
+        effect: ShimmerEffect(
+          baseColor: Colors.grey[300]!,
+          highlightColor: Colors.grey[100]!,
+          duration: Duration(seconds: 2),
+        ),
+        child: GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: gridCrossAxis,
+          ),
+          itemCount: _mockProjectList.length,
+          itemBuilder: (context, index) {
+            return ProjectCard(
+              project: _mockProjectList[index],
+              onTap: () {},
+            );
+          },
+          padding: EdgeInsets.only(
+            left: screenWidth * 0.067,
+            right: screenWidth * 0.067,
+            top: screenWidth * 0.011,
+          ),
         ),
       ),
     );

@@ -22,21 +22,18 @@ class _ToggleButtonState extends State<ToggleButton> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.5),
+        borderRadius: BorderRadius.circular(10),
         color: Colors.grey[500],
       ),
       padding: const EdgeInsets.all(0.5),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: SizedBox(
-          width: 148,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _halfButton('pH', Colors.green, 0),
-              _halfButton('temp', Colors.blue, 1),
-            ],
-          ),
+      child: SizedBox(
+        width: 148,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _halfButton('pH', Colors.green, 0),
+            _halfButton('temp', Colors.blue, 1),
+          ],
         ),
       ),
     );
@@ -44,6 +41,7 @@ class _ToggleButtonState extends State<ToggleButton> {
 
   TextButton _halfButton(String text, Color color, int index) {
     return TextButton(
+      key: Key(text),
       onPressed: () {
         toggleButton(index);
       },
@@ -59,7 +57,9 @@ class _ToggleButtonState extends State<ToggleButton> {
           : WidgetStateProperty.all<Color>(Colors.white),
       shape: WidgetStateProperty.all<OutlinedBorder>(
         RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(0),
+          borderRadius: index == 0
+              ? BorderRadius.only(topLeft: Radius.circular(10), bottomLeft: Radius.circular(10))
+              : BorderRadius.only(topRight: Radius.circular(10), bottomRight: Radius.circular(10)),
         ),
       ),
     );

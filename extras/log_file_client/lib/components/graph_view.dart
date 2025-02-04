@@ -43,40 +43,52 @@ class _GraphViewState extends State<GraphView> {
 
     return Scaffold(
       body: Center(
-        child: FutureBuilder<List<LogDataLine>>(
-          future: logData,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text('No data found'));
-            } else {
-              final logData = snapshot.data!;
-              return Column(
-                children: [
-                  Expanded(
-                    child: _graph(logData),
-                  ),
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: ToggleButton(
-                        onPressed: toggleSeriesView,
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            }
-          },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            _graphBuilder(logData),
+            _toggleButton(),
+          ],
         ),
       ),
     );
   }
 
-  SfCartesianChart _graph(List<LogDataLine> logData) {
+  FutureBuilder _graphBuilder(
+    Future<List<LogDataLine>> logData,
+  ) {
+    return FutureBuilder<List<LogDataLine>>(
+      future: logData,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 300),
+            child: CircularProgressIndicator(),
+          );
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('No data found'));
+        } else {
+          final logData = snapshot.data!;
+          return _graph(logData);
+        }
+      },
+    );
+  }
+
+  Widget _toggleButton() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 8.0),
+        child: ToggleButton(
+          onPressed: toggleSeriesView,
+        ),
+      ),
+    );
+  }
+
+  Widget _graph(List<LogDataLine> logData) {
     final trackballBehavior = TrackballBehavior(
       enable: true,
       tooltipDisplayMode: TrackballDisplayMode.groupAllPoints,
@@ -90,43 +102,30 @@ class _GraphViewState extends State<GraphView> {
       activationMode: ActivationMode.singleTap,
     );
 
-    return SfCartesianChart(
-      title: ChartTitle(text: 'Tank ID: ${logData.first.tankid}'),
-      backgroundColor: Colors.white,
-      primaryXAxis: DateTimeAxis(
-        title: AxisTitle(text: 'Time'),
-        intervalType: DateTimeIntervalType.hours,
-        interval: 1,
-      ),
-      primaryYAxis: NumericAxis(
-        name: 'pHAxis',
-        title: AxisTitle(text: 'pH Value'),
-      ),
-      // primaryYAxis: _showPH
-      //     ? NumericAxis(
-      //         name: 'pHAxis',
-      //         title: AxisTitle(text: 'pH Value'),
-      //       )
-      //     : NumericAxis(
-      //         name: 'TemperatureAxis',
-      //         title: AxisTitle(text: 'Temperature Value'),
-      //         opposedPosition: true,
-      //       ),
-      axes: <ChartAxis>[
-        // NumericAxis(
-        //   name: 'pHAxis',
-        //   title: AxisTitle(text: 'pH Value'),
-        //   isVisible: _showPH && _showTemp,
-        // ),
-        NumericAxis(
-          name: 'TemperatureAxis',
-          title: AxisTitle(text: 'Temperature Value'),
-          opposedPosition: true,
-          isVisible: _showTemp && _showPH,
+    return Expanded(
+      child: SfCartesianChart(
+        title: ChartTitle(text: 'Tank ID: ${logData.first.tankid}'),
+        backgroundColor: Colors.white,
+        primaryXAxis: DateTimeAxis(
+          title: AxisTitle(text: 'Time'),
+          intervalType: DateTimeIntervalType.hours,
+          interval: 1,
         ),
-      ],
-      trackballBehavior: trackballBehavior,
-      series: _chartSeries(logData),
+        primaryYAxis: NumericAxis(
+          name: 'pHAxis',
+          title: AxisTitle(text: 'pH Value'),
+        ),
+        axes: <ChartAxis>[
+          NumericAxis(
+            name: 'TemperatureAxis',
+            title: AxisTitle(text: 'Temperature Value'),
+            opposedPosition: true,
+            isVisible: _showTemp && _showPH,
+          ),
+        ],
+        trackballBehavior: trackballBehavior,
+        series: _chartSeries(logData),
+      ),
     );
   }
 

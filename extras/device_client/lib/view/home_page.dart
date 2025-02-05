@@ -8,6 +8,7 @@ import 'package:device_client/view/files_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 // import 'package:web/web.dart' as html;
+// TODO: Figure out how to link to website without having interference with Flutter widget tests
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({required this.title, super.key});

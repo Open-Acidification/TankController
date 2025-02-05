@@ -6,6 +6,7 @@ import 'package:log_file_client/pages/project_page.dart';
 import 'package:log_file_client/utils/http_client.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 // import 'package:web/web.dart' as html;
+// TODO: Figure out how to link to website without having interference with Flutter widget tests
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, this.httpClient});

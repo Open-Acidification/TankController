@@ -179,6 +179,8 @@ v25.1.1        	89	I	2025-01-23 15:44		20.44	20	0	7	0	121
       expect(snapshot.latestData.length, equals(5));
       expect(snapshot.pH, equals(0));
       expect(snapshot.temperature, equals(20));
+      expect(snapshot.pHSetpoint, equals(7));
+      expect(snapshot.temperatureSetpoint, equals(20.44));
     });
 
     test('Returns valid TankSnapshot for a long log file', () async {
@@ -190,6 +192,8 @@ v25.1.1        	89	I	2025-01-23 15:44		20.44	20	0	7	0	121
       expect(snapshot.latestData.length, equals(360));
       expect(snapshot.pH, equals(7));
       expect(snapshot.temperature, equals(21));
+      expect(snapshot.pHSetpoint, equals(7.5));
+      expect(snapshot.temperatureSetpoint, equals(16.48));
     });
 
     test('Handles empty log file', () async {

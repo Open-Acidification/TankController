@@ -58,6 +58,17 @@ class TankThumbnail extends StatelessWidget {
         yAxisName: 'pHAxis',
         animationDuration: 0,
       ),
+      LineSeries<LogDataLine?, DateTime>(
+        legendItemText: 'pH setpoint',
+        name: 'pH setpoint',
+        dataSource: snapshot.latestData,
+        xValueMapper: (LogDataLine? log, _) => log?.time,
+        yValueMapper: (LogDataLine? log, _) => log?.phTarget,
+        color: Colors.green.shade800,
+        width: 1,
+        yAxisName: 'pHAxis',
+        animationDuration: 0,
+      ),
     ];
   }
 
@@ -70,6 +81,17 @@ class TankThumbnail extends StatelessWidget {
         xValueMapper: (LogDataLine? log, _) => log?.time,
         yValueMapper: (LogDataLine? log, _) => log?.tempMean,
         color: Colors.blue,
+        width: 1,
+        yAxisName: 'TemperatureAxis',
+        animationDuration: 0,
+      ),
+      LineSeries<LogDataLine?, DateTime>(
+        legendItemText: 'temp setpoint',
+        name: 'temp setpoint',
+        dataSource: snapshot.latestData,
+        xValueMapper: (LogDataLine? log, _) => log?.time,
+        yValueMapper: (LogDataLine? log, _) => log?.tempTarget,
+        color: Colors.blue.shade800,
         width: 1,
         yAxisName: 'TemperatureAxis',
         animationDuration: 0,

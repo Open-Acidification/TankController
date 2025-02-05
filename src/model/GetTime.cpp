@@ -102,7 +102,7 @@ void GetTime::loop() {
 
 void GetTime::sendRequest() {
   static const char format[] PROGMEM =
-      "GET /Date HTTP/1.1\r\n"
+      "GET /index.html HTTP/1.1\r\n"
       "Host: %s\r\n"
       "Connection: close\r\n"
       "\r\n";

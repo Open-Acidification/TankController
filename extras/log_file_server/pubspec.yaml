@@ -1,6 +1,6 @@
 name: log_file_server
 description: A server app using the shelf package to manage TankController log files.
-version: 24.10.2
+version: 25.1.1
 repository: https://github.com/Open-Acidification/TankController
 
 environment:

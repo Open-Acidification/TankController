@@ -3,10 +3,10 @@
 
 #include "DateTime_TC.h"
 #include "PHCalibrationMid.h"
+#include "RemoteLogPusher.h"
 #include "SD_TC.h"
 #include "TC_util.h"
 #include "TankController.h"
-#include "UIState/PHCalibrationMid.h"
 
 unittest_setup() {
   GODMODE()->reset();
@@ -41,11 +41,11 @@ unittest(tankControllerLoop) {
   if (file.size() < sizeof(data)) {
     file.read(data, file.size());
     data[file.size()] = '\0';
-    assertEqual(
+    auto expected =
         "time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd\n"
         "04/15/2021 00:00:00,   0, 0.00, 20.00, 0.000, 8.100,    1, 100000.0,      0.0,      0.0\n"
-        "04/15/2021 00:00:01,   0, 0.00, 20.00, 0.000, 8.100,    2, 100000.0,      0.0,      0.0\n",
-        data);
+        "04/15/2021 00:00:01,   0, 0.00, 20.00, 0.000, 8.100,    2, 100000.0,      0.0,      0.0\n";
+    assertEqual(expected, data);
   }
   file.close();
 }
@@ -70,10 +70,10 @@ unittest(loopInCalibration) {
   if (file.size() < sizeof(data)) {
     file.read(data, file.size());
     data[file.size()] = '\0';
-    assertEqual(
+    auto expected =
         "time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd\n"
-        "04/15/2021 00:00:03,   0, C, 20.00, C, 8.100,    3, 100000.0,      0.0,      0.0\n",
-        data);
+        "04/15/2021 00:00:03,   0, C, 20.00, C, 8.100,    3, 100000.0,      0.0,      0.0\n";
+    assertEqual(expected, data);
   }
   file.close();
 }
@@ -103,14 +103,16 @@ unittest(appendData) {
   File file = SD_TC::instance()->open("20210415.csv");
   file.read(data, file.size());
   data[file.size()] = '\0';
-  assertEqual("time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd\nline 1\nline 2\n", data);
+  auto expected1 = "time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd\nline 1\nline 2\n";
+  assertEqual(expected1, data);
   file.close();
 
   // verify contents of 16.csv
   file = SD_TC::instance()->open("20210416.csv");
   file.read(data, file.size());
   data[file.size()] = '\0';
-  assertEqual("time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd\nline 3\n", data);
+  auto expected2 = "time,tankid,temp,temp setpoint,pH,pH setpoint,upTime,Kp,Ki,Kd\nline 3\n";
+  assertEqual(expected2, data);
   file.close();
 }
 
@@ -188,19 +190,70 @@ unittest(removeFile) {
   assertFalse(SD_TC::instance()->exists("20220706.log"));
 }
 
-unittest(noAlertFileName) {
+unittest(writeRemoteLog) {
   SD_TC* sd = SD_TC::instance();
-  sd->setRemoteLogName("");
+  sd->setRemoteLogName("Tank1");
+  delay(60000);  // remote logs don't get written immediately
+  char data[20];
+  sd->setRemoteLogName("90A2DA807B76");
+  RemoteLogPusher* pusher = RemoteLogPusher::instance();
+
   assertEqual("90A2DA807B76.log", sd->getRemoteLogName());
+  sd->updateRemoteLogFileSizeForTest();
+  assertFalse(sd->exists("90A2DA807B76.log"));
+  assertEqual(0, sd->getRemoteFileSize());
+  pusher->setShouldSentHeadRequest(false);
+  assertFalse(pusher->shouldSendHeadRequest());
+
+  // write data
+  sd->writeToRemoteLog("line 1");  // also writes header row
+  sd->updateRemoteLogFileSizeForTest();
+  assertTrue(pusher->basicShouldSendHeadRequest());
+  assertTrue(sd->exists("90A2DA807B76.log"));
+  int size = sd->getRemoteFileSize();
+  sd->writeToRemoteLog("line 2");
+  sd->updateRemoteLogFileSizeForTest();
+  assertEqual(size + strlen("line 2\n"), sd->getRemoteFileSize());  // Flawfinder: ignore
+
+  // verify contents of remote log
+  File file = sd->open("90A2DA807B76.log");
+  file.seek(size);
+  file.read(data, 7);  // Flawfinder: ignore
+  file.close();
+  data[7] = '\0';
+  assertEqual("line 2\n", data);
 }
 
-unittest(validAlertFileName) {
+unittest(getRemoteLogContents) {
+  SD_TC* sd = SD_TC::instance();
+
+  // write data
+  sd->setRemoteLogName("Tank1");
+  sd->writeToRemoteLog("line 1");
+  sd->updateRemoteLogFileSizeForTest();
+  int size = sd->getRemoteFileSize();
+  sd->writeToRemoteLog("and 2\nline 3");
+  sd->updateRemoteLogFileSizeForTest();
+  char buffer[20];
+  // get remaining remote log
+  sd->getRemoteLogContents(buffer, sizeof(buffer), size);
+  assertEqual("and 2\nline 3\n", buffer);
+}
+
+unittest(noRemoteLogFileName) {
+  SD_TC* sd = SD_TC::instance();
+  sd->setRemoteLogName("Tank1");
+  sd->setRemoteLogName("");
+  assertEqual("", sd->getRemoteLogName());
+}
+
+unittest(validRemoteLogFileName) {
   SD_TC* sd = SD_TC::instance();
   sd->setRemoteLogName("Tank1");
   assertEqual("Tank1.log", sd->getRemoteLogName());
 }
 
-unittest(longAlertFileName) {
+unittest(longRemoteLogFileName) {
   SD_TC* sd = SD_TC::instance();
   sd->setRemoteLogName("1234567890123456789012345678");  // maximum length
   assertEqual("1234567890123456789012345678.log", sd->getRemoteLogName());
@@ -220,7 +273,7 @@ unittest(remoteLogName) {
   tc = TankController::instance();
   sd = SD_TC::instance();
   name = sd->getRemoteLogName();
-  assertEqual("90A2DA807B76.log", name);
+  assertEqual("", name);
 
   sd->setRemoteLogName("newName");
   name = sd->getRemoteLogName();

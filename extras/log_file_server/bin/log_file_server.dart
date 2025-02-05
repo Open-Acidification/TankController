@@ -1,4 +1,4 @@
-import 'dart:async' show Future, Timer;
+import 'dart:async' show Future;
 import 'dart:io';
 
 import 'package:csv/csv.dart';
@@ -12,7 +12,7 @@ String rootDir =
 // Configure routes.
 final _router = Router()
   ..get('/api/<path>', _get)
-  ..post('/logs/<path>', _post);
+  ..post('/api/<path>', _post);
 
 // Get snapshots of log files
 Future<Response> _get(Request req, String path) async {
@@ -22,7 +22,6 @@ Future<Response> _get(Request req, String path) async {
   final snapshotLength = uri.queryParameters['length'] == null
       ? 720
       : int.parse(uri.queryParameters['length']!);
-
   if (!file.existsSync()) {
     return Response.notFound(null);
   }
@@ -62,12 +61,6 @@ Future<Response> _post(Request req, String path) async {
     );
   }
 
-  // // get remote address
-  // var connectionInfo =
-  //     req.context['shelf.io.connection_info'] as HttpConnectionInfo;
-  // var remoteAddress = connectionInfo.remoteAddress.address;
-  // print('remoteAddress = "$remoteAddress" (${remoteAddress.runtimeType})');
-
   final file = File('$rootDir/$path');
   file.createSync(exclusive: false);
   file.writeAsStringSync(
@@ -77,33 +70,13 @@ Future<Response> _post(Request req, String path) async {
   return Response.ok(null);
 }
 
-/*
- * read the root directory and create an index.html file
- */
-Future<void> _createIndex() async {
-  final sink = File('$rootDir/index.html').openWrite();
-  sink.write('<html><body><ul>');
-  await for (final file in Directory(rootDir).list()) {
-    if (file is File) {
-      final path = file.path.substring(rootDir.length + 1);
-      sink.write('<li><a href="/logs/$path">/logs/$path</a></li>');
-    }
-  }
-  sink.write('</ul></body></html>');
-  // close the file
-  await sink.close();
-}
-
 void main(List<String> args) async {
   // assign rootDir from args
   if (args.isNotEmpty) {
     rootDir = args[0];
   }
+  // Should not be needed in production, but it is useful for testing.
   await Directory(rootDir).create(recursive: true);
-  await _createIndex();
-  Timer.periodic(Duration(hours: 1), (timer) async {
-    await _createIndex();
-  });
 
   // Use any available host or container IP (usually `0.0.0.0`).
   final ip = InternetAddress.anyIPv4;

@@ -6,13 +6,12 @@ void main() {
   final host = 'http://localhost:$port';
 
   // Start the server in a different shell before running tests
-
   test('Get snapshot from /api/snapshotTest.log', () async {
     final response = await get(Uri.parse('$host/api/snapshotTest.log'));
     expect(response.statusCode, 200);
 
+    expect(response.body.length, 46194); // 720 lines (12 hours default)
     expect(response.body.contains('W'), isFalse);
-    expect(response.body.length, 22735); // 360 lines
   });
 
   test('Get snapshot using length parameter', () async {
@@ -21,6 +20,6 @@ void main() {
     expect(response.statusCode, 200);
 
     expect(response.body.contains('W'), isFalse);
-    expect(response.body.length, 630); // 10 lines
+    expect(response.body.length, 640); // 10 lines
   });
 }

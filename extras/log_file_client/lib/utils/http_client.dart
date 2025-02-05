@@ -81,11 +81,20 @@ class LogDataLine {
 }
 
 class TankSnapshot {
-  TankSnapshot(this.log, this.latestData, this.pH, this.temperature);
+  TankSnapshot(
+    this.log,
+    this.latestData,
+    this.pH,
+    this.temperature,
+    this.pHSetpoint,
+    this.temperatureSetpoint,
+  );
   final Log log;
   final List<LogDataLine?> latestData;
   final double? pH;
   final double? temperature;
+  final double? pHSetpoint;
+  final double? temperatureSetpoint;
 }
 
 abstract class HttpClient {
@@ -128,13 +137,15 @@ abstract class HttpClient {
     final loglines = parseLogData(data);
 
     if (loglines.isEmpty) {
-      return TankSnapshot(log, [], null, null);
+      return TankSnapshot(log, [], null, null, null, null);
     } else {
       return TankSnapshot(
         log,
         loglines,
         loglines[loglines.length - 1].phCurrent,
         loglines[loglines.length - 1].tempMean,
+        loglines[loglines.length - 1].phTarget,
+        loglines[loglines.length - 1].tempTarget,
       );
     }
   }
@@ -256,7 +267,7 @@ class HttpClientTest extends HttpClient {
 
   @override
   Future<String> fetchData(String filePath) async {
-    if (filePath == 'logs') {
+    if (filePath == 'logs' || filePath == 'logs/index.html') {
       return testHTML;
     } else if (filePath == 'sample_short.log' ||
         filePath == 'api/sample_short.log') {
@@ -286,7 +297,8 @@ v1.0	80	I	2025-01-07 11:23:30		31.25	31.22	0.015	6.38	6.34	1260
 ''';
     } else if (filePath == 'empty.log' || filePath == 'api/empty.log') {
       return '';
-    } else if (filePath == 'api/ProjectA-tank-24.log') {
+    } else if (filePath == 'api/ProjectA-tank-24.log' ||
+        filePath == 'api/fostja-tank-1.log') {
       return '''
 v1.0	24	I	2025-01-09 16:09:16		21.45	21.91	0.23	6.25	6.24	86220
 v1.0	24	I	2025-01-09 16:10:16		21.45	21.34	0.055	6.25	6.18	86280

@@ -14,12 +14,13 @@ final _router = Router()
   ..get('/api/<path>', _get)
   ..post('/api/<path>', _post);
 
+// Get snapshots of log files
 Future<Response> _get(Request req, String path) async {
-  final file = File('$rootDir/$path');
+  final file = File('$rootDir/${path.split('/').last}');
 
   final uri = req.requestedUri;
   final snapshotLength = uri.queryParameters['length'] == null
-      ? 360
+      ? 720
       : int.parse(uri.queryParameters['length']!);
   if (!file.existsSync()) {
     return Response.notFound(null);

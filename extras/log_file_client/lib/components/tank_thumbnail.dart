@@ -24,7 +24,7 @@ class TankThumbnail extends StatelessWidget {
         plotAreaBorderWidth: 0,
         primaryXAxis: DateTimeAxis(
           intervalType: DateTimeIntervalType.hours,
-          interval: 1,
+          interval: 6,
           // isVisible: !(axis == 'pHAxis'),
         ),
         primaryYAxis: NumericAxis(

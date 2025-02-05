@@ -181,8 +181,8 @@ class TankCard extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _tankInfoLine('temp', descriptionFontSize, snapshot),
           _tankInfoLine('ph', descriptionFontSize, snapshot),
+          _tankInfoLine('temp', descriptionFontSize, snapshot),
         ],
       ),
     );
@@ -198,6 +198,7 @@ class TankCard extends StatelessWidget {
         Skeleton.keep(
           child: Icon(
             type == 'ph' ? Icons.water_drop : Icons.thermostat,
+            color: type == 'ph' ? Colors.green : Colors.blue,
             size: descriptionFontSize,
           ),
         ),

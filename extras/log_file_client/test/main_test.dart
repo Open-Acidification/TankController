@@ -5,6 +5,7 @@ import 'package:log_file_client/components/project_card.dart';
 import 'package:log_file_client/components/table_view.dart';
 import 'package:log_file_client/components/tank_card.dart';
 import 'package:log_file_client/components/tank_thumbnail.dart';
+import 'package:log_file_client/components/toggle_button.dart';
 import 'package:log_file_client/main.dart';
 import 'package:log_file_client/pages/home_page.dart';
 import 'package:log_file_client/pages/project_page.dart';
@@ -22,19 +23,6 @@ void main() {
     );
     expect(find.text('Tank Monitor'), findsOneWidget);
     expect(find.byType(HomePage), findsOneWidget);
-  });
-
-  testWidgets('HomePage displays CircularProgressIndicator initially',
-      (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: HomePage(
-          httpClient: HttpClientTest(),
-        ),
-      ),
-    );
-
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });
 
   testWidgets('HomePage displays projects', (WidgetTester tester) async {
@@ -246,6 +234,54 @@ void main() {
     expect(
       find.byWidgetPredicate(
         (widget) => widget is LineSeries,
+      ),
+      findsNWidgets(4),
+    );
+  });
+
+  testWidgets('ToggleButton widget test', (WidgetTester tester) async {
+    // Build GraphView widget
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: GraphView(
+            filePath: 'sample_short.log',
+            httpClient: HttpClientTest(),
+          ),
+        ),
+      ),
+    );
+
+    // Verify that ToggleButton is shown while loading
+    expect(find.byType(ToggleButton), findsOneWidget);
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+    await tester.pumpAndSettle();
+
+    // Check that ToggleButton removes line series
+    expect(
+      find.byWidgetPredicate(
+        (widget) => widget is LineSeries && widget.initialIsVisible,
+      ),
+      findsNWidgets(4),
+    );
+
+    await tester.tap(find.byKey(const Key('pH')));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byWidgetPredicate(
+        (widget) => widget is LineSeries && widget.initialIsVisible,
+      ),
+      findsNWidgets(2),
+    );
+
+    // Check that ToggleButton adds line series
+    await tester.tap(find.byKey(const Key('pH')));
+    await tester.pumpAndSettle();
+    expect(
+      find.byWidgetPredicate(
+        (widget) => widget is LineSeries && widget.initialIsVisible,
       ),
       findsNWidgets(4),
     );

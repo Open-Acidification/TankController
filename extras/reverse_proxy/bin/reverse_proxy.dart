@@ -15,6 +15,15 @@ void main() async {
   FutureOr<Response> handler(Request request) {
     if (request.url.path.startsWith('api/')) {
       return serverProxy(request);
+    } else if (request.url.path == 'logs') {
+      final updatedRequest = Request(
+        request.method,
+        request.requestedUri.replace(path: '/logs/index.html'),
+        context: request.context,
+        headers: request.headers,
+        body: request.read(),
+      );
+      return flutterProxy(updatedRequest);
     } else {
       return flutterProxy(request);
     }

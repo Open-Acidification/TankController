@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:log_file_client/components/project_card.dart';
 import 'package:log_file_client/pages/project_page.dart';
 import 'package:log_file_client/utils/http_client.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+// import 'package:web/web.dart' as html;
+// TODO: Figure out how to link to website without having interference with Flutter widget tests
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, this.httpClient});
@@ -17,6 +20,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late final HttpClient httpClient;
   List<Project>? _projectList;
+  final List<Project> _mockProjectList = [
+    Project('mock', []),
+    Project('mock', []),
+    Project('mock', []),
+  ];
   bool _isLoading = true;
 
   @override
@@ -56,19 +64,43 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Tank Monitor'),
+        // actions: [
+        //   _tankManagerRedirect(),
+        // ],
       ),
       body: Center(
-        child: _isLoading
-            ? const CircularProgressIndicator()
-            : Column(
-                children: [
-                  _pageHeader(screenWidth),
-                  _projectCards(gridCrossAxis, screenWidth),
-                ],
-              ),
+        child: Column(
+          children: [
+            _pageHeader(screenWidth),
+            _projectCards(gridCrossAxis, screenWidth),
+          ],
+        ),
       ),
     );
   }
+
+  // Padding _tankManagerRedirect() {
+  //   return Padding(
+  //     padding: const EdgeInsets.only(right: 8.0),
+  //     child: TextButton(
+  //       onPressed: () {
+  //         const tankManagerUrl = 'http://oap.cs.wallawalla.edu/';
+  //         html.window.open(tankManagerUrl, '_self');
+  //       },
+  //       child: Row(
+  //         mainAxisSize: MainAxisSize.min,
+  //         children: const [
+  //           Text(
+  //             'Go to Tank Manager',
+  //             style: TextStyle(fontWeight: FontWeight.bold),
+  //           ),
+  //           SizedBox(width: 8),
+  //           Icon(Icons.swap_horiz),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Container _pageHeader(double screenWidth) {
     return Container(
@@ -98,23 +130,54 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Expanded _projectCards(int gridCrossAxis, double screenWidth) {
-    return Expanded(
-      child: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: gridCrossAxis,
-        ),
-        itemCount: _projectList?.length ?? 0,
-        itemBuilder: (context, index) {
-          return ProjectCard(
-            project: _projectList![index],
-            onTap: () => unawaited(openProject(_projectList![index])),
+  Widget _projectCards(int gridCrossAxis, double screenWidth) {
+    return _isLoading
+        ? _skeletonLoader(gridCrossAxis, screenWidth)
+        : Expanded(
+            child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: gridCrossAxis,
+              ),
+              itemCount: _projectList?.length ?? 0,
+              itemBuilder: (context, index) {
+                return ProjectCard(
+                  project: _projectList![index],
+                  onTap: () => unawaited(openProject(_projectList![index])),
+                );
+              },
+              padding: EdgeInsets.only(
+                left: screenWidth * 0.067,
+                right: screenWidth * 0.067,
+                top: screenWidth * 0.011,
+              ),
+            ),
           );
-        },
-        padding: EdgeInsets.only(
-          left: screenWidth * 0.067,
-          right: screenWidth * 0.067,
-          top: screenWidth * 0.011,
+  }
+
+  Widget _skeletonLoader(int gridCrossAxis, double screenWidth) {
+    return Expanded(
+      child: Skeletonizer(
+        effect: ShimmerEffect(
+          baseColor: Colors.grey[300]!,
+          highlightColor: Colors.grey[100]!,
+          duration: Duration(seconds: 2),
+        ),
+        child: GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: gridCrossAxis,
+          ),
+          itemCount: _mockProjectList.length,
+          itemBuilder: (context, index) {
+            return ProjectCard(
+              project: _mockProjectList[index],
+              onTap: () {},
+            );
+          },
+          padding: EdgeInsets.only(
+            left: screenWidth * 0.067,
+            right: screenWidth * 0.067,
+            top: screenWidth * 0.011,
+          ),
         ),
       ),
     );

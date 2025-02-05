@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:log_file_client/components/toggle_button.dart';
 import 'package:log_file_client/utils/http_client.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-class GraphView extends StatelessWidget {
+class GraphView extends StatefulWidget {
   const GraphView({
     required this.filePath,
     required this.httpClient,
@@ -12,9 +13,27 @@ class GraphView extends StatelessWidget {
   final String filePath;
   final HttpClient httpClient;
 
+  @override
+  State<GraphView> createState() => _GraphViewState();
+}
+
+class _GraphViewState extends State<GraphView> {
+  bool _showPH = true;
+  bool _showTemp = true;
+
   Future<List<LogDataLine>> getLogData() async {
-    final table = await httpClient.getLogData(filePath);
+    final table = await widget.httpClient.getLogData(widget.filePath);
     return table;
+  }
+
+  void toggleSeriesView(int index) {
+    setState(() {
+      if (index == 0) {
+        _showPH = !_showPH;
+      } else {
+        _showTemp = !_showTemp;
+      }
+    });
   }
 
   @override
@@ -24,29 +43,52 @@ class GraphView extends StatelessWidget {
 
     return Scaffold(
       body: Center(
-        child: FutureBuilder<List<LogDataLine>>(
-          future: logData,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text('No data found'));
-            } else {
-              final logData = snapshot.data!;
-              return Container(
-                padding: const EdgeInsets.all(16.0),
-                child: _graph(logData),
-              );
-            }
-          },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            _graphBuilder(logData),
+            _toggleButton(),
+          ],
         ),
       ),
     );
   }
 
-  SfCartesianChart _graph(List<LogDataLine> logData) {
+  FutureBuilder _graphBuilder(
+    Future<List<LogDataLine>> logData,
+  ) {
+    return FutureBuilder<List<LogDataLine>>(
+      future: logData,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 300),
+            child: CircularProgressIndicator(),
+          );
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('No data found'));
+        } else {
+          final logData = snapshot.data!;
+          return _graph(logData);
+        }
+      },
+    );
+  }
+
+  Widget _toggleButton() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 8.0),
+        child: ToggleButton(
+          onPressed: toggleSeriesView,
+        ),
+      ),
+    );
+  }
+
+  Widget _graph(List<LogDataLine> logData) {
     final trackballBehavior = TrackballBehavior(
       enable: true,
       tooltipDisplayMode: TrackballDisplayMode.groupAllPoints,
@@ -60,31 +102,30 @@ class GraphView extends StatelessWidget {
       activationMode: ActivationMode.singleTap,
     );
 
-    return SfCartesianChart(
-      title: ChartTitle(text: 'Tank ID: ${logData.first.tankid}'),
-      backgroundColor: Colors.white,
-      primaryXAxis: DateTimeAxis(
-        title: AxisTitle(text: 'Time'),
-        intervalType: DateTimeIntervalType.hours,
-        interval: 1,
-      ),
-      primaryYAxis: NumericAxis(
-        name: 'pHAxis',
-        title: AxisTitle(text: 'pH Value'),
-      ),
-      axes: <ChartAxis>[
-        NumericAxis(
-          name: 'TemperatureAxis',
-          title: AxisTitle(text: 'Temperature Value'),
-          opposedPosition: true,
+    return Expanded(
+      child: SfCartesianChart(
+        title: ChartTitle(text: 'Tank ID: ${logData.first.tankid}'),
+        backgroundColor: Colors.white,
+        primaryXAxis: DateTimeAxis(
+          title: AxisTitle(text: 'Time'),
+          intervalType: DateTimeIntervalType.hours,
+          interval: 1,
         ),
-      ],
-      legend: Legend(
-        isVisible: true,
-        position: LegendPosition.bottom,
+        primaryYAxis: NumericAxis(
+          name: 'pHAxis',
+          title: AxisTitle(text: 'pH Value'),
+        ),
+        axes: <ChartAxis>[
+          NumericAxis(
+            name: 'TemperatureAxis',
+            title: AxisTitle(text: 'Temperature Value'),
+            opposedPosition: true,
+            isVisible: _showTemp && _showPH,
+          ),
+        ],
+        trackballBehavior: trackballBehavior,
+        series: _chartSeries(logData),
       ),
-      trackballBehavior: trackballBehavior,
-      series: _chartSeries(logData),
     );
   }
 
@@ -98,6 +139,8 @@ class GraphView extends StatelessWidget {
         yValueMapper: (LogDataLine log, _) => log.tempMean,
         color: Colors.blue,
         yAxisName: 'TemperatureAxis',
+        animationDuration: 0,
+        initialIsVisible: _showTemp,
       ),
       LineSeries<LogDataLine, DateTime>(
         legendItemText: 'temp setpoint',
@@ -105,9 +148,10 @@ class GraphView extends StatelessWidget {
         dataSource: logData,
         xValueMapper: (LogDataLine log, _) => log.time,
         yValueMapper: (LogDataLine log, _) => log.tempTarget,
-        dashArray: <double>[5, 5],
-        color: Colors.blue,
+        color: Colors.blue.shade800,
         yAxisName: 'TemperatureAxis',
+        animationDuration: 0,
+        initialIsVisible: _showTemp,
       ),
       LineSeries<LogDataLine, DateTime>(
         legendItemText: 'pH',
@@ -117,6 +161,8 @@ class GraphView extends StatelessWidget {
         yValueMapper: (LogDataLine log, _) => log.phCurrent,
         color: Colors.green,
         yAxisName: 'pHAxis',
+        animationDuration: 0,
+        initialIsVisible: _showPH,
       ),
       LineSeries<LogDataLine, DateTime>(
         legendItemText: 'pH setpoint',
@@ -124,9 +170,10 @@ class GraphView extends StatelessWidget {
         dataSource: logData,
         xValueMapper: (LogDataLine log, _) => log.time,
         yValueMapper: (LogDataLine log, _) => log.phTarget,
-        dashArray: <double>[5, 5],
-        color: Colors.green,
+        color: Colors.green.shade800,
         yAxisName: 'pHAxis',
+        animationDuration: 0,
+        initialIsVisible: _showPH,
       ),
     ];
   }

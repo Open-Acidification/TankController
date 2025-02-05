@@ -176,15 +176,14 @@ void TankController::loop(bool report_loop_delay) {
   updateControls();                       // turn CO2 and temperature controls on or off (~90ms)
   handleUI();                             // look at keypad, update LCD (~10ms)
   DataLogger::instance()->loop();         // record current data to SD and serial (~80ms)
-  RemoteLogPusher::instance()->loop();    // write data to remote log
+  // RemoteLogPusher::instance()->loop();    // write data to remote log
   GetTime::instance()->loop();            // update the time (~0ms)
   PushingBox::instance()->loop();         // write data to Google Sheets (~0ms; ~1130ms every report)
   Ethernet_TC::instance()->loop();        // renew DHCP lease (~0ms)
   EthernetServer_TC::instance()->loop();  // handle any HTTP requests (~0ms)
   if (report_loop_delay) {
-    static long int count = 0;
     unsigned long currentLoopTime = millis() - currentLoopStart;
-    if (++count % 100000 == 1 || currentLoopTime > 500) {  // first time through and periodically thereafter
+    if (currentLoopTime > 500) {  // first time through and periodically thereafter
       serial(F("TankController::loop() - took %lu ms (at %lu sec uptime)"), currentLoopTime, millis() / 1000);
     }
   }

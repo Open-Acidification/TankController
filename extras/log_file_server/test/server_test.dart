@@ -10,8 +10,8 @@ void main() {
     final response = await get(Uri.parse('$host/api/snapshotTest.log'));
     expect(response.statusCode, 200);
 
+    expect(response.body.length, 46194); // 720 lines (12 hours default)
     expect(response.body.contains('W'), isFalse);
-    expect(response.body.length, 22735); // 360 lines
   });
 
   test('Get snapshot using length parameter', () async {

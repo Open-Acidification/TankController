@@ -104,8 +104,7 @@ abstract class HttpClient {
 
   Future<List<Project>> getProjectList() async {
     // Fetch data from server
-    // final data = await fetchData('logs');
-    final data = await fetchData('logs/index.html');
+    final data = await fetchData('logs');
 
     // Get list items from HTML
     final listItems = parseLogListFromHTML(data);

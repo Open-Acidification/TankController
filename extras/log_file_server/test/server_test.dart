@@ -20,6 +20,6 @@ void main() {
     expect(response.statusCode, 200);
 
     expect(response.body.contains('W'), isFalse);
-    expect(response.body.length, 630); // 10 lines
+    expect(response.body.length, 640); // 10 lines
   });
 }

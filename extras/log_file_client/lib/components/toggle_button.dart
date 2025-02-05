@@ -58,8 +58,14 @@ class _ToggleButtonState extends State<ToggleButton> {
       shape: WidgetStateProperty.all<OutlinedBorder>(
         RoundedRectangleBorder(
           borderRadius: index == 0
-              ? BorderRadius.only(topLeft: Radius.circular(10), bottomLeft: Radius.circular(10))
-              : BorderRadius.only(topRight: Radius.circular(10), bottomRight: Radius.circular(10)),
+              ? BorderRadius.only(
+                  topLeft: Radius.circular(10),
+                  bottomLeft: Radius.circular(10),
+                )
+              : BorderRadius.only(
+                  topRight: Radius.circular(10),
+                  bottomRight: Radius.circular(10),
+                ),
         ),
       ),
     );

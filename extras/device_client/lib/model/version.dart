@@ -1,1 +1,1 @@
-const String gitVersion = 'v24.10.2-109-gb+';
+const String gitVersion = 'v24.10.2-112-g79';

@@ -158,7 +158,9 @@ void PHControl::loop() {
       break;
     }
     case RAMP_TYPE: {
-      if (currentTime < rampTimeEndSeconds) {
+      if (currentTime < rampTimeStartSeconds) {
+        currentTargetPh = rampInitialValue;
+      } else if (currentTime < rampTimeEndSeconds) {
         currentTargetPh = rampInitialValue + ((currentTime - rampTimeStartSeconds) * (baseTargetPh - rampInitialValue) /
                                               (rampTimeEndSeconds - rampTimeStartSeconds));
       } else {

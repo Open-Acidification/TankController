@@ -12,9 +12,6 @@
  */
 Wait::Wait(uint16_t msDelay, UIState *nextState) : UIState() {
   endTime = millis() + msDelay;
-  if (nextState) {
-    COUT(nextState->name());
-  }
   this->nextState = nextState;
   if (this->nextState == nullptr) {
     this->nextState = (UIState *)new MainMenu();

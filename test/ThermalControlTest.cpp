@@ -30,7 +30,7 @@ unittest_setup() {
   state->resetClock();
   thermalProbe->setTemperature(20, true);
   tc->setNextState(new MainMenu(), true);
-  state->serialPort[0].dataOut = "";  // the history of data written
+  Serial_TC::instance()->clearBuffer();  // the history of data written
   DataLogger::instance()->clearBuffer();
 }
 
@@ -83,7 +83,7 @@ unittest(AfterIntervalAndOutsideDelta) {
   control->updateControl(20);
   DateTime_TC january(2021, 1, 15, 1, 48, 24);
   january.setAsCurrent();
-  state->serialPort[0].dataOut = "";  // the history of data written
+  Serial_TC::instance()->clearBuffer();  // the history of data written
   // chiller is initially off and goes on when needed
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[THERMAL_CONTROL_PIN]);
   assertEqual(0, millis());
@@ -95,7 +95,7 @@ unittest(AfterIntervalAndOutsideDelta) {
   assertEqual("chiller turned on at 31006 after 31006 ms", Serial_TC::instance()->getBuffer());
   tc->loop();
   assertEqual("T=20.02 C 20.00 ", lc->getLines().at(1));
-  state->serialPort[0].dataOut = "";  // the history of data written
+  Serial_TC::instance()->clearBuffer();  // the history of data written
   delay(31012);
   control->updateControl(19.95);
   assertFalse(control->isOn());
@@ -157,7 +157,7 @@ unittest(OutsideDelta) {
   assertEqual("heater turned on at 0 after 0 ms", Serial_TC::instance()->getBuffer());
   tc->loop();
   assertEqual("T 20.00 H 20.00 ", lc->getLines().at(1));
-  state->serialPort[0].dataOut = "";  // the history of data written
+  Serial_TC::instance()->clearBuffer();  // the history of data written
   delay(300);
   control->updateControl(20.05);
   assertFalse(control->isOn());

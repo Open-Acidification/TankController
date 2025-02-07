@@ -17,7 +17,7 @@ const char pushingBoxID[] = "";
 const char remoteLogName[] = "";
 
 // We query a web server for GMT time and then adjust for local time
-const int tzOffsetHrs = -8;
+const int tzOffsetHrs = -7;
 
 #include "TankController.h"
 TankController *tank = nullptr;

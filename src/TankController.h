@@ -31,6 +31,10 @@ public:
     nextKey = value;
   }
 
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+  int loopDelayCount = 0;
+#endif
+
 private:
   // class variables
   static TankController* _instance;

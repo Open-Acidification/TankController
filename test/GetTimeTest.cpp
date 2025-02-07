@@ -24,7 +24,6 @@ unittest_setup() {
   pClient = pGetTime->getClient();
   DateTime_TC now(2021, 6, 8, 15, 25, 15);
   now.setAsCurrent();
-  state->serialPort[0].dataOut = "";  // clear serial output
 }
 
 unittest_teardown() {

@@ -16,21 +16,21 @@ unittest(stringCopy) {
   char dest3[] = "0123456789abc";
   char dest4[] = "0123456789abc";
 
-  state->serialPort[0].dataOut = "";  // the history of data written
+  Serial_TC::instance()->clearBuffer();  // the history of data written
   assertEqual(1, strscpy(dest1, source, sizeof(dest1)));
   assertEqual("stringte", dest1);
   assertEqual('\0', dest1[8]);
   serialOutput = state->serialPort[0].dataOut;
   assertEqual("WARNING! String \"stringtest\" was truncated to \"stringte\"\r\n", serialOutput.c_str());
 
-  state->serialPort[0].dataOut = "";  // the history of data written
+  Serial_TC::instance()->clearBuffer();  // the history of data written
   assertEqual(1, strscpy(dest2, source, sizeof(dest2)));
   assertEqual("stringtes", dest2);
   assertEqual('\0', dest2[9]);
   serialOutput = state->serialPort[0].dataOut;
   assertEqual("WARNING! String \"stringtest\" was truncated to \"stringtes\"\r\n", serialOutput.c_str());
 
-  state->serialPort[0].dataOut = "";  // the history of data written
+  Serial_TC::instance()->clearBuffer();  // the history of data written
   assertEqual(1, strscpy(dest3, source, 9));
   assertEqual("stringte", dest3);
   assertEqual('\0', dest3[8]);
@@ -40,7 +40,7 @@ unittest(stringCopy) {
   serialOutput = state->serialPort[0].dataOut;
   assertEqual("WARNING! String \"stringtest\" was truncated to \"stringte\"\r\n", serialOutput.c_str());
 
-  state->serialPort[0].dataOut = "";  // the history of data written
+  Serial_TC::instance()->clearBuffer();  // the history of data written
   assertEqual(0, strscpy(dest4, source, sizeof(dest4)));
   assertEqual("stringtest", dest4);
   assertEqual('\0', dest4[10]);
@@ -60,21 +60,21 @@ unittest(stringCopy_P) {
   char dest3[] = "0123456789abc";
   char dest4[] = "0123456789abc";
 
-  state->serialPort[0].dataOut = "";  // the history of data written
+  Serial_TC::instance()->clearBuffer();  // the history of data written
   assertEqual(1, strscpy_P(dest1, source, sizeof(dest1)));
   assertEqual("stringte", dest1);
   assertEqual('\0', dest1[8]);
   serialOutput = state->serialPort[0].dataOut;
   assertEqual("WARNING! String (P) \"stringtest\" was truncated to \"stringte\"\r\n", serialOutput.c_str());
 
-  state->serialPort[0].dataOut = "";  // the history of data written
+  Serial_TC::instance()->clearBuffer();  // the history of data written
   assertEqual(1, strscpy_P(dest2, source, sizeof(dest2)));
   assertEqual("stringtes", dest2);
   assertEqual('\0', dest2[9]);
   serialOutput = state->serialPort[0].dataOut;
   assertEqual("WARNING! String (P) \"stringtest\" was truncated to \"stringtes\"\r\n", serialOutput.c_str());
 
-  state->serialPort[0].dataOut = "";  // the history of data written
+  Serial_TC::instance()->clearBuffer();  // the history of data written
   assertEqual(1, strscpy_P(dest3, source, 9));
   assertEqual("stringte", dest3);
   assertEqual('\0', dest3[8]);
@@ -84,7 +84,7 @@ unittest(stringCopy_P) {
   serialOutput = state->serialPort[0].dataOut;
   assertEqual("WARNING! String (P) \"stringtest\" was truncated to \"stringte\"\r\n", serialOutput.c_str());
 
-  state->serialPort[0].dataOut = "";  // the history of data written
+  Serial_TC::instance()->clearBuffer();  // the history of data written
   assertEqual(0, strscpy_P(dest4, source, sizeof(dest4)));
   assertEqual("stringtest", dest4);
   assertEqual('\0', dest4[10]);
@@ -131,7 +131,7 @@ unittest(floatToString) {
   assertEqual("-10.44", buffer);
 
   // Error because number is too large
-  state->serialPort[0].dataOut = "";  // the history of data written
+  Serial_TC::instance()->clearBuffer();  // the history of data written
   num = -1000.444;
   error_code = floattostrf(num, 6, 2, buffer, sizeof(buffer));
   assertEqual(1, error_code);
@@ -140,7 +140,7 @@ unittest(floatToString) {
   assertEqual("WARNING! String \"-1000.44\" was truncated to \"-1000.\"\r\n", serialOutput.c_str());
 
   // Error because too many decimal places are added
-  state->serialPort[0].dataOut = "";  // the history of data written
+  Serial_TC::instance()->clearBuffer();  // the history of data written
   num = 1.3;
   error_code = floattostrf(num, 6, 5, buffer, sizeof(buffer));
   assertEqual(1, error_code);
@@ -149,7 +149,7 @@ unittest(floatToString) {
   assertEqual("WARNING! String \"1.30000\" was truncated to \"1.3000\"\r\n", serialOutput.c_str());
 
   // Dangerously large number; potential overflow
-  state->serialPort[0].dataOut = "";  // the history of data written
+  Serial_TC::instance()->clearBuffer();  // the history of data written
   num = 10000000000000.0;
   error_code = floattostrf(num, 6, 1, buffer, sizeof(buffer));
   assertEqual(2, error_code);

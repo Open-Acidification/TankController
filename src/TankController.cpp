@@ -58,6 +58,7 @@ TankController *TankController::instance(const char *remoteLogName, const char *
     PushingBox::instance(pushingBoxID);
     GetTime::instance(tzOffsetHrs);
     serial(F("Free memory = %i"), _instance->freeMemory());
+    serial(F("RTC shows time as %s"), DateTime_TC::now().as16CharacterString());
     wdt_enable(WDTO_8S);
   }
   return _instance;
@@ -170,13 +171,16 @@ void TankController::loop(bool report_loop_delay) {
   if (report_loop_delay && previousLoopStart && currentLoopStart - previousLoopStart > 500) {
     serial(F("unexpected overall delay of %lu ms (at %lu sec uptime)"), currentLoopStart - previousLoopStart,
            millis() / 1000);
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+    ++loopDelayCount;
+#endif
   }
   wdt_reset();
   blink();                                // blink the on-board LED to show that we are running (0ms)
   updateControls();                       // turn CO2 and temperature controls on or off (~90ms)
   handleUI();                             // look at keypad, update LCD (~10ms)
   DataLogger::instance()->loop();         // record current data to SD and serial (~80ms)
-  // RemoteLogPusher::instance()->loop();    // write data to remote log
+  RemoteLogPusher::instance()->loop();    // write data to remote log
   GetTime::instance()->loop();            // update the time (~0ms)
   PushingBox::instance()->loop();         // write data to Google Sheets (~0ms; ~1130ms every report)
   Ethernet_TC::instance()->loop();        // renew DHCP lease (~0ms)

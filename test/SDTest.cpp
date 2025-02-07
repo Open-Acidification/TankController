@@ -155,7 +155,6 @@ unittest(appendToLog) {
 unittest(printRootDirectory) {
   GodmodeState* state = GODMODE();
   SD_TC* sd = SD_TC::instance();
-  state->serialPort[0].dataOut = "";
   assertEqual("", state->serialPort[0].dataOut);
 
   SD_TC::instance()->open("c", O_WRONLY).close();
@@ -163,7 +162,6 @@ unittest(printRootDirectory) {
   SD_TC::instance()->mkdir("d");
   SD_TC::instance()->open("d/d1", O_WRONLY).close();
   SD_TC::instance()->open("d/d2", O_WRONLY).close();
-  state->serialPort[0].dataOut = "";
   sd->printRootDirectory();
   String output = String(state->serialPort[0].dataOut);
   uint16_t index;

@@ -35,7 +35,7 @@ unittest_setup() {
   controlSolenoid->enablePID(false);
   controlSolenoid->setBaseTargetPh(7.00);
   PHProbe::instance()->setPh(7.0);
-  state->serialPort[0].dataOut = "";  // clear serial output
+  Serial_TC::instance()->clearBuffer();  // clear serial output
 }
 
 unittest_teardown() {
@@ -82,7 +82,7 @@ unittest(SendData) {
   assertFalse(pClient->connected());  // not yet connected!
   delay(60 * 1000);                   // allow for time update
   tc->loop();
-  state->serialPort[0].dataOut = "";
+  Serial_TC::instance()->clearBuffer();
   delay(10 * 1000);  // allow for PushingBox update
   tc->loop();
   char expected[] =

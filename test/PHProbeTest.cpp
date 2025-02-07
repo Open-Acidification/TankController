@@ -217,9 +217,7 @@ unittest(getSlope) {
   char buffer[20];
   pHProbe->getSlope(buffer, sizeof(buffer));
   assertEqual("99.7,100.3,-0.89", buffer);
-  COUT(state->serialPort[0].dataOut.length());
   pHProbe->setPhSlope("?SLOPE,98.7,101.3,-0.89\r");
-  COUT(state->serialPort[0].dataOut.length());
   state->serialPort[0].dataOut = "";
   pHProbe->getSlope(buffer, sizeof(buffer));
   assertEqual("98.7,101.3,-0.89", buffer);

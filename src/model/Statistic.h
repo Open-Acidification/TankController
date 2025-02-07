@@ -249,15 +249,6 @@ public:
     return std::sqrt(_extra.ssqdif() / (_cnt - 1));
   }
 
-  //  deprecated methods:
-  Statistic(bool) {
-  }
-  __attribute__((deprecated("use default constructor instead")));
-  void clear(bool) {
-    clear();
-  }
-  __attribute__((deprecated("use Statistic::clear(void) instead")));
-
 protected:
   count_type _cnt{0};
   value_type _sum{0.0};  //  NaN;

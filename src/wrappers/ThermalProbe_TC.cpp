@@ -96,7 +96,6 @@ float ThermalProbe_TC::getUncorrectedRunningAverage() {
  *
  */
 void ThermalProbe_TC::clearCorrection() {
-  COUT("old = " << correction);
   if (correction != 0) {
     correction = 0.0;
     EEPROM_TC::instance()->setThermalCorrection(correction);
@@ -110,7 +109,6 @@ void ThermalProbe_TC::clearCorrection() {
  * Set a new value for the correction offset
  */
 void ThermalProbe_TC::setCorrection(float value) {
-  COUT("old = " << correction << "; new = " << value);
   if (value != correction) {
     correction = value;
     EEPROM_TC::instance()->setThermalCorrection(correction);

@@ -26,7 +26,6 @@ public:
     if (logIndex < LOG_SIZE) {
       pinLog[logIndex].time = millis();
       pinLog[logIndex].value = state->digitalPin[LED_PIN];
-      COUT(logIndex << ":" << pinLog[logIndex].time << ":" << pinLog[logIndex].value);
       logIndex++;
     } else {
       overflowFlag = true;

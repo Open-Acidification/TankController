@@ -107,7 +107,6 @@ unittest(storeDataToSD) {
   char data[4096];
   file.read(data, file.size());
   data[file.size()] = '\0';
-  COUT(data);
   String contents(data), line;
   int16_t i = contents.indexOf('\n');
   line = contents.substring(0, i);
@@ -116,15 +115,12 @@ unittest(storeDataToSD) {
   i = contents.indexOf('\n');
   line = contents.substring(0, i);
   String expected("04/27/2021 14:24:50,  42, 16.75, 16.25, 7.125, 7.325,   10, 123456.7,  12345.6,   1234.5");
-  COUT("expectedSize = " << expected.length() << "; actualSize = " << line.length());
   assertEqual(expected, line);
   contents = contents.substring(i + 1);
   i = contents.indexOf('\n');
   line = contents.substring(0, i);
   expected = String("04/27/2021 14:24:51,  42, 16.75, 16.25, 7.125, 7.325,   11, 123456.7,  12345.6,   1234.5");
-  COUT("expectedSize = " << expected.length() << "; actualSize = " << line.length());
   assertEqual(expected, line);
-  COUT(data);
   file.close();
 }
 

@@ -58,6 +58,7 @@ TankController *TankController::instance(const char *remoteLogName, const char *
     PushingBox::instance(pushingBoxID);
     GetTime::instance(tzOffsetHrs);
     serial(F("Free memory = %i"), _instance->freeMemory());
+    serial(F("RTC shows time as %s"), DateTime_TC::now().as16CharacterString());
     wdt_enable(WDTO_8S);
   }
   return _instance;
@@ -170,6 +171,9 @@ void TankController::loop(bool report_loop_delay) {
   if (report_loop_delay && previousLoopStart && currentLoopStart - previousLoopStart > 500) {
     serial(F("unexpected overall delay of %lu ms (at %lu sec uptime)"), currentLoopStart - previousLoopStart,
            millis() / 1000);
+#if defined(ARDUINO_CI_COMPILATION_MOCKS)
+    ++loopDelayCount;
+#endif
   }
   wdt_reset();
   blink();                                // blink the on-board LED to show that we are running (0ms)
@@ -182,9 +186,8 @@ void TankController::loop(bool report_loop_delay) {
   Ethernet_TC::instance()->loop();        // renew DHCP lease (~0ms)
   EthernetServer_TC::instance()->loop();  // handle any HTTP requests (~0ms)
   if (report_loop_delay) {
-    static long int count = 0;
     unsigned long currentLoopTime = millis() - currentLoopStart;
-    if (++count % 100000 == 1 || currentLoopTime > 500) {  // first time through and periodically thereafter
+    if (currentLoopTime > 500) {  // first time through and periodically thereafter
       serial(F("TankController::loop() - took %lu ms (at %lu sec uptime)"), currentLoopTime, millis() / 1000);
     }
   }

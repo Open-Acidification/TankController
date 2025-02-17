@@ -34,7 +34,7 @@ void GetTime::loop() {
   unsigned long now = millis();
   if (now >= nextSendTime) {
     sendRequest();
-    // jump to the next multiple of interval
+    // jump to the next multiple of interval (once per day)
     nextSendTime = (now / interval + 1) * interval;
   }
   // are we still connected?

@@ -81,6 +81,11 @@ void PHProbe::serialEvent1() {
       if (isdigit(string[0])) {  // if the first character in the string is a digit
         // convert the string to a floating point number so it can be evaluated by the Arduino
         value = string.toFloat();
+        if (value < 0) {
+          value = 0;
+        } else if (value > 14) {
+          value = 14;
+        }
       } else if (string[0] == '?') {  // answer to a previous query
         serial(F("PHProbe serialEvent1: \"%s\""), string.c_str());
         if (string.length() > 7 && memcmp_P(string.c_str(), F("?SLOPE,"), 7) == 0) {

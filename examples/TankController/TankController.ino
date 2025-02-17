@@ -9,10 +9,9 @@ const char pushingBoxID[] = "";
 
 // The remote log name should be unique to this device if you are uploading
 // events to oap.cs.wallawalla.edu for log_file_client to display.
+// If it remains empty, no remote log will be generated.
 // It can be 28 characters maximum, and ".log" will be added.
 // The convention is to use {ProjectName}-{DeviceName}.
-// If it remains empty, the MAC address will be used. Keep in mind that
-// the name should be unique across all devices, not just your devices.
 // So "tank-1" is not a good name, but "Onthank-tank-1" is.
 // The name will have ".log" added to it (so don't include it!).
 const char remoteLogName[] = "";

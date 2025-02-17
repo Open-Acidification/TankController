@@ -192,18 +192,20 @@ bool SD_TC::listFile(File* myFile, void* userData) {
   listFilesData_t* pListFileData = static_cast<listFilesData_t*>(userData);
   char fileName[15];
   myFile->getName(fileName, sizeof(fileName));
-  int bytesWritten;
-  if (myFile->isDir()) {
-    bytesWritten = snprintf_P(pListFileData->buffer + pListFileData->linePos,
-                              sizeof(pListFileData->buffer) - pListFileData->linePos,
-                              (PGM_P)F("%11.11s/          \r\n"), fileName);
-  } else {
-    bytesWritten = snprintf_P(pListFileData->buffer + pListFileData->linePos,
-                              sizeof(pListFileData->buffer) - pListFileData->linePos, (PGM_P)F("%s\t%6u KB\r\n"),
-                              fileName, myFile->fileSize() / 1024 + 1);
+  if (fileName[0] != '\0') {
+    int bytesWritten;
+    if (myFile->isDir()) {
+      bytesWritten = snprintf_P(pListFileData->buffer + pListFileData->linePos,
+                                sizeof(pListFileData->buffer) - pListFileData->linePos,
+                                (PGM_P)F("%11.11s/          \r\n"), fileName);
+    } else {
+      bytesWritten = snprintf_P(pListFileData->buffer + pListFileData->linePos,
+                                sizeof(pListFileData->buffer) - pListFileData->linePos, (PGM_P)F("%s\t%6u KB\r\n"),
+                                fileName, myFile->fileSize() / 1024 + 1);
+    }
+    // "Overwrite" null terminator
+    pListFileData->linePos += bytesWritten;
   }
-  // "Overwrite" null terminator
-  pListFileData->linePos += bytesWritten;
   return (++(pListFileData->filesWritten)) % 10 != 0;  // Stop iterating after 10 files
 #endif
 }

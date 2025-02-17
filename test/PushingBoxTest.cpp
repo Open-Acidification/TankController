@@ -58,8 +58,8 @@ unittest(NoTankID) {
   delay(20 * 1000);  // allow 70 seconds (30 + 20 + 20) for PushingBox update
   Serial_TC::instance()->clearBuffer();
   tc->loop();        // Trigger PushingBox
-  auto expected4 = "Set Tank ID in order to send data to PushingBox";
-  assertEqual(expected4, Serial_TC::instance()->getBuffer());
+  auto expected = "Set Tank ID in order to send data to PushingBox";
+  assertEqual(expected, Serial_TC::instance()->getBuffer());
 }
 
 unittest(SendData) {
@@ -72,7 +72,6 @@ unittest(SendData) {
   assertFalse(pClient->connected());  // not yet connected!
   delay(60 * 1000);                   // allow for time update
   tc->loop();
-  state->serialPort[0].dataOut = "";
   delay(10 * 1000);  // allow for PushingBox update
   tc->loop();
   char expected[] =

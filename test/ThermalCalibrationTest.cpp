@@ -30,7 +30,6 @@ unittest(test) {
   assertTrue(tc->isInCalibration());
 
   // UI sets actual temperature to 10.5
-  state->serialPort[0].dataOut = "";  // the history of data written
   test->setValue(10.5);
 
   // The new temperature should be 10.5

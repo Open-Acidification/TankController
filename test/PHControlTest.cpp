@@ -32,7 +32,6 @@ void reset() {
   pHProbe->setPh(7.5);
   controlSolenoid->setBaseTargetPh(7.50);
   controlSolenoid->setRampDurationHours(0);  // No ramp
-  Serial_TC::instance()->clearBuffer();      // the history of data written
   tc->loop();
 }
 
@@ -94,7 +93,6 @@ unittest(afterTenSecondsAndPhIsLower) {
   tc->loop();
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
-  Serial_TC::instance()->clearBuffer();  // the history of data written
   delay(1000);
   tc->loop();
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);

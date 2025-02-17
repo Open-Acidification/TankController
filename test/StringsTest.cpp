@@ -8,7 +8,6 @@ GodmodeState* state = GODMODE();
 Serial_TC* serialPort = Serial_TC::instance();
 
 unittest(stringCopy) {
-  String serialOutput;
   serial("This line of code initializes SD_TC so it won't pollute future logs.");
 
   static const char source[11] = "stringtest";
@@ -48,7 +47,6 @@ unittest(stringCopy) {
 }
 
 unittest(stringCopy_P) {
-  String serialOutput;
   serial("This line of code initializes SD_TC so it won't pollute future logs.");
 
   const __FlashStringHelper* source = F("stringtest");
@@ -88,7 +86,6 @@ unittest(stringCopy_P) {
 }
 
 unittest(floatToString) {
-  String serialOutput;
   serial("This line of code initializes SD_TC so it won't pollute future logs.");
 
   // Float fills the buffer

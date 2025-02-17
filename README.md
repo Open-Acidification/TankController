@@ -41,6 +41,14 @@ The following are "hidden" commands:
     *   'C' regenerates a new (random) MAC address that will take effect on the next restart
 *   On startup you can avoid the 60-second DHCP attempt by pressing any key
 
+## Device Web Server
+
+* http://hostname/api/1/data
+* http://hostname/api/1/display
+* http://hostname/api/1/rootdir
+* http://hostname/echo?abcde="this is a test"
+* http://hostname/20250127.log
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):

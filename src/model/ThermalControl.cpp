@@ -271,7 +271,6 @@ void Heater::updateControl(float currentTemperature) {
     default:
       break;
   }
-  COUT("Heater::updateControl(" << currentTemperature);
   bool oldValue = digitalRead(THERMAL_CONTROL_PIN);
   bool newValue;
   // if in calibration, turn unit off
@@ -287,7 +286,6 @@ void Heater::updateControl(float currentTemperature) {
     newValue = TURN_SOLENOID_OFF;
   } else {
     newValue = oldValue;
-    COUT("Heater update at " << millis() << " ignored due to recent change in state");
   }
   if (newValue != oldValue) {
     uint32_t currentMS = millis();

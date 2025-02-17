@@ -72,6 +72,7 @@ unittest(SendData) {
   assertFalse(pClient->connected());  // not yet connected!
   delay(60 * 1000);                   // allow for time update
   tc->loop();
+  state->serialPort[0].dataOut = "";
   delay(10 * 1000);  // allow for PushingBox update
   tc->loop();
   char expected[] =

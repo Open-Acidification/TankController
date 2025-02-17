@@ -82,7 +82,7 @@ unittest(SendData) {
   tc->loop();
   Serial_TC::instance()->clearBuffer();
   state->serialPort[0].dataOut = "";  // the history of data written
-  delay(10 * 1000);  // allow for PushingBox update
+  delay(10 * 1000);                   // allow for PushingBox update
   tc->loop();
   char expected[] =
       "GET /pushingbox?devid=PushingBoxIdentifier&tankid=99&tempData=20.25&pHdata=7.125 HTTP/1.1\r\n"

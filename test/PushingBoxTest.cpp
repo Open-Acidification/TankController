@@ -57,7 +57,7 @@ unittest(NoTankID) {
   tc->loop();        // Trigger SD logging and Serial (DataLogger)
   delay(20 * 1000);  // allow 70 seconds (30 + 20 + 20) for PushingBox update
   Serial_TC::instance()->clearBuffer();
-  tc->loop();        // Trigger PushingBox
+  tc->loop();  // Trigger PushingBox
   auto expected = "Set Tank ID in order to send data to PushingBox";
   assertEqual(expected, Serial_TC::instance()->getBuffer());
 }

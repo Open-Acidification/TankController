@@ -150,7 +150,6 @@ void TankController::handleUI() {
     }
   } else {
     serial(F("Keypad input: %c"), key);
-    COUT("TankController::handleUI() - " << state->name() << "::handleKey(" << key << ")");
     state->handleKey(key);
     lastKeypadTime = millis();
   }
@@ -212,8 +211,6 @@ void TankController::serialEvent1() {
  * Set the next state
  */
 void TankController::setNextState(UIState *newState, bool update) {
-  COUT("TankController::setNextState() from " << (nextState ? (PGM_P)nextState->name() : "nullptr") << " to "
-                                              << (PGM_P)newState->name());
   assert(nextState == nullptr);
   nextState = newState;
   if (update) {
@@ -253,7 +250,6 @@ void TankController::updateControls() {
  */
 void TankController::updateState() {
   if (nextState) {
-    COUT("TankController::updateState() to " << (PGM_P)nextState->name());
     assert(state != nextState);
     delete state;
     state = nextState;

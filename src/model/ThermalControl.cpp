@@ -51,7 +51,6 @@ void ThermalControl::enableHeater(bool flag) {
  * protected constructor
  */
 ThermalControl::ThermalControl() {
-  COUT("ThermalControl()");
   baseThermalTarget = EEPROM_TC::instance()->getThermalTarget();
   if (isnan(baseThermalTarget)) {
     baseThermalTarget = DEFAULT_TEMPERATURE;
@@ -198,14 +197,11 @@ void Chiller::updateControl(float currentTemperature) {
     default:
       break;
   }
-  COUT("Chiller::updateControl(" << currentTemperature << ") at " << currentMillis);
   if (currentMillis < previousMillis) {
-    COUT("Reset previousMillis from " << previousMillis << " to 0");
     previousMillis = 0;  // reset if clock went backwards (typical during tests)
   }
   // pause 30 seconds between switching chiller on and off to prevent damage to chiller
   if (currentMillis - previousMillis < TIME_INTERVAL) {
-    COUT("Chiller update at " << currentMillis << " ignored due to update at " << previousMillis);
   } else {
     bool oldValue = digitalRead(THERMAL_CONTROL_PIN);
     bool newValue;
@@ -213,17 +209,14 @@ void Chiller::updateControl(float currentTemperature) {
     // if in calibration, turn unit off
     if (TankController::instance()->isInCalibration()) {
       newValue = TURN_SOLENOID_OFF;
-      COUT("Chiller should be off");
     }
     // if the observed temperature is above the set-point range turn on the chiller
     else if (currentTemperature >= currentThermalTarget + DELTA) {
       newValue = TURN_SOLENOID_ON;
-      COUT("Chiller should be on");
     }
     // if the observed temperature is below the set-point range turn off the chiller
     else if (currentTemperature <= currentThermalTarget - DELTA) {
       newValue = TURN_SOLENOID_OFF;
-      COUT("Chiller should be off");
     } else {
       newValue = oldValue;
     }
@@ -271,7 +264,6 @@ void Heater::updateControl(float currentTemperature) {
     default:
       break;
   }
-  COUT("Heater::updateControl(" << currentTemperature);
   bool oldValue = digitalRead(THERMAL_CONTROL_PIN);
   bool newValue;
   // if in calibration, turn unit off
@@ -287,7 +279,6 @@ void Heater::updateControl(float currentTemperature) {
     newValue = TURN_SOLENOID_OFF;
   } else {
     newValue = oldValue;
-    COUT("Heater update at " << millis() << " ignored due to recent change in state");
   }
   if (newValue != oldValue) {
     uint32_t currentMS = millis();

@@ -32,7 +32,7 @@ void reset() {
   pHProbe->setPh(7.5);
   controlSolenoid->setBaseTargetPh(7.50);
   controlSolenoid->setRampDurationHours(0);  // No ramp
-  Serial_TC::instance()->clearBuffer();         // the history of data written
+  Serial_TC::instance()->clearBuffer();      // the history of data written
   tc->loop();
 }
 

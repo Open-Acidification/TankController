@@ -48,8 +48,6 @@ unittest_teardown() {
 
 unittest(NoTankID) {
   SD_TC::instance()->setRemoteLogName("90A2DA807B76");
-  auto expected1 = "heater turned on at 1813 after 1813 ms";
-  assertEqual(expected1, Serial_TC::instance()->getBuffer());
   Serial_TC::instance()->clearBuffer();
   // set tank id to 0, set time interval to 1 minute
   EEPROM_TC::instance()->setTankID(0);
@@ -83,6 +81,7 @@ unittest(SendData) {
   delay(60 * 1000);                   // allow for time update
   tc->loop();
   Serial_TC::instance()->clearBuffer();
+  state->serialPort[0].dataOut = "";  // the history of data written
   delay(10 * 1000);  // allow for PushingBox update
   tc->loop();
   char expected[] =

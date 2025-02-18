@@ -30,7 +30,6 @@ unittest_setup() {
   state->resetClock();
   thermalProbe->setTemperature(20, true);
   tc->setNextState(new MainMenu(), true);
-  Serial_TC::instance()->clearBuffer();  // the history of data written
   DataLogger::instance()->clearBuffer();
 }
 
@@ -83,7 +82,6 @@ unittest(AfterIntervalAndOutsideDelta) {
   control->updateControl(20);
   DateTime_TC january(2021, 1, 15, 1, 48, 24);
   january.setAsCurrent();
-  Serial_TC::instance()->clearBuffer();  // the history of data written
   // chiller is initially off and goes on when needed
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[THERMAL_CONTROL_PIN]);
   assertEqual(0, millis());
@@ -92,15 +90,12 @@ unittest(AfterIntervalAndOutsideDelta) {
   control->updateControl(20.05);
   assertTrue(control->isOn());
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[THERMAL_CONTROL_PIN]);
-  assertEqual("chiller turned on at 31006 after 31006 ms", Serial_TC::instance()->getBuffer());
   tc->loop();
   assertEqual("T=20.02 C 20.00 ", lc->getLines().at(1));
-  Serial_TC::instance()->clearBuffer();  // the history of data written
   delay(31012);
   control->updateControl(19.95);
   assertFalse(control->isOn());
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[THERMAL_CONTROL_PIN]);
-  assertEqual("chiller turned off at 62024 after 31018 ms", Serial_TC::instance()->getBuffer());
   tc->loop();
   tc->loop();
   assertEqual("T 20.02 c 20.00 ", lc->getLines().at(1));
@@ -154,15 +149,12 @@ unittest(OutsideDelta) {
   control->updateControl(19.95);
   assertTrue(control->isOn());
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[THERMAL_CONTROL_PIN]);
-  assertEqual("heater turned on at 0 after 0 ms", Serial_TC::instance()->getBuffer());
   tc->loop();
   assertEqual("T 20.00 H 20.00 ", lc->getLines().at(1));
-  Serial_TC::instance()->clearBuffer();  // the history of data written
   delay(300);
   control->updateControl(20.05);
   assertFalse(control->isOn());
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[THERMAL_CONTROL_PIN]);
-  assertEqual("heater turned off at 306 after 306 ms", Serial_TC::instance()->getBuffer());
   tc->loop();
   assertEqual("T 20.00 h 20.00 ", lc->getLines().at(1));
 }

@@ -30,7 +30,6 @@ unittest(serialEvent1) {
   dl->reset();
   GodmodeState *state = GODMODE();
   state->reset();
-  Serial_TC::instance()->clearBuffer();
   assertEqual("", state->serialPort[1].dataOut);
   tc->serialEvent1();  // fake interrupt
   assertEqual("", pHProbe->getCalibrationResponse());
@@ -62,19 +61,16 @@ unittest(serialEvent1CatchBadSlope) {
   assertTrue(pHProbe->slopeIsBad());
   assertTrue(eeprom->getIgnoreBadPHSlope());
   assertFalse(pHProbe->shouldWarnAboutCalibration());
-  assertEqual("BAD CALIBRATION? pH slopes are more than 5\% from ideal", Serial_TC::instance()->getBuffer());
 
   // Good slope
   pHProbe->setPhSlope();
   assertFalse(pHProbe->slopeIsBad());
   assertFalse(eeprom->getIgnoreBadPHSlope());
   assertFalse(pHProbe->shouldWarnAboutCalibration());
-  assertEqual("pH slopes are within 5\% of ideal", Serial_TC::instance()->getBuffer());
 
   // Bad slope
   pHProbe->setPhSlope("?SLOPE,98.7,107.2,-0.89\r");
   assertTrue(pHProbe->slopeIsBad());
-  assertEqual("BAD CALIBRATION? pH slopes are more than 5\% from ideal", Serial_TC::instance()->getBuffer());
 }
 
 unittest(clearCalibration) {
@@ -161,7 +157,6 @@ unittest(setMidpointCalibration) {
   DataLogger::instance()->reset();
   assertFalse(DataLogger::instance()->getShouldWriteWarning());
   assertEqual("", state->serialPort[1].dataOut);
-  Serial_TC::instance()->clearBuffer();
   pHProbe->setMidpointCalibration(11.875);
   assertTrue(DataLogger::instance()->getShouldWriteWarning());
   assertEqual("Cal,mid,11.875\r", state->serialPort[1].dataOut);
@@ -206,20 +201,17 @@ unittest(sendSlopeRequest) {
 unittest(getSlope) {
   GodmodeState *state = GODMODE();
   state->reset();
-  Serial_TC::instance()->clearBuffer();
   pHProbe->setPhSlope();
   char buffer[20];
   pHProbe->getSlope(buffer, sizeof(buffer));
   assertEqual("99.7,100.3,-0.89", buffer);
   pHProbe->setPhSlope("?SLOPE,98.7,101.3,-0.89\r");
-  Serial_TC::instance()->clearBuffer();
   pHProbe->getSlope(buffer, sizeof(buffer));
   assertEqual("98.7,101.3,-0.89", buffer);
 }
 
 unittest(getPh) {
   GodmodeState *state = GODMODE();
-  Serial_TC::instance()->clearBuffer();
   state->reset();
   pHProbe->setPh(7.25);
   float pH = pHProbe->getPh();

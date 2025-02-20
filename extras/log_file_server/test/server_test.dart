@@ -22,7 +22,8 @@ void main() {
 
   test('Get snapshot using parameters', () async {
     final response = await get(
-        Uri.parse('$host/api/snapshotTest.log?length=10&granularity=1'));
+      Uri.parse('$host/api/snapshotTest.log?length=10&granularity=1'),
+    );
     expect(response.statusCode, 200);
 
     expect(response.body.contains('W'), isFalse);

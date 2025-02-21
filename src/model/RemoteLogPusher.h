@@ -51,13 +51,13 @@ public:
 
   // instance methods
   RemoteLogPusher();
-  const char* getRemoteLogName() {
+  const char *getRemoteLogName() {
     return remoteLogName;
   }
   bool isReadyToPost();
   void loop();
   void pushSoon();
-  void setRemoteLogName(const char* newFileName = nullptr);
+  void setRemoteLogName(const char *newFileName = nullptr);
   bool shouldSendHeadRequest();
 
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)

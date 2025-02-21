@@ -122,8 +122,7 @@ bool SD_TC::format() {
 
 void SD_TC::getRemoteLogContents(char* buffer, int size, uint32_t index) {
   buffer[0] = '\0';
-  const char* logName = PSTR("remote.log");
-  File file = open(logName, O_RDONLY);
+  File file = open(remoteFileName, O_RDONLY);
   if (file) {
     file.seek(index);
     int remaining = file.available();
@@ -276,20 +275,19 @@ void SD_TC::writeToRemoteLog(const char* line) {
   strncpy(mostRecentRemoteLogEntry, line, sizeof(mostRecentRemoteLogEntry));  // Flawfinder: ignore
   mostRecentRemoteLogEntry[sizeof(mostRecentRemoteLogEntry) - 1] = '\0';      // Ensure null-terminated string
 #endif
-  const char* logName = PSTR("remote.log");
-  if (!sd.exists(logName)) {
+  if (!sd.exists(remoteFileName)) {
     // rather than write an entire header line in one buffer, we break it into chunks to save memory
     char buffer[200];
     DataLogger::instance()->writeRemoteFileHeader(buffer, sizeof(buffer), 0);
-    appendStringToPath(buffer, logName, false);
+    appendStringToPath(buffer, remoteFileName, false);
     DataLogger::instance()->writeRemoteFileHeader(buffer, sizeof(buffer), 1);
-    appendStringToPath(buffer, logName, false);
+    appendStringToPath(buffer, remoteFileName, false);
     DataLogger::instance()->writeRemoteFileHeader(buffer, sizeof(buffer), 2);
-    appendStringToPath(buffer, logName, false);
+    appendStringToPath(buffer, remoteFileName, false);
     DataLogger::instance()->writeRemoteFileHeader(buffer, sizeof(buffer), 3);
-    appendStringToPath(buffer, logName);
+    appendStringToPath(buffer, remoteFileName);
   }
-  appendStringToPath(line, logName);
+  appendStringToPath(line, remoteFileName);
   updateRemoteFileSize();
   RemoteLogPusher::instance()->pushSoon();
 }

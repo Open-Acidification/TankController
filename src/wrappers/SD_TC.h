@@ -57,6 +57,7 @@ private:
   bool hasHadError = false;
   SdFat sd;
   uint32_t remoteFileSize = 0;
+  const char remoteFileName[12] PROGMEM = "remote.log";
 
   // Max depth of file system search for rootdir()
   // Two is minimum: First for root, second for files

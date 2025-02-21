@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:log_file_client/components/page_header.dart';
 import 'package:log_file_client/components/project_card.dart';
 import 'package:log_file_client/pages/project_page.dart';
 import 'package:log_file_client/utils/http_client.dart';
@@ -71,8 +72,8 @@ class _HomePageState extends State<HomePage> {
       body: Center(
         child: Column(
           children: [
-            _pageHeader(screenWidth),
-            _projectCards(gridCrossAxis, screenWidth),
+            PageHeader(text: 'Projects'),
+            _projectCards(gridCrossAxis),
           ],
         ),
       ),
@@ -102,37 +103,9 @@ class _HomePageState extends State<HomePage> {
   //   );
   // }
 
-  Container _pageHeader(double screenWidth) {
-    return Container(
-      margin: EdgeInsets.only(
-        top: screenWidth * 0.025,
-        left: screenWidth * 0.0875,
-        right: screenWidth * 0.0875,
-      ),
-      padding: EdgeInsets.only(bottom: screenWidth * 0.01),
-      width: screenWidth,
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: const Color(0xFFE6E6E6),
-            width: 1.5,
-          ),
-        ),
-      ),
-      child: Text(
-        'Projects',
-        style: TextStyle(
-          fontSize: screenWidth * 0.04,
-          letterSpacing: -2,
-          color: const Color(0xFF0C2D48),
-        ),
-      ),
-    );
-  }
-
-  Widget _projectCards(int gridCrossAxis, double screenWidth) {
+  Widget _projectCards(int gridCrossAxis) {
     return _isLoading
-        ? _skeletonLoader(gridCrossAxis, screenWidth)
+        ? _skeletonLoader(gridCrossAxis)
         : Expanded(
             child: GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -146,15 +119,15 @@ class _HomePageState extends State<HomePage> {
                 );
               },
               padding: EdgeInsets.only(
-                left: screenWidth * 0.067,
-                right: screenWidth * 0.067,
-                top: screenWidth * 0.011,
+                left: 100,
+                right: 100,
+                top: 16,
               ),
             ),
           );
   }
 
-  Widget _skeletonLoader(int gridCrossAxis, double screenWidth) {
+  Widget _skeletonLoader(int gridCrossAxis) {
     return Expanded(
       child: Skeletonizer(
         effect: ShimmerEffect(
@@ -174,9 +147,9 @@ class _HomePageState extends State<HomePage> {
             );
           },
           padding: EdgeInsets.only(
-            left: screenWidth * 0.067,
-            right: screenWidth * 0.067,
-            top: screenWidth * 0.011,
+            left: 100,
+            right: 100,
+            top: 16,
           ),
         ),
       ),

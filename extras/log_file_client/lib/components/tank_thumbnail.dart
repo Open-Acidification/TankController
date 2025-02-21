@@ -25,6 +25,7 @@ class TankThumbnail extends StatelessWidget {
         primaryXAxis: DateTimeAxis(
           intervalType: DateTimeIntervalType.hours,
           interval: 6,
+          labelStyle: TextStyle(color: Colors.grey.shade700),
           // isVisible: !(axis == 'pHAxis'),
         ),
         primaryYAxis: NumericAxis(
@@ -39,6 +40,7 @@ class TankThumbnail extends StatelessWidget {
               ? snapshot.pHSetpoint! + 0.5
               : snapshot.temperatureSetpoint! + 0.5,
           anchorRangeToVisiblePoints: false,
+          labelStyle: TextStyle(color: Colors.grey.shade700),
         ),
         series: series,
       ),

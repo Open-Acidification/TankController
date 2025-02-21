@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:log_file_client/components/page_header.dart';
 import 'package:log_file_client/components/tank_card.dart';
 import 'package:log_file_client/pages/graph_page.dart';
 import 'package:log_file_client/utils/http_client.dart';
@@ -36,7 +37,14 @@ class _ProjectPageState extends State<ProjectPage> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final gridCrossAxis = screenWidth > 750 ? 3 : 2;
+    final int gridCrossAxis;
+    if (screenWidth > 1370) {
+      gridCrossAxis = 3;
+    } else if (screenWidth > 980) {
+      gridCrossAxis = 2;
+    } else {
+      gridCrossAxis = 1;
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -46,43 +54,15 @@ class _ProjectPageState extends State<ProjectPage> {
       body: Center(
         child: Column(
           children: [
-            _pageHeader(screenWidth),
-            _tankCards(gridCrossAxis, screenWidth),
+            PageHeader(text: '${widget.project.name} Tanks'),
+            _tankCards(gridCrossAxis),
           ],
         ),
       ),
     );
   }
 
-  Container _pageHeader(double screenWidth) {
-    return Container(
-      margin: EdgeInsets.only(
-        top: screenWidth * 0.025,
-        left: screenWidth * 0.0875,
-        right: screenWidth * 0.0875,
-      ),
-      padding: EdgeInsets.only(bottom: screenWidth * 0.01),
-      width: screenWidth,
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: const Color(0xFFE6E6E6),
-            width: 1.5,
-          ),
-        ),
-      ),
-      child: Text(
-        '${widget.project.name} Tanks',
-        style: TextStyle(
-          fontSize: screenWidth * 0.04,
-          letterSpacing: -2,
-          color: const Color(0xFF0C2D48),
-        ),
-      ),
-    );
-  }
-
-  Expanded _tankCards(int gridCrossAxis, double screenWidth) {
+  Expanded _tankCards(int gridCrossAxis) {
     return Expanded(
       child: GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -97,9 +77,9 @@ class _ProjectPageState extends State<ProjectPage> {
           );
         },
         padding: EdgeInsets.only(
-          left: screenWidth * 0.067,
-          right: screenWidth * 0.067,
-          top: screenWidth * 0.011,
+          left: 100,
+          right: 100,
+          top: 16,
         ),
       ),
     );

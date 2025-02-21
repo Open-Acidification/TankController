@@ -22,23 +22,31 @@ Future<Response> _get(Request req, String path) async {
   final snapshotLength = uri.queryParameters['length'] == null
       ? 720
       : int.parse(uri.queryParameters['length']!);
+  final snapshotGranularity = uri.queryParameters['granularity'] == null
+      ? 5
+      : int.parse(uri.queryParameters['granularity']!);
+
   if (!file.existsSync()) {
     return Response.notFound(null);
   }
 
   final body = file.readAsStringSync();
-  final List<List<dynamic>> logTable =
+
+  // Remove non-informational lines
+  List<List> logTable =
       const CsvToListConverter(fieldDelimiter: '\t', eol: '\n').convert(body);
   logTable.removeWhere((row) => row[2] != 'I');
 
-  if (logTable.isEmpty || logTable.length < snapshotLength) {
-    return Response.ok(body);
-  } else {
+  // Remove old lines
+  if (!(logTable.isEmpty || logTable.length < snapshotLength)) {
     logTable.removeRange(0, logTable.length - snapshotLength);
-    final shortBody = const ListToCsvConverter(fieldDelimiter: '\t', eol: '\n')
-        .convert(logTable);
-    return Response.ok(shortBody);
   }
+
+  // Condense to granularity and return
+  logTable = condenseToGranularity(logTable, snapshotGranularity);
+  final finalBody = const ListToCsvConverter(fieldDelimiter: '\t', eol: '\n')
+      .convert(logTable);
+  return Response.ok(finalBody);
 }
 
 Future<Response> _post(Request req, String path) async {
@@ -68,6 +76,18 @@ Future<Response> _post(Request req, String path) async {
     mode: FileMode.writeOnlyAppend,
   );
   return Response.ok(null);
+}
+
+List<List> condenseToGranularity(List<List> logTable, int snapshotGranularity) {
+  if (snapshotGranularity > 1) {
+    final List<List> condensedLogTable = [];
+    for (var i = logTable.length; i > 0; i -= snapshotGranularity) {
+      condensedLogTable.insert(0, logTable[i - 1]);
+    }
+    return condensedLogTable;
+  } else {
+    return logTable;
+  }
 }
 
 void main(List<String> args) async {

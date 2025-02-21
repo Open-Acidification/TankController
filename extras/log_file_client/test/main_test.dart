@@ -50,7 +50,6 @@ void main() {
 
   testWidgets('ProjectCard opens project page when selected',
       (WidgetTester tester) async {
-    // Build the HomePage widget
     await tester.pumpWidget(
       MaterialApp(
         home: HomePage(
@@ -69,7 +68,8 @@ void main() {
   });
 
   testWidgets('ProjectPage displays TankCards', (WidgetTester tester) async {
-    // Build the ProjectPage widget
+    tester.view.physicalSize = const Size(1920, 1080);
+    tester.view.devicePixelRatio = 1.0;
     await tester.pumpWidget(
       MaterialApp(
         home: ProjectPage(
@@ -114,7 +114,8 @@ void main() {
   });
   testWidgets('TankCard opens graph when selected',
       (WidgetTester tester) async {
-    // Build the ProjectPage widget
+    tester.view.physicalSize = const Size(1920, 1080);
+    tester.view.devicePixelRatio = 1.0;
     await tester.pumpWidget(
       MaterialApp(
         home: ProjectPage(
@@ -192,9 +193,9 @@ void main() {
     expect(find.text('20.38'), findsOneWidget);
     expect(find.text('20.44'), findsOneWidget);
 
-    expect(find.text('20.0'), findsNWidgets(5));
+    expect(find.text('20.0'), findsNWidgets(4));
 
-    expect(find.text('0.0'), findsNWidgets(10));
+    expect(find.text('0.0'), findsNWidgets(9));
 
     expect(find.text('7.0'), findsNWidgets(5));
 

@@ -40,7 +40,7 @@ void PushingBox::loop() {
       minutes = 20;
     }
     unsigned long interval = minutes * 60l * 1000l;
-    // jump to the next multiple of interval
+    // jump to the next multiple of interval (default is every 20 minutes)
     nextSendTime = (now / interval + 1) * interval;
   }
   // are we still connected?

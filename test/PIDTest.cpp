@@ -28,13 +28,11 @@ unittest(constructor) {
 }
 
 unittest(logToSerial) {
-  GodmodeState *state = GODMODE();
-  DateTime_TC::now();                 // this puts stuff on the serial port that we want to ignore
-  serial(F("foo"));                   // this should get the directory creation error (if any)
-  state->serialPort[0].dataOut = "";  // so here we ignore it!
-  PID_TC *singleton = PID_TC::instance();
-  singleton->logToSerial();
-  assertEqual("Kp: 100000.0 Ki:    0.0 Kd:    0.0\r\nPID output in seconds: 0.0\r\n", state->serialPort[0].dataOut);
+  DateTime_TC::now();                    // this puts stuff on the serial port that we want to ignore
+  serial(F("foo"));                      // this should get the directory creation error (if any)
+  Serial_TC::instance()->clearBuffer();  // so here we ignore it!
+  PID_TC::instance()->logToSerial();
+  assertEqual("Kp: 100000.0 Ki:    0.0 Kd:    0.0\r\nPID output in seconds: 0.0", Serial_TC::instance()->getBuffer());
 }
 
 unittest(compute) {

@@ -158,7 +158,9 @@ void PHControl::loop() {
       break;
     }
     case RAMP_TYPE: {
-      if (currentTime < rampTimeEndSeconds) {
+      if (currentTime < rampTimeStartSeconds) {
+        currentTargetPh = rampInitialValue;
+      } else if (currentTime < rampTimeEndSeconds) {
         currentTargetPh = rampInitialValue + ((currentTime - rampTimeStartSeconds) * (baseTargetPh - rampInitialValue) /
                                               (rampTimeEndSeconds - rampTimeStartSeconds));
       } else {
@@ -201,13 +203,10 @@ void PHControl::loop() {
   }
   bool newValue;
   if (TankController::instance()->isInCalibration()) {
-    COUT("pH control should be off since in calibration");
     newValue = TURN_SOLENOID_OFF;  // turn off CO2 while in calibration
   } else if (SOLENOID_OPENING_TIME < msToBeOn && nowModWindow < msToBeOn) {
-    COUT("pH control should be on");
     newValue = TURN_SOLENOID_ON;  // open CO2 solenoid
   } else {
-    COUT("pH control should be off");
     newValue = TURN_SOLENOID_OFF;  // close CO2 solenoid
   }
   if (newValue != digitalRead(PH_CONTROL_PIN)) {

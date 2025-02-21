@@ -237,7 +237,6 @@ void MainMenu::selectSet() {
 // pH=7.325 B 7.125
 // T=12.25 H 12.75
 void MainMenu::idle() {
-  static bool firstTime = true;
   if (PHProbe::instance()->shouldWarnAboutCalibration()) {
     this->setNextState(new PHCalibrationWarning());
     return;
@@ -248,24 +247,24 @@ void MainMenu::idle() {
   output[0] = pHBlink ? ' ' : 'p';
   output[1] = pHBlink ? ' ' : 'H';
   output[2] = millis() / 1000 % 2 ? '=' : ' ';
-  float pH = PHProbe::instance()->getPh();
-  if (pH < 10.0) {
-    floattostrf(pH, 5, 3, buffer, sizeof(buffer));
+  float pH_current = PHProbe::instance()->getPh();
+  if (pH_current < 10.0) {
+    floattostrf(pH_current, 5, 3, buffer, sizeof(buffer));
   } else {
-    floattostrf(pH, 5, 2, buffer, sizeof(buffer));
+    floattostrf(pH_current, 5, 2, buffer, sizeof(buffer));
   }
   memcpy(output + 3, buffer, sizeof(buffer));
   output[8] = ' ';
   output[9] = PHControl::instance()->isOn() ? 'B' : ' ';
   output[10] = ' ';
-  pH = PHControl::instance()->getCurrentTargetPh();
-  if (pH > 15 || pH < 0) {
+  float pH_target = PHControl::instance()->getCurrentTargetPh();
+  if (pH_target > 15 || pH_target < 0) {
     serial(F("pH is out of range!"));
   }
-  if (pH < 10.0) {
-    floattostrf(pH, 5, 3, buffer, sizeof(buffer));
+  if (pH_target < 10.0) {
+    floattostrf(pH_target, 5, 3, buffer, sizeof(buffer));
   } else {
-    floattostrf(pH, 5, 2, buffer, sizeof(buffer));
+    floattostrf(pH_target, 5, 2, buffer, sizeof(buffer));
   }
   memcpy(output + 11, buffer, sizeof(buffer));
   LiquidCrystal_TC::instance()->writeLine(output, 0);

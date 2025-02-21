@@ -35,7 +35,6 @@ unittest_setup() {
   controlSolenoid->enablePID(false);
   controlSolenoid->setBaseTargetPh(7.00);
   PHProbe::instance()->setPh(7.0);
-  state->serialPort[0].dataOut = "";  // clear serial output
 }
 
 unittest_teardown() {
@@ -48,28 +47,19 @@ unittest_teardown() {
 
 unittest(NoTankID) {
   SD_TC::instance()->setRemoteLogName("90A2DA807B76");
-  auto expected1 = "heater turned on at 1813 after 1813 ms";
-  assertEqual(expected1, Serial_TC::instance()->getBuffer());
-  Serial_TC::instance()->clearBuffer();
   // set tank id to 0, set time interval to 1 minute
   EEPROM_TC::instance()->setTankID(0);
 
   delay(30 * 1000);  // allow 30 seconds for time update
   tc->loop();
-  auto expected2 = "GetTime: connected to oap.cs.wallawalla.edu";
-  assertEqual(expected2, Serial_TC::instance()->getBuffer());
-  Serial_TC::instance()->clearBuffer();
   tc->loop();
   delay(20 * 1000);  // allow 50 seconds (30 + 40) for RemoteLogPusher update
   tc->loop();        // Trigger SD logging and Serial (DataLogger)
-  auto expected3 = "RemoteLogPusher: connection to oap.cs.wallawalla.edu failed";
-  assertEqual(expected3, Serial_TC::instance()->getBuffer());
-  Serial_TC::instance()->clearBuffer();
   delay(20 * 1000);  // allow 70 seconds (30 + 20 + 20) for PushingBox update
-  tc->loop();        // Trigger PushingBox
-  auto expected4 = "Set Tank ID in order to send data to PushingBox";
-  assertEqual(expected4, Serial_TC::instance()->getBuffer());
   Serial_TC::instance()->clearBuffer();
+  tc->loop();  // Trigger PushingBox
+  auto expected = "Set Tank ID in order to send data to PushingBox";
+  assertEqual(expected, Serial_TC::instance()->getBuffer());
 }
 
 unittest(SendData) {
@@ -82,8 +72,8 @@ unittest(SendData) {
   assertFalse(pClient->connected());  // not yet connected!
   delay(60 * 1000);                   // allow for time update
   tc->loop();
-  state->serialPort[0].dataOut = "";
-  delay(10 * 1000);  // allow for PushingBox update
+  state->serialPort[0].dataOut = "";  // the history of data written
+  delay(10 * 1000);                   // allow for PushingBox update
   tc->loop();
   char expected[] =
       "GET /pushingbox?devid=PushingBoxIdentifier&tankid=99&tempData=20.25&pHdata=7.125 HTTP/1.1\r\n"

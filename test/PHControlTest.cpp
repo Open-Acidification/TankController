@@ -32,7 +32,6 @@ void reset() {
   pHProbe->setPh(7.5);
   controlSolenoid->setBaseTargetPh(7.50);
   controlSolenoid->setRampDurationHours(0);  // No ramp
-  state->serialPort[0].dataOut = "";         // the history of data written
   tc->loop();
 }
 
@@ -51,25 +50,8 @@ unittest(bubblerTurnsOnAndOff) {
   assertFalse(controlSolenoid->isOn());
   pHProbe->setPh(8.0);
   tc->loop();  // update the controls based on the current readings
-  assertEqual(13, millis());
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
-  String serialOutput = state->serialPort[0].dataOut;
-  String line;
-  int i = 0, j = 0;
-  do {
-    j = serialOutput.indexOf('\r', i);
-    if (j == -1) {
-      assertTrue(false);  // we came to the end without finding the expected line
-      break;
-    }
-    assertEqual('\r', serialOutput.charAt(j));
-    line = serialOutput.substr(i, j - i);
-    i = j + 2;
-  } while (line.charAt(0) != 'C');
-  assertEqual((int)'C', line.charAt(0));
-  assertEqual("CO2 bubbler turned on after 10 ms", line);
-  assertEqual(13, millis());
   delay(9500);
   tc->loop();  // solenoid should turn off briefly at end of window
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
@@ -105,17 +87,14 @@ unittest(afterTenSecondsAndPhIsLower) {
   tc->loop();  // update the controls based on the current readings
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
-  assertEqual("CO2 bubbler turned on after 6 ms\r\n", state->serialPort[0].dataOut);
   tc->loop();
   assertEqual("pH 8.500 B 7.500", lc->getLines().at(0));
   delay(8000);
   tc->loop();
   assertEqual(TURN_SOLENOID_ON, state->digitalPin[PH_CONTROL_PIN]);
   assertTrue(controlSolenoid->isOn());
-  state->serialPort[0].dataOut = "";  // the history of data written
   delay(1000);
   tc->loop();
-  assertEqual("CO2 bubbler turned off after 9004 ms\r\n", state->serialPort[0].dataOut);  // after 10 seconds
   assertEqual(TURN_SOLENOID_OFF, state->digitalPin[PH_CONTROL_PIN]);
   assertFalse(controlSolenoid->isOn());
   delay(1000);

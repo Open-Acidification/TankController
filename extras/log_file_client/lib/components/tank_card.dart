@@ -33,25 +33,24 @@ class TankCard extends StatelessWidget {
         onTap: onTap,
         child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
-            // Decide sizes of internal components based on card width
             final double cardWidth = constraints.maxWidth * 0.93;
-            final double titleFontSize = cardWidth * 0.05;
-            final double tankInfoFontSize = cardWidth * 0.04;
-            final double tankInfoHeaderFontSize = cardWidth * 0.035;
+            final double titleFontSize = 20;
+            final double tankInfoFontSize = 16;
+            final double tankInfoHeaderFontSize = 14;
 
             // ignore: discarded_futures
             final Future<TankSnapshot> tankSnapshot = getTankSnapshot();
 
             return Container(
-              margin: EdgeInsets.all(cardWidth * 0.075),
+              margin: EdgeInsets.all(30),
               decoration: _cardBackground(),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _graphThumbnailBuilder(tankSnapshot, cardWidth),
                   _tankName(titleFontSize),
                   _tankInfoBuilder(
                     tankSnapshot,
-                    cardWidth,
                     tankInfoFontSize,
                     tankInfoHeaderFontSize,
                   ),
@@ -97,21 +96,12 @@ class TankCard extends StatelessWidget {
     );
   }
 
-  Container _graphThumbnail(
+  Widget _graphThumbnail(
     double cardWidth,
     AsyncSnapshot<TankSnapshot>? snapshot,
   ) {
-    return Container(
-      width: cardWidth,
+    return SizedBox(
       height: cardWidth * 0.6,
-      margin: EdgeInsets.only(
-        bottom: cardWidth * 0.03,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20),
-        ),
-      ),
       child: ClipRRect(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(20),
@@ -145,7 +135,6 @@ class TankCard extends StatelessWidget {
 
   Widget _tankInfoBuilder(
     Future<TankSnapshot> tankSnapshot,
-    double cardWidth,
     double tankInfoFontSize,
     double tankInfoHeaderFontSize,
   ) {
@@ -154,7 +143,6 @@ class TankCard extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return _skeletonLoaderInfo(
-            cardWidth,
             tankInfoFontSize,
             tankInfoHeaderFontSize,
           );
@@ -162,7 +150,6 @@ class TankCard extends StatelessWidget {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else {
           return _tankInfo(
-            cardWidth,
             tankInfoFontSize,
             tankInfoHeaderFontSize,
             snapshot,
@@ -173,7 +160,6 @@ class TankCard extends StatelessWidget {
   }
 
   Skeletonizer _skeletonLoaderInfo(
-    double cardWidth,
     double tankInfoFontSize,
     double tankInfoHeaderFontSize,
   ) {
@@ -184,19 +170,17 @@ class TankCard extends StatelessWidget {
         highlightColor: Colors.grey[100]!,
         duration: Duration(seconds: 2),
       ),
-      child:
-          _tankInfo(cardWidth, tankInfoFontSize, tankInfoHeaderFontSize, null),
+      child: _tankInfo(tankInfoFontSize, tankInfoHeaderFontSize, null),
     );
   }
 
   Widget _tankInfo(
-    double cardWidth,
     double tankInfoFontSize,
     double tankInfoHeaderFontSize,
     AsyncSnapshot<TankSnapshot>? snapshot,
   ) {
     return Padding(
-      padding: EdgeInsets.only(top: cardWidth * 0.03),
+      padding: const EdgeInsets.only(bottom: 15),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [

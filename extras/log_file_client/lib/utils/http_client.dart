@@ -145,7 +145,18 @@ abstract class HttpClient {
     final loglines = parseLogData(data);
 
     if (loglines.isEmpty) {
-      return TankSnapshot(log, [], null, null, null, null, null, null, null, null);
+      return TankSnapshot(
+        log,
+        [],
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+      );
     } else {
       return TankSnapshot(
         log,

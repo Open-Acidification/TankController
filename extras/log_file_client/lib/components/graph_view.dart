@@ -100,6 +100,9 @@ class _GraphViewState extends State<GraphView> {
         format: 'series.name : point.y',
       ),
       activationMode: ActivationMode.singleTap,
+      lineColor: Colors.grey.shade600,
+      lineWidth: 1.5,
+      lineDashArray: [2, 2],
     );
 
     return Expanded(

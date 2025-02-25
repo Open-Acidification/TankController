@@ -4,6 +4,10 @@ import 'package:log_file_client/components/tank_thumbnail.dart';
 import 'package:log_file_client/utils/http_client.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+enum TankInfoType { pH, temp }
+
+enum TankInfoMode { current, range }
+
 class TankCard extends StatelessWidget {
   const TankCard({
     required this.log,
@@ -29,25 +33,26 @@ class TankCard extends StatelessWidget {
         onTap: onTap,
         child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
-            // Decide sizes of internal components based on card width
             final double cardWidth = constraints.maxWidth * 0.93;
-            final double titleFontSize = cardWidth * 0.05;
-            final double descriptionFontSize = cardWidth * 0.04;
+            final double titleFontSize = 20;
+            final double tankInfoFontSize = 16;
+            final double tankInfoHeaderFontSize = 14;
 
             // ignore: discarded_futures
             final Future<TankSnapshot> tankSnapshot = getTankSnapshot();
 
             return Container(
-              margin: EdgeInsets.all(cardWidth * 0.075),
+              margin: EdgeInsets.all(30),
               decoration: _cardBackground(),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _graphThumbnailBuilder(tankSnapshot, cardWidth),
                   _tankName(titleFontSize),
                   _tankInfoBuilder(
                     tankSnapshot,
-                    cardWidth,
-                    descriptionFontSize,
+                    tankInfoFontSize,
+                    tankInfoHeaderFontSize,
                   ),
                 ],
               ),
@@ -91,21 +96,12 @@ class TankCard extends StatelessWidget {
     );
   }
 
-  Container _graphThumbnail(
+  Widget _graphThumbnail(
     double cardWidth,
     AsyncSnapshot<TankSnapshot>? snapshot,
   ) {
-    return Container(
-      width: cardWidth,
+    return SizedBox(
       height: cardWidth * 0.6,
-      margin: EdgeInsets.only(
-        bottom: cardWidth * 0.05,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20),
-        ),
-      ),
       child: ClipRRect(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(20),
@@ -139,26 +135,33 @@ class TankCard extends StatelessWidget {
 
   Widget _tankInfoBuilder(
     Future<TankSnapshot> tankSnapshot,
-    double cardWidth,
-    double descriptionFontSize,
+    double tankInfoFontSize,
+    double tankInfoHeaderFontSize,
   ) {
     return FutureBuilder(
       future: tankSnapshot,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return _skeletonLoaderInfo(cardWidth, descriptionFontSize);
+          return _skeletonLoaderInfo(
+            tankInfoFontSize,
+            tankInfoHeaderFontSize,
+          );
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else {
-          return _tankInfo(cardWidth, descriptionFontSize, snapshot);
+          return _tankInfo(
+            tankInfoFontSize,
+            tankInfoHeaderFontSize,
+            snapshot,
+          );
         }
       },
     );
   }
 
   Skeletonizer _skeletonLoaderInfo(
-    double cardWidth,
-    double descriptionFontSize,
+    double tankInfoFontSize,
+    double tankInfoHeaderFontSize,
   ) {
     return Skeletonizer(
       textBoneBorderRadius: TextBoneBorderRadius(BorderRadius.circular(4)),
@@ -167,47 +170,107 @@ class TankCard extends StatelessWidget {
         highlightColor: Colors.grey[100]!,
         duration: Duration(seconds: 2),
       ),
-      child: _tankInfo(cardWidth, descriptionFontSize, null),
+      child: _tankInfo(tankInfoFontSize, tankInfoHeaderFontSize, null),
     );
   }
 
   Widget _tankInfo(
-    double cardWidth,
-    double descriptionFontSize,
+    double tankInfoFontSize,
+    double tankInfoHeaderFontSize,
     AsyncSnapshot<TankSnapshot>? snapshot,
   ) {
     return Padding(
-      padding: EdgeInsets.only(top: cardWidth * 0.06),
+      padding: const EdgeInsets.only(bottom: 15),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _tankInfoLine('ph', descriptionFontSize, snapshot),
-          _tankInfoLine('temp', descriptionFontSize, snapshot),
+          _tankInfoBlock(
+            TankInfoMode.current,
+            tankInfoFontSize,
+            tankInfoHeaderFontSize,
+            snapshot,
+          ),
+          _tankInfoBlock(
+            TankInfoMode.range,
+            tankInfoFontSize,
+            tankInfoHeaderFontSize,
+            snapshot,
+          ),
         ],
       ),
     );
   }
 
-  Row _tankInfoLine(
-    String type,
-    double descriptionFontSize,
+  Widget _tankInfoBlock(
+    TankInfoMode mode,
+    double tankInfoFontSize,
+    double tankInfoHeaderFontSize,
     AsyncSnapshot<TankSnapshot>? snapshot,
   ) {
+    return Column(
+      children: [
+        _tankInfoHeader(mode, tankInfoHeaderFontSize),
+        _tankInfoLine(TankInfoType.pH, mode, tankInfoFontSize, snapshot),
+        _tankInfoLine(TankInfoType.temp, mode, tankInfoFontSize, snapshot),
+      ],
+    );
+  }
+
+  Widget _tankInfoHeader(TankInfoMode mode, double tankInfoHeaderFontSize) {
+    return Text(
+      mode == TankInfoMode.current ? 'Current' : '12hr Range',
+      style: TextStyle(
+        fontSize: tankInfoHeaderFontSize,
+        fontWeight: FontWeight.normal,
+        color: Colors.grey.shade500,
+      ),
+    );
+  }
+
+  Widget _tankInfoLine(
+    TankInfoType type,
+    TankInfoMode mode,
+    double tankInfoFontSize,
+    AsyncSnapshot<TankSnapshot>? snapshot,
+  ) {
+    final IconData iconType =
+        type == TankInfoType.pH ? Icons.water_drop : Icons.thermostat;
+    final Color iconColor =
+        type == TankInfoType.pH ? Colors.green : Colors.blue;
+
+    String textData = 'mock';
+    if (mode == TankInfoMode.current) {
+      if (type == TankInfoType.pH) {
+        textData = 'pH ${snapshot?.data!.pH ?? 'mock'}';
+      } else {
+        textData = '${snapshot?.data!.temperature ?? 'mock'}°C';
+      }
+    } else if (mode == TankInfoMode.range) {
+      if (type == TankInfoType.pH) {
+        final min = snapshot?.data!.minPH ?? 'm.k';
+        final max = snapshot?.data!.maxPH ?? 'm.k';
+        textData = 'pH $min - $max';
+      } else {
+        final min = snapshot?.data!.minTemp ?? 'mk';
+        final max = snapshot?.data!.maxTemp ?? 'mk';
+        textData = '$min - $max°C';
+      }
+    }
+
     return Row(
       children: [
         Skeleton.keep(
           child: Icon(
-            type == 'ph' ? Icons.water_drop : Icons.thermostat,
-            color: type == 'ph' ? Colors.green : Colors.blue,
-            size: descriptionFontSize,
+            iconType,
+            color: iconColor,
+            size: tankInfoFontSize,
           ),
         ),
+        SizedBox(width: 5),
         Text(
-          type == 'ph'
-              ? 'pH ${snapshot?.data!.pH ?? 'mock'}'
-              : '${snapshot?.data!.temperature ?? 'mock'}°C',
+          textData,
           style: TextStyle(
-            fontSize: descriptionFontSize,
+            fontSize: tankInfoFontSize,
             color: const Color(0xFF6D6D6D),
           ),
         ),

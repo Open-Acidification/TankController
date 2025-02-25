@@ -40,8 +40,8 @@ void main() {
         '''
 Version	Tank ID	Severity	Date Time	Message	Temperature Target	Temperature Mean	Temperature Std Dev	pH Target	pH	Uptime	MAC Address	pH Slope	Ignoring Bad pH Calibration	Temperature Correction	Ignoring Bad Temperature Calibration	Heat (1) or Chill (0)	KD	KI	KP	pH Flat (0) Ramp (1) Sine (2)	pH Target	pH Ramp Start Time	pH Ramp End Time	pH Ramp Start Value	pH Sine Start Time	pH Sine Period	pH Sine Amplitude	Temperature Flat (0) Ramp (1) Sine (2)	Temperature Target	Temperature Ramp Start Time	Temperature Ramp End Time	Temperature Ramp Start Value	Temperature Sine Start Time	Temperature Sine Period	Temperature Sine Amplitude	Google Sheet Interval
 v25.1.1        	89	I	2025-01-23 15:38		20.11	20	0	7	0	60																										
-v25.1.1        	89	I	2025-01-23 15:39		20.18	20	0	7	0	120																										
-v25.1.1        	89	I	2025-01-23 15:40		20.24	20	0	7	0	180																										
+v25.1.1        	89	I	2025-01-23 15:39		20.18	21	0	7	0	120																										
+v25.1.1        	89	I	2025-01-23 15:40		20.24	20	0	7	6.9	180																										
 v25.1.1        	89	I	2025-01-23 15:43		20.38	20	0	7	0	60																										
 v25.1.1        	89	I	2025-01-23 15:44		20.44	20	0	7	0	121																										
 ''',
@@ -181,6 +181,10 @@ v25.1.1        	89	I	2025-01-23 15:44		20.44	20	0	7	0	121
       expect(snapshot.temperature, equals(20));
       expect(snapshot.pHSetpoint, equals(7));
       expect(snapshot.temperatureSetpoint, equals(20.44));
+      expect(snapshot.maxPH, equals(6.9));
+      expect(snapshot.minPH, equals(0));
+      expect(snapshot.maxTemp, equals(21));
+      expect(snapshot.minTemp, equals(20));
     });
 
     test('Returns valid TankSnapshot for a long log file', () async {
@@ -255,7 +259,7 @@ v25.1.1        	89	I	2025-01-23 15:44		20.44	20	0	7	0	121
             89,
             DateTime.parse('2025-01-23 15:39:00'),
             20.18,
-            20.0,
+            21.0,
             0.0,
             7.0,
             0.0,
@@ -269,7 +273,7 @@ v25.1.1        	89	I	2025-01-23 15:44		20.44	20	0	7	0	121
             20.0,
             0.0,
             7.0,
-            0.0,
+            6.9,
             180,
           ),
           LogDataLine(

@@ -255,8 +255,7 @@ void SD_TC::todaysDataFileName(char* path, int size) {
 }
 
 void SD_TC::updateRemoteFileSize() {
-  const char* logName = PSTR("remote.log");
-  File file = open(logName, O_RDONLY);
+  File file = open(remoteFileName, O_RDONLY);
   if (file) {
     remoteFileSize = file.size();
     file.close();

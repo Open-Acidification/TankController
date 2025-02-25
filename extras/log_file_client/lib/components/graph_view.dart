@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:log_file_client/components/toggle_button.dart';
+import 'package:log_file_client/components/chart_series_selector.dart';
 import 'package:log_file_client/utils/http_client.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -47,7 +47,7 @@ class _GraphViewState extends State<GraphView> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             _graphBuilder(logData),
-            _toggleButton(),
+            _chartSeriesSelector(),
           ],
         ),
       ),
@@ -77,11 +77,11 @@ class _GraphViewState extends State<GraphView> {
     );
   }
 
-  Widget _toggleButton() {
+  Widget _chartSeriesSelector() {
     return Center(
       child: Padding(
         padding: const EdgeInsets.only(bottom: 8.0),
-        child: ToggleButton(
+        child: ChartSeriesSelector(
           onPressed: toggleSeriesView,
         ),
       ),

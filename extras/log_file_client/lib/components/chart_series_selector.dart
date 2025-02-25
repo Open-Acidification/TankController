@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-class ToggleButton extends StatefulWidget {
-  const ToggleButton({required this.onPressed, super.key});
+class ChartSeriesSelector extends StatefulWidget {
+  const ChartSeriesSelector({required this.onPressed, super.key});
   final void Function(int index) onPressed;
 
   @override
-  State<ToggleButton> createState() => _ToggleButtonState();
+  State<ChartSeriesSelector> createState() => _ChartSeriesSelectorState();
 }
 
-class _ToggleButtonState extends State<ToggleButton> {
+class _ChartSeriesSelectorState extends State<ChartSeriesSelector> {
   List<bool> buttonState = [true, true];
 
   void toggleButton(int index) {

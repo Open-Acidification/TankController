@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:log_file_client/components/chart_series_selector.dart';
 import 'package:log_file_client/components/graph_view.dart';
 import 'package:log_file_client/components/project_card.dart';
 import 'package:log_file_client/components/table_view.dart';
 import 'package:log_file_client/components/tank_card.dart';
 import 'package:log_file_client/components/tank_thumbnail.dart';
-import 'package:log_file_client/components/toggle_button.dart';
 import 'package:log_file_client/main.dart';
 import 'package:log_file_client/pages/home_page.dart';
 import 'package:log_file_client/pages/project_page.dart';
@@ -254,7 +254,7 @@ void main() {
     );
 
     // Verify that ToggleButton is shown while loading
-    expect(find.byType(ToggleButton), findsOneWidget);
+    expect(find.byType(ChartSeriesSelector), findsOneWidget);
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
     await tester.pumpAndSettle();

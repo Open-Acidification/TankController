@@ -25,6 +25,13 @@ RemoteLogPusher* RemoteLogPusher::instance() {
   return _instance;
 }
 
+void RemoteLogPusher::deleteInstance() {
+  if (_instance) {
+    delete _instance;
+    _instance = nullptr;
+  }
+}
+
 //  instance methods
 RemoteLogPusher::RemoteLogPusher() {
   this->buffer[0] = '\0';
@@ -154,10 +161,6 @@ void RemoteLogPusher::pushSoon() {
  *
  */
 void RemoteLogPusher::sendHeadRequest() {
-  const char* logName = SD_TC::instance()->getRemoteLogName();
-  if (logName[0] == '\0') {
-    return;
-  }
   static const char format[] PROGMEM =
       "HEAD /logs/%s HTTP/1.1\r\n"
       "Host: %s\r\n"
@@ -165,7 +168,7 @@ void RemoteLogPusher::sendHeadRequest() {
       "Accept: text/plain\r\n"
       "Connection: Close\r\n"
       "\r\n";
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)format, logName, serverDomain, VERSION);
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)format, remoteLogName, serverDomain, VERSION);
   if (client.connected() || client.connect(serverDomain, PORT) == 1) {  // this is a blocking step
     client.write(buffer, strnlen(buffer, sizeof(buffer)));
   } else {
@@ -177,10 +180,6 @@ void RemoteLogPusher::sendHeadRequest() {
 }
 
 void RemoteLogPusher::sendPostRequest() {
-  const char* logName = SD_TC::instance()->getRemoteLogName();
-  if (logName[0] == '\0') {
-    return;
-  }
   char data[300];
   SD_TC::instance()->getRemoteLogContents(data, sizeof(data), serverFileSize);
   static const char format[] PROGMEM =
@@ -191,7 +190,7 @@ void RemoteLogPusher::sendPostRequest() {
       "Content-Length: %i\r\n"
       "Connection: Close\r\n"
       "\r\n";
-  snprintf_P(buffer, sizeof(buffer), (PGM_P)format, logName, serverDomain, VERSION, strnlen(data, sizeof(data)));
+  snprintf_P(buffer, sizeof(buffer), (PGM_P)format, remoteLogName, serverDomain, VERSION, strnlen(data, sizeof(data)));
   if (client.connected() || client.connect(serverDomain, PORT) == 1) {  // this is a blocking step
     client.write(buffer, strnlen(buffer, sizeof(buffer)));
     client.write(data, strnlen(data, sizeof(data)));
@@ -200,6 +199,18 @@ void RemoteLogPusher::sendPostRequest() {
   }
   buffer[0] = '\0';
   state = PROCESS_POST_RESPONSE;
+}
+
+void RemoteLogPusher::setRemoteLogName(const char* newFileName) {
+  if (newFileName == nullptr || newFileName[0] == '\0') {
+    remoteLogName[0] = '\0';
+    return;
+  }
+  // See TankController.ino for the definition of remoteLogName
+  if (strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) <= MAX_FILE_NAME_LENGTH) {
+    // valid file name has been provided (See TankController.ino)
+    snprintf_P(remoteLogName, MAX_FILE_NAME_LENGTH + 5, PSTR("%s.log"), newFileName);
+  }
 }
 
 bool RemoteLogPusher::shouldSendHeadRequest() {

@@ -190,15 +190,15 @@ unittest(removeFile) {
 
 unittest(writeRemoteLog) {
   SD_TC* sd = SD_TC::instance();
-  sd->setRemoteLogName("Tank1");
+  RemoteLogPusher* pusher = RemoteLogPusher::instance();
+  pusher->setRemoteLogName("Tank1");
   delay(60000);  // remote logs don't get written immediately
   char data[20];
-  sd->setRemoteLogName("90A2DA807B76");
-  RemoteLogPusher* pusher = RemoteLogPusher::instance();
+  pusher->setRemoteLogName("90A2DA807B76");
 
-  assertEqual("90A2DA807B76.log", sd->getRemoteLogName());
+  assertEqual("90A2DA807B76.log", pusher->getRemoteLogName());
   sd->updateRemoteLogFileSizeForTest();
-  assertFalse(sd->exists("90A2DA807B76.log"));
+  assertFalse(sd->exists("remote.log"));
   assertEqual(0, sd->getRemoteFileSize());
   pusher->setShouldSentHeadRequest(false);
   assertFalse(pusher->shouldSendHeadRequest());
@@ -207,14 +207,14 @@ unittest(writeRemoteLog) {
   sd->writeToRemoteLog("line 1");  // also writes header row
   sd->updateRemoteLogFileSizeForTest();
   assertTrue(pusher->basicShouldSendHeadRequest());
-  assertTrue(sd->exists("90A2DA807B76.log"));
+  assertTrue(sd->exists("remote.log"));
   int size = sd->getRemoteFileSize();
   sd->writeToRemoteLog("line 2");
   sd->updateRemoteLogFileSizeForTest();
   assertEqual(size + strlen("line 2\n"), sd->getRemoteFileSize());  // Flawfinder: ignore
 
   // verify contents of remote log
-  File file = sd->open("90A2DA807B76.log");
+  File file = sd->open("remote.log");
   file.seek(size);
   file.read(data, 7);  // Flawfinder: ignore
   file.close();
@@ -226,7 +226,7 @@ unittest(getRemoteLogContents) {
   SD_TC* sd = SD_TC::instance();
 
   // write data
-  sd->setRemoteLogName("Tank1");
+  // sd->setRemoteLogName("Tank1");
   sd->writeToRemoteLog("line 1");
   sd->updateRemoteLogFileSizeForTest();
   int size = sd->getRemoteFileSize();
@@ -239,42 +239,42 @@ unittest(getRemoteLogContents) {
 }
 
 unittest(noRemoteLogFileName) {
-  SD_TC* sd = SD_TC::instance();
-  sd->setRemoteLogName("Tank1");
-  sd->setRemoteLogName("");
-  assertEqual("", sd->getRemoteLogName());
+  RemoteLogPusher* pusher = RemoteLogPusher::instance();
+  pusher->setRemoteLogName("Tank1");
+  pusher->setRemoteLogName("");
+  assertEqual("", pusher->getRemoteLogName());
 }
 
 unittest(validRemoteLogFileName) {
-  SD_TC* sd = SD_TC::instance();
-  sd->setRemoteLogName("Tank1");
-  assertEqual("Tank1.log", sd->getRemoteLogName());
+  RemoteLogPusher* pusher = RemoteLogPusher::instance();
+  pusher->setRemoteLogName("Tank1");
+  assertEqual("Tank1.log", pusher->getRemoteLogName());
 }
 
 unittest(longRemoteLogFileName) {
-  SD_TC* sd = SD_TC::instance();
-  sd->setRemoteLogName("1234567890123456789012345678");  // maximum length
-  assertEqual("1234567890123456789012345678.log", sd->getRemoteLogName());
-  sd->setRemoteLogName("12345678901234567890123456789");  // one character too many
-  assertEqual("1234567890123456789012345678.log", sd->getRemoteLogName());
+  RemoteLogPusher* pusher = RemoteLogPusher::instance();
+  pusher->setRemoteLogName("1234567890123456789012345678");  // maximum length
+  assertEqual("1234567890123456789012345678.log", pusher->getRemoteLogName());
+  pusher->setRemoteLogName("12345678901234567890123456789");  // one character too many
+  assertEqual("1234567890123456789012345678.log", pusher->getRemoteLogName());
 }
 
 unittest(remoteLogName) {
   TankController::deleteInstance();
   TankController* tc = TankController::instance("remoteLog");
-  SD_TC* sd = SD_TC::instance();
-  const char* name = sd->getRemoteLogName();
+  RemoteLogPusher* pusher = RemoteLogPusher::instance();
+  const char* name = pusher->getRemoteLogName();
   assertEqual("remoteLog.log", name);
 
   TankController::deleteInstance();
   SD_TC::deleteInstance();
+  RemoteLogPusher::deleteInstance();
   tc = TankController::instance();
-  sd = SD_TC::instance();
-  name = sd->getRemoteLogName();
+  name = pusher->getRemoteLogName();
   assertEqual("", name);
 
-  sd->setRemoteLogName("newName");
-  name = sd->getRemoteLogName();
+  pusher->setRemoteLogName("newName");
+  name = pusher->getRemoteLogName();
   assertEqual("newName.log", name);
 }
 

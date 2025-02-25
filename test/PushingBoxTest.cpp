@@ -6,6 +6,7 @@
 #include "EthernetServer_TC.h"
 #include "PHControl.h"
 #include "PushingBox.h"
+#include "RemoteLogPusher.h"
 #include "Serial_TC.h"
 #include "TankController.h"
 #include "ThermalControl.h"
@@ -46,7 +47,7 @@ unittest_teardown() {
 }
 
 unittest(NoTankID) {
-  SD_TC::instance()->setRemoteLogName("90A2DA807B76");
+  RemoteLogPusher::instance()->setRemoteLogName("90A2DA807B76");
   // set tank id to 0, set time interval to 1 minute
   EEPROM_TC::instance()->setTankID(0);
 

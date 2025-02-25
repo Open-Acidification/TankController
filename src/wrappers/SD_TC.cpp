@@ -42,7 +42,6 @@ SD_TC::SD_TC() {
   if (!sd.begin(SD_SELECT_PIN)) {
     Serial.println(F("SD_TC failed to initialize!"));
   }
-  remoteLogName[0] = '\0';
 }
 
 /**
@@ -123,11 +122,7 @@ bool SD_TC::format() {
 
 void SD_TC::getRemoteLogContents(char* buffer, int size, uint32_t index) {
   buffer[0] = '\0';
-  const char* logName = getRemoteLogName();
-  if (logName[0] == '\0') {
-    return;
-  }
-  File file = open(logName, O_RDONLY);
+  File file = open(remoteFileName, O_RDONLY);
   if (file) {
     file.seek(index);
     int remaining = file.available();
@@ -254,29 +249,13 @@ bool SD_TC::remove(const char* path) {
   return sd.remove(path);
 }
 
-void SD_TC::setRemoteLogName(const char* newFileName) {
-  if (newFileName == nullptr || newFileName[0] == '\0') {
-    remoteLogName[0] = '\0';
-    return;
-  }
-  // See TankController.ino for the definition of remoteLogName
-  if (strnlen(newFileName, MAX_FILE_NAME_LENGTH + 1) <= MAX_FILE_NAME_LENGTH) {
-    // valid file name has been provided (See TankController.ino)
-    snprintf_P(remoteLogName, MAX_FILE_NAME_LENGTH + 5, PSTR("%s.log"), newFileName);
-  }
-}
-
 void SD_TC::todaysDataFileName(char* path, int size) {
   DateTime_TC now = DateTime_TC::now();
   snprintf_P(path, size, (PGM_P)F("%4i%02i%02i.csv"), now.year(), now.month(), now.day());
 }
 
 void SD_TC::updateRemoteFileSize() {
-  if (remoteLogName[0] == '\0') {
-    remoteFileSize = 0;
-    return;
-  }
-  File file = open(remoteLogName, O_RDONLY);
+  File file = open(remoteFileName, O_RDONLY);
   if (file) {
     remoteFileSize = file.size();
     file.close();
@@ -295,23 +274,19 @@ void SD_TC::writeToRemoteLog(const char* line) {
   strncpy(mostRecentRemoteLogEntry, line, sizeof(mostRecentRemoteLogEntry));  // Flawfinder: ignore
   mostRecentRemoteLogEntry[sizeof(mostRecentRemoteLogEntry) - 1] = '\0';      // Ensure null-terminated string
 #endif
-  const char* logName = getRemoteLogName();
-  if (logName[0] == '\0') {
-    return;
-  }
-  if (!sd.exists(logName)) {
+  if (!sd.exists(remoteFileName)) {
     // rather than write an entire header line in one buffer, we break it into chunks to save memory
     char buffer[200];
     DataLogger::instance()->writeRemoteFileHeader(buffer, sizeof(buffer), 0);
-    appendStringToPath(buffer, remoteLogName, false);
+    appendStringToPath(buffer, remoteFileName, false);
     DataLogger::instance()->writeRemoteFileHeader(buffer, sizeof(buffer), 1);
-    appendStringToPath(buffer, remoteLogName, false);
+    appendStringToPath(buffer, remoteFileName, false);
     DataLogger::instance()->writeRemoteFileHeader(buffer, sizeof(buffer), 2);
-    appendStringToPath(buffer, remoteLogName, false);
+    appendStringToPath(buffer, remoteFileName, false);
     DataLogger::instance()->writeRemoteFileHeader(buffer, sizeof(buffer), 3);
-    appendStringToPath(buffer, remoteLogName);
+    appendStringToPath(buffer, remoteFileName);
   }
-  appendStringToPath(line, remoteLogName);
+  appendStringToPath(line, remoteFileName);
   updateRemoteFileSize();
   RemoteLogPusher::instance()->pushSoon();
 }

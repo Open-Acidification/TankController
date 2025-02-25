@@ -3,6 +3,8 @@
 
 #include "wrappers/Ethernet_TC.h"
 
+#define MAX_FILE_NAME_LENGTH 28
+
 /*
  * @brief RemoteLogPusher is a singleton that sends data records and remote logs to the server.
  *
@@ -45,12 +47,17 @@ class RemoteLogPusher {
 public:
   // class methods
   static RemoteLogPusher *instance();
+  static void deleteInstance();
 
   // instance methods
   RemoteLogPusher();
+  const char *getRemoteLogName() {
+    return remoteLogName;
+  }
   bool isReadyToPost();
   void loop();
   void pushSoon();
+  void setRemoteLogName(const char *newFileName = nullptr);
   bool shouldSendHeadRequest();
 
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
@@ -84,6 +91,7 @@ private:
   clientState_t state = CLIENT_NOT_CONNECTED;
   uint32_t delayRequestsUntilTime = 40000;  // wait a bit before first request
   const char *serverDomain = "oap.cs.wallawalla.edu";
+  char remoteLogName[MAX_FILE_NAME_LENGTH + 5] = "";  // add ".log" with null-terminator
   char buffer[300];
   unsigned int index = 0;
   bool _isReadyToPost = false;

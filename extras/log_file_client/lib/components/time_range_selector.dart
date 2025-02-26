@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class TimeRangeSelector extends StatefulWidget {
   const TimeRangeSelector({required this.onSelected, super.key});
-  final Function(int) onSelected;
+  final void Function(int) onSelected;
 
   @override
   State<TimeRangeSelector> createState() => _TimeRangeSelectorState();
@@ -79,6 +79,15 @@ class _TimeRangeSelectorState extends State<TimeRangeSelector> {
           decoration: BoxDecoration(
             color: active ? Colors.white : Colors.grey[100],
             borderRadius: BorderRadius.circular(8),
+            boxShadow: active
+                ? [
+                    BoxShadow(
+                      color: Colors.grey[300]!,
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : null,
           ),
           child: Text(
             text,

@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:log_file_client/components/chart_series_selector.dart';
+import 'package:log_file_client/components/time_range_selector.dart';
 import 'package:log_file_client/utils/http_client.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -20,6 +23,7 @@ class GraphView extends StatefulWidget {
 class _GraphViewState extends State<GraphView> {
   bool _showPH = true;
   bool _showTemp = true;
+  int _timeRange = 1440; // 1 day
 
   Future<List<LogDataLine>> getLogData() async {
     final table = await widget.httpClient.getLogData(widget.filePath);
@@ -36,6 +40,22 @@ class _GraphViewState extends State<GraphView> {
     });
   }
 
+  void toggleTimeRange(int index) {
+    final ranges = [
+      360, // 6 hours
+      720, // 12 hours
+      1440, // 1 day
+      4320, // 3 days
+      10080, // 7 days
+      43200, // 30 days
+      525600, // 365 days
+    ];
+
+    setState(() {
+      _timeRange = ranges[index];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // ignore: discarded_futures
@@ -44,13 +64,58 @@ class _GraphViewState extends State<GraphView> {
     return Scaffold(
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            _topRow(logData),
             _graphBuilder(logData),
-            _chartSeriesSelector(),
           ],
         ),
       ),
+    );
+  }
+
+  Padding _topRow(
+    Future<List<LogDataLine>> logData,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 70, right: 70, top: 15, bottom: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _titleBuilder(logData),
+          Row(
+            children: [
+              ChartSeriesSelector(onPressed: toggleSeriesView),
+              const SizedBox(width: 10),
+              TimeRangeSelector(onSelected: toggleTimeRange),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  FutureBuilder _titleBuilder(Future<List<LogDataLine>> logData) {
+    return FutureBuilder<List<LogDataLine>>(
+      future: logData,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return SizedBox();
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Text('No data found');
+        } else {
+          final logData = snapshot.data!;
+          return Text(
+            'Tank ID: ${logData.first.tankid}',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          );
+        }
+      },
     );
   }
 
@@ -70,21 +135,13 @@ class _GraphViewState extends State<GraphView> {
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return const Center(child: Text('No data found'));
         } else {
-          final logData = snapshot.data!;
+          final logData = snapshot.data!.sublist(
+            max(snapshot.data!.length - _timeRange, 0),
+            snapshot.data!.length,
+          );
           return _graph(logData);
         }
       },
-    );
-  }
-
-  Widget _chartSeriesSelector() {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 8.0),
-        child: ChartSeriesSelector(
-          onPressed: toggleSeriesView,
-        ),
-      ),
     );
   }
 
@@ -107,7 +164,6 @@ class _GraphViewState extends State<GraphView> {
 
     return Expanded(
       child: SfCartesianChart(
-        title: ChartTitle(text: 'Tank ID: ${logData.first.tankid}'),
         backgroundColor: Colors.white,
         primaryXAxis: DateTimeAxis(
           title: AxisTitle(text: 'Time'),

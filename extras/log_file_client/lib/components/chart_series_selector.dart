@@ -21,15 +21,15 @@ class _ChartSeriesSelectorState extends State<ChartSeriesSelector> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: Colors.grey[500],
+        borderRadius: BorderRadius.circular(8),
+        // color: Colors.grey[500],
       ),
-      padding: const EdgeInsets.all(0.5),
       child: SizedBox(
-        width: 148,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             _halfButton('pH', Colors.green, 0),
             _halfButton('temp', Colors.blue, 1),
@@ -59,12 +59,12 @@ class _ChartSeriesSelectorState extends State<ChartSeriesSelector> {
         RoundedRectangleBorder(
           borderRadius: index == 0
               ? BorderRadius.only(
-                  topLeft: Radius.circular(10),
-                  bottomLeft: Radius.circular(10),
+                  topLeft: Radius.circular(8),
+                  bottomLeft: Radius.circular(8),
                 )
               : BorderRadius.only(
-                  topRight: Radius.circular(10),
-                  bottomRight: Radius.circular(10),
+                  topRight: Radius.circular(8),
+                  bottomRight: Radius.circular(8),
                 ),
         ),
       ),
@@ -73,8 +73,8 @@ class _ChartSeriesSelectorState extends State<ChartSeriesSelector> {
 
   Widget _buttonText(String text, Color color, int index) {
     return SizedBox(
-      width: 50,
-      height: 40,
+      width: 40,
+      // height: 40,
       child: Center(
         child: Text(
           text,

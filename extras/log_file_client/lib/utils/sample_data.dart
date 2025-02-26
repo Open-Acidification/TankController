@@ -580,7 +580,6 @@ k ID	Severity	Date Time	Message	Temperature Target	Temperature Mean	Temperature 
 v25.1.1        	89	I	2025-01-24 16:29		16.3	20	0	7.5	0	240																											
 v25.1.1        	89	I	2025-01-24 16:30		16.37	20	0	7.5	0	300																											
 v25.1.1        	89	I	2025-01-24 16:32		16.48	21	0	7.5	7	60																											
-
 ''';
 }
 

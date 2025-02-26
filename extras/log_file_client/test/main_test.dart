@@ -6,6 +6,7 @@ import 'package:log_file_client/components/project_card.dart';
 import 'package:log_file_client/components/table_view.dart';
 import 'package:log_file_client/components/tank_card.dart';
 import 'package:log_file_client/components/tank_thumbnail.dart';
+import 'package:log_file_client/components/time_range_selector.dart';
 import 'package:log_file_client/main.dart';
 import 'package:log_file_client/pages/home_page.dart';
 import 'package:log_file_client/pages/project_page.dart';
@@ -240,7 +241,7 @@ void main() {
     );
   });
 
-  testWidgets('ToggleButton widget test', (WidgetTester tester) async {
+  testWidgets('ChartSeriesSelector widget test', (WidgetTester tester) async {
     // Build GraphView widget
     await tester.pumpWidget(
       MaterialApp(
@@ -253,13 +254,13 @@ void main() {
       ),
     );
 
-    // Verify that ToggleButton is shown while loading
+    // Verify that ChartSeriesSelector is shown while loading
     expect(find.byType(ChartSeriesSelector), findsOneWidget);
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
     await tester.pumpAndSettle();
 
-    // Check that ToggleButton removes line series
+    // Check that ChartSeriesSelector removes line series
     expect(
       find.byWidgetPredicate(
         (widget) => widget is LineSeries && widget.initialIsVisible,
@@ -277,7 +278,7 @@ void main() {
       findsNWidgets(2),
     );
 
-    // Check that ToggleButton adds line series
+    // Check that ChartSeriesSelector adds line series
     await tester.tap(find.byKey(const Key('pH')));
     await tester.pumpAndSettle();
     expect(
@@ -287,4 +288,54 @@ void main() {
       findsNWidgets(4),
     );
   });
+
+  testWidgets('TimeRangeSelector widget test', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1920, 1080);
+    tester.view.devicePixelRatio = 1.0;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: GraphView(
+            filePath: 'sample_long.log',
+            httpClient: HttpClientTest(),
+          ),
+        ),
+      ),
+    );
+
+    // Verify that TimeRangeSelector is shown while loading
+    expect(find.byType(TimeRangeSelector), findsOneWidget);
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+    // Check that 24H (or max) is shown by default
+    await checkOption(tester, '24H', 1440, false);
+
+    // Check that selecting 6H shows 6H of data
+    await checkOption(tester, '6H', 360, true);
+
+    // Check that selecting Max shows all data
+    await checkOption(tester, 'Max', 576, true);
+  });
+}
+
+Future<void> checkOption(WidgetTester tester, String text, int length, bool exact) async {
+  // Tap selector
+  await tester.tap(find.text(text));
+  await tester.pumpAndSettle();
+
+  // Text is selected
+  final selectedFinder = find.text(text);
+  expect(
+    tester.widget<Text>(selectedFinder).style!.color,
+    equals(Colors.black),
+  );
+
+  // Data points are displayed accurately
+  final graphFinder = find.byType(SfCartesianChart);
+  expect(graphFinder, findsOneWidget);
+  final graphWidget = tester.widget<SfCartesianChart>(graphFinder);
+  expect(
+    graphWidget.series.first.dataSource!.length,
+    exact ? length : lessThanOrEqualTo(length),
+  );
 }

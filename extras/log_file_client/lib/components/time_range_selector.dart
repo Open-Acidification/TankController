@@ -1,8 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:log_file_client/components/custom_time_range_picker.dart';
+import 'package:popover/popover.dart';
 
 class TimeRangeSelector extends StatefulWidget {
-  const TimeRangeSelector({required this.onSelected, super.key});
-  final void Function(int) onSelected;
+  const TimeRangeSelector({
+    required this.onSelected,
+    required this.avaliableTimeRange,
+    super.key,
+  });
+  final void Function(int, DateTimeRange?) onSelected;
+  final DateTimeRange avaliableTimeRange;
 
   @override
   State<TimeRangeSelector> createState() => _TimeRangeSelectorState();
@@ -20,12 +29,32 @@ class _TimeRangeSelectorState extends State<TimeRangeSelector> {
     false,
   ];
 
-  void onPressed(int index) {
-    setState(() {
-      _isSelected.fillRange(0, _isSelected.length, false);
-      _isSelected[index] = true;
-      widget.onSelected(index);
-    });
+  Future<void> onPressed(int index, BuildContext context) async {
+    if (index < 7) {
+      setState(() {
+        _isSelected.fillRange(0, _isSelected.length, false);
+        _isSelected[index] = true;
+        widget.onSelected(index, null);
+      });
+    }
+    if (index == 7) {
+      late DateTimeRange timeRange;
+      await showPopover(
+        context: context,
+        bodyBuilder: (context) => CustomTimeRangePicker(
+          timeRange: widget.avaliableTimeRange,
+          onApplied: (value) {
+            timeRange = value;
+            Navigator.of(context).pop();
+          },
+        ),
+      );
+      setState(() {
+        _isSelected.fillRange(0, _isSelected.length, false);
+        _isSelected[index] = true;
+        widget.onSelected(index, timeRange);
+      });
+    }
   }
 
   @override
@@ -72,28 +101,33 @@ class _TimeRangeSelectorState extends State<TimeRangeSelector> {
     final active = _isSelected[index];
     return MouseRegion(
       cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: () => onPressed(index),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
-            color: active ? Colors.white : Colors.grey[100],
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: active
-                ? [
-                    BoxShadow(
-                      color: Colors.grey[300]!,
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ]
-                : null,
-          ),
-          child: Text(
-            text,
-            style: TextStyle(color: active ? Colors.black : Colors.grey[600]),
-          ),
-        ),
+      child: Builder(
+        builder: (context) {
+          return GestureDetector(
+            onTap: () => onPressed(index, context),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: active ? Colors.white : Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: active
+                    ? [
+                        BoxShadow(
+                          color: Colors.grey[300]!,
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ]
+                    : null,
+              ),
+              child: Text(
+                text,
+                style:
+                    TextStyle(color: active ? Colors.black : Colors.grey[600]),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

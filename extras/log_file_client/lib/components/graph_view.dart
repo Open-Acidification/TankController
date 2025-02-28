@@ -21,8 +21,11 @@ class GraphView extends StatefulWidget {
 class _GraphViewState extends State<GraphView> {
   bool _showPH = true;
   bool _showTemp = true;
-  List<int> _displayedTimeRange = [1440, 0]; // 1 day
   late final DateTimeRange avaliableTimeRange;
+  late List<int> _displayedTimeRange = [
+    max(widget.logData.length - 1400, 0),
+    widget.logData.length,
+  ]; // 1 day
 
   @override
   void initState() {
@@ -43,7 +46,7 @@ class _GraphViewState extends State<GraphView> {
     });
   }
 
-  void toggleTimeRange(int index) {
+  void toggleTimeRange(int index, DateTimeRange? customRange) {
     final ranges = [
       360, // 6 hours
       720, // 12 hours
@@ -55,7 +58,18 @@ class _GraphViewState extends State<GraphView> {
     ];
 
     setState(() {
-      _displayedTimeRange = [ranges[index], 0];
+      if (index < 7) {
+        _displayedTimeRange = [
+          max(widget.logData.length - ranges[index], 0),
+          widget.logData.length,
+        ];
+      } else if (index == 7) {
+        final int endOffset =
+            avaliableTimeRange.end.difference(customRange!.end).inMinutes;
+        final int endIndex = widget.logData.length  - endOffset;
+        final int startIndex = endIndex - customRange.duration.inMinutes;
+        _displayedTimeRange = [startIndex, endIndex];
+      }
     });
   }
 
@@ -69,8 +83,8 @@ class _GraphViewState extends State<GraphView> {
             _topRow(widget.logData),
             _graph(
               widget.logData.sublist(
-                max(widget.logData.length - _displayedTimeRange[0], 0),
-                widget.logData.length - _displayedTimeRange[1],
+                _displayedTimeRange[0],
+                _displayedTimeRange[1],
               ),
             ),
           ],
@@ -96,7 +110,10 @@ class _GraphViewState extends State<GraphView> {
             children: [
               ChartSeriesSelector(onPressed: toggleSeriesView),
               const SizedBox(width: 10),
-              TimeRangeSelector(onSelected: toggleTimeRange),
+              TimeRangeSelector(
+                onSelected: toggleTimeRange,
+                avaliableTimeRange: avaliableTimeRange,
+              ),
             ],
           ),
         ],

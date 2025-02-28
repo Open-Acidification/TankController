@@ -8,13 +8,11 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 
 class GraphView extends StatefulWidget {
   const GraphView({
-    required this.filePath,
-    required this.httpClient,
+    required this.logData,
     super.key,
   });
 
-  final String filePath;
-  final HttpClient httpClient;
+  final List<LogDataLine> logData;
 
   @override
   State<GraphView> createState() => _GraphViewState();
@@ -23,11 +21,16 @@ class GraphView extends StatefulWidget {
 class _GraphViewState extends State<GraphView> {
   bool _showPH = true;
   bool _showTemp = true;
-  int _timeRange = 1440; // 1 day
+  List<int> _displayedTimeRange = [1440, 0]; // 1 day
+  late final DateTimeRange avaliableTimeRange;
 
-  Future<List<LogDataLine>> getLogData() async {
-    final table = await widget.httpClient.getLogData(widget.filePath);
-    return table;
+  @override
+  void initState() {
+    super.initState();
+    avaliableTimeRange = DateTimeRange(
+      start: widget.logData.first.time,
+      end: widget.logData.last.time,
+    );
   }
 
   void toggleSeriesView(int index) {
@@ -48,41 +51,47 @@ class _GraphViewState extends State<GraphView> {
       4320, // 3 days
       10080, // 7 days
       43200, // 30 days
-      525600, // 365 days
+      9999999, // Max
     ];
 
     setState(() {
-      _timeRange = ranges[index];
+      _displayedTimeRange = [ranges[index], 0];
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // ignore: discarded_futures
-    final Future<List<LogDataLine>> logData = getLogData();
-
     return Scaffold(
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            _topRow(logData),
-            _graphBuilder(logData),
+            _topRow(widget.logData),
+            _graph(
+              widget.logData.sublist(
+                max(widget.logData.length - _displayedTimeRange[0], 0),
+                widget.logData.length - _displayedTimeRange[1],
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Padding _topRow(
-    Future<List<LogDataLine>> logData,
-  ) {
+  Widget _topRow(List<LogDataLine> logData) {
     return Padding(
       padding: const EdgeInsets.only(left: 70, right: 70, top: 15, bottom: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _titleBuilder(logData),
+          Text(
+            'Tank ID: ${logData.first.tankid}',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
           Row(
             children: [
               ChartSeriesSelector(onPressed: toggleSeriesView),
@@ -92,56 +101,6 @@ class _GraphViewState extends State<GraphView> {
           ),
         ],
       ),
-    );
-  }
-
-  FutureBuilder _titleBuilder(Future<List<LogDataLine>> logData) {
-    return FutureBuilder<List<LogDataLine>>(
-      future: logData,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return SizedBox();
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Text('No data found');
-        } else {
-          final logData = snapshot.data!;
-          return Text(
-            'Tank ID: ${logData.first.tankid}',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            ),
-          );
-        }
-      },
-    );
-  }
-
-  FutureBuilder _graphBuilder(
-    Future<List<LogDataLine>> logData,
-  ) {
-    return FutureBuilder<List<LogDataLine>>(
-      future: logData,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 300),
-            child: CircularProgressIndicator(),
-          );
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('No data found'));
-        } else {
-          final logData = snapshot.data!.sublist(
-            max(snapshot.data!.length - _timeRange, 0),
-            snapshot.data!.length,
-          );
-          return _graph(logData);
-        }
-      },
     );
   }
 
@@ -173,13 +132,14 @@ class _GraphViewState extends State<GraphView> {
         primaryYAxis: NumericAxis(
           name: 'pHAxis',
           title: AxisTitle(text: 'pH Value'),
+          isVisible: _showPH,
         ),
         axes: <ChartAxis>[
           NumericAxis(
             name: 'TemperatureAxis',
             title: AxisTitle(text: 'Temperature Value'),
             opposedPosition: true,
-            isVisible: _showTemp && _showPH,
+            isVisible: _showTemp,
           ),
         ],
         trackballBehavior: trackballBehavior,
@@ -191,37 +151,14 @@ class _GraphViewState extends State<GraphView> {
   List<CartesianSeries> _chartSeries(List<LogDataLine> logData) {
     return <CartesianSeries>[
       LineSeries<LogDataLine, DateTime>(
-        legendItemText: 'temp',
-        name: 'temp',
-        dataSource: logData,
-        xValueMapper: (LogDataLine log, _) => log.time,
-        yValueMapper: (LogDataLine log, _) => log.tempMean,
-        color: Colors.blue,
-        yAxisName: 'TemperatureAxis',
-        animationDuration: 0,
-        initialIsVisible: _showTemp,
-      ),
-      LineSeries<LogDataLine, DateTime>(
-        legendItemText: 'temp setpoint',
-        name: 'temp setpoint',
-        dataSource: logData,
-        xValueMapper: (LogDataLine log, _) => log.time,
-        yValueMapper: (LogDataLine log, _) => log.tempTarget,
-        color: Colors.blue.shade800,
-        yAxisName: 'TemperatureAxis',
-        animationDuration: 0,
-        initialIsVisible: _showTemp,
-      ),
-      LineSeries<LogDataLine, DateTime>(
         legendItemText: 'pH',
         name: 'pH',
         dataSource: logData,
         xValueMapper: (LogDataLine log, _) => log.time,
         yValueMapper: (LogDataLine log, _) => log.phCurrent,
-        color: Colors.green,
+        color: _showPH ? Colors.green : Colors.transparent,
         yAxisName: 'pHAxis',
         animationDuration: 0,
-        initialIsVisible: _showPH,
       ),
       LineSeries<LogDataLine, DateTime>(
         legendItemText: 'pH setpoint',
@@ -229,10 +166,29 @@ class _GraphViewState extends State<GraphView> {
         dataSource: logData,
         xValueMapper: (LogDataLine log, _) => log.time,
         yValueMapper: (LogDataLine log, _) => log.phTarget,
-        color: Colors.green.shade800,
+        color: _showPH ? Colors.green.shade800 : Colors.transparent,
         yAxisName: 'pHAxis',
         animationDuration: 0,
-        initialIsVisible: _showPH,
+      ),
+      LineSeries<LogDataLine, DateTime>(
+        legendItemText: 'temp',
+        name: 'temp',
+        dataSource: logData,
+        xValueMapper: (LogDataLine log, _) => log.time,
+        yValueMapper: (LogDataLine log, _) => log.tempMean,
+        color: _showTemp ? Colors.blue : Colors.transparent,
+        yAxisName: 'TemperatureAxis',
+        animationDuration: 0,
+      ),
+      LineSeries<LogDataLine, DateTime>(
+        legendItemText: 'temp setpoint',
+        name: 'temp setpoint',
+        dataSource: logData,
+        xValueMapper: (LogDataLine log, _) => log.time,
+        yValueMapper: (LogDataLine log, _) => log.tempTarget,
+        color: _showTemp ? Colors.blue.shade800 : Colors.transparent,
+        yAxisName: 'TemperatureAxis',
+        animationDuration: 0,
       ),
     ];
   }

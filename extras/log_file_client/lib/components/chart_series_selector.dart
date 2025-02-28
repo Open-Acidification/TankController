@@ -40,7 +40,7 @@ class _ChartSeriesSelectorState extends State<ChartSeriesSelector> {
     );
   }
 
-   Widget _chartSeriesOption(String text, Color color, int index) {
+  Widget _chartSeriesOption(String text, Color color, int index) {
     final active = _buttonState[index];
     return MouseRegion(
       cursor: SystemMouseCursors.click,

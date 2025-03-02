@@ -66,7 +66,7 @@ class _GraphViewState extends State<GraphView> {
       } else if (index == 7) {
         final int endOffset =
             avaliableTimeRange.end.difference(customRange!.end).inMinutes;
-        final int endIndex = widget.logData.length  - endOffset;
+        final int endIndex = widget.logData.length - endOffset;
         final int startIndex = endIndex - customRange.duration.inMinutes;
         _displayedTimeRange = [startIndex, endIndex];
       }

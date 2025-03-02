@@ -104,7 +104,7 @@ class _TimeRangeSelectorState extends State<TimeRangeSelector> {
       child: Builder(
         builder: (context) {
           return GestureDetector(
-            onTap: () => onPressed(index, context),
+            onTap: () => unawaited(onPressed(index, context)),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(

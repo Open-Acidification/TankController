@@ -293,7 +293,8 @@ class HttpClientTest extends HttpClient {
     if (filePath == 'logs' || filePath == 'logs/index.html') {
       return testHTML;
     } else if (filePath == 'sample_short.log' ||
-        filePath == 'api/sample_short.log') {
+        filePath == 'api/sample_short.log' ||
+        filePath == '/logs/sample_short.log') {
       return '''
 Version	Tank ID	Severity	Date Time	Message	Temperature Target	Temperature Mean	Temperature Std Dev	pH Target	pH	Uptime	MAC Address	pH Slope	Ignoring Bad pH Calibration	Temperature Correction	Ignoring Bad Temperature Calibration	Heat (1) or Chill (0)	KD	KI	KP	pH Flat (0) Ramp (1) Sine (2)	pH Target	pH Ramp Start Time	pH Ramp End Time	pH Ramp Start Value	pH Sine Start Time	pH Sine Period	pH Sine Amplitude	Temperature Flat (0) Ramp (1) Sine (2)	Temperature Target	Temperature Ramp Start Time	Temperature Ramp End Time	Temperature Ramp Start Value	Temperature Sine Start Time	Temperature Sine Period	Temperature Sine Amplitude	Google Sheet Interval
 v25.1.1        	89	I	2025-01-23 15:38		20.11	20	0	7	0	60																										
@@ -302,7 +303,8 @@ v25.1.1        	89	I	2025-01-23 15:40		20.24	20	0	7	6.9	180
 v25.1.1        	89	I	2025-01-23 15:43		20.38	20	0	7	0	60																										
 v25.1.1        	89	I	2025-01-23 15:44		20.44	20	0	7	0	121																										
 ''';
-    } else if (filePath == 'sample_long.log') {
+    } else if (filePath == 'sample_long.log' ||
+        filePath == '/logs/sample_long.log') {
       return sampleData();
     } else if (filePath == 'api/sample_long.log') {
       return sampleSnapshotData();

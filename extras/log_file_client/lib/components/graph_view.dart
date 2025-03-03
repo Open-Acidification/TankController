@@ -1,17 +1,18 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:log_file_client/components/toggle_button.dart';
+import 'package:log_file_client/components/chart_series_selector.dart';
+import 'package:log_file_client/components/time_range_selector.dart';
 import 'package:log_file_client/utils/http_client.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class GraphView extends StatefulWidget {
   const GraphView({
-    required this.filePath,
-    required this.httpClient,
+    required this.logData,
     super.key,
   });
 
-  final String filePath;
-  final HttpClient httpClient;
+  final List<LogDataLine> logData;
 
   @override
   State<GraphView> createState() => _GraphViewState();
@@ -20,10 +21,19 @@ class GraphView extends StatefulWidget {
 class _GraphViewState extends State<GraphView> {
   bool _showPH = true;
   bool _showTemp = true;
+  late final DateTimeRange avaliableTimeRange;
+  late List<int> _displayedTimeRange = [
+    max(widget.logData.length - 1400, 0),
+    widget.logData.length,
+  ]; // 1 day
 
-  Future<List<LogDataLine>> getLogData() async {
-    final table = await widget.httpClient.getLogData(widget.filePath);
-    return table;
+  @override
+  void initState() {
+    super.initState();
+    avaliableTimeRange = DateTimeRange(
+      start: widget.logData.first.time,
+      end: widget.logData.last.time,
+    );
   }
 
   void toggleSeriesView(int index) {
@@ -36,54 +46,77 @@ class _GraphViewState extends State<GraphView> {
     });
   }
 
+  void toggleTimeRange(int index, DateTimeRange? customRange) {
+    final ranges = [
+      360, // 6 hours
+      720, // 12 hours
+      1440, // 1 day
+      4320, // 3 days
+      10080, // 7 days
+      43200, // 30 days
+      9999999, // Max
+    ];
+
+    setState(() {
+      if (index < 7) {
+        _displayedTimeRange = [
+          max(widget.logData.length - ranges[index], 0),
+          widget.logData.length,
+        ];
+      } else if (index == 7) {
+        final int endOffset =
+            avaliableTimeRange.end.difference(customRange!.end).inMinutes;
+        final int endIndex = widget.logData.length - endOffset;
+        final int startIndex = endIndex - customRange.duration.inMinutes;
+        _displayedTimeRange = [startIndex, endIndex];
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    // ignore: discarded_futures
-    final Future<List<LogDataLine>> logData = getLogData();
-
     return Scaffold(
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            _graphBuilder(logData),
-            _toggleButton(),
+            _topRow(widget.logData),
+            _graph(
+              widget.logData.sublist(
+                _displayedTimeRange[0],
+                _displayedTimeRange[1],
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  FutureBuilder _graphBuilder(
-    Future<List<LogDataLine>> logData,
-  ) {
-    return FutureBuilder<List<LogDataLine>>(
-      future: logData,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 300),
-            child: CircularProgressIndicator(),
-          );
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('No data found'));
-        } else {
-          final logData = snapshot.data!;
-          return _graph(logData);
-        }
-      },
-    );
-  }
-
-  Widget _toggleButton() {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 8.0),
-        child: ToggleButton(
-          onPressed: toggleSeriesView,
-        ),
+  Widget _topRow(List<LogDataLine> logData) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 70, right: 70, top: 15, bottom: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            'Tank ID: ${logData.first.tankid}',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+          Row(
+            children: [
+              ChartSeriesSelector(onPressed: toggleSeriesView),
+              const SizedBox(width: 10),
+              TimeRangeSelector(
+                onSelected: toggleTimeRange,
+                avaliableTimeRange: avaliableTimeRange,
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -107,7 +140,6 @@ class _GraphViewState extends State<GraphView> {
 
     return Expanded(
       child: SfCartesianChart(
-        title: ChartTitle(text: 'Tank ID: ${logData.first.tankid}'),
         backgroundColor: Colors.white,
         primaryXAxis: DateTimeAxis(
           title: AxisTitle(text: 'Time'),
@@ -117,13 +149,14 @@ class _GraphViewState extends State<GraphView> {
         primaryYAxis: NumericAxis(
           name: 'pHAxis',
           title: AxisTitle(text: 'pH Value'),
+          isVisible: _showPH,
         ),
         axes: <ChartAxis>[
           NumericAxis(
             name: 'TemperatureAxis',
             title: AxisTitle(text: 'Temperature Value'),
             opposedPosition: true,
-            isVisible: _showTemp && _showPH,
+            isVisible: _showTemp,
           ),
         ],
         trackballBehavior: trackballBehavior,
@@ -135,37 +168,14 @@ class _GraphViewState extends State<GraphView> {
   List<CartesianSeries> _chartSeries(List<LogDataLine> logData) {
     return <CartesianSeries>[
       LineSeries<LogDataLine, DateTime>(
-        legendItemText: 'temp',
-        name: 'temp',
-        dataSource: logData,
-        xValueMapper: (LogDataLine log, _) => log.time,
-        yValueMapper: (LogDataLine log, _) => log.tempMean,
-        color: Colors.blue,
-        yAxisName: 'TemperatureAxis',
-        animationDuration: 0,
-        initialIsVisible: _showTemp,
-      ),
-      LineSeries<LogDataLine, DateTime>(
-        legendItemText: 'temp setpoint',
-        name: 'temp setpoint',
-        dataSource: logData,
-        xValueMapper: (LogDataLine log, _) => log.time,
-        yValueMapper: (LogDataLine log, _) => log.tempTarget,
-        color: Colors.blue.shade800,
-        yAxisName: 'TemperatureAxis',
-        animationDuration: 0,
-        initialIsVisible: _showTemp,
-      ),
-      LineSeries<LogDataLine, DateTime>(
         legendItemText: 'pH',
         name: 'pH',
         dataSource: logData,
         xValueMapper: (LogDataLine log, _) => log.time,
         yValueMapper: (LogDataLine log, _) => log.phCurrent,
-        color: Colors.green,
+        color: _showPH ? Colors.green : Colors.transparent,
         yAxisName: 'pHAxis',
         animationDuration: 0,
-        initialIsVisible: _showPH,
       ),
       LineSeries<LogDataLine, DateTime>(
         legendItemText: 'pH setpoint',
@@ -173,10 +183,29 @@ class _GraphViewState extends State<GraphView> {
         dataSource: logData,
         xValueMapper: (LogDataLine log, _) => log.time,
         yValueMapper: (LogDataLine log, _) => log.phTarget,
-        color: Colors.green.shade800,
+        color: _showPH ? Colors.green.shade800 : Colors.transparent,
         yAxisName: 'pHAxis',
         animationDuration: 0,
-        initialIsVisible: _showPH,
+      ),
+      LineSeries<LogDataLine, DateTime>(
+        legendItemText: 'temp',
+        name: 'temp',
+        dataSource: logData,
+        xValueMapper: (LogDataLine log, _) => log.time,
+        yValueMapper: (LogDataLine log, _) => log.tempMean,
+        color: _showTemp ? Colors.blue : Colors.transparent,
+        yAxisName: 'TemperatureAxis',
+        animationDuration: 0,
+      ),
+      LineSeries<LogDataLine, DateTime>(
+        legendItemText: 'temp setpoint',
+        name: 'temp setpoint',
+        dataSource: logData,
+        xValueMapper: (LogDataLine log, _) => log.time,
+        yValueMapper: (LogDataLine log, _) => log.tempTarget,
+        color: _showTemp ? Colors.blue.shade800 : Colors.transparent,
+        yAxisName: 'TemperatureAxis',
+        animationDuration: 0,
       ),
     ];
   }

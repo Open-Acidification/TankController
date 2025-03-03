@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:log_file_client/components/chart_series_selector.dart';
 import 'package:log_file_client/components/graph_view.dart';
 import 'package:log_file_client/components/project_card.dart';
 import 'package:log_file_client/components/table_view.dart';
 import 'package:log_file_client/components/tank_card.dart';
 import 'package:log_file_client/components/tank_thumbnail.dart';
-import 'package:log_file_client/components/toggle_button.dart';
+import 'package:log_file_client/components/time_range_selector.dart';
 import 'package:log_file_client/main.dart';
+import 'package:log_file_client/pages/graph_page.dart';
 import 'package:log_file_client/pages/home_page.dart';
 import 'package:log_file_client/pages/project_page.dart';
 import 'package:log_file_client/utils/http_client.dart';
@@ -134,7 +136,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify that the graph page is displayed
-    expect(find.byType(GraphView), findsOneWidget);
+    expect(find.byType(GraphPage), findsOneWidget);
   });
 
   testWidgets('TableView displays table with log data from file',
@@ -206,12 +208,13 @@ void main() {
   });
 
   testWidgets('GraphView widget test', (WidgetTester tester) async {
-    // Build GraphView widget
+    tester.view.physicalSize = const Size(1920, 1080);
+    tester.view.devicePixelRatio = 1.0;
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          body: GraphView(
-            filePath: 'sample_short.log',
+          body: GraphPage(
+            log: Log('sample_short.log', 'sample_short.log'),
             httpClient: HttpClientTest(),
           ),
         ),
@@ -224,7 +227,8 @@ void main() {
     // Wait for the FutureBuilder to complete
     await tester.pumpAndSettle();
 
-    // Verify that the SfCartesianChart is rendered
+    // Verify that the graph is rendered
+    expect(find.byType(GraphView), findsOneWidget);
     expect(find.byType(SfCartesianChart), findsOneWidget);
 
     // Verify that the chart contains the correct line series for temperature and pH
@@ -240,26 +244,25 @@ void main() {
     );
   });
 
-  testWidgets('ToggleButton widget test', (WidgetTester tester) async {
-    // Build GraphView widget
+  testWidgets('ChartSeriesSelector widget test', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1920, 1080);
+    tester.view.devicePixelRatio = 1.0;
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          body: GraphView(
-            filePath: 'sample_short.log',
+          body: GraphPage(
+            log: Log('sample_short.log', 'sample_short.log'),
             httpClient: HttpClientTest(),
           ),
         ),
       ),
     );
 
-    // Verify that ToggleButton is shown while loading
-    expect(find.byType(ToggleButton), findsOneWidget);
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
-
+    // Verify that ChartSeriesSelector is shown
     await tester.pumpAndSettle();
+    expect(find.byType(ChartSeriesSelector), findsOneWidget);
 
-    // Check that ToggleButton removes line series
+    // Check that ChartSeriesSelector removes line series
     expect(
       find.byWidgetPredicate(
         (widget) => widget is LineSeries && widget.initialIsVisible,
@@ -267,24 +270,79 @@ void main() {
       findsNWidgets(4),
     );
 
-    await tester.tap(find.byKey(const Key('pH')));
+    await tester.tap(find.text('pH'));
     await tester.pumpAndSettle();
 
     expect(
       find.byWidgetPredicate(
-        (widget) => widget is LineSeries && widget.initialIsVisible,
+        (widget) => widget is LineSeries && widget.color != Colors.transparent,
       ),
       findsNWidgets(2),
     );
 
-    // Check that ToggleButton adds line series
-    await tester.tap(find.byKey(const Key('pH')));
+    // Check that ChartSeriesSelector adds line series
+    await tester.tap(find.text('pH'));
     await tester.pumpAndSettle();
     expect(
       find.byWidgetPredicate(
-        (widget) => widget is LineSeries && widget.initialIsVisible,
+        (widget) => widget is LineSeries && widget.color != Colors.transparent,
       ),
       findsNWidgets(4),
     );
   });
+
+  testWidgets('TimeRangeSelector widget test', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1920, 1080);
+    tester.view.devicePixelRatio = 1.0;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: GraphPage(
+            log: Log('sample_long.log', 'sample_long.log'),
+            httpClient: HttpClientTest(),
+          ),
+        ),
+      ),
+    );
+
+    // Verify that TimeRangeSelector is shown
+    await tester.pumpAndSettle();
+    expect(find.byType(TimeRangeSelector), findsOneWidget);
+
+    // Check that 24H (or max) is shown by default
+    await checkOption(tester, '24H', 1440, false);
+
+    // Check that selecting 6H shows 6H of data
+    await checkOption(tester, '6H', 360, true);
+
+    // Check that selecting Max shows all data
+    await checkOption(tester, 'Max', 576, true);
+  });
+}
+
+Future<void> checkOption(
+  WidgetTester tester,
+  String text,
+  int length,
+  bool exact,
+) async {
+  // Tap selector
+  await tester.tap(find.text(text));
+  await tester.pumpAndSettle();
+
+  // Text is selected
+  final selectedFinder = find.text(text);
+  expect(
+    tester.widget<Text>(selectedFinder).style!.color,
+    equals(Colors.black),
+  );
+
+  // Data points are displayed accurately
+  final graphFinder = find.byType(SfCartesianChart);
+  expect(graphFinder, findsOneWidget);
+  final graphWidget = tester.widget<SfCartesianChart>(graphFinder);
+  expect(
+    graphWidget.series.first.dataSource!.length,
+    exact ? length : lessThanOrEqualTo(length),
+  );
 }

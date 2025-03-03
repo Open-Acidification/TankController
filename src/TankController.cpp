@@ -40,7 +40,8 @@ TankController *TankController::instance(const char *remoteLogName, const char *
   if (!_instance) {
     serial(F("\r\n##############\r\nTankController %s"), TANK_CONTROLLER_VERSION);
     _instance = new TankController();
-    SD_TC::instance()->setRemoteLogName(remoteLogName);
+    SD_TC::instance();
+    RemoteLogPusher::instance()->setRemoteLogName(remoteLogName);
     EEPROM_TC::instance();
     Keypad_TC::instance();
     LiquidCrystal_TC::instance(TANK_CONTROLLER_VERSION);

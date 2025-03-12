@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:log_file_client/components/chart_series_selector.dart';
 import 'package:log_file_client/components/time_range_selector.dart';
 import 'package:log_file_client/utils/http_client.dart';
@@ -26,6 +27,7 @@ class _GraphViewState extends State<GraphView> {
     max(widget.logData.length - 1400, 0),
     widget.logData.length,
   ]; // 1 day
+  late DateTimeIntervalType timeIntervalType;
 
   @override
   void initState() {
@@ -34,6 +36,7 @@ class _GraphViewState extends State<GraphView> {
       start: widget.logData.first.time,
       end: widget.logData.last.time,
     );
+    calculateTimeInterval();
   }
 
   void toggleSeriesView(int index) {
@@ -70,7 +73,16 @@ class _GraphViewState extends State<GraphView> {
         final int startIndex = endIndex - customRange.duration.inMinutes;
         _displayedTimeRange = [startIndex, endIndex];
       }
+      calculateTimeInterval();
     });
+  }
+
+  void calculateTimeInterval() {
+    if (_displayedTimeRange[1] - _displayedTimeRange[0] < 1440) {
+      timeIntervalType = DateTimeIntervalType.hours;
+    } else {
+      timeIntervalType = DateTimeIntervalType.days;
+    }
   }
 
   @override
@@ -143,8 +155,9 @@ class _GraphViewState extends State<GraphView> {
         backgroundColor: Colors.white,
         primaryXAxis: DateTimeAxis(
           title: AxisTitle(text: 'Time'),
-          intervalType: DateTimeIntervalType.hours,
+          intervalType: timeIntervalType,
           interval: 1,
+          dateFormat: DateFormat('MMM d hh:mm a'),
         ),
         primaryYAxis: NumericAxis(
           name: 'pHAxis',

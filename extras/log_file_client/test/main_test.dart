@@ -231,14 +231,14 @@ void main() {
     expect(find.byType(GraphView), findsOneWidget);
     expect(find.byType(SfCartesianChart), findsOneWidget);
 
-    // Verify that the chart contains the correct line series for temperature and pH
+    // Verify that the chart contains the correct series for temperature and pH
     expect(find.text('temp'), findsOneWidget);
     expect(find.text('pH'), findsOneWidget);
 
-    // Check for LineSeries widget presence
+    // Check for ScatterSeries widget presence
     expect(
       find.byWidgetPredicate(
-        (widget) => widget is LineSeries,
+        (widget) => widget is ScatterSeries,
       ),
       findsNWidgets(4),
     );
@@ -262,10 +262,10 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(ChartSeriesSelector), findsOneWidget);
 
-    // Check that ChartSeriesSelector removes line series
+    // Check that ChartSeriesSelector removes series
     expect(
       find.byWidgetPredicate(
-        (widget) => widget is LineSeries && widget.initialIsVisible,
+        (widget) => widget is ScatterSeries && widget.initialIsVisible,
       ),
       findsNWidgets(4),
     );
@@ -275,17 +275,17 @@ void main() {
 
     expect(
       find.byWidgetPredicate(
-        (widget) => widget is LineSeries && widget.color != Colors.transparent,
+        (widget) => widget is ScatterSeries && widget.color != Colors.transparent,
       ),
       findsNWidgets(2),
     );
 
-    // Check that ChartSeriesSelector adds line series
+    // Check that ChartSeriesSelector adds series
     await tester.tap(find.text('pH'));
     await tester.pumpAndSettle();
     expect(
       find.byWidgetPredicate(
-        (widget) => widget is LineSeries && widget.color != Colors.transparent,
+        (widget) => widget is ScatterSeries && widget.color != Colors.transparent,
       ),
       findsNWidgets(4),
     );

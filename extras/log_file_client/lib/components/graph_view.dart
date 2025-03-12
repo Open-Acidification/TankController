@@ -179,8 +179,10 @@ class _GraphViewState extends State<GraphView> {
   }
 
   List<CartesianSeries> _chartSeries(List<LogDataLine> logData) {
+    final MarkerSettings markerSettings = MarkerSettings(height: 2, width: 2);
+
     return <CartesianSeries>[
-      LineSeries<LogDataLine, DateTime>(
+      ScatterSeries<LogDataLine, DateTime>(
         legendItemText: 'pH',
         name: 'pH',
         dataSource: logData,
@@ -189,8 +191,9 @@ class _GraphViewState extends State<GraphView> {
         color: _showPH ? Colors.green : Colors.transparent,
         yAxisName: 'pHAxis',
         animationDuration: 0,
+        markerSettings: markerSettings,
       ),
-      LineSeries<LogDataLine, DateTime>(
+      ScatterSeries<LogDataLine, DateTime>(
         legendItemText: 'pH setpoint',
         name: 'pH setpoint',
         dataSource: logData,
@@ -199,8 +202,9 @@ class _GraphViewState extends State<GraphView> {
         color: _showPH ? Colors.green.shade800 : Colors.transparent,
         yAxisName: 'pHAxis',
         animationDuration: 0,
+        markerSettings: markerSettings,
       ),
-      LineSeries<LogDataLine, DateTime>(
+      ScatterSeries<LogDataLine, DateTime>(
         legendItemText: 'temp',
         name: 'temp',
         dataSource: logData,
@@ -209,8 +213,9 @@ class _GraphViewState extends State<GraphView> {
         color: _showTemp ? Colors.blue : Colors.transparent,
         yAxisName: 'TemperatureAxis',
         animationDuration: 0,
+        markerSettings: markerSettings,
       ),
-      LineSeries<LogDataLine, DateTime>(
+      ScatterSeries<LogDataLine, DateTime>(
         legendItemText: 'temp setpoint',
         name: 'temp setpoint',
         dataSource: logData,
@@ -219,6 +224,7 @@ class _GraphViewState extends State<GraphView> {
         color: _showTemp ? Colors.blue.shade800 : Colors.transparent,
         yAxisName: 'TemperatureAxis',
         animationDuration: 0,
+        markerSettings: markerSettings,
       ),
     ];
   }

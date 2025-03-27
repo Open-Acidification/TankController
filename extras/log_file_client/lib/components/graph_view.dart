@@ -78,7 +78,7 @@ class _GraphViewState extends State<GraphView> {
   }
 
   void calculateTimeInterval() {
-    if (_displayedTimeRange[1] - _displayedTimeRange[0] < 1440) {
+    if (_displayedTimeRange[1] - _displayedTimeRange[0] <= 1440) {
       timeIntervalType = DateTimeIntervalType.hours;
     } else {
       timeIntervalType = DateTimeIntervalType.days;
@@ -192,6 +192,7 @@ class _GraphViewState extends State<GraphView> {
         yAxisName: 'pHAxis',
         animationDuration: 0,
         markerSettings: markerSettings,
+        enableTrackball: _showPH,
       ),
       ScatterSeries<LogDataLine, DateTime>(
         legendItemText: 'pH setpoint',
@@ -203,6 +204,7 @@ class _GraphViewState extends State<GraphView> {
         yAxisName: 'pHAxis',
         animationDuration: 0,
         markerSettings: markerSettings,
+        enableTrackball: _showPH,
       ),
       ScatterSeries<LogDataLine, DateTime>(
         legendItemText: 'temp',
@@ -214,6 +216,7 @@ class _GraphViewState extends State<GraphView> {
         yAxisName: 'TemperatureAxis',
         animationDuration: 0,
         markerSettings: markerSettings,
+        enableTrackball: _showTemp,
       ),
       ScatterSeries<LogDataLine, DateTime>(
         legendItemText: 'temp setpoint',
@@ -225,6 +228,7 @@ class _GraphViewState extends State<GraphView> {
         yAxisName: 'TemperatureAxis',
         animationDuration: 0,
         markerSettings: markerSettings,
+        enableTrackball: _showTemp,
       ),
     ];
   }

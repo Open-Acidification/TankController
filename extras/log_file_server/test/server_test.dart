@@ -33,6 +33,72 @@ void main() {
     expect(logTable.length, 10); // 10 lines
   });
 
+  test('trimToTimeRange trims normal list', () async {
+    final testList = [
+      ['v0', 0, 'I', '2023-10-01 00:00:00'],
+      ['v0', 0, 'I', '2023-10-01 00:01:00'],
+      ['v0', 0, 'I', '2023-10-01 00:02:00'],
+      ['v0', 0, 'I', '2023-10-01 00:03:00'],
+      ['v0', 0, 'I', '2023-10-01 00:04:00'],
+      ['v0', 0, 'I', '2023-10-01 00:05:00'],
+      ['v0', 0, 'I', '2023-10-01 00:06:00'],
+      ['v0', 0, 'I', '2023-10-01 00:07:00'],
+      ['v0', 0, 'I', '2023-10-01 00:08:00'],
+      ['v0', 0, 'I', '2023-10-01 00:09:00'],
+    ];
+
+    final newList =
+        trimToTimeRange(testList, 5, DateTime.parse('2023-10-01 00:10:00'));
+
+    expect(newList.length, 5);
+    expect(newList[0][3], '2023-10-01 00:05:00');
+    expect(newList[4][3], '2023-10-01 00:09:00');
+  });
+
+  test('trimToTimeRange trims empty list', () async {
+    final testList = [[]];
+
+    final newList =
+        trimToTimeRange(testList, 5, DateTime.parse('2023-10-01 00:10:00'));
+
+    expect(newList.length, 0);
+  });
+
+  test('trimToTimeRange trims list shorter than target range', () async {
+    final testList = [
+      ['v0', 0, 'I', '2023-10-01 00:07:00'],
+      ['v0', 0, 'I', '2023-10-01 00:08:00'],
+      ['v0', 0, 'I', '2023-10-01 00:09:00'],
+    ];
+
+    final newList =
+        trimToTimeRange(testList, 5, DateTime.parse('2023-10-01 00:10:00'));
+
+    expect(newList.length, 3);
+    expect(newList[0][3], '2023-10-01 00:07:00');
+    expect(newList[2][3], '2023-10-01 00:09:00');
+  });
+
+  test('trimToTimeRange trims list with missing minutes', () async {
+    final testList = [
+      ['v0', 0, 'I', '2023-10-01 00:00:00'],
+      ['v0', 0, 'I', '2023-10-01 00:01:00'],
+      ['v0', 0, 'I', '2023-10-01 00:02:00'],
+      ['v0', 0, 'I', '2023-10-01 00:03:00'],
+      ['v0', 0, 'I', '2023-10-01 00:04:00'],
+      ['v0', 0, 'I', '2023-10-01 00:05:00'],
+      ['v0', 0, 'I', '2023-10-01 00:06:00'],
+      ['v0', 0, 'I', '2023-10-01 00:09:00'],
+    ];
+
+    final newList =
+        trimToTimeRange(testList, 5, DateTime.parse('2023-10-01 00:10:00'));
+
+    expect(newList.length, 3);
+    expect(newList[0][3], '2023-10-01 00:05:00');
+    expect(newList[2][3], '2023-10-01 00:09:00');
+  });
+
   test('condenseToGranularity', () async {
     final testList = [
       ['2023-10-01 00:00:00', 'I', 'test'],

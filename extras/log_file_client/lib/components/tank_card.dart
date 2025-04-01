@@ -33,7 +33,7 @@ class TankCard extends StatelessWidget {
         onTap: onTap,
         child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
-            final double cardWidth = constraints.maxWidth * 0.93;
+            final double cardWidth = constraints.maxWidth;
             final double titleFontSize = 20;
             final double tankInfoFontSize = 16;
             final double tankInfoHeaderFontSize = 14;
@@ -101,7 +101,7 @@ class TankCard extends StatelessWidget {
     AsyncSnapshot<TankSnapshot>? snapshot,
   ) {
     return SizedBox(
-      height: cardWidth * 0.6,
+      height: cardWidth * 0.53,
       child: ClipRRect(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(20),

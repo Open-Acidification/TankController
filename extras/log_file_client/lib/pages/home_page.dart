@@ -102,7 +102,11 @@ class _HomePageState extends State<HomePage> {
 
   Widget _projectCards() {
     final screenWidth = MediaQuery.of(context).size.width;
-    final int gridCrossAxis = screenWidth > 800 ? 3 : screenWidth > 500 ? 2 : 1;
+    final int gridCrossAxis = screenWidth > 800
+        ? 3
+        : screenWidth > 500
+            ? 2
+            : 1;
     final double sideMargins = screenWidth > 500 ? 100 : 40;
 
     return _isLoading

@@ -37,7 +37,11 @@ class _ProjectPageState extends State<ProjectPage> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final int gridCrossAxis = screenWidth > 1024 ? 3 : screenWidth > 500 ? 2 : 1;
+    final int gridCrossAxis = screenWidth > 1024
+        ? 3
+        : screenWidth > 500
+            ? 2
+            : 1;
     final double sideMargins = screenWidth > 500 ? 100 : 10;
 
     return Scaffold(
@@ -56,7 +60,7 @@ class _ProjectPageState extends State<ProjectPage> {
     );
   }
 
-  Expanded _tankCards(int gridCrossAxis, double sideMargins){
+  Expanded _tankCards(int gridCrossAxis, double sideMargins) {
     return Expanded(
       child: GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

@@ -52,6 +52,8 @@ void main() {
 
   testWidgets('ProjectCard opens project page when selected',
       (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1920, 1080);
+    tester.view.devicePixelRatio = 1.0;
     await tester.pumpWidget(
       MaterialApp(
         home: HomePage(

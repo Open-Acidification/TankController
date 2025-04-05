@@ -3,9 +3,11 @@ import 'package:log_file_client/utils/http_client.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class TankThumbnail extends StatelessWidget {
-  const TankThumbnail({required this.snapshot, super.key});
+  TankThumbnail({required this.snapshot, DateTime? now, super.key})
+      : now = now ?? DateTime.now();
 
   final TankSnapshot snapshot;
+  final DateTime now;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,8 @@ class TankThumbnail extends StatelessWidget {
           intervalType: DateTimeIntervalType.hours,
           interval: 6,
           labelStyle: TextStyle(color: Colors.grey.shade700),
+          maximum: now,
+          minimum: now.subtract(const Duration(hours: 12)),
         ),
         primaryYAxis: NumericAxis(
           name: axis,

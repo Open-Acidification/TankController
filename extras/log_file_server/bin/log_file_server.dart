@@ -26,6 +26,9 @@ Future<Response> _get(Request req, String path) async {
   final snapshotGranularity = uri.queryParameters['granularity'] == null
       ? 5
       : int.parse(uri.queryParameters['granularity']!);
+  final now = uri.queryParameters['now'] == null
+      ? DateTime.now()
+      : DateTime.tryParse(uri.queryParameters['now']!) ?? DateTime.now();
 
   if (!file.existsSync()) {
     return Response.notFound(null);
@@ -39,7 +42,7 @@ Future<Response> _get(Request req, String path) async {
   logTable.removeWhere((row) => row[2] != 'I');
 
   // Condense to time range and granularity
-  logTable = trimToTimeRange(logTable, snapshotLength, DateTime.now());
+  logTable = trimToTimeRange(logTable, snapshotLength, now);
   logTable = condenseToGranularity(logTable, snapshotGranularity);
   final finalBody = const ListToCsvConverter(fieldDelimiter: '\t', eol: '\n')
       .convert(logTable);

@@ -241,18 +241,18 @@ class TankCard extends StatelessWidget {
     String textData = 'mock';
     if (mode == TankInfoMode.current) {
       if (type == TankInfoType.pH) {
-        textData = 'pH ${snapshot?.data!.pH ?? 'mock'}';
+        textData = 'pH ${snapshot?.data!.pH ?? '----'}';
       } else {
-        textData = '${snapshot?.data!.temperature ?? 'mock'}°C';
+        textData = '${snapshot?.data!.temperature ?? '----'}°C';
       }
     } else if (mode == TankInfoMode.range) {
       if (type == TankInfoType.pH) {
-        final min = snapshot?.data!.minPH ?? 'm.k';
-        final max = snapshot?.data!.maxPH ?? 'm.k';
+        final min = snapshot?.data!.minPH ?? '---';
+        final max = snapshot?.data!.maxPH ?? '---';
         textData = 'pH $min - $max';
       } else {
-        final min = snapshot?.data!.minTemp ?? 'mk';
-        final max = snapshot?.data!.maxTemp ?? 'mk';
+        final min = snapshot?.data!.minTemp ?? '--';
+        final max = snapshot?.data!.maxTemp ?? '--';
         textData = '$min - $max°C';
       }
     }

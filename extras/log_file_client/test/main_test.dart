@@ -114,6 +114,30 @@ void main() {
     // Verify that the TankThumbnail widget is displayed
     expect(find.byType(TankThumbnail), findsOneWidget);
   });
+
+  testWidgets('TankThumbnail is able to build from empty snapshot',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(
+      TankThumbnail(
+        snapshot: TankSnapshot(
+          Log('test', 'test.log'),
+          [],
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(TankThumbnail), findsOneWidget);
+    expect(find.text('No data available within past 12 hrs'), findsOneWidget);
+  });
   testWidgets('TankCard opens graph when selected',
       (WidgetTester tester) async {
     tester.view.physicalSize = const Size(1920, 1080);
@@ -275,7 +299,8 @@ void main() {
 
     expect(
       find.byWidgetPredicate(
-        (widget) => widget is ScatterSeries && widget.color != Colors.transparent,
+        (widget) =>
+            widget is ScatterSeries && widget.color != Colors.transparent,
       ),
       findsNWidgets(2),
     );
@@ -285,7 +310,8 @@ void main() {
     await tester.pumpAndSettle();
     expect(
       find.byWidgetPredicate(
-        (widget) => widget is ScatterSeries && widget.color != Colors.transparent,
+        (widget) =>
+            widget is ScatterSeries && widget.color != Colors.transparent,
       ),
       findsNWidgets(4),
     );

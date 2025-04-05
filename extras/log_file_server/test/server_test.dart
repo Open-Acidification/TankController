@@ -99,6 +99,25 @@ void main() {
     expect(newList[2][3], '2023-10-01 00:09:00');
   });
 
+  test('trimToTimeRange returns empty list when last data is too old',
+      () async {
+    final testList = [
+      ['v0', 0, 'I', '2023-10-01 00:00:00'],
+      ['v0', 0, 'I', '2023-10-01 00:01:00'],
+      ['v0', 0, 'I', '2023-10-01 00:02:00'],
+      ['v0', 0, 'I', '2023-10-01 00:03:00'],
+      ['v0', 0, 'I', '2023-10-01 00:04:00'],
+      ['v0', 0, 'I', '2023-10-01 00:05:00'],
+      ['v0', 0, 'I', '2023-10-01 00:06:00'],
+      ['v0', 0, 'I', '2023-10-01 00:09:00'],
+    ];
+
+    final newList =
+        trimToTimeRange(testList, 5, DateTime.parse('2023-10-01 00:20:00'));
+
+    expect(newList, equals([]));
+  });
+
   test('condenseToGranularity', () async {
     final testList = [
       ['2023-10-01 00:00:00', 'I', 'test'],

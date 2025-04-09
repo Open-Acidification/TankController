@@ -26,8 +26,10 @@ class _GraphViewState extends State<GraphView> {
   late List<int> _displayedTimeRange = [
     max(widget.logData.length - 1400, 0),
     widget.logData.length,
-  ]; // 1 day
+  ]; // 1 day default
   late DateTimeIntervalType timeIntervalType;
+  late double timeInterval;
+  late DateFormat timeFormat;
 
   @override
   void initState() {
@@ -36,7 +38,7 @@ class _GraphViewState extends State<GraphView> {
       start: widget.logData.first.time,
       end: widget.logData.last.time,
     );
-    calculateTimeInterval();
+    calculateTimeAxisFormat();
   }
 
   void toggleSeriesView(int index) {
@@ -73,15 +75,23 @@ class _GraphViewState extends State<GraphView> {
         final int startIndex = endIndex - customRange.duration.inMinutes;
         _displayedTimeRange = [startIndex, endIndex];
       }
-      calculateTimeInterval();
+      calculateTimeAxisFormat();
     });
   }
 
-  void calculateTimeInterval() {
+  void calculateTimeAxisFormat() {
+    timeInterval = 1;
+
     if (_displayedTimeRange[1] - _displayedTimeRange[0] <= 1440) {
       timeIntervalType = DateTimeIntervalType.hours;
+      timeFormat = DateFormat('h a');
+    } else if (_displayedTimeRange[1] - _displayedTimeRange[0] <= 4320) {
+      timeIntervalType = DateTimeIntervalType.days;
+      timeFormat = DateFormat('h a\nMMM d');
+      timeInterval = 0.5;
     } else {
       timeIntervalType = DateTimeIntervalType.days;
+      timeFormat = DateFormat('MMM d');
     }
   }
 
@@ -156,8 +166,8 @@ class _GraphViewState extends State<GraphView> {
         primaryXAxis: DateTimeAxis(
           title: AxisTitle(text: 'Time'),
           intervalType: timeIntervalType,
-          interval: 1,
-          dateFormat: DateFormat('MMM d hh:mm a'),
+          interval: timeInterval,
+          dateFormat: timeFormat,
         ),
         primaryYAxis: NumericAxis(
           name: 'pHAxis',

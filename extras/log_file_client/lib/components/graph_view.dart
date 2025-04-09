@@ -31,6 +31,8 @@ class _GraphViewState extends State<GraphView> {
   late double timeInterval;
   late DateFormat timeFormat;
 
+  final List<Color> _seriesColors = [];
+
   @override
   void initState() {
     super.initState();
@@ -147,17 +149,14 @@ class _GraphViewState extends State<GraphView> {
     final trackballBehavior = TrackballBehavior(
       enable: true,
       tooltipDisplayMode: TrackballDisplayMode.groupAllPoints,
+      activationMode: ActivationMode.singleTap,
       markerSettings: TrackballMarkerSettings(
         markerVisibility: TrackballVisibilityMode.visible,
       ),
-      tooltipSettings: InteractiveTooltip(
-        enable: true,
-        format: 'series.name : point.y',
-      ),
-      activationMode: ActivationMode.singleTap,
       lineColor: Colors.grey.shade600,
       lineWidth: 1.5,
       lineDashArray: [2, 2],
+      builder: _trackballBuilder,
     );
 
     return Expanded(
@@ -188,6 +187,90 @@ class _GraphViewState extends State<GraphView> {
     );
   }
 
+  Widget _trackballBuilder(BuildContext context, TrackballDetails details) {
+    final ThemeData themeData = Theme.of(context);
+    final TextStyle textStyle = themeData.textTheme.bodySmall!.copyWith(
+      color: themeData.colorScheme.onInverseSurface,
+    );
+    final TextStyle headerStyle = textStyle.copyWith(
+      fontWeight: FontWeight.bold,
+    );
+
+    final String header = DateFormat('MMM d hh:mm a')
+        .format(details.groupingModeInfo?.points.first.x);
+
+    final labels = ['pH', 'pH setpoint', 'temp', 'temp setpoint'];
+    final trackballLines = List.generate(
+      labels.length,
+      (i) => _trackballLine(
+        details.groupingModeInfo!.points[i],
+        labels[i],
+        i,
+        textStyle,
+      ),
+    );
+
+    return Container(
+      width: 155,
+      height: 106,
+      padding: EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Color(0xFF2F3036),
+        borderRadius: BorderRadius.circular(6),
+        boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 2)],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Text(
+              header,
+              style: headerStyle,
+            ),
+          ),
+          Divider(
+            height: 10.0,
+            thickness: 1,
+            color: themeData.colorScheme.onInverseSurface,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: trackballLines,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Row _trackballLine(
+    CartesianChartPoint point,
+    String seriesName,
+    int seriesColor,
+    TextStyle textStyle,
+  ) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsetsDirectional.only(end: 3.0),
+          child: Container(
+            padding: EdgeInsets.all(2.0),
+            width: 10,
+            height: 10,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: _seriesColors[seriesColor],
+            ),
+          ),
+        ),
+        Text(
+          '$seriesName : ${point.y}',
+          style: textStyle,
+        ),
+      ],
+    );
+  }
+
   List<CartesianSeries> _chartSeries(List<LogDataLine> logData) {
     final MarkerSettings markerSettings = MarkerSettings(height: 2, width: 2);
 
@@ -203,6 +286,7 @@ class _GraphViewState extends State<GraphView> {
         animationDuration: 0,
         markerSettings: markerSettings,
         enableTrackball: _showPH,
+        onCreateRenderer: (series) => _ScatterSeriesRenderer(this),
       ),
       ScatterSeries<LogDataLine, DateTime>(
         legendItemText: 'pH setpoint',
@@ -215,6 +299,7 @@ class _GraphViewState extends State<GraphView> {
         animationDuration: 0,
         markerSettings: markerSettings,
         enableTrackball: _showPH,
+        onCreateRenderer: (series) => _ScatterSeriesRenderer(this),
       ),
       ScatterSeries<LogDataLine, DateTime>(
         legendItemText: 'temp',
@@ -227,6 +312,7 @@ class _GraphViewState extends State<GraphView> {
         animationDuration: 0,
         markerSettings: markerSettings,
         enableTrackball: _showTemp,
+        onCreateRenderer: (series) => _ScatterSeriesRenderer(this),
       ),
       ScatterSeries<LogDataLine, DateTime>(
         legendItemText: 'temp setpoint',
@@ -239,7 +325,23 @@ class _GraphViewState extends State<GraphView> {
         animationDuration: 0,
         markerSettings: markerSettings,
         enableTrackball: _showTemp,
+        onCreateRenderer: (series) => _ScatterSeriesRenderer(this),
       ),
     ];
+  }
+}
+
+class _ScatterSeriesRenderer
+    extends ScatterSeriesRenderer<LogDataLine, DateTime> {
+  _ScatterSeriesRenderer(this._state);
+
+  final _GraphViewState _state;
+
+  @override
+  void customizeSegment(ChartSegment segment) {
+    super.customizeSegment(segment);
+    if (!_state._seriesColors.contains(segment.fillPaint.color)) {
+      _state._seriesColors.add(segment.fillPaint.color);
+    }
   }
 }

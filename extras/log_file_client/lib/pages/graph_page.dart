@@ -3,8 +3,14 @@ import 'package:log_file_client/components/graph_view.dart';
 import 'package:log_file_client/utils/http_client.dart';
 
 class GraphPage extends StatelessWidget {
-  const GraphPage({required this.log, required this.httpClient, super.key});
+  const GraphPage({
+    required this.log,
+    required this.httpClient,
+    this.now,
+    super.key,
+  });
 
+  final DateTime? now;
   final HttpClient httpClient;
   final Log log;
 
@@ -41,6 +47,7 @@ class GraphPage extends StatelessWidget {
               final logData = snapshot.data!;
               return GraphView(
                 logData: logData,
+                now: now,
               );
             }
           },

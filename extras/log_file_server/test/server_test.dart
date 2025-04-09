@@ -11,7 +11,8 @@ void main() {
   // Start the server in a different shell before running tests
   test('Get snapshot from /api/snapshotTest.log', () async {
     final response = await get(
-        Uri.parse('$host/api/snapshotTest.log?now=2025-01-09T16:05:00'));
+      Uri.parse('$host/api/snapshotTest.log?now=2025-01-09T16:05:00'),
+    );
     expect(response.statusCode, 200);
 
     final logTable = const CsvToListConverter(fieldDelimiter: '\t', eol: '\n')
@@ -24,7 +25,8 @@ void main() {
   test('Get snapshot using parameters', () async {
     final response = await get(
       Uri.parse(
-          '$host/api/snapshotTest.log?now=2025-01-09T16:05:00&length=10&granularity=1'),
+        '$host/api/snapshotTest.log?now=2025-01-09T16:05:00&length=10&granularity=1',
+      ),
     );
     expect(response.statusCode, 200);
 

@@ -328,6 +328,7 @@ void main() {
           body: GraphPage(
             log: Log('sample_long.log', 'sample_long.log'),
             httpClient: HttpClientTest(),
+            now: DateTime(2025, 1, 24, 16, 33),
           ),
         ),
       ),
@@ -340,8 +341,8 @@ void main() {
     // Check that 24H (or max) is shown by default
     await checkOption(tester, '24H', 1440, false);
 
-    // Check that selecting 6H shows 6H of data
-    await checkOption(tester, '6H', 360, true);
+    // Check that selecting 6H shows last 6H of data (missing minutes in test file add up to 222 lines over the last 6 hrs)
+    await checkOption(tester, '6H', 222, true);
 
     // Check that selecting Max shows all data
     await checkOption(tester, 'Max', 576, true);

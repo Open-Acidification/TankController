@@ -189,7 +189,7 @@ abstract class HttpClient {
 
     // Filter out header and empty rows
     logTable.removeWhere((row) => row.isEmpty);
-    logTable.removeWhere((row) => row[0].substring(0, 1) != 'v');
+    logTable.removeWhere((row) => row[0].toString().substring(0, 1) != 'v');
 
     // Parse the date strings
     for (int i = 0; i < logTable.length; i++) {
@@ -255,7 +255,7 @@ class HttpClientProd extends HttpClient {
   Future<String> fetchData(String filePath) async {
     Uri url;
     if (Uri.base.toString() == 'https://oap.cs.wallawalla.edu/') {
-      url = Uri.https('oap.cs.wallawalla.edu/', filePath);
+      url = Uri.https('oap.cs.wallawalla.edu', filePath);
     } else {
       url = Uri.http('localhost:8080', filePath);
     }

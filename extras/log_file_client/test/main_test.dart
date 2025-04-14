@@ -52,6 +52,8 @@ void main() {
 
   testWidgets('ProjectCard opens project page when selected',
       (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1920, 1080);
+    tester.view.devicePixelRatio = 1.0;
     await tester.pumpWidget(
       MaterialApp(
         home: HomePage(
@@ -113,6 +115,30 @@ void main() {
 
     // Verify that the TankThumbnail widget is displayed
     expect(find.byType(TankThumbnail), findsOneWidget);
+  });
+
+  testWidgets('TankThumbnail is able to build from empty snapshot',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(
+      TankThumbnail(
+        snapshot: TankSnapshot(
+          Log('test', 'test.log'),
+          [],
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(TankThumbnail), findsOneWidget);
+    expect(find.text('No data available within past 12 hrs'), findsOneWidget);
   });
   testWidgets('TankCard opens graph when selected',
       (WidgetTester tester) async {
@@ -231,14 +257,14 @@ void main() {
     expect(find.byType(GraphView), findsOneWidget);
     expect(find.byType(SfCartesianChart), findsOneWidget);
 
-    // Verify that the chart contains the correct line series for temperature and pH
+    // Verify that the chart contains the correct series for temperature and pH
     expect(find.text('temp'), findsOneWidget);
     expect(find.text('pH'), findsOneWidget);
 
-    // Check for LineSeries widget presence
+    // Check for ScatterSeries widget presence
     expect(
       find.byWidgetPredicate(
-        (widget) => widget is LineSeries,
+        (widget) => widget is ScatterSeries,
       ),
       findsNWidgets(4),
     );
@@ -262,10 +288,10 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(ChartSeriesSelector), findsOneWidget);
 
-    // Check that ChartSeriesSelector removes line series
+    // Check that ChartSeriesSelector removes series
     expect(
       find.byWidgetPredicate(
-        (widget) => widget is LineSeries && widget.initialIsVisible,
+        (widget) => widget is ScatterSeries && widget.initialIsVisible,
       ),
       findsNWidgets(4),
     );
@@ -275,17 +301,19 @@ void main() {
 
     expect(
       find.byWidgetPredicate(
-        (widget) => widget is LineSeries && widget.color != Colors.transparent,
+        (widget) =>
+            widget is ScatterSeries && widget.color != Colors.transparent,
       ),
       findsNWidgets(2),
     );
 
-    // Check that ChartSeriesSelector adds line series
+    // Check that ChartSeriesSelector adds series
     await tester.tap(find.text('pH'));
     await tester.pumpAndSettle();
     expect(
       find.byWidgetPredicate(
-        (widget) => widget is LineSeries && widget.color != Colors.transparent,
+        (widget) =>
+            widget is ScatterSeries && widget.color != Colors.transparent,
       ),
       findsNWidgets(4),
     );
@@ -300,6 +328,7 @@ void main() {
           body: GraphPage(
             log: Log('sample_long.log', 'sample_long.log'),
             httpClient: HttpClientTest(),
+            now: DateTime(2025, 1, 24, 16, 33),
           ),
         ),
       ),
@@ -312,8 +341,8 @@ void main() {
     // Check that 24H (or max) is shown by default
     await checkOption(tester, '24H', 1440, false);
 
-    // Check that selecting 6H shows 6H of data
-    await checkOption(tester, '6H', 360, true);
+    // Check that selecting 6H shows last 6H of data (missing minutes in test file add up to 222 lines over the last 6 hrs)
+    await checkOption(tester, '6H', 222, true);
 
     // Check that selecting Max shows all data
     await checkOption(tester, 'Max', 576, true);

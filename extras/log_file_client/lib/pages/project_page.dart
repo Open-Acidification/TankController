@@ -37,14 +37,12 @@ class _ProjectPageState extends State<ProjectPage> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final int gridCrossAxis;
-    if (screenWidth > 1370) {
-      gridCrossAxis = 3;
-    } else if (screenWidth > 980) {
-      gridCrossAxis = 2;
-    } else {
-      gridCrossAxis = 1;
-    }
+    final int gridCrossAxis = screenWidth > 1024
+        ? 3
+        : screenWidth > 500
+            ? 2
+            : 1;
+    final double sideMargins = screenWidth > 500 ? 100 : 10;
 
     return Scaffold(
       appBar: AppBar(
@@ -55,14 +53,14 @@ class _ProjectPageState extends State<ProjectPage> {
         child: Column(
           children: [
             PageHeader(text: '${widget.project.name} Tanks'),
-            _tankCards(gridCrossAxis),
+            _tankCards(gridCrossAxis, sideMargins),
           ],
         ),
       ),
     );
   }
 
-  Expanded _tankCards(int gridCrossAxis) {
+  Expanded _tankCards(int gridCrossAxis, double sideMargins) {
     return Expanded(
       child: GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -77,8 +75,8 @@ class _ProjectPageState extends State<ProjectPage> {
           );
         },
         padding: EdgeInsets.only(
-          left: 100,
-          right: 100,
+          left: sideMargins,
+          right: sideMargins,
           top: 16,
         ),
       ),

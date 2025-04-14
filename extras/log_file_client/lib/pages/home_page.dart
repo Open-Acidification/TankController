@@ -58,9 +58,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final gridCrossAxis = screenWidth > 750 ? 3 : 2;
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -73,7 +70,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             PageHeader(text: 'Projects'),
-            _projectCards(gridCrossAxis),
+            _projectCards(),
           ],
         ),
       ),
@@ -103,9 +100,17 @@ class _HomePageState extends State<HomePage> {
   //   );
   // }
 
-  Widget _projectCards(int gridCrossAxis) {
+  Widget _projectCards() {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final int gridCrossAxis = screenWidth > 800
+        ? 3
+        : screenWidth > 500
+            ? 2
+            : 1;
+    final double sideMargins = screenWidth > 500 ? 100 : 40;
+
     return _isLoading
-        ? _skeletonLoader(gridCrossAxis)
+        ? _skeletonLoader(gridCrossAxis, sideMargins)
         : Expanded(
             child: GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -118,16 +123,12 @@ class _HomePageState extends State<HomePage> {
                   onTap: () => unawaited(openProject(_projectList![index])),
                 );
               },
-              padding: EdgeInsets.only(
-                left: 100,
-                right: 100,
-                top: 16,
-              ),
+              padding: _gridViewPadding(sideMargins),
             ),
           );
   }
 
-  Widget _skeletonLoader(int gridCrossAxis) {
+  Widget _skeletonLoader(int gridCrossAxis, double sideMargins) {
     return Expanded(
       child: Skeletonizer(
         effect: ShimmerEffect(
@@ -146,13 +147,17 @@ class _HomePageState extends State<HomePage> {
               onTap: () {},
             );
           },
-          padding: EdgeInsets.only(
-            left: 100,
-            right: 100,
-            top: 16,
-          ),
+          padding: _gridViewPadding(sideMargins),
         ),
       ),
+    );
+  }
+
+  EdgeInsets _gridViewPadding(sideMargins) {
+    return EdgeInsets.only(
+      left: sideMargins,
+      right: sideMargins,
+      top: 16,
     );
   }
 }

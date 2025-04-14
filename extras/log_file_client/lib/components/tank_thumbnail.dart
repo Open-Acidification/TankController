@@ -3,21 +3,36 @@ import 'package:log_file_client/utils/http_client.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class TankThumbnail extends StatelessWidget {
-  const TankThumbnail({required this.snapshot, super.key});
+  TankThumbnail({required this.snapshot, DateTime? now, super.key})
+      : now = now ?? DateTime.now();
 
   final TankSnapshot snapshot;
+  final DateTime now;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _graph(_pHSeries(), 'pHAxis'),
-        _graph(_tempSeries(), 'TemperatureAxis'),
-      ],
-    );
+    if (snapshot.latestData.isEmpty) {
+      return Center(
+        child: Text(
+          'No data available within past 12 hrs',
+          style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
+          textDirection: TextDirection.ltr,
+        ),
+      );
+    } else {
+      return Column(
+        children: [
+          _graph(_pHSeries(), 'pHAxis'),
+          _graph(_tempSeries(), 'TemperatureAxis'),
+        ],
+      );
+    }
   }
 
   Widget _graph(series, String axis) {
+    final double setpoint =
+        axis == 'pHAxis' ? snapshot.pHSetpoint! : snapshot.temperatureSetpoint!;
+
     return Expanded(
       child: SfCartesianChart(
         backgroundColor: Colors.white,
@@ -26,19 +41,13 @@ class TankThumbnail extends StatelessWidget {
           intervalType: DateTimeIntervalType.hours,
           interval: 6,
           labelStyle: TextStyle(color: Colors.grey.shade700),
-          // isVisible: !(axis == 'pHAxis'),
+          maximum: now,
+          minimum: now.subtract(const Duration(hours: 12)),
         ),
         primaryYAxis: NumericAxis(
           name: axis,
-          // title: axis == 'pHAxis'
-          //     ? const AxisTitle(text: 'pH')
-          //     : const AxisTitle(text: 'temp'),
-          minimum: axis == 'pHAxis'
-              ? snapshot.pHSetpoint! - 0.5
-              : snapshot.temperatureSetpoint! - 0.5,
-          maximum: axis == 'pHAxis'
-              ? snapshot.pHSetpoint! + 0.5
-              : snapshot.temperatureSetpoint! + 0.5,
+          minimum: setpoint - 0.5,
+          maximum: setpoint + 0.5,
           anchorRangeToVisiblePoints: false,
           labelStyle: TextStyle(color: Colors.grey.shade700),
         ),

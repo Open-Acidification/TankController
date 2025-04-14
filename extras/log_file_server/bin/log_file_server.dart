@@ -2,6 +2,7 @@ import 'dart:async' show Future;
 import 'dart:io';
 
 import 'package:csv/csv.dart';
+import 'package:intl/intl.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
@@ -25,6 +26,9 @@ Future<Response> _get(Request req, String path) async {
   final snapshotGranularity = uri.queryParameters['granularity'] == null
       ? 5
       : int.parse(uri.queryParameters['granularity']!);
+  final now = uri.queryParameters['now'] == null
+      ? DateTime.now()
+      : DateTime.tryParse(uri.queryParameters['now']!) ?? DateTime.now();
 
   if (!file.existsSync()) {
     return Response.notFound(null);
@@ -37,12 +41,8 @@ Future<Response> _get(Request req, String path) async {
       const CsvToListConverter(fieldDelimiter: '\t', eol: '\n').convert(body);
   logTable.removeWhere((row) => row[2] != 'I');
 
-  // Remove old lines
-  if (!(logTable.isEmpty || logTable.length < snapshotLength)) {
-    logTable.removeRange(0, logTable.length - snapshotLength);
-  }
-
-  // Condense to granularity and return
+  // Condense to time range and granularity
+  logTable = trimToTimeRange(logTable, snapshotLength, now);
   logTable = condenseToGranularity(logTable, snapshotGranularity);
   final finalBody = const ListToCsvConverter(fieldDelimiter: '\t', eol: '\n')
       .convert(logTable);
@@ -76,6 +76,31 @@ Future<Response> _post(Request req, String path) async {
     mode: FileMode.writeOnlyAppend,
   );
   return Response.ok(null);
+}
+
+List<List> trimToTimeRange(
+  List<List> logTable,
+  int snapshotLength,
+  DateTime now,
+) {
+  if (logTable.isEmpty || logTable[0].isEmpty) {
+    return [];
+  }
+
+  final String targetTime = DateFormat('yyyy-MM-dd HH:mm:ss')
+      .format(now.subtract(Duration(minutes: snapshotLength)));
+
+  // Find the start index of the log entries that are within the time range
+  int startIndex = 0;
+  for (int i = logTable.length - 1; i >= 0; i--) {
+    final rowTime = logTable[i][3] as String;
+    if (rowTime.compareTo(targetTime) < 0) {
+      startIndex = i + 1;
+      break;
+    }
+  }
+
+  return logTable.sublist(startIndex);
 }
 
 List<List> condenseToGranularity(List<List> logTable, int snapshotGranularity) {

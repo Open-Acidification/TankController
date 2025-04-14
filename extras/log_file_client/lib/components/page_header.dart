@@ -7,12 +7,15 @@ class PageHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final double fontSize = screenWidth >= 500 ? 60 : 40;
+    final double sideMargins = screenWidth >= 500 ? 135 : 40;
+    final double topMargin = screenWidth >= 500 ? 40 : 30;
 
     return Container(
       margin: EdgeInsets.only(
-        top: 40,
-        left: 135,
-        right: 135,
+        top: topMargin,
+        left: sideMargins,
+        right: sideMargins,
       ),
       padding: EdgeInsets.only(bottom: 16),
       width: screenWidth,
@@ -27,7 +30,7 @@ class PageHeader extends StatelessWidget {
       child: Text(
         text,
         style: TextStyle(
-          fontSize: 60,
+          fontSize: fontSize,
           letterSpacing: -2,
           color: const Color(0xFF0C2D48),
         ),

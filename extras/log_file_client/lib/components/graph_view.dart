@@ -30,8 +30,6 @@ class _GraphViewState extends State<GraphView> {
   late double timeInterval;
   late DateFormat timeFormat;
 
-  final List<Color> _seriesColors = [];
-
   @override
   void initState() {
     super.initState();
@@ -167,6 +165,7 @@ class _GraphViewState extends State<GraphView> {
   }
 
   Widget _graph(List<LogDataLine> logData) {
+    final List<Map<String, dynamic>> trackballData = [];
     final trackballBehavior = TrackballBehavior(
       enable: true,
       tooltipDisplayMode: TrackballDisplayMode.groupAllPoints,
@@ -177,7 +176,7 @@ class _GraphViewState extends State<GraphView> {
       lineColor: Colors.grey.shade600,
       lineWidth: 1.5,
       lineDashArray: [2, 2],
-      builder: _trackballBuilder,
+      // builder: _trackballBuilder,
     );
 
     return Expanded(
@@ -205,92 +204,44 @@ class _GraphViewState extends State<GraphView> {
           ),
         ],
         trackballBehavior: trackballBehavior,
+        onTrackballPositionChanging: (TrackballArgs details) {
+          // Clear previously stored data on each update.
+          trackballData.clear();
+
+          // Store the details for the current trackball position.
+          if (details.chartPointInfo.series != null &&
+              details.chartPointInfo.chartPoint != null) {
+            final String seriesName = details.chartPointInfo.series!.name;
+            final DateTime date =
+                details.chartPointInfo.chartPoint!.x as DateTime;
+            final double yValue =
+                details.chartPointInfo.chartPoint!.y as double;
+
+            // Add this series' details to the trackballData list.
+            trackballData.add({
+              'seriesName': seriesName,
+              'yValue': yValue,
+              'date': date,
+            });
+
+            // Construct the tooltip dynamically from the stored data.
+            String tooltipText = '';
+            String seriesText = '';
+            for (final data in trackballData) {
+              seriesText += '${data['seriesName']} : ${data['yValue']}';
+            }
+
+            // Combine the series data into a compact format
+            tooltipText += seriesText;
+
+            // Update the trackball tooltip information
+            details.chartPointInfo.label = tooltipText;
+            details.chartPointInfo.header =
+                DateFormat('MMM d hh:mm a').format(date);
+          }
+        },
         series: _chartSeries(logData),
       ),
-    );
-  }
-
-  Widget _trackballBuilder(BuildContext context, TrackballDetails details) {
-    final ThemeData themeData = Theme.of(context);
-    final TextStyle textStyle = themeData.textTheme.bodySmall!.copyWith(
-      color: themeData.colorScheme.onInverseSurface,
-    );
-    final TextStyle headerStyle = textStyle.copyWith(
-      fontWeight: FontWeight.bold,
-    );
-
-    final String header = DateFormat('MMM d hh:mm a')
-        .format(details.groupingModeInfo?.points.first.x);
-
-    final labels = ['pH', 'pH setpoint', 'temp', 'temp setpoint'];
-    final trackballLines = List.generate(
-      labels.length,
-      (i) => _trackballLine(
-        details.groupingModeInfo!.points[i],
-        labels[i],
-        i,
-        textStyle,
-      ),
-    );
-
-    return Container(
-      width: 155,
-      height: 106,
-      padding: EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Color(0xFF2F3036),
-        borderRadius: BorderRadius.circular(6),
-        boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 2)],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(
-            child: Text(
-              header,
-              style: headerStyle,
-            ),
-          ),
-          Divider(
-            height: 10.0,
-            thickness: 1,
-            color: themeData.colorScheme.onInverseSurface,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: trackballLines,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Row _trackballLine(
-    CartesianChartPoint point,
-    String seriesName,
-    int seriesColor,
-    TextStyle textStyle,
-  ) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsetsDirectional.only(end: 3.0),
-          child: Container(
-            padding: EdgeInsets.all(2.0),
-            width: 10,
-            height: 10,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: _seriesColors[seriesColor],
-            ),
-          ),
-        ),
-        Text(
-          '$seriesName : ${point.y}',
-          style: textStyle,
-        ),
-      ],
     );
   }
 
@@ -309,7 +260,6 @@ class _GraphViewState extends State<GraphView> {
         animationDuration: 0,
         markerSettings: markerSettings,
         enableTrackball: _showPH,
-        onCreateRenderer: (series) => _ScatterSeriesRenderer(this),
       ),
       ScatterSeries<LogDataLine, DateTime>(
         legendItemText: 'pH setpoint',
@@ -322,7 +272,6 @@ class _GraphViewState extends State<GraphView> {
         animationDuration: 0,
         markerSettings: markerSettings,
         enableTrackball: _showPH,
-        onCreateRenderer: (series) => _ScatterSeriesRenderer(this),
       ),
       ScatterSeries<LogDataLine, DateTime>(
         legendItemText: 'temp',
@@ -335,7 +284,6 @@ class _GraphViewState extends State<GraphView> {
         animationDuration: 0,
         markerSettings: markerSettings,
         enableTrackball: _showTemp,
-        onCreateRenderer: (series) => _ScatterSeriesRenderer(this),
       ),
       ScatterSeries<LogDataLine, DateTime>(
         legendItemText: 'temp setpoint',
@@ -348,23 +296,7 @@ class _GraphViewState extends State<GraphView> {
         animationDuration: 0,
         markerSettings: markerSettings,
         enableTrackball: _showTemp,
-        onCreateRenderer: (series) => _ScatterSeriesRenderer(this),
       ),
     ];
-  }
-}
-
-class _ScatterSeriesRenderer
-    extends ScatterSeriesRenderer<LogDataLine, DateTime> {
-  _ScatterSeriesRenderer(this._state);
-
-  final _GraphViewState _state;
-
-  @override
-  void customizeSegment(ChartSegment segment) {
-    super.customizeSegment(segment);
-    if (!_state._seriesColors.contains(segment.fillPaint.color)) {
-      _state._seriesColors.add(segment.fillPaint.color);
-    }
   }
 }

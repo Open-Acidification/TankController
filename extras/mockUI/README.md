@@ -4,7 +4,7 @@ A Python GUI for TankController running on the mocks provided by `Arduino CI`.
 ## Build Process
 Follow these steps
 * `python3 -m pip install wxPython pybind11`
-* `cd GUI`
+* `cd extras/mockUI`
 * ``filePath=`bundle exec which arduino_library_location.rb` ``
 * `export ARDUINO_CI=${filePath%/bin/*}/gems/arduino_ci-1.3.0/cpp/arduino`
 * `make clean`

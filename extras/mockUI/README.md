@@ -14,20 +14,21 @@ Follow these steps
 ## Build Process (Windows)
 Follow these steps
 * `install Ruby via https://rubyinstaller.org`
-* `gem install bunder arduino_ci`
+* In the Ruby command prompt `gem install bunder arduino_ci`
 * `python3 -m pip install wxPython pybind11`
 * `cd extras/mockUI`
 * `irb`
 * `require 'arduino_ci'; puts Gem::Specification.find_by_name('arduino_ci').gem_dir`
-* `copy the returned directory`
+* Copy the returned directory
 * `exit`
 * In powershell terminal `$env:ARDUINO_CI = "[INSERT DIRECTORY HERE]"`
 * `echo $env:ARDUINO_CI` Should return the directory that was given earlier
 * `make clean`
-* If the make file fails, launch the Git Bash terminal in the IDE and retry
+* If the make file fails, ensure you have make installed on the MINGW64 version of Git Bash
 * `(mkdir -p build; cd build; make -f ../Makefile)`
 * `python3 TankController.py`
 
+## Makefile Specs
 The `Makefile` provides for making the following:
 * `libtc.dylib` (on macOS) containing the following:
   * `Arduino CI` mocks (essentially the Arduino OS)

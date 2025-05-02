@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:log_file_client/components/advanced_options_dropdown.dart';
 import 'package:log_file_client/components/page_header.dart';
 import 'package:log_file_client/components/tank_card.dart';
 import 'package:log_file_client/pages/graph_page.dart';
@@ -34,6 +35,9 @@ class _ProjectPageState extends State<ProjectPage> {
     );
   }
 
+  final _tempDeviationController = TextEditingController(text: '0.5');
+  final _pHDeviationController = TextEditingController(text: '0.5');
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -48,6 +52,12 @@ class _ProjectPageState extends State<ProjectPage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Tank Monitor'),
+        actions: [
+          AdvancedOptionsDropdown(
+            tempController: _tempDeviationController,
+            phController: _pHDeviationController,
+          ),
+        ],
       ),
       body: Center(
         child: Column(
@@ -71,6 +81,8 @@ class _ProjectPageState extends State<ProjectPage> {
           return TankCard(
             log: widget.project.logs[index],
             httpClient: widget.httpClient,
+            tempDeviation: 0.5,
+            pHDeviation: 0.5,
             onTap: () => unawaited(openTankGraph(widget.project.logs[index])),
           );
         },

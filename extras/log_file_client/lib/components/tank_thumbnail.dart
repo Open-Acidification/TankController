@@ -3,11 +3,19 @@ import 'package:log_file_client/utils/http_client.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class TankThumbnail extends StatelessWidget {
-  TankThumbnail({required this.snapshot, DateTime? now, super.key})
-      : now = now ?? DateTime.now();
+  TankThumbnail({
+    required this.snapshot,
+    required this.tempDeviation,
+    required this.pHDeviation,
+    DateTime? now,
+    super.key,
+  // }) : now = now ?? DateTime.now();
+  })  : now = now ?? DateTime(2025, 4, 14, 8, 3);
 
   final TankSnapshot snapshot;
   final DateTime now;
+  final double tempDeviation;
+  final double pHDeviation;
 
   @override
   Widget build(BuildContext context) {

@@ -37,6 +37,31 @@ class _ProjectPageState extends State<ProjectPage> {
 
   final _tempDeviationController = TextEditingController(text: '0.5');
   final _pHDeviationController = TextEditingController(text: '0.5');
+  double _tempDeviation = 0.5;
+  double _pHDeviation = 0.5;
+
+  @override
+  void initState() {
+    super.initState();
+    _tempDeviationController.addListener(_onDeviationChanged);
+    _pHDeviationController.addListener(_onDeviationChanged);
+  }
+
+  void _onDeviationChanged() {
+    setState(() {
+      _tempDeviation = double.tryParse(_tempDeviationController.text) ?? 0.5;
+      _pHDeviation = double.tryParse(_pHDeviationController.text) ?? 0.5;
+    });
+  }
+
+  @override
+  void dispose() {
+    _tempDeviationController.removeListener(_onDeviationChanged);
+    _pHDeviationController.removeListener(_onDeviationChanged);
+    _tempDeviationController.dispose();
+    _pHDeviationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,8 +106,8 @@ class _ProjectPageState extends State<ProjectPage> {
           return TankCard(
             log: widget.project.logs[index],
             httpClient: widget.httpClient,
-            tempDeviation: 0.5,
-            pHDeviation: 0.5,
+            tempDeviation: _tempDeviation,
+            pHDeviation: _pHDeviation,
             onTap: () => unawaited(openTankGraph(widget.project.logs[index])),
           );
         },

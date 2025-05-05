@@ -3,11 +3,20 @@ import 'package:log_file_client/utils/http_client.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class TankThumbnail extends StatelessWidget {
-  TankThumbnail({required this.snapshot, DateTime? now, super.key})
-      : now = now ?? DateTime.now();
+  TankThumbnail({
+    required this.snapshot,
+    double? tempDeviation,
+    double? pHDeviation,
+    DateTime? now,
+    super.key,
+  })  : now = now ?? DateTime.now(),
+        tempDeviation = tempDeviation ?? 0.5,
+        pHDeviation = pHDeviation ?? 0.5;
 
   final TankSnapshot snapshot;
   final DateTime now;
+  final double tempDeviation;
+  final double pHDeviation;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +41,7 @@ class TankThumbnail extends StatelessWidget {
   Widget _graph(series, String axis) {
     final double setpoint =
         axis == 'pHAxis' ? snapshot.pHSetpoint! : snapshot.temperatureSetpoint!;
+    final double deviation = axis == 'pHAxis' ? pHDeviation : tempDeviation;
 
     return Expanded(
       child: SfCartesianChart(
@@ -46,8 +56,8 @@ class TankThumbnail extends StatelessWidget {
         ),
         primaryYAxis: NumericAxis(
           name: axis,
-          minimum: setpoint - 0.5,
-          maximum: setpoint + 0.5,
+          minimum: setpoint - deviation,
+          maximum: setpoint + deviation,
           anchorRangeToVisiblePoints: false,
           labelStyle: TextStyle(color: Colors.grey.shade700),
         ),

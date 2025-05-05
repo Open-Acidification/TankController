@@ -13,12 +13,16 @@ class TankCard extends StatelessWidget {
     required this.log,
     required this.onTap,
     required this.httpClient,
+    required this.tempDeviation,
+    required this.pHDeviation,
     super.key,
   });
 
   final Log log;
   final void Function() onTap;
   final HttpClient httpClient;
+  final double tempDeviation;
+  final double pHDeviation;
 
   Future<TankSnapshot> getTankSnapshot() async {
     final snapshot = await httpClient.getTankSnapshot(log);
@@ -107,7 +111,11 @@ class TankCard extends StatelessWidget {
           top: Radius.circular(20),
         ),
         child: snapshot != null
-            ? TankThumbnail(snapshot: snapshot.data!)
+            ? TankThumbnail(
+                snapshot: snapshot.data!,
+                tempDeviation: tempDeviation,
+                pHDeviation: pHDeviation,
+              )
             : Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(

@@ -55,18 +55,18 @@ class AdvancedOptionsDropdown extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _decimalTextField(tempController, 'Temperature Deviation'),
+            _decimalTextField(tempController, 'Temp Deviation'),
             const SizedBox(height: 8),
             _decimalTextField(phController, 'pH Deviation'),
           ],
         ),
       );
 
-  TextFormField _decimalTextField(
+  TextField _decimalTextField(
     TextEditingController controller,
     String label,
   ) {
-    return TextFormField(
+    return TextField(
       controller: controller,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       decoration: InputDecoration(labelText: label),

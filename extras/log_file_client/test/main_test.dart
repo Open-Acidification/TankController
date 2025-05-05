@@ -136,14 +136,12 @@ void main() {
     final tempField = find.byWidgetPredicate(
       (w) =>
           w is TextField &&
-          w.decoration?.labelText?.toLowerCase().contains('temp deviation') ==
-              true,
+          w.decoration!.labelText!.toLowerCase().contains('temp deviation'),
     );
     final phField = find.byWidgetPredicate(
       (w) =>
           w is TextField &&
-          w.decoration?.labelText?.toLowerCase().contains('ph deviation') ==
-              true,
+          w.decoration!.labelText!.toLowerCase().contains('ph deviation'),
     );
 
     expect(tempField, findsOneWidget);

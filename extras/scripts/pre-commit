@@ -1,5 +1,7 @@
+# Create a tag before committing and then move the tag to the commit (yes, a bit of a hack!)
 version=`git describe --tags`
 version="$version                    "
+# if the only change is in Version.h or version.dart, don't add the + to the version
 changes=`git diff --name-only --cached | grep -v "Version.h" | grep -v "version.dart" | wc -l | xargs`
 if [[ "$changes" == "0" ]]
 then

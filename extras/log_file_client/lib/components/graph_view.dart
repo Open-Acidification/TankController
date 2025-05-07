@@ -30,10 +30,13 @@ class _GraphViewState extends State<GraphView> {
   late double timeInterval;
   late DateFormat timeFormat;
 
+  int scatterGranularity = 1;
+
   @override
   void initState() {
     super.initState();
-    now = widget.now ?? DateTime.now();
+    // now = widget.now ?? DateTime.now();
+    now = widget.now ?? DateTime.parse('2025-04-14 08:03');
     avaliableTimeRange = DateTimeRange(
       start: widget.logData.first.time,
       end: widget.logData.last.time,
@@ -79,6 +82,7 @@ class _GraphViewState extends State<GraphView> {
       displayedTimeRange = timeRange;
       _displayedTimeRangeIndices = calculateTimeRange(timeRange);
       calculateTimeAxisFormat();
+      calculateGranularity();
     });
   }
 
@@ -113,6 +117,17 @@ class _GraphViewState extends State<GraphView> {
     } else {
       timeIntervalType = DateTimeIntervalType.days;
       timeFormat = DateFormat('MMM d');
+    }
+  }
+
+  void calculateGranularity() {
+    final Duration duration = displayedTimeRange.duration;
+    if (duration <= Duration(days: 5)) {
+      scatterGranularity = 1;
+    } else if (duration <= Duration(days: 20)) {
+      scatterGranularity = 3;
+    } else {
+      scatterGranularity = 10;
     }
   }
 
@@ -248,11 +263,13 @@ class _GraphViewState extends State<GraphView> {
   List<CartesianSeries> _chartSeries(List<LogDataLine> logData) {
     final MarkerSettings markerSettings = MarkerSettings(height: 2, width: 2);
 
+    final subsampledLogData = _subsampleData(logData, scatterGranularity);
+
     return <CartesianSeries>[
       ScatterSeries<LogDataLine, DateTime>(
         legendItemText: 'pH',
         name: 'pH',
-        dataSource: logData,
+        dataSource: subsampledLogData,
         xValueMapper: (LogDataLine log, _) => log.time,
         yValueMapper: (LogDataLine log, _) => log.phCurrent,
         color: _showPH ? Colors.green : Colors.transparent,
@@ -264,7 +281,7 @@ class _GraphViewState extends State<GraphView> {
       ScatterSeries<LogDataLine, DateTime>(
         legendItemText: 'pH setpoint',
         name: 'pH setpoint',
-        dataSource: logData,
+        dataSource: subsampledLogData,
         xValueMapper: (LogDataLine log, _) => log.time,
         yValueMapper: (LogDataLine log, _) => log.phTarget,
         color: _showPH ? Colors.green.shade800 : Colors.transparent,
@@ -276,7 +293,7 @@ class _GraphViewState extends State<GraphView> {
       ScatterSeries<LogDataLine, DateTime>(
         legendItemText: 'temp',
         name: 'temp',
-        dataSource: logData,
+        dataSource: subsampledLogData,
         xValueMapper: (LogDataLine log, _) => log.time,
         yValueMapper: (LogDataLine log, _) => log.tempMean,
         color: _showTemp ? Colors.blue : Colors.transparent,
@@ -288,7 +305,7 @@ class _GraphViewState extends State<GraphView> {
       ScatterSeries<LogDataLine, DateTime>(
         legendItemText: 'temp setpoint',
         name: 'temp setpoint',
-        dataSource: logData,
+        dataSource: subsampledLogData,
         xValueMapper: (LogDataLine log, _) => log.time,
         yValueMapper: (LogDataLine log, _) => log.tempTarget,
         color: _showTemp ? Colors.blue.shade800 : Colors.transparent,
@@ -299,4 +316,15 @@ class _GraphViewState extends State<GraphView> {
       ),
     ];
   }
+
+  List<LogDataLine> _subsampleData(List<LogDataLine> logData, int granularity) {
+    final List<LogDataLine> subSampledData = [];
+
+    for (int i = 0; i < logData.length; i += scatterGranularity) {
+      subSampledData.add(logData[i]);
+    }
+
+    return subSampledData;
+  }
+
 }

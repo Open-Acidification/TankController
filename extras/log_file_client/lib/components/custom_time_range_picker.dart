@@ -182,9 +182,13 @@ class _CustomTimeRangePickerState extends State<CustomTimeRangePicker> {
   Widget _timePicker(RangeEndpointType type) {
     final TimeOfDay selectedTime = type == RangeEndpointType.start
         ? TimeOfDay(
-            hour: selectedRange.start.hour, minute: selectedRange.start.minute)
+            hour: selectedRange.start.hour,
+            minute: selectedRange.start.minute,
+          )
         : TimeOfDay(
-            hour: selectedRange.end.hour, minute: selectedRange.end.minute);
+            hour: selectedRange.end.hour,
+            minute: selectedRange.end.minute,
+          );
 
     return SizedBox(
       height: 100,

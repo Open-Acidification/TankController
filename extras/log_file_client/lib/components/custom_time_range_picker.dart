@@ -78,8 +78,12 @@ class _CustomTimeRangePickerState extends State<CustomTimeRangePicker> {
   void onApplied() {
     // Ensure the time range is within the available range
     selectedRange = DateTimeRange(
-      start: selectedRange.start.isAfter(widget.timeRange.start) ? selectedRange.start : widget.timeRange.start,
-      end: selectedRange.end.isBefore(widget.timeRange.end) ? selectedRange.end : widget.timeRange.end,
+      start: selectedRange.start.isAfter(widget.timeRange.start)
+          ? selectedRange.start
+          : widget.timeRange.start,
+      end: selectedRange.end.isBefore(widget.timeRange.end)
+          ? selectedRange.end
+          : widget.timeRange.end,
     );
 
     widget.onApplied(selectedRange);
@@ -176,10 +180,11 @@ class _CustomTimeRangePickerState extends State<CustomTimeRangePicker> {
   }
 
   Widget _timePicker(RangeEndpointType type) {
-    final TimeOfDay selectedTime =
-        type == RangeEndpointType.start
-            ? TimeOfDay(hour: selectedRange.start.hour, minute: selectedRange.start.minute)
-            : TimeOfDay(hour: selectedRange.end.hour, minute: selectedRange.end.minute);
+    final TimeOfDay selectedTime = type == RangeEndpointType.start
+        ? TimeOfDay(
+            hour: selectedRange.start.hour, minute: selectedRange.start.minute)
+        : TimeOfDay(
+            hour: selectedRange.end.hour, minute: selectedRange.end.minute);
 
     return SizedBox(
       height: 100,

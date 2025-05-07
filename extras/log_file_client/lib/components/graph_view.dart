@@ -326,5 +326,4 @@ class _GraphViewState extends State<GraphView> {
 
     return subSampledData;
   }
-
 }

@@ -35,8 +35,7 @@ class _GraphViewState extends State<GraphView> {
   @override
   void initState() {
     super.initState();
-    // now = widget.now ?? DateTime.now();
-    now = widget.now ?? DateTime.parse('2025-04-14 08:03');
+    now = widget.now ?? DateTime.now();
     avaliableTimeRange = DateTimeRange(
       start: widget.logData.first.time,
       end: widget.logData.last.time,

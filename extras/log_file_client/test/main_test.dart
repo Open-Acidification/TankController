@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:log_file_client/components/advanced_options_dropdown.dart';
 import 'package:log_file_client/components/chart_series_selector.dart';
 import 'package:log_file_client/components/graph_view.dart';
 import 'package:log_file_client/components/project_card.dart';
@@ -97,6 +98,69 @@ void main() {
     // Verify that the TankCard widgets contain the correct text
     expect(find.text('tank-24'), findsOneWidget);
     expect(find.text('tank-70'), findsOneWidget);
+  });
+
+  testWidgets('Changing deviation controllers updates TankCard widgets',
+      (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1920, 1080);
+    tester.view.devicePixelRatio = 1.0;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProjectPage(
+          project: Project('ProjectA', [
+            Log('tank-24', 'ProjectA-tank-24.log'),
+          ]),
+          httpClient: HttpClientTest(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // Find the chart widgets and verify it built with default deviation values
+    SfCartesianChart phChart =
+        tester.widget(find.byType(SfCartesianChart).first);
+    SfCartesianChart tempChart =
+        tester.widget(find.byType(SfCartesianChart).last);
+    NumericAxis phAxis = phChart.primaryYAxis as NumericAxis;
+    NumericAxis tempAxis = tempChart.primaryYAxis as NumericAxis;
+    expect(phAxis.minimum, closeTo(6.25 - 0.5, 0.01));
+    expect(phAxis.maximum, closeTo(6.25 + 0.5, 0.01));
+    expect(tempAxis.minimum, closeTo(21.45 - 0.5, 0.01));
+    expect(tempAxis.maximum, closeTo(21.45 + 0.5, 0.01));
+
+    // Click on the AdvancedOptionsDropdown to open it
+    await tester.tap(find.byType(AdvancedOptionsDropdown).first);
+    await tester.pumpAndSettle();
+
+    // Find the AdvancedOptionsDropdown text fields
+    final tempField = find.byWidgetPredicate(
+      (w) =>
+          w is TextField &&
+          w.decoration!.labelText!.toLowerCase().contains('temp deviation'),
+    );
+    final phField = find.byWidgetPredicate(
+      (w) =>
+          w is TextField &&
+          w.decoration!.labelText!.toLowerCase().contains('ph deviation'),
+    );
+
+    expect(tempField, findsOneWidget);
+    expect(phField, findsOneWidget);
+
+    // Enter new values in the controllers
+    await tester.enterText(phField, '2.5');
+    await tester.enterText(tempField, '1.2');
+    await tester.pumpAndSettle();
+
+    // Verify the chart rebuilt with new deviation values
+    phChart = tester.widget(find.byType(SfCartesianChart).first);
+    tempChart = tester.widget(find.byType(SfCartesianChart).last);
+    phAxis = phChart.primaryYAxis as NumericAxis;
+    tempAxis = tempChart.primaryYAxis as NumericAxis;
+    expect(phAxis.minimum, closeTo(6.25 - 2.5, 0.01));
+    expect(phAxis.maximum, closeTo(6.25 + 2.5, 0.01));
+    expect(tempAxis.minimum, closeTo(21.45 - 1.2, 0.01));
+    expect(tempAxis.maximum, closeTo(21.45 + 1.2, 0.01));
   });
 
   testWidgets('TankCards have thumbnail graphs', (WidgetTester tester) async {

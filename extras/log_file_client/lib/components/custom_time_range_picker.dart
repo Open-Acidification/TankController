@@ -20,63 +20,73 @@ class CustomTimeRangePicker extends StatefulWidget {
 }
 
 class _CustomTimeRangePickerState extends State<CustomTimeRangePicker> {
-  late DateTime minTime;
-  late DateTime maxTime;
+  late DateTimeRange selectedRange;
 
   @override
   void initState() {
     super.initState();
-    minTime = widget.timeRange.start;
-    maxTime = widget.timeRange.end;
+    selectedRange = widget.timeRange;
   }
 
   void onDatesSelected(DateTimeRange value) {
-    minTime = DateTime(
-      value.start.year,
-      value.start.month,
-      value.start.day,
-      minTime.hour,
-      minTime.minute,
-    );
-    maxTime = DateTime(
-      value.end.year,
-      value.end.month,
-      value.end.day,
-      maxTime.hour,
-      maxTime.minute,
-    );
+    setState(() {
+      selectedRange = DateTimeRange(
+        start: DateTime(
+          value.start.year,
+          value.start.month,
+          value.start.day,
+          selectedRange.start.hour,
+          selectedRange.start.minute,
+        ),
+        end: DateTime(
+          value.end.year,
+          value.end.month,
+          value.end.day,
+          selectedRange.end.hour,
+          selectedRange.end.minute,
+        ),
+      );
+    });
   }
 
   void onTimeSelected(TimeOfDay time, RangeEndpointType type) {
     if (type == RangeEndpointType.start) {
-      minTime = DateTime(
-        minTime.year,
-        minTime.month,
-        minTime.day,
-        time.hour,
-        time.minute,
+      selectedRange = DateTimeRange(
+        start: DateTime(
+          selectedRange.start.year,
+          selectedRange.start.month,
+          selectedRange.start.day,
+          time.hour,
+          time.minute,
+        ),
+        end: selectedRange.end,
       );
     } else if (type == RangeEndpointType.end) {
-      maxTime = DateTime(
-        maxTime.year,
-        maxTime.month,
-        maxTime.day,
-        time.hour,
-        time.minute,
+      selectedRange = DateTimeRange(
+        start: selectedRange.start,
+        end: DateTime(
+          selectedRange.end.year,
+          selectedRange.end.month,
+          selectedRange.end.day,
+          time.hour,
+          time.minute,
+        ),
       );
     }
   }
 
   void onApplied() {
     // Ensure the time range is within the available range
-    if (minTime.isBefore(widget.timeRange.start)) {
-      minTime = widget.timeRange.start;
-    }
-    if (maxTime.isAfter(widget.timeRange.end)) {
-      maxTime = widget.timeRange.end;
-    }
+    selectedRange = DateTimeRange(
+      start: selectedRange.start.isAfter(widget.timeRange.start)
+          ? selectedRange.start
+          : widget.timeRange.start,
+      end: selectedRange.end.isBefore(widget.timeRange.end)
+          ? selectedRange.end
+          : widget.timeRange.end,
+    );
 
-    widget.onApplied(DateTimeRange(start: minTime, end: maxTime));
+    widget.onApplied(selectedRange);
   }
 
   @override
@@ -95,10 +105,7 @@ class _CustomTimeRangePickerState extends State<CustomTimeRangePicker> {
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
-            child: TextButton(
-              onPressed: onApplied,
-              child: const Text('Apply'),
-            ),
+            child: TextButton(onPressed: onApplied, child: const Text('Apply')),
           ),
         ],
       ),
@@ -141,8 +148,8 @@ class _CustomTimeRangePickerState extends State<CustomTimeRangePicker> {
   Widget _dateDisplay(RangeEndpointType type) {
     return Text(
       type == RangeEndpointType.start
-          ? DateFormat.yMMMd('en_US').format(minTime)
-          : DateFormat.yMMMd('en_US').format(maxTime),
+          ? DateFormat.yMMMd('en_US').format(selectedRange.start)
+          : DateFormat.yMMMd('en_US').format(selectedRange.end),
       style: const TextStyle(fontSize: 16),
     );
   }
@@ -153,8 +160,9 @@ class _CustomTimeRangePickerState extends State<CustomTimeRangePicker> {
       height: 300,
       child: RangeDatePicker(
         centerLeadingDate: true,
-        minDate: minTime,
-        maxDate: maxTime,
+        minDate: widget.timeRange.start,
+        maxDate: widget.timeRange.end,
+        selectedRange: selectedRange,
         onRangeSelected: onDatesSelected,
         splashColor: Colors.transparent,
         daysOfTheWeekTextStyle: TextStyle(
@@ -173,8 +181,14 @@ class _CustomTimeRangePickerState extends State<CustomTimeRangePicker> {
 
   Widget _timePicker(RangeEndpointType type) {
     final TimeOfDay selectedTime = type == RangeEndpointType.start
-        ? TimeOfDay(hour: minTime.hour, minute: minTime.minute)
-        : TimeOfDay(hour: maxTime.hour, minute: maxTime.minute);
+        ? TimeOfDay(
+            hour: selectedRange.start.hour,
+            minute: selectedRange.start.minute,
+          )
+        : TimeOfDay(
+            hour: selectedRange.end.hour,
+            minute: selectedRange.end.minute,
+          );
 
     return SizedBox(
       height: 100,

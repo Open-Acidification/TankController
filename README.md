@@ -16,9 +16,16 @@ Arduino library for the Open Acidification pH Stat Controller
 
 *   Use [`extras/scripts/install.sh`](extras/scripts/install.sh) to do the initial install.
 *   After that use [`extras/scripts/testAndBuild.sh`](extras/scripts/testAndBuild.sh) to test.
-    *    See [this video](https://youtu.be/ZYNnVE4LnCg) for an install and test example.
-*   Push a tag with 'v' in order to build a release
-    *    Use Ansible to install on [oap.cs.wallawalla.edu](oap.cs.wallawalla.edu).
+    *   See [this video](https://youtu.be/ZYNnVE4LnCg) for an install and test example.
+*   Release Process
+    *   Update the version files to a new version (e.g., v25.4.1)
+    *   Create a _local_ tag on the _previous_ commit
+    *   Commit _only_ the version files to avoid edits to the version files (see `extras/scripts/pre-commit`)
+    *   Push and merge the commit
+    *   Fetch and move the local main to upstream main
+    *   Move the tag to the merged commit with the version file changes
+    *   Push the tag to origin and upstream
+    *   Use Ansible to install on [oap.cs.wallawalla.edu](oap.cs.wallawalla.edu).
 *   To build the GUI simulator, see [GUI/build.sh](GUI/build.sh).
 *   Use the [`extras/scripts/tasks.json`](extras/scripts/tasks.json) file to easily start the development servers in Visual Studio Code.
     * Copy the JSON file to your [`.vscode`](.vscode) directory

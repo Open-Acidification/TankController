@@ -1,7 +1,7 @@
 # TankControllerGUI
 A Python GUI for TankController running on the mocks provided by `Arduino CI`.
 
-## Build Process (Mac/Linux)
+## Build Process (Mac/Linux) [Not up to date]
 Follow these steps
 * `python3 -m pip install wxPython pybind11`
 * `cd extras/mockUI`
@@ -13,20 +13,22 @@ Follow these steps
 
 ## Build Process (Windows)
 Follow these steps
-* `install Ruby via https://rubyinstaller.org`
-* In the Ruby command prompt `gem install bunder arduino_ci`
-* `python3 -m pip install wxPython pybind11`
-* `cd extras/mockUI`
-* `irb`
-* `require 'arduino_ci'; puts Gem::Specification.find_by_name('arduino_ci').gem_dir`
-* Copy the returned directory
-* `exit`
-* In powershell terminal `$env:ARDUINO_CI = "[INSERT DIRECTORY HERE]"`
-* `echo $env:ARDUINO_CI` Should return the directory that was given earlier
-* `make clean`
-* If the make file fails, ensure you have make installed on the MINGW64 version of Git Bash
-* `(mkdir -p build; cd build; make -f ../Makefile)`
-* `python3 TankController.py`
+* Install Ruby via https://rubyinstaller.org
+* Inside IDE terminal (Or equivalent Powershell terminal) 
+  * `cd extras/mockUI`
+  * `irb`
+  * `gem install bunder arduino_ci`
+  * `require 'arduino_ci'; puts Gem::Specification.find_by_name('arduino_ci').gem_dir`
+  * Copy the returned directory
+  * `exit`
+* Inside powershell terminal 
+  * `python3 -m pip install wxPython pybind11`
+  * `$env:ARDUINO_CI = "[INSERT DIRECTORY HERE]"`
+  * `echo $env:ARDUINO_CI` Should return the directory that was given earlier
+  * `make clean`
+  * If the make file fails, ensure you have make installed on the MINGW64 version of Git Bash
+  * `(mkdir -p build; cd build; make -f ../Makefile)`
+  * `python3 TankController.py`
 
 ## Makefile Specs
 The `Makefile` provides for making the following:

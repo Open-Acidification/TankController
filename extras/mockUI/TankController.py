@@ -2,6 +2,7 @@
 
 import errno
 import time
+import sys
 import libTC
 import os
 import shutil

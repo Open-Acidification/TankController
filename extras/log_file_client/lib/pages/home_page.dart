@@ -153,7 +153,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  EdgeInsets _gridViewPadding(sideMargins) {
+  EdgeInsets _gridViewPadding(double sideMargins) {
     return EdgeInsets.only(
       left: sideMargins,
       right: sideMargins,

@@ -38,7 +38,7 @@ class TankThumbnail extends StatelessWidget {
     }
   }
 
-  Widget _graph(series, String axis) {
+  Widget _graph(List<CartesianSeries<dynamic, dynamic>> series, String axis) {
     final double setpoint =
         axis == 'pHAxis' ? snapshot.pHSetpoint! : snapshot.temperatureSetpoint!;
     final double deviation = axis == 'pHAxis' ? pHDeviation : tempDeviation;

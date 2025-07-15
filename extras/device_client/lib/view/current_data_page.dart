@@ -84,8 +84,8 @@ class CurrentData extends StatelessWidget {
                           child: Text('ON'),
                         ),
                       ],
-                      onChanged: (String? newValue) {
-                        TcInterface.instance()
+                      onChanged: (String? newValue) async {
+                        await TcInterface.instance()
                             .put(
                           '${appData.currentData["IPAddress"]}',
                           'data?$key=$newValue',
@@ -93,7 +93,9 @@ class CurrentData extends StatelessWidget {
                             .then((value) {
                           appData.currentData = json.decode(value);
                         });
-                        Navigator.pop(context);
+                        if (context.mounted) {
+                          Navigator.pop(context);
+                        }
                       },
                     )
                   else if (key == 'HeatOrChill')
@@ -109,8 +111,8 @@ class CurrentData extends StatelessWidget {
                           child: Text('HEAT'),
                         ),
                       ],
-                      onChanged: (String? newValue) {
-                        TcInterface.instance()
+                      onChanged: (String? newValue) async {
+                        await TcInterface.instance()
                             .put(
                           '${appData.currentData["IPAddress"]}',
                           'data?$key=$newValue',
@@ -118,14 +120,16 @@ class CurrentData extends StatelessWidget {
                             .then((value) {
                           appData.currentData = json.decode(value);
                         });
-                        Navigator.pop(context);
+                        if (context.mounted) {
+                          Navigator.pop(context);
+                        }
                       },
                     )
                   else
                     TextFormField(
                       initialValue: value,
-                      onFieldSubmitted: (val) {
-                        TcInterface.instance()
+                      onFieldSubmitted: (val) async {
+                        await TcInterface.instance()
                             .put(
                           '${appData.currentData["IPAddress"]}',
                           'data?$key=$val',
@@ -133,7 +137,9 @@ class CurrentData extends StatelessWidget {
                             .then((value) {
                           appData.currentData = json.decode(value);
                         });
-                        Navigator.pop(context);
+                        if (context.mounted) {
+                          Navigator.pop(context);
+                        }
                       },
                     ),
                   const SizedBox(height: 20),
@@ -209,8 +215,8 @@ class CurrentData extends StatelessWidget {
       final files = uploadInput.files;
       final file = files![0];
       final dynamic reader = html.FileReader();
-      reader.onLoadEnd.listen((e) {
-        sendArbitraryPathString(reader.result as String, ip);
+      reader.onLoadEnd.listen((e) async {
+        await sendArbitraryPathString(reader.result as String, ip);
       });
       reader.readAsDataUrl(file);
     });

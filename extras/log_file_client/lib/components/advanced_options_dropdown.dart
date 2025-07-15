@@ -50,7 +50,7 @@ class AdvancedOptionsDropdown extends StatelessWidget {
     );
   }
 
-  Widget _popoverBuilder(context) => Padding(
+  Widget _popoverBuilder(BuildContext context) => Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
           mainAxisSize: MainAxisSize.min,

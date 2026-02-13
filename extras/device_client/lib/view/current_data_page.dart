@@ -73,7 +73,7 @@ class CurrentData extends StatelessWidget {
                 children: <Widget>[
                   if (key == 'PID')
                     DropdownButtonFormField<String>(
-                      value: value,
+                      initialValue: value,
                       items: const <DropdownMenuItem<String>>[
                         DropdownMenuItem(
                           value: 'OFF',
@@ -100,7 +100,7 @@ class CurrentData extends StatelessWidget {
                     )
                   else if (key == 'HeatOrChill')
                     DropdownButtonFormField<String>(
-                      value: value,
+                      initialValue: value,
                       items: const <DropdownMenuItem<String>>[
                         DropdownMenuItem(
                           value: 'CHILL',

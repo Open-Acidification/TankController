@@ -35,12 +35,7 @@ class TableView extends StatelessWidget {
   }
 
   Column _table(List<LogDataLine> logData) {
-    return Column(
-      children: [
-        _tableHeader(),
-        _tableData(logData),
-      ],
-    );
+    return Column(children: [_tableHeader(), _tableData(logData)]);
   }
 
   Container _tableHeader() {
@@ -68,10 +63,7 @@ class TableView extends StatelessWidget {
   Expanded _headerItem({required String item, int flex = 1}) {
     return Expanded(
       flex: flex,
-      child: Text(
-        item,
-        style: TextStyle(fontStyle: FontStyle.italic),
-      ),
+      child: Text(item, style: TextStyle(fontStyle: FontStyle.italic)),
     );
   }
 
@@ -85,9 +77,7 @@ class TableView extends StatelessWidget {
           return Container(
             padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(color: Colors.grey.shade400),
-              ),
+              border: Border(bottom: BorderSide(color: Colors.grey.shade400)),
             ),
             child: _dataRow(row),
           );

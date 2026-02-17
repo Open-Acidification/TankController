@@ -9,9 +9,9 @@ class TankThumbnail extends StatelessWidget {
     double? pHDeviation,
     DateTime? now,
     super.key,
-  })  : now = now ?? DateTime.now(),
-        tempDeviation = tempDeviation ?? 0.5,
-        pHDeviation = pHDeviation ?? 0.5;
+  }) : now = now ?? DateTime.now(),
+       tempDeviation = tempDeviation ?? 0.5,
+       pHDeviation = pHDeviation ?? 0.5;
 
   final TankSnapshot snapshot;
   final DateTime now;
@@ -39,8 +39,9 @@ class TankThumbnail extends StatelessWidget {
   }
 
   Widget _graph(List<CartesianSeries<dynamic, dynamic>> series, String axis) {
-    final double setpoint =
-        axis == 'pHAxis' ? snapshot.pHSetpoint! : snapshot.temperatureSetpoint!;
+    final double setpoint = axis == 'pHAxis'
+        ? snapshot.pHSetpoint!
+        : snapshot.temperatureSetpoint!;
     final double deviation = axis == 'pHAxis' ? pHDeviation : tempDeviation;
 
     return Expanded(

@@ -17,9 +17,7 @@ class AppDrawer extends StatelessWidget {
       child: Column(
         children: [
           // Header
-          DrawerHeader(
-            child: Image.asset('lib/assets/oap.png'),
-          ),
+          DrawerHeader(child: Image.asset('lib/assets/oap.png')),
 
           // Log files that can be opened
           Expanded(

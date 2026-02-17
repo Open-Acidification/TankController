@@ -14,9 +14,7 @@ void main() {
 
     test('sample HTML data', () async {
       final data = await client.fetchData('logs');
-      expect(
-        data,
-        '''
+      expect(data, '''
 <html>
 <head><title>Index of /logs/</title></head>
 <body>
@@ -29,23 +27,19 @@ void main() {
 <a href="stefan-tank-1.log">stefan-tank-1.log</a>                                  26-Jan-2025 06:02                  32
 <a href="stefan-tank-2.log">stefan-tank-2.log</a>                                  26-Jan-2025 06:02                  32
 </pre><hr></body>
-</html>''',
-      );
+</html>''');
     });
 
     test('sample log data', () async {
       final data = await client.fetchData('sample_short.log');
-      expect(
-        data,
-        '''
+      expect(data, '''
 Version	Tank ID	Severity	Date Time	Message	Temperature Target	Temperature Mean	Temperature Std Dev	pH Target	pH	Uptime	MAC Address	pH Slope	Ignoring Bad pH Calibration	Temperature Correction	Ignoring Bad Temperature Calibration	Heat (1) or Chill (0)	KD	KI	KP	pH Flat (0) Ramp (1) Sine (2)	pH Target	pH Ramp Start Time	pH Ramp End Time	pH Ramp Start Value	pH Sine Start Time	pH Sine Period	pH Sine Amplitude	Temperature Flat (0) Ramp (1) Sine (2)	Temperature Target	Temperature Ramp Start Time	Temperature Ramp End Time	Temperature Ramp Start Value	Temperature Sine Start Time	Temperature Sine Period	Temperature Sine Amplitude	Google Sheet Interval
 v25.1.1        	89	I	2025-01-23 15:38		20.11	20	0	7	0	60																										
 v25.1.1        	89	I	2025-01-23 15:39		20.18	21	0	7	0	120																										
 v25.1.1        	89	I	2025-01-23 15:40		20.24	20	0	7	6.9	180																										
 v25.1.1        	89	I	2025-01-23 15:43		20.38	20	0	7	0	60																										
 v25.1.1        	89	I	2025-01-23 15:44		20.44	20	0	7	0	121																										
-''',
-      );
+''');
     });
   });
 
@@ -240,66 +234,63 @@ v25.1.1        	89	I	2025-01-23 15:44		20.44	20	0	7	0	121
       // Validate structure and date parsing for sample_short.log
       expect(logTable.length, equals(5));
 
-      expect(
-        logTable,
-        [
-          LogDataLine(
-            'v25.1.1',
-            89,
-            DateTime.parse('2025-01-23 15:38:00'),
-            20.11,
-            20.0,
-            0.0,
-            7.0,
-            0.0,
-            60,
-          ),
-          LogDataLine(
-            'v25.1.1',
-            89,
-            DateTime.parse('2025-01-23 15:39:00'),
-            20.18,
-            21.0,
-            0.0,
-            7.0,
-            0.0,
-            120,
-          ),
-          LogDataLine(
-            'v25.1.1',
-            89,
-            DateTime.parse('2025-01-23 15:40:00'),
-            20.24,
-            20.0,
-            0.0,
-            7.0,
-            6.9,
-            180,
-          ),
-          LogDataLine(
-            'v25.1.1',
-            89,
-            DateTime.parse('2025-01-23 15:43:00'),
-            20.38,
-            20.0,
-            0.0,
-            7.0,
-            0.0,
-            60,
-          ),
-          LogDataLine(
-            'v25.1.1',
-            89,
-            DateTime.parse('2025-01-23 15:44:00'),
-            20.44,
-            20.0,
-            0.0,
-            7.0,
-            0.0,
-            121,
-          ),
-        ],
-      );
+      expect(logTable, [
+        LogDataLine(
+          'v25.1.1',
+          89,
+          DateTime.parse('2025-01-23 15:38:00'),
+          20.11,
+          20.0,
+          0.0,
+          7.0,
+          0.0,
+          60,
+        ),
+        LogDataLine(
+          'v25.1.1',
+          89,
+          DateTime.parse('2025-01-23 15:39:00'),
+          20.18,
+          21.0,
+          0.0,
+          7.0,
+          0.0,
+          120,
+        ),
+        LogDataLine(
+          'v25.1.1',
+          89,
+          DateTime.parse('2025-01-23 15:40:00'),
+          20.24,
+          20.0,
+          0.0,
+          7.0,
+          6.9,
+          180,
+        ),
+        LogDataLine(
+          'v25.1.1',
+          89,
+          DateTime.parse('2025-01-23 15:43:00'),
+          20.38,
+          20.0,
+          0.0,
+          7.0,
+          0.0,
+          60,
+        ),
+        LogDataLine(
+          'v25.1.1',
+          89,
+          DateTime.parse('2025-01-23 15:44:00'),
+          20.44,
+          20.0,
+          0.0,
+          7.0,
+          0.0,
+          121,
+        ),
+      ]);
     });
 
     test('handles empty log file without errors', () async {
@@ -323,55 +314,52 @@ v25.1.1        	89	I	2025-01-23 15:44		20.44	20	0	7	0	121
 
       expect(logTable.length, equals(4));
 
-      expect(
-        logTable,
-        [
-          LogDataLine(
-            'v1.0',
-            80,
-            DateTime.parse('2025-01-07 11:20:00'),
-            31.25,
-            30.81,
-            0.22,
-            6.38,
-            6.3,
-            1080,
-          ),
-          LogDataLine(
-            'v1.0',
-            80,
-            DateTime.parse('2025-01-07 11:21:00'),
-            31.25,
-            30.99,
-            0.13,
-            6.38,
-            6.38,
-            1140,
-          ),
-          LogDataLine(
-            'v1.0',
-            80,
-            DateTime.parse('2025-01-07 11:22:00'),
-            31.25,
-            31.38,
-            0.065,
-            6.38,
-            6.39,
-            1200,
-          ),
-          LogDataLine(
-            'v1.0',
-            80,
-            DateTime.parse('2025-01-07 11:23:00'),
-            31.25,
-            31.22,
-            0.015,
-            6.38,
-            6.34,
-            1260,
-          ),
-        ],
-      );
+      expect(logTable, [
+        LogDataLine(
+          'v1.0',
+          80,
+          DateTime.parse('2025-01-07 11:20:00'),
+          31.25,
+          30.81,
+          0.22,
+          6.38,
+          6.3,
+          1080,
+        ),
+        LogDataLine(
+          'v1.0',
+          80,
+          DateTime.parse('2025-01-07 11:21:00'),
+          31.25,
+          30.99,
+          0.13,
+          6.38,
+          6.38,
+          1140,
+        ),
+        LogDataLine(
+          'v1.0',
+          80,
+          DateTime.parse('2025-01-07 11:22:00'),
+          31.25,
+          31.38,
+          0.065,
+          6.38,
+          6.39,
+          1200,
+        ),
+        LogDataLine(
+          'v1.0',
+          80,
+          DateTime.parse('2025-01-07 11:23:00'),
+          31.25,
+          31.22,
+          0.015,
+          6.38,
+          6.34,
+          1260,
+        ),
+      ]);
     });
   });
 

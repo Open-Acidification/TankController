@@ -51,21 +51,18 @@ class AdvancedOptionsDropdown extends StatelessWidget {
   }
 
   Widget _popoverBuilder(BuildContext context) => Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _decimalTextField(tempController, 'Temp Deviation'),
-            const SizedBox(height: 8),
-            _decimalTextField(phController, 'pH Deviation'),
-          ],
-        ),
-      );
+    padding: const EdgeInsets.all(12),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _decimalTextField(tempController, 'Temp Deviation'),
+        const SizedBox(height: 8),
+        _decimalTextField(phController, 'pH Deviation'),
+      ],
+    ),
+  );
 
-  TextField _decimalTextField(
-    TextEditingController controller,
-    String label,
-  ) {
+  TextField _decimalTextField(TextEditingController controller, String label) {
     return TextField(
       controller: controller,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),

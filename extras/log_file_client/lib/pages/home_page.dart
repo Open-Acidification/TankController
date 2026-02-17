@@ -46,10 +46,8 @@ class _HomePageState extends State<HomePage> {
   Future<void> openProject(Project project) async {
     await Navigator.of(context).push(
       PageRouteBuilder(
-        pageBuilder: (context, animation1, animation2) => ProjectPage(
-          project: project,
-          httpClient: httpClient,
-        ),
+        pageBuilder: (context, animation1, animation2) =>
+            ProjectPage(project: project, httpClient: httpClient),
         transitionDuration: Duration.zero,
         reverseTransitionDuration: Duration.zero,
       ),
@@ -105,8 +103,8 @@ class _HomePageState extends State<HomePage> {
     final int gridCrossAxis = screenWidth > 800
         ? 3
         : screenWidth > 500
-            ? 2
-            : 1;
+        ? 2
+        : 1;
     final double sideMargins = screenWidth > 500 ? 100 : 40;
 
     return _isLoading
@@ -142,10 +140,7 @@ class _HomePageState extends State<HomePage> {
           ),
           itemCount: _mockProjectList.length,
           itemBuilder: (context, index) {
-            return ProjectCard(
-              project: _mockProjectList[index],
-              onTap: () {},
-            );
+            return ProjectCard(project: _mockProjectList[index], onTap: () {});
           },
           padding: _gridViewPadding(sideMargins),
         ),
@@ -154,10 +149,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   EdgeInsets _gridViewPadding(double sideMargins) {
-    return EdgeInsets.only(
-      left: sideMargins,
-      right: sideMargins,
-      top: 16,
-    );
+    return EdgeInsets.only(left: sideMargins, right: sideMargins, top: 16);
   }
 }

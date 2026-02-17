@@ -6,11 +6,7 @@ import 'package:log_file_client/utils/http_client.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class GraphView extends StatefulWidget {
-  const GraphView({
-    required this.logData,
-    this.now,
-    super.key,
-  });
+  const GraphView({required this.logData, this.now, super.key});
 
   final List<LogDataLine> logData;
   final DateTime? now;
@@ -158,10 +154,7 @@ class _GraphViewState extends State<GraphView> {
         children: [
           Text(
             'Tank ID: ${logData.first.tankid}',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            ),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
           Row(
             children: [
@@ -250,8 +243,9 @@ class _GraphViewState extends State<GraphView> {
 
             // Update the trackball tooltip information
             details.chartPointInfo.label = tooltipText;
-            details.chartPointInfo.header =
-                DateFormat('MMM d hh:mm a').format(date);
+            details.chartPointInfo.header = DateFormat(
+              'MMM d hh:mm a',
+            ).format(date);
           }
         },
         series: _chartSeries(logData),

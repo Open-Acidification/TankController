@@ -45,10 +45,7 @@ class GraphPage extends StatelessWidget {
               return const Center(child: Text('No data found'));
             } else {
               final logData = snapshot.data!;
-              return GraphView(
-                logData: logData,
-                now: now,
-              );
+              return GraphView(logData: logData, now: now);
             }
           },
         ),

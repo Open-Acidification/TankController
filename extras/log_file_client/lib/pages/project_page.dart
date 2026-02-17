@@ -25,10 +25,8 @@ class _ProjectPageState extends State<ProjectPage> {
   Future<void> openTankGraph(Log log) async {
     await Navigator.of(context).push(
       PageRouteBuilder(
-        pageBuilder: (context, animation1, animation2) => GraphPage(
-          log: log,
-          httpClient: widget.httpClient,
-        ),
+        pageBuilder: (context, animation1, animation2) =>
+            GraphPage(log: log, httpClient: widget.httpClient),
         transitionDuration: Duration.zero,
         reverseTransitionDuration: Duration.zero,
       ),
@@ -69,8 +67,8 @@ class _ProjectPageState extends State<ProjectPage> {
     final int gridCrossAxis = screenWidth > 1024
         ? 3
         : screenWidth > 500
-            ? 2
-            : 1;
+        ? 2
+        : 1;
     final double sideMargins = screenWidth > 500 ? 100 : 10;
 
     return Scaffold(

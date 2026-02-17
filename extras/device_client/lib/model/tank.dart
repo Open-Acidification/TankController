@@ -1,16 +1,11 @@
 class Tank {
   Tank(this.name, this.ip);
 
-  Tank.fromJson(Map json)
-      : name = json['name'],
-        ip = json['ip'];
+  Tank.fromJson(Map json) : name = json['name'], ip = json['ip'];
   String name;
   String ip;
 
-  Map toJson() => {
-        'name': name,
-        'ip': ip,
-      };
+  Map toJson() => {'name': name, 'ip': ip};
 
   @override
   bool operator ==(Object other) => hashCode == other.hashCode;

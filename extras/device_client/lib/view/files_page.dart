@@ -6,10 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Files extends StatelessWidget {
-  const Files({
-    required this.context,
-    super.key,
-  });
+  const Files({required this.context, super.key});
 
   final BuildContext context;
 
@@ -32,9 +29,7 @@ class Files extends StatelessWidget {
                         final String loc = 'http://$ip/$file';
                         unawaited(launchUrl(Uri.parse(loc)));
                       },
-                      child: Text(
-                        fileName.toString(),
-                      ),
+                      child: Text(fileName.toString()),
                     ),
                   ),
                   DataCell(
@@ -48,9 +43,9 @@ class Files extends StatelessWidget {
             ),
           );
           fileRows.sort(
-            (a, b) => a.cells[0].child
-                .toString()
-                .compareTo(b.cells[0].child.toString()),
+            (a, b) => a.cells[0].child.toString().compareTo(
+              b.cells[0].child.toString(),
+            ),
           );
           return ListView(
             children: <Widget>[

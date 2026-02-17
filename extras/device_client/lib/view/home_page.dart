@@ -25,9 +25,7 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Column(
         children: <Widget>[
           Display(context: context),
-          Flexible(
-            child: Keypad(context: context),
-          ),
+          Flexible(child: Keypad(context: context)),
         ],
       ),
     );
@@ -44,9 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
       builder: (context, appData, child) {
         return Scaffold(
           appBar: AppBar(
-            title: Text(
-              '${widget.title}: ${appData.currentTank.name}',
-            ),
+            title: Text('${widget.title}: ${appData.currentTank.name}'),
             // actions: [
             //   _tankMonitorRedirect(),
             // ],

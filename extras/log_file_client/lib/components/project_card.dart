@@ -41,16 +41,11 @@ class ProjectCard extends StatelessWidget {
     return Container(
       width: imageSize,
       height: imageSize,
-      margin: EdgeInsets.only(
-        top: cardWidth * 0.11,
-        bottom: cardWidth * 0.075,
-      ),
+      margin: EdgeInsets.only(top: cardWidth * 0.11, bottom: cardWidth * 0.075),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(cardWidth * 0.25),
         image: DecorationImage(
-          image: AssetImage(
-            './lib/assets/placeholder.png',
-          ),
+          image: AssetImage('./lib/assets/placeholder.png'),
           fit: BoxFit.cover,
         ),
       ),
@@ -84,9 +79,7 @@ class ProjectCard extends StatelessWidget {
   BoxDecoration _cardBackground() {
     return BoxDecoration(
       borderRadius: BorderRadius.circular(24.0),
-      border: Border.all(
-        color: const Color(0xFFE6E6E6),
-      ),
+      border: Border.all(color: const Color(0xFFE6E6E6)),
       color: const Color(0xFFFAFAF5),
     );
   }

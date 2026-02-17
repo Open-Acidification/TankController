@@ -6,10 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class Display extends StatelessWidget {
-  const Display({
-    required BuildContext context,
-    super.key,
-  });
+  const Display({required BuildContext context, super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -19,22 +19,14 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('MyApp has a title and HomePage', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MyApp(
-        httpClient: HttpClientTest(),
-      ),
-    );
+    await tester.pumpWidget(MyApp(httpClient: HttpClientTest()));
     expect(find.text('Tank Monitor'), findsOneWidget);
     expect(find.byType(HomePage), findsOneWidget);
   });
 
   testWidgets('HomePage displays projects', (WidgetTester tester) async {
     await tester.pumpWidget(
-      MaterialApp(
-        home: HomePage(
-          httpClient: HttpClientTest(),
-        ),
-      ),
+      MaterialApp(home: HomePage(httpClient: HttpClientTest())),
     );
 
     await tester.pumpAndSettle();
@@ -51,16 +43,13 @@ void main() {
     expect(find.text('stefan'), findsOneWidget);
   });
 
-  testWidgets('ProjectCard opens project page when selected',
-      (WidgetTester tester) async {
+  testWidgets('ProjectCard opens project page when selected', (
+    WidgetTester tester,
+  ) async {
     tester.view.physicalSize = const Size(1920, 1080);
     tester.view.devicePixelRatio = 1.0;
     await tester.pumpWidget(
-      MaterialApp(
-        home: HomePage(
-          httpClient: HttpClientTest(),
-        ),
-      ),
+      MaterialApp(home: HomePage(httpClient: HttpClientTest())),
     );
     await tester.pumpAndSettle();
 
@@ -100,8 +89,9 @@ void main() {
     expect(find.text('tank-70'), findsOneWidget);
   });
 
-  testWidgets('Changing deviation controllers updates TankCard widgets',
-      (WidgetTester tester) async {
+  testWidgets('Changing deviation controllers updates TankCard widgets', (
+    WidgetTester tester,
+  ) async {
     tester.view.physicalSize = const Size(1920, 1080);
     tester.view.devicePixelRatio = 1.0;
     await tester.pumpWidget(
@@ -117,10 +107,12 @@ void main() {
     await tester.pumpAndSettle();
 
     // Find the chart widgets and verify it built with default deviation values
-    SfCartesianChart phChart =
-        tester.widget(find.byType(SfCartesianChart).first);
-    SfCartesianChart tempChart =
-        tester.widget(find.byType(SfCartesianChart).last);
+    SfCartesianChart phChart = tester.widget(
+      find.byType(SfCartesianChart).first,
+    );
+    SfCartesianChart tempChart = tester.widget(
+      find.byType(SfCartesianChart).last,
+    );
     NumericAxis phAxis = phChart.primaryYAxis as NumericAxis;
     NumericAxis tempAxis = tempChart.primaryYAxis as NumericAxis;
     expect(phAxis.minimum, closeTo(6.25 - 0.5, 0.01));
@@ -168,8 +160,9 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: ProjectPage(
-          project:
-              Project('ProjectA', [Log('tank-24', 'ProjectA-tank-24.log')]),
+          project: Project('ProjectA', [
+            Log('tank-24', 'ProjectA-tank-24.log'),
+          ]),
           httpClient: HttpClientTest(),
         ),
       ),
@@ -181,8 +174,9 @@ void main() {
     expect(find.byType(TankThumbnail), findsOneWidget);
   });
 
-  testWidgets('TankThumbnail is able to build from empty snapshot',
-      (WidgetTester tester) async {
+  testWidgets('TankThumbnail is able to build from empty snapshot', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(
       TankThumbnail(
         snapshot: TankSnapshot(
@@ -204,8 +198,9 @@ void main() {
     expect(find.byType(TankThumbnail), findsOneWidget);
     expect(find.text('No data available within past 12 hrs'), findsOneWidget);
   });
-  testWidgets('TankCard opens graph when selected',
-      (WidgetTester tester) async {
+  testWidgets('TankCard opens graph when selected', (
+    WidgetTester tester,
+  ) async {
     tester.view.physicalSize = const Size(1920, 1080);
     tester.view.devicePixelRatio = 1.0;
     await tester.pumpWidget(
@@ -229,8 +224,9 @@ void main() {
     expect(find.byType(GraphPage), findsOneWidget);
   });
 
-  testWidgets('TableView displays table with log data from file',
-      (WidgetTester tester) async {
+  testWidgets('TableView displays table with log data from file', (
+    WidgetTester tester,
+  ) async {
     // Build the TableView widget
     await tester.pumpWidget(
       MaterialApp(
@@ -327,9 +323,7 @@ void main() {
 
     // Check for ScatterSeries widget presence
     expect(
-      find.byWidgetPredicate(
-        (widget) => widget is ScatterSeries,
-      ),
+      find.byWidgetPredicate((widget) => widget is ScatterSeries),
       findsNWidgets(4),
     );
   });

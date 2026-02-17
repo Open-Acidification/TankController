@@ -36,10 +36,7 @@ class _MyWheelPickerState extends State<MyWheelPicker> {
         );
         break;
       case WheelType.minutes:
-        selectedTime = TimeOfDay(
-          hour: selectedTime.hour,
-          minute: index,
-        );
+        selectedTime = TimeOfDay(hour: selectedTime.hour, minute: index);
         break;
       case WheelType.amPm:
         selectedAmPm = ['AM', 'PM'][index];

@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Graphs extends StatelessWidget {
-  const Graphs({
-    required this.context,
-    super.key,
-  });
+  const Graphs({required this.context, super.key});
 
   final BuildContext context;
 

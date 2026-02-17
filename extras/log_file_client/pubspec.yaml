@@ -9,7 +9,7 @@ environment:
 dependencies:
   csv: ^6.0.0
   cupertino_icons: ^1.0.6
-  date_picker_plus: ^4.1.0
+  date_picker_plus: ^6.0.0
   flutter:
     sdk: flutter
   html: ^0.15.4

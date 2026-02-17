@@ -5,7 +5,8 @@ import 'dart:typed_data';
 import 'package:device_client/model/app_data.dart';
 import 'package:device_client/model/tc_interface.dart';
 import 'package:device_client/view/mock_html.dart'
-    if (dart.library.html) 'dart:html' as html;
+    if (dart.library.html) 'dart:html'
+    as html;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
@@ -13,10 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:version/version.dart';
 
 class CurrentData extends StatelessWidget {
-  const CurrentData({
-    required this.context,
-    super.key,
-  });
+  const CurrentData({required this.context, super.key});
 
   final BuildContext context;
 
@@ -42,13 +40,10 @@ class CurrentData extends StatelessWidget {
 
   Future<void> putNewValue(String newValue, AppData appData) async {
     await TcInterface.instance()
-        .put(
-      '${appData.currentData["IPAddress"]}',
-      'data?$key=$newValue',
-    )
+        .put('${appData.currentData["IPAddress"]}', 'data?$key=$newValue')
         .then((value) {
-      appData.currentData = json.decode(value);
-    });
+          appData.currentData = json.decode(value);
+        });
     if (context.mounted) {
       Navigator.pop(context);
     }
@@ -75,24 +70,18 @@ class CurrentData extends StatelessWidget {
                     DropdownButtonFormField<String>(
                       initialValue: value,
                       items: const <DropdownMenuItem<String>>[
-                        DropdownMenuItem(
-                          value: 'OFF',
-                          child: Text('OFF'),
-                        ),
-                        DropdownMenuItem(
-                          value: 'ON',
-                          child: Text('ON'),
-                        ),
+                        DropdownMenuItem(value: 'OFF', child: Text('OFF')),
+                        DropdownMenuItem(value: 'ON', child: Text('ON')),
                       ],
                       onChanged: (String? newValue) async {
                         await TcInterface.instance()
                             .put(
-                          '${appData.currentData["IPAddress"]}',
-                          'data?$key=$newValue',
-                        )
+                              '${appData.currentData["IPAddress"]}',
+                              'data?$key=$newValue',
+                            )
                             .then((value) {
-                          appData.currentData = json.decode(value);
-                        });
+                              appData.currentData = json.decode(value);
+                            });
                         if (context.mounted) {
                           Navigator.pop(context);
                         }
@@ -102,24 +91,18 @@ class CurrentData extends StatelessWidget {
                     DropdownButtonFormField<String>(
                       initialValue: value,
                       items: const <DropdownMenuItem<String>>[
-                        DropdownMenuItem(
-                          value: 'CHILL',
-                          child: Text('CHILL'),
-                        ),
-                        DropdownMenuItem(
-                          value: 'HEAT',
-                          child: Text('HEAT'),
-                        ),
+                        DropdownMenuItem(value: 'CHILL', child: Text('CHILL')),
+                        DropdownMenuItem(value: 'HEAT', child: Text('HEAT')),
                       ],
                       onChanged: (String? newValue) async {
                         await TcInterface.instance()
                             .put(
-                          '${appData.currentData["IPAddress"]}',
-                          'data?$key=$newValue',
-                        )
+                              '${appData.currentData["IPAddress"]}',
+                              'data?$key=$newValue',
+                            )
                             .then((value) {
-                          appData.currentData = json.decode(value);
-                        });
+                              appData.currentData = json.decode(value);
+                            });
                         if (context.mounted) {
                           Navigator.pop(context);
                         }
@@ -131,21 +114,19 @@ class CurrentData extends StatelessWidget {
                       onFieldSubmitted: (val) async {
                         await TcInterface.instance()
                             .put(
-                          '${appData.currentData["IPAddress"]}',
-                          'data?$key=$val',
-                        )
+                              '${appData.currentData["IPAddress"]}',
+                              'data?$key=$val',
+                            )
                             .then((value) {
-                          appData.currentData = json.decode(value);
-                        });
+                              appData.currentData = json.decode(value);
+                            });
                         if (context.mounted) {
                           Navigator.pop(context);
                         }
                       },
                     ),
                   const SizedBox(height: 20),
-                  const Text(
-                    'Press "Esc" to cancel, or "Enter" to submit',
-                  ),
+                  const Text('Press "Esc" to cancel, or "Enter" to submit'),
                 ],
               ),
             ),
@@ -166,11 +147,7 @@ class CurrentData extends StatelessWidget {
             child: Form(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text(
-                    messageString,
-                  ),
-                ],
+                children: <Widget>[Text(messageString)],
               ),
             ),
           ),
@@ -180,8 +157,9 @@ class CurrentData extends StatelessWidget {
   }
 
   Future<void> sendArbitraryPathString(String arbitraryPath, String ip) async {
-    final Uint8List bytes =
-        const Base64Decoder().convert(arbitraryPath.split(',').last);
+    final Uint8List bytes = const Base64Decoder().convert(
+      arbitraryPath.split(',').last,
+    );
     if (bytes.length > 10000) {
       await showPopupDialog('File too large', 'Your file exceeds 10 KB.');
       throw UnsupportedError('File too large');
@@ -275,12 +253,8 @@ class CurrentData extends StatelessWidget {
                     DataTable(
                       headingRowHeight: 0,
                       columns: const <DataColumn>[
-                        DataColumn(
-                          label: Text('Key'),
-                        ),
-                        DataColumn(
-                          label: Text('Value'),
-                        ),
+                        DataColumn(label: Text('Key')),
+                        DataColumn(label: Text('Value')),
                       ],
                       rows: currentDataRows,
                     ),

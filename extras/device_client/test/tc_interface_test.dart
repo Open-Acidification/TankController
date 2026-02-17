@@ -7,17 +7,19 @@ void main() {
   test('Post', () async {
     final post = await tcInterface.post('192.168.0.1', 'key?value=4');
     expect(
-        post,
-        'pH=7.352   7.218\n'
-        'T=10.99 C 11.004');
+      post,
+      'pH=7.352   7.218\n'
+      'T=10.99 C 11.004',
+    );
   });
 
   test('Get Post', () async {
     final get = await tcInterface.get('192.168.0.1', '7');
     expect(
-        get,
-        'pH=7.352   7.218\n'
-        'T=10.99 C 11.007');
+      get,
+      'pH=7.352   7.218\n'
+      'T=10.99 C 11.007',
+    );
   });
 
   test('Put', () async {
@@ -30,9 +32,7 @@ void main() {
 
   test('Get Put', () async {
     final get = await tcInterface.get('192.168.0.1', 'data');
-    expect(
-      get,
-      '''
+    expect(get, '''
 {
       "pH": "8.0",
       "Temperature": "20.0",
@@ -74,7 +74,6 @@ void main() {
             "PID"
       ]
 }
-''',
-    );
+''');
   });
 }

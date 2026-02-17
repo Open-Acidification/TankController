@@ -5,10 +5,7 @@ import 'package:device_client/model/tc_interface.dart';
 import 'package:flutter/material.dart';
 
 class Keypad extends StatelessWidget {
-  const Keypad({
-    required this.context,
-    super.key,
-  });
+  const Keypad({required this.context, super.key});
 
   final BuildContext context;
 

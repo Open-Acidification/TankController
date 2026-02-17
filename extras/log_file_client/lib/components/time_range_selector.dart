@@ -122,8 +122,9 @@ class _TimeRangeSelectorState extends State<TimeRangeSelector> {
               ),
               child: Text(
                 text,
-                style:
-                    TextStyle(color: active ? Colors.black : Colors.grey[600]),
+                style: TextStyle(
+                  color: active ? Colors.black : Colors.grey[600],
+                ),
               ),
             ),
           );

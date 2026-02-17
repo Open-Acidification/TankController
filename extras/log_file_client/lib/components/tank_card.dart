@@ -77,11 +77,7 @@ class TankCard extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return _skeletonLoaderGraph(cardWidth);
         } else if (snapshot.hasError) {
-          return Center(
-            child: Text(
-              'Error: ${snapshot.error}',
-            ),
-          );
+          return Center(child: Text('Error: ${snapshot.error}'));
         } else {
           return _graphThumbnail(cardWidth, snapshot);
         }
@@ -107,9 +103,7 @@ class TankCard extends StatelessWidget {
     return SizedBox(
       height: cardWidth * 0.53,
       child: ClipRRect(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         child: snapshot != null
             ? TankThumbnail(
                 snapshot: snapshot.data!,
@@ -119,9 +113,7 @@ class TankCard extends StatelessWidget {
             : Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage(
-                      './lib/assets/placeholder.png',
-                    ),
+                    image: AssetImage('./lib/assets/placeholder.png'),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -150,18 +142,11 @@ class TankCard extends StatelessWidget {
       future: tankSnapshot,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return _skeletonLoaderInfo(
-            tankInfoFontSize,
-            tankInfoHeaderFontSize,
-          );
+          return _skeletonLoaderInfo(tankInfoFontSize, tankInfoHeaderFontSize);
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else {
-          return _tankInfo(
-            tankInfoFontSize,
-            tankInfoHeaderFontSize,
-            snapshot,
-          );
+          return _tankInfo(tankInfoFontSize, tankInfoHeaderFontSize, snapshot);
         }
       },
     );
@@ -241,10 +226,12 @@ class TankCard extends StatelessWidget {
     double tankInfoFontSize,
     AsyncSnapshot<TankSnapshot>? snapshot,
   ) {
-    final IconData iconType =
-        type == TankInfoType.pH ? Icons.water_drop : Icons.thermostat;
-    final Color iconColor =
-        type == TankInfoType.pH ? Colors.green : Colors.blue;
+    final IconData iconType = type == TankInfoType.pH
+        ? Icons.water_drop
+        : Icons.thermostat;
+    final Color iconColor = type == TankInfoType.pH
+        ? Colors.green
+        : Colors.blue;
 
     String textData = 'mock';
     if (mode == TankInfoMode.current) {
@@ -268,11 +255,7 @@ class TankCard extends StatelessWidget {
     return Row(
       children: [
         Skeleton.keep(
-          child: Icon(
-            iconType,
-            color: iconColor,
-            size: tankInfoFontSize,
-          ),
+          child: Icon(iconType, color: iconColor, size: tankInfoFontSize),
         ),
         SizedBox(width: 5),
         Text(
@@ -289,9 +272,7 @@ class TankCard extends StatelessWidget {
   BoxDecoration _cardBackground() {
     return BoxDecoration(
       borderRadius: BorderRadius.circular(24.0),
-      border: Border.all(
-        color: const Color(0xFFE6E6E6),
-      ),
+      border: Border.all(color: const Color(0xFFE6E6E6)),
       color: const Color(0xFFFAFAF5),
     );
   }

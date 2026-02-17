@@ -68,16 +68,16 @@ class LogDataLine {
 
   @override
   int get hashCode => Object.hash(
-        version,
-        tankid,
-        time,
-        tempTarget,
-        tempMean,
-        tempStdDev,
-        phTarget,
-        phCurrent,
-        onTime,
-      );
+    version,
+    tankid,
+    time,
+    tempTarget,
+    tempMean,
+    tempStdDev,
+    phTarget,
+    phCurrent,
+    onTime,
+  );
 }
 
 class TankSnapshot {
@@ -126,8 +126,9 @@ abstract class HttpClient {
       }
       final projectName = listItems[i][0].split('-')[0];
       if (projects[projectName] != null) {
-        projects[projectName]!
-            .add(Log(parseLogName(listItems[i][0]), listItems[i][1]));
+        projects[projectName]!.add(
+          Log(parseLogName(listItems[i][0]), listItems[i][1]),
+        );
       } else {
         projects[projectName] = [
           Log(parseLogName(listItems[i][0]), listItems[i][1]),
@@ -184,8 +185,10 @@ abstract class HttpClient {
       return [];
     }
 
-    final List<List<dynamic>> logTable =
-        const CsvToListConverter(fieldDelimiter: '\t', eol: '\n').convert(data);
+    final List<List<dynamic>> logTable = const CsvToListConverter(
+      fieldDelimiter: '\t',
+      eol: '\n',
+    ).convert(data);
 
     // Filter out header and empty rows
     logTable.removeWhere((row) => row.isEmpty);
@@ -232,10 +235,7 @@ abstract class HttpClient {
       if (e.attributes.containsKey('href')) {
         final name = e.innerHtml;
         if (e.attributes['href']!.endsWith('.log') && name.contains('-')) {
-          result.add([
-            name,
-            e.attributes['href']!,
-          ]);
+          result.add([name, e.attributes['href']!]);
         }
       }
     }

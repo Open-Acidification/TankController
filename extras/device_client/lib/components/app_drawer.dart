@@ -7,10 +7,7 @@ import 'package:device_client/model/version.dart';
 import 'package:flutter/material.dart';
 
 class AppDrawer extends StatelessWidget {
-  const AppDrawer({
-    required this.context,
-    super.key,
-  });
+  const AppDrawer({required this.context, super.key});
 
   final BuildContext context;
 
@@ -29,9 +26,7 @@ class AppDrawer extends StatelessWidget {
       content: const Text(
         'Error connecting to Tank Controller. This is likely due to an incorrect IP address.',
       ),
-      actions: [
-        okButton,
-      ],
+      actions: [okButton],
     );
 
     // show the dialog
@@ -123,11 +118,7 @@ class AppDrawer extends StatelessWidget {
   Widget drawerHeader(BuildContext context) {
     return ColoredBox(
       color: Colors.blue,
-      child: DrawerHeader(
-        child: Image.asset(
-          'lib/assets/oap.png',
-        ),
-      ),
+      child: DrawerHeader(child: Image.asset('lib/assets/oap.png')),
     );
   }
 
@@ -148,17 +139,16 @@ class AppDrawer extends StatelessWidget {
   Future<void> updateDisplay() async {
     final appData = AppData.instance();
     final tcInterface = TcInterface.instance();
-    final String value =
-        await tcInterface.get(appData.currentTank.ip, 'display');
+    final String value = await tcInterface.get(
+      appData.currentTank.ip,
+      'display',
+    );
     appData.display = value; // setter notifies listeners of change
   }
 
   Widget tile(Tank selected) {
     return ListTile(
-      title: Text(
-        selected.name,
-        style: const TextStyle(color: Colors.white),
-      ),
+      title: Text(selected.name, style: const TextStyle(color: Colors.white)),
       onTap: () {
         AppData.instance().currentTank = selected;
         unawaited(updateDisplay());

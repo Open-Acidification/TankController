@@ -7,8 +7,9 @@ import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
 
-String rootDir =
-    Platform.localHostname == 'oap-vm' ? '/var/opt/oap/logs' : './test/logs';
+String rootDir = Platform.localHostname == 'oap-vm'
+    ? '/var/opt/oap/logs'
+    : './test/logs';
 
 // Configure routes.
 final _router = Router()
@@ -37,15 +38,19 @@ Future<Response> _get(Request req, String path) async {
   final body = file.readAsStringSync();
 
   // Remove non-informational lines
-  List<List> logTable =
-      const CsvToListConverter(fieldDelimiter: '\t', eol: '\n').convert(body);
+  List<List> logTable = const CsvToListConverter(
+    fieldDelimiter: '\t',
+    eol: '\n',
+  ).convert(body);
   logTable.removeWhere((row) => row[2] != 'I');
 
   // Condense to time range and granularity
   logTable = trimToTimeRange(logTable, snapshotLength, now);
   logTable = condenseToGranularity(logTable, snapshotGranularity);
-  final finalBody = const ListToCsvConverter(fieldDelimiter: '\t', eol: '\n')
-      .convert(logTable);
+  final finalBody = const ListToCsvConverter(
+    fieldDelimiter: '\t',
+    eol: '\n',
+  ).convert(logTable);
   return Response.ok(finalBody);
 }
 
@@ -64,17 +69,15 @@ Future<Response> _post(Request req, String path) async {
   final body = await req.readAsString();
   if (length != body.length) {
     return Response.badRequest(
-      body: 'Content-Length of $length '
+      body:
+          'Content-Length of $length '
           'did not match body.length of ${body.length}!',
     );
   }
 
   final file = File('$rootDir/$path');
   file.createSync(exclusive: false);
-  file.writeAsStringSync(
-    body,
-    mode: FileMode.writeOnlyAppend,
-  );
+  file.writeAsStringSync(body, mode: FileMode.writeOnlyAppend);
   return Response.ok(null);
 }
 
@@ -87,8 +90,9 @@ List<List> trimToTimeRange(
     return [];
   }
 
-  final String targetTime = DateFormat('yyyy-MM-dd HH:mm:ss')
-      .format(now.subtract(Duration(minutes: snapshotLength)));
+  final String targetTime = DateFormat(
+    'yyyy-MM-dd HH:mm:ss',
+  ).format(now.subtract(Duration(minutes: snapshotLength)));
 
   // Find the start index of the log entries that are within the time range
   int startIndex = 0;
@@ -127,8 +131,9 @@ void main(List<String> args) async {
   final ip = InternetAddress.anyIPv4;
 
   // Configure a pipeline that logs requests.
-  final handler =
-      Pipeline().addMiddleware(logRequests()).addHandler(_router.call);
+  final handler = Pipeline()
+      .addMiddleware(logRequests())
+      .addHandler(_router.call);
 
   // For running in containers, we respect the PORT environment variable.
   final port = int.parse(Platform.environment['PORT'] ?? '8082');

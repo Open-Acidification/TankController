@@ -4,7 +4,7 @@ version: 25.1.1
 repository: https://github.com/Open-Acidification/TankController
 
 environment:
-  sdk: '>=3.3.0 <4.0.0'
+  sdk: '>=3.11.0 <4.0.0'
 
 dependencies:
   args: ^2.3.0

@@ -11,6 +11,7 @@ public:
   int32_t eepromReadInt(uint16_t address);
   void eepromWriteFloat(uint16_t address, float value);
   void eepromWriteInt(uint16_t address, int32_t value);
+  void resetAll();
 
   // accessor methods
   float getAmplitude();                  // not used

@@ -1,5 +1,5 @@
 /**
- * SetCalibrationClear.cpp
+ * ResetThermalCalibration.cpp
  */
 #include "ResetThermalCalibration.h"
 

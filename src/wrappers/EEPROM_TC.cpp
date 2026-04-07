@@ -27,7 +27,8 @@ float EEPROM_TC::eepromReadFloat(uint16_t address) {
   float value = 0.0;
   byte* p = (byte*)(void*)&value;
   for (size_t i = 0; i < sizeof(value); i++) {
-    *p++ = EEPROM.read(address++);
+    *p++ = eepromAccessEnabled ? EEPROM.read(address++)
+                               : 1;  // if access is disabled, return 1s which is the default value for erased EEPROM
   }
   return value;
 }
@@ -39,6 +40,10 @@ float EEPROM_TC::eepromReadFloat(uint16_t address) {
  * @param value
  */
 void EEPROM_TC::eepromWriteFloat(uint16_t address, float value) {
+  if (!eepromAccessEnabled) {
+    serial(F("EEPROM disabled, cannot write to address %i"), address);
+    return;
+  }
   if (eepromReadFloat(address) != value) {
     byte* p = (byte*)(void*)&value;
     for (size_t i = 0; i < sizeof(value); i++) {
@@ -52,7 +57,8 @@ int32_t EEPROM_TC::eepromReadInt(uint16_t address) {
   int32_t value = 0;
   byte* p = (byte*)(void*)&value;
   for (size_t i = 0; i < sizeof(value); i++) {
-    *p++ = EEPROM.read(address++);
+    *p++ = eepromAccessEnabled ? EEPROM.read(address++)
+                               : 1;  // if access is disabled, return 1s which is the default value for erased EEPROM
   }
   return value;
 }
@@ -64,6 +70,10 @@ int32_t EEPROM_TC::eepromReadInt(uint16_t address) {
  * @param value
  */
 void EEPROM_TC::eepromWriteInt(uint16_t address, int32_t value) {
+  if (!eepromAccessEnabled) {
+    serial(F("EEPROM disabled, cannot write to address %i"), address);
+    return;
+  }
   if (eepromReadInt(address) != value) {
     byte* p = (byte*)(void*)&value;
     for (size_t i = 0; i < sizeof(value); i++) {
@@ -77,7 +87,7 @@ void EEPROM_TC::eepromWriteInt(uint16_t address, int32_t value) {
  * @brief resets EEPROM to factory default by writing 1 to all addresses, and triggers a remote log in DataLogger
  *
  */
-void EEPROM_TC::resetAll() {
+void EEPROM_TC::resetEEPROM() {
   for (uint16_t i = 0; i < EEPROM.length(); i++) {
     EEPROM.update(i, 1);
   }

@@ -9,6 +9,9 @@
 class ResetEEPROM : public UIState {
 public:
   void handleKey(char key);
+  bool isInCalibration() {
+    return true;
+  }
   const __FlashStringHelper* name() {
     return F("ResetEEPROM");
   }

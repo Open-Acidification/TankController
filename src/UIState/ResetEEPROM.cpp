@@ -10,11 +10,13 @@
 void ResetEEPROM::handleKey(char key) {
   switch (key) {
     case 'A':  // Save (erase EEPROM)
-      EEPROM_TC::instance()->resetAll();
+      EEPROM_TC::instance()->resetEEPROM();
       returnToMainMenu();
       break;
     case 'D':  // Don't save (cancel)
-      returnToMainMenu();
+      wdt_enable(WDTO_15MS);
+      do {
+      } while (true);
       break;
     default:
       break;

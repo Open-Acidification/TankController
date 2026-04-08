@@ -84,14 +84,14 @@ void EEPROM_TC::eepromWriteInt(uint16_t address, int32_t value) {
 }
 
 /**
- * @brief resets EEPROM to factory default by writing 1 to all addresses, and triggers a remote log in DataLogger
+ * @brief resets EEPROM to factory default by writing 1 to all addresses, and reenables read/write functions
  *
  */
 void EEPROM_TC::resetEEPROM() {
   for (uint16_t i = 0; i < EEPROM.length(); i++) {
     EEPROM.update(i, 1);
   }
-  DataLogger::instance()->writeWarningSoon();  // log all settings
+  eepromAccessEnabled = true;
 }
 
 // getter methods

@@ -3,6 +3,8 @@
  */
 #include "ResetEEPROM.h"
 
+#include <avr/wdt.h>
+
 #include "Wait.h"
 #include "wrappers/EEPROM_TC.h"
 #include "wrappers/LiquidCrystal_TC.h"
@@ -11,7 +13,9 @@ void ResetEEPROM::handleKey(char key) {
   switch (key) {
     case 'A':  // Save (erase EEPROM)
       EEPROM_TC::instance()->resetEEPROM();
-      returnToMainMenu();
+      wdt_enable(WDTO_15MS);
+      do {
+      } while (true);
       break;
     case 'D':  // Don't save (cancel)
       wdt_enable(WDTO_15MS);

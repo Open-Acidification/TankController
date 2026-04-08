@@ -26,3 +26,8 @@ void ResetEEPROM::handleKey(char key) {
       break;
   };
 }
+
+void ResetEEPROM::start() {
+  LiquidCrystal_TC::instance()->writeLine(prompt(), 0);
+  LiquidCrystal_TC::instance()->writeLine(F("D: Cancel"), 1);
+}

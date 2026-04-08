@@ -13,6 +13,7 @@ public:
   bool isInCalibration() {
     return true;
   }
+  void start() override;
   const __FlashStringHelper* name() {
     return F("ResetEEPROM");
   }

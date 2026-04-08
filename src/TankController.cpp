@@ -44,12 +44,12 @@ TankController* TankController::instance(const char* remoteLogName, const char* 
     SD_TC::instance();
     RemoteLogPusher::instance()->setRemoteLogName(remoteLogName);
     EEPROM_TC::instance();
+    Keypad_TC::instance();
     bool resetEEPROM = Keypad_TC::instance()->getKey() == 'C';
     if (resetEEPROM) {
       EEPROM_TC::instance()->setEEPROMAccessEnabled(false);
       serial(F("EEPROM access disabled"));
     };
-    Keypad_TC::instance();
     LiquidCrystal_TC::instance(TANK_CONTROLLER_VERSION);
     DataLogger::instance();
     DateTime_TC::rtc();
@@ -61,7 +61,11 @@ TankController* TankController::instance(const char* remoteLogName, const char* 
     PHControl::instance();
     PID_TC::instance();
     pinMode(LED_BUILTIN, OUTPUT);
-    _instance->state = resetEEPROM ? (UIState*)new ResetEEPROM() : (UIState*)new MainMenu();
+    // _instance->state = resetEEPROM ? (UIState*)new ResetEEPROM() : (UIState*)new MainMenu();
+    _instance->state = new MainMenu();
+    if (resetEEPROM) {
+      _instance->setNextState(new ResetEEPROM());
+    }
     PushingBox::instance(pushingBoxID);
     GetTime::instance(tzOffsetHrs);
     serial(F("Free memory = %i"), _instance->freeMemory());

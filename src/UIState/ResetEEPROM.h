@@ -14,9 +14,9 @@ public:
     return true;
   }
   const __FlashStringHelper* name() {
-    return F("Erase EEPROM?");
+    return F("ResetEEPROM");
   }
   const __FlashStringHelper* prompt() {
-    return F("A: Erase  D: Cancel");
+    return F("A: Erase EEPROM");
   };
 };

@@ -10,7 +10,8 @@
 
 class Ethernet_TC {
 public:
-  static Ethernet_TC *instance(bool reset = false);
+  static Ethernet_TC *instance(bool reset);
+  static Ethernet_TC *instance(long timeout = 60000);
   IPAddress getIP() {
     return IP;
   };
@@ -27,7 +28,7 @@ public:
   void loop();
 
 protected:
-  Ethernet_TC();
+  Ethernet_TC(long timeout);
 
 private:
   static Ethernet_TC *_instance;

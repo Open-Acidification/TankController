@@ -45,15 +45,15 @@ TankController* TankController::instance(const char* remoteLogName, const char* 
     RemoteLogPusher::instance()->setRemoteLogName(remoteLogName);
     EEPROM_TC::instance();
     Keypad_TC::instance();
-    bool resetEEPROM = Keypad_TC::instance()->getKey() == 'C';
-    if (resetEEPROM) {
+    char key = Keypad_TC::instance()->getKey();
+    if (key == '1') {
       EEPROM_TC::instance()->setEEPROMAccessEnabled(false);
       serial(F("EEPROM access disabled"));
     };
     LiquidCrystal_TC::instance(TANK_CONTROLLER_VERSION);
     DataLogger::instance();
     DateTime_TC::rtc();
-    Ethernet_TC::instance();
+    Ethernet_TC::instance(key == NO_KEY ? 60000 : 1);
     EthernetServer_TC::instance();
     ThermalProbe_TC::instance();
     ThermalControl::instance();
@@ -61,9 +61,8 @@ TankController* TankController::instance(const char* remoteLogName, const char* 
     PHControl::instance();
     PID_TC::instance();
     pinMode(LED_BUILTIN, OUTPUT);
-    // _instance->state = resetEEPROM ? (UIState*)new ResetEEPROM() : (UIState*)new MainMenu();
     _instance->state = new MainMenu();
-    if (resetEEPROM) {
+    if (key == '1') {
       _instance->setNextState(new ResetEEPROM());
     }
     PushingBox::instance(pushingBoxID);

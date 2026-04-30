@@ -9,15 +9,15 @@
 
 class ResetEEPROM : public UIState {
 public:
-  void handleKey(char key);
-  bool isInCalibration() {
+  void handleKey(char key) override;
+  bool isInCalibration() override {
     return true;
   }
   void start() override;
-  const __FlashStringHelper* name() {
+  const __FlashStringHelper* name() override {
     return F("ResetEEPROM");
   }
-  const __FlashStringHelper* prompt() {
+  const __FlashStringHelper* prompt() override {
     return F("A: Erase EEPROM");
   };
 };

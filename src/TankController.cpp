@@ -28,6 +28,26 @@
 
 const char TANK_CONTROLLER_VERSION[] = VERSION;
 
+// ------------ Early Boot Watchdog Disable ------------
+/**
+ * Disable the watchdog timer immediately on boot, before main()/setup() runs.
+ *
+ * After a watchdog reset on AVR, the WDT remains enabled with whatever timeout
+ * triggered the reset (e.g. the 15 ms used by ResetEEPROM). The stock Mega2560
+ * bootloader does not clear MCUSR or call wdt_disable(), and it takes longer
+ * than 15 ms to hand control to the sketch -- so the WDT fires again inside
+ * the bootloader, looping forever and appearing as a "freeze." Clearing MCUSR
+ * and disabling the WDT from .init3 runs before the C runtime / main() and
+ * breaks that loop. See avr-libc <avr/wdt.h> documentation.
+ */
+#if !defined(ARDUINO_CI_COMPILATION_MOCKS)
+void disableWatchdogAtBoot(void) __attribute__((naked, used, section(".init3")));
+void disableWatchdogAtBoot(void) {
+  MCUSR = 0;
+  wdt_disable();
+}
+#endif
+
 // ------------ Class Methods ------------
 /**
  * static variable to hold singleton
@@ -53,7 +73,7 @@ TankController* TankController::instance(const char* remoteLogName, const char* 
     LiquidCrystal_TC::instance(TANK_CONTROLLER_VERSION);
     DataLogger::instance();
     DateTime_TC::rtc();
-    Ethernet_TC::instance(key == NO_KEY ? 60000 : 1);
+    Ethernet_TC::instance(key == NO_KEY ? (long)60000 : (long)1);  // if a key is held, use a short timeout
     EthernetServer_TC::instance();
     ThermalProbe_TC::instance();
     ThermalControl::instance();

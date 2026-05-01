@@ -71,6 +71,7 @@ all : \
 	$(BIN)/PIDTest.cpp.bin \
 	$(BIN)/PushingBoxTest.cpp.bin \
 	$(BIN)/RemoteLogPusherTest.cpp.bin \
+	$(BIN)/ResetEEPROMTest.cpp.bin \
 	$(BIN)/ResetPHCalibrationTest.cpp.bin \
 	$(BIN)/ResetThermalCalibrationTest.cpp.bin \
 	$(BIN)/SDTest.cpp.bin \
@@ -175,6 +176,15 @@ $(BIN)/PushingBoxTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/PushingBoxTest.cpp $
 $(BIN)/RemoteLogPusherTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/RemoteLogPusherTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/RemoteLogPusherTest.cpp.bin $(TEST)/RemoteLogPusherTest.cpp -larduino
 
+$(BIN)/ResetEEPROMTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/ResetEEPROMTest.cpp $(HEADERS)
+	$(GPP_TEST) -o $(BIN)/ResetEEPROMTest.cpp.bin $(TEST)/ResetEEPROMTest.cpp -larduino
+
+$(BIN)/ResetPHCalibrationTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/ResetPHCalibrationTest.cpp $(HEADERS)
+	$(GPP_TEST) -o $(BIN)/ResetPHCalibrationTest.cpp.bin $(TEST)/ResetPHCalibrationTest.cpp -larduino
+
+$(BIN)/ResetThermalCalibrationTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/ResetThermalCalibrationTest.cpp $(HEADERS)
+	$(GPP_TEST) -o $(BIN)/ResetThermalCalibrationTest.cpp.bin $(TEST)/ResetThermalCalibrationTest.cpp -larduino
+
 $(BIN)/SDTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SDTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/SDTest.cpp.bin $(TEST)/SDTest.cpp -larduino
 
@@ -229,9 +239,6 @@ $(BIN)/SetKITest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SetKITest.cpp $(HEADERS)
 $(BIN)/SetKPTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SetKPTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/SetKPTest.cpp.bin $(TEST)/SetKPTest.cpp -larduino
 
-$(BIN)/ResetPHCalibrationTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/ResetPHCalibrationTest.cpp $(HEADERS)
-	$(GPP_TEST) -o $(BIN)/ResetPHCalibrationTest.cpp.bin $(TEST)/ResetPHCalibrationTest.cpp -larduino
-
 $(BIN)/SetPHTargetTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SetPHTargetTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/SetPHTargetTest.cpp.bin $(TEST)/SetPHTargetTest.cpp -larduino
 
@@ -240,9 +247,6 @@ $(BIN)/SetPHSineWaveTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SetPHSineWaveTest
 
 $(BIN)/SetTankIDTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SetTankIDTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/SetTankIDTest.cpp.bin $(TEST)/SetTankIDTest.cpp -larduino
-
-$(BIN)/ResetThermalCalibrationTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/ResetThermalCalibrationTest.cpp $(HEADERS)
-	$(GPP_TEST) -o $(BIN)/ResetThermalCalibrationTest.cpp.bin $(TEST)/ResetThermalCalibrationTest.cpp -larduino
 
 $(BIN)/SetThermalTargetTest.cpp.bin: $(BIN)/libarduino.so $(TEST)/SetThermalTargetTest.cpp $(HEADERS)
 	$(GPP_TEST) -o $(BIN)/SetThermalTargetTest.cpp.bin $(TEST)/SetThermalTargetTest.cpp -larduino

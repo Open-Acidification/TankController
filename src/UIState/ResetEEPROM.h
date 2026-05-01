@@ -2,7 +2,7 @@
  * ResetEEPROM.h
  *
  * Asks whether to reset EEPROM to factory default, which is useful if the data is corrupted and causing crashes. This
- * is accessed by holding the 'C' key on the keypad during startup. The device is rebooted after the selection is made.
+ * is accessed by holding the '1' key on the keypad during startup. The device is rebooted after the selection is made.
  */
 #pragma once
 #include "UIState.h"

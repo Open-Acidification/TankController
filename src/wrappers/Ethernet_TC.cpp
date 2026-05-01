@@ -38,7 +38,7 @@ Ethernet_TC *Ethernet_TC::instance(bool reset) {
     delete _instance;
     _instance = nullptr;
   }
-  return instance(); // Call the other instance() method to create the instance if it doesn't exist
+  return instance();  // Call the other instance() method to create the instance if it doesn't exist
 }
 
 Ethernet_TC *Ethernet_TC::instance(long timeout) {

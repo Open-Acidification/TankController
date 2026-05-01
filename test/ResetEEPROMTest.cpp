@@ -56,8 +56,7 @@ unittest(isInCalibrationIsTrue) {
 //    behavior so a future edit can't silently add (e.g.) a returnToMainMenu()
 //    that would let an accidental keypress drop the user out of the prompt.
 unittest(unhandledKeysAreNoOps) {
-  const char unhandledKeys[] = {'0', '1', '2', '3', '4', '5', '6',
-                                '7', '8', '9', 'B', 'C', '*', '#'};
+  const char unhandledKeys[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C', '*', '#'};
   for (size_t i = 0; i < sizeof(unhandledKeys); ++i) {
     enterKey(unhandledKeys[i]);
     assertEqual("ResetEEPROM", tc->stateName());

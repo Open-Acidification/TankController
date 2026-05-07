@@ -11,6 +11,7 @@ public:
   int32_t eepromReadInt(uint16_t address);
   void eepromWriteFloat(uint16_t address, float value);
   void eepromWriteInt(uint16_t address, int32_t value);
+  void resetEEPROM();
 
   // accessor methods
   float getAmplitude();                  // not used
@@ -53,6 +54,9 @@ public:
   float getTempSeriesSize();     // not used
 
   // setter methods
+  void setEEPROMAccessEnabled(bool enabled) {
+    eepromAccessEnabled = enabled;
+  }
   void setAmplitude(float value);
   void setThermalCorrection(float value);
   void setFrequency(float value);
@@ -97,6 +101,8 @@ public:
   void writeAllToString(char* destination, int size);
 
 private:
+  bool eepromAccessEnabled = true;  // disables read/write functions if false to prevent infinite loop when EEPROM is
+                                    // corrupted and causing crashes
   // note that while Arduino floats are 4 bytes, we sometimes allow 8 bytes!
   // instance variables from v0.197
   const uint16_t PH_ADDRESS = 0;                   // 9.999

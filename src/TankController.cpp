@@ -4,6 +4,7 @@
 #include <stdlib.h>
 
 #include "UIState/MainMenu.h"
+#include "UIState/ResetEEPROM.h"
 #include "UIState/UIState.h"
 #include "Version.h"
 #include "model/DataLogger.h"
@@ -27,16 +28,36 @@
 
 const char TANK_CONTROLLER_VERSION[] = VERSION;
 
+// ------------ Early Boot Watchdog Disable ------------
+/**
+ * Disable the watchdog timer immediately on boot, before main()/setup() runs.
+ *
+ * After a watchdog reset on AVR, the WDT remains enabled with whatever timeout
+ * triggered the reset (e.g. the 15 ms used by ResetEEPROM). The stock Mega2560
+ * bootloader does not clear MCUSR or call wdt_disable(), and it takes longer
+ * than 15 ms to hand control to the sketch -- so the WDT fires again inside
+ * the bootloader, looping forever and appearing as a "freeze." Clearing MCUSR
+ * and disabling the WDT from .init3 runs before the C runtime / main() and
+ * breaks that loop. See avr-libc <avr/wdt.h> documentation.
+ */
+#if !defined(ARDUINO_CI_COMPILATION_MOCKS)
+void disableWatchdogAtBoot(void) __attribute__((naked, used, section(".init3")));
+void disableWatchdogAtBoot(void) {
+  MCUSR = 0;
+  wdt_disable();
+}
+#endif
+
 // ------------ Class Methods ------------
 /**
  * static variable to hold singleton
  */
-TankController *TankController::_instance = nullptr;
+TankController* TankController::_instance = nullptr;
 
 /**
  * static function to return singleton
  */
-TankController *TankController::instance(const char *remoteLogName, const char *pushingBoxID, int tzOffsetHrs) {
+TankController* TankController::instance(const char* remoteLogName, const char* pushingBoxID, int tzOffsetHrs) {
   if (!_instance) {
     serial(F("\r\n##############\r\nTankController %s"), TANK_CONTROLLER_VERSION);
     _instance = new TankController();
@@ -44,10 +65,15 @@ TankController *TankController::instance(const char *remoteLogName, const char *
     RemoteLogPusher::instance()->setRemoteLogName(remoteLogName);
     EEPROM_TC::instance();
     Keypad_TC::instance();
+    char key = Keypad_TC::instance()->getKey();
+    if (key == '1') {
+      EEPROM_TC::instance()->setEEPROMAccessEnabled(false);
+      serial(F("EEPROM access disabled"));
+    };
     LiquidCrystal_TC::instance(TANK_CONTROLLER_VERSION);
     DataLogger::instance();
     DateTime_TC::rtc();
-    Ethernet_TC::instance();
+    Ethernet_TC::instance(key == NO_KEY ? (long)60000 : (long)1);  // if a key is held, use a short timeout
     EthernetServer_TC::instance();
     ThermalProbe_TC::instance();
     ThermalControl::instance();
@@ -56,6 +82,9 @@ TankController *TankController::instance(const char *remoteLogName, const char *
     PID_TC::instance();
     pinMode(LED_BUILTIN, OUTPUT);
     _instance->state = new MainMenu();
+    if (key == '1') {
+      _instance->setNextState(new ResetEEPROM());
+    }
     PushingBox::instance(pushingBoxID);
     GetTime::instance(tzOffsetHrs);
     serial(F("Free memory = %i"), _instance->freeMemory());
@@ -114,7 +143,7 @@ int TankController::freeMemory() {
 #if defined(ARDUINO_CI_COMPILATION_MOCKS)
   return 1024;
 #else
-  extern char *__brkval;
+  extern char* __brkval;
   int topOfStack;
 
   return (int)((size_t)&topOfStack) - ((size_t)__brkval);
@@ -146,7 +175,7 @@ void TankController::handleUI() {
       // we already have a next state teed-up, do don't try to return to main menu
     } else if (millis() - lastKeypadTime > IDLE_TIMEOUT) {
       // time since last keypress exceeds the idle timeout, so return to main menu
-      setNextState((UIState *)new MainMenu());
+      setNextState((UIState*)new MainMenu());
       lastKeypadTime = 0;  // so we don't do this until another keypress!
     }
   } else {
@@ -211,7 +240,7 @@ void TankController::serialEvent1() {
 /**
  * Set the next state
  */
-void TankController::setNextState(UIState *newState, bool update) {
+void TankController::setNextState(UIState* newState, bool update) {
   assert(nextState == nullptr);
   nextState = newState;
   if (update) {
@@ -231,7 +260,7 @@ void TankController::setup() {
  * Public member function used to get the current state name.
  * This is primarily used by testing.
  */
-const __FlashStringHelper *TankController::stateName() {
+const __FlashStringHelper* TankController::stateName() {
   return state->name();
 }
 
@@ -262,13 +291,13 @@ void TankController::updateState() {
 /**
  * What is the current version?
  */
-const char *TankController::version() {
+const char* TankController::version() {
   return TANK_CONTROLLER_VERSION;
 }
 
 #if defined(__CYGWIN__)
-size_t strnlen(const char *s, size_t n) {
-  void *found = memchr(s, '\0', n);
-  return found ? (size_t)((char *)found - s) : n;
+size_t strnlen(const char* s, size_t n) {
+  void* found = memchr(s, '\0', n);
+  return found ? (size_t)((char*)found - s) : n;
 }
 #endif

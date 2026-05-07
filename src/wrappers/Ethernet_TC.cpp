@@ -9,14 +9,12 @@
 Ethernet_TC *Ethernet_TC::_instance = nullptr;
 
 // Establishes the Ethernet connection and sets class variables
-Ethernet_TC::Ethernet_TC() {
+Ethernet_TC::Ethernet_TC(long timeout) {
   pinMode(SD_SELECT_PIN, OUTPUT);
   digitalWrite(SD_SELECT_PIN, HIGH);
   readMac();
   serial(F("Attempting to connect to Ethernet"));
   wdt_disable();
-  int key = Keypad_TC::instance()->getKey();
-  long timeout = key == NO_KEY ? 60000 : 1;
   if (Ethernet.begin(mac, timeout)) {
     IP = Ethernet.localIP();
     serial(F("DHCP address is %i.%i.%i.%i"), IP[0], IP[1], IP[2], IP[3]);
@@ -32,13 +30,20 @@ Ethernet_TC::Ethernet_TC() {
   wdt_enable(WDTO_8S);
 }
 
+/**
+ * This method is used in testing.
+ */
 Ethernet_TC *Ethernet_TC::instance(bool reset) {
   if (reset && _instance) {
     delete _instance;
     _instance = nullptr;
   }
+  return instance();  // Call the other instance() method to create the instance if it doesn't exist
+}
+
+Ethernet_TC *Ethernet_TC::instance(long timeout) {
   if (_instance == nullptr) {
-    _instance = new Ethernet_TC;
+    _instance = new Ethernet_TC(timeout);
   }
   return _instance;
 }
